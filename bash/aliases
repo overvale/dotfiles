@@ -1,0 +1,67 @@
+# Alias Editing
+alias reload='source ~/Dropbox/code/bin/dotfiles/bash/aliases'
+alias ea='bbedit -w ~/Dropbox/code/bin/dotfiles/bash/aliases && reload' # Edit aliases
+
+# PROCESSES
+alias tu='top -o cpu' # cpu
+alias tm='top -o vsize' # memory
+
+# shell
+alias h='history'
+alias c='clear'
+alias e='exit'
+
+alias bb='bbedit'
+alias o='open . &'
+alias md='mkdir -p'
+function zipr() {zip -r $1.zip $1}
+function cake() { mkdir -p "$1"; cd "$1" }
+
+# ls
+alias cls='clear; ls'     # clear the screen and list
+alias cl='clear; l'       # clear screen and do custom list
+alias l='ls -lhGt'        # -l long listing, most recent first, -G color
+alias l.='ls -d .[^.]*'   # List only dot-files like .DS_Store
+alias a='ls -A'           # list all in a short list
+alias la="ls -A -l -G"    # long list, all, colors
+alias lh="ls -lh"         # human readable
+alias ll='ls -lhG'        # -l long listing, human readable, no group info, dirs in color
+alias lt='ls -lt'         # sort with recently modified first
+
+function cdl() {cd $1; ls} # move to a dir and list
+
+# cd
+alias ..="cd .."
+alias cdb="cd -"
+alias cdd='cd ~/Desktop'
+alias cddrop='cd ~/Dropbox'
+alias cdc='cd ~/Dropbox/code'
+alias cdbin='cd ~/Dropbox/code/bin'
+alias cds19='cd ~/Dropbox/Screenwriting/sierra_one_nine/'
+
+# Git Aliases
+alias gs='git status'
+alias ga='git add -A'
+
+
+
+# Connect to local file-server
+alias raidcharles='open smb://smb:123456@192.168.0.150/raidcharles_work'
+
+# this looks for the ip address of "en1" - see `ipconfig` for more
+ipaddr() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
+
+# open man pages in bbedit
+function bbm() {
+cmd=$(tr [a-z] [A-Z] <<< "$1")
+man $1 | col -b | /usr/local/bin/bbedit --view-top --clean -t "$cmd MANUAL"
+}
+
+# Airport On/Off
+function wifi(){networksetup -setairportpower en0 $1;}
+
+# Trash
+function trash(){mv $1 ~/.Trash;}
+
+# Delete directories
+function rmr(){rm -r $1;}

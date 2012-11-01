@@ -14,7 +14,6 @@ alias e='exit'
 alias bb='bbedit'
 alias o='open . &'
 alias md='mkdir -p'
-function zipr() {zip -r $1.zip $1}
 function cake() { mkdir -p "$1"; cd "$1" }
 
 # ls
@@ -28,7 +27,10 @@ alias lh="ls -lh"         # human readable
 alias ll='ls -lhG'        # -l long listing, human readable, no group info, dirs in color
 alias lt='ls -lt'         # sort with recently modified first
 
-function cdl() {cd $1; ls} # move to a dir and list
+function cdl() { # move to a dir and list
+cd $1;
+ls
+}
 
 # cd
 alias ..="cd .."
@@ -43,8 +45,6 @@ alias cds19='cd ~/Dropbox/Screenwriting/sierra_one_nine/'
 alias gs='git status'
 alias ga='git add -A'
 
-
-
 # Connect to local file-server
 alias raidcharles='open smb://smb:123456@192.168.0.150/raidcharles_work'
 
@@ -58,10 +58,19 @@ man $1 | col -b | /usr/local/bin/bbedit --view-top --clean -t "$cmd MANUAL"
 }
 
 # Airport On/Off
-function wifi(){networksetup -setairportpower en0 $1;}
+function wifi(){
+networksetup -setairportpower en0 $1;
+}
+
+# Textplay (http://olivertaylor.net/textplay)
+alias tp="textplay"
 
 # Trash
-function trash(){mv $1 ~/.Trash;}
+function trash(){
+mv $1 ~/.Trash;
+}
 
 # Delete directories
-function rmr(){rm -r $1;}
+function rmr(){
+rm -r $1;
+}

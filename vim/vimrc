@@ -1,0 +1,95 @@
+" General app prefs
+" ---------------------------------------------------------------------------
+
+set nocompatible                  " Must come first because it changes other options.
+syntax enable                     " Turn on syntax highlighting.
+filetype plugin indent on         " Turn on file type detection.
+call pathogen#infect()            " Load Pathogen plugin
+set modelines=0                   " Turn off modeline support
+
+set encoding=utf-8                " Set default encoding
+set ttyfast                       " Tell vim you're using a fast terminal.
+
+set title                         " Set the terminal's title
+set visualbell                    " No beeping.
+set nobackup                      " Don't make a backup before overwriting a file.
+set nowritebackup                 " And again.
+set directory=$HOME/.vim/tmp//,.  " Keep swap files in one location
+
+set hidden                        " Handle multiple buffers better.
+set wildmenu                      " Enhanced command line completion.
+set wildmode=list:longest         " Complete files like a shell.
+
+set ignorecase                    " Case-insensitive searching.
+set smartcase                     " But case-sensitive if expression contains a capital letter.
+set incsearch                     " Highlight matches as you type.
+set hlsearch                      " Highlight matches.
+set showmatch                     " Show matching brackets, etc.
+
+set gdefault                      " Sets searches to be global (line) by default
+"nnoremap / /\v                    " Standardize vim's regex syntax
+"vnoremap / /\v                    " Standardize vim's regex syntax
+
+
+" Editing Prefs
+" ---------------------------------------------------------------------------
+set autoindent                    " Turn on auto-indenting
+set tabstop=4                     " Tab preferences
+set shiftwidth=4
+set softtabstop=4
+"set expandtab                    " Use spaces instead of tabs
+set backspace=indent,eol,start    " Intuitive backspacing.
+
+
+" Display Stuff
+" ---------------------------------------------------------------------------
+
+" Useful status information at bottom of screen
+set statusline=[%n]\ %<%.99f\ %h%w%m%r%y\ %{exists('*CapsLockStatusline')?CapsLockStatusline():''}%=%-16(\ %l,%c-%v\ %)%P
+set laststatus=2                  " Show the status line all the time
+set showcmd                       " Display incomplete commands.
+set showmode                      " Display the mode you're in.
+
+set relativenumber                " Show line numbers relative to current line.
+set ruler                         " Show cursor position.
+"set cursorline                    " Highlight line the cursor is currently on.
+
+set wrap linebreak                " Turn on line wrapping.
+set scrolloff=3                   " Show 3 lines of context around the cursor at all times.
+
+colorscheme solarized             " Set color scheme
+set background=dark               " Tell Solarized to use a dark background
+
+
+" Shortcuts
+" ---------------------------------------------------------------------------
+
+" Disable The Arrow Keys - Oh God...
+nnoremap <up> <nop>
+nnoremap <down> <nop>
+nnoremap <left> <nop>
+nnoremap <right> <nop>
+inoremap <up> <nop>
+inoremap <down> <nop>
+inoremap <left> <nop>
+inoremap <right> <nop>
+nnoremap j gj
+nnoremap k gk
+
+" TAB MAPPINGS
+map <leader>tt :tabnew<cr>
+map <leader>te :tabedit
+map <leader>tc :tabclose<cr>
+map <leader>to :tabonly<cr>
+map <leader>tn :tabnext<cr>
+map <leader>tp :tabprevious<cr>
+map <leader>tf :tabfirst<cr>
+map <leader>tl :tablast<cr>
+map <leader>tm :tabmove
+
+" Clear search highlighting
+nnoremap <leader><space> :noh<cr>
+
+" Open .vimrc in a vertical split
+nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
+nnoremap <leader>svrc :source $MYVIMRC<cr>

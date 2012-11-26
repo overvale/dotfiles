@@ -74,3 +74,6 @@ mv $1 ~/.Trash;
 function rmr(){
 rm -r $1;
 }
+
+# My To Do List
+alias tasks='cat ~/Dropbox/tasks.txt'

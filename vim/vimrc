@@ -30,6 +30,8 @@ set gdefault                      " Sets searches to be global (line) by default
 "nnoremap / /\v                    " Standardize vim's regex syntax
 "vnoremap / /\v                    " Standardize vim's regex syntax
 
+set autoread                      " Tells vim to auto-read changes to the file from the disk.
+
 
 " Editing Prefs
 " ---------------------------------------------------------------------------
@@ -40,6 +42,12 @@ set softtabstop=4
 "set expandtab                    " Use spaces instead of tabs
 set backspace=indent,eol,start    " Intuitive backspacing.
 
+" Turn on spell-checking
+setlocal spell spelllang=en_us
+
+" Turn the blinking cursor off in normal mode
+" set gcr=n-c-v:blinkon0
+"
 
 " Display Stuff
 " ---------------------------------------------------------------------------
@@ -60,6 +68,8 @@ set scrolloff=3                   " Show 3 lines of context around the cursor at
 colorscheme solarized             " Set color scheme
 set background=dark               " Tell Solarized to use a dark background
 
+" Height of the command bar
+set cmdheight=2
 
 " Shortcuts
 " ---------------------------------------------------------------------------
@@ -92,4 +102,15 @@ nnoremap <leader><space> :noh<cr>
 
 " Open .vimrc in a vertical split
 nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
+
+" Quick-reload of this file
 nnoremap <leader>svrc :source $MYVIMRC<cr>
+
+" Open NERDTree
+nnoremap <leader>nt :NERDTree<cr>
+
+" Quickly set Markdown as the language
+nnoremap mdown<cr> :set syntax=markdown<cr>
+
+" Quickly save
+map <leader>w :w<cr>

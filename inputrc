@@ -1,0 +1,9 @@
+# ignore case for tab completion
+set completion-ignore-case on
+
+# show all suggestions after pressing tab once instead of twice
+set show-all-if-ambiguous on
+
+# make option-up and option-down cycle through commands that match the start of a line
+"\e\e[A": history-search-backward
+"\e\e[B": history-search-forward

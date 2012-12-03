@@ -1,6 +1,6 @@
 # Alias Editing
 alias reload='source ~/Dropbox/code/bin/dotfiles/bash/aliases'
-alias ea='bbedit -w ~/Dropbox/code/bin/dotfiles/bash/aliases && reload' # Edit aliases
+alias ea='bbedit -w ~/Dropbox/code/bin/dotfiles/bash/aliases && reload'
 
 # PROCESSES
 alias tu='top -o cpu' # cpu
@@ -14,7 +14,11 @@ alias e='exit'
 alias bb='bbedit'
 alias o='open . &'
 alias md='mkdir -p'
-function cake() { mkdir -p "$1"; cd "$1" }
+
+function cake() {
+mkdir -p "$1";
+cd "$1"
+}
 
 # ls
 alias cls='clear; ls'     # clear the screen and list
@@ -27,7 +31,8 @@ alias lh="ls -lh"         # human readable
 alias ll='ls -lhG'        # -l long listing, human readable, no group info, dirs in color
 alias lt='ls -lt'         # sort with recently modified first
 
-function cdl() { # move to a dir and list
+# move to a dir and list
+function cdl() {
 cd $1;
 ls
 }
@@ -45,9 +50,6 @@ alias cds19='cd ~/Dropbox/Screenwriting/sierra_one_nine/'
 alias gs='git status'
 alias ga='git add -A'
 
-# Connect to local file-server
-alias raidcharles='open smb://smb:123456@192.168.0.150/raidcharles_work'
-
 # this looks for the ip address of "en1" - see `ipconfig` for more
 ipaddr() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 
@@ -62,7 +64,7 @@ function wifi(){
 networksetup -setairportpower en0 $1;
 }
 
-# Textplay (http://olivertaylor.net/textplay)
+# Textplay
 alias tp="textplay"
 
 # Trash

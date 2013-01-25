@@ -27,8 +27,6 @@ set hlsearch                      " Highlight matches.
 set showmatch                     " Show matching brackets, etc.
 
 set gdefault                      " Sets searches to be global (line) by default
-"nnoremap / /\v                    " Standardize vim's regex syntax
-"vnoremap / /\v                    " Standardize vim's regex syntax
 
 set autoread                      " Tells vim to auto-read changes to the file from the disk.
 
@@ -46,8 +44,8 @@ set backspace=indent,eol,start    " Intuitive backspacing.
 setlocal spell spelllang=en_us
 
 " Turn the blinking cursor off in normal mode
-" set gcr=n-c-v:blinkon0
-"
+set gcr=n-c-v:blinkon0
+
 
 " Display Stuff
 " ---------------------------------------------------------------------------
@@ -58,15 +56,22 @@ set laststatus=2                  " Show the status line all the time
 set showcmd                       " Display incomplete commands.
 set showmode                      " Display the mode you're in.
 
-set relativenumber                " Show line numbers relative to current line.
+set number                " Show line numbers relative to current line.
 set ruler                         " Show cursor position.
-"set cursorline                    " Highlight line the cursor is currently on.
+"set cursorline                    " Highlight the line the cursor is on
 
-set wrap linebreak                " Turn on line wrapping.
+" word-wrapping setup stolen from drbunsen
+set formatprg=par
+setlocal wrap 
+setlocal linebreak
+
+" Set the colors to Solarized/Dark
+let g:solarized_contrast="low"
+set background=dark
+colorscheme solarized
+
 set scrolloff=3                   " Show 3 lines of context around the cursor at all times.
 
-colorscheme solarized             " Set color scheme
-set background=dark               " Tell Solarized to use a dark background
 
 " Height of the command bar
 set cmdheight=2
@@ -104,13 +109,15 @@ nnoremap <leader><space> :noh<cr>
 nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
 
 " Quick-reload of this file
-nnoremap <leader>svrc :source $MYVIMRC<cr>
+nnoremap <leader>vrc :source $MYVIMRC<cr>
 
 " Open NERDTree
 nnoremap <leader>nt :NERDTree<cr>
 
-" Quickly set Markdown as the language
-nnoremap mdown<cr> :set syntax=markdown<cr>
+" When moving to the end of the document also move to the end of the line
+nnoremap G G$
 
-" Quickly save
-map <leader>w :w<cr>
+" Indentation remaps
+nnoremap > gv>
+nnoremap < gv<
+

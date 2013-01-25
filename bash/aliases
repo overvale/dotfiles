@@ -51,7 +51,7 @@ alias gs='git status'
 alias ga='git add -A'
 
 # this looks for the ip address of "en1" - see `ipconfig` for more
-ipaddr() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
+myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 
 # open man pages in bbedit
 function bbm() {
@@ -67,6 +67,9 @@ networksetup -setairportpower en0 $1;
 # Textplay
 alias tp="textplay"
 
+# Sierra One Nine page-count check
+alias s19pdf="textplay -p ~/Dropbox/Screenwriting/sierra_one_nine/s19.txt"
+
 # Trash
 function trash(){
 mv $1 ~/.Trash;
@@ -77,5 +80,28 @@ function rmr(){
 rm -r $1;
 }
 
-# My To Do List
-alias tasks='cat ~/Dropbox/tasks.txt'
+# copy the contents of a plain-text file
+# http://brettterpstra.com/2013/01/15/clip-text-file-a-handy-dumb-service/
+function clip() {
+	type=`file "$1"|grep -c text`
+	if [ $type -gt 0 ]; then
+		cat "$@"|pbcopy
+		echo "Contents of $1 are in the clipboard."
+	else
+		echo "File \"$1\" is not plain text."
+	fi
+}
+
+# SEARCHING
+# -----------------------------------------------------
+
+# google
+function g(){
+open -a Safari "http://www.google.com/search?query=$1"
+}
+
+# wolfram alpha
+function wfa(){
+# open -a Safari "http://api.wolframalpha.com/v2/query?input=$1&appid=XWRP9J-6XWG83LEPE"
+open -a Safari "http://www.wolframalpha.com/input/?i=$1&appid=XWRP9J-6XWG83LEPE"
+}

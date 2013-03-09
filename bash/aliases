@@ -64,12 +64,6 @@ function wifi(){
 networksetup -setairportpower en0 $1;
 }
 
-# Textplay
-alias tp="textplay"
-
-# Sierra One Nine page-count check
-alias s19pdf="textplay -p ~/Dropbox/Screenwriting/sierra_one_nine/s19.txt"
-
 # Trash
 function trash(){
 mv $1 ~/.Trash;
@@ -92,6 +86,23 @@ function clip() {
 	fi
 }
 
+# Quick way to rebuild the Launch Services database and get rid
+# of duplicates in the Open With submenu.
+alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user; killall Finder'
+
+# Personal
+# -----------------------------------------------------
+
+# Textplay
+alias tp="textplay"
+
+# Sierra One Nine page-count check
+alias s19pdf="textplay -p ~/Dropbox/Screenwriting/sierra_one_nine/s19.txt"
+
+# Update local copy of pinboard bookmarks
+alias pinmarks="download_pinmarks.rb"
+
+
 # SEARCHING
 # -----------------------------------------------------
 
@@ -104,4 +115,9 @@ open -a Safari "http://www.google.com/search?query=$1"
 function wfa(){
 # open -a Safari "http://api.wolframalpha.com/v2/query?input=$1&appid=XWRP9J-6XWG83LEPE"
 open -a Safari "http://www.wolframalpha.com/input/?i=$1&appid=XWRP9J-6XWG83LEPE"
+}
+
+# Should I watch this movie?
+function swt(){
+open -a Safari "http://www.youtube.com/results?search_query=$1+trailer" "http://www.rottentomatoes.com/search/?search=$1" "http://www.imdb.com/find?q=$1"
 }

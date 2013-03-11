@@ -1,3 +1,5 @@
+source ~/Dropbox/code/bin/dotfiles/bash/personal_aliases
+
 # Alias Editing
 alias reload='source ~/Dropbox/code/bin/dotfiles/bash/aliases'
 alias ea='bbedit -w ~/Dropbox/code/bin/dotfiles/bash/aliases && reload'
@@ -48,10 +50,6 @@ alias cdbin='cd ~/Dropbox/code/bin'
 alias cds19='cd ~/Dropbox/Screenwriting/sierra_one_nine/'
 alias cdsite='cd ~/Sites/olivertaylor/'
 
-# Git Aliases
-alias gs='git status'
-alias ga='git add -A'
-
 # this looks for the ip address of "en1" - see `ipconfig` for more
 myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 
@@ -94,18 +92,6 @@ alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/
 
 # quicklook
 alias ql='qlmanage -p "$@" >& /dev/null'       # quick view file
-
-# Personal
-# -----------------------------------------------------
-
-# Textplay
-alias tp="textplay"
-
-# Sierra One Nine page-count check
-alias s19pdf="textplay -p ~/Dropbox/Screenwriting/sierra_one_nine/s19.txt"
-
-# Update local copy of pinboard bookmarks
-alias pinmarks="download_pinmarks.rb"
 
 
 # SEARCHING

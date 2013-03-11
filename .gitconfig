@@ -6,9 +6,16 @@
 	editor = bbedit
 [alias]
 	co = checkout
-	unstage = reset HEAD
+	br = branch
+	cm = commit
+	st = status
+	last = log -1 HEAD
+	lg = log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cr) %C(blue)<%an>%C(reset)' --abbrev-commit --date=relative
+	unstage = reset HEAD --
 [apply]
 	whitespace = nowarn
+
+
 
 [color]
 branch = auto
@@ -30,7 +37,3 @@ new = green
 added = yellow
 changed = green
 untracked = magenta
-
-
-[alias]
-    lg = log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cr) %C(blue)<%an>%C(reset)' --abbrev-commit --date=relative

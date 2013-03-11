@@ -4,7 +4,7 @@ setopt prompt_subst
 
 PROMPT='
 [%n:%~]
-→ %{$reset_color%}'
+$ %{$reset_color%}'
 
 # Set RPROMPT to have info show up on the right, too.
 

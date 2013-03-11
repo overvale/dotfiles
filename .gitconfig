@@ -1,0 +1,36 @@
+[user]
+	name = Oliver Taylor
+	email = olivertaylor@me.com
+[core]
+	excludesfile = /Users/oliver/.gitignore_global
+	editor = bbedit
+[alias]
+	co = checkout
+	unstage = reset HEAD
+[apply]
+	whitespace = nowarn
+
+[color]
+branch = auto
+diff = auto
+status = auto
+
+[color "branch"]
+current = cyan
+local = yellow
+remote = green
+
+[color "diff"]
+meta = white
+frag = cyan
+old = red
+new = green
+
+[color "status"]
+added = yellow
+changed = green
+untracked = magenta
+
+
+[alias]
+    lg = log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cr) %C(blue)<%an>%C(reset)' --abbrev-commit --date=relative

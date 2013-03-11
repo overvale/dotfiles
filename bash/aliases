@@ -30,6 +30,7 @@ alias la="ls -A -l -G"    # long list, all, colors
 alias lh="ls -lh"         # human readable
 alias ll='ls -lhG'        # -l long listing, human readable, no group info, dirs in color
 alias lt='ls -lt'         # sort with recently modified first
+alias dirs='ls -alFG | grep /'      # list directories
 
 # move to a dir and list
 function cdl() {
@@ -45,6 +46,7 @@ alias cddrop='cd ~/Dropbox'
 alias cdc='cd ~/Dropbox/code'
 alias cdbin='cd ~/Dropbox/code/bin'
 alias cds19='cd ~/Dropbox/Screenwriting/sierra_one_nine/'
+alias cdsite='cd ~/Sites/olivertaylor/'
 
 # Git Aliases
 alias gs='git status'
@@ -54,7 +56,7 @@ alias ga='git add -A'
 myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 
 # open man pages in bbedit
-function bbm() {
+function bbman() {
 cmd=$(tr [a-z] [A-Z] <<< "$1")
 man $1 | col -b | /usr/local/bin/bbedit --view-top --clean -t "$cmd MANUAL"
 }
@@ -90,6 +92,9 @@ function clip() {
 # of duplicates in the Open With submenu.
 alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user; killall Finder'
 
+# quicklook
+alias ql='qlmanage -p "$@" >& /dev/null'       # quick view file
+
 # Personal
 # -----------------------------------------------------
 
@@ -118,6 +123,6 @@ open -a Safari "http://www.wolframalpha.com/input/?i=$1&appid=XWRP9J-6XWG83LEPE"
 }
 
 # Should I watch this movie?
-function swt(){
+function wtm(){
 open -a Safari "http://www.youtube.com/results?search_query=$1+trailer" "http://www.rottentomatoes.com/search/?search=$1" "http://www.imdb.com/find?q=$1"
 }

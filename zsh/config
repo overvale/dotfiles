@@ -3,8 +3,8 @@ colors
 setopt prompt_subst
 
 PROMPT='
-[%n:%~]
-$ %{$reset_color%}'
+$fg_bold[black]%D{%H:%M:%S} %{$reset_color%}[%n:$fg[white]%~%{$reset_color%}]
+$fg[red]>> %{$reset_color%}'
 
 # Set RPROMPT to have info show up on the right, too.
 
@@ -57,3 +57,4 @@ compinit -C
 ## case-insensitive (all),partial-word and then substring completion
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' \
     'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+

@@ -109,7 +109,7 @@ nnoremap <leader><space> :noh<cr>
 nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
 
 " Quick-reload of this file
-nnoremap <leader>vrc :source $MYVIMRC<cr>
+nnoremap reload :source $MYVIMRC<cr>
 
 " Open NERDTree
 nnoremap <leader>nt :NERDTree<cr>

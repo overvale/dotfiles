@@ -12,28 +12,26 @@
 	last = log -1 HEAD
 	lg = log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cr) %C(blue)<%an>%C(reset)' --abbrev-commit --date=relative
 	unstage = reset HEAD --
+	stash-unapply = !git stash show -p | git apply -R
 [apply]
 	whitespace = nowarn
 
 
 
 [color]
-branch = auto
-diff = auto
-status = auto
-
+	ui = true
 [color "branch"]
-current = cyan
-local = yellow
-remote = green
-
+	current = red bold
+	local = yellow
+	remote = green
 [color "diff"]
-meta = white
-frag = cyan
-old = red
-new = green
-
+	meta = white
+	frag = cyan
+	old = red
+	new = green
+	commit = yellow
 [color "status"]
-added = yellow
-changed = green
-untracked = magenta
+	header = white
+	added = yellow
+	changed = green
+	untracked = magenta

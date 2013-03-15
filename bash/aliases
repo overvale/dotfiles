@@ -27,7 +27,7 @@ alias cls='clear; ls'     # clear the screen and list
 alias cl='clear; l'       # clear screen and do custom list
 alias l='ls -lhGt'        # -l long listing, most recent first, -G color
 alias l.='ls -d .[^.]*'   # List only dot-files like .DS_Store
-alias a='ls -A'           # list all in a short list
+# alias a='ls -A'           # list all in a short list
 alias la="ls -A -l -G"    # long list, all, colors
 alias lh="ls -lh"         # human readable
 alias ll='ls -lhG'        # -l long listing, human readable, no group info, dirs in color
@@ -45,10 +45,6 @@ alias ..="cd .."
 alias cdb="cd -"
 alias cdd='cd ~/Desktop'
 alias cddrop='cd ~/Dropbox'
-alias cdc='cd ~/Dropbox/code'
-alias cdbin='cd ~/Dropbox/code/bin'
-alias cds19='cd ~/Dropbox/Screenwriting/sierra_one_nine/'
-alias cdsite='cd ~/Sites/olivertaylor/'
 
 # this looks for the ip address of "en1" - see `ipconfig` for more
 myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
@@ -93,6 +89,20 @@ alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/
 # quicklook
 alias ql='qlmanage -p "$@" >& /dev/null'       # quick view file
 
+# App Lunching
+function app(){
+open -a "$1"
+}
+
+# curl for useragents
+alias iecurl="curl -H \"User-Agent: Mozilla/5.0 (Windows; U; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)\""
+alias ffcurl="curl -H \"User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.0 (.NET CLR 3.5.30729)\""
+
+# Lookup in Mac's dictionary
+function dict(){
+open dict:///"$1"
+}
+
 
 # SEARCHING
 # -----------------------------------------------------
@@ -102,9 +112,12 @@ function g(){
 open -a Safari "http://www.google.com/search?query=$1"
 }
 
+function gl(){
+open -a Safari "http://www.google.com/search?q=$1&btnI"
+}
+
 # wolfram alpha
 function wfa(){
-# open -a Safari "http://api.wolframalpha.com/v2/query?input=$1&appid=XWRP9J-6XWG83LEPE"
 open -a Safari "http://www.wolframalpha.com/input/?i=$1&appid=XWRP9J-6XWG83LEPE"
 }
 

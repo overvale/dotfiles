@@ -10,7 +10,7 @@
 	cm = commit
 	st = status
 	last = log -1 HEAD
-	lg = log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cr) %C(blue)<%an>%C(reset)' --abbrev-commit --date=relative
+	lg = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%d%C(reset) %s %C(green)(%cr) %C(cyan)<%an>%C(reset)' --abbrev-commit --date=relative --branches --tags --remotes
 	unstage = reset HEAD --
 	stash-unapply = !git stash show -p | git apply -R
 [apply]
@@ -35,3 +35,5 @@
 	added = yellow
 	changed = green
 	untracked = magenta
+[log]
+	decorate = full

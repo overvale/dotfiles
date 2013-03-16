@@ -1,21 +1,34 @@
 # More info at <https://github.com/jigish/slate/blob/master/Slate/default.slate>
+# some advanced stuff at <https://github.com/cespare/dotfiles/blob/master/.slate>
 
 config defaultToCurrentScreen true
 config nudgePercentOf screenSize
 config resizePercentOf screenSize
-
-# Monitor Aliases
-alias mon-laptop      1366x768
+alias current-dims windowSizeX;windowSizeY
+alias center-both move screenOriginX+(screenSizeX-windowSizeX)/2;screenOriginY+(screenSizeY-windowSizeY)/2 ${current-dims}
 
 # Window Hints
 bind esc:cmd hint
 
-# half-screen
-bind right:ctrl;alt;cmd  push right bar-resize:screenSizeX/2
-bind left:ctrl;alt;cmd   push left  bar-resize:screenSizeX/2
+# ------------------------------
+
+# Half-screen
+bind right:ctrl;alt;cmd        push right bar-resize:screenSizeX/2
+bind left:ctrl;alt;cmd         push left  bar-resize:screenSizeX/2
+
+# Move Windows
+bind tab:shift;alt;cmd;ctrl    ${center-both}
+bind ]:shift;ctrl;alt;cmd      push right
+bind [:shift;ctrl;alt;cmd      push left
+
+# Full-screen
+#bind up:ctrl;alt;cmd          throw 0 resize
+
+# ------------------------------
 
 # shift focus
-bind right:cmd;ctrl    focus right
-bind left:cmd;ctrl     focus left
-bind up:cmd;ctrl       focus up
-bind down:cmd;ctrl     focus down
+bind right:cmd;ctrl            focus right
+bind left:cmd;ctrl             focus left
+bind up:cmd;ctrl               focus up
+bind down:cmd;ctrl             focus down
+

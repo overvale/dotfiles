@@ -3,7 +3,6 @@
 	email = olivertaylor@me.com
 [core]
 	excludesfile = /Users/oliver/.gitignore_global
-	editor = bbedit
 [alias]
 	co = checkout
 	br = branch
@@ -31,9 +30,9 @@
 	new = green
 	commit = yellow
 [color "status"]
-	header = blue
-	added = yellow
-	changed = green
-	untracked = magenta
+	header = reset
+	added = green
+	changed = yellow
+	untracked = red
 [log]
 	decorate = full

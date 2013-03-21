@@ -3,6 +3,7 @@
 	email = olivertaylor@me.com
 [core]
 	excludesfile = /Users/oliver/.gitignore_global
+	editor = bbedit --wait --resume
 [alias]
 	co = checkout
 	br = branch

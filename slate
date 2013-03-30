@@ -1,34 +1,36 @@
-# More info at <https://github.com/jigish/slate/blob/master/Slate/default.slate>
-# some advanced stuff at <https://github.com/cespare/dotfiles/blob/master/.slate>
-
+# Some reasonable defaults
 config defaultToCurrentScreen true
 config nudgePercentOf screenSize
 config resizePercentOf screenSize
+
+# Some aliases to save typing
 alias current-dims windowSizeX;windowSizeY
 alias center-both move screenOriginX+(screenSizeX-windowSizeX)/2;screenOriginY+(screenSizeY-windowSizeY)/2 ${current-dims}
+alias hyper ctrl;shift;alt;cmd
+
+# ------------------------------
 
 # Window Hints
 bind esc:cmd hint
 
 # ------------------------------
 
-# Half-screen
-bind right:ctrl;alt;cmd        push right bar-resize:screenSizeX/2
-bind left:ctrl;alt;cmd         push left  bar-resize:screenSizeX/2
-
-# Move Windows
-bind tab:shift;alt;cmd;ctrl    ${center-both}
-bind ]:shift;ctrl;alt;cmd      push right
-bind [:shift;ctrl;alt;cmd      push left
+# Move and Resize - half-screen
+bind right:${hyper}    push right bar-resize:screenSizeX/2
+bind left:${hyper}     push left  bar-resize:screenSizeX/2
 
 # Full-screen
-#bind up:ctrl;alt;cmd          throw 0 resize
+bind f:${hyper}        throw 0 resize
+
+# Move Windows
+bind tab:${hyper}      ${center-both}
+bind ]:${hyper}        push right
+bind [:${hyper}        push left
 
 # ------------------------------
 
-# shift focus
-bind right:cmd;ctrl            focus right
-bind left:cmd;ctrl             focus left
-bind up:cmd;ctrl               focus up
-bind down:cmd;ctrl             focus down
-
+# Shift Focus
+bind right:cmd;ctrl    focus right
+bind left:cmd;ctrl     focus left
+bind up:cmd;ctrl       focus up
+bind down:cmd;ctrl     focus down

@@ -19,8 +19,11 @@ bind esc:cmd hint
 bind right:${hyper}    push right bar-resize:screenSizeX/2
 bind left:${hyper}     push left  bar-resize:screenSizeX/2
 
+# Move and Resize - 2/3-screen
+bind =:${hyper}    push left bar-resize:(screenSizeX/3)*2
+
 # Full-screen
-bind f:${hyper}        throw 0 resize
+bind up:${hyper}        throw 0 resize
 
 # Move Windows
 bind tab:${hyper}      ${center-both}

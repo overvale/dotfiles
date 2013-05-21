@@ -1,2 +1,2 @@
 export EDITOR="bbedit -w"
-export PATH=$PATH:~/Dropbox/code/bin
+export PATH=$PATH:~/code/bin

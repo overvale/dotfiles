@@ -1,3 +1,3 @@
-. ~/Dropbox/code/bin/dotfiles/zsh/env
-. ~/Dropbox/code/bin/dotfiles/zsh/config
-. ~/Dropbox/code/bin/dotfiles/zsh/aliases
+. ~/code/bin/dotfiles/zsh/env
+. ~/code/bin/dotfiles/zsh/config
+. ~/code/bin/dotfiles/zsh/aliases

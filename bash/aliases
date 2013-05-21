@@ -1,74 +1,163 @@
-source ~/Dropbox/code/bin/dotfiles/bash/personal_aliases
+# Alias Administration
+# ----------------------------------------------------------------------
+
+source ~/code/bin/dotfiles/bash/personal_aliases
 
 # Alias Editing
-alias reload='source ~/Dropbox/code/bin/dotfiles/bash/aliases'
-alias ea='bbedit -w ~/Dropbox/code/bin/dotfiles/bash/aliases && reload'
+alias reload='source ~/code/bin/dotfiles/bash/aliases'
+alias ea='bbedit -w ~/code/bin/dotfiles/bash/aliases && reload'
+
+# Suffix Aliases (zsh)
+alias -s txt=bbedit
+alias -s text=bbedit
+alias -s md=bbedit
+
+
+# Info about your machine / terminal
+# ----------------------------------------------------------------------
 
 # PROCESSES
 alias tu='top -o cpu' # cpu
-alias tm='top -o vsize' # memory
 
 # shell
 alias h='history'
 alias c='clear'
 alias e='exit'
 
-alias bb='bbedit'
-alias o='open . &'
-alias md='mkdir -p'
-
-function cake() {
-mkdir -p "$1";
-cd "$1"
+# Size of file/directory
+function size(){
+  du -sh "$1"
 }
+
+
+# Moving around & using the file-system
+# ----------------------------------------------------------------------
 
 # ls
 alias cls='clear; ls'     # clear the screen and list
 alias cl='clear; l'       # clear screen and do custom list
 alias l='ls -lhGt'        # -l long listing, most recent first, -G color
 alias l.='ls -d .[^.]*'   # List only dot-files like .DS_Store
-# alias a='ls -A'           # list all in a short list
+alias a='ls -A'           # list all in a short list
 alias la="ls -A -l -G"    # long list, all, colors
 alias lh="ls -lh"         # human readable
-alias ll='ls -lhG'        # -l long listing, human readable, no group info, dirs in color
-alias lt='ls -lt'         # sort with recently modified first
-alias dirs='ls -alFG | grep /'      # list directories
-
-# move to a dir and list
-function cdl() {
-cd $1;
-ls
-}
 
 # cd
 alias ..="cd .."
 alias cdb="cd -"
 alias cdd='cd ~/Desktop'
-alias cddrop='cd ~/Dropbox'
 
-# this looks for the ip address of "en1" - see `ipconfig` for more
-myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
+# directories
+alias md='mkdir -p'
 
-# open man pages in bbedit
-function bbman() {
-cmd=$(tr [a-z] [A-Z] <<< "$1")
-man $1 | col -b | /usr/local/bin/bbedit --view-top --clean -t "$cmd MANUAL"
-}
-
-# Airport On/Off
-function wifi(){
-networksetup -setairportpower en0 $1;
-}
-
-# Trash
-function trash(){
-mv $1 ~/.Trash;
+# Create directory and cd into it
+function cake() {
+mkdir -p "$1";
+cd "$1"
 }
 
 # Delete directories
 function rmr(){
 rm -r $1;
 }
+
+
+
+# Editing & Interacting with Files
+# ----------------------------------------------------------------------
+
+alias bb='bbedit'
+alias bb.='bbedit .'
+alias o='open . &'
+
+# quicklook
+alias ql='qlmanage -p "$@" >& /dev/null'       # quick view file
+
+# make executable
+alias ax="chmod a+x"
+
+
+
+# Git
+# ----------------------------------------------------------------------
+
+alias difftool="git difftool"
+
+
+
+# Tools
+# ----------------------------------------------------------------------
+
+# Move to Trash
+function trash(){
+mv $1 ~/.Trash;
+}
+
+# Airport On/Off - usage: "wifi off"
+function wifi(){
+networksetup -setairportpower en0 $1;
+}
+
+# highlight current date in calendar
+alias cal='cal | grep -E --color "\b`date +%e`\b|$"'
+
+# Lookup in Mac's dictionary
+function dict(){
+open dict:///"$1"
+}
+
+# Send to BC
+function math(){
+echo "$1" | bc
+}
+
+# mute the system volume
+alias stfu="osascript -e 'set volume output muted true'"
+
+# Terminal-Notifier
+function notify(){
+~/code/bin/terminal-notifier.app/Contents/MacOS/terminal-notifier -message "$1";
+}
+
+
+
+# Searching for Things
+# ----------------------------------------------------------------------
+
+# google
+function google(){
+open -a Safari "http://www.google.com/search?query=$1"
+}
+
+# wolfram alpha
+function wolframalpha(){
+open -a Safari "http://www.wolframalpha.com/input/?i=$1&appid=XWRP9J-6XWG83LEPE"
+}
+
+# Should I watch this movie?
+function movie-info(){
+open -a Safari "http://www.youtube.com/results?search_query=$1+trailer" "http://www.rottentomatoes.com/search/?search=$1" "http://www.imdb.com/find?q=$1"
+}
+
+# What movies are playing?
+alias movies="open 'http://goo.gl/wH1lc' 'http://goo.gl/Unr0l'"
+
+
+
+
+
+# Tools
+# ----------------------------------------------------------------------
+
+# Open Man Pages in Bbedit
+function bbman() {
+cmd=$(tr [a-z] [A-Z] <<< "$1")
+man $1 | col -b | /usr/local/bin/bbedit --view-top --clean -t "$cmd MANUAL"
+}
+
+# What's my I.P. Address?
+# this looks for the ip address of "en1" - see `ipconfig` for more
+myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 
 # copy the contents of a plain-text file
 # http://brettterpstra.com/2013/01/15/clip-text-file-a-handy-dumb-service/
@@ -86,27 +175,9 @@ function clip() {
 # of duplicates in the Open With submenu.
 alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user; killall Finder'
 
-# quicklook
-alias ql='qlmanage -p "$@" >& /dev/null'       # quick view file
-
-# App Lunching
-function app(){
-open -a "$1"
-}
-
 # curl for useragents
 alias iecurl="curl -H \"User-Agent: Mozilla/5.0 (Windows; U; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)\""
 alias ffcurl="curl -H \"User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.0 (.NET CLR 3.5.30729)\""
-
-# Lookup in Mac's dictionary
-function dict(){
-open dict:///"$1"
-}
-
-# Send to BC
-function math(){
-echo "$1" | bc
-}
 
 # Extract <https://github.com/revans/bash-it/blob/master/plugins/available/extract.plugin.bash>
 extract () {
@@ -133,27 +204,4 @@ extract () {
 	else
 		echo "'$1' is not a valid file"
 	fi
-}
-
-
-# SEARCHING
-# -----------------------------------------------------
-
-# google
-function g(){
-open -a Safari "http://www.google.com/search?query=$1"
-}
-
-function gl(){
-open -a Safari "http://www.google.com/search?q=$1&btnI"
-}
-
-# wolfram alpha
-function wfa(){
-open -a Safari "http://www.wolframalpha.com/input/?i=$1&appid=XWRP9J-6XWG83LEPE"
-}
-
-# Should I watch this movie?
-function wtm(){
-open -a Safari "http://www.youtube.com/results?search_query=$1+trailer" "http://www.rottentomatoes.com/search/?search=$1" "http://www.imdb.com/find?q=$1"
 }

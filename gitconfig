@@ -4,17 +4,21 @@
 [core]
 	excludesfile = /Users/oliver/.gitignore_global
 	editor = bbedit --wait --resume
+[push]
+	default = simple
+[apply]
+	whitespace = nowarn
+
+
 [alias]
 	co = checkout
 	br = branch
 	cm = commit
 	st = status
 	last = log -1 HEAD
-	lg = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%d%C(reset) %s %C(green)(%cr) %C(cyan)<%an>%C(reset)' --abbrev-commit --date=relative --branches --tags --remotes
+	lg = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%d%C(reset) %s %C(green)(%cd) %C(cyan)<%an>%C(reset)' --abbrev-commit --date=short --branches --tags --remotes
 	unstage = reset HEAD --
 	stash-unapply = !git stash show -p | git apply -R
-[apply]
-	whitespace = nowarn
 
 
 
@@ -37,8 +41,9 @@
 	untracked = red
 [log]
 	decorate = full
-[push]
-	default = simple
+
+
+
 [difftool "Kaleidoscope"]
 	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
 [diff]

@@ -66,9 +66,15 @@ rm -r $1;
 # Editing & Interacting with Files
 # ----------------------------------------------------------------------
 
-alias bb='bbedit'
-alias bb.='bbedit .'
+alias e='$EDITOR'
+
 alias o='open . &'
+alias bb='bbedit'
+alias bo='bbedit .'
+
+function app(){
+open -a "$1"
+}
 
 # quicklook
 alias ql='qlmanage -p "$@" >& /dev/null'       # quick view file
@@ -76,6 +82,14 @@ alias ql='qlmanage -p "$@" >& /dev/null'       # quick view file
 # make executable
 alias ax="chmod a+x"
 
+# copy the working directory path
+alias cpwd='pwd|tr -d "\n"|pbcopy'
+
+# copy the file-path
+function cfp(){
+echo "$PWD/$1"|pbcopy
+echo "File-Path is on the clipboard"
+}
 
 
 # Git

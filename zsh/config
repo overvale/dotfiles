@@ -5,10 +5,9 @@ setopt prompt_subst
 PROMPT='
 $fg_bold[black]%D{%H:%M:%S} %{$reset_color%}[%n:$fg[white]%~%{$reset_color%}]
 $fg[red]>> %{$reset_color%}'
-RPROMPT=''
-
 
 # Set RPROMPT to have info show up on the right, too.
+RPROMPT=''
 
 #############################
 # Other Options

@@ -1,0 +1,9 @@
+bufexplorer
+nerdtree
+snipmate
+vim-solarized
+vim-markdown
+
+https://github.com/tpope/vim-surround
+https://github.com/tomtom/tcomment_vim
+http://sjl.bitbucket.org/gundo.vim/

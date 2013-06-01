@@ -10,4 +10,5 @@ ln -s /Users/oliver/code/bin/dotfiles/slate .slate
 ln -s /Users/oliver/code/bin/dotfiles/vim .vim
 ln -s /Users/oliver/code/bin/dotfiles/vim/vimrc .vimrc
 ln -s /Users/oliver/code/bin/dotfiles/zshrc .zshrc
+ln -s /Users/oliver/code/bin/dotfiles/zsh .zsh
 ln -s /Users/oliver/code/bin/dotfiles/KeyRemap4MacBook /Users/oliver/Library/Application\ Support/KeyRemap4MacBook

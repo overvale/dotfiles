@@ -34,17 +34,14 @@ function size(){
 # ----------------------------------------------------------------------
 
 # ls
-alias cls='clear; ls'     # clear the screen and list
 alias cl='clear; l'       # clear screen and do custom list
-alias l='ls -FGlh'        # -l long listing, most recent first, -G color
-alias l.='ls -d .[^.]*'   # List only dot-files like .DS_Store
-alias a='ls -A'           # list all in a short list
-alias la="ls -A -l -G"    # long list, all, colors
+
+alias l='ls -1Gp'         # my favorite options
+alias la="ls -AohGp"    # long list, all, colors
 
 # cd
 alias ..="cd .."
 alias cdb="cd -"
-alias cdd='cd ~/Desktop'
 
 # directories
 alias md='mkdir -p'
@@ -68,8 +65,8 @@ rm -r $1;
 alias e='$EDITOR'
 
 alias o='open . &'
-alias bb='bbedit'
-alias bo='bbedit .'
+alias bb='bbedit -w'
+alias bo='bbedit -w .'
 
 function app(){
 open -a "$1"
@@ -96,7 +93,7 @@ echo "File-Path is on the clipboard"
 
 alias gs='git status'
 alias gd="git difftool"
-alias gl='git lg'
+alias gl='git lg' # "lg" defined in gitconfig
 
 
 
@@ -114,7 +111,7 @@ networksetup -setairportpower en0 $1;
 }
 
 # highlight current date in calendar
-alias cal='cal | grep -E --color "\b`date +%e`\b|$"'
+alias cal='cal | grep -E --color "(\b)`date +%e`[\b\n]|$"'
 
 # Lookup in Mac's dictionary
 function dict(){

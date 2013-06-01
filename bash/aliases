@@ -36,11 +36,10 @@ function size(){
 # ls
 alias cls='clear; ls'     # clear the screen and list
 alias cl='clear; l'       # clear screen and do custom list
-alias l='ls -lhGt'        # -l long listing, most recent first, -G color
+alias l='ls -FGlh'        # -l long listing, most recent first, -G color
 alias l.='ls -d .[^.]*'   # List only dot-files like .DS_Store
 alias a='ls -A'           # list all in a short list
 alias la="ls -A -l -G"    # long list, all, colors
-alias lh="ls -lh"         # human readable
 
 # cd
 alias ..="cd .."
@@ -95,7 +94,9 @@ echo "File-Path is on the clipboard"
 # Git
 # ----------------------------------------------------------------------
 
-alias difftool="git difftool"
+alias gs='git status'
+alias gd="git difftool"
+alias gl='git lg'
 
 
 

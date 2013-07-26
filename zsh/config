@@ -22,7 +22,7 @@ chpwd_functions+='chpwd_update_git_vars'
 # Set the prompt.
 PROMPT=$'
 
-$fg_bold[black]%D{%H:%M:%S}%{$reset_color%} %{${fg[green]}%}%~$(prompt_git_info)%{${fg[default]}%}
+$fg_bold[black]%D{%H:%M:%S}%{$reset_color%} %{${fg[white]}%}%~$(prompt_git_info)%{${fg[default]}%}
 $fg[red]>> %{$reset_color%}'
 
 # Set RPROMPT to have info show up on the right, too.

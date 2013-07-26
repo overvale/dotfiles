@@ -11,4 +11,7 @@ ln -s /Users/oliver/code/bin/dotfiles/vim .vim
 ln -s /Users/oliver/code/bin/dotfiles/vim/vimrc .vimrc
 ln -s /Users/oliver/code/bin/dotfiles/zshrc .zshrc
 ln -s /Users/oliver/code/bin/dotfiles/zsh .zsh
+
+# After you've installed KeyRemap4MacBook & Launchbar:
 ln -s /Users/oliver/code/bin/dotfiles/KeyRemap4MacBook /Users/oliver/Library/Application\ Support/KeyRemap4MacBook
+ln -s /Users/oliver/code/lb_snippets /Users/oliver/Library/Application\ Support/Launchbar/Snippets

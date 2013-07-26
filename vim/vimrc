@@ -65,9 +65,8 @@ set formatprg=par
 setlocal wrap 
 setlocal linebreak
 
-" Set the colors to Solarized/Dark
-set background=dark
-colorscheme solarized
+" Set the color-schemc
+colorscheme github
 
 set scrolloff=3                   " Show 3 lines of context around the cursor at all times.
 
@@ -120,3 +119,4 @@ nnoremap G G$
 nnoremap > gv>
 nnoremap < gv<
 
+nnoremap mdown :set syntax=markdown<cr>

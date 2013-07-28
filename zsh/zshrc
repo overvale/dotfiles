@@ -1,0 +1,12 @@
+typeset -U config_files
+config_files=(~/code/dotfiles/**/*.zsh)
+
+# load the path files
+for file in ${(M)config_files}
+do
+  source $file
+done
+
+unset config_files
+
+

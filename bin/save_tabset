@@ -1,0 +1,34 @@
+#!/usr/bin/osascript
+#
+# A small command line script to save browser tabs for later
+# from "http://www.leancrew.com/all-this/2012/10/saving-browser-tab-sets/"
+
+-- Assume the frontmost Finder window (or the Desktop) is where we want to store the script.
+try
+	tell application "Finder" to set defaultFolder to the folder of the front window
+on error
+	set defaultFolder to (path to desktop)
+end try
+
+-- Initialize the text ot the script.
+set cmd to "#!/bin/bash" & linefeed & linefeed
+
+-- Add commands to open all the tabs.
+tell application "Safari"
+	set n to count of tabs in front window
+	repeat with i from 1 to n
+		set cmd to cmd & "open -g " & URL of tab i of front window & linefeed
+	end repeat
+end tell
+
+-- Open/create a file and save the script.
+set scriptAlias to choose file name default name "tabset" default location (defaultFolder as alias)
+set scriptPath to POSIX path of scriptAlias
+set scriptFile to open for access scriptAlias with write permission
+set eof scriptFile to 0
+write cmd to scriptFile starting at eof
+close access scriptFile
+
+-- Change the file attributes to make it double-clickable.
+do shell script "chmod 777 " & scriptPath
+do shell script "xattr -wx com.apple.FinderInfo '00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00' " & scriptPath

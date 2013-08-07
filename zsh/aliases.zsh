@@ -22,6 +22,9 @@ alias la="ls -AohGp"    # long list, all, colors
 alias ..="cd .."
 alias cdb="cd -"
 
+# open $PWD in Finder
+alias o='open . &'
+
 # directories
 alias md='mkdir -p'
 
@@ -37,8 +40,6 @@ cd "$1"
 
 # PROCESSES
 alias tu='top -o cpu' # cpu
-
-alias o='open . &'
 
 # quicklook
 alias ql='qlmanage -p "$@" >& /dev/null'       # quick view file
@@ -75,6 +76,7 @@ myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user; killall Finder'
 
 # Airport On/Off - usage: "wifi off"
+# to get wifi status: networksetup -getairportpower
 function wifi(){
 networksetup -setairportpower en0 $1;
 }
@@ -84,9 +86,9 @@ function dict(){
 open dict:///"$1"
 }
 
-# Send to BC
+# Send to QC (https://github.com/danielcorin/qc.git)
 function math(){
-echo "$1" | bc
+/Users/oliver/code/qc/qc/qc.sh "$1" | sed s/\n//g | pbcopy | echo "\"`pbpaste`\" is on the clipboard"
 }
 
 # mute the system volume

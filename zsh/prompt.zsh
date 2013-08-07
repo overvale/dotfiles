@@ -1,15 +1,8 @@
-# for vcs_info
-# setopt prompt_subst
+# My prompt is setup with git info
+#
+# Step one is to enable vcs_info and tell it how to format the
+# information you want in the prompt
 # 
-# PROMPT=$'
-# 
-# [%F{white%}%~%f]
-# %F{red%}>> %f'
-# 
-# RPROMPT=""
-
-
-
 setopt prompt_subst
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' stagedstr ' λ'
@@ -37,17 +30,17 @@ function +vi-git-aheadbehind() {
     # for git prior to 1.7
     # ahead=$(git rev-list origin/${hook_com[branch]}..HEAD | wc -l)
     ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l | sed 's/ //g')
-    (( $ahead )) && gitstatus+=( " ↑" )
+    (( $ahead )) && gitstatus+=( " ↑${ahead}" )
 
     # for git prior to 1.7
     # behind=$(git rev-list HEAD..origin/${hook_com[branch]} | wc -l)
     behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l | sed 's/ //g')
-    (( $behind )) && gitstatus+=( " ↓" )
+    (( $behind )) && gitstatus+=( " ↓${behind}" )
 
     hook_com[misc]+=${(j::)gitstatus}
 }
 
-
+# And here's the actual prompt
 precmd () { vcs_info }
 PROMPT='
 [%F{7}%~%f] ${vcs_info_msg_0_}

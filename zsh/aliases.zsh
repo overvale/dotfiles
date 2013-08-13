@@ -38,6 +38,9 @@ cd "$1"
 # Utilities
 # ----------------------------------------------------------------------
 
+# Show calendar with current date highlighted
+alias cal='cal | grep -E --color "\b$(date +%e)\b|$"'
+
 # PROCESSES
 alias tu='top -o cpu' # cpu
 

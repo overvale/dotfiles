@@ -5,8 +5,8 @@
 # 
 setopt prompt_subst
 autoload -Uz vcs_info
-zstyle ':vcs_info:*' stagedstr ' λ'
-zstyle ':vcs_info:*' unstagedstr ' λ'
+zstyle ':vcs_info:*' stagedstr ' Δ'
+zstyle ':vcs_info:*' unstagedstr ' Δ'
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' actionformats '[%b|%a]'  #[branch|action]
 zstyle ':vcs_info:*' formats '%F{4}(%b%m)%f%F{2}%c%f%F{3}%u%f'     #(<branch> <ahead|behind>) stagedstr unstagedstr

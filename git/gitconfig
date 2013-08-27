@@ -17,7 +17,8 @@
 	st = status
 	last = log -1 HEAD
 	lg = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%d%C(reset) %s %C(green)(%cd) %C(cyan)<%an>%C(reset)' --abbrev-commit --date=short --branches --tags --remotes
-	unstage = reset HEAD --
+	unstage = rm --cached
+	unstage-all = reset HEAD --
 	stash-unapply = !git stash show -p | git apply -R
 	all = add -A
 

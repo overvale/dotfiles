@@ -43,5 +43,5 @@ function +vi-git-aheadbehind() {
 # And here's the actual prompt
 precmd () { vcs_info }
 PROMPT='
-[%F{7}%~%f] ${vcs_info_msg_0_}
+[%F{2}%~%f] ${vcs_info_msg_0_}
 %F{1}>> %f'

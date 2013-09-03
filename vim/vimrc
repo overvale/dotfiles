@@ -65,9 +65,6 @@ set formatprg=par
 setlocal wrap 
 setlocal linebreak
 
-" Set the color-schemc
-colorscheme github
-
 set scrolloff=3                   " Show 3 lines of context around the cursor at all times.
 
 
@@ -104,7 +101,7 @@ map <leader>tm :tabmove
 nnoremap <leader><space> :noh<cr>
 
 " Open .vimrc in a vertical split
-nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
+nnoremap <leader>erc <C-w><C-v><C-l>:e $MYVIMRC<cr>
 
 " Quick-reload of this file
 nnoremap reload :source $MYVIMRC<cr>

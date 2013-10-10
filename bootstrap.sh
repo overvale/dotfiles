@@ -15,7 +15,7 @@ ln -s ~/.vim/vimrc .vimrc
 
 # After you've installed KeyRemap4MacBook & Launchbar:
 ln -s ~/code/dotfiles/KeyRemap4MacBook ~/Library/Application\ Support/KeyRemap4MacBook
-ln -s ~/code/lb_snippets ~/Library/Application\ Support/Launchbar/Snippets
+# ln -s ~/code/lb_snippets ~/Library/Application\ Support/Launchbar/Snippets
 
 
 # Software to install
@@ -25,7 +25,15 @@ ln -s ~/code/lb_snippets ~/Library/Application\ Support/Launchbar/Snippets
 # BBEdit
 # Keyboard Meastro
 # KeyboardRemap4MacBook
-# Launchbar
 # Lightroom
 # Transmit
-# iA Writer
+
+
+# A few personal preferences...
+# Stolen from: https://github.com/mathiasbynens/dotfiles
+
+# Set Help Viewer windows to non-floating mode
+defaults write com.apple.helpviewer DevMode -bool true
+
+# Avoid creating .DS_Store files on network volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true

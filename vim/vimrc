@@ -37,11 +37,11 @@ set autoindent                    " Turn on auto-indenting
 set tabstop=4                     " Tab preferences
 set shiftwidth=4
 set softtabstop=4
-"set expandtab                    " Use spaces instead of tabs
+set expandtab                    " Use spaces instead of tabs
 set backspace=indent,eol,start    " Intuitive backspacing.
 
 " Turn on spell-checking
-setlocal spell spelllang=en_us
+"setlocal spell spelllang=en_us
 
 " Turn the blinking cursor off in normal mode
 set gcr=n-c-v:blinkon0
@@ -56,7 +56,8 @@ set laststatus=2                  " Show the status line all the time
 set showcmd                       " Display incomplete commands.
 set showmode                      " Display the mode you're in.
 
-set number                " Show line numbers relative to current line.
+"set number                        " Show absolute line numbers.
+set relativenumber                " Show relative line numbers.
 set ruler                         " Show cursor position.
 "set cursorline                    " Highlight the line the cursor is on
 
@@ -70,6 +71,9 @@ set scrolloff=3                   " Show 3 lines of context around the cursor at
 
 " Height of the command bar
 set cmdheight=2
+
+" show 'noname' buffers in bufExplorer 
+let g:bufExplorerShowNoName=1
 
 " Shortcuts
 " ---------------------------------------------------------------------------
@@ -85,17 +89,6 @@ inoremap <left> <nop>
 inoremap <right> <nop>
 nnoremap j gj
 nnoremap k gk
-
-" TAB MAPPINGS
-map <leader>tt :tabnew<cr>
-map <leader>te :tabedit
-map <leader>tc :tabclose<cr>
-map <leader>to :tabonly<cr>
-map <leader>tn :tabnext<cr>
-map <leader>tp :tabprevious<cr>
-map <leader>tf :tabfirst<cr>
-map <leader>tl :tablast<cr>
-map <leader>tm :tabmove
 
 " Clear search highlighting
 nnoremap <leader><space> :noh<cr>
@@ -117,3 +110,4 @@ nnoremap > gv>
 nnoremap < gv<
 
 nnoremap mdown :set syntax=markdown<cr>
+

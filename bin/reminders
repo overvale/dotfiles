@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# This lists all the reminders on your "Reminders" list
+
+osascript >/dev/null <<EOF
+set AppleScript's text item delimiters to ASCII character 10 -- (a line feed)
+tell application "Reminders"
+    set myList to "Reminders"
+    if (count of (reminders in list myList whose completed is false)) > 0 then
+        repeat with itemNum from 1 to (count of (reminders in list myList whose completed is false))
+            set todoList to (name of reminders in list myList whose completed is false)
+            set output to "" & todoList & return
+        end repeat
+    else
+        set output to "No reminders"
+    end if
+end tell
+EOF

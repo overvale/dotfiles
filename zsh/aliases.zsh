@@ -1,9 +1,9 @@
-# Alias Administration
-# ----------------------------------------------------------------------
-
 # Alias Editing
 alias reload='source $DOT/**/*.zsh'
-alias ea='bbedit -w $DOT/zsh/aliases.zsh && reload'
+alias ea='bbedit -w $DOT/zsh/aliases.zsh'
+# personal aliases (not for distribution)
+alias epa='bbedit -w ~/.zsh/localrc.zsh && reload'
+
 
 # Suffix Aliases (zsh)
 alias -s txt=bbedit
@@ -23,32 +23,15 @@ alias ..="cd .."
 alias cdb="cd -"
 
 # open $PWD in Finder
-alias o='open . &'
-
-# directories
-alias md='mkdir -p'
+alias o='open .'
 
 # Create directory and cd into it
 function cake() {
-mkdir -p "$1";
-cd "$1"
+mkdir -p "$@" && cd "$@"
 }
 
-
-# Utilities
-# ----------------------------------------------------------------------
-
-# Show calendar with current date highlighted
-alias cal='cal | grep -E --color "\b$(date +%e)\b|$"'
-
-# PROCESSES
-alias tu='top -o cpu' # cpu
-
-# quicklook
-alias ql='qlmanage -p "$@" >& /dev/null'       # quick view file
-
-# make executable
-alias ax="chmod a+x"
+# cd to the front-most finder window's dir - no error handling
+alias fdir='cd $(osascript -e "tell application \"Finder\" to POSIX path of (target of window 1 as alias)")'
 
 # copy the working directory path
 alias cpwd='pwd|tr -d "\n"|pbcopy'
@@ -64,24 +47,43 @@ function size(){
   du -sh "$1"
 }
 
-# Move to Trash
-function trash(){
+
+
+# Working with files
+# ----------------------------------------------------------------------
+
+# quicklook
+alias ql='qlmanage -p "$@" >& /dev/null'
+
+# make executable
+alias ax="chmod a+x"
+
+# Move to Trash - remove to trash
+function rt(){
 mv $1 ~/.Trash;
 }
 
-# What's my I.P. Address?
-# this looks for the ip address of "en1" - see `ipconfig` for more
-myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 
+
+# System Info & Tools
+# ----------------------------------------------------------------------
+
+# What's my I.P. Address?
+# this looks for the ip address of "en0" - see `ipconfig` for more
+myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 
 # Quick way to rebuild the Launch Services database and get rid
 # of duplicates in the Open With submenu.
 alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user; killall Finder'
 
-# Airport On/Off - usage: "wifi off"
-# to get wifi status: networksetup -getairportpower
-function wifi(){
-networksetup -setairportpower en0 $1;
+
+
+# Miscellaneous
+# ----------------------------------------------------------------------
+
+# Arq has a command-line tool!
+function arq(){
+  /Applications/Arq.app/Contents/MacOS/Arq "$1"
 }
 
 # Lookup in Mac's dictionary
@@ -94,25 +96,9 @@ function math(){
 /Users/oliver/code/qc/qc/qc.sh "$1" | sed s/\n//g | pbcopy | echo "\"`pbpaste`\" is on the clipboard"
 }
 
-# mute the system volume
-alias stfu="osascript -e 'set volume output muted true'"
-
 # Terminal-Notifier
 function notify(){
 ~/code/bin/terminal-notifier.app/Contents/MacOS/terminal-notifier -message "$1";
-}
-
-# TerminaIMdB
-alias imdb="/Users/oliver/code/terminaimdb/terminalmdb.py"
-
-# google
-function google(){
-open -a Safari "http://www.google.com/search?query=$1"
-}
-
-# wolfram alpha
-function wolframalpha(){
-open -a Safari "http://www.wolframalpha.com/input/?i=$1&appid=XWRP9J-6XWG83LEPE"
 }
 
 # Should I watch this movie?
@@ -120,5 +106,12 @@ function movie-info(){
 open -a Safari "http://www.youtube.com/results?search_query=$1+trailer" "http://www.rottentomatoes.com/search/?search=$1" "http://www.imdb.com/find?q=$1"
 }
 
-# What movies are playing?
-alias movies="open 'http://goo.gl/wH1lc' 'http://goo.gl/Unr0l'"
+# New Note
+function memo(){
+  if [ "$1" = "" ] ; then
+    exec $EDITOR ~/Documents/Dropbox/note_`date +"%Y%m%d_%H%M%S"`.txt
+  else
+    exec $EDITOR ~/Documents/Dropbox/"$1".txt
+  fi
+}
+

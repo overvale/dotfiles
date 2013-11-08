@@ -1,7 +1,10 @@
 #!/bin/zsh
 
 # Use this script to setup a new mac with your dot-files
-# ensure you run it from $HOME
+# ensure you run it from $HOME, and be very careful with your data
+
+# Ask for the administrator password upfront
+sudo -v
 
 ln -s ~/code/dotfiles/git/gitconfig .gitconfig
 ln -s ~/code/dotfiles/git/gitignore_global .gitignore_global
@@ -20,7 +23,6 @@ ln -s ~/code/dotfiles/KeyRemap4MacBook ~/Library/Application\ Support/KeyRemap4M
 
 # Software to install
 # ===================
-# 
 # Arq
 # BBEdit
 # Keyboard Meastro
@@ -31,6 +33,9 @@ ln -s ~/code/dotfiles/KeyRemap4MacBook ~/Library/Application\ Support/KeyRemap4M
 
 # A few personal preferences...
 # Stolen from: https://github.com/mathiasbynens/dotfiles
+
+# set default shell
+chsh -s /opt/local/bin/zsh
 
 # Set Help Viewer windows to non-floating mode
 defaults write com.apple.helpviewer DevMode -bool true

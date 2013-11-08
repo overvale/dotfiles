@@ -31,7 +31,7 @@ mkdir -p "$@" && cd "$@"
 }
 
 # cd to the front-most finder window's dir - no error handling
-alias fdir='cd $(osascript -e "tell application \"Finder\" to POSIX path of (target of window 1 as alias)")'
+alias cdf='cd $(osascript -e "tell application \"Finder\" to POSIX path of (target of window 1 as alias)")'
 
 # copy the working directory path
 alias cpwd='pwd|tr -d "\n"|pbcopy'
@@ -64,9 +64,11 @@ mv $1 ~/.Trash;
 }
 
 
-
 # System Info & Tools
 # ----------------------------------------------------------------------
+
+# What's the battery status?
+alias batt="pmset -g batt"
 
 # What's my I.P. Address?
 # this looks for the ip address of "en0" - see `ipconfig` for more
@@ -91,11 +93,6 @@ function dict(){
 open dict:///"$1"
 }
 
-# Send to QC (https://github.com/danielcorin/qc.git)
-function math(){
-/Users/oliver/code/qc/qc/qc.sh "$1" | sed s/\n//g | pbcopy | echo "\"`pbpaste`\" is on the clipboard"
-}
-
 # Terminal-Notifier
 function notify(){
 ~/code/bin/terminal-notifier.app/Contents/MacOS/terminal-notifier -message "$1";
@@ -107,11 +104,12 @@ open -a Safari "http://www.youtube.com/results?search_query=$1+trailer" "http://
 }
 
 # New Note
-function memo(){
+function note(){
   if [ "$1" = "" ] ; then
-    exec $EDITOR ~/Documents/Dropbox/note_`date +"%Y%m%d_%H%M%S"`.txt
+    exec $EDITOR ~/Documents/Dropbox/notes/note_`date +"%Y%m%d_%H%M%S"`.txt
   else
-    exec $EDITOR ~/Documents/Dropbox/"$1".txt
+    exec $EDITOR ~/Documents/Dropbox/notes/"$1".txt
   fi
 }
 
+alias notes="open ~/Documents/Dropbox/notes/;exit"

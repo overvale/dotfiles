@@ -1,6 +1,38 @@
 <?xml version="1.0"?>
 <root>
 
+<!--
+    Documentation here:
+    https://pqrs.org/macosx/keyremap4macbook/xml.html.en
+-->
+
+
+<appdef>
+  <appname>BBEDIT</appname>
+  <equal>com.barebones.bbedit</equal>
+</appdef>
+
+<vkopenurldef>
+  <name>KeyCode::VK_OPEN_URL_SHELL_terminaltab</name>
+  <url type="shell">
+  <![CDATA[osascript -e 'tell application "Terminal" to activate' && osascript -e 'tell application "System Events" to tell process "Terminal" to keystroke "t" using command down']]>
+  </url>
+</vkopenurldef>
+
+
+<item>
+  <name>New Terminal Tab</name>
+  <appendix>Control + Option + Space creates new Terminal tab</appendix>
+  <identifier>private.terminaltab</identifier>
+  <autogen>
+    --KeyToKey--
+    KeyCode::SPACE, ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L,
+    KeyCode::VK_OPEN_URL_SHELL_terminaltab
+    </autogen>
+</item>
+
+
+
 <item>
   <name>Remap Option_R to Hyper</name>
   <appendix>This maps the Right Option key to Control + Shift + Option + Command.</appendix>
@@ -8,11 +40,42 @@
   <autogen>
     --KeyToKey--
     KeyCode::OPTION_R,
-
-    KeyCode::COMMAND_L,
-    ModifierFlag::OPTION_L | ModifierFlag::SHIFT_R | ModifierFlag::CONTROL_L
+    KeyCode::COMMAND_L, ModifierFlag::OPTION_L | ModifierFlag::SHIFT_R | ModifierFlag::CONTROL_L
   </autogen>
 </item>
+
+
+<item>
+  <name>Remap Control Arrows to Option Arrows</name>
+  <appendix>Active in everything *except* BBEdit</appendix>
+  <identifier>private.control_arrows_2_option_arrows</identifier>
+  <not>BBEDIT</not>
+  <autogen>
+  --KeyToKey--
+  KeyCode::CURSOR_LEFT, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
+  KeyCode::CURSOR_LEFT, ModifierFlag::OPTION_L, 
+  </autogen>
+  <autogen>
+  --KeyToKey--
+  KeyCode::CURSOR_RIGHT, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
+  KeyCode::CURSOR_RIGHT, ModifierFlag::OPTION_L, 
+  </autogen>
+
+</item>
+
+
+<item>
+  <name>Remap Control Delete to Option Delete</name>
+  <appendix>Active in everything *except* BBEdit</appendix>
+  <identifier>private.left_control_delete_to_option_delete</identifier>
+  <not>BBEDIT</not>
+  <autogen>
+  --KeyToKey--
+  KeyCode::DELETE, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
+  KeyCode::DELETE, ModifierFlag::OPTION_L, 
+  </autogen>
+</item>
+
 
 <item>
   <name>Remap Control_L to Control_L + Complete</name>
@@ -21,10 +84,10 @@
   <autogen>
     --KeyOverlaidModifier--
     KeyCode::CONTROL_L,
- 
     KeyCode::CONTROL_L, KeyCode::F5
   </autogen>
 </item>
+
 
 <item>
   <name>Use the Correct Shift Keys</name>

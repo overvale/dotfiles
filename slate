@@ -16,17 +16,17 @@ bind esc:cmd hint
 # ------------------------------
 
 # Move and Resize - half-screen
-bind right:${hyper}    push right bar-resize:screenSizeX/2
-bind left:${hyper}     push left  bar-resize:screenSizeX/2
-
-# Move and Resize - 2/3-screen
-bind =:${hyper}    push left bar-resize:(screenSizeX/3)*2
+bind 1:${hyper}     push left  bar-resize:screenSizeX/2
+bind 2:${hyper}     push right bar-resize:screenSizeX/2
 
 # Full-screen
-bind up:${hyper}        throw 0 resize
+bind 3:${hyper}        throw 0 resize
+
+# Move and Resize - 2/3-screen
+bind 4:${hyper}    push left bar-resize:(screenSizeX/3)*2
 
 # Move Windows
-bind tab:${hyper}      ${center-both}
+bind =:${hyper}      ${center-both}
 bind ]:${hyper}        push right
 bind [:${hyper}        push left
 

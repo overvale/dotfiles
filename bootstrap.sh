@@ -15,20 +15,9 @@ ln -s ~/.zsh/zshrc .zshrc
 ln -s ~/code/dotfiles/vim .vim
 ln -s ~/.vim/vimrc .vimrc
 
-
-# After you've installed KeyRemap4MacBook & Launchbar:
+ln -s ~/code/dotfiles/slate .slate
 ln -s ~/code/dotfiles/KeyRemap4MacBook ~/Library/Application\ Support/KeyRemap4MacBook
-# ln -s ~/code/lb_snippets ~/Library/Application\ Support/Launchbar/Snippets
 
-
-# Software to install
-# ===================
-# Arq
-# BBEdit
-# Keyboard Meastro
-# KeyboardRemap4MacBook
-# Lightroom
-# Transmit
 
 
 # A few personal preferences...

@@ -6,6 +6,9 @@
 # Ask for the administrator password upfront
 sudo -v
 
+# Installs the developer command line tools
+xcode-select --install
+
 ln -s ~/code/dotfiles/git/gitconfig .gitconfig
 ln -s ~/code/dotfiles/git/gitignore_global .gitignore_global
 

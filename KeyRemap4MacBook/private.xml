@@ -6,12 +6,13 @@
     https://pqrs.org/macosx/keyremap4macbook/xml.html.en
 -->
 
-
+<!-- This sets an alias for BBEdit so I can refer to it later -->
 <appdef>
   <appname>BBEDIT</appname>
   <equal>com.barebones.bbedit</equal>
 </appdef>
 
+<!-- This aliases an applescript to something I can reference -->
 <vkopenurldef>
   <name>KeyCode::VK_OPEN_URL_SHELL_terminaltab</name>
   <url type="shell">
@@ -30,7 +31,6 @@
     KeyCode::VK_OPEN_URL_SHELL_terminaltab
     </autogen>
 </item>
-
 
 
 <item>
@@ -60,7 +60,6 @@
   KeyCode::CURSOR_RIGHT, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
   KeyCode::CURSOR_RIGHT, ModifierFlag::OPTION_L, 
   </autogen>
-
 </item>
 
 

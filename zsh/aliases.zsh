@@ -93,11 +93,6 @@ function dict(){
 open dict:///"$1"
 }
 
-# Terminal-Notifier
-function notify(){
-~/code/bin/terminal-notifier.app/Contents/MacOS/terminal-notifier -message "$1";
-}
-
 # Should I watch this movie?
 function movie-info(){
 open -a Safari "http://www.youtube.com/results?search_query=$1+trailer" "http://www.rottentomatoes.com/search/?search=$1" "http://www.imdb.com/find?q=$1"

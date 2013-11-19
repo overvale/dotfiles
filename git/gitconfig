@@ -15,8 +15,8 @@
     br = branch
     cm = commit
     st = status
+    df = diff -b --word-diff
     last = log -1 HEAD
-    
     lg = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%d%C(reset) %s %C(green)[%cd]' --abbrev-commit --date=short --branches --tags --remotes
     unstage = rm --cached
     all = add -A
@@ -43,16 +43,3 @@
     decorate = full
 
 
-[difftool "Kaleidoscope"]
-    cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
-[diff]
-    tool = Kaleidoscope
-[difftool]
-    prompt = false
-[mergetool "Kaleidoscope"]
-    cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
-    trustExitCode = true
-[mergetool]
-    prompt = false
-[merge]
-    tool = Kaleidoscope

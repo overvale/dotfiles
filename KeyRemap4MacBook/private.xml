@@ -12,6 +12,12 @@
   <equal>com.barebones.bbedit</equal>
 </appdef>
 
+<!-- This sets an alias for Terminal so I can refer to it later -->
+<appdef>
+  <appname>TERMINAL</appname>
+  <equal>com.apple.Terminal</equal>
+</appdef>
+
 <!-- This aliases an applescript to something I can reference -->
 <vkopenurldef>
   <name>KeyCode::VK_OPEN_URL_SHELL_terminaltab</name>
@@ -19,6 +25,21 @@
   <![CDATA[osascript -e 'tell application "Terminal" to activate' && osascript -e 'tell application "System Events" to tell process "Terminal" to keystroke "t" using command down']]>
   </url>
 </vkopenurldef>
+
+
+<!-- =============================================================== -->
+
+<item>
+  <name>Remap F5 to escape</name>
+  <appendix>Active only in Terminal, mostly for vim</appendix>
+  <identifier>private.terminalEscape</identifier>
+  <only>TERMINAL</only>
+  <autogen>
+    --KeyToKey--
+    KeyCode::F5, ModifierFlag::NONE,
+    KeyCode::ESCAPE
+    </autogen>
+</item>
 
 
 <item>

@@ -26,7 +26,6 @@
   </url>
 </vkopenurldef>
 
-
 <!-- =============================================================== -->
 
 <item>
@@ -52,7 +51,6 @@
     KeyCode::VK_OPEN_URL_SHELL_terminaltab
     </autogen>
 </item>
-
 
 <item>
   <name>Remap Option_R to Hyper</name>

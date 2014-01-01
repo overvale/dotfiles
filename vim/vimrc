@@ -55,6 +55,9 @@ set statusline=[%n]\ %<%.99f\ %h%w%m%r%y\ %{exists('*CapsLockStatusline')?CapsLo
 set laststatus=2                  " Show the status line all the time
 set showcmd                       " Display incomplete commands.
 set showmode                      " Display the mode you're in.
+hi StatusLine ctermfg=15 ctermbg=0
+hi StatusLineNC ctermfg=8 ctermbg=0
+
 
 "set number                        " Show absolute line numbers.
 set relativenumber                " Show relative line numbers.
@@ -67,13 +70,46 @@ setlocal wrap
 setlocal linebreak
 
 set scrolloff=3                   " Show 3 lines of context around the cursor at all times.
-
+set background=dark
+colorscheme base16-ocean
 
 " Height of the command bar
 set cmdheight=2
 
 " show 'noname' buffers in bufExplorer 
 let g:bufExplorerShowNoName=1
+
+
+" Vundle Stuff
+" ---------------------------------------------------------------------------
+
+filetype off                  " required!
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+" let Vundle manage Vundle
+" required! 
+Bundle 'gmarik/vundle'
+
+
+" Vundles...
+Bundle 'scrooloose/nerdtree'
+Bundle 'matze/vim-move'
+Bundle "sjl/gundo.vim"
+Bundle "tpope/vim-markdown"
+Bundle 'jlanzarotta/bufexplorer'
+
+filetype plugin indent on     " required!
+"
+" Brief help
+" :BundleList          - list configured bundles
+" :BundleInstall(!)    - install (update) bundles
+" :BundleSearch(!) foo - search (or refresh cache first) for foo
+" :BundleClean(!)      - confirm (or auto-approve) removal of unused bundles
+"
+" see :h vundle for more details or wiki for FAQ
+" NOTE: comments after Bundle commands are not allowed.
+
+
 
 " Shortcuts
 " ---------------------------------------------------------------------------
@@ -100,7 +136,10 @@ nnoremap <leader>erc <C-w><C-v><C-l>:e $MYVIMRC<cr>
 nnoremap reload :source $MYVIMRC<cr>
 
 " Open NERDTree
-nnoremap <leader>nt :NERDTree<cr>
+nnoremap <leader>nt :NERDTreeToggle<cr>
+
+" Gundo
+nnoremap <F5> :GundoToggle<CR>
 
 " When moving to the end of the document also move to the end of the line
 nnoremap G G$
@@ -111,3 +150,5 @@ nnoremap < gv<
 
 nnoremap mdown :set syntax=markdown<cr>
 
+" Vim-Move
+let g:move_key_modifier = 'C'

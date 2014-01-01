@@ -1,0 +1,128 @@
+{
+
+/* Add line below */
+"^@o" = ("moveToEndOfParagraph:","insertNewline:");
+
+/* Add line above */
+"^~o" = ("moveToBeginningOfParagraph:","insertNewline:","moveUp:");
+
+/* Kill Line */
+"^@k" = ("moveToBeginningOfParagraph:","deleteToEndOfLine:");
+
+/* Transpose Words */
+"^@t" = "transposeWords:";
+
+
+/* 2-Stage Commands */
+"^x" = {
+  /* Word-Case */
+  "^l" = "lowercaseWord:";
+  "^u" = "uppercaseWord:";
+  "^t" = "capitalizeWord:";
+  
+  /* Selection */
+  "^w" = "selectWord:";
+  "^p" = "selectParagraph:";
+};
+
+
+}
+
+/* ---------------------------------------------------------------------------
+
+KEY MODIFIERS
+^ : Ctrl
+$ : Shift
+~ : Option (Alt)
+@ : Command (Apple)
+# : Numeric Keypad
+
+NON-PRINTABLE KEY CODES
+Up Arrow:     \UF700        Backspace:    \U0008        F1:           \UF704
+Down Arrow:   \UF701        Tab:          \U0009        F2:           \UF705
+Left Arrow:   \UF702        Escape:       \U001B        F3:           \UF706
+Right Arrow:  \UF703        Enter:        \U000A        ...
+Insert:       \UF727        Page Up:      \UF72C
+Delete:       \UF728        Page Down:    \UF72D
+Home:         \UF729        Print Screen: \UF72E
+End:          \UF72B        Scroll Lock:  \UF72F
+Break:        \UF732        Pause:        \UF730
+SysReq:       \UF731        Menu:         \UF735
+Help:         \UF746
+
+SUPPORTED ACTION
+alignCenter:                                        newDocument:
+alignJustified:                                     openDocument:
+alignLeft:                                          orderBack:
+alignRight:                                         orderFront:
+breakUndoCoalescing                                 orderFrontLinkPanel:
+cancelOperation:                                    orderFrontListPanel:
+capitalizeWord:                                     orderFrontSpacingPanel:
+center                                              orderFrontTablePanel:
+centerSelectionInVisibleArea:                       outline:
+changeCaseOfLetter:                                 pageDown:
+checkSpelling:                                      pageUp:
+clearRecentDocuments:                               paste:
+complete:                                           pasteAsPlainText:
+copy:                                               pasteAsRichText:
+copyFont:                                           pasteFont:
+copyRuler:                                          pasteRuler:
+cut:                                                performClose:
+delete:                                             performMiniaturize:
+deleteBackward:                                     performZoom:
+deleteBackwardByDecomposingPreviousCharacter:       printDocument:
+deleteForward:                                      raiseBaseline:
+deleteToBeginningOfLine:                            revertDocumentToSaved:
+deleteToBeginningOfParagraph:                       runPageLayout:
+deleteToEndOfLine:                                  saveAllDocuments:
+deleteToEndOfParagraph:                             saveDocument:
+deleteToMark:                                       saveDocumentAs:
+deleteWordBackward:                                 saveDocumentTo:
+deleteWordForward:                                  scrollLineDown:
+hide:                                               scrollLineUp:
+ignoreSpelling:                                     scrollPageDown:
+indent:                                             scrollPageUp:
+insertBacktab:                                      selectAll:
+insertContainerBreak:                               selectLine:
+insertLineBreak:                                    selectParagraph:
+insertNewline:                                      selectToMark:
+insertNewlineIgnoringFieldEditor:                   selectWord:
+insertParagraphSeparator:                           setMark:
+insertTab:                                          showContextHelp:
+insertTabIgnoringFieldEditor:                       showGuessPanel:
+insertText:                                         startSpeaking:
+loosenKerning:                                      stopSpeaking:
+lowerBaseline:                                      subscript:
+lowercaseWord:                                      superscript:
+moveBackward:                                       swapWithMark:
+moveBackwardAndModifySelection:                     terminate:
+moveDown:                                           tightenKerning:
+moveDownAndModifySelection:                         toggleBaseWritingDirection:
+moveForward:                                        toggleContinuousSpellChecking:
+moveForwardAndModifySelection:                      toggleRuler:
+moveLeft:                                           transpose:
+moveLeftAndModifySelection:                         transposeWords:
+moveRight:                                          turnOffKerning:
+moveRightAndModifySelection:                        turnOffLigatures:
+moveToBeginningOfDocument:                          underline:
+moveToBeginningOfDocumentAndModifySelection:        unscript:
+moveToBeginningOfLine:                              uppercaseWord:
+moveToBeginningOfLineAndModifySelection:            useAllLigatures:
+moveToBeginningOfParagraph:                         useStandardKerning:
+moveToEndOfDocument:                                useStandardLigatures:
+moveToEndOfDocumentAndModifySelection:              yank:
+moveToEndOfLineAndModifySelection:
+moveToEndOfLine:
+moveToEndOfParagraph:
+moveUp:
+moveUpAndModifySelection:
+moveWordBackward:
+moveWordBackwardAndModifySelection:
+moveWordForward:
+moveWordForwardAndModifySelection:
+moveWordLeft:
+moveWordLeftAndModifySelection:
+moveWordRight:
+moveWordRightAndModifySelection:
+
+--------------------------------------------------------------------------- */

@@ -16,6 +16,7 @@
     cm = commit
     st = status
     df = diff -b --word-diff
+    ks = difftool
     last = log -1 HEAD
     lg = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%d%C(reset) %s %C(green)[%cd]' --abbrev-commit --date=short --branches --tags --remotes
     unstage = rm --cached

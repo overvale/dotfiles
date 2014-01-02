@@ -4,7 +4,6 @@
 set nocompatible                  " Must come first because it changes other options.
 syntax enable                     " Turn on syntax highlighting.
 filetype plugin indent on         " Turn on file type detection.
-call pathogen#infect()            " Load Pathogen plugin
 set modelines=0                   " Turn off modeline support
 
 set encoding=utf-8                " Set default encoding
@@ -41,7 +40,7 @@ set expandtab                    " Use spaces instead of tabs
 set backspace=indent,eol,start    " Intuitive backspacing.
 
 " Turn on spell-checking
-"setlocal spell spelllang=en_us
+" setlocal spell spelllang=en_us
 
 " Turn the blinking cursor off in normal mode
 set gcr=n-c-v:blinkon0
@@ -50,12 +49,23 @@ set gcr=n-c-v:blinkon0
 " Display Stuff
 " ---------------------------------------------------------------------------
 
+set background=dark
+colorscheme base16-ocean
+
 set laststatus=2
+
+" These MUST go after your colorscheme to actaully work
+hi StatusLine ctermbg=07 ctermfg=00 term=none cterm=none
+hi StatusLineNC ctermbg=00 ctermfg=07 term=none cterm=underline
+hi ModeMsg ctermbg=02 ctermfg=00 term=none cterm=none
+
+" Show what you're typing in Normal mode
+set showcmd
 
 "set number                        " Show absolute line numbers.
 set relativenumber                " Show relative line numbers.
 set ruler                         " Show cursor position.
-"set cursorline                    " Highlight the line the cursor is on
+" set cursorline                    " Highlight the line the cursor is on
 
 " word-wrapping setup stolen from drbunsen
 set formatprg=par
@@ -63,8 +73,6 @@ setlocal wrap
 setlocal linebreak
 
 set scrolloff=3                   " Show 3 lines of context around the cursor at all times.
-set background=dark
-colorscheme base16-ocean
 
 " Height of the command bar
 set cmdheight=2
@@ -91,7 +99,7 @@ Bundle "sjl/gundo.vim"
 Bundle "tpope/vim-markdown"
 Bundle 'jlanzarotta/bufexplorer'
 Bundle 'Rykka/riv.vim'
-Bundle 'bling/vim-airline'
+"Bundle 'bling/vim-airline'
 
 filetype plugin indent on     " required!
 "
@@ -147,3 +155,4 @@ nnoremap mdown :set syntax=markdown<cr>
 
 " Vim-Move
 let g:move_key_modifier = 'C'
+

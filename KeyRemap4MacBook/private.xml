@@ -35,18 +35,6 @@
 <!-- =============================================================== -->
 
 <item>
-  <name>Remap F5 to escape</name>
-  <appendix>Active only in iTerm, mostly for vim</appendix>
-  <identifier>private.itermEscape</identifier>
-  <only>ITERM</only>
-  <autogen>
-    --KeyToKey--
-    KeyCode::F5, ModifierFlag::NONE,
-    KeyCode::ESCAPE
-    </autogen>
-</item>
-
-<item>
   <name>New Terminal Tab</name>
   <appendix>Control + Option + Space creates new Terminal tab</appendix>
   <identifier>private.terminaltab</identifier>
@@ -104,11 +92,19 @@
   <name>Remap Control_L to Control_L + Complete</name>
   <appendix>When you type Control_L only, send F5</appendix>
   <identifier>private.controlL2controlL_f5</identifier>
+  <autogen>__KeyOverlaidModifier__ KeyCode::CONTROL_L, KeyCode::CONTROL_L, KeyCode::F5</autogen>
+</item>
+
+<item>
+  <name>Remap F5 to escape</name>
+  <appendix>Active only in iTerm, mostly for vim</appendix>
+  <identifier>private.itermEscape</identifier>
+  <only>ITERM, TERMINAL</only>
   <autogen>
-    --KeyOverlaidModifier--
-    KeyCode::CONTROL_L,
-    KeyCode::CONTROL_L, KeyCode::F5
-  </autogen>
+    --KeyToKey--
+    KeyCode::F5, ModifierFlag::NONE,
+    KeyCode::ESCAPE
+    </autogen>
 </item>
 
 

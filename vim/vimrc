@@ -50,14 +50,7 @@ set gcr=n-c-v:blinkon0
 " Display Stuff
 " ---------------------------------------------------------------------------
 
-" Useful status information at bottom of screen
-set statusline=[%n]\ %<%.99f\ %h%w%m%r%y\ %{exists('*CapsLockStatusline')?CapsLockStatusline():''}%=%-16(\ %l,%c-%v\ %)%P
-set laststatus=2                  " Show the status line all the time
-set showcmd                       " Display incomplete commands.
-set showmode                      " Display the mode you're in.
-hi StatusLine ctermfg=15 ctermbg=0
-hi StatusLineNC ctermfg=8 ctermbg=0
-
+set laststatus=2
 
 "set number                        " Show absolute line numbers.
 set relativenumber                " Show relative line numbers.
@@ -97,6 +90,8 @@ Bundle 'matze/vim-move'
 Bundle "sjl/gundo.vim"
 Bundle "tpope/vim-markdown"
 Bundle 'jlanzarotta/bufexplorer'
+Bundle 'Rykka/riv.vim'
+Bundle 'bling/vim-airline'
 
 filetype plugin indent on     " required!
 "

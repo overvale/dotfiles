@@ -18,11 +18,17 @@
   <equal>com.apple.Terminal</equal>
 </appdef>
 
+<!-- This sets an alias for iTerm2 so I can refer to it later -->
+<appdef>
+  <appname>ITERM</appname>
+  <equal>com.googlecode.iterm2</equal>
+</appdef>
+
 <!-- This aliases an applescript to something I can reference -->
 <vkopenurldef>
   <name>KeyCode::VK_OPEN_URL_SHELL_terminaltab</name>
   <url type="shell">
-  <![CDATA[osascript -e 'tell application "Terminal" to activate' && osascript -e 'tell application "System Events" to tell process "Terminal" to keystroke "t" using command down']]>
+  <![CDATA[osascript -e 'tell application "iTerm" to activate' && osascript -e 'tell application "System Events" to tell process "iTerm" to keystroke "t" using command down']]>
   </url>
 </vkopenurldef>
 
@@ -30,16 +36,15 @@
 
 <item>
   <name>Remap F5 to escape</name>
-  <appendix>Active only in Terminal, mostly for vim</appendix>
-  <identifier>private.terminalEscape</identifier>
-  <only>TERMINAL</only>
+  <appendix>Active only in iTerm, mostly for vim</appendix>
+  <identifier>private.itermEscape</identifier>
+  <only>ITERM</only>
   <autogen>
     --KeyToKey--
     KeyCode::F5, ModifierFlag::NONE,
     KeyCode::ESCAPE
     </autogen>
 </item>
-
 
 <item>
   <name>New Terminal Tab</name>

@@ -58,7 +58,7 @@
 
 
 <item>
-  <name>Remap Control Arrows to Option Arrows</name>
+  <name>Remap Control Arrows/Delete to Option Arrows/Delete</name>
   <appendix>Active in everything *except* BBEdit</appendix>
   <identifier>private.control_arrows_2_option_arrows</identifier>
   <not>BBEDIT</not>
@@ -72,14 +72,6 @@
   KeyCode::CURSOR_RIGHT, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
   KeyCode::CURSOR_RIGHT, ModifierFlag::OPTION_L, 
   </autogen>
-</item>
-
-
-<item>
-  <name>Remap Control Delete to Option Delete</name>
-  <appendix>Active in everything *except* BBEdit</appendix>
-  <identifier>private.left_control_delete_to_option_delete</identifier>
-  <not>BBEDIT</not>
   <autogen>
   --KeyToKey--
   KeyCode::DELETE, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
@@ -87,24 +79,28 @@
   </autogen>
 </item>
 
-
 <item>
-  <name>Remap Control_L to Control_L + Complete</name>
-  <appendix>When you type Control_L only, send F5</appendix>
+  <name>Remap Control_L to F5</name>
+  <appendix>When you type Control_L only, send F5 - exclude iTerm</appendix>
   <identifier>private.controlL2controlL_f5</identifier>
-  <autogen>__KeyOverlaidModifier__ KeyCode::CONTROL_L, KeyCode::CONTROL_L, KeyCode::F5</autogen>
+  <not>ITERM</not>
+  <autogen>
+    __KeyOverlaidModifier__
+    KeyCode::CONTROL_L, KeyCode::CONTROL_L,
+    KeyCode::F5
+  </autogen>
 </item>
 
 <item>
-  <name>Remap F5 to escape</name>
-  <appendix>Active only in iTerm, mostly for vim</appendix>
+  <name>Remap Control_L to Escape</name>
+  <appendix>Only active in iTerm</appendix>
   <identifier>private.itermEscape</identifier>
-  <only>ITERM, TERMINAL</only>
+  <only>ITERM</only>
   <autogen>
-    --KeyToKey--
-    KeyCode::F5, ModifierFlag::NONE,
+    __KeyOverlaidModifier__
+    KeyCode::CONTROL_L, KeyCode::CONTROL_L,
     KeyCode::ESCAPE
-    </autogen>
+  </autogen>
 </item>
 
 

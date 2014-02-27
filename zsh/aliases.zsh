@@ -101,10 +101,10 @@ open -a Safari "http://www.youtube.com/results?search_query=$1+trailer" "http://
 # New Note
 function note(){
   if [ "$1" = "" ] ; then
-    exec $EDITOR ~/Documents/Dropbox/notes/note_`date +"%Y%m%d_%H%M%S"`.txt
+    exec $EDITOR ~/Dropbox/note_`date +"%Y%m%d_%H%M%S"`.txt
   else
-    exec $EDITOR ~/Documents/Dropbox/notes/"$1".txt
+    exec $EDITOR ~/Dropbox/"$1".txt
   fi
 }
 
-alias notes="open ~/Documents/Dropbox/notes/;exit"
+alias notes="open ~/Dropbox/;exit"

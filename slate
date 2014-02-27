@@ -1,39 +1,39 @@
-# Some reasonable defaults
+# DEFAULTS
 config defaultToCurrentScreen true
 config nudgePercentOf screenSize
 config resizePercentOf screenSize
 
-# Some aliases to save typing
+# ALIASES
 alias current-dims windowSizeX;windowSizeY
 alias center-both move screenOriginX+(screenSizeX-windowSizeX)/2;screenOriginY+(screenSizeY-windowSizeY)/2 ${current-dims}
 alias hyper ctrl;shift;alt;cmd
 
-# ------------------------------
-
-# Window Hints
+# WINDOW HINTS
 bind esc:cmd hint
 
-# ------------------------------
+# MOVE AND RESIZE - HALF-SCREEN
+bind 1:${hyper}        push left  bar-resize:screenSizeX/2
+bind 2:${hyper}        push right bar-resize:screenSizeX/2
 
-# Move and Resize - half-screen
-bind 1:${hyper}     push left  bar-resize:screenSizeX/2
-bind 2:${hyper}     push right bar-resize:screenSizeX/2
-
-# Full-screen
+# FULL-SCREEN
 bind 3:${hyper}        throw 0 resize
 
-# Move and Resize - 2/3-screen
-bind 4:${hyper}    push left bar-resize:(screenSizeX/3)*2
+# MOVE AND RESIZE - 2/3-SCREEN, LEFT
+bind 4:${hyper}        push left bar-resize:(screenSizeX/3)*2
 
-# Move Windows
-bind =:${hyper}      ${center-both}
+# MOVE & RESIZE - IN THIRDS
+bind 8:${hyper}        push left  bar-resize:screenSizeX/3
+bind 9:${hyper}        sequence   push left  bar-resize:screenSizeX/3 > ${center-both}
+bind 0:${hyper}        push right bar-resize:screenSizeX/3
+
+# ALIGN WINDOWS
+bind =:${hyper}        ${center-both}
 bind ]:${hyper}        push right
 bind [:${hyper}        push left
 
-# ------------------------------
-
-# Shift Focus
+# SHIFT FOCUS
 bind right:cmd;ctrl    focus right
 bind left:cmd;ctrl     focus left
 bind up:cmd;ctrl       focus up
 bind down:cmd;ctrl     focus down
+

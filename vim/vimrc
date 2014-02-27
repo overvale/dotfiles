@@ -5,29 +5,24 @@ set nocompatible                  " Must come first because it changes other opt
 syntax enable                     " Turn on syntax highlighting.
 filetype plugin indent on         " Turn on file type detection.
 set modelines=0                   " Turn off modeline support
-
 set encoding=utf-8                " Set default encoding
 set ttyfast                       " Tell vim you're using a fast terminal.
-
 set title                         " Set the terminal's title
 set visualbell                    " No beeping.
 set nobackup                      " Don't make a backup before overwriting a file.
 set nowritebackup                 " And again.
 set directory=$HOME/.vim/tmp//,.  " Keep swap files in one location
-
 set hidden                        " Handle multiple buffers better.
 set wildmenu                      " Enhanced command line completion.
 set wildmode=list:longest         " Complete files like a shell.
-
 set ignorecase                    " Case-insensitive searching.
 set smartcase                     " But case-sensitive if expression contains a capital letter.
 set incsearch                     " Highlight matches as you type.
 set hlsearch                      " Highlight matches.
 set showmatch                     " Show matching brackets, etc.
-
 set gdefault                      " Sets searches to be global (line) by default
-
 set autoread                      " Tells vim to auto-read changes to the file from the disk.
+
 
 
 " Editing Prefs
@@ -36,49 +31,64 @@ set autoindent                    " Turn on auto-indenting
 set tabstop=4                     " Tab preferences
 set shiftwidth=4
 set softtabstop=4
-set expandtab                    " Use spaces instead of tabs
+set expandtab                     " Use spaces instead of tabs
 set backspace=indent,eol,start    " Intuitive backspacing.
 
 " Turn on spell-checking
-" setlocal spell spelllang=en_us
+setlocal spell spelllang=en_us
 
-" Turn the blinking cursor off in normal mode
-set gcr=n-c-v:blinkon0
+" Toggle spell-checking
+nnoremap <leader>s :set spell!<cr>
 
 
 " Display Stuff
 " ---------------------------------------------------------------------------
 
-set background=dark
-colorscheme base16-ocean
+set scrolloff=3                    " Show 3 lines of context around the cursor at all times.
+set cursorline                     " Highlight the line the cursor is on
 
-set laststatus=2
-
-" These MUST go after your colorscheme to actaully work
-hi StatusLine ctermbg=07 ctermfg=00 term=none cterm=none
-hi StatusLineNC ctermbg=00 ctermfg=07 term=none cterm=underline
-hi ModeMsg ctermbg=02 ctermfg=00 term=none cterm=none
-
-" Show what you're typing in Normal mode
-set showcmd
-
-"set number                        " Show absolute line numbers.
-set relativenumber                " Show relative line numbers.
-set ruler                         " Show cursor position.
-" set cursorline                    " Highlight the line the cursor is on
-
-" word-wrapping setup stolen from drbunsen
+" WORD-WRAPPING
 set formatprg=par
 setlocal wrap 
 setlocal linebreak
 
-set scrolloff=3                   " Show 3 lines of context around the cursor at all times.
-
-" Height of the command bar
-set cmdheight=2
-
-" show 'noname' buffers in bufExplorer 
+" SHOW 'NONAME' BUFFERS IN BUFEXPLORER 
 let g:bufExplorerShowNoName=1
+
+
+" COLORS
+" ---------------------------------------------------------------------------
+
+" ENABLE 256 COLORS
+set t_Co=256
+
+" THE STATUS BAR
+set laststatus=2      "Always show status bar
+set cmdheight=1       "Height of command typing area
+set showcmd           "Shows your typing in Normal Mode
+
+" COLOR SCHEME
+set background=dark
+colorscheme base16-ocean
+
+" STATUS BAR COLORS - AFTER 'COLORSCHEME'
+hi StatusLine ctermbg=1 ctermfg=00 term=none cterm=none
+hi StatusLineNC ctermbg=08 ctermfg=07 term=none cterm=none
+hi ModeMsg ctermbg=00 ctermfg=11 term=none cterm=none
+hi LineNr ctermbg=10 ctermfg=8
+
+" now set it up to change the status line based on mode
+if version >= 700
+  au InsertEnter * hi StatusLine ctermbg=02 ctermfg=00 term=none cterm=none
+  au InsertLeave * hi StatusLine ctermbg=1 ctermfg=00 term=none cterm=none
+endif
+
+" COMPLETION COLORS
+"hi Pmenu ctermbg=15 ctermfg=00
+"hi PmenuSel ctermbg=3 ctermfg=00
+
+
+
 
 
 " Vundle Stuff
@@ -96,10 +106,11 @@ Bundle 'gmarik/vundle'
 Bundle 'scrooloose/nerdtree'
 Bundle 'matze/vim-move'
 Bundle "sjl/gundo.vim"
-Bundle "tpope/vim-markdown"
 Bundle 'jlanzarotta/bufexplorer'
 Bundle 'Rykka/riv.vim'
-"Bundle 'bling/vim-airline'
+Bundle "plasticboy/vim-markdown"
+Bundle "fountain.vim"
+Bundle 'tpope/vim-surround'
 
 filetype plugin indent on     " required!
 "
@@ -117,7 +128,7 @@ filetype plugin indent on     " required!
 " Shortcuts
 " ---------------------------------------------------------------------------
 
-" Disable The Arrow Keys - Oh God...
+" DISABLE THE ARROW KEYS - OH GOD...
 nnoremap <up> <nop>
 nnoremap <down> <nop>
 nnoremap <left> <nop>
@@ -132,11 +143,8 @@ nnoremap k gk
 " Clear search highlighting
 nnoremap <leader><space> :noh<cr>
 
-" Open .vimrc in a vertical split
-nnoremap <leader>erc <C-w><C-v><C-l>:e $MYVIMRC<cr>
-
 " Quick-reload of this file
-nnoremap reload :source $MYVIMRC<cr>
+nnoremap reload :source ~/.vimrc<cr>
 
 " Open NERDTree
 nnoremap <leader>nt :NERDTreeToggle<cr>
@@ -147,12 +155,4 @@ nnoremap <F5> :GundoToggle<CR>
 " When moving to the end of the document also move to the end of the line
 nnoremap G G$
 
-" Indentation remaps
-nnoremap > gv>
-nnoremap < gv<
-
 nnoremap mdown :set syntax=markdown<cr>
-
-" Vim-Move
-let g:move_key_modifier = 'C'
-

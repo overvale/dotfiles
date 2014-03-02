@@ -93,6 +93,11 @@ function dict(){
 open dict:///"$1"
 }
 
+# Wolfram Alpha
+function wolf(){
+open "http://www.wolframalpha.com/input/?i=$*"
+}
+
 # Should I watch this movie?
 function movie-info(){
 open -a Safari "http://www.youtube.com/results?search_query=$1+trailer" "http://www.rottentomatoes.com/search/?search=$1" "http://www.imdb.com/find?q=$1"

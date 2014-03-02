@@ -3,6 +3,31 @@
 # Use this script to setup a new mac with your dot-files
 # ensure you run it from $HOME, and be very careful with your data
 
+# Sign in to iCloud
+# Sign in to iTunes Match
+# 
+# Bootstrap my dotfiles with symlinks
+# Change login shell to zsh
+# 
+# Install apps:
+# Slate
+# KeyRemap4MacBook
+# Dropbox
+# iTerm
+# Lightroom
+# Chrome
+# Kaleidoscope
+# Pixelmator
+# Super Duper
+# The Unarchiver
+# Transmit
+# VLC
+# Writer Pro
+# 
+# Once everything's working...
+# Install Arq backup
+
+
 # Ask for the administrator password upfront
 sudo -v
 

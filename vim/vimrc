@@ -112,6 +112,7 @@ Bundle 'Rykka/riv.vim'
 Bundle "plasticboy/vim-markdown"
 Bundle "fountain.vim"
 Bundle 'tpope/vim-surround'
+Bundle 'airblade/vim-gitgutter'
 
 filetype plugin indent on     " required!
 "
@@ -166,3 +167,9 @@ nnoremap <c-k> :m-2<cr>
 
 inoremap <c-b> <S-Left>
 inoremap <c-e> <S-Right>
+
+" faster spelling correction
+" Mark current position, jump to last misspelled word, offer corrections
+inoremap <c-z> <esc>mxa<c-x>s
+" leave insert mode, jump to x mark, re-enter insert mode
+inoremap <c-l> <esc>`xa

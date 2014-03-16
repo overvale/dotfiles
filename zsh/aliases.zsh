@@ -14,6 +14,12 @@ alias -s md=bbedit
 # Moving around & using the file-system
 # ----------------------------------------------------------------------
 
+# rm protection
+alias rm="rm -i"
+
+# mv overwrite protection
+alias mv="mv -i"
+
 # ls
 alias l='ls -1p'         # my favorite options
 alias la="ls -AohGp"    # long list, all, colors

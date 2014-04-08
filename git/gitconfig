@@ -30,11 +30,11 @@
     local = yellow
     remote = green
 [color "diff"]
-    meta = white
+    meta = yellow
     frag = cyan
     old = red
     new = green
-    commit = yellow
+    commit = magenta
 [color "status"]
     header = 8
     added = green

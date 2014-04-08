@@ -46,6 +46,36 @@
 </item>
 
 <item>
+  <name>BBEdit Vim Control Word-Movement</name>
+  <appendix>Remaps a few vim-like cursor movement shortcuts</appendix>
+  <identifier>private.vimbbeditword</identifier>
+  <only>BBEDIT</only>
+  <autogen>
+    --KeyToKey--
+    KeyCode::E, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
+    KeyCode::CURSOR_RIGHT, ModifierFlag::CONTROL_L
+  </autogen>
+  <autogen>
+    --KeyToKey--
+    KeyCode::B, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
+    KeyCode::CURSOR_LEFT, ModifierFlag::CONTROL_L
+  </autogen>
+  <autogen>
+    --KeyToKey--
+    KeyCode::KEY_0, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
+    KeyCode::A, ModifierFlag::CONTROL_L
+  </autogen>
+  <autogen>
+    --KeyToKey--
+    KeyCode::KEY_4, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
+    KeyCode::E, ModifierFlag::CONTROL_L
+  </autogen>
+</item>
+
+
+<!-- =============================================================== -->
+
+<item>
   <name>Remap Option_R to Hyper</name>
   <appendix>This maps the Right Option key to Control + Shift + Option + Command.</appendix>
   <identifier>space_cadet.left_control_to_hyper</identifier>
@@ -65,17 +95,17 @@
   <autogen>
   --KeyToKey--
   KeyCode::CURSOR_LEFT, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
-  KeyCode::CURSOR_LEFT, ModifierFlag::OPTION_L, 
+  KeyCode::CURSOR_LEFT, ModifierFlag::OPTION_L,
   </autogen>
   <autogen>
   --KeyToKey--
   KeyCode::CURSOR_RIGHT, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
-  KeyCode::CURSOR_RIGHT, ModifierFlag::OPTION_L, 
+  KeyCode::CURSOR_RIGHT, ModifierFlag::OPTION_L,
   </autogen>
   <autogen>
   --KeyToKey--
   KeyCode::DELETE, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
-  KeyCode::DELETE, ModifierFlag::OPTION_L, 
+  KeyCode::DELETE, ModifierFlag::OPTION_L,
   </autogen>
 </item>
 
@@ -93,7 +123,7 @@
 
 <item>
   <name>Remap Control_L to Escape</name>
-  <appendix>Only active in iTerm</appendix>
+  <appendix>Active in iTerm</appendix>
   <identifier>private.itermEscape</identifier>
   <only>ITERM</only>
   <autogen>
@@ -103,6 +133,7 @@
   </autogen>
 </item>
 
+<!-- =============================================================== -->
 
 <item>
   <name>Use the Correct Shift Keys</name>

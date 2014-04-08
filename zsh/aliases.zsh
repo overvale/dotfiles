@@ -58,6 +58,9 @@ function tree(){
 find ./ -print | awk -F "/" '{for (i=1; i<=NF-2; i++){printf "|  "} print "|--"$NF}'
 }
 
+# quick exit
+alias xit=exit
+
 # Working with files
 # ----------------------------------------------------------------------
 
@@ -88,6 +91,19 @@ myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user; killall Finder'
 
 
+# Notes
+# ----------------------------------------------------------------------
+
+function note(){
+  if [ "$1" = "" ] ; then
+    exec $EDITOR ~/Dropbox/notes/note_`date +"%Y%m%d_%H%M%S"`.txt
+  else
+    exec $EDITOR ~/Dropbox/notes/"$1".txt
+  fi
+}
+
+alias notes="open ~/Dropbox/notes/;exit"
+
 
 # Miscellaneous
 # ----------------------------------------------------------------------
@@ -112,13 +128,3 @@ function movie-info(){
 open -a Safari "http://www.youtube.com/results?search_query=$1+trailer" "http://www.rottentomatoes.com/search/?search=$1" "http://www.imdb.com/find?q=$1"
 }
 
-# New Note
-function note(){
-  if [ "$1" = "" ] ; then
-    exec $EDITOR ~/Dropbox/note_`date +"%Y%m%d_%H%M%S"`.txt
-  else
-    exec $EDITOR ~/Dropbox/"$1".txt
-  fi
-}
-
-alias notes="open ~/Dropbox/;exit"

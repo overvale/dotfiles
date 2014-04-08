@@ -49,7 +49,8 @@ set scrolloff=3                    " Show 3 lines of context around the cursor a
 set cursorline                     " Highlight the line the cursor is on
 
 " WORD-WRAPPING
-set formatprg=par
+set formatoptions=tcrqn
+set formatprg=par\ -w72rq
 setlocal wrap 
 setlocal linebreak
 
@@ -108,9 +109,7 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'matze/vim-move'
 Bundle "sjl/gundo.vim"
 Bundle 'jlanzarotta/bufexplorer'
-Bundle 'Rykka/riv.vim'
 Bundle "plasticboy/vim-markdown"
-Bundle "fountain.vim"
 Bundle 'tpope/vim-surround'
 Bundle 'airblade/vim-gitgutter'
 
@@ -157,6 +156,9 @@ nnoremap <F5> :GundoToggle<CR>
 " When moving to the end of the document also move to the end of the line
 nnoremap G G$
 
+" toggle numbers
+:nnoremap <leader>num :set invnumber<cr>
+
 nnoremap mdown :set syntax=markdown<cr>
 
 " Moving lines up and down
@@ -164,9 +166,8 @@ nnoremap <c-j> :m+<cr>
 nnoremap <c-k> :m-2<cr>
 
 " Some things to make editing in Insert Mode a little easier
-
-inoremap <c-b> <S-Left>
-inoremap <c-e> <S-Right>
+" insert newline ahead of cursor
+inoremap <c-k> <cr><c-o><bs>
 
 " faster spelling correction
 " Mark current position, jump to last misspelled word, offer corrections

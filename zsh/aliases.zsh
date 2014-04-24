@@ -59,7 +59,7 @@ find ./ -print | awk -F "/" '{for (i=1; i<=NF-2; i++){printf "|  "} print "|--"$
 }
 
 # quick exit
-alias xit=exit
+alias xxx=exit
 
 # Working with files
 # ----------------------------------------------------------------------

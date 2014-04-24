@@ -12,10 +12,10 @@
   <equal>com.barebones.bbedit</equal>
 </appdef>
 
-<!-- This sets an alias for Terminal so I can refer to it later -->
+<!-- This sets an alias for BBEdit so I can refer to it later -->
 <appdef>
-  <appname>TERMINAL</appname>
-  <equal>com.apple.Terminal</equal>
+  <appname>ATOM</appname>
+  <equal>com.github.atom</equal>
 </appdef>
 
 <!-- This sets an alias for iTerm2 so I can refer to it later -->
@@ -23,55 +23,6 @@
   <appname>ITERM</appname>
   <equal>com.googlecode.iterm2</equal>
 </appdef>
-
-<!-- This aliases an applescript to something I can reference -->
-<vkopenurldef>
-  <name>KeyCode::VK_OPEN_URL_SHELL_terminaltab</name>
-  <url type="shell">
-  <![CDATA[osascript -e 'tell application "iTerm" to activate' && osascript -e 'tell application "System Events" to tell process "iTerm" to keystroke "t" using command down']]>
-  </url>
-</vkopenurldef>
-
-<!-- =============================================================== -->
-
-<item>
-  <name>New Terminal Tab</name>
-  <appendix>Control + Option + Space creates new Terminal tab</appendix>
-  <identifier>private.terminaltab</identifier>
-  <autogen>
-    --KeyToKey--
-    KeyCode::SPACE, ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L,
-    KeyCode::VK_OPEN_URL_SHELL_terminaltab
-    </autogen>
-</item>
-
-<item>
-  <name>BBEdit Vim Control Word-Movement</name>
-  <appendix>Remaps a few vim-like cursor movement shortcuts</appendix>
-  <identifier>private.vimbbeditword</identifier>
-  <only>BBEDIT</only>
-  <autogen>
-    --KeyToKey--
-    KeyCode::E, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
-    KeyCode::CURSOR_RIGHT, ModifierFlag::CONTROL_L
-  </autogen>
-  <autogen>
-    --KeyToKey--
-    KeyCode::B, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
-    KeyCode::CURSOR_LEFT, ModifierFlag::CONTROL_L
-  </autogen>
-  <autogen>
-    --KeyToKey--
-    KeyCode::KEY_0, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
-    KeyCode::A, ModifierFlag::CONTROL_L
-  </autogen>
-  <autogen>
-    --KeyToKey--
-    KeyCode::KEY_4, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
-    KeyCode::E, ModifierFlag::CONTROL_L
-  </autogen>
-</item>
-
 
 <!-- =============================================================== -->
 
@@ -82,38 +33,15 @@
   <autogen>
     --KeyToKey--
     KeyCode::OPTION_R,
-    KeyCode::COMMAND_L, ModifierFlag::OPTION_L | ModifierFlag::SHIFT_R | ModifierFlag::CONTROL_L
-  </autogen>
-</item>
-
-
-<item>
-  <name>Remap Control Arrows/Delete to Option Arrows/Delete</name>
-  <appendix>Active in everything *except* BBEdit</appendix>
-  <identifier>private.control_arrows_2_option_arrows</identifier>
-  <not>BBEDIT</not>
-  <autogen>
-  --KeyToKey--
-  KeyCode::CURSOR_LEFT, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
-  KeyCode::CURSOR_LEFT, ModifierFlag::OPTION_L,
-  </autogen>
-  <autogen>
-  --KeyToKey--
-  KeyCode::CURSOR_RIGHT, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
-  KeyCode::CURSOR_RIGHT, ModifierFlag::OPTION_L,
-  </autogen>
-  <autogen>
-  --KeyToKey--
-  KeyCode::DELETE, ModifierFlag::CONTROL_L | ModifierFlag::NONE,
-  KeyCode::DELETE, ModifierFlag::OPTION_L,
+    KeyCode::COMMAND_L, ModifierFlag::OPTION_L | ModifierFlag::SHIFT_R | ModifierFlag::CONTROL_R
   </autogen>
 </item>
 
 <item>
   <name>Remap Control_L to F5</name>
-  <appendix>When you type Control_L only, send F5 - exclude iTerm</appendix>
+  <appendix>When you type Control_L only, send F5 - exclude iTerm, Atom</appendix>
   <identifier>private.controlL2controlL_f5</identifier>
-  <not>ITERM</not>
+  <not>ITERM, ATOM</not>
   <autogen>
     __KeyOverlaidModifier__
     KeyCode::CONTROL_L, KeyCode::CONTROL_L,
@@ -123,9 +51,9 @@
 
 <item>
   <name>Remap Control_L to Escape</name>
-  <appendix>Active in iTerm</appendix>
+  <appendix>Active in iTerm and Atom</appendix>
   <identifier>private.itermEscape</identifier>
-  <only>ITERM</only>
+  <only>ITERM, ATOM</only>
   <autogen>
     __KeyOverlaidModifier__
     KeyCode::CONTROL_L, KeyCode::CONTROL_L,

@@ -4,25 +4,53 @@
 set nocompatible                  " Must come first because it changes other options.
 syntax enable                     " Turn on syntax highlighting.
 filetype plugin indent on         " Turn on file type detection.
-set modelines=0                   " Turn off modeline support
 set encoding=utf-8                " Set default encoding
 set ttyfast                       " Tell vim you're using a fast terminal.
 set title                         " Set the terminal's title
-set visualbell                    " No beeping.
-set nobackup                      " Don't make a backup before overwriting a file.
-set nowritebackup                 " And again.
-set directory=$HOME/.vim/tmp//,.  " Keep swap files in one location
-set hidden                        " Handle multiple buffers better.
+set visualbell                    " Make the alerts visual instead of audio
+set hidden                        " Hide buffers instead of close them (when opening a new buffer)
 set wildmenu                      " Enhanced command line completion.
 set wildmode=list:longest         " Complete files like a shell.
 set ignorecase                    " Case-insensitive searching.
 set smartcase                     " But case-sensitive if expression contains a capital letter.
-"set wildignorecase               " (7.3.107+) Ignore filename case in the command line.
 set incsearch                     " Highlight matches as you type.
 set hlsearch                      " Highlight matches.
 set showmatch                     " Show matching brackets, etc.
 set gdefault                      " Sets searches to be global (line) by default
 set autoread                      " Tells vim to auto-read changes to the file from the disk.
+set ttimeoutlen=50                " no delay leaving insert mode
+
+" Vundle Stuff
+" ---------------------------------------------------------------------------
+
+filetype off                  " required!
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+" let Vundle manage Vundle
+" required!
+Bundle 'gmarik/vundle'
+
+" Vundles...
+Bundle 'scrooloose/nerdtree'
+Bundle "sjl/gundo.vim"
+Bundle 'jlanzarotta/bufexplorer'
+Bundle 'tpope/vim-surround'
+Bundle 'airblade/vim-gitgutter'
+Bundle 'chriskempson/base16-vim'
+Bundle 'junegunn/goyo.vim'
+Bundle 'vim-scripts/fountain.vim'
+Bundle 'bling/vim-airline'
+
+filetype plugin indent on     " required!
+"
+" Brief help
+" :BundleList          - list configured bundles
+" :BundleInstall(!)    - install (update) bundles
+" :BundleSearch(!) foo - search (or refresh cache first) for foo
+" :BundleClean(!)      - confirm (or auto-approve) removal of unused bundles
+"
+" see :h vundle for more details or wiki for FAQ
+" NOTE: comments after Bundle commands are not allowed.
 
 
 
@@ -41,6 +69,12 @@ setlocal spell spelllang=en_us
 " Toggle spell-checking
 nnoremap <leader>s :set spell!<cr>
 
+" Paste mode
+set pastetoggle=<F2>
+
+" sudo save
+cmap w!! w !sudo tee % >/dev/null
+
 
 " Display Stuff
 " ---------------------------------------------------------------------------
@@ -49,20 +83,24 @@ set scrolloff=3                    " Show 3 lines of context around the cursor a
 set cursorline                     " Highlight the line the cursor is on
 
 " WORD-WRAPPING
-set formatoptions=tcrqn
-set formatprg=par\ -w72rq
-setlocal wrap 
-setlocal linebreak
+set formatoptions=tcrqn            " A few misc options for formatting text,
+set formatprg=par\ -w72rq          " external formatter options
+set wrap                           " Turn on wrapping
+set linebreak                      " Wrap only at word-breaks
 
-" SHOW 'NONAME' BUFFERS IN BUFEXPLORER 
+" SHOW 'NONAME' BUFFERS IN BUFEXPLORER
 let g:bufExplorerShowNoName=1
+
+
+" the separator used on the left side >
+let g:airline_left_sep='▶'
+
+" the separator used on the right side >
+let g:airline_right_sep='◀'
 
 
 " COLORS
 " ---------------------------------------------------------------------------
-
-" ENABLE 256 COLORS
-set t_Co=256
 
 " THE STATUS BAR
 set laststatus=2      "Always show status bar
@@ -70,61 +108,8 @@ set cmdheight=1       "Height of command typing area
 set showcmd           "Shows your typing in Normal Mode
 
 " COLOR SCHEME
-set background=dark
 colorscheme base16-ocean
-
-" STATUS BAR COLORS - AFTER 'COLORSCHEME'
-hi StatusLine ctermbg=1 ctermfg=00 term=none cterm=none
-hi StatusLineNC ctermbg=08 ctermfg=07 term=none cterm=none
-hi ModeMsg ctermbg=00 ctermfg=11 term=none cterm=none
-hi LineNr ctermbg=10 ctermfg=8
-
-" now set it up to change the status line based on mode
-if version >= 700
-  au InsertEnter * hi StatusLine ctermbg=02 ctermfg=00 term=none cterm=none
-  au InsertLeave * hi StatusLine ctermbg=1 ctermfg=00 term=none cterm=none
-endif
-
-" COMPLETION COLORS
-"hi Pmenu ctermbg=15 ctermfg=00
-"hi PmenuSel ctermbg=3 ctermfg=00
-
-
-
-
-
-" Vundle Stuff
-" ---------------------------------------------------------------------------
-
-filetype off                  " required!
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-" let Vundle manage Vundle
-" required! 
-Bundle 'gmarik/vundle'
-
-
-" Vundles...
-Bundle 'scrooloose/nerdtree'
-Bundle 'matze/vim-move'
-Bundle "sjl/gundo.vim"
-Bundle 'jlanzarotta/bufexplorer'
-Bundle "plasticboy/vim-markdown"
-Bundle 'tpope/vim-surround'
-Bundle 'airblade/vim-gitgutter'
-
-filetype plugin indent on     " required!
-"
-" Brief help
-" :BundleList          - list configured bundles
-" :BundleInstall(!)    - install (update) bundles
-" :BundleSearch(!) foo - search (or refresh cache first) for foo
-" :BundleClean(!)      - confirm (or auto-approve) removal of unused bundles
-"
-" see :h vundle for more details or wiki for FAQ
-" NOTE: comments after Bundle commands are not allowed.
-
-
+set background=dark
 
 " Shortcuts
 " ---------------------------------------------------------------------------
@@ -145,7 +130,7 @@ nnoremap k gk
 nnoremap <leader><space> :noh<cr>
 
 " Quick-reload of this file
-nnoremap reload :source ~/.vimrc<cr>
+nnoremap <leader>rc :source ~/.vimrc<cr>
 
 " Open NERDTree
 nnoremap <leader>nt :NERDTreeToggle<cr>
@@ -159,7 +144,7 @@ nnoremap G G$
 " toggle numbers
 :nnoremap <leader>num :set invnumber<cr>
 
-nnoremap mdown :set syntax=markdown<cr>
+nnoremap <leader>mdown :set syntax=markdown<cr>
 
 " Moving lines up and down
 nnoremap <c-j> :m+<cr>
@@ -174,3 +159,36 @@ inoremap <c-k> <cr><c-o><bs>
 inoremap <c-z> <esc>mxa<c-x>s
 " leave insert mode, jump to x mark, re-enter insert mode
 inoremap <c-l> <esc>`xa
+
+" Goyo
+nnoremap <leader>g :Goyo<cr>
+
+" wrap
+nnoremap <leader>w :set wrap!<cr>
+
+
+" Snippets
+" ---------------------------------------------------------------------------
+
+" date
+:iab <expr> dd strftime("[%Y-%m-%dT%H:%M:%S%z]")
+
+
+" rst customizations
+" ---------------------------------------------------------------------------
+
+augroup filetypedetect_rst
+    au!
+    " Headings
+    au FileType rst nnoremap <leader>h1 ^yypv$r=o<cr><esc>
+    au FileType rst inoremap <leader>h1 <esc>^yypv$r=o<cr>
+
+    au FileType rst nnoremap <leader>h2 ^yypv$r-o<cr><esc>
+    au FileType rst inoremap <leader>h2 <esc>^yypv$r-o<cr><esc>
+
+    au FileType rst nnoremap <leader>h3 ^yypv$r+o<cr><esc>
+    au FileType rst inoremap <leader>h3 <esc>^yypv$r+o<cr><esc>
+
+    "Create note
+    au FileType rst iabbrev nnn .. note::
+augroup END

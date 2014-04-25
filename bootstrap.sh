@@ -11,6 +11,15 @@ xcode-select --install
 # set default shell
 chsh -s /opt/local/bin/zsh
 
+# install homebrew - worth checking hompage
+# for, potentially, updated instructions
+ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+
+brew install vim
+brew install par
+brew install git
+curl -O http://sreitshamer.github.io/arq_restore/arq_restore.zip && unzip arq_restore.zip && rm arq_restore.zip
+
 # Set Help Viewer windows to non-floating mode
 defaults write com.apple.helpviewer DevMode -bool true
 

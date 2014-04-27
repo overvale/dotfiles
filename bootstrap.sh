@@ -43,13 +43,15 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # The Unarchiver
 # Transmit
 
+# pull-down your dotfiles; via Dropbox or git
+
 # Symlink a bunch of things - run from $HOME
 ln -s ~/code/dotfiles/git/gitconfig .gitconfig
 ln -s ~/code/dotfiles/git/gitignore_global .gitignore_global
 ln -s ~/code/dotfiles/zsh .zsh
-ln -s ~/.zsh/zshrc .zshrc
+ln -s ~/code/dotfiles/zsh/zshrc .zshrc
 ln -s ~/code/dotfiles/vim .vim
-ln -s ~/.vim/vimrc .vimrc
+ln -s ~/code/dotfiles/vim/vimrc .vimrc
 ln -s ~/code/dotfiles/KeyRemap4MacBook ~/Library/Application\ Support/KeyRemap4MacBook
 
 # install Arq

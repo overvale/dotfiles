@@ -36,6 +36,7 @@ Bundle "sjl/gundo.vim"
 Bundle 'jlanzarotta/bufexplorer'
 Bundle 'tpope/vim-surround'
 Bundle 'airblade/vim-gitgutter'
+Bundle 'plasticboy/vim-markdown'
 Bundle 'chriskempson/base16-vim'
 Bundle 'junegunn/goyo.vim'
 Bundle 'vim-scripts/fountain.vim'
@@ -75,6 +76,8 @@ set pastetoggle=<F2>
 " sudo save
 cmap w!! w !sudo tee % >/dev/null
 
+" disable vim-markdown default folding
+let g:vim_markdown_initial_foldlevel=1
 
 " Display Stuff
 " ---------------------------------------------------------------------------
@@ -91,12 +94,9 @@ set linebreak                      " Wrap only at word-breaks
 " SHOW 'NONAME' BUFFERS IN BUFEXPLORER
 let g:bufExplorerShowNoName=1
 
-
-" the separator used on the left side >
-let g:airline_left_sep='▶'
-
-" the separator used on the right side >
-let g:airline_right_sep='◀'
+" Airline separator glyphs
+let g:airline_left_sep=' '
+let g:airline_right_sep=' '
 
 
 " COLORS
@@ -144,7 +144,7 @@ nnoremap G G$
 " toggle numbers
 :nnoremap <leader>num :set invnumber<cr>
 
-nnoremap <leader>mdown :set syntax=markdown<cr>
+nnoremap <leader>mdown :set filetype=mkd<cr>
 
 " Moving lines up and down
 nnoremap <c-j> :m+<cr>

@@ -2,4 +2,5 @@
 .DS_Store
 *.bbprojectd/
 *.swp
+*.swo
 Thumbs.db

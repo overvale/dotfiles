@@ -19,6 +19,10 @@ set showmatch                     " Show matching brackets, etc.
 set gdefault                      " Sets searches to be global (line) by default
 set autoread                      " Tells vim to auto-read changes to the file from the disk.
 set ttimeoutlen=50                " no delay leaving insert mode
+set clipboard=unnamed             " set vim to share the system clipboard
+
+" Treat buffers from stdin (e.g.: echo foo | vim -) as scratch buffers.
+au StdinReadPost * :set buftype=nofile
 
 " Vundle Stuff
 " ---------------------------------------------------------------------------
@@ -31,10 +35,10 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " Vundles...
-Bundle 'scrooloose/nerdtree'
-Bundle "sjl/gundo.vim"
 Bundle 'jlanzarotta/bufexplorer'
+Bundle "sjl/gundo.vim"
 Bundle 'tpope/vim-surround'
+Bundle 'scrooloose/nerdtree'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'chriskempson/base16-vim'
@@ -63,9 +67,13 @@ set shiftwidth=4
 set softtabstop=4
 set expandtab                     " Use spaces instead of tabs
 set backspace=indent,eol,start    " Intuitive backspacing.
+set nojoinspaces                  " Single space between sentences when joining
 
 " Turn on spell-checking
 setlocal spell spelllang=en_us
+
+" Custom spell file
+set spellfile=~/.vim/custom-dictionary.utf-8.add
 
 " Toggle spell-checking
 nnoremap <leader>s :set spell!<cr>
@@ -79,11 +87,17 @@ cmap w!! w !sudo tee % >/dev/null
 " disable vim-markdown default folding
 let g:vim_markdown_initial_foldlevel=1
 
+let g:airline_powerline_fonts=1
+
 " Display Stuff
 " ---------------------------------------------------------------------------
 
 set scrolloff=3                    " Show 3 lines of context around the cursor at all times.
 set cursorline                     " Highlight the line the cursor is on
+
+" Only show cursorline in the current window and in normal mode
+au WinLeave,InsertEnter * set nocul
+au WinEnter,InsertLeave * set cul
 
 " WORD-WRAPPING
 set formatoptions=tcrqn            " A few misc options for formatting text,
@@ -93,11 +107,6 @@ set linebreak                      " Wrap only at word-breaks
 
 " SHOW 'NONAME' BUFFERS IN BUFEXPLORER
 let g:bufExplorerShowNoName=1
-
-" Airline separator glyphs
-let g:airline_left_sep=' '
-let g:airline_right_sep=' '
-
 
 " COLORS
 " ---------------------------------------------------------------------------
@@ -158,7 +167,7 @@ inoremap <c-k> <cr><c-o><bs>
 " Mark current position, jump to last misspelled word, offer corrections
 inoremap <c-z> <esc>mxa<c-x>s
 " leave insert mode, jump to x mark, re-enter insert mode
-inoremap <c-l> <esc>`xa
+"inoremap <c-l> <esc>`xa
 
 " Goyo
 nnoremap <leader>g :Goyo<cr>
@@ -176,6 +185,8 @@ nnoremap <leader>w :set wrap!<cr>
 
 " rst customizations
 " ---------------------------------------------------------------------------
+
+nnoremap <leader>rst :set filetype=rst<cr>
 
 augroup filetypedetect_rst
     au!

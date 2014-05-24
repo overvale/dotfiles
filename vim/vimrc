@@ -24,6 +24,8 @@ set clipboard=unnamed             " set vim to share the system clipboard
 " Treat buffers from stdin (e.g.: echo foo | vim -) as scratch buffers.
 au StdinReadPost * :set buftype=nofile
 
+
+
 " Vundle Stuff
 " ---------------------------------------------------------------------------
 
@@ -45,6 +47,7 @@ Bundle 'chriskempson/base16-vim'
 Bundle 'junegunn/goyo.vim'
 Bundle 'vim-scripts/fountain.vim'
 Bundle 'bling/vim-airline'
+Bundle 'sjl/vitality.vim'
 
 filetype plugin indent on     " required!
 "
@@ -62,15 +65,18 @@ filetype plugin indent on     " required!
 " Editing Prefs
 " ---------------------------------------------------------------------------
 set autoindent                    " Turn on auto-indenting
-set tabstop=4                     " Tab preferences
-set shiftwidth=4
-set softtabstop=4
 set expandtab                     " Use spaces instead of tabs
+set tabstop=4                     " width of tab character
+set softtabstop=4                 " number of characters to delete
+set shiftwidth=4                  " indentation settings
 set backspace=indent,eol,start    " Intuitive backspacing.
 set nojoinspaces                  " Single space between sentences when joining
 
 " Turn on spell-checking
 setlocal spell spelllang=en_us
+
+" don't highlight capitalization errors
+hi spellcap cterm=none
 
 " Custom spell file
 set spellfile=~/.vim/custom-dictionary.utf-8.add
@@ -87,7 +93,10 @@ cmap w!! w !sudo tee % >/dev/null
 " disable vim-markdown default folding
 let g:vim_markdown_initial_foldlevel=1
 
+" tell airline to use a patched powerline font
 let g:airline_powerline_fonts=1
+
+
 
 " Display Stuff
 " ---------------------------------------------------------------------------
@@ -108,6 +117,11 @@ set linebreak                      " Wrap only at word-breaks
 " SHOW 'NONAME' BUFFERS IN BUFEXPLORER
 let g:bufExplorerShowNoName=1
 
+" Use the same symbols as TextMate for tabstops and EOLs
+set listchars=tab:▸\ ,eol:¬
+
+
+
 " COLORS
 " ---------------------------------------------------------------------------
 
@@ -120,8 +134,15 @@ set showcmd           "Shows your typing in Normal Mode
 colorscheme base16-ocean
 set background=dark
 
+nnoremap <leader>dark :set background=dark<cr>
+nnoremap <leader>light :set background=light<cr>
+
+
 " Shortcuts
 " ---------------------------------------------------------------------------
+
+" Saving...
+" map <D-s> <esc>:w<cr>
 
 " DISABLE THE ARROW KEYS - OH GOD...
 nnoremap <up> <nop>
@@ -135,6 +156,12 @@ inoremap <right> <nop>
 nnoremap j gj
 nnoremap k gk
 
+" Make moving around splits easier
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
 " Clear search highlighting
 nnoremap <leader><space> :noh<cr>
 
@@ -147,21 +174,25 @@ nnoremap <leader>nt :NERDTreeToggle<cr>
 " Gundo
 nnoremap <F5> :GundoToggle<CR>
 
+" Disable ZZ - dangerous shortcut
+nnoremap ZZ echo "Your Caps-lock is on."
+
 " When moving to the end of the document also move to the end of the line
 nnoremap G G$
 
 " toggle numbers
 :nnoremap <leader>num :set invnumber<cr>
 
-nnoremap <leader>mdown :set filetype=mkd<cr>
 
 " Moving lines up and down
-nnoremap <c-j> :m+<cr>
-nnoremap <c-k> :m-2<cr>
+"nnoremap <c-j> :m+<cr>
+"nnoremap <c-k> :m-2<cr>
+
+" Remap K to split the line at the point
+nnoremap K i<cr><esc><bs>
+inoremap <c-k> <cr><c-o><bs>
 
 " Some things to make editing in Insert Mode a little easier
-" insert newline ahead of cursor
-inoremap <c-k> <cr><c-o><bs>
 
 " faster spelling correction
 " Mark current position, jump to last misspelled word, offer corrections
@@ -175,12 +206,40 @@ nnoremap <leader>g :Goyo<cr>
 " wrap
 nnoremap <leader>w :set wrap!<cr>
 
+" maintain selection on indentations
+vnoremap > >gv
+vnoremap < <gv
+
 
 " Snippets
 " ---------------------------------------------------------------------------
 
 " date
 :iab <expr> dd strftime("[%Y-%m-%dT%H:%M:%S%z]")
+
+
+
+" Misc Functions
+" ---------------------------------------------------------------------------
+function! <SID>StripTrailingWhitespaces()
+    " Preparation: save last search, and cursor position.
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    " Do the business:
+    %s/\s\+$//e
+    " Clean up: restore previous search history, and cursor position
+    let @/=_s
+    call cursor(l, c)
+endfunction
+
+nnoremap <silent> <leader>dtrail :call <SID>StripTrailingWhitespaces()<CR>
+
+
+" Markdown customizations
+" ---------------------------------------------------------------------------
+
+nnoremap <leader>mdown :set filetype=mkd<cr>
 
 
 " rst customizations

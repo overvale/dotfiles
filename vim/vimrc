@@ -1,4 +1,4 @@
-" General app prefs
+" General Preferences
 " ---------------------------------------------------------------------------
 
 set nocompatible                  " Must come first because it changes other options.
@@ -20,16 +20,33 @@ set gdefault                      " Sets searches to be global (line) by default
 set autoread                      " Tells vim to auto-read changes to the file from the disk.
 set ttimeoutlen=50                " no delay leaving insert mode
 set clipboard=unnamed             " set vim to share the system clipboard
+set wrap                          " Turn on wrapping
+set linebreak                     " Wrap only at word-breaks
+
+" Editing Prefs
+"""""""""""""""
+set autoindent                    " Turn on auto-indenting
+set expandtab                     " Use spaces instead of tabs
+set tabstop=4                     " width of tab character
+set softtabstop=4                 " number of characters to delete
+set shiftwidth=4                  " indentation settings
+set backspace=indent,eol,start    " Intuitive backspacing.
+set nojoinspaces                  " Single space between lines when joining
+setlocal spell spelllang=en_us    " Turn on spell-checking
+set formatoptions=tcrqn            " A few misc options for formatting text,
+set formatprg=par\ -w72rq          " external formatter options
+
+" Custom spell file
+set spellfile=~/.vim/custom-dictionary.utf-8.add
 
 " Treat buffers from stdin (e.g.: echo foo | vim -) as scratch buffers.
 au StdinReadPost * :set buftype=nofile
 
 
-
 " Vundle Stuff
 " ---------------------------------------------------------------------------
 
-filetype off                  " required!
+filetype off                      " required!
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 " let Vundle manage Vundle
@@ -37,70 +54,27 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " Vundles...
-Bundle 'jlanzarotta/bufexplorer'
 Bundle "sjl/gundo.vim"
-Bundle 'tpope/vim-surround'
+Bundle 'Shougo/unite.vim'
 Bundle 'scrooloose/nerdtree'
+Bundle 'tpope/vim-surround'
 Bundle 'airblade/vim-gitgutter'
-Bundle 'plasticboy/vim-markdown'
-Bundle 'chriskempson/base16-vim'
-Bundle 'junegunn/goyo.vim'
-Bundle 'vim-scripts/fountain.vim'
 Bundle 'bling/vim-airline'
+Bundle 'junegunn/goyo.vim'
 Bundle 'sjl/vitality.vim'
+Bundle 'chriskempson/base16-vim'
+Bundle 'plasticboy/vim-markdown'
+Bundle 'vim-scripts/fountain.vim'
+Bundle 'tpope/vim-rsi'
 
 filetype plugin indent on     " required!
-"
-" Brief help
-" :BundleList          - list configured bundles
-" :BundleInstall(!)    - install (update) bundles
-" :BundleSearch(!) foo - search (or refresh cache first) for foo
-" :BundleClean(!)      - confirm (or auto-approve) removal of unused bundles
-"
-" see :h vundle for more details or wiki for FAQ
-" NOTE: comments after Bundle commands are not allowed.
-
-
-
-" Editing Prefs
-" ---------------------------------------------------------------------------
-set autoindent                    " Turn on auto-indenting
-set expandtab                     " Use spaces instead of tabs
-set tabstop=4                     " width of tab character
-set softtabstop=4                 " number of characters to delete
-set shiftwidth=4                  " indentation settings
-set backspace=indent,eol,start    " Intuitive backspacing.
-set nojoinspaces                  " Single space between sentences when joining
-
-" Turn on spell-checking
-setlocal spell spelllang=en_us
-
-" don't highlight capitalization errors
-hi spellcap cterm=none
-
-" Custom spell file
-set spellfile=~/.vim/custom-dictionary.utf-8.add
-
-" Toggle spell-checking
-nnoremap <leader>s :set spell!<cr>
-
-" Paste mode
-set pastetoggle=<F2>
-
-" sudo save
-cmap w!! w !sudo tee % >/dev/null
-
-" disable vim-markdown default folding
-let g:vim_markdown_initial_foldlevel=1
-
-" tell airline to use a patched powerline font
-let g:airline_powerline_fonts=1
-
 
 
 " Display Stuff
 " ---------------------------------------------------------------------------
-
+set laststatus=2      "Always show status bar
+set cmdheight=1       "Height of command typing area
+set showcmd           "Shows your typing in Normal Mode
 set scrolloff=3                    " Show 3 lines of context around the cursor at all times.
 set cursorline                     " Highlight the line the cursor is on
 
@@ -108,41 +82,19 @@ set cursorline                     " Highlight the line the cursor is on
 au WinLeave,InsertEnter * set nocul
 au WinEnter,InsertLeave * set cul
 
-" WORD-WRAPPING
-set formatoptions=tcrqn            " A few misc options for formatting text,
-set formatprg=par\ -w72rq          " external formatter options
-set wrap                           " Turn on wrapping
-set linebreak                      " Wrap only at word-breaks
-
-" SHOW 'NONAME' BUFFERS IN BUFEXPLORER
-let g:bufExplorerShowNoName=1
-
 " Use the same symbols as TextMate for tabstops and EOLs
 set listchars=tab:▸\ ,eol:¬
 
-
-
-" COLORS
-" ---------------------------------------------------------------------------
-
-" THE STATUS BAR
-set laststatus=2      "Always show status bar
-set cmdheight=1       "Height of command typing area
-set showcmd           "Shows your typing in Normal Mode
+" tell airline to use a patched powerline font
+let g:airline_powerline_fonts=1
 
 " COLOR SCHEME
 colorscheme base16-ocean
 set background=dark
 
-nnoremap <leader>dark :set background=dark<cr>
-nnoremap <leader>light :set background=light<cr>
 
 
-" Shortcuts
 " ---------------------------------------------------------------------------
-
-" Saving...
-" map <D-s> <esc>:w<cr>
 
 " DISABLE THE ARROW KEYS - OH GOD...
 nnoremap <up> <nop>
@@ -162,65 +114,55 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-" Clear search highlighting
-nnoremap <leader><space> :noh<cr>
-
-" Quick-reload of this file
-nnoremap <leader>rc :source ~/.vimrc<cr>
-
-" Open NERDTree
-nnoremap <leader>nt :NERDTreeToggle<cr>
-
-" Gundo
-nnoremap <F5> :GundoToggle<CR>
-
-" Disable ZZ - dangerous shortcut
-nnoremap ZZ echo "Your Caps-lock is on."
-
 " When moving to the end of the document also move to the end of the line
 nnoremap G G$
-
-" toggle numbers
-:nnoremap <leader>num :set invnumber<cr>
-
-
-" Moving lines up and down
-"nnoremap <c-j> :m+<cr>
-"nnoremap <c-k> :m-2<cr>
 
 " Remap K to split the line at the point
 nnoremap K i<cr><esc><bs>
 inoremap <c-k> <cr><c-o><bs>
 
-" Some things to make editing in Insert Mode a little easier
-
-" faster spelling correction
-" Mark current position, jump to last misspelled word, offer corrections
-inoremap <c-z> <esc>mxa<c-x>s
-" leave insert mode, jump to x mark, re-enter insert mode
-"inoremap <c-l> <esc>`xa
-
-" Goyo
-nnoremap <leader>g :Goyo<cr>
-
-" wrap
-nnoremap <leader>w :set wrap!<cr>
+" sudo save
+cmap w!! w !sudo tee % >/dev/null
 
 " maintain selection on indentations
 vnoremap > >gv
 vnoremap < <gv
 
+nnoremap ZZ echo "Your Caps-lock is on."
+
+" transpose characters
+nnoremap <c-t> xp
+
+" Paste mode
+set pastetoggle=<F2>
+
+command SS :set spell!
+command NN :set invnumber
+command WW :set wrap!
+command Dtrail :call <SID>StripTrailingWhitespaces()
+command Src :source ~/.vimrc
+command NT :NERDTreeToggle
+
+" Unite Stuff
+command Ub :Unite -no-split -buffer-name=buffer buffer
+command Uf :Unite -no-split -buffer-name=file file
+
+" quickly enable syntax
+command Frst :set filetype=rst
+command Fmkd :set filetype=mkd
+
 
 " Snippets
 " ---------------------------------------------------------------------------
 
-" date
-:iab <expr> dd strftime("[%Y-%m-%dT%H:%M:%S%z]")
+" Timestamp in brackets like this: [2014-06-08T10:41:44-0700]
+iab <expr> dd strftime("[%Y-%m-%dT%H:%M:%S%z]")
 
 
 
 " Misc Functions
 " ---------------------------------------------------------------------------
+
 function! <SID>StripTrailingWhitespaces()
     " Preparation: save last search, and cursor position.
     let _s=@/
@@ -233,19 +175,18 @@ function! <SID>StripTrailingWhitespaces()
     call cursor(l, c)
 endfunction
 
-nnoremap <silent> <leader>dtrail :call <SID>StripTrailingWhitespaces()<CR>
 
 
 " Markdown customizations
 " ---------------------------------------------------------------------------
 
-nnoremap <leader>mdown :set filetype=mkd<cr>
+" disable vim-markdown default folding
+let g:vim_markdown_initial_foldlevel=1
+
 
 
 " rst customizations
 " ---------------------------------------------------------------------------
-
-nnoremap <leader>rst :set filetype=rst<cr>
 
 augroup filetypedetect_rst
     au!

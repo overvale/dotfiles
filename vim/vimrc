@@ -66,6 +66,7 @@ Bundle 'chriskempson/base16-vim'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'vim-scripts/fountain.vim'
 Bundle 'tpope/vim-rsi'
+Bundle 'davidoc/taskpaper.vim'
 
 filetype plugin indent on     " required!
 
@@ -75,7 +76,7 @@ filetype plugin indent on     " required!
 set laststatus=2      "Always show status bar
 set cmdheight=1       "Height of command typing area
 set showcmd           "Shows your typing in Normal Mode
-set scrolloff=3                    " Show 3 lines of context around the cursor at all times.
+set scrolloff=2                    " Show 3 lines of context around the cursor at all times.
 set cursorline                     " Highlight the line the cursor is on
 
 " Only show cursorline in the current window and in normal mode
@@ -105,8 +106,11 @@ inoremap <up> <nop>
 inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
+
 nnoremap j gj
 nnoremap k gk
+vnoremap j gj
+vnoremap k gk
 
 " Make moving around splits easier
 nnoremap <C-h> <C-w>h

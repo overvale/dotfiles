@@ -1,9 +1,10 @@
 " General Preferences
 " ---------------------------------------------------------------------------
 
-set nocompatible                  " Must come first because it changes other options.
+set nocompatible                  " Do not include vi compatibility.
 syntax enable                     " Turn on syntax highlighting.
 filetype plugin indent on         " Turn on file type detection.
+set modelines=0                   " disable modelines
 set encoding=utf-8                " Set default encoding
 set ttyfast                       " Tell vim you're using a fast terminal.
 set title                         " Set the terminal's title
@@ -14,27 +15,32 @@ set wildmode=list:longest         " Complete files like a shell.
 set ignorecase                    " Case-insensitive searching.
 set smartcase                     " But case-sensitive if expression contains a capital letter.
 set incsearch                     " Highlight matches as you type.
-set hlsearch                      " Highlight matches.
+set nohlsearch                    " Don't highlight search matches.
 set showmatch                     " Show matching brackets, etc.
+set t_Co=256                      " Setup term color support
 set gdefault                      " Sets searches to be global (line) by default
 set autoread                      " Tells vim to auto-read changes to the file from the disk.
 set ttimeoutlen=50                " no delay leaving insert mode
 set clipboard=unnamed             " set vim to share the system clipboard
 set wrap                          " Turn on wrapping
 set linebreak                     " Wrap only at word-breaks
-
-" Editing Prefs
-"""""""""""""""
 set autoindent                    " Turn on auto-indenting
+set copyindent                    " copy previous indentation on autoindent
 set expandtab                     " Use spaces instead of tabs
 set tabstop=4                     " width of tab character
 set softtabstop=4                 " number of characters to delete
 set shiftwidth=4                  " indentation settings
 set backspace=indent,eol,start    " Intuitive backspacing.
 set nojoinspaces                  " Single space between lines when joining
-setlocal spell spelllang=en_us    " Turn on spell-checking
-set formatoptions=tcrqn            " A few misc options for formatting text,
-set formatprg=par\ -w72rq          " external formatter options
+set spell spelllang=en_us    " Turn on spell-checking
+set formatoptions=tcrqn           " A few misc options for formatting text,
+set formatprg=par\ -w72rq         " external formatter options
+set laststatus=2                  " Always show status bar
+set cmdheight=1                   " Height of command typing area
+set showcmd                       " Shows your typing in Normal Mode
+set scrolloff=2                   " Show N lines of context around the cursor at all times.
+set cursorline                    " Highlight the line the cursor is on
+set number                        " Show line-numbers
 
 " Custom spell file
 set spellfile=~/.vim/custom-dictionary.utf-8.add
@@ -42,6 +48,12 @@ set spellfile=~/.vim/custom-dictionary.utf-8.add
 " Treat buffers from stdin (e.g.: echo foo | vim -) as scratch buffers.
 au StdinReadPost * :set buftype=nofile
 
+" Only show cursorline in the current window and in normal mode
+au WinLeave,InsertEnter * set nocul
+au WinEnter,InsertLeave * set cul
+
+" Use the same symbols as TextMate for tabstops and EOLs
+set listchars=tab:▸\ ,eol:¬,trail:⌢,extends:⇥,precedes:⇤,nbsp:⌙
 
 " Vundle Stuff
 " ---------------------------------------------------------------------------
@@ -49,8 +61,7 @@ au StdinReadPost * :set buftype=nofile
 filetype off                      " required!
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
-" let Vundle manage Vundle
-" required!
+" This one is required:
 Bundle 'gmarik/vundle'
 
 " Vundles...
@@ -61,38 +72,20 @@ Bundle 'tpope/vim-surround'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'bling/vim-airline'
 Bundle 'junegunn/goyo.vim'
-Bundle 'sjl/vitality.vim'
 Bundle 'chriskempson/base16-vim'
 Bundle 'plasticboy/vim-markdown'
-Bundle 'vim-scripts/fountain.vim'
 Bundle 'tpope/vim-rsi'
 Bundle 'davidoc/taskpaper.vim'
 
 filetype plugin indent on     " required!
 
-
-" Display Stuff
-" ---------------------------------------------------------------------------
-set laststatus=2      "Always show status bar
-set cmdheight=1       "Height of command typing area
-set showcmd           "Shows your typing in Normal Mode
-set scrolloff=2                    " Show 3 lines of context around the cursor at all times.
-set cursorline                     " Highlight the line the cursor is on
-
-" Only show cursorline in the current window and in normal mode
-au WinLeave,InsertEnter * set nocul
-au WinEnter,InsertLeave * set cul
-
-" Use the same symbols as TextMate for tabstops and EOLs
-set listchars=tab:▸\ ,eol:¬
-
+" Must be called after plugins
 " tell airline to use a patched powerline font
 let g:airline_powerline_fonts=1
 
 " COLOR SCHEME
 colorscheme base16-ocean
 set background=dark
-
 
 
 " ---------------------------------------------------------------------------
@@ -107,10 +100,15 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
+" Make j and k behave as expected
 nnoremap j gj
 nnoremap k gk
 vnoremap j gj
 vnoremap k gk
+
+" Make entering command-mode easier
+nnoremap ; :
+nnoremap : ;
 
 " Make moving around splits easier
 nnoremap <C-h> <C-w>h
@@ -121,18 +119,25 @@ nnoremap <C-l> <C-w>l
 " When moving to the end of the document also move to the end of the line
 nnoremap G G$
 
-" Remap K to split the line at the point
-nnoremap K i<cr><esc><bs>
-inoremap <c-k> <cr><c-o><bs>
-
-" sudo save
-cmap w!! w !sudo tee % >/dev/null
+" make regexp search not suck by default
+nnoremap / /\v
+vnoremap / /\v
 
 " maintain selection on indentations
 vnoremap > >gv
 vnoremap < <gv
 
-nnoremap ZZ echo "Your Caps-lock is on."
+" ---------------------------------------------------------------------------
+
+" Remap K to split the line at the point
+nnoremap K i<cr><esc>`.
+inoremap <c-k> <cr><c-o><bs>
+
+" allow saving a sudo file if forgot to open as sudo
+cmap w!! w !sudo tee % >/dev/null
+
+" protect against accidental save + close
+nnoremap ZZ :echo "Your Caps-lock is on."<cr>
 
 " transpose characters
 nnoremap <c-t> xp
@@ -143,7 +148,7 @@ set pastetoggle=<F2>
 command SS :set spell!
 command NN :set invnumber
 command WW :set wrap!
-command Dtrail :call <SID>StripTrailingWhitespaces()
+command Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
 command Src :source ~/.vimrc
 command NT :NERDTreeToggle
 
@@ -161,32 +166,6 @@ command Fmkd :set filetype=mkd
 
 " Timestamp in brackets like this: [2014-06-08T10:41:44-0700]
 iab <expr> dd strftime("[%Y-%m-%dT%H:%M:%S%z]")
-
-
-
-" Misc Functions
-" ---------------------------------------------------------------------------
-
-function! <SID>StripTrailingWhitespaces()
-    " Preparation: save last search, and cursor position.
-    let _s=@/
-    let l = line(".")
-    let c = col(".")
-    " Do the business:
-    %s/\s\+$//e
-    " Clean up: restore previous search history, and cursor position
-    let @/=_s
-    call cursor(l, c)
-endfunction
-
-
-
-" Markdown customizations
-" ---------------------------------------------------------------------------
-
-" disable vim-markdown default folding
-let g:vim_markdown_initial_foldlevel=1
-
 
 
 " rst customizations

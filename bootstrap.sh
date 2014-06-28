@@ -20,6 +20,8 @@ brew install par
 brew install git
 curl -O http://sreitshamer.github.io/arq_restore/arq_restore.zip && unzip arq_restore.zip && rm arq_restore.zip
 
+# Install Vundle (for vim)
+
 # Set Help Viewer windows to non-floating mode
 defaults write com.apple.helpviewer DevMode -bool true
 

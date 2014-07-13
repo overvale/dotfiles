@@ -1,8 +1,7 @@
 # Alias Editing
-alias reload='source $DOT/**/*.zsh'
-alias ea='bbedit -w $DOT/zsh/aliases.zsh'
+alias ea='vim $DOT/zsh/aliases.zsh'
 # personal aliases (not for distribution)
-alias epa='bbedit -w ~/.zsh/localrc.zsh && reload'
+alias epa='vim ~/.zsh/localrc.zsh && reload'
 
 
 # Suffix Aliases (zsh)

@@ -1,0 +1,12 @@
+#!/usr/bin/ruby
+
+ARGF.set_encoding(Encoding::UTF_8)
+x = ARGF.read
+
+# substitue clause delimiters with newlines
+x = x.gsub(/(\s\-\-?\s|\b--\s|\s?--\b|, |\.\s|\b\.{3}\s|\s\.{3}\b)/, '\1' + "\n")
+
+# this minimizes the addition of extra empty lines in the output
+x = x.gsub(/^\n^\n|\n\n\z/, "\n")
+
+print x

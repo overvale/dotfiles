@@ -1,0 +1,26 @@
+#!/usr/bin/ruby
+
+# A simple BBEdit Text Filter that shows you the selected text as a PDF.
+# Very handy for checking the page-count of a section you're working on.
+
+# You must specify the path to your installation of textplay
+textplay_path = "/usr/local/bin/textplay"
+
+# ------------------------------
+
+# read input
+input = ARGF.read
+
+# create tmp file
+tmpFile = File.new('/tmp/textplay_pagecheck.txt', "w+")
+
+# dump the input into that file
+File.open('/tmp/textplay_pagecheck.txt', "w+") do |txtFile|
+txtFile.puts input
+end
+
+# run textplay
+system("#{textplay_path} -p /tmp/textplay_pagecheck.txt")
+
+# put the input back to STDOUT
+puts input

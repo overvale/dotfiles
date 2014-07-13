@@ -1,0 +1,5 @@
+set guifont=Essential\ PragmataPro:h11
+set shell=zsh\ -i
+set guioptions=egm
+set mouse=""
+set linespace=1

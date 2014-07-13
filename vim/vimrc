@@ -3,7 +3,6 @@
 
 set nocompatible                  " Do not include vi compatibility.
 syntax enable                     " Turn on syntax highlighting.
-filetype plugin indent on         " Turn on file type detection.
 set modelines=0                   " disable modelines
 set encoding=utf-8                " Set default encoding
 set ttyfast                       " Tell vim you're using a fast terminal.
@@ -32,15 +31,19 @@ set softtabstop=4                 " number of characters to delete
 set shiftwidth=4                  " indentation settings
 set backspace=indent,eol,start    " Intuitive backspacing.
 set nojoinspaces                  " Single space between lines when joining
-set spell spelllang=en_us    " Turn on spell-checking
+set spell spelllang=en_us         " Turn on spell-checking
 set formatoptions=tcrqn           " A few misc options for formatting text,
-set formatprg=par\ -w72rq         " external formatter options
+set formatprg=par\ -w78rq         " external formatter options
 set laststatus=2                  " Always show status bar
 set cmdheight=1                   " Height of command typing area
 set showcmd                       " Shows your typing in Normal Mode
 set scrolloff=2                   " Show N lines of context around the cursor at all times.
 set cursorline                    " Highlight the line the cursor is on
 set number                        " Show line-numbers
+set gcr=n:blinkon0                " Turn off the blinking cursor in normal mode
+" Open new split panes to right and bottom, which feels more natural
+set splitbelow
+set splitright
 
 " Custom spell file
 set spellfile=~/.vim/custom-dictionary.utf-8.add
@@ -48,12 +51,21 @@ set spellfile=~/.vim/custom-dictionary.utf-8.add
 " Treat buffers from stdin (e.g.: echo foo | vim -) as scratch buffers.
 au StdinReadPost * :set buftype=nofile
 
-" Only show cursorline in the current window and in normal mode
-au WinLeave,InsertEnter * set nocul
-au WinEnter,InsertLeave * set cul
-
 " Use the same symbols as TextMate for tabstops and EOLs
 set listchars=tab:▸\ ,eol:¬,trail:⌢,extends:⇥,precedes:⇤,nbsp:⌙
+
+" Statusline
+set statusline=%f         "path to file in buffer
+set statusline+=%m        "modified/modifiable flag
+set statusline+=\ %y      "filetype
+set statusline+=%=        "left/right alignment separator
+set statusline+=%{strlen(&fenc)?&fenc:'none'}[%{&ff}]   "file encoding
+set statusline+=\ \ %P      "percentage through file
+set statusline+=\ %l,%c   "line,column
+
+if has("gui_macvim")
+  let macvim_skip_cmd_opt_movement = 1
+endif
 
 " Vundle Stuff
 " ---------------------------------------------------------------------------
@@ -67,21 +79,17 @@ Bundle 'gmarik/vundle'
 " Vundles...
 Bundle "sjl/gundo.vim"
 Bundle 'Shougo/unite.vim'
-Bundle 'scrooloose/nerdtree'
 Bundle 'tpope/vim-surround'
 Bundle 'airblade/vim-gitgutter'
-Bundle 'bling/vim-airline'
 Bundle 'junegunn/goyo.vim'
+Bundle 'altercation/vim-colors-solarized'
 Bundle 'chriskempson/base16-vim'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'tpope/vim-rsi'
 Bundle 'davidoc/taskpaper.vim'
 
-filetype plugin indent on     " required!
-
 " Must be called after plugins
-" tell airline to use a patched powerline font
-let g:airline_powerline_fonts=1
+filetype plugin indent on         " Turn on file type detection.
 
 " COLOR SCHEME
 colorscheme base16-ocean
@@ -108,7 +116,7 @@ vnoremap k gk
 
 " Make entering command-mode easier
 nnoremap ; :
-nnoremap : ;
+vnoremap ; :
 
 " Make moving around splits easier
 nnoremap <C-h> <C-w>h
@@ -137,28 +145,33 @@ inoremap <c-k> <cr><c-o><bs>
 cmap w!! w !sudo tee % >/dev/null
 
 " protect against accidental save + close
-nnoremap ZZ :echo "Your Caps-lock is on."<cr>
-
-" transpose characters
-nnoremap <c-t> xp
+nnoremap ZZ :echoe "Your Caps-lock is on."<cr>
 
 " Paste mode
 set pastetoggle=<F2>
 
-command SS :set spell!
-command NN :set invnumber
-command WW :set wrap!
-command Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
-command Src :source ~/.vimrc
-command NT :NERDTreeToggle
+" Cap line and move down
+inoremap <c-cr> <esc>VUo
 
-" Unite Stuff
+nmap [h <Plug>GitGutterPrevHunk
+nmap ]h <Plug>GitGutterNextHunk
+
+" Never use a binding when a command will do
+" commands are easier to remember and autocomplete
+" also, it's just vim-style
+command BGd set background=dark
+command BGl set background=light
+command Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
+command Fmkd :set filetype=mkd
+command Frst :set filetype=rst
+command H1 :normal VUyypVr=
+command H2 :normal yypVr-
+command NN :set invnumber
+command SS :set spell!
+command Src :source ~/.vimrc
 command Ub :Unite -no-split -buffer-name=buffer buffer
 command Uf :Unite -no-split -buffer-name=file file
-
-" quickly enable syntax
-command Frst :set filetype=rst
-command Fmkd :set filetype=mkd
+command WW :set wrap!
 
 
 " Snippets
@@ -167,22 +180,11 @@ command Fmkd :set filetype=mkd
 " Timestamp in brackets like this: [2014-06-08T10:41:44-0700]
 iab <expr> dd strftime("[%Y-%m-%dT%H:%M:%S%z]")
 
-
-" rst customizations
-" ---------------------------------------------------------------------------
-
-augroup filetypedetect_rst
-    au!
-    " Headings
-    au FileType rst nnoremap <leader>h1 ^yypv$r=o<cr><esc>
-    au FileType rst inoremap <leader>h1 <esc>^yypv$r=o<cr>
-
-    au FileType rst nnoremap <leader>h2 ^yypv$r-o<cr><esc>
-    au FileType rst inoremap <leader>h2 <esc>^yypv$r-o<cr><esc>
-
-    au FileType rst nnoremap <leader>h3 ^yypv$r+o<cr><esc>
-    au FileType rst inoremap <leader>h3 <esc>^yypv$r+o<cr><esc>
-
-    "Create note
-    au FileType rst iabbrev nnn .. note::
-augroup END
+" TODO:
+" Move lines up/down
+" new line, increment number
+" <clippings>
+"   date (various formats)
+"   lorem
+"   point-of-view
+"   work-in-progress

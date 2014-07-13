@@ -54,6 +54,7 @@ ln -s ~/code/dotfiles/zsh .zsh
 ln -s ~/code/dotfiles/zsh/zshrc .zshrc
 ln -s ~/code/dotfiles/vim .vim
 ln -s ~/code/dotfiles/vim/vimrc .vimrc
+ln -s code/dotfiles/vim/gvimrc .gvimrc
 ln -s ~/code/dotfiles/KeyRemap4MacBook ~/Library/Application\ Support/KeyRemap4MacBook
 
 # install Arq

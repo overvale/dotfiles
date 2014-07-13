@@ -24,6 +24,12 @@
   <equal>com.googlecode.iterm2</equal>
 </appdef>
 
+<!-- This sets an alias for iTerm2 so I can refer to it later -->
+<appdef>
+  <appname>MACVIM</appname>
+  <equal>org.vim.MacVim</equal>
+</appdef>
+
 <!-- =============================================================== -->
 
 <item>
@@ -39,9 +45,9 @@
 
 <item>
   <name>Remap Control_L to F5</name>
-  <appendix>When you type Control_L only, send F5 - exclude iTerm, Atom</appendix>
+  <appendix>When you type Control_L only, send F5 - exclude iTerm, Atom, MacVim</appendix>
   <identifier>private.controlL2controlL_f5</identifier>
-  <not>ITERM, ATOM</not>
+  <not>ITERM, ATOM, MACVIM</not>
   <autogen>
     __KeyOverlaidModifier__
     KeyCode::CONTROL_L, KeyCode::CONTROL_L,
@@ -51,9 +57,9 @@
 
 <item>
   <name>Remap Control_L to Escape</name>
-  <appendix>Active in iTerm and Atom</appendix>
+  <appendix>Active in iTerm, Atom, MacVim</appendix>
   <identifier>private.itermEscape</identifier>
-  <only>ITERM, ATOM</only>
+  <only>ITERM, ATOM, MACVIM</only>
   <autogen>
     __KeyOverlaidModifier__
     KeyCode::CONTROL_L, KeyCode::CONTROL_L,

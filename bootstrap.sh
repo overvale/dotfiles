@@ -56,6 +56,7 @@ ln -s ~/code/dotfiles/vim .vim
 ln -s ~/code/dotfiles/vim/vimrc .vimrc
 ln -s code/dotfiles/vim/gvimrc .gvimrc
 ln -s ~/code/dotfiles/KeyRemap4MacBook ~/Library/Application\ Support/KeyRemap4MacBook
+ln -s code/dotfiles/tmux.conf .tmux.conf
 
 # install Arq
 # http://www.haystacksoftware.com/arq/

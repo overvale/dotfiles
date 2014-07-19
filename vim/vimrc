@@ -93,8 +93,8 @@ Bundle 'davidoc/taskpaper.vim'
 filetype plugin indent on         " Turn on file type detection.
 
 " COLOR SCHEME
-colorscheme base16-default
-set background=light
+colorscheme base16-ocean
+set background=dark
 
 
 " ---------------------------------------------------------------------------

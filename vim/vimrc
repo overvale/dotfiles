@@ -5,6 +5,8 @@ set nocompatible                  " Do not include vi compatibility.
 syntax enable                     " Turn on syntax highlighting.
 set modelines=0                   " disable modelines
 set encoding=utf-8                " Set default encoding
+set exrc                          " Allow directory .vimrc files...
+set secure                        " ...and be safe about it
 set ttyfast                       " Tell vim you're using a fast terminal.
 set title                         " Set the terminal's title
 set visualbell                    " Make the alerts visual instead of audio
@@ -14,10 +16,9 @@ set wildmode=list:longest         " Complete files like a shell.
 set ignorecase                    " Case-insensitive searching.
 set smartcase                     " But case-sensitive if expression contains a capital letter.
 set incsearch                     " Highlight matches as you type.
-set nohlsearch                    " Don't highlight search matches.
+set hlsearch                      " Highlight search matches.
 set showmatch                     " Show matching brackets, etc.
 set t_Co=256                      " Setup term color support
-set gdefault                      " Sets searches to be global (line) by default
 set autoread                      " Tells vim to auto-read changes to the file from the disk.
 set ttimeoutlen=50                " no delay leaving insert mode
 set clipboard=unnamed             " set vim to share the system clipboard
@@ -32,7 +33,7 @@ set shiftwidth=4                  " indentation settings
 set backspace=indent,eol,start    " Intuitive backspacing.
 set nojoinspaces                  " Single space between lines when joining
 set spell spelllang=en_us         " Turn on spell-checking
-set formatoptions=tcrqn           " A few misc options for formatting text,
+set formatoptions=tcrqn1j         " A few misc options for formatting text,
 set formatprg=par\ -w78rq         " external formatter options
 set laststatus=2                  " Always show status bar
 set cmdheight=1                   " Height of command typing area
@@ -52,7 +53,7 @@ set spellfile=~/.vim/custom-dictionary.utf-8.add
 au StdinReadPost * :set buftype=nofile
 
 " Use the same symbols as TextMate for tabstops and EOLs
-set listchars=tab:▸\ ,eol:¬,trail:⌢,extends:⇥,precedes:⇤,nbsp:⌙
+set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
 
 " Statusline
 set statusline=%f         "path to file in buffer
@@ -81,19 +82,19 @@ Bundle "sjl/gundo.vim"
 Bundle 'Shougo/unite.vim'
 Bundle 'tpope/vim-surround'
 Bundle 'airblade/vim-gitgutter'
+Bundle 'sjl/vitality.vim'
+Bundle 'tpope/vim-rsi'
 Bundle 'junegunn/goyo.vim'
-Bundle 'altercation/vim-colors-solarized'
 Bundle 'chriskempson/base16-vim'
 Bundle 'plasticboy/vim-markdown'
-Bundle 'tpope/vim-rsi'
 Bundle 'davidoc/taskpaper.vim'
 
 " Must be called after plugins
 filetype plugin indent on         " Turn on file type detection.
 
 " COLOR SCHEME
-colorscheme base16-ocean
-set background=dark
+colorscheme base16-default
+set background=light
 
 
 " ---------------------------------------------------------------------------
@@ -135,6 +136,13 @@ vnoremap / /\v
 vnoremap > >gv
 vnoremap < <gv
 
+" creates an alias (%%) to represent the directory of the current file
+cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+
+" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" so that you can undo CTRL-U after inserting a line break.
+inoremap <C-U> <C-G>u<C-U>
+
 " ---------------------------------------------------------------------------
 
 " Remap K to split the line at the point
@@ -147,11 +155,22 @@ cmap w!! w !sudo tee % >/dev/null
 " protect against accidental save + close
 nnoremap ZZ :echoe "Your Caps-lock is on."<cr>
 
+" check the file on disk for changes when returning focus
+autocmd FocusGained * :checktime
+
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+" Only define it when not defined already.
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+                  \ | wincmd p | diffthis
+endif
+
 " Paste mode
 set pastetoggle=<F2>
 
 " Cap line and move down
-inoremap <c-cr> <esc>VUo
+inoremap <C-cr> <esc>VUo
 
 nmap [h <Plug>GitGutterPrevHunk
 nmap ]h <Plug>GitGutterNextHunk
@@ -159,20 +178,24 @@ nmap ]h <Plug>GitGutterNextHunk
 " Never use a binding when a command will do
 " commands are easier to remember and autocomplete
 " also, it's just vim-style
-command BGd set background=dark
-command BGl set background=light
+command BGd set background=dark | colorscheme base16-ocean
+command BGl set background=light | colorscheme base16-default
+command Cdf :cd %:h<cr>
 command Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
 command Fmkd :set filetype=mkd
 command Frst :set filetype=rst
 command H1 :normal VUyypVr=
 command H2 :normal yypVr-
 command NN :set invnumber
+command Nr :set relativenumber!
 command SS :set spell!
-command Src :source ~/.vimrc
+command Src :source $MYVIMRC
 command Ub :Unite -no-split -buffer-name=buffer buffer
 command Uf :Unite -no-split -buffer-name=file file
 command WW :set wrap!
 
+nnoremap <leader>b :Unite -no-split -buffer-name=buffer buffer<cr>
+nnoremap <leader>f :Unite -no-split -buffer-name=file file<cr>
 
 " Snippets
 " ---------------------------------------------------------------------------

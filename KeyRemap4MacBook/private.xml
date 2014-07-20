@@ -12,7 +12,7 @@
   <equal>com.barebones.bbedit</equal>
 </appdef>
 
-<!-- This sets an alias for BBEdit so I can refer to it later -->
+<!-- This sets an alias for Atom so I can refer to it later -->
 <appdef>
   <appname>ATOM</appname>
   <equal>com.github.atom</equal>
@@ -24,10 +24,16 @@
   <equal>com.googlecode.iterm2</equal>
 </appdef>
 
-<!-- This sets an alias for iTerm2 so I can refer to it later -->
+<!-- This sets an alias for MacVim so I can refer to it later -->
 <appdef>
   <appname>MACVIM</appname>
   <equal>org.vim.MacVim</equal>
+</appdef>
+
+<!-- This sets an alias for Terminal so I can refer to it later -->
+<appdef>
+  <appname>TERMINAL</appname>
+  <equal>com.apple.Terminal</equal>
 </appdef>
 
 <!-- =============================================================== -->
@@ -45,9 +51,9 @@
 
 <item>
   <name>Remap Control_L to F5</name>
-  <appendix>When you type Control_L only, send F5 - exclude iTerm, Atom, MacVim</appendix>
+  <appendix>When you type Control_L only, send F5 - exclude iTerm, Atom, MacVim, Terminal</appendix>
   <identifier>private.controlL2controlL_f5</identifier>
-  <not>ITERM, ATOM, MACVIM</not>
+  <not>ITERM, ATOM, MACVIM, TERMINAL</not>
   <autogen>
     __KeyOverlaidModifier__
     KeyCode::CONTROL_L, KeyCode::CONTROL_L,
@@ -57,9 +63,9 @@
 
 <item>
   <name>Remap Control_L to Escape</name>
-  <appendix>Active in iTerm, Atom, MacVim</appendix>
+  <appendix>Active in iTerm, Atom, MacVim, Terminal</appendix>
   <identifier>private.itermEscape</identifier>
-  <only>ITERM, ATOM, MACVIM</only>
+  <only>ITERM, ATOM, MACVIM, TERMINAL</only>
   <autogen>
     __KeyOverlaidModifier__
     KeyCode::CONTROL_L, KeyCode::CONTROL_L,

@@ -18,6 +18,9 @@ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 brew install vim
 brew install par
 brew install git
+brew install tree
+brew install tmux
+brew install reattach-to-user-namespace
 curl -O http://sreitshamer.github.io/arq_restore/arq_restore.zip && unzip arq_restore.zip && rm arq_restore.zip
 
 # Install Vundle (for vim)
@@ -33,10 +36,9 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # BBEdit
 # Dropbox
 # Google Chrome
-# iTerm2
 # Kaleidoscope
 # Keyboard Maestro
-# KeyRemap4Macbook
+# Karabiner
 # Launchbar
 # Name Mangler
 # Patterns
@@ -55,7 +57,7 @@ ln -s ~/code/dotfiles/zsh/zshrc .zshrc
 ln -s ~/code/dotfiles/vim .vim
 ln -s ~/code/dotfiles/vim/vimrc .vimrc
 ln -s code/dotfiles/vim/gvimrc .gvimrc
-ln -s ~/code/dotfiles/KeyRemap4MacBook ~/Library/Application\ Support/KeyRemap4MacBook
+ln -s ~/code/dotfiles/Karabine ~/Library/Application\ Support/Karabiner
 ln -s code/dotfiles/tmux.conf .tmux.conf
 
 # install Arq

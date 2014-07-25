@@ -8,7 +8,6 @@ set encoding=utf-8                " Set default encoding
 set exrc                          " Allow directory .vimrc files...
 set secure                        " ...and be safe about it
 set ttyfast                       " Tell vim you're using a fast terminal.
-set title                         " Set the terminal's title
 set visualbell                    " Make the alerts visual instead of audio
 set hidden                        " Hide buffers instead of close them (when opening a new buffer)
 set wildmenu                      " Enhanced command line completion.
@@ -79,15 +78,16 @@ Bundle 'gmarik/vundle'
 
 " Vundles...
 Bundle "sjl/gundo.vim"
+Bundle 'Shougo/vimproc.vim'
 Bundle 'Shougo/unite.vim'
 Bundle 'tpope/vim-surround'
 Bundle 'airblade/vim-gitgutter'
-Bundle 'sjl/vitality.vim'
 Bundle 'tpope/vim-rsi'
 Bundle 'junegunn/goyo.vim'
 Bundle 'chriskempson/base16-vim'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'davidoc/taskpaper.vim'
+Bundle 'vim-scripts/fountain.vim'
 
 " Must be called after plugins
 filetype plugin indent on         " Turn on file type detection.
@@ -109,15 +109,14 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
+nnoremap , :
+vnoremap , :
+
 " Make j and k behave as expected
 nnoremap j gj
 nnoremap k gk
 vnoremap j gj
 vnoremap k gk
-
-" Make entering command-mode easier
-nnoremap ; :
-vnoremap ; :
 
 " Make moving around splits easier
 nnoremap <C-h> <C-w>h
@@ -136,6 +135,10 @@ vnoremap / /\v
 vnoremap > >gv
 vnoremap < <gv
 
+" Easier buffer navigation
+nnoremap <m-n> :bn<cr>
+nnoremap <m-p> :bp<cr>
+
 " creates an alias (%%) to represent the directory of the current file
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
@@ -144,6 +147,9 @@ cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 inoremap <C-U> <C-G>u<C-U>
 
 " ---------------------------------------------------------------------------
+
+" make saving easier
+map <leader>w :w<cr>
 
 " Remap K to split the line at the point
 nnoremap K i<cr><esc>`.
@@ -190,12 +196,23 @@ command NN :set invnumber
 command Nr :set relativenumber!
 command SS :set spell!
 command Src :source $MYVIMRC
-command Ub :Unite -no-split -buffer-name=buffer buffer
-command Uf :Unite -no-split -buffer-name=file file
 command WW :set wrap!
 
-nnoremap <leader>b :Unite -no-split -buffer-name=buffer buffer<cr>
-nnoremap <leader>f :Unite -no-split -buffer-name=file file<cr>
+" Unite
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#custom#source('buffer,file,file_rec,file_rec/async', 'sorters', 'sorter_selecta')
+nnoremap <leader>b :Unite -no-split -start-insert buffer<cr>
+nnoremap <leader>f :Unite -no-split -start-insert file_rec/async<cr>
+
+" Custom mappings for the unite buffer
+autocmd FileType unite call s:unite_settings()
+function! s:unite_settings()
+  " Enable navigation with control-n and control-p in insert mode
+  imap <buffer> <C-n>   <Plug>(unite_select_next_line)
+  imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
+endfunction
+
+au BufRead,BufNewFile *.fountain	 set filetype=fountain
 
 " Snippets
 " ---------------------------------------------------------------------------

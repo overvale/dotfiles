@@ -146,6 +146,10 @@
 	dmVy0RcYVHJvb3SAAQgRGiMtMjc7QUhOW2KMjpCVoKmxtL3P0tcAAAAAAAABAQAAAAAA
 	AAAZAAAAAAAAAAAAAAAAAAAA2Q==
 	</data>
+	<key>BackgroundAlphaInactive</key>
+	<real>0.79521040482954541</real>
+	<key>BackgroundBlurInactive</key>
+	<real>0.49882368607954547</real>
 	<key>BackgroundColor</key>
 	<data>
 	YnBsaXN0MDDUAQIDBAUGFRZYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3AS
@@ -155,15 +159,19 @@
 	dmVy0RcYVHJvb3SAAQgRGiMtMjc7QUhOW2KMjpCVoKmxtL3P0tcAAAAAAAABAQAAAAAA
 	AAAZAAAAAAAAAAAAAAAAAAAA2Q==
 	</data>
+	<key>BackgroundSettingsForInactiveWindows</key>
+	<false/>
 	<key>Bell</key>
 	<false/>
+	<key>ConvertNewlinesOnPaste</key>
+	<true/>
 	<key>CursorBlink</key>
 	<true/>
 	<key>CursorColor</key>
 	<data>
 	YnBsaXN0MDDUAQIDBAUGFRZYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3AS
 	AAGGoKMHCA9VJG51bGzTCQoLDA0OVU5TUkdCXE5TQ29sb3JTcGFjZVYkY2xhc3NPECcw
-	Ljk0OTAxOTY3MDUgMC45NTY4NjI4MDczIDAuOTY4NjI3NTEyNQAQAoAC0hAREhNaJGNs
+	Ljk2MDc4NDMxNjEgMC45NjA3ODQzMTYxIDAuOTYwNzg0MzE2MQAQAYAC0hAREhNaJGNs
 	YXNzbmFtZVgkY2xhc3Nlc1dOU0NvbG9yohIUWE5TT2JqZWN0XxAPTlNLZXllZEFyY2hp
 	dmVy0RcYVHJvb3SAAQgRGiMtMjc7QUhOW2KMjpCVoKmxtL3P0tcAAAAAAAABAQAAAAAA
 	AAAZAAAAAAAAAAAAAAAAAAAA2Q==
@@ -179,20 +187,28 @@
 	ctEaG1Ryb290gAEIERojLTI3PEJLUltiaXJ0dniPlJ+or7K7zdDVAAAAAAAAAQEAAAAA
 	AAAAHAAAAAAAAAAAAAAAAAAAANc=
 	</data>
+	<key>FontHeightSpacing</key>
+	<real>0.8461756552419355</real>
 	<key>ProfileCurrentVersion</key>
 	<real>2.02</real>
 	<key>SelectionColor</key>
 	<data>
 	YnBsaXN0MDDUAQIDBAUGFRZYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3AS
 	AAGGoKMHCA9VJG51bGzTCQoLDA0OVU5TUkdCXE5TQ29sb3JTcGFjZVYkY2xhc3NPECcw
-	LjMxMzcyNTUwMTMgMC4zMTM3MjU1MDEzIDAuMzEzNzI1NTAxMwAQAYAC0hAREhNaJGNs
+	LjM3MjU0OTAyNzIgMC40MzEzNzI1ODI5IDAuNDc0NTA5ODM1MgAQAoAC0hAREhNaJGNs
 	YXNzbmFtZVgkY2xhc3Nlc1dOU0NvbG9yohIUWE5TT2JqZWN0XxAPTlNLZXllZEFyY2hp
 	dmVy0RcYVHJvb3SAAQgRGiMtMjc7QUhOW2KMjpCVoKmxtL3P0tcAAAAAAAABAQAAAAAA
 	AAAZAAAAAAAAAAAAAAAAAAAA2Q==
 	</data>
-	<key>ShowCommandKeyInTitle</key>
+	<key>ShowActiveProcessInTitle</key>
 	<true/>
+	<key>ShowCommandKeyInTitle</key>
+	<false/>
 	<key>ShowDimensionsInTitle</key>
+	<false/>
+	<key>ShowShellCommandInTitle</key>
+	<false/>
+	<key>ShowTTYNameInTitle</key>
 	<false/>
 	<key>ShowWindowSettingsNameInTitle</key>
 	<false/>
@@ -217,7 +233,11 @@
 	<key>VisualBell</key>
 	<true/>
 	<key>name</key>
-	<string>Base16-Ocean-Dark</string>
+	<string>base16-ocean.dark</string>
+	<key>rowCount</key>
+	<integer>40</integer>
+	<key>shellExitAction</key>
+	<integer>1</integer>
 	<key>type</key>
 	<string>Window Settings</string>
 	<key>useOptionAsMetaKey</key>

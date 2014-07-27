@@ -1,49 +1,51 @@
 " General Preferences
-" ---------------------------------------------------------------------------
+" ------------------------------------------------------------------------
 
-set nocompatible                  " Do not include vi compatibility.
-syntax enable                     " Turn on syntax highlighting.
-set modelines=0                   " disable modelines
 set encoding=utf-8                " Set default encoding
+set modelines=0                   " disable modelines
 set exrc                          " Allow directory .vimrc files...
 set secure                        " ...and be safe about it
-set ttyfast                       " Tell vim you're using a fast terminal.
-set visualbell                    " Make the alerts visual instead of audio
-set hidden                        " Hide buffers instead of close them (when opening a new buffer)
-set wildmenu                      " Enhanced command line completion.
+syntax enable                     " Turn on syntax highlighting
+set ttyfast                       " Tell vim you're using a fast terminal
+set hidden                        " Hide buffers instead of closing them
+set visualbell                    " Make alerts not audio
+set wildmenu                      " Enhanced command line completion
 set wildmode=list:longest         " Complete files like a shell.
-set ignorecase                    " Case-insensitive searching.
-set smartcase                     " But case-sensitive if expression contains a capital letter.
-set incsearch                     " Highlight matches as you type.
-set hlsearch                      " Highlight search matches.
+set ignorecase                    " Case-insensitive searching...
+set smartcase                     " ...unless there's a cap letter
+set incsearch                     " Highlight matches as you type
+set hlsearch                      " Highlight search matches
 set showmatch                     " Show matching brackets, etc.
 set t_Co=256                      " Setup term color support
-set autoread                      " Tells vim to auto-read changes to the file from the disk.
-set ttimeoutlen=50                " no delay leaving insert mode
+set autoread                      " Detect chantes on disk
+set ttimeout                      " Allow keymaps to timeout
+set ttimeoutlen=100               " no delay leaving insert mode
 set clipboard=unnamed             " set vim to share the system clipboard
 set wrap                          " Turn on wrapping
 set linebreak                     " Wrap only at word-breaks
 set autoindent                    " Turn on auto-indenting
-set copyindent                    " copy previous indentation on autoindent
+set copyindent                    " copy previous indentation on paste
 set expandtab                     " Use spaces instead of tabs
 set tabstop=4                     " width of tab character
 set softtabstop=4                 " number of characters to delete
 set shiftwidth=4                  " indentation settings
 set backspace=indent,eol,start    " Intuitive backspacing.
-set nojoinspaces                  " Single space between lines when joining
+set nojoinspaces                  " Join with single space
 set spell spelllang=en_us         " Turn on spell-checking
-set formatoptions=tcrqn1j         " A few misc options for formatting text,
+set formatoptions=tcrqn1j         " (see docs)
 set formatprg=par\ -w78rq         " external formatter options
 set laststatus=2                  " Always show status bar
 set cmdheight=1                   " Height of command typing area
 set showcmd                       " Shows your typing in Normal Mode
-set scrolloff=2                   " Show N lines of context around the cursor at all times.
+set scrolloff=2                   " Show N lines around cursor
 set cursorline                    " Highlight the line the cursor is on
 set number                        " Show line-numbers
-set gcr=n:blinkon0                " Turn off the blinking cursor in normal mode
+set display+=lastline             " Don't truncate the last line
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
 set splitright
+" Tell vim what to save when making a session file
+set sessionoptions=buffers,curdir,folds,help,tabpages,tabpages
 
 " Custom spell file
 set spellfile=~/.vim/custom-dictionary.utf-8.add
@@ -68,7 +70,7 @@ if has("gui_macvim")
 endif
 
 " Vundle Stuff
-" ---------------------------------------------------------------------------
+" ------------------------------------------------------------------------
 
 filetype off                      " required!
 set rtp+=~/.vim/bundle/vundle/
@@ -97,7 +99,7 @@ colorscheme base16-ocean
 set background=dark
 
 
-" ---------------------------------------------------------------------------
+" ------------------------------------------------------------------------
 
 " DISABLE THE ARROW KEYS - OH GOD...
 nnoremap <up> <nop>
@@ -146,7 +148,7 @@ cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
 
-" ---------------------------------------------------------------------------
+" ------------------------------------------------------------------------
 
 " make saving easier
 map <leader>w :w<cr>
@@ -164,8 +166,8 @@ nnoremap ZZ :echoe "Your Caps-lock is on."<cr>
 " check the file on disk for changes when returning focus
 autocmd FocusGained * :checktime
 
-" Convenient command to see the difference between the current buffer and the
-" file it was loaded from, thus the changes you made.
+" Convenient command to see the difference between the current buffer and 
+" the file it was loaded from, thus the changes you made.
 " Only define it when not defined already.
 if !exists(":DiffOrig")
   command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
@@ -215,7 +217,7 @@ endfunction
 au BufRead,BufNewFile *.fountain	 set filetype=fountain
 
 " Snippets
-" ---------------------------------------------------------------------------
+" ------------------------------------------------------------------------
 
 " Timestamp in brackets like this: [2014-06-08T10:41:44-0700]
 iab <expr> dd strftime("[%Y-%m-%dT%H:%M:%S%z]")

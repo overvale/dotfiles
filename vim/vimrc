@@ -178,7 +178,7 @@ endif
 set pastetoggle=<F2>
 
 " Cap line and move down
-inoremap <C-cr> <esc>VUo
+inoremap <C-M> <esc>VUo
 
 nmap [h <Plug>GitGutterPrevHunk
 nmap ]h <Plug>GitGutterNextHunk

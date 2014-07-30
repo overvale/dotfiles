@@ -90,6 +90,7 @@ Bundle 'chriskempson/base16-vim'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'davidoc/taskpaper.vim'
 Bundle 'vim-scripts/fountain.vim'
+Bundle 'reedes/vim-wordy'
 
 " Must be called after plugins
 filetype plugin indent on         " Turn on file type detection.
@@ -153,6 +154,10 @@ inoremap <C-U> <C-G>u<C-U>
 " make saving easier
 map <leader>w :w<cr>
 
+" make substitutions easier
+nmap <leader>s :%s/
+vmap <leader>s :s/\%V
+
 " Remap K to split the line at the point
 nnoremap K i<cr><esc>`.
 inoremap <c-k> <cr><c-o><bs>
@@ -176,9 +181,6 @@ endif
 
 " Paste mode
 set pastetoggle=<F2>
-
-" Cap line and move down
-inoremap <C-M> <esc>VUo
 
 nmap [h <Plug>GitGutterPrevHunk
 nmap ]h <Plug>GitGutterNextHunk
@@ -215,6 +217,15 @@ function! s:unite_settings()
 endfunction
 
 au BufRead,BufNewFile *.fountain	 set filetype=fountain
+
+" Make sure Vim returns to the same line when you reopen a file.
+augroup line_return
+    au!
+    au BufReadPost *
+        \ if line("'\"") > 0 && line("'\"") <= line("$") |
+        \     execute 'normal! g`"zvzz' |
+        \ endif
+augroup END
 
 " Snippets
 " ------------------------------------------------------------------------

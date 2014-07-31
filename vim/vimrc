@@ -171,6 +171,10 @@ inoremap <C-U> <C-G>u<C-U>
 " make saving easier
 map <leader>w :w<cr>
 
+" make substitutions easier
+nmap <leader>s :%s/
+vmap <leader>s :s/\%V
+
 " Remap K to split the line at the point
 nnoremap K i<cr><esc>`.
 inoremap <c-k> <cr><c-o><bs>
@@ -194,9 +198,6 @@ endif
 
 " Paste mode
 set pastetoggle=<F2>
-
-" Cap line and move down
-inoremap <C-cr> <esc>VUo
 
 nmap [h <Plug>GitGutterPrevHunk
 nmap ]h <Plug>GitGutterNextHunk
@@ -233,6 +234,15 @@ function! s:unite_settings()
 endfunction
 
 au BufRead,BufNewFile *.fountain	 set filetype=fountain
+
+" Make sure Vim returns to the same line when you reopen a file.
+augroup line_return
+    au!
+    au BufReadPost *
+        \ if line("'\"") > 0 && line("'\"") <= line("$") |
+        \     execute 'normal! g`"zvzz' |
+        \ endif
+augroup END
 
 " Snippets
 " ------------------------------------------------------------------------

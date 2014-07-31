@@ -5,11 +5,13 @@
 # Sign in to iCloud
 # Sign in to iTunes Match
 
+# Change caps-lock to control
+
 # Installs the developer command line tools
 xcode-select --install
 
 # set default shell
-chsh -s /opt/local/bin/zsh
+chsh -s /bin/zsh
 
 # install homebrew - worth checking hompage
 # for, potentially, updated instructions
@@ -24,6 +26,7 @@ brew install reattach-to-user-namespace
 curl -O http://sreitshamer.github.io/arq_restore/arq_restore.zip && unzip arq_restore.zip && rm arq_restore.zip
 
 # Install Vundle (for vim)
+# Install vim plugins
 
 # Set Help Viewer windows to non-floating mode
 defaults write com.apple.helpviewer DevMode -bool true
@@ -57,7 +60,7 @@ ln -s ~/code/dotfiles/zsh/zshrc .zshrc
 ln -s ~/code/dotfiles/vim .vim
 ln -s ~/code/dotfiles/vim/vimrc .vimrc
 ln -s code/dotfiles/vim/gvimrc .gvimrc
-ln -s ~/code/dotfiles/Karabine ~/Library/Application\ Support/Karabiner
+ln -s ~/code/dotfiles/Karabiner ~/Library/Application\ Support/Karabiner
 ln -s code/dotfiles/tmux.conf .tmux.conf
 
 # install Arq

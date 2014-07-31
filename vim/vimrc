@@ -1,3 +1,46 @@
+" Vundle Stuff
+" ------------------------------------------------------------------------
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+" Vundles...
+Plugin 'sjl/gundo.vim'
+Plugin 'Shougo/vimproc.vim'
+Plugin 'Shougo/unite.vim'
+Plugin 'tpope/vim-surround'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'tpope/vim-rsi'
+Plugin 'junegunn/goyo.vim'
+Plugin 'chriskempson/base16-vim'
+Plugin 'plasticboy/vim-markdown'
+Plugin 'davidoc/taskpaper.vim'
+Plugin 'vim-scripts/fountain.vim'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+
+
 " General Preferences
 " ------------------------------------------------------------------------
 
@@ -68,31 +111,6 @@ set statusline+=\ %l,%c   "line,column
 if has("gui_macvim")
   let macvim_skip_cmd_opt_movement = 1
 endif
-
-" Vundle Stuff
-" ------------------------------------------------------------------------
-
-filetype off                      " required!
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-" This one is required:
-Bundle 'gmarik/vundle'
-
-" Vundles...
-Bundle "sjl/gundo.vim"
-Bundle 'Shougo/vimproc.vim'
-Bundle 'Shougo/unite.vim'
-Bundle 'tpope/vim-surround'
-Bundle 'airblade/vim-gitgutter'
-Bundle 'tpope/vim-rsi'
-Bundle 'junegunn/goyo.vim'
-Bundle 'chriskempson/base16-vim'
-Bundle 'plasticboy/vim-markdown'
-Bundle 'davidoc/taskpaper.vim'
-Bundle 'vim-scripts/fountain.vim'
-
-" Must be called after plugins
-filetype plugin indent on         " Turn on file type detection.
 
 " COLOR SCHEME
 colorscheme base16-ocean

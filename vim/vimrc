@@ -129,8 +129,11 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
-nnoremap , :
-vnoremap , :
+" Make command-mode easier to enter
+nnoremap ; :
+vnoremap ; :
+nnoremap , ;
+vnoremap , ;
 
 " Make j and k behave as expected
 nnoremap j gj
@@ -156,8 +159,8 @@ vnoremap > >gv
 vnoremap < <gv
 
 " Easier buffer navigation
-nnoremap <m-n> :bn<cr>
-nnoremap <m-p> :bp<cr>
+nnoremap gb :bn<cr>
+nnoremap gB :bp<cr>
 
 " creates an alias (%%) to represent the directory of the current file
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
@@ -219,20 +222,6 @@ command SS :set spell!
 command Src :source $MYVIMRC
 command WW :set wrap!
 
-" Unite
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#custom#source('buffer,file,file_rec,file_rec/async', 'sorters', 'sorter_selecta')
-nnoremap <leader>b :Unite -no-split -start-insert buffer<cr>
-nnoremap <leader>f :Unite -no-split -start-insert file_rec/async<cr>
-
-" Custom mappings for the unite buffer
-autocmd FileType unite call s:unite_settings()
-function! s:unite_settings()
-  " Enable navigation with control-n and control-p in insert mode
-  imap <buffer> <C-n>   <Plug>(unite_select_next_line)
-  imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
-endfunction
-
 au BufRead,BufNewFile *.fountain	 set filetype=fountain
 
 " Make sure Vim returns to the same line when you reopen a file.
@@ -243,6 +232,29 @@ augroup line_return
         \     execute 'normal! g`"zvzz' |
         \ endif
 augroup END
+
+" Unite
+" ------------------------------------------------------------------------
+
+" Start by setting some defaults
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_selecta'])
+
+" for file_rec use a custom sorter
+"call unite#custom#source('file_rec', 'sorters', 'sorter_selecta')
+
+" shortcuts for calling Unite
+nnoremap <leader>b :Unite -no-split buffer<cr>
+nnoremap <leader>f :Unite -no-split file/async file/new directory/new<cr>
+nnoremap <leader>u :Unite -no-split -start-insert source<cr>
+
+" Custom mappings for the unite buffer
+autocmd FileType unite call s:unite_settings()
+function! s:unite_settings()
+  " Enable navigation with control-n and control-p in insert mode
+  imap <buffer> <C-n>   <Plug>(unite_select_next_line)
+  imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
+endfunction
 
 " Snippets
 " ------------------------------------------------------------------------

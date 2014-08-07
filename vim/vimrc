@@ -171,9 +171,6 @@ inoremap <C-U> <C-G>u<C-U>
 
 " ------------------------------------------------------------------------
 
-" make saving easier
-map <leader>w :w<cr>
-
 " make substitutions easier
 nmap <leader>s :%s/
 vmap <leader>s :s/\%V

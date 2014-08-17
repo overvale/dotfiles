@@ -1,7 +1,6 @@
 hi clear
 syntax reset
-let g:colors_name = "oliver"cterm
-cterm
+let g:colors_name="oliver"
 
 " http://www.pixelbeat.org/docs/terminal_colours/
 
@@ -50,30 +49,28 @@ hi SpellLocal   cterm=underline ctermfg=NONE    ctermbg=195
 hi SpellRare    cterm=underline ctermfg=NONE    ctermbg=195
 
 hi Question     cterm=NONE      ctermfg=NONE    ctermbg=NONE
-hi Special      cterm=NONE      ctermfg=787878 ctermbg=NONE
-hi SpecialKey   cterm=NONE      ctermfg=c7c7c7 ctermbg=NONE
-hi Statement    cterm=NONE      ctermfg=266ea1 ctermbg=f5fbff
-hi StorageClass cterm=NONE      ctermfg=df2a01 ctermbg=NONE
-hi String       cterm=NONE      ctermfg=cb6301 ctermbg=fffcf5
-hi Title        cterm=NONE      ctermfg=0376e2 ctermbg=ebf5ff
+hi Special      cterm=NONE      ctermfg=242  ctermbg=NONE
+hi SpecialKey   cterm=NONE      ctermfg=250 ctermbg=NONE
+hi Statement    cterm=NONE      ctermfg=25  ctermbg=195
+hi StorageClass cterm=NONE      ctermfg=162 ctermbg=NONE
+hi String       cterm=NONE      ctermfg=130 ctermbg=230
+hi Title        cterm=NONE      ctermfg=27  ctermbg=195
 hi Todo         cterm=NONE      ctermfg=196 ctermbg=230
-hi Type         cterm=NONE      ctermfg=429fd1 ctermbg=NONE
+hi Type         cterm=NONE      ctermfg=38 ctermbg=NONE
 hi Underlined   cterm=underline      ctermfg=NONE    ctermbg=NONE
 hi lCursor      cterm=NONE      ctermfg=NONE    ctermbg=NONE
 hi Identifier   cterm=NONE      ctermfg=NONE    ctermbg=NONE
 hi PreProc      cterm=NONE      ctermfg=NONE    ctermbg=NONE
-hi Error        cterm=NONE      ctermfg=ffffff ctermbg=ff0000
+hi Error        cterm=NONE      ctermfg=15 ctermbg=9
 hi Ignore       cterm=NONE      ctermfg=NONE    ctermbg=NONE
-hi Search       cterm=NONE      ctermfg=NONE    ctermbg=ffff00
-hi IncSearch    cterm=NONE      ctermfg=NONE    ctermbg=ffff00
-hi MatchParen   cterm=NONE      ctermfg=NONE    ctermbg=e8e8e8
-hi NonText      cterm=NONE      ctermfg=c7c7c7 ctermbg=NONE
-hi Number       cterm=NONE      ctermfg=8f3cc3 ctermbg=f3f0ff
-hi Boolean      cterm=NONE      ctermfg=787878 ctermbg=NONE
+hi Search       cterm=NONE      ctermfg=NONE    ctermbg=11
+hi IncSearch    cterm=NONE      ctermfg=NONE    ctermbg=11
+hi MatchParen   cterm=NONE      ctermfg=NONE    ctermbg=254
+hi NonText      cterm=NONE      ctermfg=250 ctermbg=NONE
+hi Number       cterm=NONE      ctermfg=5 ctermbg=225
+hi Boolean      cterm=NONE      ctermfg=245     ctermbg=NONE
 hi ColorColumn  cterm=NONE      ctermfg=NONE    ctermbg=252
 hi Comment      cterm=NONE      ctermfg=202 ctermbg=230
 hi Conceal      cterm=NONE      ctermfg=250 ctermbg=NONE
-hi Conditional  cterm=NONE      ctermfg=7400b8 ctermbg=NONE
-hi Constant     cterm=NONE      ctermfg=787878 ctermbg=NONE
-
-
+hi Conditional  cterm=NONE      ctermfg=5   ctermbg=NONE
+hi Constant     cterm=NONE      ctermfg=252 ctermbg=NONE

@@ -3,13 +3,9 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-" set the runtime path to include Vundle and initialize
+" Vundle setup
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-
-" let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 
 " Vundles...
@@ -22,21 +18,11 @@ Plugin 'tpope/vim-rsi'
 Plugin 'junegunn/goyo.vim'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'davidoc/taskpaper.vim'
+Plugin 'junegunn/seoul256.vim'
 
-" All of your Plugins must be added before the following line
+" Finish Vundle Stuff
 call vundle#end()            " required
 filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
 
 
 " General Preferences
@@ -106,10 +92,6 @@ set statusline+=%{strlen(&fenc)?&fenc:'none'}[%{&ff}]   "file encoding
 set statusline+=\ \ %P      "percentage through file
 set statusline+=\ %l,%c   "line,column
 
-if has("gui_macvim")
-  let macvim_skip_cmd_opt_movement = 1
-endif
-
 " COLOR SCHEME
 colorscheme base16-ocean
 set background=dark
@@ -166,8 +148,6 @@ cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
-
-" ------------------------------------------------------------------------
 
 " make substitutions easier
 nmap <leader>s :%s/

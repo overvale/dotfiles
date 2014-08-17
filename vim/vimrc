@@ -14,16 +14,14 @@ Plugin 'gmarik/Vundle.vim'
 
 " Vundles...
 Plugin 'sjl/gundo.vim'
-Plugin 'Shougo/vimproc.vim'
 Plugin 'Shougo/unite.vim'
+Plugin 'Shougo/vimproc.vim'
 Plugin 'tpope/vim-surround'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'tpope/vim-rsi'
 Plugin 'junegunn/goyo.vim'
-Plugin 'chriskempson/base16-vim'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'davidoc/taskpaper.vim'
-Plugin 'vim-scripts/fountain.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -178,6 +176,9 @@ vmap <leader>s :s/\%V
 " Remap K to split the line at the point
 nnoremap K i<cr><esc>`.
 inoremap <c-k> <cr><c-o><bs>
+
+" Quickly select text you just pasted:
+noremap gV `[v`]
 
 " allow saving a sudo file if forgot to open as sudo
 cmap w!! w !sudo tee % >/dev/null

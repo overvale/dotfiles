@@ -19,6 +19,7 @@ Plugin 'junegunn/goyo.vim'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'davidoc/taskpaper.vim'
 Plugin 'junegunn/seoul256.vim'
+Plugin 'gerw/vim-HiLinkTrace'
 
 " Finish Vundle Stuff
 call vundle#end()            " required
@@ -93,8 +94,7 @@ set statusline+=\ \ %P      "percentage through file
 set statusline+=\ %l,%c   "line,column
 
 " COLOR SCHEME
-colorscheme base16-ocean
-set background=dark
+colorscheme oliver.light
 
 
 " ------------------------------------------------------------------------

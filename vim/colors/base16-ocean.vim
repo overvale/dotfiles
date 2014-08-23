@@ -198,10 +198,10 @@ call <sid>hi("Type",         s:gui09, "", s:cterm09, "", "none")
 call <sid>hi("Typedef",      s:gui0A, "", s:cterm0A, "", "")
 
 " Spelling highlighting
-call <sid>hi("SpellBad",     "", s:gui00, "", s:cterm01, "undercurl")
-call <sid>hi("SpellLocal",   "", s:gui00, "", s:cterm01, "undercurl")
-call <sid>hi("SpellCap",     "", s:gui00, "", s:cterm01, "undercurl")
-call <sid>hi("SpellRare",    "", s:gui00, "", s:cterm01, "undercurl")
+call <sid>hi("SpellBad",     "", s:gui00, "", s:cterm00, "undercurl")
+call <sid>hi("SpellLocal",   "", s:gui00, "", s:cterm00, "undercurl")
+call <sid>hi("SpellCap",     "", s:gui00, "", s:cterm00, "undercurl")
+call <sid>hi("SpellRare",    "", s:gui00, "", s:cterm00, "undercurl")
 
 " Additional diff highlighting
 call <sid>hi("DiffAdd",      s:gui0B, s:gui00, s:cterm0B, s:cterm00, "")

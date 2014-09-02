@@ -14,7 +14,6 @@ Plugin 'Shougo/unite.vim'
 Plugin 'Shougo/vimproc.vim'
 Plugin 'tpope/vim-surround'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'tpope/vim-rsi'
 Plugin 'junegunn/goyo.vim'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'davidoc/taskpaper.vim'
@@ -66,7 +65,7 @@ set laststatus=2                  " Always show status bar
 set cmdheight=1                   " Height of command typing area
 set showcmd                       " Shows your typing in Normal Mode
 set scrolloff=2                   " Show N lines around cursor
-set cursorline                    " Highlight the line the cursor is on
+set cursorline                    " highlight cursor line
 set number                        " Show line-numbers
 set display+=lastline             " Don't truncate the last line
 " Open new split panes to right and bottom, which feels more natural
@@ -94,7 +93,8 @@ set statusline+=\ \ %P      "percentage through file
 set statusline+=\ %l,%c   "line,column
 
 " COLOR SCHEME
-colorscheme oliver.light
+colorscheme oliver-ocean.dark
+set background=dark
 
 
 " ------------------------------------------------------------------------
@@ -166,17 +166,6 @@ cmap w!! w !sudo tee % >/dev/null
 " protect against accidental save + close
 nnoremap ZZ :echoe "Your Caps-lock is on."<cr>
 
-" check the file on disk for changes when returning focus
-autocmd FocusGained * :checktime
-
-" Convenient command to see the difference between the current buffer and 
-" the file it was loaded from, thus the changes you made.
-" Only define it when not defined already.
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-                  \ | wincmd p | diffthis
-endif
-
 " Paste mode
 set pastetoggle=<F2>
 
@@ -189,6 +178,7 @@ nmap ]h <Plug>GitGutterNextHunk
 command BGd set background=dark | colorscheme base16-ocean
 command BGl set background=light | colorscheme base16-default
 command Cdf :cd %:h<cr>
+command Cl :set cursorline!
 command Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
 command Fmkd :set filetype=mkd
 command Frst :set filetype=rst
@@ -198,6 +188,7 @@ command NN :set invnumber
 command Nr :set relativenumber!
 command SS :set spell!
 command Src :source $MYVIMRC
+command Evrc :e ~/code/dotfiles/vim/vimrc
 command WW :set wrap!
 
 au BufRead,BufNewFile *.fountain	 set filetype=fountain

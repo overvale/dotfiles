@@ -214,7 +214,7 @@ call unite#filters#sorter_default#use(['sorter_selecta'])
 
 " shortcuts for calling Unite
 nnoremap <leader>b :Unite -no-split buffer<cr>
-nnoremap <leader>f :Unite -no-split file/async file/new directory/new<cr>
+nnoremap <leader>f :Unite -no-split file file/new directory/new<cr>
 nnoremap <leader>u :Unite -no-split -start-insert source<cr>
 
 " Custom mappings for the unite buffer

@@ -32,7 +32,7 @@ hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=italic
 hi Underlined    ctermfg=001   ctermbg=NONE  cterm=underline
 
 " The Structure
-hi StatusLine    ctermfg=012   ctermbg=011   cterm=NONE
+hi StatusLine    ctermfg=015   ctermbg=008   cterm=NONE
 hi StatusLineNC  ctermfg=000   ctermbg=011   cterm=NONE
 hi VertSplit     ctermfg=011   ctermbg=011   cterm=NONE
 hi TabLine       ctermfg=015   ctermbg=010   cterm=NONE
@@ -42,7 +42,7 @@ hi TabLineSel    ctermfg=003   ctermbg=010   cterm=NONE
 hi LineNr        ctermfg=008   ctermbg=010   cterm=NONE
 hi CursorLineNr  ctermfg=013   ctermbg=000   cterm=NONE
 hi SignColumn    ctermfg=013   ctermbg=010   cterm=NONE
-hi CursorLine    ctermfg=NONE  ctermbg=010  cterm=NONE
+hi CursorLine    ctermfg=NONE  ctermbg=010   cterm=NONE
 hi CursorColumn  ctermfg=NONE  ctermbg=010   cterm=NONE
 hi ColorColumn   ctermfg=NONE  ctermbg=010   cterm=NONE
 
@@ -54,7 +54,7 @@ hi PmenuThumb    ctermbg=NONE  ctermfg=NONE  cterm=NONE
 " Misc
 hi ErrorMsg      ctermfg=001   ctermbg=000   cterm=NONE
 hi FoldColumn    ctermfg=NONE  ctermbg=010   cterm=NONE
-hi Folded        ctermfg=011   ctermbg=010   cterm=NONE
+hi Folded        ctermfg=011   ctermbg=NONE  cterm=italic
 hi IncSearch     ctermfg=010   ctermbg=009   cterm=NONE
 hi Macro         ctermfg=001   ctermbg=NONE  cterm=NONE
 hi MatchParen    ctermfg=000   ctermbg=008   cterm=NONE
@@ -137,8 +137,8 @@ hi phpComparison      ctermfg=013 ctermbg=NONE cterm=NONE
 hi phpParent          ctermfg=013 ctermbg=NONE cterm=NONE
 
 " HTML highlighting
-hi htmlBold    ctermfg=003 ctermbg=NONE cterm=NONE
-hi htmlItalic  ctermfg=006 ctermbg=NONE cterm=NONE
+hi htmlBold    ctermfg=003 ctermbg=NONE cterm=bold
+hi htmlItalic  ctermfg=006 ctermbg=NONE cterm=italic
 hi htmlEndTag  ctermfg=013 ctermbg=NONE cterm=NONE
 hi htmlTag     ctermfg=013 ctermbg=NONE cterm=NONE
 hi link htmlTagN htmlTagName

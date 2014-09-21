@@ -1,33 +1,24 @@
-" Vundle Stuff
+" Plugins
 " ------------------------------------------------------------------------
-set nocompatible              " be iMproved, required
-filetype off                  " required
 
-" Vundle setup
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'gmarik/Vundle.vim'
+call plug#begin('~/.vim/plugged')
 
-" Vundles...
-Plugin 'sjl/gundo.vim'
-Plugin 'Shougo/unite.vim'
-Plugin 'Shougo/vimproc.vim'
-Plugin 'tpope/vim-surround'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'junegunn/goyo.vim'
-Plugin 'plasticboy/vim-markdown'
-Plugin 'davidoc/taskpaper.vim'
-Plugin 'junegunn/seoul256.vim'
-Plugin 'gerw/vim-HiLinkTrace'
+Plug 'Shougo/unite.vim'
+Plug 'tpope/vim-surround'
+Plug 'airblade/vim-gitgutter'
+Plug 'mbbill/undotree'
+Plug 'junegunn/goyo.vim'
+Plug 'plasticboy/vim-markdown'
+Plug 'davidoc/taskpaper.vim'
+Plug 'junegunn/seoul256.vim'
+Plug 'gerw/vim-HiLinkTrace'
 
-" Finish Vundle Stuff
-call vundle#end()            " required
-filetype plugin indent on    " required
-
+call plug#end()
 
 " General Preferences
 " ------------------------------------------------------------------------
 
+set nocompatible
 set encoding=utf-8                " Set default encoding
 set modelines=0                   " disable modelines
 set exrc                          " Allow directory .vimrc files...

@@ -49,8 +49,12 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # SuperDuper
 # The Unarchiver
 # Transmit
+# QuickTime Player 7
 
 # pull-down your dotfiles; via Dropbox or git
+
+# Create centralized vim swp files location
+mkdir ~/.swp-dir
 
 # Symlink a bunch of things - run from $HOME
 ln -s ~/code/dotfiles/git/gitconfig .gitconfig

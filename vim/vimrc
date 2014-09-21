@@ -32,6 +32,7 @@ set encoding=utf-8                " Set default encoding
 set modelines=0                   " disable modelines
 set exrc                          " Allow directory .vimrc files...
 set secure                        " ...and be safe about it
+set dir=~/.swp-dir,.              " Centralize swp files
 syntax enable                     " Turn on syntax highlighting
 set ttyfast                       " Tell vim you're using a fast terminal
 set hidden                        " Hide buffers instead of closing them

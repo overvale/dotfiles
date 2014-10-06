@@ -39,13 +39,15 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # BBEdit
 # Dropbox
 # Google Chrome
+# iTerm
 # Kaleidoscope
-# Keyboard Maestro
 # Karabiner
-# Launchbar
+# Keyboard Maestro
 # Name Mangler
+# OmniFocus
 # Patterns
 # Pixelmator
+# Slack
 # SuperDuper
 # The Unarchiver
 # Transmit

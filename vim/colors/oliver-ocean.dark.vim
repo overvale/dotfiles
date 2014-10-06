@@ -2,7 +2,7 @@ hi clear
 syntax reset
 let g:colors_name = "oliver-ocean.dark"
 
-" This is a refactoring / customization of of "Base16-Ocean.dark"
+" This is a refactoring / customization of of Base16-Ocean.dark
 " The color-codes below refer to the ANSI numbers assigned here:
 " https://github.com/chriskempson/base16-iterm2
 
@@ -40,7 +40,7 @@ hi TabLineFill   ctermfg=015   ctermbg=010   cterm=NONE
 hi TabLineSel    ctermfg=003   ctermbg=010   cterm=NONE
 
 hi LineNr        ctermfg=008   ctermbg=010   cterm=NONE
-hi CursorLineNr  ctermfg=013   ctermbg=000   cterm=NONE
+hi CursorLineNr  ctermfg=003   ctermbg=000   cterm=NONE
 hi SignColumn    ctermfg=013   ctermbg=010   cterm=NONE
 hi CursorLine    ctermfg=NONE  ctermbg=010   cterm=NONE
 hi CursorColumn  ctermfg=NONE  ctermbg=010   cterm=NONE
@@ -87,7 +87,7 @@ hi Include      ctermfg=004 ctermbg=NONE cterm=NONE
 hi Keyword      ctermfg=005 ctermbg=NONE cterm=NONE
 hi Label        ctermfg=003 ctermbg=NONE cterm=NONE
 hi NonText      ctermfg=008 ctermbg=NONE cterm=NONE
-hi Number       ctermfg=009 ctermbg=NONE cterm=NONE
+hi Number       ctermfg=005 ctermbg=NONE cterm=NONE
 hi Operator     ctermfg=013 ctermbg=NONE cterm=NONE
 hi PreProc      ctermfg=003 ctermbg=NONE cterm=NONE
 hi Repeat       ctermfg=003 ctermbg=NONE cterm=NONE
@@ -102,7 +102,7 @@ hi Tag          ctermfg=003 ctermbg=NONE cterm=NONE
 hi Title        ctermfg=015 ctermbg=NONE cterm=NONE
 hi Todo         ctermfg=003 ctermbg=010  cterm=NONE
 hi TooLong      ctermfg=001 ctermbg=NONE cterm=NONE
-hi Type         ctermfg=009 ctermbg=NONE cterm=NONE
+hi Type         ctermfg=006 ctermbg=NONE cterm=NONE
 hi Typedef      ctermfg=003 ctermbg=NONE cterm=NONE
 
 " Spelling highlighting
@@ -185,3 +185,7 @@ hi SignifySignDelete  ctermfg=001 ctermbg=010 cterm=NONE
 " NERDTree highlighting
 hi NERDTreeDirSlash  ctermfg=004 ctermbg=NONE cterm=NONE
 hi NERDTreeExecFile  ctermfg=013 ctermbg=NONE cterm=NONE
+
+" Oliver's random shit
+hi vimIsCommand      ctermfg=004
+hi vimMapRhs         ctermfg=002

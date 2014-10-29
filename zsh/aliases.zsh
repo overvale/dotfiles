@@ -52,11 +52,6 @@ function size(){
   du -sh "$1"
 }
 
-# show directory and file tree
-function tree(){
-find ./ -print | awk -F "/" '{for (i=1; i<=NF-2; i++){printf "|  "} print "|--"$NF}'
-}
-
 # quick exit
 alias xxx=exit
 

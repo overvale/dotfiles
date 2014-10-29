@@ -25,7 +25,7 @@ let g:colors_name = "oliver-ocean.dark"
 " Grey-7  15
 
 " The Basics
-hi Normal        ctermfg=013   ctermbg=000   cterm=NONE
+hi Normal        ctermfg=007   ctermbg=000   cterm=NONE
 hi Cursor        ctermfg=000   ctermbg=015   cterm=NONE
 hi Bold          ctermfg=NONE  ctermbg=NONE  cterm=bold
 hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=italic

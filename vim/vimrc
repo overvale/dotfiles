@@ -9,8 +9,6 @@ Plug 'airblade/vim-gitgutter'
 Plug 'mbbill/undotree'
 Plug 'junegunn/goyo.vim'
 Plug 'plasticboy/vim-markdown'
-Plug 'davidoc/taskpaper.vim'
-Plug 'junegunn/seoul256.vim'
 Plug 'gerw/vim-HiLinkTrace'
 
 call plug#end()
@@ -44,6 +42,7 @@ set ttimeoutlen=100               " no delay leaving insert mode
 set clipboard=unnamed             " set vim to share the system clipboard
 set wrap                          " Turn on wrapping
 set linebreak                     " Wrap only at word-breaks
+set breakindent                   " Wrap lines to indent
 set autoindent                    " Turn on auto-indenting
 set copyindent                    " copy previous indentation on paste
 set expandtab                     " Use spaces instead of tabs
@@ -93,6 +92,10 @@ set background=dark
 
 " ------------------------------------------------------------------------
 
+" Make mode-switching easy, use <c-v>` to insert literal backtick
+nnoremap ` <esc>
+inoremap ` <esc>
+
 " DISABLE THE ARROW KEYS - OH GOD...
 nnoremap <up> <nop>
 nnoremap <down> <nop>
@@ -120,9 +123,6 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-
-" When moving to the end of the document also move to the end of the line
-nnoremap G G$
 
 " make regexp search not suck by default
 nnoremap / /\v
@@ -209,7 +209,8 @@ call unite#filters#sorter_default#use(['sorter_selecta'])
 " shortcuts for calling Unite
 nnoremap <leader>b :Unite -no-split buffer<cr>
 nnoremap <leader>f :Unite -no-split file file/new directory/new<cr>
-nnoremap <leader>u :Unite -no-split -start-insert source<cr>
+nnoremap <leader>us :Unite -no-split -start-insert source<cr>
+nnoremap <leader>ul :Unite -no-split -start-insert line<cr>
 
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()

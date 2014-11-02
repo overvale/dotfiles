@@ -1,5 +1,5 @@
 # Set some basic variables
-export PATH=/usr/local/bin:$PATH:~/code/bin:~/code/dotfiles/bin
+export PATH=/usr/local/bin:$PATH:~/code/bin:~/code/dotfiles/bin:~/code/text-utilities
 export EDITOR=/usr/local/bin/bbedit
 export DOT=~/code/dotfiles
 export TERM=xterm-256color-italic

@@ -1,2 +1,0 @@
-#!/bin/sh
-cat | pandoc -f rst -t rst --columns=78 | sed 's/^\(\ *\)\-/\1*/g'

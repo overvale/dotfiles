@@ -10,6 +10,7 @@ Plug 'mbbill/undotree'
 Plug 'junegunn/goyo.vim'
 Plug 'plasticboy/vim-markdown'
 Plug 'gerw/vim-HiLinkTrace'
+Plug 'Shougo/unite-outline'
 
 call plug#end()
 
@@ -196,6 +197,9 @@ augroup line_return
         \ endif
 augroup END
 
+" Don't write undofiles for secret stuff
+au BufWritePre /Volumes/secret_files/* setlocal noundofile
+
 " Unite
 " ------------------------------------------------------------------------
 
@@ -211,6 +215,7 @@ nnoremap <leader>b :Unite -no-split buffer<cr>
 nnoremap <leader>f :Unite -no-split file file/new directory/new<cr>
 nnoremap <leader>us :Unite -no-split -start-insert source<cr>
 nnoremap <leader>ul :Unite -no-split -start-insert line<cr>
+nnoremap <leader>uo :Unite -no-split -start-insert outline<cr>
 
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()

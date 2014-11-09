@@ -24,6 +24,7 @@ brew install tree
 brew install tmux
 brew install reattach-to-user-namespace
 curl -O http://sreitshamer.github.io/arq_restore/arq_restore.zip && unzip arq_restore.zip && rm arq_restore.zip
+pip install awscli
 
 # Install Vundle (for vim)
 # Install vim plugins

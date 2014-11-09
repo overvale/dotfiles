@@ -85,20 +85,6 @@ myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user; killall Finder'
 
 
-# Notes
-# ----------------------------------------------------------------------
-
-function note(){
-  if [ "$1" = "" ] ; then
-    exec $EDITOR ~/Dropbox/notes/note_`date +"%Y%m%d_%H%M%S"`.txt
-  else
-    exec $EDITOR ~/Dropbox/notes/"$1".txt
-  fi
-}
-
-alias notes="open ~/Dropbox/notes/;exit"
-
-
 # Miscellaneous
 # ----------------------------------------------------------------------
 

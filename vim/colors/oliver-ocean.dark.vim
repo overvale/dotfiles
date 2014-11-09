@@ -28,7 +28,7 @@ let g:colors_name = "oliver-ocean.dark"
 hi Normal        ctermfg=007   ctermbg=000   cterm=NONE
 hi Cursor        ctermfg=000   ctermbg=015   cterm=NONE
 hi Bold          ctermfg=NONE  ctermbg=NONE  cterm=bold
-hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=italic
+hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=NONE
 hi Underlined    ctermfg=001   ctermbg=NONE  cterm=underline
 
 " The Structure
@@ -54,7 +54,7 @@ hi PmenuThumb    ctermbg=NONE  ctermfg=NONE  cterm=NONE
 " Misc
 hi ErrorMsg      ctermfg=001   ctermbg=000   cterm=NONE
 hi FoldColumn    ctermfg=NONE  ctermbg=010   cterm=NONE
-hi Folded        ctermfg=011   ctermbg=NONE  cterm=italic
+hi Folded        ctermfg=011   ctermbg=NONE  cterm=NONE
 hi IncSearch     ctermfg=010   ctermbg=009   cterm=NONE
 hi Macro         ctermfg=001   ctermbg=NONE  cterm=NONE
 hi MatchParen    ctermfg=000   ctermbg=008   cterm=NONE
@@ -71,7 +71,7 @@ hi WildMenu      ctermfg=001   ctermbg=NONE  cterm=NONE
 " Standard syntax highlighting
 hi Boolean      ctermfg=009 ctermbg=NONE cterm=NONE
 hi Character    ctermfg=001 ctermbg=NONE cterm=NONE
-hi Comment      ctermfg=008 ctermbg=NONE cterm=italic
+hi Comment      ctermfg=008 ctermbg=NONE cterm=NONE
 hi Conceal      ctermfg=004 ctermbg=000  cterm=NONE
 hi Conditional  ctermfg=005 ctermbg=NONE cterm=NONE
 hi Constant     ctermfg=009 ctermbg=NONE cterm=NONE
@@ -138,7 +138,7 @@ hi phpParent          ctermfg=013 ctermbg=NONE cterm=NONE
 
 " HTML highlighting
 hi htmlBold    ctermfg=003 ctermbg=NONE cterm=bold
-hi htmlItalic  ctermfg=006 ctermbg=NONE cterm=italic
+hi htmlItalic  ctermfg=006 ctermbg=NONE cterm=NONE
 hi htmlEndTag  ctermfg=013 ctermbg=NONE cterm=NONE
 hi htmlTag     ctermfg=013 ctermbg=NONE cterm=NONE
 hi link htmlTagN htmlTagName

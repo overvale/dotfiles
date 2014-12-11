@@ -32,12 +32,12 @@ hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=NONE
 hi Underlined    ctermfg=001   ctermbg=NONE  cterm=underline
 
 " The Structure
-hi StatusLine    ctermfg=015   ctermbg=008   cterm=NONE
-hi StatusLineNC  ctermfg=000   ctermbg=011   cterm=NONE
-hi VertSplit     ctermfg=011   ctermbg=011   cterm=NONE
-hi TabLine       ctermfg=015   ctermbg=010   cterm=NONE
-hi TabLineFill   ctermfg=015   ctermbg=010   cterm=NONE
-hi TabLineSel    ctermfg=003   ctermbg=010   cterm=NONE
+hi StatusLine    ctermfg=013   ctermbg=010   cterm=NONE
+hi StatusLineNC  ctermfg=000   ctermbg=010   cterm=NONE
+hi VertSplit     ctermfg=010   ctermbg=010   cterm=NONE
+hi TabLine       ctermfg=000   ctermbg=010   cterm=NONE
+hi TabLineFill   ctermfg=000   ctermbg=010   cterm=NONE
+hi TabLineSel    ctermfg=013   ctermbg=000   cterm=NONE
 
 hi LineNr        ctermfg=008   ctermbg=010   cterm=NONE
 hi CursorLineNr  ctermfg=003   ctermbg=000   cterm=NONE

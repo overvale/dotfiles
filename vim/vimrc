@@ -11,22 +11,19 @@ Plug 'junegunn/goyo.vim'
 Plug 'plasticboy/vim-markdown'
 Plug 'gerw/vim-HiLinkTrace'
 Plug 'Shougo/unite-outline'
+Plug 'christoomey/vim-tmux-navigator'
 
 call plug#end()
 
 " General Preferences
 " ------------------------------------------------------------------------
 
-set nocompatible
 set encoding=utf-8                " Set default encoding
 set modelines=0                   " disable modelines
-set exrc                          " Allow directory .vimrc files...
-set secure                        " ...and be safe about it
 set dir=~/.swp-dir,.              " Centralize swp files
 set undodir=~/code/vimundo        " Centralize undo files
 set undofile                      " Keep permanent history of undos
 syntax enable                     " Turn on syntax highlighting
-set ttyfast                       " Tell vim you're using a fast terminal
 set hidden                        " Hide buffers instead of closing them
 set visualbell                    " Make alerts not audio
 set wildmenu                      " Enhanced command line completion
@@ -35,11 +32,6 @@ set ignorecase                    " Case-insensitive searching...
 set smartcase                     " ...unless there's a cap letter
 set incsearch                     " Highlight matches as you type
 set hlsearch                      " Highlight search matches
-set showmatch                     " Show matching brackets, etc.
-set t_Co=256                      " Setup term color support
-set autoread                      " Detect chantes on disk
-set ttimeout                      " Allow keymaps to timeout
-set ttimeoutlen=100               " no delay leaving insert mode
 set clipboard=unnamed             " set vim to share the system clipboard
 set wrap                          " Turn on wrapping
 set linebreak                     " Wrap only at word-breaks
@@ -56,19 +48,15 @@ set spell spelllang=en_us         " Turn on spell-checking
 set formatoptions=tcrqn1j         " (see docs)
 set formatprg=par\ -w78rq         " external formatter options
 set laststatus=2                  " Always show status bar
-set cmdheight=1                   " Height of command typing area
-set showcmd                       " Shows your typing in Normal Mode
+set showcmd                       " Show commands as you type
 set scrolloff=2                   " Show N lines around cursor
-set cursorline                    " highlight cursor line
-set number                        " Show line-numbers
+"set cursorline                    " highlight cursor line
+"set number                        " Show line-numbers
 set display+=lastline             " Don't truncate the last line
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
 set splitright
-" Tell vim what to save when making a session file
 set sessionoptions=buffers,curdir,folds,help,tabpages,tabpages
-
-" Custom spell file
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 
 " Treat buffers from stdin (e.g.: echo foo | vim -) as scratch buffers.
@@ -96,6 +84,7 @@ set background=dark
 " Make mode-switching easy, use <c-v>` to insert literal backtick
 nnoremap ` <esc>
 inoremap ` <esc>
+vnoremap ` <esc>
 
 " DISABLE THE ARROW KEYS - OH GOD...
 nnoremap <up> <nop>
@@ -144,10 +133,6 @@ cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
 
-" make substitutions easier
-nmap <leader>s :%s/
-vmap <leader>s :s/\%V
-
 " Remap K to split the line at the point
 nnoremap K i<cr><esc>`.
 inoremap <c-k> <cr><c-o><bs>
@@ -170,8 +155,8 @@ nmap ]h <Plug>GitGutterNextHunk
 " Never use a binding when a command will do
 " commands are easier to remember and autocomplete
 " also, it's just vim-style
-command BGd set background=dark | colorscheme base16-ocean
-command BGl set background=light | colorscheme base16-default
+command BGd set background=dark | colorscheme oliver-ocean.dark
+command BGl set background=light | colorscheme oliver.light
 command Cdf :cd %:h<cr>
 command Cl :set cursorline!
 command Dtrail :%s/\s\+$//<cr>:let @/=''<CR>

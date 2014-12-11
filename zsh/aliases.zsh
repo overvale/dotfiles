@@ -52,9 +52,6 @@ function size(){
   du -sh "$1"
 }
 
-# quick exit
-alias xxx=exit
-
 # Working with files
 # ----------------------------------------------------------------------
 
@@ -69,6 +66,14 @@ function rt(){
 mv $1 ~/.Trash;
 }
 
+
+# Tmux
+# ----------------------------------------------------------------------
+
+alias tmn='tmux new -s `basename $PWD`'
+alias tma='tmux attach -t '
+alias tml='tmux list-sessions'
+alias tmk='tmux kill-session -t '
 
 # System Info & Tools
 # ----------------------------------------------------------------------

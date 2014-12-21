@@ -137,6 +137,10 @@ inoremap <C-U> <C-G>u<C-U>
 nnoremap K i<cr><esc>`.
 inoremap <c-k> <cr><c-o><bs>
 
+" Move lines
+vnoremap J :m '>+1<cr>gv
+vnoremap K :m '<-2<cr>gv
+
 " Quickly select text you just pasted:
 noremap gV `[v`]
 

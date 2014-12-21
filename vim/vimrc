@@ -12,6 +12,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'gerw/vim-HiLinkTrace'
 Plug 'Shougo/unite-outline'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'junegunn/vim-easy-align'
 
 call plug#end()
 
@@ -155,6 +156,11 @@ set pastetoggle=<F2>
 
 nmap [h <Plug>GitGutterPrevHunk
 nmap ]h <Plug>GitGutterNextHunk
+
+" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+vmap <Enter> <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
 
 " Never use a binding when a command will do
 " commands are easier to remember and autocomplete

@@ -164,8 +164,9 @@ hi javaScriptNumber  ctermfg=009 ctermbg=NONE cterm=NONE
 hi markdownCode              ctermfg=002 ctermbg=NONE cterm=NONE
 hi markdownCodeBlock         ctermfg=002 ctermbg=NONE cterm=NONE
 hi markdownHeadingDelimiter  ctermfg=004 ctermbg=NONE cterm=NONE
-hi htmlH1                    ctermfg=005 ctermbg=NONE cterm=NONE
+hi htmlH1                    ctermfg=006 ctermbg=NONE cterm=NONE
 hi htmlH2                    ctermfg=003 ctermbg=NONE cterm=NONE
+hi mkdInlineURL              ctermfg=004 ctermbg=NONE cterm=NONE
 
 " Git highlighting
 hi gitCommitOverflow  ctermfg=001 ctermbg=NONE cterm=NONE

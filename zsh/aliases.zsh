@@ -1,7 +1,7 @@
 # Alias Editing
 alias ea='vim $DOT/zsh/aliases.zsh'
 # personal aliases (not for distribution)
-alias epa='vim ~/.zsh/localrc.zsh && reload'
+alias epa='vim ~/.zsh/localrc.zsh && source ~/.zsh/localrc.zsh'
 
 
 # Suffix Aliases (zsh)

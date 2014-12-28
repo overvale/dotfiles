@@ -13,6 +13,7 @@ Plug 'gerw/vim-HiLinkTrace'
 Plug 'Shougo/unite-outline'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'junegunn/vim-easy-align'
+Plug 'reedes/vim-wordy/'
 
 call plug#end()
 

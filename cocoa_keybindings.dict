@@ -1,33 +1,3 @@
-{
-
-/* Add line below */
-"^@o" = ("moveToEndOfParagraph:","insertNewline:");
-
-/* Add line above */
-"^~o" = ("moveToBeginningOfParagraph:","insertNewline:","moveUp:");
-
-/* Kill Line */
-"^@k" = ("moveToBeginningOfParagraph:","deleteToEndOfLine:");
-
-/* Transpose Words */
-"^@t" = "transposeWords:";
-
-
-/* 2-Stage Commands */
-"^x" = {
-  /* Word-Case */
-  "^l" = "lowercaseWord:";
-  "^u" = "uppercaseWord:";
-  "^t" = "capitalizeWord:";
-  
-  /* Selection */
-  "^w" = "selectWord:";
-  "^p" = "selectParagraph:";
-};
-
-
-}
-
 /* ---------------------------------------------------------------------------
 
 KEY MODIFIERS

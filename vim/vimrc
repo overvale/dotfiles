@@ -84,9 +84,9 @@ set background=dark
 " ------------------------------------------------------------------------
 
 " Make mode-switching easy, use <c-v>` to insert literal backtick
-nnoremap ` <esc>
-inoremap ` <esc>
-vnoremap ` <esc>
+nnoremap <tab> <esc>
+inoremap <tab> <esc>
+vnoremap <tab> <esc>
 
 " DISABLE THE ARROW KEYS - OH GOD...
 nnoremap <up> <nop>

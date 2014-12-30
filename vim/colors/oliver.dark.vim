@@ -31,15 +31,15 @@ hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=NONE
 hi Underlined    ctermfg=174   ctermbg=NONE  cterm=underline
 
 " The Structure
-hi StatusLine    ctermfg=251   ctermbg=237   cterm=NONE
-hi StatusLineNC  ctermfg=236   ctermbg=237   cterm=NONE
-hi VertSplit     ctermfg=237   ctermbg=237   cterm=NONE
-hi TabLine       ctermfg=236   ctermbg=237   cterm=NONE
-hi TabLineFill   ctermfg=236   ctermbg=237   cterm=NONE
-hi TabLineSel    ctermfg=251   ctermbg=236   cterm=NONE
+hi StatusLine    ctermfg=015   ctermbg=238   cterm=NONE
+hi StatusLineNC  ctermfg=244   ctermbg=238   cterm=NONE
+hi VertSplit     ctermfg=237   ctermbg=238   cterm=NONE
+hi TabLine       ctermfg=236   ctermbg=238   cterm=NONE
+hi TabLineFill   ctermfg=236   ctermbg=238   cterm=NONE
+hi TabLineSel    ctermfg=251   ctermbg=238   cterm=NONE
 
-hi LineNr        ctermfg=244   ctermbg=237   cterm=NONE
-hi CursorLineNr  ctermfg=223   ctermbg=236   cterm=NONE
+hi LineNr        ctermfg=240   ctermbg=237   cterm=NONE
+hi CursorLineNr  ctermfg=256   ctermbg=237   cterm=NONE
 hi SignColumn    ctermfg=251   ctermbg=237   cterm=NONE
 hi CursorLine    ctermfg=NONE  ctermbg=237   cterm=NONE
 hi CursorColumn  ctermfg=NONE  ctermbg=237   cterm=NONE
@@ -53,7 +53,7 @@ hi PmenuThumb    ctermbg=NONE  ctermfg=NONE  cterm=NONE
 " Misc
 hi ErrorMsg      ctermfg=174   ctermbg=236   cterm=NONE
 hi FoldColumn    ctermfg=NONE  ctermbg=237   cterm=NONE
-hi Folded        ctermfg=251   ctermbg=NONE  cterm=NONE
+hi Folded        ctermfg=244   ctermbg=NONE  cterm=NONE
 hi IncSearch     ctermfg=237   ctermbg=216   cterm=NONE
 hi Macro         ctermfg=174   ctermbg=NONE  cterm=NONE
 hi MatchParen    ctermfg=236   ctermbg=244   cterm=NONE
@@ -61,65 +61,64 @@ hi ModeMsg       ctermfg=223   ctermbg=NONE  cterm=NONE
 hi MoreMsg       ctermfg=116   ctermbg=NONE  cterm=NONE
 hi Question      ctermfg=216   ctermbg=NONE  cterm=NONE
 hi Search        ctermfg=244   ctermbg=223   cterm=NONE
-hi SpecialKey    ctermfg=244   ctermbg=NONE  cterm=NONE
 hi Visual        ctermfg=NONE  ctermbg=251   cterm=NONE
 hi VisualNOS     ctermfg=174   ctermbg=NONE  cterm=NONE
 hi WarningMsg    ctermfg=174   ctermbg=NONE  cterm=NONE
 hi WildMenu      ctermfg=174   ctermbg=NONE  cterm=NONE
 
 " Standard syntax highlighting
-hi Boolean      ctermfg=216 ctermbg=NONE cterm=NONE
-hi Character    ctermfg=174 ctermbg=NONE cterm=NONE
-hi Comment      ctermfg=244 ctermbg=NONE cterm=NONE
-hi Conceal      ctermfg=110 ctermbg=236  cterm=NONE
-hi Conditional  ctermfg=219 ctermbg=NONE cterm=NONE
-hi Constant     ctermfg=216 ctermbg=NONE cterm=NONE
-hi Debug        ctermfg=174 ctermbg=NONE cterm=NONE
-hi Define       ctermfg=219 ctermbg=NONE cterm=NONE
-hi Delimiter    ctermfg=180 ctermbg=NONE cterm=NONE
-hi Directory    ctermfg=110 ctermbg=NONE cterm=NONE
-hi Exception    ctermfg=174 ctermbg=NONE cterm=NONE
-hi Float        ctermfg=216 ctermbg=NONE cterm=NONE
-hi Function     ctermfg=110 ctermbg=NONE cterm=NONE
-hi Identifier   ctermfg=174 ctermbg=NONE cterm=NONE
-hi Include      ctermfg=110 ctermbg=NONE cterm=NONE
-hi Keyword      ctermfg=219 ctermbg=NONE cterm=NONE
-hi Label        ctermfg=223 ctermbg=NONE cterm=NONE
-hi NonText      ctermfg=244 ctermbg=NONE cterm=NONE
-hi Number       ctermfg=219 ctermbg=NONE cterm=NONE
-hi Operator     ctermfg=251 ctermbg=NONE cterm=NONE
-hi PreProc      ctermfg=223 ctermbg=NONE cterm=NONE
-hi Repeat       ctermfg=223 ctermbg=NONE cterm=NONE
-hi Special      ctermfg=116 ctermbg=NONE cterm=NONE
-hi SpecialChar  ctermfg=180 ctermbg=NONE cterm=NONE
-hi SpecialKey   ctermfg=244 ctermbg=NONE cterm=NONE
-hi Statement    ctermfg=174 ctermbg=NONE cterm=NONE
-hi StorageClass ctermfg=223 ctermbg=NONE cterm=NONE
-hi String       ctermfg=108 ctermbg=NONE cterm=NONE
-hi Structure    ctermfg=219 ctermbg=NONE cterm=NONE
-hi Tag          ctermfg=223 ctermbg=NONE cterm=NONE
-hi Title        ctermfg=015 ctermbg=NONE cterm=NONE
-hi Todo         ctermfg=223 ctermbg=237  cterm=NONE
-hi TooLong      ctermfg=174 ctermbg=NONE cterm=NONE
-hi Type         ctermfg=110 ctermbg=NONE cterm=NONE
-hi Typedef      ctermfg=223 ctermbg=NONE cterm=NONE
+hi Boolean      ctermfg=216  ctermbg=NONE cterm=NONE
+hi Character    ctermfg=174  ctermbg=NONE cterm=NONE
+hi Comment      ctermfg=244  ctermbg=NONE cterm=NONE
+hi Conceal      ctermfg=110  ctermbg=236  cterm=NONE
+hi Conditional  ctermfg=219  ctermbg=NONE cterm=NONE
+hi Constant     ctermfg=223  ctermbg=NONE cterm=NONE
+hi Debug        ctermfg=174  ctermbg=NONE cterm=NONE
+hi Define       ctermfg=219  ctermbg=NONE cterm=NONE
+hi Delimiter    ctermfg=180  ctermbg=NONE cterm=NONE
+hi Directory    ctermfg=110  ctermbg=NONE cterm=NONE
+hi Exception    ctermfg=174  ctermbg=NONE cterm=NONE
+hi Float        ctermfg=216  ctermbg=NONE cterm=NONE
+hi Function     ctermfg=110  ctermbg=NONE cterm=NONE
+hi Identifier   ctermfg=174  ctermbg=NONE cterm=NONE
+hi Include      ctermfg=110  ctermbg=NONE cterm=NONE
+hi Keyword      ctermfg=219  ctermbg=NONE cterm=NONE
+hi Label        ctermfg=223  ctermbg=NONE cterm=NONE
+hi NonText      ctermfg=244  ctermbg=NONE cterm=NONE
+hi Number       ctermfg=116  ctermbg=NONE cterm=NONE
+hi Operator     ctermfg=251  ctermbg=NONE cterm=NONE
+hi PreProc      ctermfg=223  ctermbg=NONE cterm=NONE
+hi Repeat       ctermfg=223  ctermbg=NONE cterm=NONE
+hi Special      ctermfg=216  ctermbg=NONE cterm=NONE
+hi SpecialChar  ctermfg=216  ctermbg=NONE cterm=NONE
+hi SpecialKey   ctermfg=216  ctermbg=NONE cterm=NONE
+hi Statement    ctermfg=110  ctermbg=NONE cterm=NONE
+hi StorageClass ctermfg=216  ctermbg=NONE cterm=NONE
+hi String       ctermfg=108  ctermbg=NONE cterm=NONE
+hi Structure    ctermfg=219  ctermbg=NONE cterm=NONE
+hi Tag          ctermfg=223  ctermbg=NONE cterm=NONE
+hi Title        ctermfg=015  ctermbg=NONE cterm=NONE
+hi Todo         ctermfg=223  ctermbg=237  cterm=NONE
+hi TooLong      ctermfg=174  ctermbg=NONE cterm=NONE
+hi Type         ctermfg=116  ctermbg=NONE cterm=NONE
+hi Typedef      ctermfg=223  ctermbg=NONE cterm=NONE
 
 " Spelling highlighting
-hi SpellBad     ctermfg=NONE ctermbg=236 cterm=undercurl
-hi SpellLocal   ctermfg=NONE ctermbg=236 cterm=undercurl
-hi SpellCap     ctermfg=NONE ctermbg=236 cterm=undercurl
-hi SpellRare    ctermfg=NONE ctermbg=236 cterm=undercurl
+hi SpellBad     ctermfg=NONE ctermbg=NONE cterm=undercurl
+hi SpellLocal   ctermfg=NONE ctermbg=NONE cterm=undercurl
+hi SpellCap     ctermfg=NONE ctermbg=NONE cterm=undercurl
+hi SpellRare    ctermfg=NONE ctermbg=NONE cterm=undercurl
 
 " Additional diff highlighting
-hi DiffAdd      ctermfg=108 ctermbg=236 cterm=NONE
-hi DiffChange   ctermfg=110 ctermbg=236 cterm=NONE
-hi DiffDelete   ctermfg=174 ctermbg=236 cterm=NONE
-hi DiffText     ctermfg=110 ctermbg=236 cterm=NONE
-hi DiffAdded    ctermfg=108 ctermbg=236 cterm=NONE
-hi DiffFile     ctermfg=174 ctermbg=236 cterm=NONE
-hi DiffNewFile  ctermfg=108 ctermbg=236 cterm=NONE
-hi DiffLine     ctermfg=110 ctermbg=236 cterm=NONE
-hi DiffRemoved  ctermfg=174 ctermbg=236 cterm=NONE
+hi DiffAdd      ctermfg=108  ctermbg=236  cterm=NONE
+hi DiffChange   ctermfg=110  ctermbg=236  cterm=NONE
+hi DiffDelete   ctermfg=174  ctermbg=236  cterm=NONE
+hi DiffText     ctermfg=110  ctermbg=236  cterm=NONE
+hi DiffAdded    ctermfg=108  ctermbg=236  cterm=NONE
+hi DiffFile     ctermfg=174  ctermbg=236  cterm=NONE
+hi DiffNewFile  ctermfg=108  ctermbg=236  cterm=NONE
+hi DiffLine     ctermfg=110  ctermbg=236  cterm=NONE
+hi DiffRemoved  ctermfg=174  ctermbg=236  cterm=NONE
 
 " Ruby highlighting
 hi rubyAttribute               ctermfg=110 ctermbg=NONE cterm=NONE
@@ -136,11 +135,14 @@ hi phpComparison      ctermfg=251 ctermbg=NONE cterm=NONE
 hi phpParent          ctermfg=251 ctermbg=NONE cterm=NONE
 
 " HTML highlighting
-hi htmlBold    ctermfg=223 ctermbg=NONE cterm=bold
-hi htmlItalic  ctermfg=116 ctermbg=NONE cterm=NONE
-hi htmlEndTag  ctermfg=251 ctermbg=NONE cterm=NONE
-hi htmlTag     ctermfg=251 ctermbg=NONE cterm=NONE
+hi htmlBold    ctermfg=223  ctermbg=NONE cterm=bold
+hi htmlItalic  ctermfg=116  ctermbg=NONE cterm=NONE
+hi htmlEndTag  ctermfg=180  ctermbg=NONE cterm=NONE
+hi htmlTag     ctermfg=180  ctermbg=NONE cterm=NONE
 hi link htmlTagN htmlTagName
+hi htmlLink    ctermfg=NONE ctermbg=NONE cterm=NONE
+hi htmlH1      ctermfg=223 ctermbg=NONE cterm=NONE
+hi htmlH2      ctermfg=223 ctermbg=NONE cterm=NONE
 
 " CSS highlighting
 hi cssBraces      ctermfg=251 ctermbg=NONE cterm=NONE
@@ -163,8 +165,6 @@ hi javaScriptNumber  ctermfg=216 ctermbg=NONE cterm=NONE
 hi markdownCode              ctermfg=108 ctermbg=NONE cterm=NONE
 hi markdownCodeBlock         ctermfg=108 ctermbg=NONE cterm=NONE
 hi markdownHeadingDelimiter  ctermfg=110 ctermbg=NONE cterm=NONE
-hi htmlH1                    ctermfg=116 ctermbg=NONE cterm=NONE
-hi htmlH2                    ctermfg=223 ctermbg=NONE cterm=NONE
 hi mkdInlineURL              ctermfg=110 ctermbg=NONE cterm=NONE
 
 " Git highlighting

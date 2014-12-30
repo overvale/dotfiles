@@ -7,9 +7,9 @@ let g:colors_name = "oliver.dark"
 " Brown   180
 " Orange  216
 " Yellow  223
-" Green   107
+" Green   108
 " Cyan    116
-" Blue    039
+" Blue    110
 " Magenta 219
 " Pink    218
 " Red     174
@@ -71,18 +71,18 @@ hi WildMenu      ctermfg=174   ctermbg=NONE  cterm=NONE
 hi Boolean      ctermfg=216 ctermbg=NONE cterm=NONE
 hi Character    ctermfg=174 ctermbg=NONE cterm=NONE
 hi Comment      ctermfg=244 ctermbg=NONE cterm=NONE
-hi Conceal      ctermfg=039 ctermbg=236  cterm=NONE
+hi Conceal      ctermfg=110 ctermbg=236  cterm=NONE
 hi Conditional  ctermfg=219 ctermbg=NONE cterm=NONE
 hi Constant     ctermfg=216 ctermbg=NONE cterm=NONE
 hi Debug        ctermfg=174 ctermbg=NONE cterm=NONE
 hi Define       ctermfg=219 ctermbg=NONE cterm=NONE
 hi Delimiter    ctermfg=180 ctermbg=NONE cterm=NONE
-hi Directory    ctermfg=039 ctermbg=NONE cterm=NONE
+hi Directory    ctermfg=110 ctermbg=NONE cterm=NONE
 hi Exception    ctermfg=174 ctermbg=NONE cterm=NONE
 hi Float        ctermfg=216 ctermbg=NONE cterm=NONE
-hi Function     ctermfg=039 ctermbg=NONE cterm=NONE
+hi Function     ctermfg=110 ctermbg=NONE cterm=NONE
 hi Identifier   ctermfg=174 ctermbg=NONE cterm=NONE
-hi Include      ctermfg=039 ctermbg=NONE cterm=NONE
+hi Include      ctermfg=110 ctermbg=NONE cterm=NONE
 hi Keyword      ctermfg=219 ctermbg=NONE cterm=NONE
 hi Label        ctermfg=223 ctermbg=NONE cterm=NONE
 hi NonText      ctermfg=244 ctermbg=NONE cterm=NONE
@@ -95,7 +95,7 @@ hi SpecialChar  ctermfg=180 ctermbg=NONE cterm=NONE
 hi SpecialKey   ctermfg=244 ctermbg=NONE cterm=NONE
 hi Statement    ctermfg=174 ctermbg=NONE cterm=NONE
 hi StorageClass ctermfg=223 ctermbg=NONE cterm=NONE
-hi String       ctermfg=107 ctermbg=NONE cterm=NONE
+hi String       ctermfg=108 ctermbg=NONE cterm=NONE
 hi Structure    ctermfg=219 ctermbg=NONE cterm=NONE
 hi Tag          ctermfg=223 ctermbg=NONE cterm=NONE
 hi Title        ctermfg=015 ctermbg=NONE cterm=NONE
@@ -111,24 +111,24 @@ hi SpellCap     ctermfg=NONE ctermbg=236 cterm=undercurl
 hi SpellRare    ctermfg=NONE ctermbg=236 cterm=undercurl
 
 " Additional diff highlighting
-hi DiffAdd      ctermfg=107 ctermbg=236 cterm=NONE
-hi DiffChange   ctermfg=039 ctermbg=236 cterm=NONE
+hi DiffAdd      ctermfg=108 ctermbg=236 cterm=NONE
+hi DiffChange   ctermfg=110 ctermbg=236 cterm=NONE
 hi DiffDelete   ctermfg=174 ctermbg=236 cterm=NONE
-hi DiffText     ctermfg=039 ctermbg=236 cterm=NONE
-hi DiffAdded    ctermfg=107 ctermbg=236 cterm=NONE
+hi DiffText     ctermfg=110 ctermbg=236 cterm=NONE
+hi DiffAdded    ctermfg=108 ctermbg=236 cterm=NONE
 hi DiffFile     ctermfg=174 ctermbg=236 cterm=NONE
-hi DiffNewFile  ctermfg=107 ctermbg=236 cterm=NONE
-hi DiffLine     ctermfg=039 ctermbg=236 cterm=NONE
+hi DiffNewFile  ctermfg=108 ctermbg=236 cterm=NONE
+hi DiffLine     ctermfg=110 ctermbg=236 cterm=NONE
 hi DiffRemoved  ctermfg=174 ctermbg=236 cterm=NONE
 
 " Ruby highlighting
-hi rubyAttribute               ctermfg=039 ctermbg=NONE cterm=NONE
+hi rubyAttribute               ctermfg=110 ctermbg=NONE cterm=NONE
 hi rubyConstant                ctermfg=223 ctermbg=NONE cterm=NONE
-hi rubyInterpolation           ctermfg=107 ctermbg=NONE cterm=NONE
+hi rubyInterpolation           ctermfg=108 ctermbg=NONE cterm=NONE
 hi rubyInterpolationDelimiter  ctermfg=180 ctermbg=NONE cterm=NONE
 hi rubyRegexp                  ctermfg=116 ctermbg=NONE cterm=NONE
-hi rubySymbol                  ctermfg=107 ctermbg=NONE cterm=NONE
-hi rubyStringDelimiter         ctermfg=107 ctermbg=NONE cterm=NONE
+hi rubySymbol                  ctermfg=108 ctermbg=NONE cterm=NONE
+hi rubyStringDelimiter         ctermfg=108 ctermbg=NONE cterm=NONE
 
 " PHP highlighting
 hi phpMemberSelector  ctermfg=251 ctermbg=NONE cterm=NONE
@@ -152,7 +152,7 @@ hi sassidChar     ctermfg=174 ctermbg=NONE cterm=NONE
 hi sassClassChar  ctermfg=216 ctermbg=NONE cterm=NONE
 hi sassInclude    ctermfg=219 ctermbg=NONE cterm=NONE
 hi sassMixing     ctermfg=219 ctermbg=NONE cterm=NONE
-hi sassMixinName  ctermfg=039 ctermbg=NONE cterm=NONE
+hi sassMixinName  ctermfg=110 ctermbg=NONE cterm=NONE
 
 " JavaScript highlighting
 hi javaScript        ctermfg=251 ctermbg=NONE cterm=NONE
@@ -160,32 +160,32 @@ hi javaScriptBraces  ctermfg=251 ctermbg=NONE cterm=NONE
 hi javaScriptNumber  ctermfg=216 ctermbg=NONE cterm=NONE
 
 " Markdown highlighting
-hi markdownCode              ctermfg=107 ctermbg=NONE cterm=NONE
-hi markdownCodeBlock         ctermfg=107 ctermbg=NONE cterm=NONE
-hi markdownHeadingDelimiter  ctermfg=039 ctermbg=NONE cterm=NONE
+hi markdownCode              ctermfg=108 ctermbg=NONE cterm=NONE
+hi markdownCodeBlock         ctermfg=108 ctermbg=NONE cterm=NONE
+hi markdownHeadingDelimiter  ctermfg=110 ctermbg=NONE cterm=NONE
 hi htmlH1                    ctermfg=116 ctermbg=NONE cterm=NONE
 hi htmlH2                    ctermfg=223 ctermbg=NONE cterm=NONE
-hi mkdInlineURL              ctermfg=039 ctermbg=NONE cterm=NONE
+hi mkdInlineURL              ctermfg=110 ctermbg=NONE cterm=NONE
 
 " Git highlighting
 hi gitCommitOverflow  ctermfg=174 ctermbg=NONE cterm=NONE
-hi gitCommitSummary   ctermfg=107 ctermbg=NONE cterm=NONE
+hi gitCommitSummary   ctermfg=108 ctermbg=NONE cterm=NONE
   
 " GitGutter highlighting
-hi GitGutterAdd           ctermfg=107 ctermbg=237 cterm=NONE
+hi GitGutterAdd           ctermfg=108 ctermbg=237 cterm=NONE
 hi GitGutterChange        ctermfg=216 ctermbg=237 cterm=NONE
 hi GitGutterDelete        ctermfg=174 ctermbg=237 cterm=NONE
 hi GitGutterChangeDelete  ctermfg=219 ctermbg=237 cterm=NONE
 
 " Signify highlighting
-hi SignifySignAdd     ctermfg=107 ctermbg=237 cterm=NONE
-hi SignifySignChange  ctermfg=039 ctermbg=237 cterm=NONE
+hi SignifySignAdd     ctermfg=108 ctermbg=237 cterm=NONE
+hi SignifySignChange  ctermfg=110 ctermbg=237 cterm=NONE
 hi SignifySignDelete  ctermfg=174 ctermbg=237 cterm=NONE
 
 " NERDTree highlighting
-hi NERDTreeDirSlash  ctermfg=039 ctermbg=NONE cterm=NONE
+hi NERDTreeDirSlash  ctermfg=110 ctermbg=NONE cterm=NONE
 hi NERDTreeExecFile  ctermfg=251 ctermbg=NONE cterm=NONE
 
 " Oliver's random shit
-hi vimIsCommand      ctermfg=039
-hi vimMapRhs         ctermfg=107
+hi vimIsCommand      ctermfg=110
+hi vimMapRhs         ctermfg=108

@@ -77,7 +77,7 @@ set statusline+=\ \ %P      "percentage through file
 set statusline+=\ %l,%c   "line,column
 
 " COLOR SCHEME
-colorscheme oliver-ocean.dark
+colorscheme oliver.dark
 set background=dark
 
 

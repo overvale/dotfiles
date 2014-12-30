@@ -1,6 +1,6 @@
 hi clear
 syntax reset
-let g:colors_name = "oliver-ocean.dark"
+let g:colors_name = "oliver.dark"
 
 " This is a refactoring / customization of of Base16-Ocean.dark
 " The color-codes below refer to the ANSI numbers assigned here:

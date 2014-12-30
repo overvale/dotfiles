@@ -71,7 +71,7 @@ hi StorageClass       ctermbg=NONE  ctermfg=136   cterm=NONE
 hi String             ctermbg=NONE  ctermfg=034   cterm=NONE
 hi Structure          ctermbg=NONE  ctermfg=NONE  cterm=NONE
 hi Tag                ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Title              ctermbg=NONE   ctermfg=32    cterm=NONE
+hi Title              ctermbg=NONE   ctermfg=37    cterm=NONE
 hi Todo               ctermbg=NONE   ctermfg=196   cterm=NONE
 hi TooLong            ctermbg=NONE  ctermfg=NONE  cterm=NONE
 hi Type               ctermbg=NONE  ctermfg=32    cterm=NONE
@@ -81,23 +81,23 @@ hi WarningMsg         ctermbg=208   ctermfg=231   cterm=NONE
 hi WildMenu           ctermbg=230   ctermfg=196   cterm=NONE
 
 hi VertSplit          ctermbg=252   ctermfg=252   cterm=NONE
-hi StatusLine         ctermbg=240   ctermfg=255   cterm=NONE
+hi StatusLine         ctermbg=245   ctermfg=255   cterm=NONE
 hi StatusLineNC       ctermbg=252   ctermfg=245   cterm=NONE
 hi TabLine            ctermbg=252   ctermfg=245   cterm=NONE
 hi TabLineFill        ctermbg=252   ctermfg=245   cterm=NONE
-hi TabLineSel         ctermbg=240   ctermfg=255   cterm=NONE
+hi TabLineSel         ctermbg=245   ctermfg=255   cterm=NONE
 hi SignColumn         ctermbg=255   ctermfg=245   cterm=NONE
 
-hi LineNr             ctermbg=NONE  ctermfg=252   cterm=NONE
-hi CursorLine         ctermbg=194  ctermfg=NONE  cterm=NONE
+hi LineNr             ctermbg=255  ctermfg=251   cterm=NONE
+hi CursorLine         ctermbg=255  ctermfg=NONE  cterm=NONE
 hi CursorLineNr       ctermbg=255  ctermfg=245   cterm=NONE
 hi Visual             ctermbg=194   ctermfg=NONE  cterm=NONE
 hi VisualNOS          ctermbg=194   ctermfg=NONE  cterm=NONE
 
-hi SpellBad           ctermbg=224  ctermfg=NONE  cterm=underline
-hi SpellCap           ctermbg=224  ctermfg=NONE  cterm=underline
-hi SpellLocal         ctermbg=224  ctermfg=NONE  cterm=underline
-hi SpellRare          ctermbg=224  ctermfg=NONE  cterm=underline
+hi SpellBad           ctermbg=NONE  ctermfg=NONE  cterm=underline
+hi SpellCap           ctermbg=NONE  ctermfg=NONE  cterm=underline
+hi SpellLocal         ctermbg=NONE  ctermfg=NONE  cterm=underline
+hi SpellRare          ctermbg=NONE  ctermfg=NONE  cterm=underline
 
 hi Pmenu              ctermbg=252   ctermfg=NONE  cterm=NONE
 hi PmenuSel           ctermbg=227   ctermfg=NONE  cterm=NONE
@@ -133,7 +133,7 @@ hi link htmlTagN htmlTagName
 hi htmlBold               ctermbg=NONE ctermfg=NONE cterm=bold
 hi htmlTag                ctermbg=NONE ctermfg=020  cterm=NONE
 hi htmlEndTag             ctermbg=NONE ctermfg=020  cterm=NONE
-hi htmlH1                 ctermbg=NONE ctermfg=NONE cterm=NONE
+hi htmlH1                 ctermbg=NONE ctermfg=196 cterm=NONE
 hi htmlH2                 ctermbg=NONE ctermfg=32   cterm=NONE
 hi htmlItalic             ctermbg=NONE ctermfg=NONE cterm=NONE
 
@@ -141,12 +141,10 @@ hi javaScript             ctermbg=NONE ctermfg=NONE cterm=NONE
 hi javaScriptBraces       ctermbg=NONE ctermfg=NONE cterm=NONE
 hi javaScriptNumber       ctermbg=NONE ctermfg=NONE cterm=NONE
 
+hi mkdDelimiter                ctermbg=NONE ctermfg=032  cterm=NONE
 hi markdownCode                ctermbg=NONE ctermfg=NONE cterm=NONE
 hi markdownCodeBlock           ctermbg=NONE ctermfg=NONE cterm=NONE
 hi markdownHeadingDelimiter    ctermbg=NONE ctermfg=NONE cterm=NONE
-
-hi NERDTreeDirSlash            ctermbg=NONE ctermfg=NONE cterm=NONE
-hi NERDTreeExecFile            ctermbg=NONE ctermfg=NONE cterm=NONE
 
 hi phpComparison               ctermbg=NONE ctermfg=NONE cterm=NONE
 hi phpMemberSelector           ctermbg=NONE ctermfg=NONE cterm=NONE
@@ -159,9 +157,3 @@ hi rubyInterpolationDelimiter  ctermbg=NONE ctermfg=NONE cterm=NONE
 hi rubyRegexp                  ctermbg=NONE ctermfg=NONE cterm=NONE
 hi rubyStringDelimiter         ctermbg=NONE ctermfg=NONE cterm=NONE
 hi rubySymbol                  ctermbg=NONE ctermfg=NONE cterm=NONE
-
-hi sassClassChar               ctermbg=NONE ctermfg=NONE cterm=NONE
-hi sassidChar                  ctermbg=NONE ctermfg=NONE cterm=NONE
-hi sassInclude                 ctermbg=NONE ctermfg=NONE cterm=NONE
-hi sassMixing                  ctermbg=NONE ctermfg=NONE cterm=NONE
-hi sassMixinName               ctermbg=NONE ctermfg=NONE cterm=NONE

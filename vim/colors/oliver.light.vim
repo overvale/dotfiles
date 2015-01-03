@@ -1,159 +1,186 @@
 hi clear
 syntax reset
-let g:colors_name="oliver.light"
+let g:colors_name = "oliver.light"
 
-" Text Colors
-"  Brown   136
-"  Orange  208
-"  Green   34
-"  Cyan    37
-"  Blue    32
-"  Purple  92
-"  Pink    205
-"  Red     196
+" TEXT COLORS
+" Brown   094   Grey-0  236
+" Orange  208   Grey-1  237
+" Yellow  208   Grey-2  241
+" Green   028   Grey-3  244
+" Cyan    037   Grey-4  250
+" Blue    032   Grey-5  251
+" Magenta 098   Grey-6  256
+" Pink    200   Grey-7  015
+" Red     160   
 
-" Background Colors
-"  Light-Brown   187
-"  Light-Yellow  230
-"  Light-Green   194
-"  Light-Cyan    195
-"  Light-Blue    189
-"  Light-Purple  225
-"  Light-Red     224
+" The Basics
+hi Normal        ctermfg=236   ctermbg=015   cterm=NONE
+hi Cursor        ctermfg=015   ctermbg=236   cterm=NONE
+hi Bold          ctermfg=NONE  ctermbg=NONE  cterm=bold
+hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=NONE
+hi Underlined    ctermfg=160   ctermbg=NONE  cterm=underline
 
-hi Normal             ctermbg=231   ctermfg=234   cterm=NONE
-hi Cursor             ctermbg=33    ctermfg=07    cterm=NONE
+" The Structure
+hi StatusLine    ctermfg=015   ctermbg=241   cterm=NONE
+hi StatusLineNC  ctermfg=250   ctermbg=241   cterm=NONE
+hi VertSplit     ctermfg=241   ctermbg=241   cterm=NONE
+hi TabLine       ctermfg=250   ctermbg=241   cterm=NONE
+hi TabLineFill   ctermfg=250   ctermbg=241   cterm=NONE
+hi TabLineSel    ctermfg=015   ctermbg=241   cterm=NONE
 
-hi Bold               ctermbg=NONE  ctermfg=NONE  cterm=bold
-hi Boolean            ctermbg=NONE  ctermfg=032   cterm=NONE
-hi Character          ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi ColorColumn        ctermbg=252   ctermfg=NONE  cterm=NONE
-hi Comment            ctermbg=NONE  ctermfg=248   cterm=NONE
-hi Conceal            ctermbg=NONE  ctermfg=250   cterm=NONE
-hi Conditional        ctermbg=NONE  ctermfg=092   cterm=NONE
-hi Constant           ctermbg=NONE  ctermfg=32   cterm=NONE
-hi CursorColumn       ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Debug              ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Define             ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Delimiter          ctermbg=NONE  ctermfg=172   cterm=NONE
-hi Directory          ctermbg=NONE  ctermfg=32    cterm=NONE
-hi Error              ctermbg=196   ctermfg=15    cterm=NONE
-hi ErrorMsg           ctermbg=196   ctermfg=15    cterm=NONE
-hi Exception          ctermbg=NONE  ctermfg=092   cterm=NONE
-hi Float              ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi FoldColumn         ctermbg=NONE  ctermfg=250   cterm=NONE
-hi Folded             ctermbg=NONE   ctermfg=250    cterm=NONE
-hi Function           ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Identifier         ctermbg=NONE  ctermfg=196   cterm=NONE
-hi Ignore             ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Include            ctermbg=NONE  ctermfg=196  cterm=NONE
-hi IncSearch          ctermbg=214   ctermfg=015   cterm=NONE
-hi Italic             ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Keyword            ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Label              ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi lCursor            ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Macro              ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi MatchParen         ctermbg=254   ctermfg=NONE  cterm=NONE
-hi ModeMsg            ctermbg=32  ctermfg=231    cterm=NONE
-hi MoreMsg            ctermbg=NONE  ctermfg=93    cterm=NONE
-hi NonText            ctermbg=NONE  ctermfg=250   cterm=NONE
-hi Number             ctermbg=NONE   ctermfg=092   cterm=NONE
-hi Operator           ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi PreProc            ctermbg=NONE  ctermfg=092   cterm=NONE
-hi Question           ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Repeat             ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Search             ctermbg=228   ctermfg=NONE  cterm=NONE
-hi Special            ctermbg=NONE   ctermfg=32   cterm=NONE
-hi SpecialChar        ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi SpecialKey         ctermbg=NONE  ctermfg=250   cterm=NONE
-hi Statement          ctermbg=NONE   ctermfg=196   cterm=NONE
-hi StorageClass       ctermbg=NONE  ctermfg=136   cterm=NONE
-hi String             ctermbg=NONE  ctermfg=034   cterm=NONE
-hi Structure          ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Tag                ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Title              ctermbg=NONE   ctermfg=37    cterm=NONE
-hi Todo               ctermbg=NONE   ctermfg=196   cterm=NONE
-hi TooLong            ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Type               ctermbg=NONE  ctermfg=32    cterm=NONE
-hi Typedef            ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi Underlined         ctermbg=NONE  ctermfg=NONE  cterm=underline
-hi WarningMsg         ctermbg=208   ctermfg=231   cterm=NONE
-hi WildMenu           ctermbg=230   ctermfg=196   cterm=NONE
+hi LineNr        ctermfg=251   ctermbg=255   cterm=NONE
+hi CursorLineNr  ctermfg=251   ctermbg=255   cterm=NONE
+hi SignColumn    ctermfg=251   ctermbg=255   cterm=NONE
+hi CursorLine    ctermfg=NONE  ctermbg=255   cterm=NONE
+hi CursorColumn  ctermfg=NONE  ctermbg=255   cterm=NONE
+hi ColorColumn   ctermfg=NONE  ctermbg=255   cterm=NONE
 
-hi VertSplit          ctermbg=252   ctermfg=252   cterm=NONE
-hi StatusLine         ctermbg=245   ctermfg=255   cterm=NONE
-hi StatusLineNC       ctermbg=252   ctermfg=245   cterm=NONE
-hi TabLine            ctermbg=252   ctermfg=245   cterm=NONE
-hi TabLineFill        ctermbg=252   ctermfg=245   cterm=NONE
-hi TabLineSel         ctermbg=245   ctermfg=255   cterm=NONE
-hi SignColumn         ctermbg=255   ctermfg=245   cterm=NONE
+hi PMenu         ctermfg=236   ctermbg=250   cterm=NONE
+hi PMenuSel      ctermfg=237   ctermbg=208   cterm=NONE
+hi PmenuSbar     ctermbg=NONE  ctermfg=NONE  cterm=NONE
+hi PmenuThumb    ctermbg=NONE  ctermfg=NONE  cterm=NONE
 
-hi LineNr             ctermbg=255  ctermfg=251   cterm=NONE
-hi CursorLine         ctermbg=255  ctermfg=NONE  cterm=NONE
-hi CursorLineNr       ctermbg=255  ctermfg=245   cterm=NONE
-hi Visual             ctermbg=194   ctermfg=NONE  cterm=NONE
-hi VisualNOS          ctermbg=194   ctermfg=NONE  cterm=NONE
+" Misc
+hi ErrorMsg      ctermfg=160   ctermbg=236   cterm=NONE
+hi FoldColumn    ctermfg=NONE  ctermbg=238   cterm=NONE
+hi Folded        ctermfg=248   ctermbg=255   cterm=NONE
+hi IncSearch     ctermfg=237   ctermbg=208   cterm=NONE
+hi Macro         ctermfg=160   ctermbg=NONE  cterm=NONE
+hi MatchParen    ctermfg=236   ctermbg=244   cterm=NONE
+hi ModeMsg       ctermfg=208   ctermbg=NONE  cterm=NONE
+hi MoreMsg       ctermfg=037   ctermbg=NONE  cterm=NONE
+hi Question      ctermfg=208   ctermbg=NONE  cterm=NONE
+hi Search        ctermfg=244   ctermbg=208   cterm=NONE
+hi Visual        ctermfg=NONE  ctermbg=251   cterm=NONE
+hi VisualNOS     ctermfg=160   ctermbg=NONE  cterm=NONE
+hi WarningMsg    ctermfg=160   ctermbg=NONE  cterm=NONE
+hi WildMenu      ctermfg=160   ctermbg=NONE  cterm=NONE
 
-hi SpellBad           ctermbg=NONE  ctermfg=NONE  cterm=underline
-hi SpellCap           ctermbg=NONE  ctermfg=NONE  cterm=underline
-hi SpellLocal         ctermbg=NONE  ctermfg=NONE  cterm=underline
-hi SpellRare          ctermbg=NONE  ctermfg=NONE  cterm=underline
+" Standard syntax highlighting
+hi Boolean      ctermfg=208  ctermbg=NONE cterm=NONE
+hi Character    ctermfg=160  ctermbg=NONE cterm=NONE
+hi Comment      ctermfg=244  ctermbg=NONE cterm=NONE
+hi Conceal      ctermfg=032  ctermbg=236  cterm=NONE
+hi Conditional  ctermfg=098  ctermbg=NONE cterm=NONE
+hi Constant     ctermfg=208  ctermbg=NONE cterm=NONE
+hi Debug        ctermfg=160  ctermbg=NONE cterm=NONE
+hi Define       ctermfg=098  ctermbg=NONE cterm=NONE
+hi Delimiter    ctermfg=094  ctermbg=NONE cterm=NONE
+hi Directory    ctermfg=032  ctermbg=NONE cterm=NONE
+hi Exception    ctermfg=160  ctermbg=NONE cterm=NONE
+hi Float        ctermfg=208  ctermbg=NONE cterm=NONE
+hi Function     ctermfg=032  ctermbg=NONE cterm=NONE
+hi Identifier   ctermfg=160  ctermbg=NONE cterm=NONE
+hi Include      ctermfg=032  ctermbg=NONE cterm=NONE
+hi Keyword      ctermfg=098  ctermbg=NONE cterm=NONE
+hi Label        ctermfg=208  ctermbg=NONE cterm=NONE
+hi NonText      ctermfg=240  ctermbg=NONE cterm=NONE
+hi Number       ctermfg=098  ctermbg=NONE cterm=NONE
+hi Operator     ctermfg=160  ctermbg=NONE cterm=NONE
+hi PreProc      ctermfg=208  ctermbg=NONE cterm=NONE
+hi Repeat       ctermfg=208  ctermbg=NONE cterm=NONE
+hi Special      ctermfg=208  ctermbg=NONE cterm=NONE
+hi SpecialChar  ctermfg=208  ctermbg=NONE cterm=NONE
+hi SpecialKey   ctermfg=208  ctermbg=NONE cterm=NONE
+hi Statement    ctermfg=032  ctermbg=NONE cterm=NONE
+hi StorageClass ctermfg=208  ctermbg=NONE cterm=NONE
+hi String       ctermfg=028  ctermbg=NONE cterm=NONE
+hi Structure    ctermfg=098  ctermbg=NONE cterm=NONE
+hi Tag          ctermfg=208  ctermbg=NONE cterm=NONE
+hi Title        ctermfg=160  ctermbg=NONE cterm=NONE
+hi Todo         ctermfg=208  ctermbg=237  cterm=NONE
+hi TooLong      ctermfg=160  ctermbg=NONE cterm=NONE
+hi Type         ctermfg=037  ctermbg=NONE cterm=NONE
+hi Typedef      ctermfg=208  ctermbg=NONE cterm=NONE
 
-hi Pmenu              ctermbg=252   ctermfg=NONE  cterm=NONE
-hi PmenuSel           ctermbg=227   ctermfg=NONE  cterm=NONE
-hi PmenuSbar          ctermbg=248   ctermfg=NONE  cterm=NONE
-hi PmenuThumb         ctermbg=252   ctermfg=NONE  cterm=NONE
+" Spelling highlighting
+hi SpellBad     ctermfg=NONE ctermbg=NONE cterm=undercurl
+hi SpellLocal   ctermfg=NONE ctermbg=NONE cterm=undercurl
+hi SpellCap     ctermfg=NONE ctermbg=NONE cterm=undercurl
+hi SpellRare    ctermfg=NONE ctermbg=NONE cterm=undercurl
 
-hi SignifySignAdd     ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi SignifySignChange  ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi SignifySignDelete  ctermbg=NONE  ctermfg=NONE  cterm=NONE
+" Additional diff highlighting
+hi DiffAdd      ctermfg=028  ctermbg=236  cterm=NONE
+hi DiffChange   ctermfg=032  ctermbg=236  cterm=NONE
+hi DiffDelete   ctermfg=160  ctermbg=236  cterm=NONE
+hi DiffText     ctermfg=032  ctermbg=236  cterm=NONE
+hi DiffAdded    ctermfg=028  ctermbg=236  cterm=NONE
+hi DiffFile     ctermfg=160  ctermbg=236  cterm=NONE
+hi DiffNewFile  ctermfg=028  ctermbg=236  cterm=NONE
+hi DiffLine     ctermfg=032  ctermbg=236  cterm=NONE
+hi DiffRemoved  ctermfg=160  ctermbg=236  cterm=NONE
 
-hi cssBraces          ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi cssClassName       ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi cssColor           ctermbg=NONE  ctermfg=NONE  cterm=NONE
+" Ruby highlighting
+hi rubyAttribute               ctermfg=032 ctermbg=NONE cterm=NONE
+hi rubyConstant                ctermfg=208 ctermbg=NONE cterm=NONE
+hi rubyInterpolation           ctermfg=028 ctermbg=NONE cterm=NONE
+hi rubyInterpolationDelimiter  ctermfg=094 ctermbg=NONE cterm=NONE
+hi rubyRegexp                  ctermfg=160 ctermbg=NONE cterm=NONE
+hi rubyRegexpSpecial           ctermfg=032
+hi rubyRegexpParens            ctermfg=208
+hi rubyStringEscape            ctermfg=098
+hi rubySymbol                  ctermfg=160 ctermbg=NONE cterm=NONE
+hi rubyStringDelimiter         ctermfg=028 ctermbg=NONE cterm=NONE
+hi rubyDoBlock                 ctermfg=208
+hi rubyConditionalExpression   ctermfg=251
 
-hi DiffAdd            ctermbg=120   ctermfg=NONE  cterm=NONE
-hi DiffAdded          ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi DiffChange         ctermbg=223   ctermfg=NONE  cterm=NONE
-hi DiffDelete         ctermbg=175   ctermfg=NONE  cterm=NONE
-hi DiffFile           ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi DiffLine           ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi DiffNewFile        ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi DiffRemoved        ctermbg=NONE  ctermfg=NONE  cterm=NONE
-hi DiffText           ctermbg=222   ctermfg=15    cterm=NONE
+" PHP highlighting
+hi phpMemberSelector  ctermfg=251 ctermbg=NONE cterm=NONE
+hi phpComparison      ctermfg=251 ctermbg=NONE cterm=NONE
+hi phpParent          ctermfg=251 ctermbg=NONE cterm=NONE
 
-hi gitCommitOverflow      ctermbg=NONE ctermfg=NONE cterm=NONE
-hi gitCommitSummary       ctermbg=NONE ctermfg=NONE cterm=NONE
-hi GitGutterAdd           ctermbg=255 ctermfg=034  cterm=NONE
-hi GitGutterChange        ctermbg=255 ctermfg=208  cterm=NONE
-hi GitGutterChangeDelete  ctermbg=255 ctermfg=092  cterm=NONE
-hi GitGutterDelete        ctermbg=255 ctermfg=196  cterm=NONE
-
+" HTML highlighting
+hi htmlBold    ctermfg=208  ctermbg=NONE cterm=bold
+hi htmlItalic  ctermfg=208  ctermbg=NONE cterm=NONE
+hi htmlEndTag  ctermfg=094  ctermbg=NONE cterm=NONE
+hi htmlTag     ctermfg=094  ctermbg=NONE cterm=NONE
 hi link htmlTagN htmlTagName
-hi htmlBold               ctermbg=NONE ctermfg=NONE cterm=bold
-hi htmlTag                ctermbg=NONE ctermfg=020  cterm=NONE
-hi htmlEndTag             ctermbg=NONE ctermfg=020  cterm=NONE
-hi htmlH1                 ctermbg=NONE ctermfg=196 cterm=NONE
-hi htmlH2                 ctermbg=NONE ctermfg=32   cterm=NONE
-hi htmlItalic             ctermbg=NONE ctermfg=NONE cterm=NONE
+hi htmlLink    ctermfg=NONE ctermbg=NONE cterm=NONE
+hi htmlH1      ctermfg=032 ctermbg=NONE cterm=NONE
+hi htmlH2      ctermfg=032 ctermbg=NONE cterm=NONE
 
-hi javaScript             ctermbg=NONE ctermfg=NONE cterm=NONE
-hi javaScriptBraces       ctermbg=NONE ctermfg=NONE cterm=NONE
-hi javaScriptNumber       ctermbg=NONE ctermfg=NONE cterm=NONE
+" CSS highlighting
+hi cssBraces      ctermfg=251 ctermbg=NONE cterm=NONE
+hi cssClassName   ctermfg=098 ctermbg=NONE cterm=NONE
+hi cssColor       ctermfg=037 ctermbg=NONE cterm=NONE
 
-hi mkdDelimiter                ctermbg=NONE ctermfg=032  cterm=NONE
-hi markdownCode                ctermbg=NONE ctermfg=NONE cterm=NONE
-hi markdownCodeBlock           ctermbg=NONE ctermfg=NONE cterm=NONE
-hi markdownHeadingDelimiter    ctermbg=NONE ctermfg=NONE cterm=NONE
+" SASS highlighting
+hi sassidChar     ctermfg=160 ctermbg=NONE cterm=NONE
+hi sassClassChar  ctermfg=208 ctermbg=NONE cterm=NONE
+hi sassInclude    ctermfg=098 ctermbg=NONE cterm=NONE
+hi sassMixing     ctermfg=098 ctermbg=NONE cterm=NONE
+hi sassMixinName  ctermfg=032 ctermbg=NONE cterm=NONE
 
-hi phpComparison               ctermbg=NONE ctermfg=NONE cterm=NONE
-hi phpMemberSelector           ctermbg=NONE ctermfg=NONE cterm=NONE
-hi phpParent                   ctermbg=NONE ctermfg=NONE cterm=NONE
+" JavaScript highlighting
+hi javaScript        ctermfg=251 ctermbg=NONE cterm=NONE
+hi javaScriptBraces  ctermfg=251 ctermbg=NONE cterm=NONE
+hi javaScriptNumber  ctermfg=208 ctermbg=NONE cterm=NONE
 
-hi rubyAttribute               ctermbg=NONE ctermfg=NONE cterm=NONE
-hi rubyConstant                ctermbg=NONE ctermfg=NONE cterm=NONE
-hi rubyInterpolation           ctermbg=NONE ctermfg=NONE cterm=NONE
-hi rubyInterpolationDelimiter  ctermbg=NONE ctermfg=NONE cterm=NONE
-hi rubyRegexp                  ctermbg=NONE ctermfg=NONE cterm=NONE
-hi rubyStringDelimiter         ctermbg=NONE ctermfg=NONE cterm=NONE
-hi rubySymbol                  ctermbg=NONE ctermfg=NONE cterm=NONE
+" Markdown highlighting
+hi markdownCode              ctermfg=028 ctermbg=NONE cterm=NONE
+hi markdownCodeBlock         ctermfg=028 ctermbg=NONE cterm=NONE
+hi markdownHeadingDelimiter  ctermfg=032 ctermbg=NONE cterm=NONE
+hi mkdInlineURL              ctermfg=032 ctermbg=NONE cterm=NONE
+
+" Git highlighting
+hi gitCommitOverflow  ctermfg=160 ctermbg=NONE cterm=NONE
+hi gitCommitSummary   ctermfg=028 ctermbg=NONE cterm=NONE
+  
+" GitGutter highlighting
+hi GitGutterAdd           ctermfg=028 ctermbg=255 cterm=NONE
+hi GitGutterChange        ctermfg=208 ctermbg=255 cterm=NONE
+hi GitGutterDelete        ctermfg=160 ctermbg=255 cterm=NONE
+hi GitGutterChangeDelete  ctermfg=098 ctermbg=255 cterm=NONE
+
+" Signify highlighting
+hi SignifySignAdd     ctermfg=028 ctermbg=237 cterm=NONE
+hi SignifySignChange  ctermfg=032 ctermbg=237 cterm=NONE
+hi SignifySignDelete  ctermfg=160 ctermbg=237 cterm=NONE
+
+" NERDTree highlighting
+hi NERDTreeDirSlash  ctermfg=032 ctermbg=NONE cterm=NONE
+hi NERDTreeExecFile  ctermfg=251 ctermbg=NONE cterm=NONE
+
+" Oliver's random shit
+hi vimIsCommand      ctermfg=160
+hi vimMapRhs         ctermfg=028

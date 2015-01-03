@@ -2,26 +2,16 @@ hi clear
 syntax reset
 let g:colors_name = "oliver.dark"
 
-" Text Colors
-"
-" Brown   180
-" Orange  216
-" Yellow  223
-" Green   108
-" Cyan    116
-" Blue    110
-" Magenta 219
-" Pink    218
-" Red     174
-"
-" Grey-0  236
-" Grey-1  237
-" Grey-2  241
-" Grey-3  244
-" Grey-4  250
-" Grey-5  251
-" Grey-6  256
-" Grey-7  015
+" TEXT COLORS
+" Brown   180   Grey-0  236
+" Orange  216   Grey-1  237
+" Yellow  223   Grey-2  241
+" Green   108   Grey-3  244
+" Cyan    116   Grey-4  250
+" Blue    110   Grey-5  251
+" Magenta 219   Grey-6  256
+" Pink    218   Grey-7  015
+" Red     174   
 
 " The Basics
 hi Normal        ctermfg=256   ctermbg=236   cterm=NONE
@@ -141,7 +131,7 @@ hi phpParent          ctermfg=251 ctermbg=NONE cterm=NONE
 
 " HTML highlighting
 hi htmlBold    ctermfg=223  ctermbg=NONE cterm=bold
-hi htmlItalic  ctermfg=116  ctermbg=NONE cterm=NONE
+hi htmlItalic  ctermfg=216  ctermbg=NONE cterm=NONE
 hi htmlEndTag  ctermfg=180  ctermbg=NONE cterm=NONE
 hi htmlTag     ctermfg=180  ctermbg=NONE cterm=NONE
 hi link htmlTagN htmlTagName

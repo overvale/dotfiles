@@ -21,7 +21,7 @@ let g:colors_name="oliver.light"
 "  Light-Purple  225
 "  Light-Red     224
 
-hi Normal             ctermbg=231   ctermfg=237   cterm=NONE
+hi Normal             ctermbg=231   ctermfg=234   cterm=NONE
 hi Cursor             ctermbg=33    ctermfg=07    cterm=NONE
 
 hi Bold               ctermbg=NONE  ctermfg=NONE  cterm=bold

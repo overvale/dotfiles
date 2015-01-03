@@ -80,6 +80,7 @@ set statusline+=\ %l,%c   "line,column
 colorscheme oliver.dark
 
 
+" Mappings
 " ------------------------------------------------------------------------
 
 " Make mode-switching easy, use <c-v>` to insert literal backtick
@@ -154,13 +155,8 @@ nnoremap ZZ :echoe "Your Caps-lock is on."<cr>
 " Paste mode
 set pastetoggle=<F2>
 
-nmap [h <Plug>GitGutterPrevHunk
-nmap ]h <Plug>GitGutterNextHunk
-
-" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
-vmap <Enter> <Plug>(EasyAlign)
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)
+" Commands
+" ------------------------------------------------------------------------
 
 " Never use a binding when a command will do
 " commands are easier to remember and autocomplete
@@ -178,10 +174,17 @@ command NN :set invnumber
 command Nr :set relativenumber!
 command SS :set spell!
 command Src :source $MYVIMRC
-command Evrc :e ~/code/dotfiles/vim/vimrc
+command Erc :e ~/code/dotfiles/vim/vimrc
 command WW :set wrap!
 
-au BufRead,BufNewFile *.fountain	 set filetype=fountain
+" Autocommands
+" ------------------------------------------------------------------------
+
+augroup filetypes
+    autocmd!
+    au BufRead,BufNewFile *.fountain	 set filetype=fountain
+    au BufRead,BufNewFile *.text         set filetype=markdown
+augroup END
 
 " Make sure Vim returns to the same line when you reopen a file.
 augroup line_return
@@ -195,7 +198,21 @@ augroup END
 " Don't write undofiles for secret stuff
 au BufWritePre /Volumes/secret_files/* setlocal noundofile
 
-" Unite
+augroup custom_misc
+  autocmd!
+
+  " Only show cursorline in the current window.
+  autocmd WinLeave * set nocursorline
+  autocmd WinEnter * set cursorline
+
+  " Super fast exiting from insert mode. Note that with this, you can't
+  " possibly use mappings that start with <esc> *in insert mode*, since vim
+  " won't wait for you to press other keys.
+  autocmd InsertEnter * set timeoutlen=0
+  autocmd InsertLeave * set timeoutlen=800
+augroup END
+
+" Plugins
 " ------------------------------------------------------------------------
 
 " Start by setting some defaults
@@ -220,17 +237,17 @@ function! s:unite_settings()
   imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
 endfunction
 
+nmap [h <Plug>GitGutterPrevHunk
+nmap ]h <Plug>GitGutterNextHunk
+
+" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+vmap <Enter> <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
 " Snippets
 " ------------------------------------------------------------------------
 
 " Timestamp in brackets like this: [2014-06-08T10:41:44-0700]
 iab <expr> dd strftime("[%Y-%m-%dT%H:%M:%S%z]")
 
-" TODO:
-" Move lines up/down
-" new line, increment number
-" <clippings>
-"   date (various formats)
-"   lorem
-"   point-of-view
-"   work-in-progress

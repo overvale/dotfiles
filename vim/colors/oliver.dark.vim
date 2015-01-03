@@ -33,10 +33,10 @@ hi Underlined    ctermfg=174   ctermbg=NONE  cterm=underline
 " The Structure
 hi StatusLine    ctermfg=015   ctermbg=238   cterm=NONE
 hi StatusLineNC  ctermfg=244   ctermbg=238   cterm=NONE
-hi VertSplit     ctermfg=237   ctermbg=238   cterm=NONE
-hi TabLine       ctermfg=236   ctermbg=238   cterm=NONE
-hi TabLineFill   ctermfg=236   ctermbg=238   cterm=NONE
-hi TabLineSel    ctermfg=251   ctermbg=238   cterm=NONE
+hi VertSplit     ctermfg=238   ctermbg=238   cterm=NONE
+hi TabLine       ctermfg=244   ctermbg=238   cterm=NONE
+hi TabLineFill   ctermfg=244   ctermbg=238   cterm=NONE
+hi TabLineSel    ctermfg=015   ctermbg=238   cterm=NONE
 
 hi LineNr        ctermfg=240   ctermbg=237   cterm=NONE
 hi CursorLineNr  ctermfg=256   ctermbg=237   cterm=NONE
@@ -52,8 +52,8 @@ hi PmenuThumb    ctermbg=NONE  ctermfg=NONE  cterm=NONE
 
 " Misc
 hi ErrorMsg      ctermfg=174   ctermbg=236   cterm=NONE
-hi FoldColumn    ctermfg=NONE  ctermbg=237   cterm=NONE
-hi Folded        ctermfg=244   ctermbg=NONE  cterm=NONE
+hi FoldColumn    ctermfg=NONE  ctermbg=238   cterm=NONE
+hi Folded        ctermfg=244   ctermbg=237   cterm=NONE
 hi IncSearch     ctermfg=237   ctermbg=216   cterm=NONE
 hi Macro         ctermfg=174   ctermbg=NONE  cterm=NONE
 hi MatchParen    ctermfg=236   ctermbg=244   cterm=NONE
@@ -84,8 +84,8 @@ hi Identifier   ctermfg=174  ctermbg=NONE cterm=NONE
 hi Include      ctermfg=110  ctermbg=NONE cterm=NONE
 hi Keyword      ctermfg=219  ctermbg=NONE cterm=NONE
 hi Label        ctermfg=223  ctermbg=NONE cterm=NONE
-hi NonText      ctermfg=244  ctermbg=NONE cterm=NONE
-hi Number       ctermfg=116  ctermbg=NONE cterm=NONE
+hi NonText      ctermfg=240  ctermbg=NONE cterm=NONE
+hi Number       ctermfg=219  ctermbg=NONE cterm=NONE
 hi Operator     ctermfg=251  ctermbg=NONE cterm=NONE
 hi PreProc      ctermfg=223  ctermbg=NONE cterm=NONE
 hi Repeat       ctermfg=223  ctermbg=NONE cterm=NONE
@@ -125,9 +125,14 @@ hi rubyAttribute               ctermfg=110 ctermbg=NONE cterm=NONE
 hi rubyConstant                ctermfg=223 ctermbg=NONE cterm=NONE
 hi rubyInterpolation           ctermfg=108 ctermbg=NONE cterm=NONE
 hi rubyInterpolationDelimiter  ctermfg=180 ctermbg=NONE cterm=NONE
-hi rubyRegexp                  ctermfg=116 ctermbg=NONE cterm=NONE
-hi rubySymbol                  ctermfg=108 ctermbg=NONE cterm=NONE
+hi rubyRegexp                  ctermfg=174 ctermbg=NONE cterm=NONE
+hi rubyRegexpSpecial           ctermfg=110
+hi rubyRegexpParens            ctermfg=216
+hi rubyStringEscape            ctermfg=219
+hi rubySymbol                  ctermfg=174 ctermbg=NONE cterm=NONE
 hi rubyStringDelimiter         ctermfg=108 ctermbg=NONE cterm=NONE
+hi rubyDoBlock                 ctermfg=223
+hi rubyConditionalExpression   ctermfg=251
 
 " PHP highlighting
 hi phpMemberSelector  ctermfg=251 ctermbg=NONE cterm=NONE
@@ -187,5 +192,5 @@ hi NERDTreeDirSlash  ctermfg=110 ctermbg=NONE cterm=NONE
 hi NERDTreeExecFile  ctermfg=251 ctermbg=NONE cterm=NONE
 
 " Oliver's random shit
-hi vimIsCommand      ctermfg=110
+hi vimIsCommand      ctermfg=174
 hi vimMapRhs         ctermfg=108

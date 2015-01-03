@@ -78,7 +78,6 @@ set statusline+=\ %l,%c   "line,column
 
 " COLOR SCHEME
 colorscheme oliver.dark
-set background=dark
 
 
 " ------------------------------------------------------------------------

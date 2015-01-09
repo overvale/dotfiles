@@ -52,7 +52,7 @@ set formatprg=par\ -w78rq         " external formatter options
 set laststatus=2                  " Always show status bar
 set showcmd                       " Show commands as you type
 set scrolloff=2                   " Show N lines around cursor
-"set cursorline                    " highlight cursor line
+set cursorline                    " highlight cursor line
 "set number                        " Show line-numbers
 set display+=lastline             " Don't truncate the last line
 " Open new split panes to right and bottom, which feels more natural
@@ -154,6 +154,9 @@ nnoremap ZZ :echoe "Your Caps-lock is on."<cr>
 
 " Paste mode
 set pastetoggle=<F2>
+
+" Make spelling corrections faster
+nnoremap = z=
 
 " Commands
 " ------------------------------------------------------------------------

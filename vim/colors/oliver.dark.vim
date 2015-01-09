@@ -14,19 +14,19 @@ let g:colors_name = "oliver.dark"
 " Red     174   
 
 " The Basics
-hi Normal        ctermfg=256   ctermbg=236   cterm=NONE
+hi Normal        ctermfg=255   ctermbg=236   cterm=NONE
 hi Cursor        ctermfg=236   ctermbg=015   cterm=NONE
 hi Bold          ctermfg=NONE  ctermbg=NONE  cterm=bold
 hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=NONE
 hi Underlined    ctermfg=174   ctermbg=NONE  cterm=underline
 
 " The Structure
-hi StatusLine    ctermfg=015   ctermbg=238   cterm=NONE
-hi StatusLineNC  ctermfg=244   ctermbg=238   cterm=NONE
-hi VertSplit     ctermfg=238   ctermbg=238   cterm=NONE
-hi TabLine       ctermfg=244   ctermbg=238   cterm=NONE
-hi TabLineFill   ctermfg=244   ctermbg=238   cterm=NONE
-hi TabLineSel    ctermfg=015   ctermbg=238   cterm=NONE
+hi StatusLine    ctermfg=015   ctermbg=239   cterm=NONE
+hi StatusLineNC  ctermfg=246   ctermbg=239   cterm=NONE
+hi VertSplit     ctermfg=239   ctermbg=239   cterm=NONE
+hi TabLine       ctermfg=246   ctermbg=239   cterm=NONE
+hi TabLineFill   ctermfg=246   ctermbg=239   cterm=NONE
+hi TabLineSel    ctermfg=015   ctermbg=239   cterm=NONE
 
 hi LineNr        ctermfg=240   ctermbg=237   cterm=NONE
 hi CursorLineNr  ctermfg=256   ctermbg=237   cterm=NONE
@@ -51,7 +51,7 @@ hi ModeMsg       ctermfg=223   ctermbg=NONE  cterm=NONE
 hi MoreMsg       ctermfg=116   ctermbg=NONE  cterm=NONE
 hi Question      ctermfg=216   ctermbg=NONE  cterm=NONE
 hi Search        ctermfg=244   ctermbg=223   cterm=NONE
-hi Visual        ctermfg=NONE  ctermbg=251   cterm=NONE
+hi Visual        ctermfg=NONE  ctermbg=240   cterm=NONE
 hi VisualNOS     ctermfg=174   ctermbg=NONE  cterm=NONE
 hi WarningMsg    ctermfg=174   ctermbg=NONE  cterm=NONE
 hi WildMenu      ctermfg=174   ctermbg=NONE  cterm=NONE
@@ -137,7 +137,8 @@ hi htmlTag     ctermfg=180  ctermbg=NONE cterm=NONE
 hi link htmlTagN htmlTagName
 hi htmlLink    ctermfg=NONE ctermbg=NONE cterm=NONE
 hi htmlH1      ctermfg=223 ctermbg=NONE cterm=NONE
-hi htmlH2      ctermfg=223 ctermbg=NONE cterm=NONE
+hi htmlH2      ctermfg=116 ctermbg=NONE cterm=NONE
+hi htmlH3      ctermfg=110 ctermbg=NONE cterm=NONE
 
 " CSS highlighting
 hi cssBraces      ctermfg=251 ctermbg=NONE cterm=NONE

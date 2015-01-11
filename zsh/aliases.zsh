@@ -1,5 +1,5 @@
 # Alias Editing
-alias ea='vim $DOT/zsh/aliases.zsh'
+alias ea='vim $DOT/zsh/aliases.zsh && source $DOT/zsh/aliases.zsh'
 # personal aliases (not for distribution)
 alias epa='vim ~/.zsh/localrc.zsh && source ~/.zsh/localrc.zsh'
 
@@ -29,8 +29,8 @@ alias la="ls -AohGp"    # long list, all, colors
 alias ..="cd .."
 alias cdb="cd -"
 
-# open $PWD in Finder
-alias o='open .'
+# open
+alias o='open'
 
 # Create directory and cd into it
 function cake() {
@@ -53,6 +53,11 @@ echo "File-Path is on the clipboard"
 function size(){
   du -sh "$1"
 }
+
+# Git
+# ----------------------------------------------------------------------
+
+alias gitACP="git add -A && git commit -m 'updates' && git push"
 
 # Working with files
 # ----------------------------------------------------------------------

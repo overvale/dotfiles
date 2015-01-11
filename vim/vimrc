@@ -71,6 +71,7 @@ set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
 set statusline=%f         "path to file in buffer
 set statusline+=%m        "modified/modifiable flag
 set statusline+=\ %y      "filetype
+set statusline+=\ %R      "read only flag, not the same as 'modifiable'
 set statusline+=%=        "left/right alignment separator
 set statusline+=%{strlen(&fenc)?&fenc:'none'}[%{&ff}]   "file encoding
 set statusline+=\ \ %P      "percentage through file
@@ -158,14 +159,15 @@ set pastetoggle=<F2>
 " Make spelling corrections faster
 nnoremap = z=
 
+" Make Y like D or C
+nnoremap Y y$
+
 " Commands
 " ------------------------------------------------------------------------
 
 " Never use a binding when a command will do
 " commands are easier to remember and autocomplete
 " also, it's just vim-style
-command BGd set background=dark | colorscheme oliver-ocean.dark
-command BGl set background=light | colorscheme oliver.light
 command Cdf :cd %:h<cr>
 command Cl :set cursorline!
 command Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
@@ -185,24 +187,24 @@ command WW :set wrap!
 
 augroup filetypes
     autocmd!
-    au BufRead,BufNewFile *.fountain	 set filetype=fountain
-    au BufRead,BufNewFile *.text         set filetype=markdown
+    autocmd BufRead,BufNewFile *.fountain set filetype=fountain
+    autocmd BufRead,BufNewFile *.text     set filetype=markdown
 augroup END
 
 " Make sure Vim returns to the same line when you reopen a file.
 augroup line_return
-    au!
-    au BufReadPost *
+    autocmd!
+    autocmd BufReadPost *
         \ if line("'\"") > 0 && line("'\"") <= line("$") |
         \     execute 'normal! g`"zvzz' |
         \ endif
 augroup END
 
-" Don't write undofiles for secret stuff
-au BufWritePre /Volumes/secret_files/* setlocal noundofile
-
 augroup custom_misc
   autocmd!
+
+  " Don't write undofiles for secret stuff
+  autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
 
   " Only show cursorline in the current window.
   autocmd WinLeave * set nocursorline

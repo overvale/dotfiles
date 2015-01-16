@@ -9,11 +9,12 @@ Plug 'airblade/vim-gitgutter'
 Plug 'mbbill/undotree'
 Plug 'junegunn/goyo.vim'
 Plug 'plasticboy/vim-markdown'
+Plug 'thinca/vim-ft-markdown_fold'
 Plug 'gerw/vim-HiLinkTrace'
 Plug 'Shougo/unite-outline'
+Plug 'kopischke/unite-spell-suggest'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'junegunn/vim-easy-align'
-Plug 'reedes/vim-wordy/'
 
 call plug#end()
 
@@ -33,7 +34,6 @@ set wildmode=list:longest         " Complete files like a shell.
 set ignorecase                    " Case-insensitive searching...
 set smartcase                     " ...unless there's a cap letter
 set incsearch                     " Highlight matches as you type
-set hlsearch                      " Highlight search matches
 set clipboard=unnamed             " set vim to share the system clipboard
 set wrap                          " Turn on wrapping
 set linebreak                     " Wrap only at word-breaks
@@ -60,6 +60,7 @@ set splitbelow
 set splitright
 set sessionoptions=buffers,curdir,folds,help,tabpages,tabpages
 set spellfile=~/.vim/custom-dictionary.utf-8.add
+set cryptmethod=blowfish2         " Use blowfish2 encryption
 
 " Treat buffers from stdin (e.g.: echo foo | vim -) as scratch buffers.
 au StdinReadPost * :set buftype=nofile
@@ -84,7 +85,7 @@ colorscheme oliver.dark
 " Mappings
 " ------------------------------------------------------------------------
 
-" Make mode-switching easy, use <c-v>` to insert literal backtick
+" Make mode-switching easy
 nnoremap <tab> <esc>
 inoremap <tab> <esc>
 vnoremap <tab> <esc>
@@ -141,8 +142,8 @@ nnoremap K i<cr><esc>`.
 inoremap <c-k> <cr><c-o><bs>
 
 " Move lines
-vnoremap J :m '>+1<cr>gv
-vnoremap K :m '<-2<cr>gv
+vnoremap gJ :m '>+1<cr>gv
+vnoremap gK :m '<-2<cr>gv
 
 " Quickly select text you just pasted:
 noremap gV `[v`]
@@ -153,14 +154,14 @@ cmap w!! w !sudo tee % >/dev/null
 " protect against accidental save + close
 nnoremap ZZ :echoe "Your Caps-lock is on."<cr>
 
-" Paste mode
-set pastetoggle=<F2>
-
 " Make spelling corrections faster
 nnoremap = z=
 
 " Make Y like D or C
 nnoremap Y y$
+
+" Make selected text a bulleted list
+vnoremap <leader>lb :s/\v^/* /g<cr>
 
 " Commands
 " ------------------------------------------------------------------------
@@ -171,7 +172,7 @@ nnoremap Y y$
 command Cdf :cd %:h<cr>
 command Cl :set cursorline!
 command Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
-command Fmkd :set filetype=mkd
+command Fmkd :set filetype=markdown syntax=mkd
 command Frst :set filetype=rst
 command H1 :normal VUyypVr=
 command H2 :normal yypVr-
@@ -188,7 +189,10 @@ command WW :set wrap!
 augroup filetypes
     autocmd!
     autocmd BufRead,BufNewFile *.fountain set filetype=fountain
-    autocmd BufRead,BufNewFile *.text     set filetype=markdown
+    " Use the built-in markdown file-type to trigger thinca/vim-ft-markdown_fold,
+    " then set syntax to mkd to trigger vim-markdown's syntax, which is better
+    autocmd BufRead,BufNewFile *.text     set filetype=markdown syntax=mkd
+    autocmd BufRead,BufNewFile *.md       set filetype=markdown syntax=mkd
 augroup END
 
 " Make sure Vim returns to the same line when you reopen a file.
@@ -230,6 +234,7 @@ call unite#filters#sorter_default#use(['sorter_selecta'])
 " shortcuts for calling Unite
 nnoremap <leader>b :Unite -no-split buffer<cr>
 nnoremap <leader>f :Unite -no-split file file/new directory/new<cr>
+nnoremap <leader>= :Unite -no-split spell_suggest<cr>
 nnoremap <leader>us :Unite -no-split -start-insert source<cr>
 nnoremap <leader>ul :Unite -no-split -start-insert line<cr>
 nnoremap <leader>uo :Unite -no-split -start-insert outline<cr>
@@ -241,6 +246,9 @@ function! s:unite_settings()
   imap <buffer> <C-n>   <Plug>(unite_select_next_line)
   imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
 endfunction
+
+" Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
+let g:vim_markdown_folding_disabled=1
 
 nmap [h <Plug>GitGutterPrevHunk
 nmap ]h <Plug>GitGutterNextHunk

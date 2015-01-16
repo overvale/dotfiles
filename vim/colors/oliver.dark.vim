@@ -22,9 +22,9 @@ hi Underlined    ctermfg=174   ctermbg=NONE  cterm=underline
 
 " The Structure
 hi StatusLine    ctermfg=015   ctermbg=239   cterm=NONE
-hi StatusLineNC  ctermfg=246   ctermbg=239   cterm=NONE
+hi StatusLineNC  ctermfg=000   ctermbg=239   cterm=NONE
 hi VertSplit     ctermfg=239   ctermbg=239   cterm=NONE
-hi TabLine       ctermfg=246   ctermbg=239   cterm=NONE
+hi TabLine       ctermfg=000   ctermbg=239   cterm=NONE
 hi TabLineFill   ctermfg=246   ctermbg=239   cterm=NONE
 hi TabLineSel    ctermfg=015   ctermbg=239   cterm=NONE
 
@@ -47,7 +47,7 @@ hi Folded        ctermfg=244   ctermbg=237   cterm=NONE
 hi IncSearch     ctermfg=237   ctermbg=216   cterm=NONE
 hi Macro         ctermfg=174   ctermbg=NONE  cterm=NONE
 hi MatchParen    ctermfg=236   ctermbg=244   cterm=NONE
-hi ModeMsg       ctermfg=223   ctermbg=NONE  cterm=NONE
+hi ModeMsg       ctermfg=236   ctermbg=223   cterm=NONE
 hi MoreMsg       ctermfg=116   ctermbg=NONE  cterm=NONE
 hi Question      ctermfg=216   ctermbg=NONE  cterm=NONE
 hi Search        ctermfg=244   ctermbg=223   cterm=NONE

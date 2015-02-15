@@ -12,6 +12,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'thinca/vim-ft-markdown_fold'
 Plug 'gerw/vim-HiLinkTrace'
 Plug 'Shougo/unite-outline'
+Plug 'Shougo/unite-help'
 Plug 'kopischke/unite-spell-suggest'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'junegunn/vim-easy-align'
@@ -61,6 +62,7 @@ set splitright
 set sessionoptions=buffers,curdir,folds,help,tabpages,tabpages
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set cryptmethod=blowfish2         " Use blowfish2 encryption
+set foldlevelstart=99             " Don't start with collapsed folds
 
 " Treat buffers from stdin (e.g.: echo foo | vim -) as scratch buffers.
 au StdinReadPost * :set buftype=nofile
@@ -71,16 +73,15 @@ set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
 " Statusline
 set statusline=%f         "path to file in buffer
 set statusline+=%m        "modified/modifiable flag
-set statusline+=\ %y      "filetype
-set statusline+=\ %R      "read only flag, not the same as 'modifiable'
+set statusline+=\ %r      "read only flag, not the same as 'modifiable'
 set statusline+=%=        "left/right alignment separator
-set statusline+=%{strlen(&fenc)?&fenc:'none'}[%{&ff}]   "file encoding
-set statusline+=\ \ %P      "percentage through file
-set statusline+=\ %l,%c   "line,column
+set statusline+=\ %y      "filetype
+"set statusline+=%{strlen(&fenc)?&fenc:'none'}[%{&ff}]   "file encoding
+set statusline+=\ %P      "percentage through file
+set statusline+=\ %l:%c   "line,column
 
 " COLOR SCHEME
 colorscheme oliver.dark
-
 
 " Mappings
 " ------------------------------------------------------------------------
@@ -130,8 +131,9 @@ vnoremap < <gv
 nnoremap gb :bn<cr>
 nnoremap gB :bp<cr>
 
-" creates an alias (%%) to represent the directory of the current file
-cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+" Go to the end of the previous word
+nnoremap - ge
+nnoremap _ gE
 
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
@@ -146,22 +148,10 @@ vnoremap gJ :m '>+1<cr>gv
 vnoremap gK :m '<-2<cr>gv
 
 " Quickly select text you just pasted:
-noremap gV `[v`]
-
-" allow saving a sudo file if forgot to open as sudo
-cmap w!! w !sudo tee % >/dev/null
-
-" protect against accidental save + close
-nnoremap ZZ :echoe "Your Caps-lock is on."<cr>
-
-" Make spelling corrections faster
-nnoremap = z=
+noremap gp `[v`]
 
 " Make Y like D or C
 nnoremap Y y$
-
-" Make selected text a bulleted list
-vnoremap <leader>lb :s/\v^/* /g<cr>
 
 " Commands
 " ------------------------------------------------------------------------
@@ -183,14 +173,20 @@ command Src :source $MYVIMRC
 command Erc :e ~/code/dotfiles/vim/vimrc
 command WW :set wrap!
 
+" allow saving a sudo file if forgot to open as sudo
+cmap w!! w !sudo tee % >/dev/null
+
+" creates an alias (%%) to represent the directory of the current file
+cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+
 " Autocommands
 " ------------------------------------------------------------------------
 
 augroup filetypes
     autocmd!
     autocmd BufRead,BufNewFile *.fountain set filetype=fountain
-    " Use the built-in markdown file-type to trigger thinca/vim-ft-markdown_fold,
-    " then set syntax to mkd to trigger vim-markdown's syntax, which is better
+    " Use filetype=markdown to trigger thinca/vim-ft-markdown_fold,
+    " then syntax=mkd to trigger vim-markdown's syntax, which is MUCH better
     autocmd BufRead,BufNewFile *.text     set filetype=markdown syntax=mkd
     autocmd BufRead,BufNewFile *.md       set filetype=markdown syntax=mkd
 augroup END
@@ -234,10 +230,11 @@ call unite#filters#sorter_default#use(['sorter_selecta'])
 " shortcuts for calling Unite
 nnoremap <leader>b :Unite -no-split buffer<cr>
 nnoremap <leader>f :Unite -no-split file file/new directory/new<cr>
-nnoremap <leader>= :Unite -no-split spell_suggest<cr>
-nnoremap <leader>us :Unite -no-split -start-insert source<cr>
-nnoremap <leader>ul :Unite -no-split -start-insert line<cr>
-nnoremap <leader>uo :Unite -no-split -start-insert outline<cr>
+nnoremap <leader>h :Unite -no-split help<cr>
+nnoremap = :Unite -no-split spell_suggest<cr>
+nnoremap <leader>us :Unite -no-split source<cr>
+nnoremap <leader>ul :Unite -no-split line<cr>
+nnoremap <leader>uo :Unite -no-split outline<cr>
 
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()
@@ -261,6 +258,5 @@ nmap ga <Plug>(EasyAlign)
 " Snippets
 " ------------------------------------------------------------------------
 
-" Timestamp in brackets like this: [2014-06-08T10:41:44-0700]
-iab <expr> dd strftime("[%Y-%m-%dT%H:%M:%S%z]")
-
+" Date: 2015-02-15
+iab <expr> dd strftime("%Y-%m-%d")

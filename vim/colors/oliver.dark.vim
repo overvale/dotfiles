@@ -162,6 +162,8 @@ hi markdownCode              ctermfg=108 ctermbg=NONE cterm=NONE
 hi markdownCodeBlock         ctermfg=108 ctermbg=NONE cterm=NONE
 hi markdownHeadingDelimiter  ctermfg=110 ctermbg=NONE cterm=NONE
 hi mkdInlineURL              ctermfg=110 ctermbg=NONE cterm=NONE
+hi mkdBlockquote             ctermfg=180
+hi mkdLineContinue           ctermfg=180
 
 " Git highlighting
 hi gitCommitOverflow  ctermfg=174 ctermbg=NONE cterm=NONE

@@ -162,7 +162,7 @@ nnoremap Y y$
 command Cdf :cd %:h<cr>
 command Cl :set cursorline!
 command Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
-command Fmkd :set filetype=markdown syntax=mkd
+command MM :set filetype=markdown syntax=mkd
 command Frst :set filetype=rst
 command H1 :normal VUyypVr=
 command H2 :normal yypVr-
@@ -220,6 +220,8 @@ augroup END
 " Plugins
 " ------------------------------------------------------------------------
 
+" UNITE
+
 " Start by setting some defaults
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_selecta'])
@@ -228,13 +230,12 @@ call unite#filters#sorter_default#use(['sorter_selecta'])
 "call unite#custom#source('file_rec', 'sorters', 'sorter_selecta')
 
 " shortcuts for calling Unite
-nnoremap <leader>b :Unite -no-split buffer<cr>
-nnoremap <leader>f :Unite -no-split file file/new directory/new<cr>
-nnoremap <leader>h :Unite -no-split help<cr>
-nnoremap = :Unite -no-split spell_suggest<cr>
-nnoremap <leader>us :Unite -no-split source<cr>
-nnoremap <leader>ul :Unite -no-split line<cr>
-nnoremap <leader>uo :Unite -no-split outline<cr>
+nnoremap <leader>e :Unite -no-split -no-resize buffer file file/new directory/new<cr>
+nnoremap <leader>h :Unite -no-split -no-resize help<cr>
+nnoremap = :Unite -no-split -no-resize spell_suggest<cr>
+nnoremap <leader>us :Unite -no-split -no-resize source<cr>
+nnoremap <leader>ul :Unite -no-split -no-resize line<cr>
+nnoremap <leader>uo :Unite -no-split -no-resize outline<cr>
 
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()
@@ -244,11 +245,18 @@ function! s:unite_settings()
   imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
 endfunction
 
+" MARKDOWN
+
 " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
 let g:vim_markdown_folding_disabled=1
 
+" GITGUTTER
+
+let g:gitgutter_enabled = 0
 nmap [h <Plug>GitGutterPrevHunk
 nmap ]h <Plug>GitGutterNextHunk
+
+" EASY ALIGN
 
 " Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
 vmap <Enter> <Plug>(EasyAlign)
@@ -260,3 +268,5 @@ nmap ga <Plug>(EasyAlign)
 
 " Date: 2015-02-15
 iab <expr> dd strftime("%Y-%m-%d")
+" Date: 16 February 2015
+iab <expr> ddate strftime("%d %B %Y")

@@ -10,23 +10,26 @@ let g:colors_name = "oliver.dark"
 " Cyan    116   Grey-4  250
 " Blue    110   Grey-5  251
 " Magenta 219   Grey-6  256
-" Pink    218   Grey-7  015
-" Red     174   
+" Pink    218   White   015
+" Red     174   Black   000
+
+" This scheme is designed to be used with the 'oliver.dark'
+" terminal color scheme
 
 " The Basics
-hi Normal        ctermfg=255   ctermbg=236   cterm=NONE
+hi Normal        ctermfg=256   ctermbg=236   cterm=NONE
 hi Cursor        ctermfg=236   ctermbg=015   cterm=NONE
 hi Bold          ctermfg=NONE  ctermbg=NONE  cterm=bold
 hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=NONE
 hi Underlined    ctermfg=174   ctermbg=NONE  cterm=underline
 
 " The Structure
-hi StatusLine    ctermfg=015   ctermbg=239   cterm=NONE
-hi StatusLineNC  ctermfg=000   ctermbg=239   cterm=NONE
-hi VertSplit     ctermfg=239   ctermbg=239   cterm=NONE
-hi TabLine       ctermfg=000   ctermbg=239   cterm=NONE
-hi TabLineFill   ctermfg=246   ctermbg=239   cterm=NONE
-hi TabLineSel    ctermfg=015   ctermbg=239   cterm=NONE
+hi StatusLine    ctermfg=110   ctermbg=235   cterm=NONE
+hi TabLineSel    ctermfg=110   ctermbg=235   cterm=NONE
+hi TabLine       ctermfg=240   ctermbg=235   cterm=NONE
+hi StatusLineNC  ctermfg=240   ctermbg=235   cterm=NONE
+hi VertSplit     ctermfg=235   ctermbg=235   cterm=NONE
+hi TabLineFill   ctermfg=000   ctermbg=235   cterm=NONE
 
 hi LineNr        ctermfg=240   ctermbg=237   cterm=NONE
 hi CursorLineNr  ctermfg=256   ctermbg=237   cterm=NONE
@@ -47,7 +50,7 @@ hi Folded        ctermfg=244   ctermbg=237   cterm=NONE
 hi IncSearch     ctermfg=237   ctermbg=216   cterm=NONE
 hi Macro         ctermfg=174   ctermbg=NONE  cterm=NONE
 hi MatchParen    ctermfg=236   ctermbg=244   cterm=NONE
-hi ModeMsg       ctermfg=236   ctermbg=223   cterm=NONE
+hi ModeMsg       ctermfg=223   ctermbg=NONE   cterm=NONE
 hi MoreMsg       ctermfg=116   ctermbg=NONE  cterm=NONE
 hi Question      ctermfg=216   ctermbg=NONE  cterm=NONE
 hi Search        ctermfg=244   ctermbg=223   cterm=NONE
@@ -94,10 +97,10 @@ hi Type         ctermfg=116  ctermbg=NONE cterm=NONE
 hi Typedef      ctermfg=223  ctermbg=NONE cterm=NONE
 
 " Spelling highlighting
-hi SpellBad     ctermfg=NONE ctermbg=NONE cterm=undercurl
-hi SpellLocal   ctermfg=NONE ctermbg=NONE cterm=undercurl
-hi SpellCap     ctermfg=NONE ctermbg=NONE cterm=undercurl
-hi SpellRare    ctermfg=NONE ctermbg=NONE cterm=undercurl
+hi SpellBad     ctermfg=NONE ctermbg=NONE cterm=underline
+hi SpellLocal   ctermfg=NONE ctermbg=NONE cterm=underline
+hi SpellCap     ctermfg=NONE ctermbg=NONE cterm=underline
+hi SpellRare    ctermfg=NONE ctermbg=NONE cterm=underline
 
 " Additional diff highlighting
 hi DiffAdd      ctermfg=108  ctermbg=236  cterm=NONE

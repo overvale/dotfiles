@@ -22,14 +22,12 @@ call plug#end()
 " General Preferences
 " ------------------------------------------------------------------------
 
+syntax enable                     " Turn on syntax highlighting
 set encoding=utf-8                " Set default encoding
-set modelines=0                   " disable modelines
 set dir=~/.swp-dir,.              " Centralize swp files
 set undodir=~/code/vimundo        " Centralize undo files
 set undofile                      " Keep permanent history of undos
-syntax enable                     " Turn on syntax highlighting
 set hidden                        " Hide buffers instead of closing them
-set visualbell                    " Make alerts not audio
 set wildmenu                      " Enhanced command line completion
 set wildmode=list:longest         " Complete files like a shell.
 set ignorecase                    " Case-insensitive searching...
@@ -40,13 +38,12 @@ set wrap                          " Turn on wrapping
 set linebreak                     " Wrap only at word-breaks
 set breakindent                   " Wrap lines to indent
 set autoindent                    " Turn on auto-indenting
-set copyindent                    " copy previous indentation on paste
+set smartindent                   " Be smart about autoindenting
 set expandtab                     " Use spaces instead of tabs
 set tabstop=4                     " width of tab character
 set softtabstop=4                 " number of characters to delete
 set shiftwidth=4                  " indentation settings
-set backspace=indent,eol,start    " Intuitive backspacing.
-set nojoinspaces                  " Join with single space
+set nojoinspaces                  " Join lines with single space
 set spell spelllang=en_us         " Turn on spell-checking
 set formatoptions=tcrqn1j         " (see docs)
 set formatprg=par\ -w78rq         " external formatter options
@@ -54,12 +51,10 @@ set laststatus=2                  " Always show status bar
 set showcmd                       " Show commands as you type
 set scrolloff=2                   " Show N lines around cursor
 set cursorline                    " highlight cursor line
-"set number                        " Show line-numbers
 set display+=lastline             " Don't truncate the last line
-" Open new split panes to right and bottom, which feels more natural
-set splitbelow
-set splitright
-set sessionoptions=buffers,curdir,folds,help,tabpages,tabpages
+set splitbelow                    " Where default splits go
+set splitright                    " Where default splits go
+set sessionoptions=buffers,curdir,folds,help,tabpages
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set cryptmethod=blowfish2         " Use blowfish2 encryption
 set foldlevelstart=99             " Don't start with collapsed folds
@@ -76,7 +71,6 @@ set statusline+=%m        "modified/modifiable flag
 set statusline+=\ %r      "read only flag, not the same as 'modifiable'
 set statusline+=%=        "left/right alignment separator
 set statusline+=\ %y      "filetype
-"set statusline+=%{strlen(&fenc)?&fenc:'none'}[%{&ff}]   "file encoding
 set statusline+=\ %P      "percentage through file
 set statusline+=\ %l:%c   "line,column
 
@@ -226,9 +220,6 @@ augroup END
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_selecta'])
 
-" for file_rec use a custom sorter
-"call unite#custom#source('file_rec', 'sorters', 'sorter_selecta')
-
 " shortcuts for calling Unite
 nnoremap <leader>e :Unite -no-split -no-resize buffer file file/new directory/new<cr>
 nnoremap <leader>h :Unite -no-split -no-resize help<cr>
@@ -253,6 +244,7 @@ let g:vim_markdown_folding_disabled=1
 " GITGUTTER
 
 let g:gitgutter_enabled = 0
+command GG :GitGutterToggle
 nmap [h <Plug>GitGutterPrevHunk
 nmap ]h <Plug>GitGutterNextHunk
 

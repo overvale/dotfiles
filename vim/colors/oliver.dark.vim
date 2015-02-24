@@ -9,7 +9,7 @@ let g:colors_name = "oliver.dark"
 " Green   108   Grey-3  244
 " Cyan    116   Grey-4  250
 " Blue    110   Grey-5  251
-" Magenta 219   Grey-6  256
+" Magenta 219   Grey-6  255
 " Pink    218   White   015
 " Red     174   Black   000
 
@@ -17,7 +17,7 @@ let g:colors_name = "oliver.dark"
 " terminal color scheme
 
 " The Basics
-hi Normal        ctermfg=256   ctermbg=236   cterm=NONE
+hi Normal        ctermfg=255   ctermbg=236   cterm=NONE
 hi Cursor        ctermfg=236   ctermbg=015   cterm=NONE
 hi Bold          ctermfg=NONE  ctermbg=NONE  cterm=bold
 hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=NONE
@@ -32,7 +32,7 @@ hi VertSplit     ctermfg=235   ctermbg=235   cterm=NONE
 hi TabLineFill   ctermfg=000   ctermbg=235   cterm=NONE
 
 hi LineNr        ctermfg=240   ctermbg=237   cterm=NONE
-hi CursorLineNr  ctermfg=256   ctermbg=237   cterm=NONE
+hi CursorLineNr  ctermfg=255   ctermbg=237   cterm=NONE
 hi SignColumn    ctermfg=251   ctermbg=237   cterm=NONE
 hi CursorLine    ctermfg=NONE  ctermbg=237   cterm=NONE
 hi CursorColumn  ctermfg=NONE  ctermbg=237   cterm=NONE
@@ -164,7 +164,7 @@ hi javaScriptNumber  ctermfg=216 ctermbg=NONE cterm=NONE
 hi markdownCode              ctermfg=108 ctermbg=NONE cterm=NONE
 hi markdownCodeBlock         ctermfg=108 ctermbg=NONE cterm=NONE
 hi markdownHeadingDelimiter  ctermfg=110 ctermbg=NONE cterm=NONE
-hi mkdInlineURL              ctermfg=110 ctermbg=NONE cterm=NONE
+hi mkdInlineURL              ctermfg=219 ctermbg=NONE cterm=NONE
 hi mkdBlockquote             ctermfg=180
 hi mkdLineContinue           ctermfg=180
 

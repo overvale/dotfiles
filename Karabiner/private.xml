@@ -39,78 +39,36 @@
 <!-- =============================================================== -->
 
 <item>
-  <name>Remap Option_R to Hyper</name>
-  <appendix>This maps the Right Option key to Control + Shift + Option + Command.</appendix>
-  <identifier>space_cadet.left_control_to_hyper</identifier>
-  <autogen>
-    --KeyToKey--
-    KeyCode::OPTION_R,
-    KeyCode::COMMAND_L, ModifierFlag::OPTION_L | ModifierFlag::SHIFT_R | ModifierFlag::CONTROL_R
-  </autogen>
+    <name>Disable Arrow Keys</name>
+    <appendix>Pretty simple really.</appendix>
+    <identifier>private.disable_arrows</identifier>
+    <autogen>--KeyToKey-- KeyCode::CURSOR_UP,    KeyCode::VK_NONE</autogen>
+    <autogen>--KeyToKey-- KeyCode::CURSOR_DOWN,  KeyCode::VK_NONE</autogen>
+    <autogen>--KeyToKey-- KeyCode::CURSOR_RIGHT, KeyCode::VK_NONE</autogen>
+    <autogen>--KeyToKey-- KeyCode::CURSOR_LEFT,  KeyCode::VK_NONE</autogen>
 </item>
 
 <item>
-  <name>Remap Control_L to F5</name>
-  <appendix>When you type Control_L only, send F5 - exclude iTerm, Atom, MacVim, Terminal</appendix>
-  <identifier>private.controlL2controlL_f5</identifier>
-  <not>ITERM, ATOM, MACVIM, TERMINAL</not>
-  <autogen>
-    __KeyOverlaidModifier__
-    KeyCode::CONTROL_L, KeyCode::CONTROL_L,
-    KeyCode::F5
-  </autogen>
-</item>
-
-<item>
-  <name>Remap Control_L to CapsLock</name>
-  <appendix>When you type Control_L alone, capslock</appendix>
-  <identifier>private.controlL2controlL_caps</identifier>
-  <autogen>
-    __KeyOverlaidModifier__
-    KeyCode::CONTROL_L, KeyCode::CONTROL_L,
-    KeyCode::CAPSLOCK
-  </autogen>
-</item>
-
-<item>
-  <name>Remap Control_L 2x to CapsLock</name>
-  <appendix>When you type Control_L 2x, capslock</appendix>
-  <identifier>private.controlL2x_caps</identifier>
-  <autogen>
-    __DoublePressModifier__ KeyCode::CONTROL_L, KeyCode::CONTROL_L, KeyCode::CAPSLOCK
-  </autogen>
+    <name>Remap Fn+HJKL to Arrows</name>
+    <appendix>Use Function + vim movement keys instead of arrows.</appendix>
+    <identifier>private.fn_vim_arrows</identifier>
+    <autogen>--KeyToKey-- KeyCode::H, ModifierFlag::FN, KeyCode::CURSOR_LEFT</autogen>
+    <autogen>--KeyToKey-- KeyCode::J, ModifierFlag::FN, KeyCode::CURSOR_DOWN</autogen>
+    <autogen>--KeyToKey-- KeyCode::K, ModifierFlag::FN, KeyCode::CURSOR_UP</autogen>
+    <autogen>--KeyToKey-- KeyCode::L, ModifierFlag::FN, KeyCode::CURSOR_RIGHT</autogen>
 </item>
 
 <item>
   <name>Return to Control_R</name>
-  <appendix>(+ When you type Return only, send Return)</appendix>
-  <identifier>private.return2controlR_return</identifier>
-  <autogen>
-      __KeyOverlaidModifier__
-      KeyCode::RETURN, KeyCode::CONTROL_R,
-      KeyCode::RETURN
-  </autogen>
+  <appendix>(+ When you type Return only, send Return) + [KeyRepeat]</appendix>
+  <identifier>private.return2controlR_return_keyrepeat</identifier>
+  <autogen>__KeyOverlaidModifierWithRepeat__ KeyCode::RETURN, KeyCode::CONTROL_R, KeyCode::RETURN</autogen>
 </item>
-      
-<item>
-  <name>Remap Control_L to Escape</name>
-  <appendix>Active in iTerm, Atom, MacVim, Terminal</appendix>
-  <identifier>private.itermEscape</identifier>
-  <only>ITERM, ATOM, MACVIM, TERMINAL</only>
-  <autogen>
-    __KeyOverlaidModifier__
-    KeyCode::CONTROL_L, KeyCode::CONTROL_L,
-    KeyCode::ESCAPE
-  </autogen>
-</item>
-
-<!-- =============================================================== -->
 
 <item>
   <name>Use the Correct Shift Keys</name>
   <appendix>Forces correct typing by disabling incorrect shift-letter combinations</appendix>
   <identifier>private.correct_shift_keys</identifier>
-
   <autogen>--KeyToKey-- KeyCode::Q, ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::W, ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::E, ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
@@ -125,7 +83,6 @@
   <autogen>--KeyToKey-- KeyCode::X, ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::C, ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::V, ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
-
   <autogen>--KeyToKey-- KeyCode::Y,         ModifierFlag::SHIFT_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::U,         ModifierFlag::SHIFT_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::I,         ModifierFlag::SHIFT_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
@@ -141,7 +98,37 @@
   <autogen>--KeyToKey-- KeyCode::M,         ModifierFlag::SHIFT_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::COMMA,     ModifierFlag::SHIFT_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::DOT,       ModifierFlag::SHIFT_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+</item>
 
+<item>
+  <name>Use the Correct Control Keys</name>
+  <appendix>Forces correct typing by disabling incorrect control-letter combinations</appendix>
+  <identifier>private.correct_control_keys</identifier>
+  <autogen>--KeyToKey-- KeyCode::Q,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::W,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::E,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::R,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::T,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::A,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::S,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::D,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::F,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::G,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::Z,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::X,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::C,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::V,         ModifierFlag::CONTROL_L | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::Y,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::U,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::I,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::O,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::P,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::H,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::J,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::K,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::L,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::N,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::M,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
 </item>
 
 </root>

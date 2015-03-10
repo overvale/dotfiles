@@ -15,6 +15,8 @@ let g:colors_name = "oliver.dark"
 
 " This scheme is designed to be used with the 'oliver.dark'
 " terminal color scheme
+" It uses the ANSI color-codes for colors
+" and 256 codes for shades of gray.
 
 " The Basics
 hi Normal        ctermfg=255   ctermbg=236   cterm=NONE

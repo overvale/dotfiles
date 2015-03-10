@@ -14,26 +14,26 @@ let g:colors_name = "oliver.light"
 " Red     160   
 
 " The Basics
-hi Normal        ctermfg=236   ctermbg=015   cterm=NONE
+hi Normal        ctermfg=236   ctermbg=255   cterm=NONE
 hi Cursor        ctermfg=015   ctermbg=236   cterm=NONE
 hi Bold          ctermfg=NONE  ctermbg=NONE  cterm=bold
 hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=NONE
 hi Underlined    ctermfg=160   ctermbg=NONE  cterm=underline
 
 " The Structure
-hi StatusLine    ctermfg=015   ctermbg=241   cterm=NONE
-hi StatusLineNC  ctermfg=250   ctermbg=241   cterm=NONE
-hi VertSplit     ctermfg=241   ctermbg=241   cterm=NONE
-hi TabLine       ctermfg=250   ctermbg=241   cterm=NONE
-hi TabLineFill   ctermfg=250   ctermbg=241   cterm=NONE
-hi TabLineSel    ctermfg=015   ctermbg=241   cterm=NONE
+hi StatusLine    ctermfg=015   ctermbg=256   cterm=NONE
+hi StatusLineNC  ctermfg=250   ctermbg=256   cterm=NONE
+hi VertSplit     ctermfg=245   ctermbg=256   cterm=NONE
+hi TabLine       ctermfg=250   ctermbg=256   cterm=NONE
+hi TabLineFill   ctermfg=250   ctermbg=256   cterm=NONE
+hi TabLineSel    ctermfg=015   ctermbg=256   cterm=NONE
 
-hi LineNr        ctermfg=251   ctermbg=255   cterm=NONE
-hi CursorLineNr  ctermfg=251   ctermbg=255   cterm=NONE
-hi SignColumn    ctermfg=251   ctermbg=255   cterm=NONE
-hi CursorLine    ctermfg=NONE  ctermbg=255   cterm=NONE
-hi CursorColumn  ctermfg=NONE  ctermbg=255   cterm=NONE
-hi ColorColumn   ctermfg=NONE  ctermbg=255   cterm=NONE
+hi LineNr        ctermfg=251   ctermbg=254   cterm=NONE
+hi CursorLineNr  ctermfg=251   ctermbg=254   cterm=NONE
+hi SignColumn    ctermfg=251   ctermbg=254   cterm=NONE
+hi CursorLine    ctermfg=NONE  ctermbg=254   cterm=NONE
+hi CursorColumn  ctermfg=NONE  ctermbg=254   cterm=NONE
+hi ColorColumn   ctermfg=NONE  ctermbg=254   cterm=NONE
 
 hi PMenu         ctermfg=236   ctermbg=250   cterm=NONE
 hi PMenuSel      ctermfg=237   ctermbg=208   cterm=NONE

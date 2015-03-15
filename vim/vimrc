@@ -16,6 +16,7 @@ Plug 'Shougo/unite-help'
 Plug 'kopischke/unite-spell-suggest'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'junegunn/vim-easy-align'
+Plug 'w0ng/vim-hybrid'
 
 call plug#end()
 
@@ -44,6 +45,7 @@ set tabstop=4                     " width of tab character
 set softtabstop=4                 " number of characters to delete
 set shiftwidth=4                  " indentation settings
 set nojoinspaces                  " Join lines with single space
+set backspace=indent,eol,start    " allow backspace anywhere
 set spell spelllang=en_us         " Turn on spell-checking
 set formatoptions=tcrqn1j         " (see docs)
 set formatprg=par\ -w78rq         " external formatter options
@@ -153,19 +155,19 @@ nnoremap Y y$
 " Never use a binding when a command will do
 " commands are easier to remember and autocomplete
 " also, it's just vim-style
-command Cdf :cd %:h<cr>
-command Cl :set cursorline!
-command Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
-command MM :set filetype=markdown syntax=mkd
-command Frst :set filetype=rst
-command H1 :normal VUyypVr=
-command H2 :normal yypVr-
-command NN :set invnumber
-command Nr :set relativenumber!
-command SS :set spell!
-command Src :source $MYVIMRC
-command Erc :e ~/code/dotfiles/vim/vimrc
-command WW :set wrap!
+command! Cdf :cd %:h<cr>
+command! Cl :set cursorline!
+command! Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
+command! MM :set filetype=markdown syntax=mkd
+command! Frst :set filetype=rst
+command! H1 :normal VUyypVr=
+command! H2 :normal yypVr-
+command! NN :set number!
+command! Nr :set relativenumber!
+command! SS :set spell!
+command! Src :source $MYVIMRC
+command! Erc :e ~/code/dotfiles/vim/vimrc
+command! WW :set wrap!
 
 " allow saving a sudo file if forgot to open as sudo
 cmap w!! w !sudo tee % >/dev/null
@@ -211,6 +213,26 @@ augroup custom_misc
   autocmd InsertLeave * set timeoutlen=800
 augroup END
 
+" Folding
+" ------------------------------------------------------------------------
+
+" better text folding from http://github.com/dphase/dphase-vim
+set fillchars=fold:\∙
+function! NeatFoldText()
+  let line = ' ' . substitute(getline(v:foldstart), '^\s*\("\|#\|//\|/\)\?\s*\|\s*\("\|#\)\?\s*{{' . '{\d*\s*', '', 'g') . ' '
+  let lines_count = v:foldend - v:foldstart + 1
+  let lines_count_text = '│ ' . printf("%10s", lines_count . ' lines') . ' │'
+  let foldchar = matchstr(&fillchars, 'fold:\zs.')
+  let foldtextstart = strpart('∙' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
+  let foldtextend = lines_count_text . repeat(foldchar, 8)
+  let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
+  return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
+endfunction
+set foldtext=NeatFoldText()
+
+" http://vim.wikia.com/wiki/Customize_text_for_closed_folds
+" https://bitbucket.org/atimholt/spiffy_foldtext
+
 " Plugins
 " ------------------------------------------------------------------------
 
@@ -244,7 +266,7 @@ let g:vim_markdown_folding_disabled=1
 " GITGUTTER
 
 let g:gitgutter_enabled = 0
-command GG :GitGutterToggle
+command! GG :GitGutterToggle
 nmap [h <Plug>GitGutterPrevHunk
 nmap ]h <Plug>GitGutterNextHunk
 

@@ -16,7 +16,6 @@ Plug 'Shougo/unite-help'
 Plug 'kopischke/unite-spell-suggest'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'junegunn/vim-easy-align'
-Plug 'w0ng/vim-hybrid'
 
 call plug#end()
 
@@ -51,8 +50,7 @@ set formatoptions=tcrqn1j         " (see docs)
 set formatprg=par\ -w78rq         " external formatter options
 set laststatus=2                  " Always show status bar
 set showcmd                       " Show commands as you type
-set scrolloff=2                   " Show N lines around cursor
-set cursorline                    " highlight cursor line
+"set scrolloff=2                   " Show N lines around cursor
 set display+=lastline             " Don't truncate the last line
 set splitbelow                    " Where default splits go
 set splitright                    " Where default splits go
@@ -60,10 +58,6 @@ set sessionoptions=buffers,curdir,folds,help,tabpages
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set cryptmethod=blowfish2         " Use blowfish2 encryption
 set foldlevelstart=99             " Don't start with collapsed folds
-
-" Treat buffers from stdin (e.g.: echo foo | vim -) as scratch buffers.
-au StdinReadPost * :set buftype=nofile
-
 " Use the same symbols as TextMate for tabstops and EOLs
 set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
 
@@ -160,6 +154,7 @@ command! Cl :set cursorline!
 command! Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
 command! MM :set filetype=markdown syntax=mkd
 command! Frst :set filetype=rst
+command! GG :GitGutterToggle
 command! H1 :normal VUyypVr=
 command! H2 :normal yypVr-
 command! NN :set number!
@@ -168,6 +163,7 @@ command! SS :set spell!
 command! Src :source $MYVIMRC
 command! Erc :e ~/code/dotfiles/vim/vimrc
 command! WW :set wrap!
+command! UT :UndotreeToggle
 
 " allow saving a sudo file if forgot to open as sudo
 cmap w!! w !sudo tee % >/dev/null
@@ -203,8 +199,8 @@ augroup custom_misc
   autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
 
   " Only show cursorline in the current window.
-  autocmd WinLeave * set nocursorline
-  autocmd WinEnter * set cursorline
+  " autocmd WinLeave * set nocursorline
+  " autocmd WinEnter * set cursorline
 
   " Super fast exiting from insert mode. Note that with this, you can't
   " possibly use mappings that start with <esc> *in insert mode*, since vim
@@ -266,7 +262,6 @@ let g:vim_markdown_folding_disabled=1
 " GITGUTTER
 
 let g:gitgutter_enabled = 0
-command! GG :GitGutterToggle
 nmap [h <Plug>GitGutterPrevHunk
 nmap ]h <Plug>GitGutterNextHunk
 

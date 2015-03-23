@@ -6,31 +6,23 @@
     https://pqrs.org/macosx/keyremap4macbook/xml.html.en
 -->
 
-<!-- This sets an alias for BBEdit so I can refer to it later -->
+<!-- Set aliases for Apps -->
 <appdef>
   <appname>BBEDIT</appname>
   <equal>com.barebones.bbedit</equal>
 </appdef>
-
-<!-- This sets an alias for Atom so I can refer to it later -->
 <appdef>
   <appname>ATOM</appname>
   <equal>com.github.atom</equal>
 </appdef>
-
-<!-- This sets an alias for iTerm2 so I can refer to it later -->
 <appdef>
   <appname>ITERM</appname>
   <equal>com.googlecode.iterm2</equal>
 </appdef>
-
-<!-- This sets an alias for MacVim so I can refer to it later -->
 <appdef>
   <appname>MACVIM</appname>
   <equal>org.vim.MacVim</equal>
 </appdef>
-
-<!-- This sets an alias for Terminal so I can refer to it later -->
 <appdef>
   <appname>TERMINAL</appname>
   <equal>com.apple.Terminal</equal>
@@ -129,6 +121,16 @@
   <autogen>--KeyToKey-- KeyCode::L,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::N,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::M,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
+</item>
+
+<item>
+  <name>Swap Tab / Delete</name>
+  <appendix>Swaps tab with delete, also disables Command_L + Delete, which prevents bad things happening when (without thinking) I press what used to be the old application-switcher shortcut.</appendix>
+  <identifier>private.tabswapdelete</identifier>
+  <!-- These must go in this order to work properly -->
+  <autogen>--KeyToKey-- KeyCode::TAB, ModifierFlag::COMMAND_L, KeyCode::VK_NONE</autogen>
+  <autogen>--KeyToKey-- KeyCode::TAB, KeyCode::DELETE</autogen>
+  <autogen>--KeyToKey-- KeyCode::DELETE, KeyCode::TAB</autogen>
 </item>
 
 </root>

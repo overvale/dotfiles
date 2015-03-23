@@ -21,13 +21,13 @@ brew install vim
 brew install par
 brew install git
 brew install tree
+brew install ranger
 brew install tmux
 brew install reattach-to-user-namespace
 curl -O http://sreitshamer.github.io/arq_restore/arq_restore.zip && unzip arq_restore.zip && rm arq_restore.zip
 pip install awscli
 
-# Install Vundle (for vim)
-# Install vim plugins
+# Install vim plugin manager + plugins
 
 # Set Help Viewer windows to non-floating mode
 defaults write com.apple.helpviewer DevMode -bool true
@@ -38,9 +38,7 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # Install apps:
 # Adobe Lightroom
 # BBEdit
-# Dropbox
 # Google Chrome
-# iTerm
 # Kaleidoscope
 # Karabiner
 # Keyboard Maestro
@@ -48,13 +46,11 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # OmniFocus
 # Patterns
 # Pixelmator
-# Slack
 # SuperDuper
-# The Unarchiver
 # Transmit
 # QuickTime Player 7
 
-# pull-down your dotfiles; via Dropbox or git
+# pull-down your dotfiles
 
 # Create centralized vim swp files location
 mkdir ~/.swp-dir
@@ -75,3 +71,4 @@ ln -s code/dotfiles/tmux.conf .tmux.conf
 # and restore anything that wasn't automatically restored by
 # cloud services (iCloud, Dropbox, etc.)
 
+# Install fonts from server

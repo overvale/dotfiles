@@ -58,6 +58,13 @@
 </item>
 
 <item>
+<name>Control_L to Control_L</name>
+  <appendix>(+ When you type Control_L only, send Delete) + [KeyRepeat]</appendix>
+  <identifier>private.controlL2controlL_delete_keyrepeat</identifier>
+  <autogen>__KeyOverlaidModifierWithRepeat__ KeyCode::CONTROL_L, KeyCode::CONTROL_L, KeyCode::DELETE</autogen>
+</item>
+
+<item>
   <name>Use the Correct Shift Keys</name>
   <appendix>Forces correct typing by disabling incorrect shift-letter combinations</appendix>
   <identifier>private.correct_shift_keys</identifier>

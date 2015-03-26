@@ -51,14 +51,14 @@
 </item>
 
 <item>
-  <name>Return to Control_R</name>
+  <name>Return to Return/Control_R</name>
   <appendix>(+ When you type Return only, send Return) + [KeyRepeat]</appendix>
   <identifier>private.return2controlR_return_keyrepeat</identifier>
   <autogen>__KeyOverlaidModifierWithRepeat__ KeyCode::RETURN, KeyCode::CONTROL_R, KeyCode::RETURN</autogen>
 </item>
 
 <item>
-<name>Control_L to Control_L</name>
+<name>Control_L to Delete/Control_L</name>
   <appendix>(+ When you type Control_L only, send Delete) + [KeyRepeat]</appendix>
   <identifier>private.controlL2controlL_delete_keyrepeat</identifier>
   <autogen>__KeyOverlaidModifierWithRepeat__ KeyCode::CONTROL_L, KeyCode::CONTROL_L, KeyCode::DELETE</autogen>
@@ -138,6 +138,14 @@
   <autogen>--KeyToKey-- KeyCode::TAB, ModifierFlag::COMMAND_L, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::TAB, KeyCode::DELETE</autogen>
   <autogen>--KeyToKey-- KeyCode::DELETE, KeyCode::TAB</autogen>
+</item>
+
+<item>
+  <name>Brackets to Delete Back/Forward</name>
+  <appendix>[ = Delete, ] = Forward Delete. Use Fn+[/] for square brackets.</appendix>
+  <identifier>private.brackets2delete</identifier>
+  <autogen>--KeyToKey-- KeyCode::BRACKET_LEFT,   | ModifierFlag::NONE, KeyCode::DELETE</autogen>
+  <autogen>--KeyToKey-- KeyCode::BRACKET_RIGHT,  | ModifierFlag::NONE, KeyCode::FORWARD_DELETE</autogen>
 </item>
 
 </root>

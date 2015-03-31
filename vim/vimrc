@@ -16,6 +16,7 @@ Plug 'Shougo/unite-help'
 Plug 'kopischke/unite-spell-suggest'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'junegunn/vim-easy-align'
+Plug 'romainl/Apprentice'
 
 call plug#end()
 
@@ -75,6 +76,11 @@ colorscheme oliver.dark
 
 " Mappings
 " ------------------------------------------------------------------------
+
+" Since I've remapped brackets [] system-wide to delete...
+" Make things a little easier in normal mode
+nnoremap <backspace> [
+nnoremap <delete> ]
 
 " Make mode-switching easy
 nnoremap <tab> <esc>

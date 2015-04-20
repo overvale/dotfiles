@@ -9,7 +9,7 @@ zstyle ':vcs_info:*' stagedstr ' Δ'
 zstyle ':vcs_info:*' unstagedstr ' Δ'
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' actionformats '[%b|%a]'  #[branch|action]
-zstyle ':vcs_info:*' formats '%F{4}git:%b%m%f%F{2}%c%f%F{3}%u%f'     #(<branch> <ahead|behind>) stagedstr unstagedstr
+zstyle ':vcs_info:*' formats '%F{4}git:%b%m%f%F{2}%c%f%F{5}%u%f'     #(<branch> <ahead|behind>) stagedstr unstagedstr
 zstyle ':vcs_info:git*+set-message:*' hooks git-untracked git-aheadbehind
 zstyle ':vcs_info:*' enable git 
 
@@ -43,5 +43,5 @@ function +vi-git-aheadbehind() {
 # And here's the actual prompt
 precmd () { vcs_info }
 PROMPT='
-%F{9}%(1j.%jj .)%f[%F{2}%~%f] ${vcs_info_msg_0_}
+%F{1}%(1j.%jj .)%f[%F{2}%~%f] ${vcs_info_msg_0_}
 %F{1}$ %f'

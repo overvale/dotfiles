@@ -16,7 +16,6 @@ Plug 'Shougo/unite-help'
 Plug 'kopischke/unite-spell-suggest'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'junegunn/vim-easy-align'
-Plug 'romainl/Apprentice'
 
 call plug#end()
 
@@ -25,7 +24,6 @@ call plug#end()
 
 syntax enable                     " Turn on syntax highlighting
 set encoding=utf-8                " Set default encoding
-set dir=~/.swp-dir,.              " Centralize swp files
 set undodir=~/code/vimundo        " Centralize undo files
 set undofile                      " Keep permanent history of undos
 set hidden                        " Hide buffers instead of closing them
@@ -33,7 +31,8 @@ set wildmenu                      " Enhanced command line completion
 set wildmode=list:longest         " Complete files like a shell.
 set ignorecase                    " Case-insensitive searching...
 set smartcase                     " ...unless there's a cap letter
-set incsearch                     " Highlight matches as you type
+set infercase                     " infer completion case in Insert mode
+set incsearch                     " Show search matches as you type
 set clipboard=unnamed             " set vim to share the system clipboard
 set wrap                          " Turn on wrapping
 set linebreak                     " Wrap only at word-breaks
@@ -45,22 +44,19 @@ set tabstop=4                     " width of tab character
 set softtabstop=4                 " number of characters to delete
 set shiftwidth=4                  " indentation settings
 set nojoinspaces                  " Join lines with single space
-set backspace=indent,eol,start    " allow backspace anywhere
+"set backspace=indent,eol,start    " allow backspace anywhere
 set spell spelllang=en_us         " Turn on spell-checking
 set formatoptions=tcrqn1j         " (see docs)
 set formatprg=par\ -w78rq         " external formatter options
 set laststatus=2                  " Always show status bar
 set showcmd                       " Show commands as you type
-"set scrolloff=2                   " Show N lines around cursor
-set display+=lastline             " Don't truncate the last line
 set splitbelow                    " Where default splits go
 set splitright                    " Where default splits go
-set sessionoptions=buffers,curdir,folds,help,tabpages
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set cryptmethod=blowfish2         " Use blowfish2 encryption
 set foldlevelstart=99             " Don't start with collapsed folds
-" Use the same symbols as TextMate for tabstops and EOLs
 set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
+set autoread                      " re-read file if changed outside vim
 
 " Statusline
 set statusline=%f         "path to file in buffer
@@ -165,6 +161,7 @@ command! H1 :normal VUyypVr=
 command! H2 :normal yypVr-
 command! NN :set number!
 command! Nr :set relativenumber!
+command! PP :set paste!
 command! SS :set spell!
 command! Src :source $MYVIMRC
 command! Erc :e ~/code/dotfiles/vim/vimrc
@@ -182,11 +179,11 @@ cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
 augroup filetypes
     autocmd!
-    autocmd BufRead,BufNewFile *.fountain set filetype=fountain
+    autocmd BufRead,BufNewFile *.fountain setlocal filetype=fountain
     " Use filetype=markdown to trigger thinca/vim-ft-markdown_fold,
     " then syntax=mkd to trigger vim-markdown's syntax, which is MUCH better
-    autocmd BufRead,BufNewFile *.text     set filetype=markdown syntax=mkd
-    autocmd BufRead,BufNewFile *.md       set filetype=markdown syntax=mkd
+    autocmd BufRead,BufNewFile *.text     setlocal filetype=markdown syntax=mkd
+    autocmd BufRead,BufNewFile *.md       setlocal filetype=markdown syntax=mkd
 augroup END
 
 " Make sure Vim returns to the same line when you reopen a file.
@@ -203,10 +200,6 @@ augroup custom_misc
 
   " Don't write undofiles for secret stuff
   autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
-
-  " Only show cursorline in the current window.
-  " autocmd WinLeave * set nocursorline
-  " autocmd WinEnter * set cursorline
 
   " Super fast exiting from insert mode. Note that with this, you can't
   " possibly use mappings that start with <esc> *in insert mode*, since vim

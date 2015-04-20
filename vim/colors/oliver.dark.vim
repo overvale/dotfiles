@@ -31,7 +31,7 @@ hi Normal        ctermfg=255   ctermbg=236   cterm=NONE
 hi Cursor        ctermfg=236   ctermbg=015   cterm=NONE
 hi Bold          ctermfg=NONE  ctermbg=NONE  cterm=bold
 hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=NONE
-hi Underlined    ctermfg=001   ctermbg=NONE  cterm=underline
+hi Underlined    ctermfg=001   ctermbg=NONE  cterm=NONE
 
 " The Structure
 hi StatusLine    ctermfg=004   ctermbg=235   cterm=NONE
@@ -44,6 +44,7 @@ hi TabLineFill   ctermfg=000   ctermbg=235   cterm=NONE
 hi LineNr        ctermfg=240   ctermbg=237   cterm=NONE
 hi CursorLineNr  ctermfg=255   ctermbg=237   cterm=NONE
 hi SignColumn    ctermfg=251   ctermbg=237   cterm=NONE
+hi FoldColumn    ctermfg=251   ctermbg=237   cterm=NONE
 hi CursorLine    ctermfg=NONE  ctermbg=237   cterm=NONE
 hi CursorColumn  ctermfg=NONE  ctermbg=237   cterm=NONE
 hi ColorColumn   ctermfg=NONE  ctermbg=237   cterm=NONE
@@ -79,7 +80,7 @@ hi Conditional  ctermfg=005  ctermbg=NONE cterm=NONE
 hi Constant     ctermfg=003  ctermbg=NONE cterm=NONE
 hi Debug        ctermfg=001  ctermbg=NONE cterm=NONE
 hi Define       ctermfg=005  ctermbg=NONE cterm=NONE
-hi Delimiter    ctermfg=011  ctermbg=NONE cterm=NONE
+hi Delimiter    ctermfg=004  ctermbg=NONE cterm=NONE
 hi Directory    ctermfg=004  ctermbg=NONE cterm=NONE
 hi Exception    ctermfg=001  ctermbg=NONE cterm=NONE
 hi Float        ctermfg=009  ctermbg=NONE cterm=NONE
@@ -95,7 +96,7 @@ hi PreProc      ctermfg=003  ctermbg=NONE cterm=NONE
 hi Repeat       ctermfg=003  ctermbg=NONE cterm=NONE
 hi Special      ctermfg=009  ctermbg=NONE cterm=NONE
 hi SpecialChar  ctermfg=009  ctermbg=NONE cterm=NONE
-hi SpecialKey   ctermfg=009  ctermbg=NONE cterm=NONE
+hi SpecialKey   ctermfg=240  ctermbg=NONE cterm=NONE
 hi Statement    ctermfg=004  ctermbg=NONE cterm=NONE
 hi StorageClass ctermfg=009  ctermbg=NONE cterm=NONE
 hi String       ctermfg=002  ctermbg=NONE cterm=NONE

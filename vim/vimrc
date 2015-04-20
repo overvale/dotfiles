@@ -147,10 +147,10 @@ nnoremap Y y$
 
 " Commands
 " ------------------------------------------------------------------------
-
 " Never use a binding when a command will do
 " commands are easier to remember and autocomplete
 " also, it's just vim-style
+
 command! Cdf :cd %:h<cr>
 command! Cl :set cursorline!
 command! Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
@@ -224,7 +224,6 @@ function! NeatFoldText()
   return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
 endfunction
 set foldtext=NeatFoldText()
-
 " http://vim.wikia.com/wiki/Customize_text_for_closed_folds
 " https://bitbucket.org/atimholt/spiffy_foldtext
 

@@ -29,7 +29,7 @@ hi CursorLine    ctermfg=NONE    ctermbg=011     cterm=NONE
 hi CursorColumn  ctermfg=NONE    ctermbg=011     cterm=NONE
 hi ColorColumn   ctermfg=NONE    ctermbg=011     cterm=NONE
     
-hi PMenu         ctermfg=007     ctermbg=250     cterm=NONE
+hi PMenu         ctermfg=000     ctermbg=007     cterm=NONE
 hi PMenuSel      ctermfg=015     ctermbg=003     cterm=NONE
 hi PmenuSbar     ctermbg=NONE    ctermfg=NONE    cterm=NONE
 hi PmenuThumb    ctermbg=NONE    ctermfg=NONE    cterm=NONE
@@ -43,7 +43,7 @@ hi IncSearch     ctermfg=000     ctermbg=003     cterm=NONE
 hi MatchParen    ctermfg=NONE    ctermbg=007     cterm=NONE
 hi ModeMsg       ctermfg=011     ctermbg=003    cterm=NONE
 hi MoreMsg       ctermfg=006     ctermbg=NONE    cterm=NONE
-hi Question      ctermfg=009     ctermbg=NONE    cterm=NONE
+hi Question      ctermfg=001     ctermbg=NONE    cterm=NONE
 hi Search        ctermfg=244     ctermbg=003     cterm=NONE
 hi Error         ctermfg=015     ctermbg=001     cterm=NONE
 
@@ -84,7 +84,7 @@ hi Delimiter    ctermfg=004  ctermbg=NONE  cterm=NONE
 hi Directory    ctermfg=004  ctermbg=NONE  cterm=NONE
 hi Function     ctermfg=004  ctermbg=NONE  cterm=NONE
 hi Include      ctermfg=004  ctermbg=NONE  cterm=NONE
-hi Statement    ctermfg=004  ctermbg=NONE  cterm=NONE
+hi Statement    ctermfg=004  ctermbg=012  cterm=NONE
 
 hi Conditional  ctermfg=005  ctermbg=NONE  cterm=NONE
 hi Define       ctermfg=005  ctermbg=NONE  cterm=NONE
@@ -135,10 +135,10 @@ hi Underlined    ctermfg=NONE     ctermbg=NONE   cterm=underline
 hi rubyAttribute               ctermfg=004   ctermbg=NONE   cterm=NONE
 hi rubyConstant                ctermfg=003   ctermbg=NONE   cterm=NONE
 hi rubyInterpolation           ctermfg=002   ctermbg=NONE   cterm=NONE
-hi rubyInterpolationDelimiter  ctermfg=011   ctermbg=NONE   cterm=NONE
+hi rubyInterpolationDelimiter  ctermfg=003   ctermbg=NONE   cterm=NONE
 hi rubyRegexp                  ctermfg=001   ctermbg=NONE   cterm=NONE
 hi rubyRegexpSpecial           ctermfg=004    
-hi rubyRegexpParens            ctermfg=009    
+hi rubyRegexpParens            ctermfg=001    
 hi rubyStringEscape            ctermfg=005    
 hi rubySymbol                  ctermfg=001   ctermbg=NONE   cterm=NONE
 hi rubyStringDelimiter         ctermfg=002   ctermbg=NONE   cterm=NONE
@@ -148,14 +148,15 @@ hi rubyConditionalExpression   ctermfg=251
 " HTML highlighting
 " ---------------------------------------------------------
 hi htmlBold                     ctermfg=003  ctermbg=NONE cterm=bold
-hi htmlItalic                   ctermfg=009  ctermbg=NONE cterm=NONE
-hi htmlEndTag                   ctermfg=011  ctermbg=NONE cterm=NONE
-hi htmlTag                      ctermfg=011  ctermbg=NONE cterm=NONE
+hi htmlItalic                   ctermfg=001  ctermbg=NONE cterm=NONE
+hi htmlArg                      ctermfg=005  ctermbg=NONE cterm=NONE
+hi htmlEndTag                   ctermfg=004  ctermbg=NONE cterm=NONE
+hi htmlTag                      ctermfg=004  ctermbg=NONE cterm=NONE
 hi link htmlTagN htmlTagName
 hi htmlLink                     ctermfg=NONE ctermbg=NONE cterm=NONE
 hi htmlH1                       ctermfg=001  ctermbg=NONE cterm=NONE
-hi htmlH2                       ctermfg=002  ctermbg=NONE cterm=NONE
-hi htmlH3                       ctermfg=005  ctermbg=NONE cterm=NONE
+hi htmlH2                       ctermfg=004  ctermbg=NONE cterm=NONE
+hi htmlH3                       ctermfg=002  ctermbg=NONE cterm=NONE
 
 " CSS highlighting
 " ---------------------------------------------------------
@@ -168,9 +169,9 @@ hi cssColor       ctermfg=006 ctermbg=NONE cterm=NONE
 hi markdownCode              ctermfg=002 ctermbg=NONE cterm=NONE
 hi markdownCodeBlock         ctermfg=002 ctermbg=NONE cterm=NONE
 hi markdownHeadingDelimiter  ctermfg=004 ctermbg=NONE cterm=NONE
-hi mkdInlineURL              ctermfg=005 ctermbg=NONE cterm=NONE
-hi mkdBlockquote             ctermfg=011
-hi mkdLineContinue           ctermfg=011
+hi mkdInlineURL              ctermfg=004 ctermbg=NONE cterm=NONE
+hi mkdBlockquote             ctermfg=003
+hi mkdLineContinue           ctermfg=003
 
 " Git highlighting
 " ---------------------------------------------------------

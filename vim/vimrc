@@ -68,7 +68,7 @@ set statusline+=\ %P      "percentage through file
 set statusline+=\ %l:%c   "line,column
 
 " COLOR SCHEME
-colorscheme oliver.dark
+colorscheme oliver.light
 
 " Mappings
 " ------------------------------------------------------------------------
@@ -126,6 +126,8 @@ nnoremap gB :bp<cr>
 " Go to the end of the previous word
 nnoremap - ge
 nnoremap _ gE
+vnoremap - ge
+vnoremap _ gE
 
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.

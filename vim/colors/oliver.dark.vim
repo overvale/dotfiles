@@ -109,7 +109,7 @@ hi Type         ctermfg=006  ctermbg=NONE cterm=NONE
 hi Typedef      ctermfg=003  ctermbg=NONE cterm=NONE
 
 " Spelling highlighting
-hi SpellBad     ctermfg=NONE ctermbg=234 
+hi SpellBad     ctermfg=NONE ctermbg=234  cterm=NONE
 hi SpellLocal   ctermfg=NONE ctermbg=234  cterm=NONE
 hi SpellCap     ctermfg=NONE ctermbg=234  cterm=NONE
 hi SpellRare    ctermfg=NONE ctermbg=234  cterm=NONE

@@ -6,6 +6,10 @@ alias epa='vim ~/.zsh/localrc.zsh && source ~/.zsh/localrc.zsh'
 bindkey "^K" history-beginning-search-backward
 bindkey "^J" history-beginning-search-forward
 
+# theme setup
+alias theme-dark='export THEME=dark && source $DOT/zsh/prompt.zsh'
+alias theme-light='export THEME=light && source $DOT/zsh/prompt.zsh'
+
 # Suffix Aliases (zsh)
 alias -s txt=bbedit
 alias -s text=bbedit

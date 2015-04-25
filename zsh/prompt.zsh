@@ -9,7 +9,11 @@ zstyle ':vcs_info:*' stagedstr ' Δ'
 zstyle ':vcs_info:*' unstagedstr ' Δ'
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' actionformats '[%b|%a]'  #[branch|action]
-zstyle ':vcs_info:*' formats '%F{4}git:%b%m%f%F{2}%c%f%F{5}%u%f'     #(<branch> <ahead|behind>) stagedstr unstagedstr
+if [[ $THEME == "light" ]]; then
+    zstyle ':vcs_info:*' formats '%F{4}git:%b%m%f%F{2}%c%f%F{5}%u%f'     #(<branch> <ahead|behind>) stagedstr unstagedstr
+else
+    zstyle ':vcs_info:*' formats '%F{4}git:%b%m%f%F{2}%c%f%F{3}%u%f'     #(<branch> <ahead|behind>) stagedstr unstagedstr
+fi
 zstyle ':vcs_info:git*+set-message:*' hooks git-untracked git-aheadbehind
 zstyle ':vcs_info:*' enable git 
 
@@ -27,13 +31,9 @@ function +vi-git-aheadbehind() {
     local ahead behind
     local -a gitstatus
 
-    # for git prior to 1.7
-    # ahead=$(git rev-list origin/${hook_com[branch]}..HEAD | wc -l)
     ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l | sed 's/ //g')
     (( $ahead )) && gitstatus+=( " ↑${ahead}" )
 
-    # for git prior to 1.7
-    # behind=$(git rev-list HEAD..origin/${hook_com[branch]} | wc -l)
     behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l | sed 's/ //g')
     (( $behind )) && gitstatus+=( " ↓${behind}" )
 
@@ -42,6 +42,13 @@ function +vi-git-aheadbehind() {
 
 # And here's the actual prompt
 precmd () { vcs_info }
+if [[ $THEME == "light" ]]; then
+PROMPT='
+%K{1}%F{11}%(1j.%jj .)%f%k%K{10}%F{2}[%~]%f%k ${vcs_info_msg_0_}
+%F{1}$ %f'
+else
 PROMPT='
 %F{1}%(1j.%jj .)%f[%F{2}%~%f] ${vcs_info_msg_0_}
 %F{1}$ %f'
+fi
+

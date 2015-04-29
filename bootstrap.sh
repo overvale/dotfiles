@@ -43,17 +43,12 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # Karabiner
 # Keyboard Maestro
 # Name Mangler
-# OmniFocus
-# Patterns
 # Pixelmator
 # SuperDuper
 # Transmit
 # QuickTime Player 7
 
 # pull-down your dotfiles
-
-# Create centralized vim swp files location
-mkdir ~/.swp-dir
 
 # Symlink a bunch of things - run from $HOME
 ln -s ~/code/dotfiles/git/gitconfig .gitconfig
@@ -62,9 +57,8 @@ ln -s ~/code/dotfiles/zsh .zsh
 ln -s ~/code/dotfiles/zsh/zshrc .zshrc
 ln -s ~/code/dotfiles/vim .vim
 ln -s ~/code/dotfiles/vim/vimrc .vimrc
-ln -s code/dotfiles/vim/gvimrc .gvimrc
 ln -s ~/code/dotfiles/Karabiner ~/Library/Application\ Support/Karabiner
-ln -s code/dotfiles/tmux.conf .tmux.conf
+ln -s ~/code/dotfiles/tmux.conf .tmux.conf
 
 # install Arq
 # http://www.haystacksoftware.com/arq/

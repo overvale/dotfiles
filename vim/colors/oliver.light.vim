@@ -84,7 +84,7 @@ hi Delimiter    ctermfg=004  ctermbg=NONE  cterm=NONE
 hi Directory    ctermfg=004  ctermbg=NONE  cterm=NONE
 hi Function     ctermfg=004  ctermbg=NONE  cterm=NONE
 hi Include      ctermfg=004  ctermbg=NONE  cterm=NONE
-hi Statement    ctermfg=004  ctermbg=012  cterm=NONE
+hi Statement    ctermfg=004  ctermbg=NONE  cterm=NONE
 
 hi Conditional  ctermfg=005  ctermbg=NONE  cterm=NONE
 hi Define       ctermfg=005  ctermbg=NONE  cterm=NONE
@@ -105,8 +105,8 @@ hi Operator     ctermfg=008  ctermbg=NONE  cterm=NONE
 " ---------------------------------------------------------
 hi SpellBad     ctermfg=NONE ctermbg=009 
 hi SpellLocal   ctermfg=NONE ctermbg=009  cterm=NONE
-hi SpellCap     ctermfg=NONE ctermbg=009  cterm=NONE
-hi SpellRare    ctermfg=NONE ctermbg=009  cterm=NONE
+hi SpellCap     ctermfg=NONE ctermbg=010  cterm=NONE
+hi SpellRare    ctermfg=NONE ctermbg=011  cterm=NONE
 
 
 " diff highlighting
@@ -153,10 +153,11 @@ hi htmlArg                      ctermfg=005  ctermbg=NONE cterm=NONE
 hi htmlEndTag                   ctermfg=004  ctermbg=NONE cterm=NONE
 hi htmlTag                      ctermfg=004  ctermbg=NONE cterm=NONE
 hi link htmlTagN htmlTagName
+hi htmlTagName                  ctermfg=004  ctermbg=012  cterm=NONE
 hi htmlLink                     ctermfg=NONE ctermbg=NONE cterm=NONE
-hi htmlH1                       ctermfg=001  ctermbg=NONE cterm=NONE
-hi htmlH2                       ctermfg=004  ctermbg=NONE cterm=NONE
-hi htmlH3                       ctermfg=002  ctermbg=NONE cterm=NONE
+hi htmlH1                       ctermfg=001  ctermbg=NONE cterm=bold
+hi htmlH2                       ctermfg=004  ctermbg=NONE cterm=bold
+hi htmlH3                       ctermfg=002  ctermbg=NONE cterm=bold
 
 " CSS highlighting
 " ---------------------------------------------------------

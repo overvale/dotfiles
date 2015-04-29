@@ -31,7 +31,6 @@ set wildmenu                      " Enhanced command line completion
 set wildmode=list:longest         " Complete files like a shell.
 set ignorecase                    " Case-insensitive searching...
 set smartcase                     " ...unless there's a cap letter
-set infercase                     " infer completion case in Insert mode
 set incsearch                     " Show search matches as you type
 set clipboard=unnamed             " set vim to share the system clipboard
 set wrap                          " Turn on wrapping
@@ -133,10 +132,6 @@ vnoremap _ gE
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
 
-" Remap K to split the line at the point
-nnoremap K i<cr><esc>`.
-inoremap <c-k> <cr><c-o><bs>
-
 " Move lines
 vnoremap gJ :m '>+1<cr>gv
 vnoremap gK :m '<-2<cr>gv
@@ -155,10 +150,11 @@ nnoremap Y y$
 
 command! Cdf :cd %:h<cr>
 command! Cl :set cursorline!
-command! Dtrail :%s/\s\+$//<cr>:let @/=''<CR>
+command! Dtrail :%s/\s\+$//
 command! MM :set filetype=markdown syntax=mkd
 command! Frst :set filetype=rst
 command! GG :GitGutterToggle
+command! GY :Goyo
 command! H1 :normal VUyypVr=
 command! H2 :normal yypVr-
 command! NN :set number!
@@ -179,13 +175,17 @@ cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 " Autocommands
 " ------------------------------------------------------------------------
 
-augroup filetypes
+augroup markdown
     autocmd!
-    autocmd BufRead,BufNewFile *.fountain setlocal filetype=fountain
     " Use filetype=markdown to trigger thinca/vim-ft-markdown_fold,
     " then syntax=mkd to trigger vim-markdown's syntax, which is MUCH better
     autocmd BufRead,BufNewFile *.text     setlocal filetype=markdown syntax=mkd
     autocmd BufRead,BufNewFile *.md       setlocal filetype=markdown syntax=mkd
+augroup END
+
+augroup misc-filetypes
+    autocmd!
+    autocmd BufRead,BufNewFile *.fountain setlocal filetype=fountain
 augroup END
 
 " Make sure Vim returns to the same line when you reopen a file.
@@ -218,7 +218,7 @@ set fillchars=fold:\∙
 function! NeatFoldText()
   let line = ' ' . substitute(getline(v:foldstart), '^\s*\("\|#\|//\|/\)\?\s*\|\s*\("\|#\)\?\s*{{' . '{\d*\s*', '', 'g') . ' '
   let lines_count = v:foldend - v:foldstart + 1
-  let lines_count_text = '│ ' . printf("%10s", lines_count . ' lines') . ' │'
+  let lines_count_text = ' ' . printf("%10s", lines_count . ' lines') . ' '
   let foldchar = matchstr(&fillchars, 'fold:\zs.')
   let foldtextstart = strpart('∙' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
   let foldtextend = lines_count_text . repeat(foldchar, 8)
@@ -272,10 +272,21 @@ vmap <Enter> <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
+" GOYO
+
+let g:goyo_width = 90
+let g:goyo_margin_top = 2
+let g:goyo_margin_bottom = 0
+
 " Snippets
 " ------------------------------------------------------------------------
 
 " Date: 2015-02-15
-iab <expr> dd strftime("%Y-%m-%d")
+iabbrev <expr> dd strftime("%Y-%m-%d")
 " Date: 16 February 2015
-iab <expr> ddate strftime("%d %B %Y")
+iabbrev <expr> ddate strftime("%d %B %Y")
+
+iabbrev xcl CLARISSA
+iabbrev xja JACK
+iabbrev xju JULIAN
+iabbrev xpe PENNY

@@ -5,7 +5,15 @@
 # Sign in to iCloud
 # Sign in to iTunes Match
 
+# Check for software updates
+# Install ad blocking
+# Install Little Snitch
+# Create separate local password (iCloud password used by default)
 # Change caps-lock to control
+# Turn on trackpad tap to click
+# Disable guest account
+
+# Copy documents from backup
 
 # Installs the developer command line tools
 xcode-select --install
@@ -15,7 +23,7 @@ chsh -s /bin/zsh
 
 # install homebrew - worth checking hompage
 # for, potentially, updated instructions
-ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 brew install vim
 brew install par
@@ -24,10 +32,8 @@ brew install tree
 brew install ranger
 brew install tmux
 brew install reattach-to-user-namespace
-curl -O http://sreitshamer.github.io/arq_restore/arq_restore.zip && unzip arq_restore.zip && rm arq_restore.zip
-pip install awscli
 
-# Install vim plugin manager + plugins
+# Set up ssh keys
 
 # Set Help Viewer windows to non-floating mode
 defaults write com.apple.helpviewer DevMode -bool true
@@ -35,20 +41,7 @@ defaults write com.apple.helpviewer DevMode -bool true
 # Avoid creating .DS_Store files on network volumes
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
-# Install apps:
-# Adobe Lightroom
-# BBEdit
-# Google Chrome
-# Kaleidoscope
-# Karabiner
-# Keyboard Maestro
-# Name Mangler
-# Pixelmator
-# SuperDuper
-# Transmit
-# QuickTime Player 7
-
-# pull-down your dotfiles
+# pull-down your dotfiles, or copy from backup
 
 # Symlink a bunch of things - run from $HOME
 ln -s ~/code/dotfiles/git/gitconfig .gitconfig
@@ -60,9 +53,21 @@ ln -s ~/code/dotfiles/vim/vimrc .vimrc
 ln -s ~/code/dotfiles/Karabiner ~/Library/Application\ Support/Karabiner
 ln -s ~/code/dotfiles/tmux.conf .tmux.conf
 
-# install Arq
-# http://www.haystacksoftware.com/arq/
-# and restore anything that wasn't automatically restored by
-# cloud services (iCloud, Dropbox, etc.)
+# Install vim plugin manager + plugins
+# Reconstruct ~/.marks directory
+
+# Install apps:
+# Arq
+# Adobe Lightroom
+# BBEdit
+# Google Chrome
+# Kaleidoscope
+# Karabiner
+# Keyboard Maestro
+# Name Mangler
+# Pixelmator (Mac App Store)
+# SuperDuper
+# Transmit
+# QuickTime Player 7
 
 # Install fonts from server

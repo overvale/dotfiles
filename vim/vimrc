@@ -6,10 +6,10 @@ call plug#begin('~/.vim/plugged')
 Plug 'Shougo/unite.vim'
 Plug 'tpope/vim-surround'
 Plug 'airblade/vim-gitgutter'
-Plug 'mbbill/undotree'
-Plug 'junegunn/goyo.vim'
-Plug 'plasticboy/vim-markdown'
-Plug 'thinca/vim-ft-markdown_fold'
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
+Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+Plug 'thinca/vim-ft-markdown_fold', { 'for': 'markdown' }
 Plug 'gerw/vim-HiLinkTrace'
 Plug 'Shougo/unite-outline'
 Plug 'Shougo/unite-help'

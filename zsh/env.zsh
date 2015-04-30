@@ -3,6 +3,3 @@ export PATH=/usr/local/bin:$PATH:~/code/bin:~/code/dotfiles/bin:~/code/text-util
 export EDITOR=vim
 export DOT=~/code/dotfiles
 export THEME=light
-
-# set a search directory for cd in addition to the working dir
-# export CDPATH=.:~

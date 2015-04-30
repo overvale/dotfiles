@@ -1,126 +1,22 @@
-# Alias Editing
-alias ea='vim $DOT/zsh/aliases.zsh && source $DOT/zsh/aliases.zsh'
-# personal aliases (not for distribution)
-alias epa='vim ~/.zsh/localrc.zsh && source ~/.zsh/localrc.zsh'
-
 bindkey "^K" history-beginning-search-backward
 bindkey "^J" history-beginning-search-forward
-
-# theme setup
 alias theme-dark='export THEME=dark && source $DOT/zsh/prompt.zsh'
 alias theme-light='export THEME=light && source $DOT/zsh/prompt.zsh'
-
-# Suffix Aliases (zsh)
-alias -s txt=bbedit
-alias -s text=bbedit
-alias -s md=bbedit
-
-
-# Moving around & using the file-system
-# ----------------------------------------------------------------------
-
-# rm protection
-alias rm="rm -i"
-
-# mv overwrite protection
-alias mv="mv -i"
-
-# ls
-alias l='ls -1p'         # my favorite options
+alias rm="rm -i"        # overwrite protection
+alias mv="mv -i"        # overwrite protection
+alias l='ls -1p'        # my favorite options
 alias la="ls -AohGp"    # long list, all, colors
-
-# cd
 alias ..="cd .."
-alias cdb="cd -"
-
-# open
-alias o='open'
-
-# Create directory and cd into it
-function cake() {
-mkdir -p "$@" && cd "$@"
-}
-
-# cd to the front-most finder window's dir - no error handling
-alias cdf='cd $(osascript -e "tell application \"Finder\" to POSIX path of (target of window 1 as alias)")'
-
-# copy the working directory path
-alias cpwd='pwd|tr -d "\n"|pbcopy'
-
-# copy the file-path
-function cfp(){
-echo "$PWD/$1"|pbcopy
-echo "File-Path is on the clipboard"
-}
-
-# Size of file/directory
-function size(){
-  du -sh "$1"
-}
-
-# Git
-# ----------------------------------------------------------------------
-
-alias gitACP="git add -A && git commit -m 'updates' && git push"
-
-# Working with files
-# ----------------------------------------------------------------------
-
-# quicklook
-alias ql='qlmanage -p "$@" >& /dev/null'
-
-# make executable
 alias ax="chmod a+x"
-
-# Move to Trash - remove to trash
-function rt(){
-mv $1 ~/.Trash;
-}
-
-
-# Tmux
-# ----------------------------------------------------------------------
-
+alias cpwd='pwd|tr -d "\n"|pbcopy' # copy pwd
 alias tmn='tmux new -s `basename $PWD`'
 alias tma='tmux attach -t '
 alias tml='tmux list-sessions'
 alias tmk='tmux kill-session -t '
-
-# System Info & Tools
-# ----------------------------------------------------------------------
-
-# What's the battery status?
+function size(){ du -sh "$1" }
+function rt(){ mv $1 ~/.Trash; }
+alias cdf='cd $(osascript -e "tell application \"Finder\" to POSIX path of (target of window 1 as alias)")'
+function cfp(){ echo "$PWD/$1"|pbcopy && echo "File-Path is on the clipboard" }
+alias gitACP="git add -A && git commit -m 'updates' && git push"
 alias batt="pmset -g batt"
-
-# What's my I.P. Address?
-# this looks for the ip address of "en0" - see `ipconfig` for more
 myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
-
-# Quick way to rebuild the Launch Services database and get rid
-# of duplicates in the Open With submenu.
-alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user; killall Finder'
-
-
-# Miscellaneous
-# ----------------------------------------------------------------------
-
-# Arq has a command-line tool!
-function arq(){
-  /Applications/Arq.app/Contents/MacOS/Arq "$1"
-}
-
-# Lookup in Mac's dictionary
-function dict(){
-open dict:///"$1"
-}
-
-# Wolfram Alpha
-function wolf(){
-open "http://www.wolframalpha.com/input/?i=$*"
-}
-
-# Should I watch this movie?
-function movie-info(){
-open -a Safari "http://www.youtube.com/results?search_query=$1+trailer" "http://www.rottentomatoes.com/search/?search=$1" "http://www.imdb.com/find?q=$1"
-}
-

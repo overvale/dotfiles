@@ -3,19 +3,23 @@
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'Shougo/unite.vim'
 Plug 'tpope/vim-surround'
-Plug 'airblade/vim-gitgutter'
-Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
-Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
-Plug 'thinca/vim-ft-markdown_fold', { 'for': 'markdown' }
-Plug 'gerw/vim-HiLinkTrace'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'junegunn/goyo.vim'
+
+Plug 'Shougo/unite.vim'
 Plug 'Shougo/unite-outline'
 Plug 'Shougo/unite-help'
 Plug 'kopischke/unite-spell-suggest'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'junegunn/vim-easy-align'
+
+Plug 'plasticboy/vim-markdown'
+Plug 'thinca/vim-ft-markdown_fold'
+Plug 'junegunn/vim-journal'
+
+Plug 'airblade/vim-gitgutter',        { 'on': 'GitGutterToggle' }
+Plug 'mbbill/undotree',               { 'on': 'UndotreeToggle' }
+Plug 'gerw/vim-HiLinkTrace',          { 'on': 'HLT' }
+Plug 'junegunn/vim-easy-align',       { 'on': ['<Plug>(EasyAlign)', 'EasyAlign'] }
 
 call plug#end()
 
@@ -43,8 +47,7 @@ set tabstop=4                     " width of tab character
 set softtabstop=4                 " number of characters to delete
 set shiftwidth=4                  " indentation settings
 set nojoinspaces                  " Join lines with single space
-"set backspace=indent,eol,start    " allow backspace anywhere
-set spell spelllang=en_us         " Turn on spell-checking
+set spelllang=en_us               " Use US English for spell-checking
 set formatoptions=tcrqn1j         " (see docs)
 set formatprg=par\ -w78rq         " external formatter options
 set laststatus=2                  " Always show status bar
@@ -52,7 +55,7 @@ set showcmd                       " Show commands as you type
 set splitbelow                    " Where default splits go
 set splitright                    " Where default splits go
 set spellfile=~/.vim/custom-dictionary.utf-8.add
-set cryptmethod=blowfish2         " Use blowfish2 encryption
+"set cryptmethod=blowfish2         " Use blowfish2 encryption
 set foldlevelstart=99             " Don't start with collapsed folds
 set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
 set autoread                      " re-read file if changed outside vim

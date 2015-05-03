@@ -32,6 +32,10 @@ brew install tree
 brew install ranger
 brew install tmux
 brew install reattach-to-user-namespace
+brew install pandoc
+
+Install princeXML
+make install textplay (symlink)
 
 # Set up ssh keys
 
@@ -57,17 +61,20 @@ ln -s ~/code/dotfiles/tmux.conf .tmux.conf
 # Reconstruct ~/.marks directory
 
 # Install apps:
+
 # Arq
 # Adobe Lightroom
 # BBEdit
-# Google Chrome
 # Kaleidoscope
 # Karabiner
-# Keyboard Maestro
-# Name Mangler
-# Pixelmator (Mac App Store)
 # SuperDuper
 # Transmit
 # QuickTime Player 7
+
+# Google Chrome ???
+# Keyboard Maestro ???
+
+# Name Mangler (Mac App Store)
+# Pixelmator (Mac App Store)
 
 # Install fonts from server

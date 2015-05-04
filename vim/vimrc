@@ -209,8 +209,8 @@ augroup custom_misc
   " Super fast exiting from insert mode. Note that with this, you can't
   " possibly use mappings that start with <esc> *in insert mode*, since vim
   " won't wait for you to press other keys.
-  autocmd InsertEnter * set timeoutlen=0
-  autocmd InsertLeave * set timeoutlen=800
+  autocmd InsertEnter * set timeoutlen=0 linebreak
+  autocmd InsertLeave * set timeoutlen=800 linebreak
 augroup END
 
 " Folding

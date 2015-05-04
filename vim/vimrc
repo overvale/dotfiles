@@ -1,89 +1,43 @@
-" Plugins
-" ------------------------------------------------------------------------
-
 call plug#begin('~/.vim/plugged')
-
-Plug 'tpope/vim-surround'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'junegunn/goyo.vim'
-
-Plug 'Shougo/unite.vim'
-Plug 'Shougo/unite-outline'
-Plug 'Shougo/unite-help'
-Plug 'kopischke/unite-spell-suggest'
-
-Plug 'plasticboy/vim-markdown'
-Plug 'thinca/vim-ft-markdown_fold'
-Plug 'junegunn/vim-journal'
-
-Plug 'airblade/vim-gitgutter',        { 'on': 'GitGutterToggle' }
-Plug 'mbbill/undotree',               { 'on': 'UndotreeToggle' }
-Plug 'gerw/vim-HiLinkTrace',          { 'on': 'HLT' }
-Plug 'junegunn/vim-easy-align',       { 'on': ['<Plug>(EasyAlign)', 'EasyAlign'] }
-
+    Plug 'Shougo/unite.vim'
+    Plug 'Shougo/unite-outline'
+    Plug 'kopischke/unite-spell-suggest'
+    Plug 'tpope/vim-surround'
+    Plug 'christoomey/vim-tmux-navigator'
+    Plug 'plasticboy/vim-markdown'
+    Plug 'thinca/vim-ft-markdown_fold'
+    Plug 'junegunn/goyo.vim'
+    Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)', 'EasyAlign'] }
+    Plug 'airblade/vim-gitgutter',  { 'on': 'GitGutterToggle' }
+    Plug 'mbbill/undotree',         { 'on': 'UndotreeToggle' }
+    Plug 'gerw/vim-HiLinkTrace',    { 'on': 'HLT' }
 call plug#end()
 
-" General Preferences
-" ------------------------------------------------------------------------
-
-syntax enable                     " Turn on syntax highlighting
-set encoding=utf-8                " Set default encoding
-set undodir=~/code/vimundo        " Centralize undo files
-set undofile                      " Keep permanent history of undos
-set hidden                        " Hide buffers instead of closing them
-set wildmenu                      " Enhanced command line completion
-set wildmode=list:longest         " Complete files like a shell.
-set ignorecase                    " Case-insensitive searching...
-set smartcase                     " ...unless there's a cap letter
-set incsearch                     " Show search matches as you type
-set clipboard=unnamed             " set vim to share the system clipboard
-set wrap                          " Turn on wrapping
-set linebreak                     " Wrap only at word-breaks
-set breakindent                   " Wrap lines to indent
-set autoindent                    " Turn on auto-indenting
-set smartindent                   " Be smart about autoindenting
-set expandtab                     " Use spaces instead of tabs
-set tabstop=4                     " width of tab character
-set softtabstop=4                 " number of characters to delete
-set shiftwidth=4                  " indentation settings
-set nojoinspaces                  " Join lines with single space
-set spelllang=en_us               " Use US English for spell-checking
-set formatoptions=tcrqn1j         " (see docs)
-set formatprg=par\ -w78rq         " external formatter options
-set laststatus=2                  " Always show status bar
-set showcmd                       " Show commands as you type
-set splitbelow                    " Where default splits go
-set splitright                    " Where default splits go
-set spellfile=~/.vim/custom-dictionary.utf-8.add
-"set cryptmethod=blowfish2         " Use blowfish2 encryption
-set foldlevelstart=99             " Don't start with collapsed folds
-set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
-set autoread                      " re-read file if changed outside vim
-
-" Statusline
-set statusline=%f         "path to file in buffer
-set statusline+=%m        "modified/modifiable flag
-set statusline+=\ %r      "read only flag, not the same as 'modifiable'
-set statusline+=%=        "left/right alignment separator
-set statusline+=\ %y      "filetype
-set statusline+=\ %P      "percentage through file
-set statusline+=\ %l:%c   "line,column
-
-" COLOR SCHEME
+syntax enable
 colorscheme oliver.light
 
-" Mappings
-" ------------------------------------------------------------------------
+set clipboard=unnamed
+set encoding=utf-8
+set foldlevelstart=99
+set formatoptions=tcrqn1j formatprg=par\ -w78rq nojoinspaces
+set hidden
+set incsearch ignorecase
+set laststatus=2 showcmd
+set linebreak breakindent
+set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
+set smartindent autoindent
+set spellfile=~/.vim/custom-dictionary.utf-8.add
+set spelllang=en_us
+set splitbelow splitright
+set statusline=%f%m\ %r%=\ %y\ %P\ %l:%c
+set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+set undofile undodir=~/code/vimundo
+set wildmenu wildmode=list:longest
+set wrap
 
-" Since I've remapped brackets [] system-wide to delete...
-" Make things a little easier in normal mode
-nnoremap <backspace> [
-nnoremap <delete> ]
-
-" Make mode-switching easy
-nnoremap <tab> <esc>
-inoremap <tab> <esc>
-vnoremap <tab> <esc>
+" MAPPINGS
+" ------------------------------------------------------------------------------
+let mapleader = ' '
 
 " DISABLE THE ARROW KEYS - OH GOD...
 nnoremap <up> <nop>
@@ -95,31 +49,28 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
+" Yes, I use brackets for delete
+inoremap [ <backspace>
+cnoremap [ <backspace>
+inoremap ] <delete>
+cnoremap ] <delete>
+
+" Make mode-switching easy
+nnoremap <tab> <esc>
+inoremap <tab> <esc>
+vnoremap <tab> <esc>
+
 " Make command-mode easier to enter
 nnoremap ; :
 vnoremap ; :
 nnoremap , ;
 vnoremap , ;
 
-" Make j and k behave as expected
-nnoremap j gj
-nnoremap k gk
-vnoremap j gj
-vnoremap k gk
-
 " Make moving around splits easier
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-
-" make regexp search not suck by default
-nnoremap / /\v
-vnoremap / /\v
-
-" maintain selection on indentations
-vnoremap > >gv
-vnoremap < <gv
 
 " Easier buffer navigation
 nnoremap gb :bn<cr>
@@ -131,37 +82,36 @@ nnoremap _ gE
 vnoremap - ge
 vnoremap _ gE
 
-" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
-" so that you can undo CTRL-U after inserting a line break.
-inoremap <C-U> <C-G>u<C-U>
-
-" Move lines
-vnoremap gJ :m '>+1<cr>gv
-vnoremap gK :m '<-2<cr>gv
-
-" Quickly select text you just pasted:
-noremap gp `[v`]
-
 " Make Y like D or C
 nnoremap Y y$
 
-" Commands
-" ------------------------------------------------------------------------
-" Never use a binding when a command will do
-" commands are easier to remember and autocomplete
-" also, it's just vim-style
+" Nice regex by default
+nnoremap / /\v
+vnoremap / /\v
 
+" maintain selection on indentations
+vnoremap > >gv
+vnoremap < <gv
+
+" Break undo before CTRL-U
+inoremap <C-U> <C-G>u<C-U>
+
+" Move lines
+vnoremap <c-j> :m '>+1<cr>gv=gv
+vnoremap <c-k> :m '<-2<cr>gv=gv
+
+" COMMANDS
+" ------------------------------------------------------------------------------
 command! Cdf :cd %:h<cr>
 command! Cl :set cursorline!
 command! Dtrail :%s/\s\+$//
 command! MM :set filetype=markdown syntax=mkd
-command! Frst :set filetype=rst
 command! GG :GitGutterToggle
 command! GY :Goyo
 command! H1 :normal VUyypVr=
 command! H2 :normal yypVr-
 command! NN :set number!
-command! Nr :set relativenumber!
+command! NR :set relativenumber!
 command! PP :set paste!
 command! SS :set spell!
 command! Src :source $MYVIMRC
@@ -170,25 +120,18 @@ command! WW :set wrap!
 command! UT :UndotreeToggle
 
 " allow saving a sudo file if forgot to open as sudo
-cmap w!! w !sudo tee % >/dev/null
-
+    cmap w!! w !sudo tee % >/dev/null
 " creates an alias (%%) to represent the directory of the current file
-cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+    cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
-" Autocommands
-" ------------------------------------------------------------------------
-
+" AUTOCOMMANDS
+" ------------------------------------------------------------------------------
 augroup markdown
     autocmd!
     " Use filetype=markdown to trigger thinca/vim-ft-markdown_fold,
     " then syntax=mkd to trigger vim-markdown's syntax, which is MUCH better
     autocmd BufRead,BufNewFile *.text     setlocal filetype=markdown syntax=mkd
     autocmd BufRead,BufNewFile *.md       setlocal filetype=markdown syntax=mkd
-augroup END
-
-augroup misc-filetypes
-    autocmd!
-    autocmd BufRead,BufNewFile *.fountain setlocal filetype=fountain
 augroup END
 
 " Make sure Vim returns to the same line when you reopen a file.
@@ -201,95 +144,88 @@ augroup line_return
 augroup END
 
 augroup custom_misc
-  autocmd!
-
-  " Don't write undofiles for secret stuff
-  autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
-
-  " Super fast exiting from insert mode. Note that with this, you can't
-  " possibly use mappings that start with <esc> *in insert mode*, since vim
-  " won't wait for you to press other keys.
-  autocmd InsertEnter * set timeoutlen=0 linebreak
-  autocmd InsertLeave * set timeoutlen=800 linebreak
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+    autocmd BufRead,BufNewFile *.fountain setlocal filetype=fountain
+    " Don't write undofiles for secret stuff
+    autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
+    " Super fast exiting from insert mode. Note that with this, you can't
+    " possibly use mappings that start with <esc> *in insert mode*, since vim
+    " won't wait for you to press other keys.
+    autocmd InsertEnter * set timeoutlen=0 linebreak
+    autocmd InsertLeave * set timeoutlen=800 linebreak
 augroup END
 
-" Folding
-" ------------------------------------------------------------------------
-
+" BETTER FOLDS
+" ------------------------------------------------------------------------------
 " better text folding from http://github.com/dphase/dphase-vim
 set fillchars=fold:\∙
 function! NeatFoldText()
-  let line = ' ' . substitute(getline(v:foldstart), '^\s*\("\|#\|//\|/\)\?\s*\|\s*\("\|#\)\?\s*{{' . '{\d*\s*', '', 'g') . ' '
-  let lines_count = v:foldend - v:foldstart + 1
-  let lines_count_text = ' ' . printf("%10s", lines_count . ' lines') . ' '
-  let foldchar = matchstr(&fillchars, 'fold:\zs.')
-  let foldtextstart = strpart('∙' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
-  let foldtextend = lines_count_text . repeat(foldchar, 8)
-  let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
-  return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
+    let line = ' ' . substitute(getline(v:foldstart), '^\s*\("\|#\|//\|/\)\?\s*\|\s*\("\|#\)\?\s*{{' . '{\d*\s*', '', 'g') . ' '
+    let lines_count = v:foldend - v:foldstart + 1
+    let lines_count_text = ' ' . printf("%10s", lines_count . ' lines') . ' '
+    let foldchar = matchstr(&fillchars, 'fold:\zs.')
+    let foldtextstart = strpart('∙' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
+    let foldtextend = lines_count_text . repeat(foldchar, 8)
+    let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
+    return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
 endfunction
 set foldtext=NeatFoldText()
 " http://vim.wikia.com/wiki/Customize_text_for_closed_folds
 " https://bitbucket.org/atimholt/spiffy_foldtext
 
-" Plugins
+" PLUGIN PREFS
 " ------------------------------------------------------------------------
-
 " UNITE
+    " Start by setting some defaults
+    call unite#filters#matcher_default#use(['matcher_fuzzy'])
+    call unite#filters#sorter_default#use(['sorter_selecta'])
 
-" Start by setting some defaults
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_selecta'])
+    " shortcuts for calling Unite
+    nnoremap <leader>e :Unite -no-split -no-resize buffer file file/new directory/new<cr>
+    nnoremap <leader>h :Unite -no-split -no-resize help<cr>
+    nnoremap = :Unite -no-split -no-resize spell_suggest<cr>
+    nnoremap <leader>us :Unite -no-split -no-resize source<cr>
+    nnoremap <leader>ul :Unite -no-split -no-resize line<cr>
+    nnoremap <leader>uo :Unite -no-split -no-resize outline<cr>
 
-" shortcuts for calling Unite
-nnoremap <leader>e :Unite -no-split -no-resize buffer file file/new directory/new<cr>
-nnoremap <leader>h :Unite -no-split -no-resize help<cr>
-nnoremap = :Unite -no-split -no-resize spell_suggest<cr>
-nnoremap <leader>us :Unite -no-split -no-resize source<cr>
-nnoremap <leader>ul :Unite -no-split -no-resize line<cr>
-nnoremap <leader>uo :Unite -no-split -no-resize outline<cr>
-
-" Custom mappings for the unite buffer
-autocmd FileType unite call s:unite_settings()
-function! s:unite_settings()
-  " Enable navigation with control-n and control-p in insert mode
-  imap <buffer> <C-n>   <Plug>(unite_select_next_line)
-  imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
-endfunction
+    " Custom mappings for the unite buffer
+    autocmd FileType unite call s:unite_settings()
+    function! s:unite_settings()
+        " Enable navigation with control-n and control-p in insert mode
+        imap <buffer> <C-n>   <Plug>(unite_select_next_line)
+        imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
+    endfunction
 
 " MARKDOWN
-
-" Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
-let g:vim_markdown_folding_disabled=1
+    " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
+    let g:vim_markdown_folding_disabled=1
 
 " GITGUTTER
-
-let g:gitgutter_enabled = 0
-nmap [h <Plug>GitGutterPrevHunk
-nmap ]h <Plug>GitGutterNextHunk
+    let g:gitgutter_enabled = 0
+    nmap [h <Plug>GitGutterPrevHunk
+    nmap ]h <Plug>GitGutterNextHunk
 
 " EASY ALIGN
-
-" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
-vmap <Enter> <Plug>(EasyAlign)
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)
+    " Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+    vmap <Enter> <Plug>(EasyAlign)
+    " Start interactive EasyAlign for a motion/text object (e.g. gaip)
+    nmap ga <Plug>(EasyAlign)
 
 " GOYO
+    let g:goyo_width = 90
+    let g:goyo_margin_top = 2
+    let g:goyo_margin_bottom = 0
 
-let g:goyo_width = 90
-let g:goyo_margin_top = 2
-let g:goyo_margin_bottom = 0
-
-" Snippets
+" SNIPPETS
 " ------------------------------------------------------------------------
-
 " Date: 2015-02-15
 iabbrev <expr> dd strftime("%Y-%m-%d")
 " Date: 16 February 2015
 iabbrev <expr> ddate strftime("%d %B %Y")
 
-iabbrev xcl CLARISSA
-iabbrev xja JACK
-iabbrev xju JULIAN
-iabbrev xpe PENNY
+" IWR
+    iabbrev xcl CLARISSA
+    iabbrev xja JACK
+    iabbrev xju JULIAN
+    iabbrev xpe PENNY

@@ -58,10 +58,19 @@
 </item>
 
 <item>
-<name>Control_L to Delete/Control_L</name>
-  <appendix>(+ When you type Control_L only, send Delete) + [KeyRepeat]</appendix>
-  <identifier>private.controlL2controlL_delete_keyrepeat</identifier>
-  <autogen>__KeyOverlaidModifierWithRepeat__ KeyCode::CONTROL_L, KeyCode::CONTROL_L, KeyCode::DELETE</autogen>
+  <name>Brackets to Delete Back/Forward</name>
+  <appendix>[ = Delete, ] = Forward Delete. Use Fn+[/] for square brackets. NOT in Terminal.</appendix>
+  <identifier>private.brackets2delete</identifier>
+  <not>TERMINAL</not>
+  <autogen>--KeyToKey-- KeyCode::BRACKET_LEFT,   | ModifierFlag::NONE, KeyCode::DELETE</autogen>
+  <autogen>--KeyToKey-- KeyCode::BRACKET_RIGHT,  | ModifierFlag::NONE, KeyCode::FORWARD_DELETE</autogen>
+</item>
+
+<item>
+  <name>Control_L to Caps-Lock</name>
+  <appendix>Remaps Control_L alone to Caps-Lock</appendix>
+  <identifier>private.control2caps</identifier>
+  <autogen>--KeyToKey-- KeyCode::CONTROL_L, ModifierFlag::NONE, KeyCode::CAPSLOCK</autogen>
 </item>
 
 <item>
@@ -128,25 +137,6 @@
   <autogen>--KeyToKey-- KeyCode::L,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::N,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
   <autogen>--KeyToKey-- KeyCode::M,         ModifierFlag::CONTROL_R | ModifierFlag::NONE, KeyCode::VK_NONE</autogen>
-</item>
-
-<item>
-  <name>Swap Tab / Delete</name>
-  <appendix>Swaps tab with delete, also disables Command_L + Delete, which prevents bad things happening when (without thinking) I press what used to be the old application-switcher shortcut.</appendix>
-  <identifier>private.tabswapdelete</identifier>
-  <!-- These must go in this order to work properly -->
-  <autogen>--KeyToKey-- KeyCode::TAB, ModifierFlag::COMMAND_L, KeyCode::VK_NONE</autogen>
-  <autogen>--KeyToKey-- KeyCode::TAB, KeyCode::DELETE</autogen>
-  <autogen>--KeyToKey-- KeyCode::DELETE, KeyCode::TAB</autogen>
-</item>
-
-<item>
-  <name>Brackets to Delete Back/Forward</name>
-  <appendix>[ = Delete, ] = Forward Delete. Use Fn+[/] for square brackets.</appendix>
-  <identifier>private.brackets2delete</identifier>
-  <!-- <not>TERMINAL</not> -->
-  <autogen>--KeyToKey-- KeyCode::BRACKET_LEFT,   | ModifierFlag::NONE, KeyCode::DELETE</autogen>
-  <autogen>--KeyToKey-- KeyCode::BRACKET_RIGHT,  | ModifierFlag::NONE, KeyCode::FORWARD_DELETE</autogen>
 </item>
 
 </root>

@@ -55,10 +55,10 @@
 # Same thing, but without the git info
 if [[ $THEME == "light" ]]; then
 PROMPT='
-%K{1}%F{11}%(1j.%jj .)%f%k%K{10}%F{2}[%~]%f%k
-%F{1}$ %f'
+%K{11}%F{1}%(1j.%jj .)%f%k%F{8}[%~]%f
+   %F{1}$%f'
 else
 PROMPT='
 %F{1}%(1j.%jj .)%f[%F{2}%~%f] ${vcs_info_msg_0_}
-%F{1}$ %f'
+   %F{1}$ %f'
 fi

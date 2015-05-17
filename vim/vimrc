@@ -42,17 +42,6 @@ set wrap linebreak breakindent
 
 " MAPPINGS
 " ------------------------------------------------------------------------------
-" DISABLE THE ARROW KEYS - OH GOD...
-nnoremap <up> <nop>
-nnoremap <down> <nop>
-nnoremap <left> <nop>
-nnoremap <right> <nop>
-inoremap <up> <nop>
-inoremap <down> <nop>
-inoremap <left> <nop>
-inoremap <right> <nop>
-
-" Yes, I use brackets for delete
 inoremap [ <backspace>
 cnoremap [ <backspace>
 inoremap ] <delete>
@@ -75,36 +64,8 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-" Go to '+/term ~/project/file'
-vnoremap gsf "0y:e <c-r>0<cr>
-
-" Easier buffer navigation
-nnoremap gb :bn<cr>
-nnoremap gB :bp<cr>
-
-" Go to the end of the previous word
-nnoremap - ge
-nnoremap _ gE
-vnoremap - ge
-vnoremap _ gE
-
-" Make Y like D or C
-nnoremap Y y$
-
-" Nice regex by default
-nnoremap / /\v
-vnoremap / /\v
-
-" maintain selection on indentations
-vnoremap > >gv
-vnoremap < <gv
-
 " Break undo before CTRL-U
 inoremap <C-U> <C-G>u<C-U>
-
-" Move lines
-vnoremap <c-j> :m '>+1<cr>gv=gv
-vnoremap <c-k> :m '<-2<cr>gv=gv
 
 " Instead of using man for word lookups, use the OSX dictionary
 nnoremap K :!open dict:///<cword><cr>
@@ -150,19 +111,9 @@ augroup markdown
     autocmd BufRead,BufNewFile *.md   call Markdown()
 augroup END
 
-" Make sure Vim returns to the same line when you reopen a file.
-augroup line_return
-    autocmd!
-    autocmd BufReadPost *
-        \ if line("'\"") > 0 && line("'\"") <= line("$") |
-        \     execute 'normal! g`"zvzz' |
-        \ endif
-augroup END
-
 augroup custom_misc
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker
-    autocmd BufRead,BufNewFile *.fountain setlocal filetype=fountain
     " Don't write undofiles for secret stuff
     autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
     " Super fast exiting from insert mode. Note that with this, you can't
@@ -175,13 +126,13 @@ augroup END
 " BETTER FOLDS
 " ------------------------------------------------------------------------------
 " better text folding from http://github.com/dphase/dphase-vim
-set fillchars=fold:\∙
+set fillchars=fold:\⋅
 function! NeatFoldText()
     let line = ' ' . substitute(getline(v:foldstart), '^\s*\("\|#\|//\|/\)\?\s*\|\s*\("\|#\)\?\s*{{' . '{\d*\s*', '', 'g') . ' '
     let lines_count = v:foldend - v:foldstart + 1
     let lines_count_text = ' ' . printf("%10s", lines_count . ' lines') . ' '
     let foldchar = matchstr(&fillchars, 'fold:\zs.')
-    let foldtextstart = strpart('∙' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
+    let foldtextstart = strpart('⋅' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
     let foldtextend = lines_count_text . repeat(foldchar, 8)
     let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
     return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
@@ -206,20 +157,11 @@ set foldtext=NeatFoldText()
     nnoremap <leader>uo :Unite -no-split -no-resize outline<cr>
     nnoremap <leader>ur :Unite -no-split -no-resize register<cr>
 
-    " Custom mappings for the unite buffer
-    autocmd FileType unite call s:unite_settings()
-    function! s:unite_settings()
-        " Enable navigation with control-n and control-p in insert mode
-        imap <buffer> <C-n>   <Plug>(unite_select_next_line)
-        imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
-    endfunction
-
 " MARKDOWN
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
     let g:vim_markdown_folding_disabled=1
 
 " GITGUTTER
-    let g:gitgutter_enabled = 0
     nmap [h <Plug>GitGutterPrevHunk
     nmap ]h <Plug>GitGutterNextHunk
 

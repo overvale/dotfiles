@@ -28,6 +28,13 @@
   <equal>com.apple.Terminal</equal>
 </appdef>
 
+<!-- Aliases for window names -->
+
+<windownamedef>
+  <name>vim</name>
+  <regex>^vim</regex>
+</windownamedef>
+
 <!-- =============================================================== -->
 
 <item>
@@ -59,9 +66,9 @@
 
 <item>
   <name>Brackets to Delete Back/Forward</name>
-  <appendix>[ = Delete, ] = Forward Delete. Use Fn+[/] for square brackets. NOT in Terminal.</appendix>
+  <appendix>[ = Delete, ] = Forward Delete. Use Fn+[/] for square brackets. NOT in Terminal vim sessions. Depends on properly named windows.</appendix>
   <identifier>private.brackets2delete</identifier>
-  <not>TERMINAL</not>
+  <windowname_not>vim</windowname_not>
   <autogen>--KeyToKey-- KeyCode::BRACKET_LEFT,   | ModifierFlag::NONE, KeyCode::DELETE</autogen>
   <autogen>--KeyToKey-- KeyCode::BRACKET_RIGHT,  | ModifierFlag::NONE, KeyCode::FORWARD_DELETE</autogen>
 </item>

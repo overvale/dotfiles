@@ -11,11 +11,13 @@ call plug#begin('~/.vim/plugged')
     Plug 'airblade/vim-gitgutter',  { 'on': 'GitGutterToggle' }
     Plug 'mbbill/undotree',         { 'on': 'UndotreeToggle' }
     Plug 'gerw/vim-HiLinkTrace',    { 'on': 'HLT' }
+    Plug 'gcmt/taboo.vim'
 call plug#end()
 
 syntax enable
 colorscheme oliver.light
 
+set autoread
 set clipboard=unnamed
 set encoding=utf-8
 set foldlevelstart=99
@@ -23,22 +25,23 @@ set formatoptions=tcrqn1j formatprg=par\ -w78rq nojoinspaces
 set hidden
 set incsearch ignorecase
 set laststatus=2 showcmd
-set linebreak breakindent
 set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
+set nrformats+=alpha
+set relativenumber
+set scrolloff=1 sidescrolloff=5
 set smartindent autoindent
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
 set splitbelow splitright
-set statusline=%f%m\ %r%=\ %y\ %P\ %l:%c
+set statusline=%f%m%r%=\ %y
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+set thesaurus+=/Users/oliver/code/mthesaur.txt
 set undofile undodir=~/code/vimundo
 set wildmenu wildmode=list:longest
-set wrap
+set wrap linebreak breakindent
 
 " MAPPINGS
 " ------------------------------------------------------------------------------
-let mapleader = ' '
-
 " DISABLE THE ARROW KEYS - OH GOD...
 nnoremap <up> <nop>
 nnoremap <down> <nop>
@@ -72,6 +75,9 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" Go to '+/term ~/project/file'
+vnoremap gsf "0y:e <c-r>0<cr>
+
 " Easier buffer navigation
 nnoremap gb :bn<cr>
 nnoremap gB :bp<cr>
@@ -100,12 +106,15 @@ inoremap <C-U> <C-G>u<C-U>
 vnoremap <c-j> :m '>+1<cr>gv=gv
 vnoremap <c-k> :m '<-2<cr>gv=gv
 
+" Instead of using man for word lookups, use the OSX dictionary
+nnoremap K :!open dict:///<cword><cr>
+
 " COMMANDS
 " ------------------------------------------------------------------------------
 command! Cdf :cd %:h<cr>
 command! Cl :set cursorline!
 command! Dtrail :%s/\s\+$//
-command! MM :set filetype=markdown syntax=mkd
+command! MM :call Markdown()
 command! GG :GitGutterToggle
 command! GY :Goyo
 command! H1 :normal VUyypVr=
@@ -117,6 +126,7 @@ command! SS :set spell!
 command! Src :source $MYVIMRC
 command! Erc :e ~/code/dotfiles/vim/vimrc
 command! WW :set wrap!
+command! Wbd :w | :bd
 command! UT :UndotreeToggle
 
 " allow saving a sudo file if forgot to open as sudo
@@ -124,14 +134,20 @@ command! UT :UndotreeToggle
 " creates an alias (%%) to represent the directory of the current file
     cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
+" FUNCTION
+" ------------------------------------------------------------------------------
+function! Markdown()
+    setlocal spell
+    setlocal filetype=markdown "triggers thinca/vim-ft-markdown_fold for folding,
+    setlocal syntax=mkd "triggers vim-markdown's syntax, which is MUCH better
+endfunction
+
 " AUTOCOMMANDS
 " ------------------------------------------------------------------------------
 augroup markdown
     autocmd!
-    " Use filetype=markdown to trigger thinca/vim-ft-markdown_fold,
-    " then syntax=mkd to trigger vim-markdown's syntax, which is MUCH better
-    autocmd BufRead,BufNewFile *.text     setlocal filetype=markdown syntax=mkd
-    autocmd BufRead,BufNewFile *.md       setlocal filetype=markdown syntax=mkd
+    autocmd BufRead,BufNewFile *.text call Markdown()
+    autocmd BufRead,BufNewFile *.md   call Markdown()
 augroup END
 
 " Make sure Vim returns to the same line when you reopen a file.
@@ -182,12 +198,13 @@ set foldtext=NeatFoldText()
     call unite#filters#sorter_default#use(['sorter_selecta'])
 
     " shortcuts for calling Unite
-    nnoremap <leader>e :Unite -no-split -no-resize buffer file file/new directory/new<cr>
-    nnoremap <leader>h :Unite -no-split -no-resize help<cr>
     nnoremap = :Unite -no-split -no-resize spell_suggest<cr>
+    nnoremap <leader>e :Unite -no-split -no-resize buffer file file/new directory/new<cr>
+    nnoremap <leader>uh :Unite -no-split -no-resize help<cr>
     nnoremap <leader>us :Unite -no-split -no-resize source<cr>
     nnoremap <leader>ul :Unite -no-split -no-resize line<cr>
     nnoremap <leader>uo :Unite -no-split -no-resize outline<cr>
+    nnoremap <leader>ur :Unite -no-split -no-resize register<cr>
 
     " Custom mappings for the unite buffer
     autocmd FileType unite call s:unite_settings()
@@ -229,3 +246,4 @@ iabbrev <expr> ddate strftime("%d %B %Y")
     iabbrev xja JACK
     iabbrev xju JULIAN
     iabbrev xpe PENNY
+    iabbrev xmi MILTON

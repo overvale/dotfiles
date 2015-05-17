@@ -121,8 +121,8 @@ command! H1 :normal VUyypVr=
 command! H2 :normal yypVr-
 command! NN :set number!
 command! NR :set relativenumber!
-command! PP :set paste!
-command! SS :set spell!
+command! PP :set paste! | set paste?
+command! SS :set spell! | set spell?
 command! Src :source $MYVIMRC
 command! Erc :e ~/code/dotfiles/vim/vimrc
 command! WW :set wrap!

@@ -2,6 +2,7 @@ bindkey "^K" history-beginning-search-backward
 bindkey "^J" history-beginning-search-forward
 alias theme-dark='export THEME=dark && source $DOT/zsh/prompt.zsh'
 alias theme-light='export THEME=light && source $DOT/zsh/prompt.zsh'
+alias cal='cal | grep --color -C9 $(date +%d)'
 alias rm="rm -i"        # overwrite protection
 alias mv="mv -i"        # overwrite protection
 alias l='ls -1p'        # my favorite options

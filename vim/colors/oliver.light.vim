@@ -11,18 +11,19 @@ let g:colors_name = "oliver.light"
 " ---------------------------------------------------------
 hi Normal        ctermfg=000     ctermbg=015     cterm=NONE
 hi Cursor        ctermfg=015     ctermbg=236     cterm=NONE
-hi Visual        ctermfg=000     ctermbg=007     cterm=NONE
+hi Visual        ctermfg=000     ctermbg=003     cterm=NONE
     
 " The Structure    
 " ---------------------------------------------------------
-hi StatusLine    ctermfg=015     ctermbg=004     cterm=NONE
+hi StatusLine    ctermfg=015     ctermbg=008     cterm=NONE
+hi TabLineSel    ctermfg=015     ctermbg=008     cterm=NONE
+
 hi StatusLineNC  ctermfg=247     ctermbg=253     cterm=NONE
 hi TabLine       ctermfg=247     ctermbg=253     cterm=NONE
 hi TabLineFill   ctermfg=000     ctermbg=253     cterm=NONE
-hi TabLineSel    ctermfg=004     ctermbg=253     cterm=NONE
 hi VertSplit     ctermfg=253     ctermbg=253     cterm=NONE
-hi LineNr        ctermfg=247     ctermbg=255     cterm=NONE
-hi CursorLineNr  ctermfg=000     ctermbg=255     cterm=NONE
+hi LineNr        ctermfg=250     ctermbg=255     cterm=NONE
+hi CursorLineNr  ctermfg=004     ctermbg=255     cterm=NONE
 hi SignColumn    ctermfg=251     ctermbg=255     cterm=NONE
 
 hi CursorLine    ctermfg=NONE    ctermbg=011     cterm=NONE
@@ -41,7 +42,7 @@ hi Folded        ctermfg=007     ctermbg=NONE     cterm=NONE
 hi IncSearch     ctermfg=000     ctermbg=003     cterm=NONE
 
 hi MatchParen    ctermfg=NONE    ctermbg=007     cterm=NONE
-hi ModeMsg       ctermfg=011     ctermbg=003    cterm=NONE
+hi ModeMsg       ctermfg=001     ctermbg=NONE    cterm=NONE
 hi MoreMsg       ctermfg=006     ctermbg=NONE    cterm=NONE
 hi Question      ctermfg=001     ctermbg=NONE    cterm=NONE
 hi Search        ctermfg=244     ctermbg=003     cterm=NONE
@@ -111,15 +112,15 @@ hi SpellRare    ctermfg=NONE ctermbg=011  cterm=NONE
 
 " diff highlighting
 " ---------------------------------------------------------
-hi DiffAdd      ctermfg=002  ctermbg=236  cterm=NONE
-hi DiffChange   ctermfg=004  ctermbg=236  cterm=NONE
-hi DiffDelete   ctermfg=001  ctermbg=236  cterm=NONE
-hi DiffText     ctermfg=004  ctermbg=236  cterm=NONE
-hi DiffAdded    ctermfg=002  ctermbg=236  cterm=NONE
-hi DiffFile     ctermfg=001  ctermbg=236  cterm=NONE
-hi DiffNewFile  ctermfg=002  ctermbg=236  cterm=NONE
-hi DiffLine     ctermfg=004  ctermbg=236  cterm=NONE
-hi DiffRemoved  ctermfg=001  ctermbg=236  cterm=NONE
+hi DiffAdd      ctermfg=002  ctermbg=NONE  cterm=NONE
+hi DiffChange   ctermfg=004  ctermbg=NONE  cterm=NONE
+hi DiffDelete   ctermfg=001  ctermbg=NONE  cterm=NONE
+hi DiffText     ctermfg=004  ctermbg=NONE  cterm=NONE
+hi DiffAdded    ctermfg=002  ctermbg=NONE  cterm=NONE
+hi DiffFile     ctermfg=001  ctermbg=NONE  cterm=NONE
+hi DiffNewFile  ctermfg=002  ctermbg=NONE  cterm=NONE
+hi DiffLine     ctermfg=004  ctermbg=NONE  cterm=NONE
+hi DiffRemoved  ctermfg=001  ctermbg=NONE  cterm=NONE
 
 " Bold, Italic, etc.
 " ---------------------------------------------------------
@@ -190,4 +191,3 @@ hi GitGutterChangeDelete  ctermfg=001 ctermbg=255 cterm=NONE
 " ---------------------------------------------------------
 hi vimIsCommand      ctermfg=001
 hi vimMapRhs         ctermfg=002
-hi vimSetEqual       ctermfg=001

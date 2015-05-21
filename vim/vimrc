@@ -70,6 +70,13 @@ inoremap <C-U> <C-G>u<C-U>
 " Instead of using man for word lookups, use the OSX dictionary
 nnoremap K :!open dict:///<cword><cr>
 
+" Convert sentence junctions
+nnoremap gc. r.wvUb
+nnoremap gc, r,wvub
+nnoremap gc- s -<esc>wvub
+vnoremap gc. s.<esc>wvUb
+vnoremap gc, s,<esc>wvub
+
 " COMMANDS
 " ------------------------------------------------------------------------------
 command! Cdf :cd %:h<cr>

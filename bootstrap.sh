@@ -56,6 +56,7 @@ ln -s ~/code/dotfiles/vim .vim
 ln -s ~/code/dotfiles/vim/vimrc .vimrc
 ln -s ~/code/dotfiles/Karabiner ~/Library/Application\ Support/Karabiner
 ln -s ~/code/dotfiles/tmux.conf .tmux.conf
+ln -s ~/code/dotfiles/slate .slate
 
 # Install vim plugin manager + plugins
 # Reconstruct ~/.marks directory
@@ -70,9 +71,10 @@ ln -s ~/code/dotfiles/tmux.conf .tmux.conf
 # SuperDuper
 # Transmit
 # QuickTime Player 7
-
-# Google Chrome ???
-# Keyboard Maestro ???
+# Google Chrome
+# iWork
+# Little Snitch
+# Slate
 
 # Name Mangler (Mac App Store)
 # Pixelmator (Mac App Store)

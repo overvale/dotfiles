@@ -77,6 +77,10 @@ nnoremap gc- s -<esc>wvub
 vnoremap gc. s.<esc>wvUb
 vnoremap gc, s,<esc>wvub
 
+" My terminal sends arrow keys when scrolling with the trackpad
+nnoremap <up> <c-y>
+nnoremap <down> <c-e>
+
 " COMMANDS
 " ------------------------------------------------------------------------------
 command! Cdf :cd %:h<cr>
@@ -127,7 +131,7 @@ augroup custom_misc
     " possibly use mappings that start with <esc> *in insert mode*, since vim
     " won't wait for you to press other keys.
     autocmd InsertEnter * set timeoutlen=0 linebreak
-    autocmd InsertLeave * set timeoutlen=800 linebreak
+    autocmd InsertLeave * set timeoutlen=3000 linebreak
 augroup END
 
 " BETTER FOLDS

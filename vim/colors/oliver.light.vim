@@ -28,7 +28,7 @@ hi SignColumn    ctermfg=251     ctermbg=255     cterm=NONE
 
 hi CursorLine    ctermfg=NONE    ctermbg=011     cterm=NONE
 hi CursorColumn  ctermfg=NONE    ctermbg=011     cterm=NONE
-hi ColorColumn   ctermfg=NONE    ctermbg=011     cterm=NONE
+hi ColorColumn   ctermfg=NONE    ctermbg=014     cterm=NONE
     
 hi PMenu         ctermfg=000     ctermbg=007     cterm=NONE
 hi PMenuSel      ctermfg=015     ctermbg=003     cterm=NONE
@@ -41,8 +41,8 @@ hi FoldColumn    ctermfg=NONE    ctermbg=238     cterm=NONE
 hi Folded        ctermfg=007     ctermbg=NONE     cterm=NONE
 hi IncSearch     ctermfg=000     ctermbg=003     cterm=NONE
 
-hi MatchParen    ctermfg=NONE    ctermbg=007     cterm=NONE
-hi ModeMsg       ctermfg=001     ctermbg=NONE    cterm=NONE
+hi MatchParen    ctermfg=NONE    ctermbg=009     cterm=NONE
+hi ModeMsg       ctermfg=015     ctermbg=003    cterm=NONE
 hi MoreMsg       ctermfg=006     ctermbg=NONE    cterm=NONE
 hi Question      ctermfg=001     ctermbg=NONE    cterm=NONE
 hi Search        ctermfg=244     ctermbg=003     cterm=NONE
@@ -148,7 +148,7 @@ hi rubyConditionalExpression   ctermfg=251
 
 " HTML highlighting
 " ---------------------------------------------------------
-hi htmlBold                     ctermfg=003  ctermbg=NONE cterm=bold
+hi htmlBold                     ctermfg=005  ctermbg=NONE cterm=bold
 hi htmlItalic                   ctermfg=001  ctermbg=NONE cterm=NONE
 hi htmlArg                      ctermfg=005  ctermbg=NONE cterm=NONE
 hi htmlEndTag                   ctermfg=004  ctermbg=NONE cterm=NONE

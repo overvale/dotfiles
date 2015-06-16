@@ -26,5 +26,5 @@ zstyle ':completion:*' insert-tab pending
 function _completemarks {
   reply=($(ls $MARKPATH))
 }
-compctl -K _completemarks jump
+compctl -K _completemarks jmp
 compctl -K _completemarks unmark

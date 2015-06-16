@@ -59,6 +59,6 @@ PROMPT='
    %F{1}$%f'
 else
 PROMPT='
-%F{1}%(1j.%jj .)%f[%F{2}%~%f] ${vcs_info_msg_0_}
-   %F{1}$ %f'
+%F{1}%(1j.%jj .)%f[%F{2}%~%f]
+   %F{1}$%f'
 fi

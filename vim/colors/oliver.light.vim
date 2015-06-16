@@ -7,6 +7,16 @@ let g:colors_name = "oliver.light"
 " It uses the ANSI codes for colors
 " and 256 codes for shades of gray.
 
+hi User1         ctermfg=015     ctermbg=001     cterm=NONE
+hi User2         ctermfg=015     ctermbg=002     cterm=NONE
+hi User3         ctermfg=015     ctermbg=003     cterm=NONE
+hi User4         ctermfg=015     ctermbg=004     cterm=NONE
+hi User5         ctermfg=015     ctermbg=005     cterm=NONE
+hi User6         ctermfg=015     ctermbg=006     cterm=NONE
+hi User7         ctermfg=015     ctermbg=007     cterm=NONE
+hi User8         ctermfg=015     ctermbg=008     cterm=NONE
+hi User9         ctermfg=015     ctermbg=009     cterm=NONE
+
 " The Basics
 " ---------------------------------------------------------
 hi Normal        ctermfg=000     ctermbg=015     cterm=NONE
@@ -18,7 +28,7 @@ hi Visual        ctermfg=000     ctermbg=003     cterm=NONE
 hi StatusLine    ctermfg=015     ctermbg=008     cterm=NONE
 hi TabLineSel    ctermfg=015     ctermbg=008     cterm=NONE
 
-hi StatusLineNC  ctermfg=247     ctermbg=253     cterm=NONE
+hi StatusLineNC  ctermfg=008     ctermbg=253     cterm=NONE
 hi TabLine       ctermfg=247     ctermbg=253     cterm=NONE
 hi TabLineFill   ctermfg=000     ctermbg=253     cterm=NONE
 hi VertSplit     ctermfg=253     ctermbg=253     cterm=NONE
@@ -28,7 +38,7 @@ hi SignColumn    ctermfg=251     ctermbg=255     cterm=NONE
 
 hi CursorLine    ctermfg=NONE    ctermbg=011     cterm=NONE
 hi CursorColumn  ctermfg=NONE    ctermbg=011     cterm=NONE
-hi ColorColumn   ctermfg=NONE    ctermbg=014     cterm=NONE
+hi ColorColumn   ctermfg=NONE    ctermbg=255     cterm=NONE
     
 hi PMenu         ctermfg=000     ctermbg=007     cterm=NONE
 hi PMenuSel      ctermfg=015     ctermbg=003     cterm=NONE
@@ -37,12 +47,12 @@ hi PmenuThumb    ctermbg=NONE    ctermfg=NONE    cterm=NONE
     
 " Misc    
 " ---------------------------------------------------------
-hi FoldColumn    ctermfg=NONE    ctermbg=238     cterm=NONE
+hi FoldColumn    ctermfg=250    ctermbg=255     cterm=NONE
 hi Folded        ctermfg=007     ctermbg=NONE     cterm=NONE
 hi IncSearch     ctermfg=000     ctermbg=003     cterm=NONE
 
 hi MatchParen    ctermfg=NONE    ctermbg=009     cterm=NONE
-hi ModeMsg       ctermfg=015     ctermbg=003    cterm=NONE
+hi ModeMsg       ctermfg=015     ctermbg=002    cterm=NONE
 hi MoreMsg       ctermfg=006     ctermbg=NONE    cterm=NONE
 hi Question      ctermfg=001     ctermbg=NONE    cterm=NONE
 hi Search        ctermfg=244     ctermbg=003     cterm=NONE
@@ -158,7 +168,8 @@ hi htmlTagName                  ctermfg=004  ctermbg=012  cterm=NONE
 hi htmlLink                     ctermfg=NONE ctermbg=NONE cterm=NONE
 hi htmlH1                       ctermfg=001  ctermbg=NONE cterm=bold
 hi htmlH2                       ctermfg=004  ctermbg=NONE cterm=bold
-hi htmlH3                       ctermfg=002  ctermbg=NONE cterm=bold
+hi htmlH3                       ctermfg=005  ctermbg=NONE cterm=bold
+hi htmlH4                       ctermfg=002  ctermbg=NONE cterm=bold
 
 " CSS highlighting
 " ---------------------------------------------------------
@@ -168,12 +179,13 @@ hi cssColor       ctermfg=006 ctermbg=NONE cterm=NONE
 
 " Markdown highlighting
 " ---------------------------------------------------------
-hi markdownCode              ctermfg=002 ctermbg=NONE cterm=NONE
-hi markdownCodeBlock         ctermfg=002 ctermbg=NONE cterm=NONE
+hi markdownCode              ctermfg=006 ctermbg=NONE cterm=NONE
+hi markdownCodeBlock         ctermfg=006 ctermbg=NONE cterm=NONE
+hi mkdIndentCode             ctermfg=006 ctermbg=NONE cterm=NONE
 hi markdownHeadingDelimiter  ctermfg=004 ctermbg=NONE cterm=NONE
 hi mkdInlineURL              ctermfg=004 ctermbg=NONE cterm=NONE
-hi mkdBlockquote             ctermfg=003
-hi mkdLineContinue           ctermfg=003
+hi mkdBlockquote             ctermfg=002
+hi mkdLineContinue           ctermfg=002
 
 " Git highlighting
 " ---------------------------------------------------------

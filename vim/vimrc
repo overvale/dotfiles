@@ -8,7 +8,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'thinca/vim-ft-markdown_fold'
     Plug 'junegunn/goyo.vim'
     Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)', 'EasyAlign'] }
-    Plug 'airblade/vim-gitgutter',  { 'on': 'GitGutterToggle' }
+    Plug 'airblade/vim-gitgutter',  { 'on': ['GitGutterToggle', 'GitGutterEnable'] }
     Plug 'mbbill/undotree',         { 'on': 'UndotreeToggle' }
     Plug 'gerw/vim-HiLinkTrace',    { 'on': 'HLT' }
     Plug 'gcmt/taboo.vim'
@@ -18,6 +18,7 @@ syntax enable
 colorscheme oliver.light
 
 set autoread
+set backspace=eol
 set clipboard=unnamed
 set encoding=utf-8
 set foldlevelstart=99
@@ -28,12 +29,13 @@ set laststatus=2 showcmd
 set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
 set nrformats+=alpha
 set relativenumber
-set scrolloff=1 sidescrolloff=5
+set scrolloff=0 sidescrolloff=5
+set showtabline=1
 set smartindent autoindent
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
 set splitbelow splitright
-set statusline=%f%m%r%=\ %y
+set statusline=%f\ %m\ %r%=\ %y
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set thesaurus+=/Users/oliver/code/mthesaur.txt
 set undofile undodir=~/code/vimundo
@@ -77,18 +79,11 @@ nnoremap gc- s -<esc>wvub
 vnoremap gc. s.<esc>wvUb
 vnoremap gc, s,<esc>wvub
 
-" My terminal sends arrow keys when scrolling with the trackpad
-nnoremap <up> <c-y>
-nnoremap <down> <c-e>
-
 " COMMANDS
 " ------------------------------------------------------------------------------
 command! Cdf :cd %:h<cr>
-command! Cl :set cursorline!
 command! Dtrail :%s/\s\+$//
 command! MM :call Markdown()
-command! GG :GitGutterToggle
-command! GY :Goyo
 command! H1 :normal VUyypVr=
 command! H2 :normal yypVr-
 command! NN :set number!
@@ -98,7 +93,6 @@ command! SS :set spell! | set spell?
 command! Src :source $MYVIMRC
 command! Erc :e ~/code/dotfiles/vim/vimrc
 command! WW :set wrap!
-command! Wbd :w | :bd
 command! UT :UndotreeToggle
 
 " allow saving a sudo file if forgot to open as sudo
@@ -187,6 +181,10 @@ set foldtext=NeatFoldText()
     let g:goyo_margin_top = 2
     let g:goyo_margin_bottom = 0
 
+" TABOO
+    let g:taboo_tab_format=" %N %f%m "
+    let g:taboo_modified_tab_flag="+"
+
 " SNIPPETS
 " ------------------------------------------------------------------------
 " Date: 2015-02-15
@@ -200,3 +198,6 @@ iabbrev <expr> ddate strftime("%d %B %Y")
     iabbrev xju JULIAN
     iabbrev xpe PENNY
     iabbrev xmi MILTON
+
+" Tripwire
+    iabbrev jjap (Japanese)

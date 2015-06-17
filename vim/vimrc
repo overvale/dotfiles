@@ -21,16 +21,13 @@ set autoread
 set backspace=eol
 set clipboard=unnamed
 set encoding=utf-8
-set foldlevelstart=99
 set formatoptions=tcrqn1j formatprg=par\ -w78rq nojoinspaces
 set hidden
 set incsearch ignorecase
 set laststatus=2 showcmd
 set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
-set nrformats+=alpha
 set relativenumber
 set scrolloff=0 sidescrolloff=5
-set showtabline=1
 set smartindent autoindent
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
@@ -77,9 +74,11 @@ nnoremap K :!open dict:///<cword><cr>
 " Convert sentence junctions
 nnoremap gc. r.wvUb
 nnoremap gc, r,wvub
+nnoremap gc; r;wvub
 nnoremap gc- s -<esc>wvub
-vnoremap gc. s.<esc>wvUb
-vnoremap gc, s,<esc>wvub
+xnoremap gc. s.<esc>wvUb
+xnoremap gc, s,<esc>wvub
+xnoremap gc; s;<esc>wvub
 
 " COMMANDS
 " ------------------------------------------------------------------------------

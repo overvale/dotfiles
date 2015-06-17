@@ -42,30 +42,32 @@ set undofile undodir=~/code/vimundo
 set wildmenu wildmode=list:longest
 set wrap linebreak breakindent
 
-" MAPPINGS
+" Pinky savers
 " ------------------------------------------------------------------------------
 inoremap [ <backspace>
 cnoremap [ <backspace>
 inoremap ] <delete>
 cnoremap ] <delete>
+" Insert square-brackes with <c-v>[
 
-" Make mode-switching easy
+" Use tab (which term sees as <c-i> because OLD) for escape
 nnoremap <tab> <esc>
 inoremap <tab> <esc>
 vnoremap <tab> <esc>
+" In which case remap jump-list navigation
+nnoremap <leader>i <c-i>
+nnoremap <leader>o <c-o>
 
-" Make command-mode easier to enter
-nnoremap ; :
-vnoremap ; :
-nnoremap , ;
-vnoremap , ;
-
-" Make moving around splits easier
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+nnoremap ; :
+nnoremap : ;
+
+" MAPPINGS
+" ------------------------------------------------------------------------------
 " Break undo before CTRL-U
 inoremap <C-U> <C-G>u<C-U>
 

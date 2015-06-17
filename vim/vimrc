@@ -153,14 +153,22 @@ set foldtext=NeatFoldText()
     call unite#filters#matcher_default#use(['matcher_fuzzy'])
     call unite#filters#sorter_default#use(['sorter_selecta'])
 
+    let g:unite_source_history_yank_enable = 1
+
+    augroup unite
+        autocmd!
+        autocmd FileType unite setlocal cursorline
+    augroup END
+
     " shortcuts for calling Unite
-    nnoremap = :Unite -no-split -no-resize spell_suggest<cr>
-    nnoremap <leader>e :Unite -no-split -no-resize buffer file file/new directory/new<cr>
-    nnoremap <leader>uh :Unite -no-split -no-resize help<cr>
-    nnoremap <leader>us :Unite -no-split -no-resize source<cr>
-    nnoremap <leader>ul :Unite -no-split -no-resize line<cr>
-    nnoremap <leader>uo :Unite -no-split -no-resize outline<cr>
-    nnoremap <leader>ur :Unite -no-split -no-resize register<cr>
+    nnoremap = :Unite -buffer-name=spelling -no-split -no-resize spell_suggest<cr>
+    nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize buffer file file/new directory/new<cr>
+    nnoremap <leader>y :Unite -buffer-name=yank -no-split -no-resize history/yank<cr>
+    nnoremap <leader>uh :Unite -buffer-name=help -no-split -no-resize help<cr>
+    nnoremap <leader>us :Unite -buffer-name=source -no-split -no-resize source<cr>
+    nnoremap <leader>ul :Unite -buffer-name=line -no-split -no-resize line<cr>
+    nnoremap <leader>uo :Unite -buffer-name=outline -no-split -no-resize outline<cr>
+    nnoremap <leader>ur :Unite -buffer-name=register -no-split -no-resize register<cr>
 
 " MARKDOWN
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold

@@ -132,14 +132,6 @@ hi DiffNewFile  ctermfg=002  ctermbg=NONE  cterm=NONE
 hi DiffLine     ctermfg=004  ctermbg=NONE  cterm=NONE
 hi DiffRemoved  ctermfg=001  ctermbg=NONE  cterm=NONE
 
-" Bold, Italic, etc.
-" ---------------------------------------------------------
-hi Bold          ctermfg=NONE    ctermbg=NONE    cterm=bold
-hi Italic        ctermfg=NONE    ctermbg=NONE    cterm=italic
-hi Underlined    ctermfg=NONE     ctermbg=NONE   cterm=underline
-
-
-
 
 " Ruby highlighting
 " ---------------------------------------------------------
@@ -154,11 +146,10 @@ hi rubyStringEscape            ctermfg=005
 hi rubySymbol                  ctermfg=001   ctermbg=NONE   cterm=NONE
 hi rubyStringDelimiter         ctermfg=002   ctermbg=NONE   cterm=NONE
 hi rubyDoBlock                 ctermfg=003    
-hi rubyConditionalExpression   ctermfg=251    
 
 " HTML highlighting
 " ---------------------------------------------------------
-hi htmlBold                     ctermfg=005  ctermbg=NONE cterm=bold
+hi htmlBold                     ctermfg=005  ctermbg=NONE cterm=NONE
 hi htmlItalic                   ctermfg=001  ctermbg=NONE cterm=NONE
 hi htmlArg                      ctermfg=005  ctermbg=NONE cterm=NONE
 hi htmlEndTag                   ctermfg=004  ctermbg=NONE cterm=NONE
@@ -166,10 +157,10 @@ hi htmlTag                      ctermfg=004  ctermbg=NONE cterm=NONE
 hi link htmlTagN htmlTagName
 hi htmlTagName                  ctermfg=004  ctermbg=012  cterm=NONE
 hi htmlLink                     ctermfg=NONE ctermbg=NONE cterm=NONE
-hi htmlH1                       ctermfg=001  ctermbg=NONE cterm=bold
-hi htmlH2                       ctermfg=004  ctermbg=NONE cterm=bold
-hi htmlH3                       ctermfg=005  ctermbg=NONE cterm=bold
-hi htmlH4                       ctermfg=002  ctermbg=NONE cterm=bold
+hi htmlH1                       ctermfg=001  ctermbg=009  cterm=NONE
+hi htmlH2                       ctermfg=004  ctermbg=012  cterm=NONE
+hi htmlH3                       ctermfg=005  ctermbg=013  cterm=NONE
+hi htmlH4                       ctermfg=002  ctermbg=010  cterm=NONE
 
 " CSS highlighting
 " ---------------------------------------------------------

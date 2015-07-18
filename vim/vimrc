@@ -2,22 +2,22 @@ call plug#begin('~/.vim/plugged')
     Plug 'Shougo/unite.vim'
     Plug 'Shougo/unite-outline'
     Plug 'kopischke/unite-spell-suggest'
+    Plug 'tpope/vim-rsi'
     Plug 'tpope/vim-surround'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'plasticboy/vim-markdown'
     Plug 'thinca/vim-ft-markdown_fold'
-    Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)', 'EasyAlign'] }
-    Plug 'airblade/vim-gitgutter',  { 'on': ['GitGutterToggle', 'GitGutterEnable'] }
-    Plug 'mbbill/undotree',         { 'on': 'UndotreeToggle' }
-    Plug 'gerw/vim-HiLinkTrace',    { 'on': 'HLT' }
+    Plug 'junegunn/vim-easy-align'
+    Plug 'mbbill/undotree'
+    Plug 'gerw/vim-HiLinkTrace'
     Plug 'gcmt/taboo.vim'
+    Plug 'moll/vim-bbye'
+    Plug 'kshenoy/vim-signature'
 call plug#end()
 
 syntax enable
 colorscheme oliver.light
 
-set autoread
 set backspace=eol
 set clipboard=unnamed
 set encoding=utf-8
@@ -25,9 +25,10 @@ set formatoptions=tcrqn1j formatprg=par\ -w78rq nojoinspaces
 set hidden
 set incsearch ignorecase
 set laststatus=2 showcmd
-set listchars=tab:▸\ ,eol:¬,trail:+,extends:>,precedes:<,nbsp:⌙
+set listchars=tab:▸\ ,eol:¬,trail:•,extends:,precedes:,nbsp:⌙
 set relativenumber
 set scrolloff=0 sidescrolloff=5
+set shortmess+=I
 set smartindent autoindent
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
@@ -38,6 +39,7 @@ set thesaurus+=/Users/oliver/code/mthesaur.txt
 set undofile undodir=~/code/vimundo
 set wildmenu wildmode=list:longest
 set wrap linebreak breakindent
+set wrapscan
 
 " Pinky savers
 " ------------------------------------------------------------------------------
@@ -80,10 +82,15 @@ xnoremap gc. s.<esc>wvUb
 xnoremap gc, s,<esc>wvub
 xnoremap gc; s;<esc>wvub
 
+" Maintain selection on in/de-dent
+xnoremap > >gv
+xnoremap < <gv
+
 " COMMANDS
 " ------------------------------------------------------------------------------
 command! Cdf :cd %:h<cr>
 command! Dtrail :%s/\s\+$//
+command! Join :'<,'>!clause-join
 command! MM :call Markdown()
 command! H1 :normal VUyypVr=
 command! H2 :normal yypVr-
@@ -165,7 +172,6 @@ set foldtext=NeatFoldText()
     nnoremap = :Unite -buffer-name=spelling -no-split -no-resize spell_suggest<cr>
     nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize buffer file file/new directory/new<cr>
     nnoremap <leader>y :Unite -buffer-name=yank -no-split -no-resize history/yank<cr>
-    nnoremap <leader>uh :Unite -buffer-name=help -no-split -no-resize help<cr>
     nnoremap <leader>us :Unite -buffer-name=source -no-split -no-resize source<cr>
     nnoremap <leader>ul :Unite -buffer-name=line -no-split -no-resize line<cr>
     nnoremap <leader>uo :Unite -buffer-name=outline -no-split -no-resize outline<cr>
@@ -185,14 +191,9 @@ set foldtext=NeatFoldText()
     " Start interactive EasyAlign for a motion/text object (e.g. gaip)
     nmap ga <Plug>(EasyAlign)
 
-" GOYO
-    let g:goyo_width = 90
-    let g:goyo_margin_top = 2
-    let g:goyo_margin_bottom = 0
-
 " TABOO
-    let g:taboo_tab_format=" %N %f%m "
-    let g:taboo_modified_tab_flag="+"
+    let g:taboo_tab_format=" %N: %f%m "
+    let g:taboo_modified_tab_flag=" +"
 
 " SNIPPETS
 " ------------------------------------------------------------------------
@@ -201,12 +202,4 @@ iabbrev <expr> dd strftime("%Y-%m-%d")
 " Date: 16 February 2015
 iabbrev <expr> ddate strftime("%d %B %Y")
 
-" IWR
-    iabbrev xcl CLARISSA
-    iabbrev xja JACK
-    iabbrev xju JULIAN
-    iabbrev xpe PENNY
-    iabbrev xmi MILTON
-
-" Tripwire
-    iabbrev jjap (Japanese)
+iabbrev jjap (Japanese)

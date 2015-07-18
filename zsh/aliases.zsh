@@ -21,3 +21,6 @@ function cfp(){ echo "$PWD/$1"|pbcopy && echo "File-Path is on the clipboard" }
 alias gitACP="git add -A && git commit -m 'updates' && git push"
 alias batt="pmset -g batt"
 myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
+alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+alias server='python -m SimpleHTTPServer 8000'

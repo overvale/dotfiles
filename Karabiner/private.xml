@@ -74,10 +74,10 @@
 </item>
 
 <item>
-  <name>Control_L to Caps-Lock</name>
-  <appendix>Remaps Control_L alone to Caps-Lock</appendix>
+  <name>Shift_L Control_R to Caps-Lock</name>
+  <appendix>Remaps Shift_R Control_L to Caps-Lock</appendix>
   <identifier>private.control2caps</identifier>
-  <autogen>--KeyToKey-- KeyCode::CONTROL_L, ModifierFlag::NONE, KeyCode::CAPSLOCK</autogen>
+  <autogen>--KeyToKey-- KeyCode::CONTROL_L, ModifierFlag::SHIFT_R, KeyCode::CAPSLOCK</autogen>
 </item>
 
 <item>

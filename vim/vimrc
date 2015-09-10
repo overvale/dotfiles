@@ -49,13 +49,13 @@ inoremap ] <delete>
 cnoremap ] <delete>
 " Insert square-brackes with <c-v>[
 
-" Use tab (which term sees as <c-i> because OLD) for escape
-nnoremap <tab> <esc>
-inoremap <tab> <esc>
-vnoremap <tab> <esc>
-" In which case remap jump-list navigation
-nnoremap <leader>i <c-i>
-nnoremap <leader>o <c-o>
+"" Use tab (which term sees as <c-i> because OLD) for escape
+"nnoremap <tab> <esc>
+"inoremap <tab> <esc>
+"vnoremap <tab> <esc>
+"" In which case remap jump-list navigation
+"nnoremap <leader>i <c-i>
+"nnoremap <leader>o <c-o>
 
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j

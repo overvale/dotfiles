@@ -114,10 +114,10 @@ hi Operator     ctermfg=008  ctermbg=NONE  cterm=NONE
 
 " Spelling highlighting
 " ---------------------------------------------------------
-hi SpellBad     ctermfg=NONE ctermbg=009 
-hi SpellLocal   ctermfg=NONE ctermbg=009  cterm=NONE
-hi SpellCap     ctermfg=NONE ctermbg=010  cterm=NONE
-hi SpellRare    ctermfg=NONE ctermbg=011  cterm=NONE
+hi SpellBad     ctermfg=NONE ctermbg=NONE cterm=underline
+hi SpellLocal   ctermfg=NONE ctermbg=NONE cterm=underline
+hi SpellCap     ctermfg=NONE ctermbg=NONE cterm=underline
+hi SpellRare    ctermfg=NONE ctermbg=NONE cterm=underline
 
 
 " diff highlighting
@@ -150,7 +150,7 @@ hi rubyDoBlock                 ctermfg=003
 " HTML highlighting
 " ---------------------------------------------------------
 hi htmlBold                     ctermfg=005  ctermbg=NONE cterm=NONE
-hi htmlItalic                   ctermfg=001  ctermbg=NONE cterm=NONE
+hi htmlItalic                   ctermfg=002  ctermbg=NONE cterm=NONE
 hi htmlArg                      ctermfg=005  ctermbg=NONE cterm=NONE
 hi htmlEndTag                   ctermfg=004  ctermbg=NONE cterm=NONE
 hi htmlTag                      ctermfg=004  ctermbg=NONE cterm=NONE

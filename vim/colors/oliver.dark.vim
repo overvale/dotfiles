@@ -27,7 +27,7 @@ let g:colors_name = "oliver.dark"
 " White    15
 
 " The Basics
-hi Normal        ctermfg=255   ctermbg=236   cterm=NONE
+hi Normal        ctermfg=253   ctermbg=236   cterm=NONE
 hi Cursor        ctermfg=236   ctermbg=015   cterm=NONE
 hi Bold          ctermfg=NONE  ctermbg=NONE  cterm=bold
 hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=NONE
@@ -109,10 +109,10 @@ hi Type         ctermfg=006  ctermbg=NONE cterm=NONE
 hi Typedef      ctermfg=003  ctermbg=NONE cterm=NONE
 
 " Spelling highlighting
-hi SpellBad     ctermfg=NONE ctermbg=234  cterm=underline
-hi SpellLocal   ctermfg=NONE ctermbg=234  cterm=underline
-hi SpellCap     ctermfg=NONE ctermbg=234  cterm=underline
-hi SpellRare    ctermfg=NONE ctermbg=234  cterm=underline
+hi SpellBad     ctermfg=NONE ctermbg=NONE  cterm=underline
+hi SpellLocal   ctermfg=NONE ctermbg=NONE  cterm=underline
+hi SpellCap     ctermfg=NONE ctermbg=NONE  cterm=underline
+hi SpellRare    ctermfg=NONE ctermbg=NONE  cterm=underline
 
 " Additional diff highlighting
 hi DiffAdd      ctermfg=002  ctermbg=236  cterm=NONE

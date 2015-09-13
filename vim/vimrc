@@ -26,7 +26,7 @@ set formatoptions=tcrqn1j formatprg=par\ -w78rq nojoinspaces
 set hidden
 set incsearch ignorecase
 set laststatus=2 showcmd
-set listchars=tab:▸\ ,eol:¬,trail:•,extends:,precedes:,nbsp:⌙
+set listchars=tab:▸\ ,eol:¬,trail:◯,extends:→,precedes:←,nbsp:╌
 set relativenumber
 set scrolloff=0 sidescrolloff=5
 set shortmess+=I
@@ -50,24 +50,24 @@ inoremap ] <delete>
 cnoremap ] <delete>
 " Insert square-brackes with <c-v>[
 
-"" Use tab (which term sees as <c-i> because OLD) for escape
-"nnoremap <tab> <esc>
-"inoremap <tab> <esc>
-"vnoremap <tab> <esc>
-"" In which case remap jump-list navigation
-"nnoremap <leader>i <c-i>
-"nnoremap <leader>o <c-o>
-
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-nnoremap ; :
-nnoremap : ;
+" Swap key to enter Ex mode
+" in Visual, Select, and Operator-pending modes:
+noremap ; :
+noremap : ;
 
 " MAPPINGS
 " ------------------------------------------------------------------------------
+
+" Add single-key backwards end-of-word motion
+" in Visual, Select, and Operator-pending modes:
+noremap - ge
+noremap _ gE
+
 " Break undo before CTRL-U
 inoremap <C-U> <C-G>u<C-U>
 

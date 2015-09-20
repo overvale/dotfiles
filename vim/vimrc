@@ -13,7 +13,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'gcmt/taboo.vim'
     Plug 'moll/vim-bbye'
     Plug 'kshenoy/vim-signature'
-    Plug 'unblevable/quick-scope'
+    Plug 'junegunn/goyo.vim'
 call plug#end()
 
 syntax enable
@@ -191,6 +191,11 @@ set foldtext=NeatFoldText()
     vmap <Enter> <Plug>(EasyAlign)
     " Start interactive EasyAlign for a motion/text object (e.g. gaip)
     nmap ga <Plug>(EasyAlign)
+
+" GOYO
+    let g:goyo_width = 90
+    let g:goyo_margin_top = 2
+    let g:goyo_margin_bottom = 0
 
 " TABOO
     let g:taboo_tab_format=" %N: %f%m "

@@ -114,7 +114,7 @@ command! UT :UndotreeToggle
 function! Markdown()
     setlocal spell
     setlocal filetype=markdown "triggers thinca/vim-ft-markdown_fold for folding,
-    setlocal syntax=mkd "triggers vim-markdown's syntax, which is MUCH better
+    setlocal syntax=markdown "triggers vim-markdown's syntax
 endfunction
 
 " AUTOCOMMANDS

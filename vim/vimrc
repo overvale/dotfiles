@@ -109,30 +109,34 @@ command! UT :UndotreeToggle
 " creates an alias (%%) to represent the directory of the current file
     cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
-" FUNCTION
+" FUNCTIONS
 " ------------------------------------------------------------------------------
 function! Markdown()
-    setlocal spell
-    setlocal filetype=markdown "triggers thinca/vim-ft-markdown_fold for folding,
-    setlocal syntax=markdown "triggers vim-markdown's syntax
+    setlocal spell filetype=markdown syntax=markdown
+endfunction
+
+function! ProjectsCheck()
+if expand("%:p:h") == '/Users/oliver/Documents/screenwriting/tripwire'
+    silent! source .vim_settings
+endif
 endfunction
 
 " AUTOCOMMANDS
 " ------------------------------------------------------------------------------
 augroup markdown
     autocmd!
-    autocmd BufRead,BufNewFile *.text call Markdown()
-    autocmd BufRead,BufNewFile *.md   call Markdown()
+    autocmd BufRead,BufNewFile *.text,*.md call Markdown()
+augroup END
+
+augroup projectsCheck
+    autocmd!
+    autocmd BufRead,BufNewFile * call ProjectsCheck()
 augroup END
 
 augroup custom_misc
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker
-    " Don't write undofiles for secret stuff
     autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
-    " Super fast exiting from insert mode. Note that with this, you can't
-    " possibly use mappings that start with <esc> *in insert mode*, since vim
-    " won't wait for you to press other keys.
     autocmd InsertEnter * set timeoutlen=0 linebreak
     autocmd InsertLeave * set timeoutlen=3000 linebreak
 augroup END

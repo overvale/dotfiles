@@ -33,10 +33,11 @@ brew install ranger
 brew install tmux
 brew install reattach-to-user-namespace
 brew install pandoc
+brew install zsh
+brew install zsh-syntax-highlighting
 
-Install princeXML
-make install textplay (symlink)
-
+# Install princeXML
+# make install textplay (symlink)
 # Set up ssh keys
 
 # Set Help Viewer windows to non-floating mode
@@ -63,20 +64,24 @@ ln -s ~/code/dotfiles/slate .slate
 
 # Install apps:
 
-# Arq
 # Adobe Lightroom
+# Arq
 # BBEdit
+# Google Chrome
 # Kaleidoscope
 # Karabiner
+# Launchbar
+# Little Snitch
+# Name Mangler (Mac App Store)
+# Omnifocus
+# Pixelmator (Mac App Store)
+# QuickTime Player 7
+# Shortcat
+# Slack
+# Slate
 # SuperDuper
 # Transmit
-# QuickTime Player 7
-# Google Chrome
+# iA Writer
 # iWork
-# Little Snitch
-# Slate
-
-# Name Mangler (Mac App Store)
-# Pixelmator (Mac App Store)
 
 # Install fonts from server

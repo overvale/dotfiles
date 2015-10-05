@@ -17,6 +17,9 @@ call plug#end()
 syntax enable
 colorscheme oliver.light
 
+" Each machine has settings spesific to it
+source $DOT/vim/localvimrc
+
 set backspace=eol
 set clipboard=unnamed
 set encoding=utf-8
@@ -123,22 +126,11 @@ function! Markdown()
     setlocal spell filetype=markdown syntax=markdown
 endfunction
 
-function! ProjectsCheck()
-if expand("%:p:h") == '/Users/oliver/Documents/screenwriting/tripwire'
-    silent! source .vim_settings
-endif
-endfunction
-
 " AUTOCOMMANDS
 " ------------------------------------------------------------------------------
 augroup markdown
     autocmd!
     autocmd BufRead,BufNewFile *.text,*.md call Markdown()
-augroup END
-
-augroup projectsCheck
-    autocmd!
-    autocmd BufRead,BufNewFile * call ProjectsCheck()
 augroup END
 
 augroup custom_misc

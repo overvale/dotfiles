@@ -12,15 +12,17 @@ call plug#begin('~/.vim/plugged')
     Plug 'gerw/vim-HiLinkTrace'
     Plug 'gcmt/taboo.vim'
     Plug 'junegunn/goyo.vim'
+    Plug 'osyo-manga/unite-quickfix'
+    Plug 'osyo-manga/vim-anzu'
 call plug#end()
 
 syntax enable
-colorscheme oliver.light
+colorscheme oliver.dark
 
 " Each machine has settings spesific to it
 source $DOT/vim/localvimrc
 
-set backspace=eol
+set backspace=start,indent,eol
 set clipboard=unnamed
 set encoding=utf-8
 set formatoptions=tcrqn1j formatprg=par\ -w78rq nojoinspaces
@@ -28,14 +30,14 @@ set hidden
 set incsearch ignorecase
 set laststatus=2 showcmd
 set listchars=tab:▸\ ,eol:¬,trail:◯,extends:→,precedes:←,nbsp:╌
-set relativenumber
 set scrolloff=0 sidescrolloff=5
 set shortmess+=I
 set smartindent autoindent
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
 set splitbelow splitright
-set statusline=%f\ %m\ %r%=\ %y
+set statusline=%f\ %m\ %r\ %{anzu#search_status()}%=\ %y
+set statusline+=
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set thesaurus+=/Users/oliver/code/mthesaur.txt
 set undofile undodir=~/code/vimundo
@@ -69,11 +71,6 @@ noremap $ g_
 
 "  Make Y behave like D
 nnoremap Y y$
-
-" Add single-key backwards end-of-word motion
-" in Visual, Select, and Operator-pending modes:
-noremap - ge
-noremap _ gE
 
 " Break undo before CTRL-U
 inoremap <C-U> <C-G>u<C-U>
@@ -204,6 +201,13 @@ set foldtext=NeatFoldText()
 " TABOO
     let g:taboo_tab_format=" %N: %f%m "
     let g:taboo_modified_tab_flag=" +"
+
+" Anzu
+    nmap n <Plug>(anzu-n-with-echo)
+    nmap N <Plug>(anzu-N-with-echo)
+    nmap * <Plug>(anzu-star-with-echo)
+    nmap # <Plug>(anzu-sharp-with-echo)
+    nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
 
 " SNIPPETS
 " ------------------------------------------------------------------------

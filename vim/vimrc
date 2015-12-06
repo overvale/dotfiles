@@ -13,6 +13,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/goyo.vim'
     Plug 'osyo-manga/unite-quickfix'
     Plug 'osyo-manga/vim-anzu'
+    Plug 'easymotion/vim-easymotion'
 call plug#end()
 
 syntax enable
@@ -116,6 +117,21 @@ command! UT :UndotreeToggle
 " creates an alias (%%) to represent the directory of the current file
     cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
+" LEADER
+" ------------------------------------------------------------------------------
+
+nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize buffer file file/new directory/new<cr>
+nnoremap <leader>y :Unite -buffer-name=yank -no-split -no-resize history/yank<cr>
+nnoremap <leader>u <nop>
+nnoremap <leader>us :Unite -buffer-name=source -no-split -no-resize source<cr>
+nnoremap <leader>ul :Unite -buffer-name=line -no-split -no-resize line<cr>
+nnoremap <leader>uo :Unite -buffer-name=outline -no-split -no-resize outline<cr>
+nnoremap <leader>ur :Unite -buffer-name=register -no-split -no-resize register<cr>
+map <leader>s <Plug>(easymotion-s)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+
+
 " FUNCTIONS
 " ------------------------------------------------------------------------------
 function! Markdown()
@@ -171,12 +187,6 @@ set foldtext=NeatFoldText()
 
     " shortcuts for calling Unite
     nnoremap = :Unite -buffer-name=spelling -no-split -no-resize spell_suggest<cr>
-    nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize buffer file file/new directory/new<cr>
-    nnoremap <leader>y :Unite -buffer-name=yank -no-split -no-resize history/yank<cr>
-    nnoremap <leader>us :Unite -buffer-name=source -no-split -no-resize source<cr>
-    nnoremap <leader>ul :Unite -buffer-name=line -no-split -no-resize line<cr>
-    nnoremap <leader>uo :Unite -buffer-name=outline -no-split -no-resize outline<cr>
-    nnoremap <leader>ur :Unite -buffer-name=register -no-split -no-resize register<cr>
 
 " MARKDOWN
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
@@ -207,6 +217,9 @@ set foldtext=NeatFoldText()
     nmap * <Plug>(anzu-star-with-echo)
     nmap # <Plug>(anzu-sharp-with-echo)
     nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
+
+" Easy Motion
+    let g:EasyMotion_smartcase = 1
 
 " SNIPPETS
 " ------------------------------------------------------------------------

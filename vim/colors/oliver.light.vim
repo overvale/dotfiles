@@ -194,3 +194,38 @@ hi GitGutterChangeDelete  ctermfg=001 ctermbg=255 cterm=NONE
 " ---------------------------------------------------------
 hi vimIsCommand      ctermfg=001
 hi vimMapRhs         ctermfg=002
+
+
+
+" Unite
+" ---------------------------------------------------------
+
+"hi uniteCandidateIcon                    ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteCandidateInputKeyword            ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteCandidateSourceName              ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteChooseAction                     ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteChooseCandidate                  ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteChooseKey                        ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteChooseMessage                    ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteChoosePrompt                     ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteChooseSource                     ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteError                            ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteInputCommand                     ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteInputLine                        ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteInputPrompt                      ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteMarkedIcon                       ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteMarkedLine                       ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteNonMarkedLine                    ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteQuickMatchText                   ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteSourceLine__uniteSource__Outline ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteSourceNames                      ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteSourcePrompt                     ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteSource__Outline                  ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteStatusHead                       ctermfg=NONE ctermbg=NONE cterm=NONE
+"" controls numbers on right side of status bar
+"hi uniteStatusLineNR                     ctermfg=001  ctermbg=008  cterm=NONE
+"hi uniteStatusMessage                    ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteStatusNormal                     ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteStatusSourceCandidates           ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi uniteStatusSourceNames                ctermfg=NONE ctermbg=NONE cterm=NONE
+

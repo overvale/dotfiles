@@ -4,7 +4,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'kopischke/unite-spell-suggest'
     Plug 'tpope/vim-rsi'
     Plug 'tpope/vim-surround'
-    Plug 'christoomey/vim-tmux-navigator'
     Plug 'plasticboy/vim-markdown'
     Plug 'thinca/vim-ft-markdown_fold'
     Plug 'junegunn/vim-easy-align'
@@ -17,7 +16,7 @@ call plug#begin('~/.vim/plugged')
 call plug#end()
 
 syntax enable
-colorscheme oliver.dark
+colorscheme oliver.light
 
 " Each machine has settings spesific to it
 source $DOT/vim/localvimrc

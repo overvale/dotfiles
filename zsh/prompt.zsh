@@ -7,22 +7,20 @@ zstyle ':vcs_info:*' check-for-changes true
 precmd () { vcs_info }
 
 # This builds the vcs_info that goes in the prompt
-zstyle ':vcs_info:*' formats ' %F{8}: %b%u%c%m%f'
+zstyle ':vcs_info:*' formats ' %F{5}git: %b %c%u%m%f'
 # %b = branch
-# %u = String from unstagedstr 
 # %c = String from stagedstr 
+# %u = String from unstagedstr 
 # %m = misc (see below)
 
 # actionformats are used when something is happening in
 # the repo, like a merge or rebase.
 # %a = action identifier
-zstyle ':vcs_info:*' actionformats ' %F{8}(git %a)%f'
+zstyle ':vcs_info:*' actionformats ' %F{3}(git %a)%f'
 
 # if there are staged/unstaged changes in the repository.
-zstyle ':vcs_info:*' stagedstr ' %F{2}M%f'
-zstyle ':vcs_info:*' unstagedstr ' %F{3}M%f'
-
-# Next, setup what's in %m Misc
+zstyle ':vcs_info:*' stagedstr '%F{2}●%f'
+zstyle ':vcs_info:*' unstagedstr '%F{3}○%f'
 
 # This runs functions when vcs displays a message
 zstyle ':vcs_info:git*+set-message:*' hooks git-untracked git-aheadbehind
@@ -31,7 +29,7 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-untracked git-aheadbehind
 function +vi-git-untracked() {
   if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
     git status --porcelain | grep '??' &> /dev/null ; then
-    hook_com[unstaged]+=' %F{1}??%f'
+    hook_com[unstaged]+='%F{1}□%f'
   fi  
 }
 

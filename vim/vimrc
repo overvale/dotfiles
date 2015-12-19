@@ -12,12 +12,18 @@ call plug#begin('~/.vim/plugged')
     Plug 'gcmt/taboo.vim'
     Plug 'junegunn/goyo.vim'
     Plug 'osyo-manga/unite-quickfix'
-    Plug 'osyo-manga/vim-anzu'
     Plug 'easymotion/vim-easymotion'
+    Plug 'w0ng/vim-hybrid'
+    Plug 'wellle/visual-split.vim'
+    Plug 'kshenoy/vim-signature'
+    Plug 'wellle/vim-visual-star-search'
+    Plug 'haya14busa/incsearch.vim'
 call plug#end()
 
 syntax enable
-colorscheme oliver.light
+let g:hybrid_use_Xresources = 1
+set background=dark
+colorscheme hybrid
 
 " Each machine has settings spesific to it
 source $DOT/vim/localvimrc
@@ -30,13 +36,14 @@ set hidden
 set incsearch ignorecase
 set laststatus=2 showcmd
 set listchars=tab:▸\ ,eol:¬,trail:◯,extends:→,precedes:←,nbsp:╌
+set relativenumber
 set scrolloff=0 sidescrolloff=5
 set shortmess+=I
 set smartindent autoindent
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
 set splitbelow splitright
-set statusline=%f\ %m\ %r\ %{anzu#search_status()}%=\ %y
+set statusline=%f\ %m\ %=\ %y
 set statusline+=
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set thesaurus+=/Users/oliver/code/mthesaur.txt
@@ -47,11 +54,6 @@ set wrapscan
 
 " Pinky savers
 " ------------------------------------------------------------------------------
-inoremap [ <backspace>
-cnoremap [ <backspace>
-inoremap ] <delete>
-cnoremap ] <delete>
-" Insert square-brackes with <c-v>[
 
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -65,6 +67,8 @@ noremap : ;
 
 " MAPPINGS
 " ------------------------------------------------------------------------------
+
+let mapleader = " "
 
 " In Visual Mode I almost never want $ to select the newline
 noremap $ g_
@@ -97,6 +101,7 @@ nnoremap gB :bNext<cr>
 
 " COMMANDS
 " ------------------------------------------------------------------------------
+command! Break :'<,'>!clause-break
 command! Cdf :cd %:h<cr>
 command! Dtrail :%s/\s\+$//
 command! Join :'<,'>!clause-join
@@ -211,15 +216,13 @@ set foldtext=NeatFoldText()
     let g:taboo_tab_format=" %N: %f%m "
     let g:taboo_modified_tab_flag=" +"
 
-" Anzu
-    nmap n <Plug>(anzu-n-with-echo)
-    nmap N <Plug>(anzu-N-with-echo)
-    nmap * <Plug>(anzu-star-with-echo)
-    nmap # <Plug>(anzu-sharp-with-echo)
-    nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
-
 " Easy Motion
     let g:EasyMotion_smartcase = 1
+
+" Incsearch
+    map /  <Plug>(incsearch-forward)
+    map ?  <Plug>(incsearch-backward)
+    map g/ <Plug>(incsearch-stay)
 
 " SNIPPETS
 " ------------------------------------------------------------------------

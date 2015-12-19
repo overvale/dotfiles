@@ -19,7 +19,7 @@ let g:colors_name = "oliver.dark"
 " Grey 1   07
 " Grey 2   08
 " Orange   09
-"          10
+" Grey 3   10
 " Brown    11
 "          12
 " Pink     13
@@ -34,31 +34,31 @@ hi Italic        ctermfg=NONE  ctermbg=NONE  cterm=NONE
 hi Underlined    ctermfg=001   ctermbg=NONE  cterm=NONE
 
 " The Structure
-hi StatusLine    ctermfg=004   ctermbg=235   cterm=NONE
-hi TabLineSel    ctermfg=004   ctermbg=235   cterm=NONE
-hi TabLine       ctermfg=240   ctermbg=235   cterm=NONE
-hi StatusLineNC  ctermfg=240   ctermbg=235   cterm=NONE
-hi VertSplit     ctermfg=235   ctermbg=235   cterm=NONE
-hi TabLineFill   ctermfg=000   ctermbg=235   cterm=NONE
+hi StatusLine    ctermfg=004   ctermbg=000   cterm=NONE
+hi TabLineSel    ctermfg=004   ctermbg=000   cterm=NONE
+hi TabLine       ctermfg=240   ctermbg=000   cterm=NONE
+hi StatusLineNC  ctermfg=240   ctermbg=000   cterm=NONE
+hi VertSplit     ctermfg=235   ctermbg=000   cterm=NONE
+hi TabLineFill   ctermfg=000   ctermbg=000   cterm=NONE
 
-hi LineNr        ctermfg=240   ctermbg=237   cterm=NONE
-hi CursorLineNr  ctermfg=255   ctermbg=237   cterm=NONE
-hi SignColumn    ctermfg=251   ctermbg=237   cterm=NONE
-hi FoldColumn    ctermfg=251   ctermbg=237   cterm=NONE
-hi CursorLine    ctermfg=NONE  ctermbg=237   cterm=NONE
-hi CursorColumn  ctermfg=NONE  ctermbg=237   cterm=NONE
-hi ColorColumn   ctermfg=NONE  ctermbg=237   cterm=NONE
+hi LineNr        ctermfg=237   ctermbg=235   cterm=NONE
+hi CursorLineNr  ctermfg=004   ctermbg=235   cterm=NONE
+hi SignColumn    ctermfg=251   ctermbg=235   cterm=NONE
+hi CursorLine    ctermfg=NONE  ctermbg=235   cterm=NONE
+hi CursorColumn  ctermfg=NONE  ctermbg=235   cterm=NONE
+hi ColorColumn   ctermfg=NONE  ctermbg=235   cterm=NONE
 
 hi PMenu         ctermfg=236   ctermbg=250   cterm=NONE
 hi PMenuSel      ctermfg=237   ctermbg=003   cterm=NONE
 hi PmenuSbar     ctermbg=NONE  ctermfg=NONE  cterm=NONE
 hi PmenuThumb    ctermbg=NONE  ctermfg=NONE  cterm=NONE
 
+hi FoldColumn    ctermfg=NONE  ctermbg=NONE  cterm=NONE
+hi Folded        ctermfg=241   ctermbg=010   cterm=NONE
+
 " Misc
 hi Error         ctermfg=223   ctermbg=232
 hi ErrorMsg      ctermfg=001   ctermbg=236   cterm=NONE
-hi FoldColumn    ctermfg=NONE  ctermbg=238   cterm=NONE
-hi Folded        ctermfg=244   ctermbg=237   cterm=NONE
 hi IncSearch     ctermfg=237   ctermbg=009   cterm=NONE
 hi Macro         ctermfg=001   ctermbg=NONE  cterm=NONE
 hi MatchParen    ctermfg=236   ctermbg=244   cterm=NONE

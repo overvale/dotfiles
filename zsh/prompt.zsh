@@ -7,8 +7,7 @@ zstyle ':vcs_info:*' check-for-changes true
 precmd () { vcs_info }
 
 # This builds the vcs_info that goes in the prompt
-zstyle ':vcs_info:*' formats '
-%F{8}Git: %b%u%c%m%f'
+zstyle ':vcs_info:*' formats ' %F{8}: %b%u%c%m%f'
 # %b = branch
 # %u = String from unstagedstr 
 # %c = String from stagedstr 
@@ -20,8 +19,8 @@ zstyle ':vcs_info:*' formats '
 zstyle ':vcs_info:*' actionformats '(%a)'
 
 # if there are staged/unstaged changes in the repository.
-zstyle ':vcs_info:*' stagedstr ', +staged'
-zstyle ':vcs_info:*' unstagedstr ', +unstaged'
+zstyle ':vcs_info:*' stagedstr ' %F{2}M%f'
+zstyle ':vcs_info:*' unstagedstr ' %F{3}M%f'
 
 # Next, setup what's in %m Misc
 
@@ -32,7 +31,7 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-untracked git-aheadbehind
 function +vi-git-untracked() {
   if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
     git status --porcelain | grep '??' &> /dev/null ; then
-    hook_com[unstaged]+=', +untracked'
+    hook_com[unstaged]+=' %F{1}??%f'
   fi  
 }
 

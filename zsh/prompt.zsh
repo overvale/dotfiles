@@ -7,7 +7,8 @@ zstyle ':vcs_info:*' check-for-changes true
 precmd () { vcs_info }
 
 # This builds the vcs_info that goes in the prompt
-zstyle ':vcs_info:*' formats ' %F{2}%b%u%c%f%F{3}%m%f'
+zstyle ':vcs_info:*' formats '
+%F{8}Git: %b%u%c%m%f'
 # %b = branch
 # %u = String from unstagedstr 
 # %c = String from stagedstr 
@@ -19,8 +20,8 @@ zstyle ':vcs_info:*' formats ' %F{2}%b%u%c%f%F{3}%m%f'
 zstyle ':vcs_info:*' actionformats '(%a)'
 
 # if there are staged/unstaged changes in the repository.
-zstyle ':vcs_info:*' stagedstr '*'
-zstyle ':vcs_info:*' unstagedstr '*'
+zstyle ':vcs_info:*' stagedstr ', +staged'
+zstyle ':vcs_info:*' unstagedstr ', +unstaged'
 
 # Next, setup what's in %m Misc
 
@@ -31,7 +32,7 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-untracked git-aheadbehind
 function +vi-git-untracked() {
   if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
     git status --porcelain | grep '??' &> /dev/null ; then
-    hook_com[unstaged]+=' %F{1}+%f'
+    hook_com[unstaged]+=', +untracked'
   fi  
 }
 
@@ -51,6 +52,14 @@ function +vi-git-aheadbehind() {
 
 # And finally the prompt...
 
+# Setup the variables used in the prompt
+if [ -n "$SSH_CLIENT" ]; then local myUsermachine='%F{8}%n@%m:%f'
+fi
+myDir='%F{12}%~%f'
+myBackgroundjobs='%F{1}%(1j. (%j jobs).)%f'
+myPrompt='%F{9}❯ %f'
+
+# The prompt itself
 PROMPT='
-%F{12}%~%f%F{1}%(1j. (%j jobs).)%f${vcs_info_msg_0_}
-%F{9}❯ %f'
+${myUsermachine}${myDir}${myBackgroundjobs}${vcs_info_msg_0_}
+${myPrompt}'

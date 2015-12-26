@@ -4,14 +4,15 @@ call plug#begin('~/.vim/plugged')
     Plug 'kopischke/unite-spell-suggest'
     Plug 'tpope/vim-rsi'
     Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-commentary'
     Plug 'plasticboy/vim-markdown'
     Plug 'thinca/vim-ft-markdown_fold'
     Plug 'junegunn/vim-easy-align'
     Plug 'mbbill/undotree'
     Plug 'gerw/vim-HiLinkTrace'
     Plug 'gcmt/taboo.vim'
-    Plug 'junegunn/goyo.vim'
     Plug 'osyo-manga/unite-quickfix'
+    Plug 'osyo-manga/vim-over'
     Plug 'easymotion/vim-easymotion'
     Plug 'w0ng/vim-hybrid'
     Plug 'wellle/visual-split.vim'
@@ -21,9 +22,7 @@ call plug#begin('~/.vim/plugged')
 call plug#end()
 
 syntax enable
-let g:hybrid_use_Xresources = 1
-set background=dark
-colorscheme hybrid
+colorscheme oliver.dark
 
 " Each machine has settings spesific to it
 source $DOT/vim/localvimrc
@@ -36,7 +35,6 @@ set hidden
 set incsearch ignorecase
 set laststatus=2 showcmd
 set listchars=tab:▸\ ,eol:¬,trail:◯,extends:→,precedes:←,nbsp:╌
-set relativenumber
 set scrolloff=0 sidescrolloff=5
 set shortmess+=I
 set smartindent autoindent
@@ -50,7 +48,6 @@ set thesaurus+=/Users/oliver/code/mthesaur.txt
 set undofile undodir=~/code/vimundo
 set wildmenu wildmode=list:longest
 set wrap linebreak breakindent
-set wrapscan
 
 " Pinky savers
 " ------------------------------------------------------------------------------
@@ -99,7 +96,11 @@ xnoremap < <gv
 nnoremap gb :bnext<cr>
 nnoremap gB :bNext<cr>
 
-" COMMANDS
+" make n/N always mean forward/backward search
+" regardless of whether it was done with / or ?
+nmap <silent> n /<cr>
+nmap <silent> N ?<cr>
+
 " ------------------------------------------------------------------------------
 command! Break :'<,'>!clause-break
 command! Cdf :cd %:h<cr>
@@ -126,7 +127,6 @@ command! UT :UndotreeToggle
 " ------------------------------------------------------------------------------
 
 nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize buffer file file/new directory/new<cr>
-nnoremap <leader>y :Unite -buffer-name=yank -no-split -no-resize history/yank<cr>
 nnoremap <leader>u <nop>
 nnoremap <leader>us :Unite -buffer-name=source -no-split -no-resize source<cr>
 nnoremap <leader>ul :Unite -buffer-name=line -no-split -no-resize line<cr>
@@ -160,21 +160,22 @@ augroup END
 
 " BETTER FOLDS
 " ------------------------------------------------------------------------------
-" better text folding from http://github.com/dphase/dphase-vim
-set fillchars=fold:\⋅
-function! NeatFoldText()
-    let line = ' ' . substitute(getline(v:foldstart), '^\s*\("\|#\|//\|/\)\?\s*\|\s*\("\|#\)\?\s*{{' . '{\d*\s*', '', 'g') . ' '
-    let lines_count = v:foldend - v:foldstart + 1
-    let lines_count_text = ' ' . printf("%10s", lines_count . ' lines') . ' '
-    let foldchar = matchstr(&fillchars, 'fold:\zs.')
-    let foldtextstart = strpart('⋅' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
-    let foldtextend = lines_count_text . repeat(foldchar, 8)
-    let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
-    return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
+function! MyFoldText()
+    let line = getline(v:foldstart)
+
+    let nucolwidth = &fdc + &number * &numberwidth
+    let windowwidth = winwidth(0) - nucolwidth - 3
+    let foldedlinecount = v:foldend - v:foldstart
+
+    " expand tabs into spaces
+    let onetab = strpart('          ', 0, &tabstop)
+    let line = substitute(line, '\t', onetab, 'g')
+
+    let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
+    let fillcharcount = windowwidth - len(line) - len(foldedlinecount) - 4
+    return line . ' …' . repeat(" ",fillcharcount) . foldedlinecount . ' '
 endfunction
-set foldtext=NeatFoldText()
-" http://vim.wikia.com/wiki/Customize_text_for_closed_folds
-" https://bitbucket.org/atimholt/spiffy_foldtext
+set foldtext=MyFoldText()
 
 " PLUGIN PREFS
 " ------------------------------------------------------------------------

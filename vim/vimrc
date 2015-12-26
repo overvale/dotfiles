@@ -1,3 +1,5 @@
+" Plugins {{{
+" ------------------------------------------------------------------------------
 call plug#begin('~/.vim/plugged')
     Plug 'Shougo/unite.vim'
     Plug 'Shougo/unite-outline'
@@ -20,7 +22,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/vim-visual-star-search'
     Plug 'haya14busa/incsearch.vim'
 call plug#end()
+" }}}
 
+" Settings {{{
+" ------------------------------------------------------------------------------
 syntax enable
 colorscheme oliver.dark
 
@@ -41,16 +46,19 @@ set smartindent autoindent
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
 set splitbelow splitright
-set statusline=%f\ %m\ %=\ %y
+set statusline=%f\ %m\ %=\ %y\ %c\:%l\ %P
 set statusline+=
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set thesaurus+=/Users/oliver/code/mthesaur.txt
 set undofile undodir=~/code/vimundo
 set wildmenu wildmode=list:longest
 set wrap linebreak breakindent
+" }}}
 
-" Pinky savers
+" MAPPINGS {{{
 " ------------------------------------------------------------------------------
+
+let mapleader = " "
 
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -61,11 +69,6 @@ nnoremap <C-l> <C-w>l
 " in Visual, Select, and Operator-pending modes:
 noremap ; :
 noremap : ;
-
-" MAPPINGS
-" ------------------------------------------------------------------------------
-
-let mapleader = " "
 
 " In Visual Mode I almost never want $ to select the newline
 noremap $ g_
@@ -100,7 +103,9 @@ nnoremap gB :bNext<cr>
 " regardless of whether it was done with / or ?
 nmap <silent> n /<cr>
 nmap <silent> N ?<cr>
+" }}}
 
+" Commands {{{
 " ------------------------------------------------------------------------------
 command! Break :'<,'>!clause-break
 command! Cdf :cd %:h<cr>
@@ -123,7 +128,9 @@ command! UT :UndotreeToggle
 " creates an alias (%%) to represent the directory of the current file
     cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
-" LEADER
+" }}}
+
+" LEADER mappings {{{
 " ------------------------------------------------------------------------------
 
 nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize buffer file file/new directory/new<cr>
@@ -135,15 +142,16 @@ nnoremap <leader>ur :Unite -buffer-name=register -no-split -no-resize register<c
 map <leader>s <Plug>(easymotion-s)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
+" }}}
 
-
-" FUNCTIONS
+" FUNCTIONS {{{
 " ------------------------------------------------------------------------------
 function! Markdown()
     setlocal spell filetype=markdown syntax=markdown
 endfunction
+" }}}
 
-" AUTOCOMMANDS
+" AUTOCOMMANDS {{{
 " ------------------------------------------------------------------------------
 augroup markdown
     autocmd!
@@ -157,8 +165,9 @@ augroup custom_misc
     autocmd InsertEnter * set timeoutlen=0 linebreak
     autocmd InsertLeave * set timeoutlen=3000 linebreak
 augroup END
+" }}}
 
-" BETTER FOLDS
+" BETTER FOLDS {{{
 " ------------------------------------------------------------------------------
 function! MyFoldText()
     let line = getline(v:foldstart)
@@ -176,8 +185,9 @@ function! MyFoldText()
     return line . ' …' . repeat(" ",fillcharcount) . foldedlinecount . ' '
 endfunction
 set foldtext=MyFoldText()
+" }}}
 
-" PLUGIN PREFS
+" PLUGIN PREFS {{{
 " ------------------------------------------------------------------------
 " UNITE
     " Start by setting some defaults
@@ -224,10 +234,12 @@ set foldtext=MyFoldText()
     map /  <Plug>(incsearch-forward)
     map ?  <Plug>(incsearch-backward)
     map g/ <Plug>(incsearch-stay)
+" }}}
 
-" SNIPPETS
+" SNIPPETS {{{
 " ------------------------------------------------------------------------
 " Date: 2015-02-15
 iabbrev <expr> dd strftime("%Y-%m-%d")
 " Date: 16 February 2015
 iabbrev <expr> ddate strftime("%d %B %Y")
+" }}}

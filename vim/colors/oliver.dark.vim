@@ -38,41 +38,41 @@ hi StatusLine    ctermfg=004   ctermbg=000   cterm=NONE
 hi TabLineSel    ctermfg=004   ctermbg=000   cterm=NONE
 hi TabLine       ctermfg=240   ctermbg=000   cterm=NONE
 hi StatusLineNC  ctermfg=240   ctermbg=000   cterm=NONE
-hi VertSplit     ctermfg=235   ctermbg=000   cterm=NONE
+hi VertSplit     ctermfg=000   ctermbg=000   cterm=NONE
 hi TabLineFill   ctermfg=000   ctermbg=000   cterm=NONE
 
-hi LineNr        ctermfg=237   ctermbg=235   cterm=NONE
-hi CursorLineNr  ctermfg=004   ctermbg=235   cterm=NONE
-hi SignColumn    ctermfg=251   ctermbg=235   cterm=NONE
-hi CursorLine    ctermfg=NONE  ctermbg=235   cterm=NONE
-hi CursorColumn  ctermfg=NONE  ctermbg=235   cterm=NONE
-hi ColorColumn   ctermfg=NONE  ctermbg=235   cterm=NONE
+hi CursorLine    ctermfg=NONE  ctermbg=237   cterm=NONE
+hi CursorColumn  ctermfg=NONE  ctermbg=237   cterm=NONE
+hi ColorColumn   ctermfg=NONE  ctermbg=237   cterm=NONE
+hi Folded        ctermfg=008   ctermbg=237  cterm=NONE
+
+hi LineNr        ctermfg=238   ctermbg=235   cterm=NONE
+hi FoldColumn    ctermfg=238   ctermbg=235   cterm=NONE
+hi SignColumn    ctermfg=238   ctermbg=235   cterm=NONE
+hi CursorLineNr  ctermfg=003   ctermbg=235   cterm=NONE
 
 hi PMenu         ctermfg=236   ctermbg=250   cterm=NONE
 hi PMenuSel      ctermfg=237   ctermbg=003   cterm=NONE
 hi PmenuSbar     ctermbg=NONE  ctermfg=NONE  cterm=NONE
 hi PmenuThumb    ctermbg=NONE  ctermfg=NONE  cterm=NONE
 
-hi FoldColumn    ctermfg=NONE  ctermbg=NONE  cterm=NONE
-hi Folded        ctermfg=241   ctermbg=010   cterm=NONE
-
 " Misc
-hi Error         ctermfg=223   ctermbg=232
+hi Error         ctermfg=001   ctermbg=000
 hi ErrorMsg      ctermfg=001   ctermbg=236   cterm=NONE
-hi IncSearch     ctermfg=237   ctermbg=009   cterm=NONE
-hi Macro         ctermfg=001   ctermbg=NONE  cterm=NONE
-hi MatchParen    ctermfg=236   ctermbg=244   cterm=NONE
-hi ModeMsg       ctermfg=003   ctermbg=NONE   cterm=NONE
+hi IncSearch     ctermfg=000   ctermbg=003   cterm=NONE
+hi Search        ctermfg=003   ctermbg=008   cterm=NONE
+hi Macro         ctermfg=003   ctermbg=008  cterm=NONE
+hi MatchParen    ctermfg=003   ctermbg=NONE   cterm=NONE
+hi ModeMsg       ctermfg=002   ctermbg=NONE   cterm=NONE
 hi MoreMsg       ctermfg=006   ctermbg=NONE  cterm=NONE
-hi Question      ctermfg=009   ctermbg=NONE  cterm=NONE
-hi Search        ctermfg=244   ctermbg=003   cterm=NONE
+hi Question      ctermfg=001   ctermbg=NONE  cterm=NONE
 hi Visual        ctermfg=NONE  ctermbg=240   cterm=NONE
 hi VisualNOS     ctermfg=001   ctermbg=NONE  cterm=NONE
 hi WarningMsg    ctermfg=001   ctermbg=NONE  cterm=NONE
-hi WildMenu      ctermfg=001   ctermbg=NONE  cterm=NONE
+hi WildMenu      ctermfg=000   ctermbg=003  cterm=NONE
 
 " Standard syntax highlighting
-hi Boolean      ctermfg=009  ctermbg=NONE cterm=NONE
+hi Boolean      ctermfg=001  ctermbg=NONE cterm=NONE
 hi Character    ctermfg=001  ctermbg=NONE cterm=NONE
 hi Comment      ctermfg=244  ctermbg=NONE cterm=NONE
 hi Conceal      ctermfg=004  ctermbg=236  cterm=NONE
@@ -83,7 +83,7 @@ hi Define       ctermfg=005  ctermbg=NONE cterm=NONE
 hi Delimiter    ctermfg=004  ctermbg=NONE cterm=NONE
 hi Directory    ctermfg=004  ctermbg=NONE cterm=NONE
 hi Exception    ctermfg=001  ctermbg=NONE cterm=NONE
-hi Float        ctermfg=009  ctermbg=NONE cterm=NONE
+hi Float        ctermfg=001  ctermbg=NONE cterm=NONE
 hi Function     ctermfg=004  ctermbg=NONE cterm=NONE
 hi Identifier   ctermfg=001  ctermbg=NONE cterm=NONE
 hi Include      ctermfg=004  ctermbg=NONE cterm=NONE
@@ -94,11 +94,11 @@ hi Number       ctermfg=005  ctermbg=NONE cterm=NONE
 hi Operator     ctermfg=251  ctermbg=NONE cterm=NONE
 hi PreProc      ctermfg=003  ctermbg=NONE cterm=NONE
 hi Repeat       ctermfg=003  ctermbg=NONE cterm=NONE
-hi Special      ctermfg=009  ctermbg=NONE cterm=NONE
-hi SpecialChar  ctermfg=009  ctermbg=NONE cterm=NONE
+hi Special      ctermfg=001  ctermbg=NONE cterm=NONE
+hi SpecialChar  ctermfg=001  ctermbg=NONE cterm=NONE
 hi SpecialKey   ctermfg=240  ctermbg=NONE cterm=NONE
 hi Statement    ctermfg=004  ctermbg=NONE cterm=NONE
-hi StorageClass ctermfg=009  ctermbg=NONE cterm=NONE
+hi StorageClass ctermfg=001  ctermbg=NONE cterm=NONE
 hi String       ctermfg=002  ctermbg=NONE cterm=NONE
 hi Structure    ctermfg=005  ctermbg=NONE cterm=NONE
 hi Tag          ctermfg=003  ctermbg=NONE cterm=NONE
@@ -116,23 +116,23 @@ hi SpellRare    ctermfg=NONE ctermbg=NONE  cterm=underline
 
 " Additional diff highlighting
 hi DiffAdd      ctermfg=002  ctermbg=236  cterm=NONE
-hi DiffChange   ctermfg=004  ctermbg=236  cterm=NONE
-hi DiffDelete   ctermfg=001  ctermbg=236  cterm=NONE
-hi DiffText     ctermfg=004  ctermbg=236  cterm=NONE
 hi DiffAdded    ctermfg=002  ctermbg=236  cterm=NONE
-hi DiffFile     ctermfg=001  ctermbg=236  cterm=NONE
 hi DiffNewFile  ctermfg=002  ctermbg=236  cterm=NONE
+hi DiffText     ctermfg=004  ctermbg=236  cterm=NONE
+hi DiffChange   ctermfg=004  ctermbg=236  cterm=NONE
 hi DiffLine     ctermfg=004  ctermbg=236  cterm=NONE
+hi DiffDelete   ctermfg=001  ctermbg=236  cterm=NONE
 hi DiffRemoved  ctermfg=001  ctermbg=236  cterm=NONE
+hi DiffFile     ctermfg=001  ctermbg=236  cterm=NONE
 
 " Ruby highlighting
 hi rubyAttribute               ctermfg=004 ctermbg=NONE cterm=NONE
 hi rubyConstant                ctermfg=003 ctermbg=NONE cterm=NONE
 hi rubyInterpolation           ctermfg=002 ctermbg=NONE cterm=NONE
-hi rubyInterpolationDelimiter  ctermfg=011 ctermbg=NONE cterm=NONE
+hi rubyInterpolationDelimiter  ctermfg=003 ctermbg=NONE cterm=NONE
 hi rubyRegexp                  ctermfg=001 ctermbg=NONE cterm=NONE
 hi rubyRegexpSpecial           ctermfg=004
-hi rubyRegexpParens            ctermfg=009
+hi rubyRegexpParens            ctermfg=001
 hi rubyStringEscape            ctermfg=005
 hi rubySymbol                  ctermfg=001 ctermbg=NONE cterm=NONE
 hi rubyStringDelimiter         ctermfg=002 ctermbg=NONE cterm=NONE
@@ -146,14 +146,14 @@ hi phpParent          ctermfg=251 ctermbg=NONE cterm=NONE
 
 " HTML highlighting
 hi htmlBold    ctermfg=003  ctermbg=NONE cterm=bold
-hi htmlItalic  ctermfg=009  ctermbg=NONE cterm=NONE
-hi htmlEndTag  ctermfg=011  ctermbg=NONE cterm=NONE
-hi htmlTag     ctermfg=011  ctermbg=NONE cterm=NONE
+hi htmlItalic  ctermfg=001  ctermbg=NONE cterm=NONE
+hi htmlEndTag  ctermfg=003  ctermbg=NONE cterm=NONE
+hi htmlTag     ctermfg=003  ctermbg=NONE cterm=NONE
 hi link htmlTagN htmlTagName
 hi htmlLink    ctermfg=NONE ctermbg=NONE cterm=NONE
-hi htmlH1      ctermfg=003 ctermbg=NONE cterm=NONE
-hi htmlH2      ctermfg=006 ctermbg=NONE cterm=NONE
-hi htmlH3      ctermfg=004 ctermbg=NONE cterm=NONE
+hi htmlH1      ctermfg=003  ctermbg=NONE cterm=NONE
+hi htmlH2      ctermfg=006  ctermbg=NONE cterm=NONE
+hi htmlH3      ctermfg=004  ctermbg=NONE cterm=NONE
 
 " CSS highlighting
 hi cssBraces      ctermfg=251 ctermbg=NONE cterm=NONE
@@ -162,7 +162,7 @@ hi cssColor       ctermfg=006 ctermbg=NONE cterm=NONE
 
 " SASS highlighting
 hi sassidChar     ctermfg=001 ctermbg=NONE cterm=NONE
-hi sassClassChar  ctermfg=009 ctermbg=NONE cterm=NONE
+hi sassClassChar  ctermfg=001 ctermbg=NONE cterm=NONE
 hi sassInclude    ctermfg=005 ctermbg=NONE cterm=NONE
 hi sassMixing     ctermfg=005 ctermbg=NONE cterm=NONE
 hi sassMixinName  ctermfg=004 ctermbg=NONE cterm=NONE
@@ -170,15 +170,15 @@ hi sassMixinName  ctermfg=004 ctermbg=NONE cterm=NONE
 " JavaScript highlighting
 hi javaScript        ctermfg=251 ctermbg=NONE cterm=NONE
 hi javaScriptBraces  ctermfg=251 ctermbg=NONE cterm=NONE
-hi javaScriptNumber  ctermfg=009 ctermbg=NONE cterm=NONE
+hi javaScriptNumber  ctermfg=001 ctermbg=NONE cterm=NONE
 
 " Markdown highlighting
 hi markdownCode              ctermfg=002 ctermbg=NONE cterm=NONE
 hi markdownCodeBlock         ctermfg=002 ctermbg=NONE cterm=NONE
 hi markdownHeadingDelimiter  ctermfg=004 ctermbg=NONE cterm=NONE
 hi mkdInlineURL              ctermfg=005 ctermbg=NONE cterm=NONE
-hi mkdBlockquote             ctermfg=011
-hi mkdLineContinue           ctermfg=011
+hi mkdBlockquote             ctermfg=003
+hi mkdLineContinue           ctermfg=003
 
 " Git highlighting
 hi gitCommitOverflow  ctermfg=001 ctermbg=NONE cterm=NONE
@@ -186,7 +186,7 @@ hi gitCommitSummary   ctermfg=002 ctermbg=NONE cterm=NONE
   
 " GitGutter highlighting
 hi GitGutterAdd           ctermfg=002 ctermbg=237 cterm=NONE
-hi GitGutterChange        ctermfg=009 ctermbg=237 cterm=NONE
+hi GitGutterChange        ctermfg=006 ctermbg=237 cterm=NONE
 hi GitGutterDelete        ctermfg=001 ctermbg=237 cterm=NONE
 hi GitGutterChangeDelete  ctermfg=005 ctermbg=237 cterm=NONE
 
@@ -202,3 +202,18 @@ hi NERDTreeExecFile  ctermfg=251 ctermbg=NONE cterm=NONE
 " Oliver's random shit
 hi vimIsCommand      ctermfg=001
 hi vimMapRhs         ctermfg=002
+
+" Unite
+hi uniteStatusNormal           ctermfg=003 ctermbg=000
+hi uniteStatusHead             ctermfg=003 ctermbg=000
+hi uniteStatusSourceNames      ctermfg=003 ctermbg=000
+hi uniteStatusSourceCandidates ctermfg=003 ctermbg=000
+hi uniteStatusMessage          ctermfg=003 ctermbg=000
+hi uniteStatusLineNR           ctermfg=003 ctermbg=000
+
+" Easymotion
+hi link EasyMotionTarget ErrorMsg
+hi link EasyMotionShade  Comment
+hi EasyMotionTarget2First ctermfg=03
+hi EasyMotionTarget2Second ctermfg=03
+hi link EasyMotionMoveHL Search

@@ -52,9 +52,9 @@ function +vi-git-aheadbehind() {
 # Setup the variables used in the prompt
 if [ -n "$SSH_CLIENT" ]; then local myUsermachine='%F{8}%n@%m:%f'
 fi
-myDir='%F{12}%~%f'
+myDir='%F{4}%~%f'
 myBackgroundjobs='%F{1}%(1j. (%j jobs).)%f'
-myPrompt='%F{9}❯ %f'
+myPrompt='%F{5}❯ %f'
 
 # The prompt itself
 PROMPT='

@@ -1,10 +1,10 @@
-" Plugins {{{
+" {{{ Plugins
 " ------------------------------------------------------------------------------
+
 call plug#begin('~/.vim/plugged')
     Plug 'Shougo/unite.vim'
     Plug 'Shougo/unite-outline'
     Plug 'kopischke/unite-spell-suggest'
-    Plug 'tpope/vim-rsi'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-commentary'
     Plug 'plasticboy/vim-markdown'
@@ -22,10 +22,11 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/vim-visual-star-search'
     Plug 'haya14busa/incsearch.vim'
 call plug#end()
-" }}}
 
-" Settings {{{
+" }}}
+" {{{ Settings
 " ------------------------------------------------------------------------------
+
 syntax enable
 colorscheme oliver.dark
 
@@ -40,22 +41,28 @@ set hidden
 set incsearch ignorecase
 set laststatus=2 showcmd
 set listchars=tab:▸\ ,eol:¬,trail:◯,extends:→,precedes:←,nbsp:╌
+set relativenumber
 set scrolloff=0 sidescrolloff=5
 set shortmess+=I
 set smartindent autoindent
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
 set splitbelow splitright
-set statusline=%f\ %m\ %=\ %y\ %c\:%l\ %P
-set statusline+=
+set statusline=%f\ %m\ %=\ %y\ %l\:%c\ %P
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set thesaurus+=/Users/oliver/code/mthesaur.txt
 set undofile undodir=~/code/vimundo
 set wildmenu wildmode=list:longest
 set wrap linebreak breakindent
-" }}}
+set wrapscan
 
-" MAPPINGS {{{
+" Switch from block-cursor to vertical-line-cursor when going into/out of
+" insert mode
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
+" }}}
+" {{{ Mappings
 " ------------------------------------------------------------------------------
 
 let mapleader = " "
@@ -103,14 +110,16 @@ nnoremap gB :bNext<cr>
 " regardless of whether it was done with / or ?
 nmap <silent> n /<cr>
 nmap <silent> N ?<cr>
-" }}}
 
-" Commands {{{
+" }}}
+" {{{ Commands
 " ------------------------------------------------------------------------------
-command! Break :'<,'>!clause-break
+
+" Never use a mapping when a command wil do! This is Vim!
+command! -range Break :'<,'>!clause-break
 command! Cdf :cd %:h<cr>
 command! Dtrail :%s/\s\+$//
-command! Join :'<,'>!clause-join
+command! -range Join :'<,'>!clause-join
 command! MM :call Markdown()
 command! H1 :normal VUyypVr=
 command! H2 :normal yypVr-
@@ -119,7 +128,8 @@ command! NR :set relativenumber!
 command! PP :set paste! | set paste?
 command! SS :set spell! | set spell?
 command! Src :source $MYVIMRC
-command! Erc :e ~/code/dotfiles/vim/vimrc
+command! Erc :e $MYVIMRC
+command! Ecolo :e ~/code/dotfiles/vim/colors/oliver.dark.vim
 command! WW :set wrap!
 command! UT :UndotreeToggle
 
@@ -129,8 +139,7 @@ command! UT :UndotreeToggle
     cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
 " }}}
-
-" LEADER mappings {{{
+" {{{ Leader Mappings
 " ------------------------------------------------------------------------------
 
 nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize buffer file file/new directory/new<cr>
@@ -142,17 +151,31 @@ nnoremap <leader>ur :Unite -buffer-name=register -no-split -no-resize register<c
 map <leader>s <Plug>(easymotion-s)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
-" }}}
 
-" FUNCTIONS {{{
+" }}}
+" {{{ Functions
 " ------------------------------------------------------------------------------
+
 function! Markdown()
     setlocal spell filetype=markdown syntax=markdown
 endfunction
-" }}}
 
-" AUTOCOMMANDS {{{
+function! InsertEnter()
+    set timeoutlen=0
+    set linebreak
+    highlight StatusLine ctermfg=002
+endfunction
+
+function! InsertLeave()
+    set timeoutlen=3000
+    set linebreak
+    highlight StatusLine ctermfg=004
+endfunction
+
+" }}}
+" {{{ Autocommands
 " ------------------------------------------------------------------------------
+
 augroup markdown
     autocmd!
     autocmd BufRead,BufNewFile *.text,*.md call Markdown()
@@ -162,33 +185,31 @@ augroup custom_misc
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker
     autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
-    autocmd InsertEnter * set timeoutlen=0 linebreak
-    autocmd InsertLeave * set timeoutlen=3000 linebreak
+    autocmd InsertEnter * call InsertEnter()
+    autocmd InsertLeave * call InsertLeave()
 augroup END
-" }}}
 
-" BETTER FOLDS {{{
+" }}}
+" {{{ Better Folds
 " ------------------------------------------------------------------------------
+
 function! MyFoldText()
     let line = getline(v:foldstart)
-
     let nucolwidth = &fdc + &number * &numberwidth
-    let windowwidth = winwidth(0) - nucolwidth - 3
+    let windowwidth = winwidth(0) - nucolwidth - 4
     let foldedlinecount = v:foldend - v:foldstart
-
-    " expand tabs into spaces
     let onetab = strpart('          ', 0, &tabstop)
     let line = substitute(line, '\t', onetab, 'g')
-
     let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
-    let fillcharcount = windowwidth - len(line) - len(foldedlinecount) - 4
-    return line . ' …' . repeat(" ",fillcharcount) . foldedlinecount . ' '
+    let fillcharcount = windowwidth - len(line) - len(foldedlinecount) - 3
+    return '↕ ' . line . ' ' . repeat('-',fillcharcount) " . ' (' . foldedlinecount . ') '
 endfunction
 set foldtext=MyFoldText()
-" }}}
 
-" PLUGIN PREFS {{{
-" ------------------------------------------------------------------------
+" }}}
+" {{{ Plugin Prefs
+" ------------------------------------------------------------------------------
+
 " UNITE
     " Start by setting some defaults
     call unite#filters#matcher_default#use(['matcher_fuzzy'])
@@ -231,15 +252,25 @@ set foldtext=MyFoldText()
     let g:EasyMotion_smartcase = 1
 
 " Incsearch
+    set hlsearch
+    let g:incsearch#auto_nohlsearch = 1
     map /  <Plug>(incsearch-forward)
     map ?  <Plug>(incsearch-backward)
     map g/ <Plug>(incsearch-stay)
-" }}}
+    map n  <Plug>(incsearch-nohl-n)
+    map N  <Plug>(incsearch-nohl-N)
+    map *  <Plug>(incsearch-nohl-*)
+    map #  <Plug>(incsearch-nohl-#)
+    map g* <Plug>(incsearch-nohl-g*)
+    map g# <Plug>(incsearch-nohl-g#)
 
-" SNIPPETS {{{
+" }}}
+" {{{ Snippets
 " ------------------------------------------------------------------------
+
 " Date: 2015-02-15
 iabbrev <expr> dd strftime("%Y-%m-%d")
 " Date: 16 February 2015
 iabbrev <expr> ddate strftime("%d %B %Y")
+
 " }}}

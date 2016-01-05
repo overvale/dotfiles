@@ -28,13 +28,15 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 brew install vim
 brew install par
 brew install git
+brew install git-lfs
 brew install tree
 brew install ranger
 brew install tmux
 brew install reattach-to-user-namespace
 brew install pandoc
 brew install zsh
-brew install zsh-syntax-highlighting
+
+git lfs install
 
 # Install princeXML
 # make install textplay (symlink)

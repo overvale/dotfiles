@@ -42,6 +42,11 @@ git lfs install
 # make install textplay (symlink)
 # Set up ssh keys
 
+# Install gollum (for wiki)
+brew install icu4c
+gem install charlock_holmes -- --with-icu-dir=/usr/local/opt/icu4c
+gem install gollum
+
 # Set Help Viewer windows to non-floating mode
 defaults write com.apple.helpviewer DevMode -bool true
 

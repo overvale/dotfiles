@@ -4,6 +4,7 @@
 call plug#begin('~/.vim/plugged')
     Plug 'Shougo/unite.vim'
     Plug 'Shougo/unite-outline'
+    Plug 'kopischke/unite-spell-suggest'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-commentary'
     Plug 'plasticboy/vim-markdown'
@@ -106,9 +107,6 @@ nnoremap gB :bNext<cr>
 " Call custom command
 vnoremap gcb :Break<cr>
 nnoremap gcb V:Break<cr>
-
-" make spell checking faster
-nnoremap = z=
 
 " }}}
 " {{{ Commands
@@ -217,6 +215,9 @@ set foldtext=MyFoldText()
         autocmd!
         autocmd FileType unite setlocal cursorline
     augroup END
+
+    " shortcuts for calling Unite
+    nnoremap = :Unite -buffer-name=spelling -no-split -no-resize spell_suggest<cr>
 
 " MARKDOWN
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold

@@ -103,10 +103,12 @@ xnoremap < <gv
 nnoremap gb :bnext<cr>
 nnoremap gB :bNext<cr>
 
-" make n/N always mean forward/backward search
-" regardless of whether it was done with / or ?
-nmap <silent> n /<cr>
-nmap <silent> N ?<cr>
+" Call custom command
+vnoremap gcb :Break<cr>
+nnoremap gcb V:Break<cr>
+
+" make spell checking faster
+nnoremap = z=
 
 " }}}
 " {{{ Commands

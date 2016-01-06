@@ -12,14 +12,12 @@ call plug#begin('~/.vim/plugged')
     Plug 'mbbill/undotree'
     Plug 'gerw/vim-HiLinkTrace'
     Plug 'gcmt/taboo.vim'
-    Plug 'osyo-manga/unite-quickfix'
     Plug 'osyo-manga/vim-over'
-    Plug 'easymotion/vim-easymotion'
-    Plug 'w0ng/vim-hybrid'
     Plug 'wellle/visual-split.vim'
     Plug 'kshenoy/vim-signature'
     Plug 'wellle/vim-visual-star-search'
     Plug 'haya14busa/incsearch.vim'
+    Plug 'jceb/vim-orgmode'
 call plug#end()
 
 " }}}
@@ -147,9 +145,6 @@ nnoremap <leader>us :Unite -buffer-name=source -no-split -no-resize source<cr>
 nnoremap <leader>ul :Unite -buffer-name=line -no-split -no-resize line<cr>
 nnoremap <leader>uo :Unite -buffer-name=outline -no-split -no-resize outline<cr>
 nnoremap <leader>ur :Unite -buffer-name=register -no-split -no-resize register<cr>
-map <leader>s <Plug>(easymotion-s)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
 
 " }}}
 " {{{ Functions
@@ -235,17 +230,9 @@ set foldtext=MyFoldText()
     " Start interactive EasyAlign for a motion/text object (e.g. gaip)
     nmap ga <Plug>(EasyAlign)
 
-" GOYO
-    let g:goyo_width = 90
-    let g:goyo_margin_top = 2
-    let g:goyo_margin_bottom = 0
-
 " TABOO
     let g:taboo_tab_format=" %N: %f%m "
     let g:taboo_modified_tab_flag=" +"
-
-" Easy Motion
-    let g:EasyMotion_smartcase = 1
 
 " Incsearch
     set hlsearch

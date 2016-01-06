@@ -25,8 +25,8 @@ hi Visual        ctermfg=000     ctermbg=003     cterm=NONE
     
 " The Structure    
 " ---------------------------------------------------------
-hi StatusLine    ctermfg=015     ctermbg=008     cterm=bold
-hi TabLineSel    ctermfg=015     ctermbg=008     cterm=bold
+hi StatusLine    ctermfg=004     ctermbg=253     cterm=bold
+hi TabLineSel    ctermfg=004     ctermbg=253     cterm=bold
 
 hi StatusLineNC  ctermfg=008     ctermbg=253     cterm=NONE
 hi TabLine       ctermfg=247     ctermbg=253     cterm=NONE

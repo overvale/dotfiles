@@ -25,9 +25,9 @@ call plug#end()
 " ------------------------------------------------------------------------------
 
 syntax enable
-colorscheme oliver.dark
+colorscheme oliver.light
 
-" Each machine has settings spesific to it
+" Each machine has settings specific to it
 source $DOT/vim/localvimrc
 
 set backspace=start,indent,eol
@@ -126,7 +126,7 @@ command! PP :set paste! | set paste?
 command! SS :set spell! | set spell?
 command! Src :source $MYVIMRC
 command! Erc :e $MYVIMRC
-command! Ecolo :e ~/code/dotfiles/vim/colors/oliver.dark.vim
+command! Ecolo :e ~/code/dotfiles/vim/colors/oliver.light.vim
 command! WW :set wrap!
 command! UT :UndotreeToggle
 

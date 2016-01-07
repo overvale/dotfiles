@@ -28,7 +28,7 @@ call plug#end()
 " ------------------------------------------------------------------------------
 
 syntax enable
-colorscheme oliver.dark
+colorscheme oliver.light
 
 " Each machine has settings spesific to it
 source $DOT/vim/localvimrc

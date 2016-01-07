@@ -4,5 +4,5 @@ zsh/localrc.zsh
 vim/localvimrc
 vim/bundle/
 vim/plugged/
-plug.vim
+*plug.vim*
 vim/.netrwhist

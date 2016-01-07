@@ -25,8 +25,8 @@ hi Visual        ctermfg=000     ctermbg=003     cterm=NONE
     
 " The Structure    
 " ---------------------------------------------------------
-hi StatusLine    ctermfg=004     ctermbg=253     cterm=bold
-hi TabLineSel    ctermfg=004     ctermbg=253     cterm=bold
+hi StatusLine    ctermfg=004     ctermbg=253     cterm=NONE
+hi TabLineSel    ctermfg=004     ctermbg=253     cterm=NONE
 
 hi StatusLineNC  ctermfg=008     ctermbg=253     cterm=NONE
 hi TabLine       ctermfg=247     ctermbg=253     cterm=NONE
@@ -48,7 +48,7 @@ hi PmenuThumb    ctermbg=NONE    ctermfg=NONE    cterm=NONE
 " Misc    
 " ---------------------------------------------------------
 hi FoldColumn    ctermfg=250    ctermbg=255     cterm=NONE
-hi Folded        ctermfg=007     ctermbg=NONE     cterm=NONE
+hi Folded        ctermfg=240     ctermbg=NONE     cterm=NONE
 hi IncSearch     ctermfg=000     ctermbg=003     cterm=NONE
 
 hi MatchParen    ctermfg=NONE    ctermbg=009     cterm=NONE
@@ -71,7 +71,7 @@ hi WildMenu      ctermfg=001     ctermbg=NONE    cterm=NONE
 hi Character    ctermfg=001  ctermbg=NONE  cterm=NONE
 hi Debug        ctermfg=001  ctermbg=NONE  cterm=NONE
 hi Exception    ctermfg=001  ctermbg=NONE  cterm=NONE
-hi Identifier   ctermfg=001  ctermbg=NONE  cterm=NONE
+hi Identifier   ctermfg=004  ctermbg=NONE  cterm=NONE
 hi TooLong      ctermfg=001  ctermbg=NONE  cterm=NONE
 hi Float        ctermfg=001  ctermbg=NONE  cterm=NONE
 hi Special      ctermfg=001  ctermbg=NONE  cterm=NONE
@@ -155,12 +155,12 @@ hi htmlArg                      ctermfg=005  ctermbg=NONE cterm=NONE
 hi htmlEndTag                   ctermfg=004  ctermbg=NONE cterm=NONE
 hi htmlTag                      ctermfg=004  ctermbg=NONE cterm=NONE
 hi link htmlTagN htmlTagName
-hi htmlTagName                  ctermfg=004  ctermbg=012  cterm=NONE
+hi htmlTagName                  ctermfg=004  ctermbg=NONE cterm=NONE
 hi htmlLink                     ctermfg=NONE ctermbg=NONE cterm=NONE
-hi htmlH1                       ctermfg=001  ctermbg=009  cterm=bold
-hi htmlH2                       ctermfg=004  ctermbg=012  cterm=bold
-hi htmlH3                       ctermfg=005  ctermbg=013  cterm=bold
-hi htmlH4                       ctermfg=002  ctermbg=010  cterm=bold
+hi htmlH1                       ctermfg=001  ctermbg=NONE cterm=NONE
+hi htmlH2                       ctermfg=004  ctermbg=NONE cterm=NONE
+hi htmlH3                       ctermfg=005  ctermbg=NONE cterm=NONE
+hi htmlH4                       ctermfg=002  ctermbg=NONE cterm=NONE
 
 " CSS highlighting
 " ---------------------------------------------------------

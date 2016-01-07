@@ -39,7 +39,6 @@ set hidden
 set incsearch ignorecase
 set laststatus=2 showcmd
 set listchars=tab:▸\ ,eol:¬,trail:◯,extends:→,precedes:←,nbsp:╌
-set relativenumber
 set scrolloff=0 sidescrolloff=5
 set shortmess+=I
 set smartindent autoindent
@@ -195,8 +194,8 @@ function! MyFoldText()
     let onetab = strpart('          ', 0, &tabstop)
     let line = substitute(line, '\t', onetab, 'g')
     let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
-    let fillcharcount = windowwidth - len(line) - len(foldedlinecount) - 3
-    return '↕ ' . line . ' ' . repeat('-',fillcharcount) " . ' (' . foldedlinecount . ') '
+    let fillcharcount = windowwidth - len(line) - len(foldedlinecount) - 0
+    return '↕ ' . line . '... ' . repeat(' ',fillcharcount) " . ' (' . foldedlinecount . ') '
 endfunction
 set foldtext=MyFoldText()
 

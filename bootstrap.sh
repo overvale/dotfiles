@@ -35,6 +35,7 @@ brew install tmux
 brew install reattach-to-user-namespace
 brew install pandoc
 brew install zsh
+brew install awscli
 
 git lfs install
 

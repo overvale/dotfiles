@@ -28,3 +28,6 @@ function _completemarks {
 }
 compctl -K _completemarks jmp
 compctl -K _completemarks unmark
+
+# Completion for awscli
+source /usr/local/share/zsh/site-functions/_aws

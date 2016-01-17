@@ -1,9 +1,9 @@
 ;; Packages
-(setq package-archives '(("gnu"          . "http://elpa.gnu.org/packages/")
-                         ("org"          . "http://orgmode.org/elpa/")
-                         ("marmalade"    . "http://marmalade-repo.org/packages/")
-                         ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")))
-(package-initialize)
+;; (setq package-archives '(("gnu"          . "http://elpa.gnu.org/packages/")
+;;                          ("org"          . "http://orgmode.org/elpa/")
+;;                          ("marmalade"    . "http://marmalade-repo.org/packages/")
+;;                          ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")))
+;; (package-initialize)
 
 ;; Set some defaults
 (setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
@@ -23,9 +23,17 @@
 
 ;; Font settings
 (set-face-attribute 'default nil
-                    :family "Essential PragmataPro" :height 130 :weight 'normal)
+                    :family "Essential PragmataPro" :height 120 :weight 'normal)
 ;; Theme
 (load-theme 'plan9 t)
+
+;; Org Mode
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-cb" 'org-iswitchb)
+
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

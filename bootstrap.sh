@@ -38,6 +38,7 @@ brew install zsh
 brew install awscli
 
 git lfs install
+easy_install readability-lxml
 
 # Install princeXML
 # make install textplay (symlink)

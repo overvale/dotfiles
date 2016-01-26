@@ -35,8 +35,11 @@ brew install tmux
 brew install reattach-to-user-namespace
 brew install pandoc
 brew install zsh
+brew install ispell
+brew install awscli
 
 git lfs install
+easy_install readability-lxml
 
 # Install princeXML
 # make install textplay (symlink)
@@ -65,6 +68,8 @@ ln -s ~/code/dotfiles/vim/vimrc .vimrc
 ln -s ~/code/dotfiles/Karabiner ~/Library/Application\ Support/Karabiner
 ln -s ~/code/dotfiles/tmux.conf .tmux.conf
 ln -s ~/code/dotfiles/slate .slate
+ln -s ~/code/dotfiles/emacs/plan9-theme.el ~/.emacs.d/
+ln -s ~/code/dotfiles/emacs/init.el ~/.emacs.d/
 
 # Install vim plugin manager + plugins
 # Reconstruct ~/.marks directory
@@ -74,6 +79,7 @@ ln -s ~/code/dotfiles/slate .slate
 # Adobe Lightroom
 # Arq
 # BBEdit
+# Emacs
 # Google Chrome
 # Kaleidoscope
 # Karabiner

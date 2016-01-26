@@ -9,6 +9,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-commentary'
     Plug 'plasticboy/vim-markdown'
     Plug 'thinca/vim-ft-markdown_fold'
+    "Plug 'msprev/vim-markdown-folding'
+    Plug 'Konfekt/FastFold'
     Plug 'junegunn/vim-easy-align'
     Plug 'mbbill/undotree'
     Plug 'gerw/vim-HiLinkTrace'
@@ -19,6 +21,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/vim-visual-star-search'
     Plug 'haya14busa/incsearch.vim'
     Plug 'jceb/vim-orgmode'
+    Plug 'jnurmine/Zenburn'
 call plug#end()
 
 " }}}
@@ -138,12 +141,12 @@ command! UT :UndotreeToggle
 " {{{ Leader Mappings
 " ------------------------------------------------------------------------------
 
-nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize buffer file file/new directory/new<cr>
+nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize -start-insert buffer file file/new directory/new<cr>
 nnoremap <leader>u <nop>
-nnoremap <leader>us :Unite -buffer-name=source -no-split -no-resize source<cr>
-nnoremap <leader>ul :Unite -buffer-name=line -no-split -no-resize line<cr>
-nnoremap <leader>uo :Unite -buffer-name=outline -no-split -no-resize outline<cr>
-nnoremap <leader>ur :Unite -buffer-name=register -no-split -no-resize register<cr>
+nnoremap <leader>us :Unite -buffer-name=source -start-insert -no-split -no-resize source<cr>
+nnoremap <leader>ul :Unite -buffer-name=line -start-insert -no-split -no-resize line<cr>
+nnoremap <leader>uo :Unite -buffer-name=outline -start-insert -no-split -no-resize outline<cr>
+nnoremap <leader>ur :Unite -buffer-name=register -start-insert -no-split -no-resize register<cr>
 
 " }}}
 " {{{ Functions
@@ -156,13 +159,13 @@ endfunction
 function! InsertEnter()
     set timeoutlen=0
     set linebreak
-    highlight StatusLine ctermfg=002
+"    highlight StatusLine ctermfg=002
 endfunction
 
 function! InsertLeave()
     set timeoutlen=3000
     set linebreak
-    highlight StatusLine ctermfg=004
+"    highlight StatusLine ctermfg=004
 endfunction
 
 " }}}
@@ -189,7 +192,7 @@ augroup END
 function! MyFoldText()
     let line = getline(v:foldstart)
     let nucolwidth = &fdc + &number * &numberwidth
-    let windowwidth = winwidth(0) - nucolwidth - 4
+    let windowwidth = winwidth(0) - nucolwidth - 3
     let foldedlinecount = v:foldend - v:foldstart
     let onetab = strpart('          ', 0, &tabstop)
     let line = substitute(line, '\t', onetab, 'g')

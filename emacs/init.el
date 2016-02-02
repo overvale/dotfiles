@@ -23,7 +23,7 @@
 
 ;; Font settings
 (set-face-attribute 'default nil
-                    :family "Essential PragmataPro" :height 120 :weight 'normal)
+                    :family "Fira Mono" :height 120 :weight 'normal)
 ;; Theme
 (load-theme 'plan9 t)
 
@@ -40,7 +40,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (plan9)))
+ '(custom-enabled-themes (quote (leuven)))
  '(custom-safe-themes
    (quote
     ("1867e0e8f67310ded7db2ac1d70b80c2b75f2c2bf9baca5ee2d5360236f54d3c" "e21d7b25ca2bf460e5b78d5aaf43dcc0b38d955218755df59c4ffd0419983af1" default)))

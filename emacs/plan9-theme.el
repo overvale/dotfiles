@@ -689,3 +689,4 @@ Also bind `class' to ((class color) (min-colors 89))."
 ;; indent-tabs-mode: nil
 ;; End:
 ;;; plan9-theme.el ends here
+

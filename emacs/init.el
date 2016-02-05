@@ -1,45 +1,15 @@
-;; Packages
-;; (setq package-archives '(("gnu"          . "http://elpa.gnu.org/packages/")
-;;                          ("org"          . "http://orgmode.org/elpa/")
-;;                          ("marmalade"    . "http://marmalade-repo.org/packages/")
-;;                          ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")))
-;; (package-initialize)
-
-;; Set some defaults
-(setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
-(setq ispell-program-name "/usr/local/bin/ispell")
-(global-visual-line-mode t)
-(set-default 'cursor-type 'bar)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
-;; Per mode settings
-(add-hook 'text-mode-hook 'turn-on-flyspell)
-(add-hook 'org-mode-hook
-  (lambda ()
-	(org-indent-mode t)
-	)
-  t)
-
-;; Font settings
-(set-face-attribute 'default nil
-                    :family "Essential PragmataPro" :height 120 :weight 'normal)
-;; Theme
-(load-theme 'plan9 t)
-
-;; Org Mode
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cc" 'org-capture)
-(global-set-key "\C-cb" 'org-iswitchb)
-
-
+;; This loads my settings file, leaving the init.el file for interactive customizations
+(load-library "~/.emacs.d/settings.el")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["black" "red3" "ForestGreen" "yellow3" "blue" "magenta3" "DeepSkyBlue" "gray50"])
  '(custom-enabled-themes (quote (plan9)))
  '(custom-safe-themes
    (quote

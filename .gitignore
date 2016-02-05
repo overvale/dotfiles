@@ -5,3 +5,8 @@ vim/localvimrc
 vim/bundle/
 vim/plugged/
 plug.vim
+emacs/auto-save-list
+emacs/bookmarks
+emacs/elpa
+emacs/saves
+emacs/url

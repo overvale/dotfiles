@@ -12,8 +12,8 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
-;;(require 'evil)
-;;(evil-mode 1)
+(require 'evil)
+(evil-mode 1)
 
 ;; Per mode settings
 (add-hook 'text-mode-hook 'turn-on-flyspell)
@@ -35,14 +35,3 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cb" 'org-iswitchb)
-
-;; Re-bind M-x to C-c C-m
-(global-set-key "\C-x\C-m" 'execute-extended-command)
-(global-set-key "\C-c\C-m" 'execute-extended-command)
-
-;; Use vim's C-w for deleting words
-(global-set-key "\C-w" 'backward-kill-word)
-(global-set-key "\C-x\C-k" 'kill-region)
-(global-set-key "\C-c\C-k" 'kill-region)
-
-

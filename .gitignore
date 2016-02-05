@@ -6,3 +6,8 @@ vim/bundle/
 vim/plugged/
 *plug.vim*
 vim/.netrwhist
+emacs/auto-save-list
+emacs/bookmarks
+emacs/elpa
+emacs/saves
+emacs/url

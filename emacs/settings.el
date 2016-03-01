@@ -12,8 +12,8 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
-(require 'evil)
-(evil-mode 1)
+;;(require 'evil)
+;;(evil-mode 1)
 
 ;; Per mode settings
 (add-hook 'text-mode-hook 'turn-on-flyspell)
@@ -25,9 +25,9 @@
 
 ;; Font settings
 (set-face-attribute 'default nil
-                    :family "Fira Mono" :height 120 :weight 'normal)
+                    :family "Operator Mono" :height 130 :weight 'normal)
 (set-face-attribute 'variable-pitch nil
-		    :family "Fira Sans" :height 120 :weight 'normal)
+		    :family "Operator SSm" :height 120 :weight 'normal)
 ;; switch to non-monospace with 'variable-pitch-mode'
 
 ;; Org Mode
@@ -35,3 +35,9 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cb" 'org-iswitchb)
+
+;; scroll one line at a time (less "jumpy" than defaults)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;; keyboard scroll one line at a time

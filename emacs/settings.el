@@ -12,8 +12,13 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
-(require 'evil)
-(evil-mode 1)
+;;(require 'evil)
+;;(evil-mode 1)
+
+;; Startup in a useful way
+(setq inhibit-startup-screen +1)
+(setq initial-major-mode 'org-mode)
+(setq initial-scratch-message nil)
 
 ;; Per mode settings
 (add-hook 'text-mode-hook 'turn-on-flyspell)
@@ -25,9 +30,9 @@
 
 ;; Font settings
 (set-face-attribute 'default nil
-                    :family "Fira Mono" :height 120 :weight 'normal)
+                    :family "Operator Mono" :height 120 :weight 'normal)
 (set-face-attribute 'variable-pitch nil
-		    :family "Fira Sans" :height 120 :weight 'normal)
+		    :family "Operator SSm" :height 120 :weight 'normal)
 ;; switch to non-monospace with 'variable-pitch-mode'
 
 ;; Org Mode

@@ -2,26 +2,28 @@
 " ------------------------------------------------------------------------------
 
 call plug#begin('~/.vim/plugged')
-    Plug 'Shougo/unite.vim'
-    Plug 'Shougo/unite-outline'
-    Plug 'kopischke/unite-spell-suggest'
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-commentary'
-    Plug 'plasticboy/vim-markdown'
-    Plug 'thinca/vim-ft-markdown_fold'
-    "Plug 'msprev/vim-markdown-folding'
-    Plug 'Konfekt/FastFold'
-    Plug 'junegunn/vim-easy-align'
-    Plug 'mbbill/undotree'
-    Plug 'gerw/vim-HiLinkTrace'
-    Plug 'gcmt/taboo.vim'
-    Plug 'osyo-manga/vim-over'
-    Plug 'wellle/visual-split.vim'
-    Plug 'kshenoy/vim-signature'
-    Plug 'wellle/vim-visual-star-search'
-    Plug 'haya14busa/incsearch.vim'
-    Plug 'jceb/vim-orgmode'
-    Plug 'jnurmine/Zenburn'
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/unite-outline'
+Plug 'kopischke/unite-spell-suggest'
+"Plug 'Shougo/neocomplete.vim'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+Plug 'plasticboy/vim-markdown'
+Plug 'thinca/vim-ft-markdown_fold'
+Plug 'Konfekt/FastFold'
+Plug 'junegunn/vim-easy-align'
+Plug 'mbbill/undotree'
+Plug 'gerw/vim-HiLinkTrace'
+Plug 'gcmt/taboo.vim'
+Plug 'osyo-manga/vim-over'
+Plug 'wellle/visual-split.vim'
+Plug 'kshenoy/vim-signature'
+Plug 'jnurmine/Zenburn'
+Plug 'junegunn/seoul256.vim'
+Plug 'junegunn/vim-pseudocl'
+Plug 'junegunn/vim-oblique'
+Plug 'junegunn/goyo.vim'
+Plug 'morhetz/gruvbox'
 call plug#end()
 
 " }}}
@@ -29,65 +31,71 @@ call plug#end()
 " ------------------------------------------------------------------------------
 
 syntax enable
-colorscheme oliver.light
+let g:gruvbox_italic=1
+let g:gruvbox_bold=1
+let g:gruvbox_underline=1
+let g:gruvbox_termcolors=256
+let g:gruvbox_contrast_dark="soft"
+let g:gruvbox_italicize_comments=1
+colorscheme seoul256
 
 " Each machine has settings specific to it
 source $DOT/vim/localvimrc
 
-set backspace=start,indent,eol
+set backspace=eol
 set clipboard=unnamed
 set encoding=utf-8
-set formatoptions=tcrqn1j formatprg=par\ -w78rq nojoinspaces
+set formatoptions+=ron1j formatprg=par\ -w78rq nojoinspaces
+set foldlevelstart=99
 set hidden
 set incsearch ignorecase
 set laststatus=2 showcmd
-set listchars=tab:▸\ ,eol:¬,trail:◯,extends:→,precedes:←,nbsp:╌
+set listchars=tab:►\ ,eol:¬,trail:¿,extends:⟩,precedes:⟨,nbsp:╌
 set scrolloff=0 sidescrolloff=5
 set shortmess+=I
 set smartindent autoindent
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
 set splitbelow splitright
-set statusline=%f\ %m\ %=\ %y\ %l\:%c\ %P
+set statusline=%f\ %m\ %=\ %y\ %l\,%c%V\ %P
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set thesaurus+=/Users/oliver/code/mthesaur.txt
 set undofile undodir=~/code/vimundo
 set wildmenu wildmode=list:longest
 set wrap linebreak breakindent
 set wrapscan
+set nostartofline
+
+let mapleader = " "
 
 " Switch from block-cursor to vertical-line-cursor when going into/out of
 " insert mode
 let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 
-" }}}
-" {{{ Mappings
-" ------------------------------------------------------------------------------
-
-let mapleader = " "
-
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-
-" Swap key to enter Ex mode
-" in Visual, Select, and Operator-pending modes:
-noremap ; :
-noremap : ;
-
-" In Visual Mode I almost never want $ to select the newline
-noremap $ g_
-
-"  Make Y behave like D
-nnoremap Y y$
-
 " Break undo before CTRL-U
 inoremap <C-U> <C-G>u<C-U>
 
 " Instead of using man for word lookups, use the OSX dictionary
 nnoremap K :!open dict:///<cword><cr>
+
+" Maintain selection on in/de-dent
+xnoremap > >gv
+xnoremap < <gv
+
+" In Visual Mode I almost never want $ to select the newline
+noremap $ g_
+
+" }}}
+" {{{ Mappings
+" ------------------------------------------------------------------------------
+"
+"  You can safely remap Y, S, D, C
+
+" Swap key to enter Ex mode
+" in Visual, Select, and Operator-pending modes:
+noremap ; :
+noremap : ;
 
 " Convert sentence junctions
 nnoremap gc. r.wvUb
@@ -98,13 +106,19 @@ xnoremap gc. s.<esc>wvUb
 xnoremap gc, s,<esc>wvub
 xnoremap gc; s;<esc>wvub
 
-" Maintain selection on in/de-dent
-xnoremap > >gv
-xnoremap < <gv
+" Quickly go to next/previous tab/buffer
+nnoremap ]b :bnext<cr>
+nnoremap [b :bprev<cr>
+nnoremap ]t :tabn<cr>
+nnoremap [t :tabp<cr>
+nnoremap [w <c-w>W
+nnoremap ]w <c-w>w
+nnoremap [q :cN<cr>
+nnoremap ]q :cn<cr>
 
-" Quickly go to next/previous buffer
-nnoremap gb :bnext<cr>
-nnoremap gB :bNext<cr>
+" Move lines up / down
+nnoremap m- :move .-2<cr>
+nnoremap m+ :move .+1<cr>
 
 " Call custom command
 vnoremap gcb :Break<cr>
@@ -141,12 +155,7 @@ command! UT :UndotreeToggle
 " {{{ Leader Mappings
 " ------------------------------------------------------------------------------
 
-nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize -start-insert buffer file file/new directory/new<cr>
-nnoremap <leader>u <nop>
-nnoremap <leader>us :Unite -buffer-name=source -start-insert -no-split -no-resize source<cr>
-nnoremap <leader>ul :Unite -buffer-name=line -start-insert -no-split -no-resize line<cr>
-nnoremap <leader>uo :Unite -buffer-name=outline -start-insert -no-split -no-resize outline<cr>
-nnoremap <leader>ur :Unite -buffer-name=register -start-insert -no-split -no-resize register<cr>
+nnoremap <leader>n :set relativenumber!<cr>
 
 " }}}
 " {{{ Functions
@@ -158,31 +167,26 @@ endfunction
 
 function! InsertEnter()
     set timeoutlen=0
-    set linebreak
-"    highlight StatusLine ctermfg=002
+    "set linebreak
 endfunction
 
 function! InsertLeave()
     set timeoutlen=3000
-    set linebreak
-"    highlight StatusLine ctermfg=004
+    "set linebreak
 endfunction
 
 " }}}
 " {{{ Autocommands
 " ------------------------------------------------------------------------------
 
-augroup markdown
-    autocmd!
-    autocmd BufRead,BufNewFile *.text,*.md call Markdown()
-augroup END
-
 augroup custom_misc
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker
+    autocmd FileType gitcommit setlocal spell
     autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
     autocmd InsertEnter * call InsertEnter()
     autocmd InsertLeave * call InsertLeave()
+    autocmd BufRead,BufNewFile *.text,*.md call Markdown()
 augroup END
 
 " }}}
@@ -207,27 +211,25 @@ set foldtext=MyFoldText()
 " ------------------------------------------------------------------------------
 
 " UNITE
-    " Start by setting some defaults
     call unite#filters#matcher_default#use(['matcher_fuzzy'])
     call unite#filters#sorter_default#use(['sorter_selecta'])
-
-    let g:unite_source_history_yank_enable = 1
 
     augroup unite
         autocmd!
         autocmd FileType unite setlocal cursorline
     augroup END
 
-    " shortcuts for calling Unite
     nnoremap = :Unite -buffer-name=spelling -no-split -no-resize spell_suggest<cr>
+    nnoremap <leader>u <nop>
+    nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize buffer file file/new directory/new<cr>
+    nnoremap <leader>ul :Unite -buffer-name=line -no-split -no-resize line<cr>
+    nnoremap <leader>uo :Unite -buffer-name=outline -no-split -no-resize outline<cr>
+    nnoremap <leader>ur :Unite -buffer-name=register -no-split -no-resize register<cr>
+    nnoremap <leader>us :Unite -buffer-name=source -no-split -no-resize source<cr>
 
 " MARKDOWN
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
     let g:vim_markdown_folding_disabled=1
-
-" GITGUTTER
-    nmap [h <Plug>GitGutterPrevHunk
-    nmap ]h <Plug>GitGutterNextHunk
 
 " EASY ALIGN
     " Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
@@ -238,19 +240,6 @@ set foldtext=MyFoldText()
 " TABOO
     let g:taboo_tab_format=" %N: %f%m "
     let g:taboo_modified_tab_flag=" +"
-
-" Incsearch
-    set hlsearch
-    let g:incsearch#auto_nohlsearch = 1
-    map /  <Plug>(incsearch-forward)
-    map ?  <Plug>(incsearch-backward)
-    map g/ <Plug>(incsearch-stay)
-    map n  <Plug>(incsearch-nohl-n)
-    map N  <Plug>(incsearch-nohl-N)
-    map *  <Plug>(incsearch-nohl-*)
-    map #  <Plug>(incsearch-nohl-#)
-    map g* <Plug>(incsearch-nohl-g*)
-    map g# <Plug>(incsearch-nohl-g#)
 
 " }}}
 " {{{ Snippets

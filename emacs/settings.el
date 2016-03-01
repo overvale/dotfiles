@@ -15,6 +15,11 @@
 ;;(require 'evil)
 ;;(evil-mode 1)
 
+;; Startup in a useful way
+(setq inhibit-startup-screen +1)
+(setq initial-major-mode 'org-mode)
+(setq initial-scratch-message nil)
+
 ;; Per mode settings
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'org-mode-hook

@@ -18,6 +18,9 @@ bind 2:${hyper}        push right bar-resize:screenSizeX/2
 # FULL-SCREEN
 bind 3:${hyper}        corner top-left resize:screenSizeX*1;screenSizeY*1
 
+# RESIZE TO FULL HEIGHT
+bind -:${hyper}        sequence   push up none > resize +0 +900%
+
 # MOVE AND RESIZE - 2/3-SCREEN, LEFT
 bind 4:${hyper}        push left bar-resize:(screenSizeX/3)*2
 

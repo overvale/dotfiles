@@ -25,8 +25,8 @@ hi Visual        ctermfg=000     ctermbg=003     cterm=NONE
     
 " The Structure    
 " ---------------------------------------------------------
-hi StatusLine    ctermfg=004     ctermbg=253     cterm=NONE
-hi TabLineSel    ctermfg=004     ctermbg=253     cterm=NONE
+hi StatusLine    ctermfg=004     ctermbg=253     cterm=bold
+hi TabLineSel    ctermfg=004     ctermbg=253     cterm=bold
 
 hi StatusLineNC  ctermfg=008     ctermbg=253     cterm=NONE
 hi TabLine       ctermfg=247     ctermbg=253     cterm=NONE
@@ -49,13 +49,14 @@ hi PmenuThumb    ctermbg=NONE    ctermfg=NONE    cterm=NONE
 " ---------------------------------------------------------
 hi FoldColumn    ctermfg=250    ctermbg=255     cterm=NONE
 hi Folded        ctermfg=240     ctermbg=NONE     cterm=NONE
-hi IncSearch     ctermfg=000     ctermbg=003     cterm=NONE
+
+hi IncSearch     ctermfg=015     ctermbg=001     cterm=NONE
+hi Search        ctermfg=000     ctermbg=003     cterm=NONE
 
 hi MatchParen    ctermfg=NONE    ctermbg=009     cterm=NONE
 hi ModeMsg       ctermfg=015     ctermbg=002    cterm=NONE
 hi MoreMsg       ctermfg=006     ctermbg=NONE    cterm=NONE
 hi Question      ctermfg=001     ctermbg=NONE    cterm=NONE
-hi Search        ctermfg=244     ctermbg=003     cterm=NONE
 hi Error         ctermfg=015     ctermbg=001     cterm=NONE
 
 hi ErrorMsg      ctermfg=015     ctermbg=001     cterm=NONE

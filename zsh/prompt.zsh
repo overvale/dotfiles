@@ -55,8 +55,11 @@ fi
 myDir='%F{4}%~%f'
 myBackgroundjobs='%F{1}%(1j. (%j jobs).)%f'
 myPrompt='%F{5}❯ %f'
+italics=%{$'\e[3m'%}
+italicsoff=%{$'\e[23m'%}
+
 
 # The prompt itself
 PROMPT='
-${myUsermachine}${myDir}${myBackgroundjobs}${vcs_info_msg_0_}
+${italics}${myUsermachine}${myDir}${myBackgroundjobs}${vcs_info_msg_0_}${italicsoff}
 ${myPrompt}'

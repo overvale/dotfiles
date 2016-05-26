@@ -37,7 +37,7 @@ let g:gruvbox_underline=1
 let g:gruvbox_termcolors=256
 let g:gruvbox_contrast_dark="soft"
 let g:gruvbox_italicize_comments=1
-colorscheme seoul256
+colorscheme solarized
 
 " Each machine has settings specific to it
 source $DOT/vim/localvimrc

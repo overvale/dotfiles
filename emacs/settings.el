@@ -22,11 +22,11 @@
 
 ;; Per mode settings
 (add-hook 'text-mode-hook 'turn-on-flyspell)
-(add-hook 'org-mode-hook
-  (lambda ()
-	(org-indent-mode t)
-	)
-  t)
+;;(add-hook 'org-mode-hook
+;;  (lambda ()
+;;	(org-indent-mode t)
+;;	)
+;;  t)
 
 ;; Font settings
 (set-face-attribute 'default nil

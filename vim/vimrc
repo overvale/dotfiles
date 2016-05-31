@@ -22,22 +22,27 @@ Plug 'jnurmine/Zenburn'
 Plug 'junegunn/seoul256.vim'
 Plug 'junegunn/vim-pseudocl'
 Plug 'junegunn/vim-oblique'
+Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/goyo.vim'
 Plug 'morhetz/gruvbox'
+Plug 'tommcdo/vim-lion'
 call plug#end()
+
+" }}}
+" {{{ Colors
+" ------------------------------------------------------------------------------
+
+syntax enable
+let g:gruvbox_italic = 1
+let g:gruvbox_bold = 1
+let g:gruvbox_contrast_dark = 'soft'
+let g:gruvbox_italicize_comments = 1
+colorscheme gruvbox
+set background=dark
 
 " }}}
 " {{{ Settings
 " ------------------------------------------------------------------------------
-
-syntax enable
-let g:gruvbox_italic=1
-let g:gruvbox_bold=1
-let g:gruvbox_underline=1
-let g:gruvbox_termcolors=256
-let g:gruvbox_contrast_dark="soft"
-let g:gruvbox_italicize_comments=1
-colorscheme gruvbox
 
 " Each machine has settings specific to it
 source $DOT/vim/localvimrc
@@ -68,6 +73,11 @@ set nostartofline
 
 let mapleader = " "
 
+" More sane defaults for , : ;
+noremap ; :
+noremap : ,
+noremap , ;
+
 " Switch from block-cursor to vertical-line-cursor when going into/out of
 " insert mode
 let &t_SI = "\<Esc>]50;CursorShape=1\x7"
@@ -90,16 +100,15 @@ xnoremap < <gv
 " In Visual Mode I almost never want $ to select the newline
 noremap $ g_
 
+" Use 'gk' for k, unless a count is given. Useful for relative numbered lines.
+nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
+
 " }}}
 " {{{ Mappings
 " ------------------------------------------------------------------------------
 "
 "  You can safely remap Y, S, D, C
-
-" Swap key to enter Ex mode
-" in Visual, Select, and Operator-pending modes:
-noremap ; :
-noremap : ;
 
 " Convert sentence junctions
 nnoremap gc. r.wvUb
@@ -179,6 +188,16 @@ function! InsertLeave()
     "set linebreak
 endfunction
 
+function! s:nice_next(cmd)
+  let view = winsaveview()
+  execute "normal! " . a:cmd
+  if view.topline != winsaveview().topline
+    normal! zz
+  endif
+endfunction
+nnoremap <silent> n :call <SID>nice_next('n')<cr>
+nnoremap <silent> N :call <SID>nice_next('N')<cr>
+
 " }}}
 " {{{ Autocommands
 " ------------------------------------------------------------------------------
@@ -206,7 +225,7 @@ function! MyFoldText()
     let line = substitute(line, '\t', onetab, 'g')
     let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
     let fillcharcount = windowwidth - len(line) - len(foldedlinecount) - 0
-    return '↕ ' . line . '... ' . repeat(' ',fillcharcount) " . ' (' . foldedlinecount . ') '
+    return '' . line . '... ' . repeat(' ',fillcharcount) " . ' (' . foldedlinecount . ') '
 endfunction
 set foldtext=MyFoldText()
 
@@ -220,7 +239,7 @@ set foldtext=MyFoldText()
 
     augroup unite
         autocmd!
-        autocmd FileType unite setlocal cursorline
+        autocmd FileType unite setlocal cursorline relativenumber
     augroup END
 
     nnoremap = :Unite -buffer-name=spelling -no-split -no-resize spell_suggest<cr>

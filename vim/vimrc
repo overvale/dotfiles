@@ -5,27 +5,25 @@ call plug#begin('~/.vim/plugged')
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/unite-outline'
 Plug 'kopischke/unite-spell-suggest'
-"Plug 'Shougo/neocomplete.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'plasticboy/vim-markdown'
 Plug 'thinca/vim-ft-markdown_fold'
-Plug 'Konfekt/FastFold'
-Plug 'junegunn/vim-easy-align'
+"Plug 'Konfekt/FastFold'
 Plug 'mbbill/undotree'
-Plug 'gerw/vim-HiLinkTrace'
 Plug 'gcmt/taboo.vim'
 Plug 'osyo-manga/vim-over'
-Plug 'wellle/visual-split.vim'
 Plug 'kshenoy/vim-signature'
-Plug 'jnurmine/Zenburn'
-Plug 'junegunn/seoul256.vim'
+Plug 'tommcdo/vim-lion'
 Plug 'junegunn/vim-pseudocl'
 Plug 'junegunn/vim-oblique'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/goyo.vim'
+
+Plug 'jnurmine/Zenburn'
+Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
-Plug 'tommcdo/vim-lion'
+Plug 'NLKNguyen/papercolor-theme'
 call plug#end()
 
 " }}}
@@ -33,10 +31,6 @@ call plug#end()
 " ------------------------------------------------------------------------------
 
 syntax enable
-let g:gruvbox_italic = 1
-let g:gruvbox_bold = 1
-let g:gruvbox_contrast_dark = 'soft'
-let g:gruvbox_italicize_comments = 1
 colorscheme gruvbox
 set background=dark
 
@@ -107,8 +101,6 @@ nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 " }}}
 " {{{ Mappings
 " ------------------------------------------------------------------------------
-"
-"  You can safely remap Y, S, D, C
 
 " Convert sentence junctions
 nnoremap gc. r.wvUb
@@ -118,6 +110,14 @@ nnoremap gc- s -<esc>wvub
 xnoremap gc. s.<esc>wvUb
 xnoremap gc, s,<esc>wvub
 xnoremap gc; s;<esc>wvub
+
+" Mappings/Commands for 'clause-break' & 'clause-join'
+vnoremap gcb :Break<cr>
+nnoremap gcb V:Break<cr>
+command! -range Break :'<,'>!clause-break
+vnoremap gcj :Join<cr>
+nnoremap gcj V:Join<cr>
+command! -range Join :'<,'>!clause-join
 
 " Quickly go to next/previous tab/buffer
 nnoremap ]b :bnext<cr>
@@ -133,19 +133,12 @@ nnoremap ]q :cn<cr>
 nnoremap m- :move .-2<cr>
 nnoremap m+ :move .+1<cr>
 
-" Call custom command
-vnoremap gcb :Break<cr>
-nnoremap gcb V:Break<cr>
-
 " }}}
 " {{{ Commands
 " ------------------------------------------------------------------------------
 
 " Never use a mapping when a command wil do! This is Vim!
-command! -range Break :'<,'>!clause-break
 command! Cdf :cd %:h<cr>
-command! Dtrail :%s/\s\+$//
-command! -range Join :'<,'>!clause-join
 command! MM :call Markdown()
 command! H1 :normal VUyypVr=
 command! H2 :normal yypVr-
@@ -155,14 +148,13 @@ command! PP :set paste! | set paste?
 command! SS :set spell! | set spell?
 command! Src :source $MYVIMRC
 command! Erc :e $MYVIMRC
-command! Ecolo :e ~/code/dotfiles/vim/colors/oliver.light.vim
 command! WW :set wrap!
 command! UT :UndotreeToggle
 
 " allow saving a sudo file if forgot to open as sudo
-    cmap w!! w !sudo tee % >/dev/null
+cmap w!! w !sudo tee % >/dev/null
 " creates an alias (%%) to represent the directory of the current file
-    cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
 " }}}
 " {{{ Leader Mappings
@@ -180,23 +172,21 @@ endfunction
 
 function! InsertEnter()
     set timeoutlen=0
-    "set linebreak
 endfunction
 
 function! InsertLeave()
     set timeoutlen=3000
-    "set linebreak
 endfunction
 
-function! s:nice_next(cmd)
-  let view = winsaveview()
-  execute "normal! " . a:cmd
-  if view.topline != winsaveview().topline
-    normal! zz
-  endif
-endfunction
-nnoremap <silent> n :call <SID>nice_next('n')<cr>
-nnoremap <silent> N :call <SID>nice_next('N')<cr>
+" function! s:nice_next(cmd)
+"   let view = winsaveview()
+"   execute "normal! " . a:cmd
+"   if view.topline != winsaveview().topline
+"     normal! zz
+"   endif
+" endfunction
+" nnoremap <silent> n :call <SID>nice_next('n')<cr>
+" nnoremap <silent> N :call <SID>nice_next('N')<cr>
 
 " }}}
 " {{{ Autocommands
@@ -233,32 +223,23 @@ set foldtext=MyFoldText()
 " {{{ Plugin Prefs
 " ------------------------------------------------------------------------------
 
+" Gruvbox
+    let g:gruvbox_italic = 1
+    let g:gruvbox_bold = 1
+    let g:gruvbox_contrast_dark = 'soft'
+    let g:gruvbox_italicize_comments = 1
+
 " UNITE
     call unite#filters#matcher_default#use(['matcher_fuzzy'])
     call unite#filters#sorter_default#use(['sorter_selecta'])
-
-    augroup unite
-        autocmd!
-        autocmd FileType unite setlocal cursorline relativenumber
-    augroup END
-
     nnoremap = :Unite -buffer-name=spelling -no-split -no-resize spell_suggest<cr>
     nnoremap <leader>u <nop>
-    nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize buffer file file/new directory/new<cr>
-    nnoremap <leader>ul :Unite -buffer-name=line -no-split -no-resize line<cr>
-    nnoremap <leader>uo :Unite -buffer-name=outline -no-split -no-resize outline<cr>
-    nnoremap <leader>ur :Unite -buffer-name=register -no-split -no-resize register<cr>
-    nnoremap <leader>us :Unite -buffer-name=source -no-split -no-resize source<cr>
+    nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize -start-insert buffer file file/new directory/new<cr>
+    nnoremap <leader>uo :Unite -buffer-name=outline -no-split -no-resize -start-insert outline<cr>
 
 " MARKDOWN
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
     let g:vim_markdown_folding_disabled=1
-
-" EASY ALIGN
-    " Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
-    vmap <Enter> <Plug>(EasyAlign)
-    " Start interactive EasyAlign for a motion/text object (e.g. gaip)
-    nmap ga <Plug>(EasyAlign)
 
 " TABOO
     let g:taboo_tab_format=" %N: %f%m "

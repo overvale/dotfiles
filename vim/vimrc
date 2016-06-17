@@ -26,6 +26,8 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/goyo.vim'
 Plug 'morhetz/gruvbox'
 Plug 'tommcdo/vim-lion'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'reedes/vim-colors-pencil'
 call plug#end()
 
 " }}}
@@ -136,6 +138,9 @@ nnoremap m+ :move .+1<cr>
 " Call custom command
 vnoremap gcb :Break<cr>
 nnoremap gcb V:Break<cr>
+
+" Faster folding
+nnoremap <tab> za
 
 " }}}
 " {{{ Commands

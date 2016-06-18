@@ -2,14 +2,8 @@
 " ------------------------------------------------------------------------------
 
 call plug#begin('~/.vim/plugged')
-Plug 'Shougo/unite.vim'
-Plug 'Shougo/unite-outline'
-Plug 'kopischke/unite-spell-suggest'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
-Plug 'plasticboy/vim-markdown'
-Plug 'thinca/vim-ft-markdown_fold'
-"Plug 'Konfekt/FastFold'
 Plug 'mbbill/undotree'
 Plug 'gcmt/taboo.vim'
 Plug 'osyo-manga/vim-over'
@@ -19,29 +13,29 @@ Plug 'junegunn/vim-pseudocl'
 Plug 'junegunn/vim-oblique'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/goyo.vim'
-
+Plug 'junegunn/fzf.vim'
+Plug 'plasticboy/vim-markdown'
+Plug 'thinca/vim-ft-markdown_fold'
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'NLKNguyen/papercolor-theme'
 call plug#end()
 
 " }}}
-" {{{ Colors
+" {{{ Settings
 " ------------------------------------------------------------------------------
 
 syntax enable
 colorscheme seoul256
 set background=dark
 
-" }}}
-" {{{ Settings
-" ------------------------------------------------------------------------------
-
 " Each machine has settings specific to it
 source $DOT/vim/localvimrc
 
 set backspace=eol
 set clipboard=unnamed
+set complete+=kspell
+set complete+=s
 set encoding=utf-8
 set formatoptions+=ron1j formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
@@ -133,6 +127,8 @@ nnoremap ]q :cn<cr>
 nnoremap m- :move .-2<cr>
 nnoremap m+ :move .+1<cr>
 
+nnoremap <leader>n :set relativenumber!<cr>
+
 " }}}
 " {{{ Commands
 " ------------------------------------------------------------------------------
@@ -157,12 +153,6 @@ cmap w!! w !sudo tee % >/dev/null
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 
 " }}}
-" {{{ Leader Mappings
-" ------------------------------------------------------------------------------
-
-nnoremap <leader>n :set relativenumber!<cr>
-
-" }}}
 " {{{ Functions
 " ------------------------------------------------------------------------------
 
@@ -177,16 +167,6 @@ endfunction
 function! InsertLeave()
     set timeoutlen=3000
 endfunction
-
-" function! s:nice_next(cmd)
-"   let view = winsaveview()
-"   execute "normal! " . a:cmd
-"   if view.topline != winsaveview().topline
-"     normal! zz
-"   endif
-" endfunction
-" nnoremap <silent> n :call <SID>nice_next('n')<cr>
-" nnoremap <silent> N :call <SID>nice_next('N')<cr>
 
 " }}}
 " {{{ Autocommands
@@ -223,19 +203,21 @@ set foldtext=MyFoldText()
 " {{{ Plugin Prefs
 " ------------------------------------------------------------------------------
 
+" FZF
+    set rtp+=/usr/local/opt/fzf
+    nnoremap <leader>l :BLines<cr>
+    nnoremap <leader>L :Lines<cr>
+    nnoremap <leader>f :Files<cr>
+    nnoremap <leader>b :Buffers<cr>
+    imap <c-f> <plug>(fzf-complete-word)
+    imap <c-b> <plug>(fzf-complete-path)
+    imap <c-j> <plug>(fzf-complete-line)
+
 " Gruvbox
     let g:gruvbox_italic = 1
     let g:gruvbox_bold = 1
     let g:gruvbox_contrast_dark = 'soft'
     let g:gruvbox_italicize_comments = 1
-
-" UNITE
-    call unite#filters#matcher_default#use(['matcher_fuzzy'])
-    call unite#filters#sorter_default#use(['sorter_selecta'])
-    nnoremap = :Unite -buffer-name=spelling -no-split -no-resize spell_suggest<cr>
-    nnoremap <leader>u <nop>
-    nnoremap <leader>e :Unite -buffer-name=edit -no-split -no-resize -start-insert buffer file file/new directory/new<cr>
-    nnoremap <leader>uo :Unite -buffer-name=outline -no-split -no-resize -start-insert outline<cr>
 
 " MARKDOWN
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold

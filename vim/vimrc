@@ -129,11 +129,6 @@ nnoremap ]q :cn<cr>
 nnoremap m- :move .-2<cr>
 nnoremap m+ :move .+1<cr>
 
-<<<<<<< HEAD
-" Call custom command
-vnoremap gcb :Break<cr>
-nnoremap gcb V:Break<cr>
-
 nnoremap <leader>n :set relativenumber!<cr>
 
 " }}}

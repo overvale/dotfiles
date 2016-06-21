@@ -7,7 +7,6 @@ Plug 'tpope/vim-commentary'
 Plug 'mbbill/undotree'
 Plug 'gcmt/taboo.vim'
 Plug 'osyo-manga/vim-over'
-Plug 'kshenoy/vim-signature'
 Plug 'tommcdo/vim-lion'
 Plug 'junegunn/vim-pseudocl'
 Plug 'junegunn/vim-oblique'
@@ -18,7 +17,6 @@ Plug 'plasticboy/vim-markdown'
 Plug 'thinca/vim-ft-markdown_fold'
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
-Plug 'NLKNguyen/papercolor-theme'
 call plug#end()
 
 " }}}
@@ -26,8 +24,17 @@ call plug#end()
 " ------------------------------------------------------------------------------
 
 syntax enable
-colorscheme seoul256
-set background=dark
+
+colorscheme gruvbox
+
+if has("nvim")
+    set termguicolors
+    set background=light
+else
+    colorscheme seoul256
+    set background=dark
+    set encoding=utf-8
+endif 
 
 " Each machine has settings specific to it
 source $DOT/vim/localvimrc
@@ -36,13 +43,12 @@ set backspace=eol
 set clipboard=unnamed
 set complete+=kspell
 set complete+=s
-set encoding=utf-8
 set formatoptions+=ron1j formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
 set hidden
 set incsearch ignorecase
 set laststatus=2 showcmd
-set listchars=tab:►\ ,eol:¬,trail:¿,extends:⟩,precedes:⟨,nbsp:╌
+set listchars=tab:»\ ,eol:¬,trail:¿,extends:→,precedes:←,nbsp:╌
 set scrolloff=0 sidescrolloff=5
 set shortmess+=I
 set smartindent autoindent
@@ -66,14 +72,18 @@ noremap ; :
 noremap : ,
 noremap , ;
 
-" Switch from block-cursor to vertical-line-cursor when going into/out of
-" insert mode
-let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+" Escape codes
+if has("nvim")
+    let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+else
+    " Switch from block-cursor to vertical-line-cursor when going into/out of insert mode
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+    " Set proper italic escape-codes
+    let &t_ZH="\e[3m"
+    let &t_ZR="\e[23m"
+endif
 
-" Set proper italic escape-codes
-let &t_ZH="\e[3m"
-let &t_ZR="\e[23m"
 
 " Break undo before CTRL-U
 inoremap <C-U> <C-G>u<C-U>
@@ -127,13 +137,16 @@ nnoremap ]q :cn<cr>
 nnoremap m- :move .-2<cr>
 nnoremap m+ :move .+1<cr>
 
+" Faster spelling correction
+nnoremap z- ms[s1z=`s
+
 nnoremap <leader>n :set relativenumber!<cr>
 
 " }}}
 " {{{ Commands
 " ------------------------------------------------------------------------------
 
-" Never use a mapping when a command wil do! This is Vim!
+" Never use a mapping when a command will do! This is Vim!
 command! Cdf :cd %:h<cr>
 command! MM :call Markdown()
 command! H1 :normal VUyypVr=
@@ -209,19 +222,29 @@ set foldtext=MyFoldText()
     nnoremap <leader>L :Lines<cr>
     nnoremap <leader>f :Files<cr>
     nnoremap <leader>b :Buffers<cr>
-    imap <c-f> <plug>(fzf-complete-word)
-    imap <c-b> <plug>(fzf-complete-path)
-    imap <c-j> <plug>(fzf-complete-line)
+    nnoremap <leader>h :Helptags<cr>
+    nnoremap <leader>c :Colors<cr>
+    " Insert mode completion
+    imap <c-x><c-k> <plug>(fzf-complete-word)
+    imap <c-x><c-f> <plug>(fzf-complete-path)
+    imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+    imap <c-x><c-l> <plug>(fzf-complete-line)
+
+    " Advanced customization using autoload functions
+    inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
 
 " Gruvbox
     let g:gruvbox_italic = 1
     let g:gruvbox_bold = 1
     let g:gruvbox_contrast_dark = 'soft'
+    let g:gruvbox_contrast_light = 'hard'
     let g:gruvbox_italicize_comments = 1
 
 " MARKDOWN
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
     let g:vim_markdown_folding_disabled=1
+    " Disable ge mapping
+    map <Plug> <Plug>Markdown_EditUrlUnderCursor
 
 " TABOO
     let g:taboo_tab_format=" %N: %f%m "

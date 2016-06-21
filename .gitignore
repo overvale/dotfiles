@@ -5,6 +5,8 @@ vim/localvimrc
 vim/bundle/
 vim/plugged/
 vim/init.vim
+vim/autoload/
+vim/.netrwhist
 plug.vim
 emacs/auto-save-list
 emacs/bookmarks

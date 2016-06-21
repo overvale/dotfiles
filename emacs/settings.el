@@ -30,7 +30,7 @@
 
 ;; Font settings
 (set-face-attribute 'default nil
-                    :family "Operator Mono" :height 120 :weight 'normal)
+                    :family "Operator Mono" :height 130 :weight 'normal)
 (set-face-attribute 'variable-pitch nil
 		    :family "Operator SSm" :height 120 :weight 'normal)
 ;; switch to non-monospace with 'variable-pitch-mode'

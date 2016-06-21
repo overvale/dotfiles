@@ -13,7 +13,7 @@
  '(custom-enabled-themes (quote (plan9)))
  '(custom-safe-themes
    (quote
-    ("1867e0e8f67310ded7db2ac1d70b80c2b75f2c2bf9baca5ee2d5360236f54d3c" "e21d7b25ca2bf460e5b78d5aaf43dcc0b38d955218755df59c4ffd0419983af1" default)))
+    ("0153cc571e0e2ebdb93a1702a2a77c81ef6d8d252b64d6b53e85502f66e66a8c" "1867e0e8f67310ded7db2ac1d70b80c2b75f2c2bf9baca5ee2d5360236f54d3c" "e21d7b25ca2bf460e5b78d5aaf43dcc0b38d955218755df59c4ffd0419983af1" default)))
  '(fci-rule-color "#f8fce8")
  '(hl-paren-background-colors (quote ("#e8fce8" "#c1e7f8" "#f8e8e8")))
  '(hl-paren-colors (quote ("#40883f" "#0287c8" "#b85c57")))

@@ -1,6 +1,6 @@
-set guifont=PragmataPro:h12
+set guifont=SF\ Mono\ Regular:h12
 set guioptions=g
 colorscheme gruvbox
 set background=light
-set linespace=1
+"set linespace=1
 set cursorline

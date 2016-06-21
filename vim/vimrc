@@ -159,6 +159,7 @@ command! Src :source $MYVIMRC
 command! Erc :e $MYVIMRC
 command! WW :set wrap!
 command! UT :UndotreeToggle
+command! TODO vimgrep TODO % | cw
 
 " allow saving a sudo file if forgot to open as sudo
 cmap w!! w !sudo tee % >/dev/null

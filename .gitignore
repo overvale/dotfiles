@@ -4,6 +4,7 @@ zsh/localrc.zsh
 vim/localvimrc
 vim/bundle/
 vim/plugged/
+vim/init.vim
 plug.vim
 emacs/auto-save-list
 emacs/bookmarks

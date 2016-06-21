@@ -26,6 +26,8 @@ chsh -s /bin/zsh
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 brew install vim
+brew install neovim/neovim/neovim
+brew install fzf
 brew install par
 brew install git
 brew install git-lfs
@@ -45,11 +47,6 @@ easy_install readability-lxml
 # make install textplay (symlink)
 # Set up ssh keys
 
-# Install gollum (for wiki)
-brew install icu4c
-gem install charlock_holmes -- --with-icu-dir=/usr/local/opt/icu4c
-gem install gollum
-
 # Set Help Viewer windows to non-floating mode
 defaults write com.apple.helpviewer DevMode -bool true
 
@@ -58,13 +55,15 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
 # pull-down your dotfiles, or copy from backup
 
+mkdir ~/.config
+
 # Symlink a bunch of things - run from $HOME
 ln -s ~/code/dotfiles/git/gitconfig .gitconfig
 ln -s ~/code/dotfiles/git/gitignore_global .gitignore_global
 ln -s ~/code/dotfiles/zsh .zsh
 ln -s ~/code/dotfiles/zsh/zshrc .zshrc
+ln -s ~/code/dotfiles/vim .config/nvim
 ln -s ~/code/dotfiles/vim .vim
-ln -s ~/code/dotfiles/vim/vimrc .vimrc
 ln -s ~/code/dotfiles/Karabiner ~/Library/Application\ Support/Karabiner
 ln -s ~/code/dotfiles/tmux.conf .tmux.conf
 ln -s ~/code/dotfiles/slate .slate

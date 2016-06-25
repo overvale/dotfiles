@@ -925,6 +925,10 @@
                 "0": {
                     "key": "LEFT",
                     "label": "\u2190"
+                },
+                "1": {
+                    "key": "#:ledControl( 5, 0, 0 )",
+                    "label": "LED OFF"
                 }
             }
         },

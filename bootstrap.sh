@@ -43,6 +43,8 @@ brew install awscli
 git lfs install
 easy_install readability-lxml
 
+# Install ~/code/other-repos from backup
+
 # Install princeXML
 # make install textplay (symlink)
 # Set up ssh keys

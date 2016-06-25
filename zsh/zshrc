@@ -11,3 +11,5 @@ done
 unset config_files
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+source ~/code/other-repos/fzf-marks/fzf-marks.plugin.zsh

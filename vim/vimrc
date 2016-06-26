@@ -38,7 +38,7 @@ else
 endif 
 
 " Each machine has settings specific to it
-source $DOT/vim/localvimrc
+source ~/code/private-dotfiles/vimrc
 
 set backspace=eol
 set clipboard=unnamed

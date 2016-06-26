@@ -1,7 +1,5 @@
 .DS_Store
 keyboard_maestro_macros.kmsync
-zsh/localrc.zsh
-vim/localvimrc
 vim/bundle/
 vim/plugged/
 vim/autoload/

@@ -1,6 +1,7 @@
 # Start by saying that anything ending in .zsh in my dotfiles folder should be sourced
 typeset -U config_files
 config_files=(~/code/dotfiles/**/*.zsh)
+source ~/code/private-dotfiles/localrc.zsh
 
 # Then load the actual files
 for file in ${(M)config_files}

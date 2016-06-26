@@ -70,6 +70,9 @@ ln -s ~/code/dotfiles/Karabiner ~/Library/Application\ Support/Karabiner
 ln -s ~/code/dotfiles/tmux.conf .tmux.conf
 ln -s ~/code/dotfiles/slate .slate
 ln -s ~/code/dotfiles/emacs ~/.emacs.d
+ln -s ~/code/dotfiles/mutt/mailcap .mailcap
+ln -s ~/code/dotfiles/mutt .mutt
+ln -s ~/code/dotfiles/mutt/muttrc .muttrc
 
 # Install vim plugin manager + plugins
 # Reconstruct ~/.marks directory

@@ -43,6 +43,8 @@ brew install awscli
 git lfs install
 easy_install readability-lxml
 
+# Install ~/code/other-repos from backup
+
 # Install princeXML
 # make install textplay (symlink)
 # Set up ssh keys
@@ -68,6 +70,9 @@ ln -s ~/code/dotfiles/Karabiner ~/Library/Application\ Support/Karabiner
 ln -s ~/code/dotfiles/tmux.conf .tmux.conf
 ln -s ~/code/dotfiles/slate .slate
 ln -s ~/code/dotfiles/emacs ~/.emacs.d
+ln -s ~/code/dotfiles/mutt/mailcap .mailcap
+ln -s ~/code/dotfiles/mutt .mutt
+ln -s ~/code/dotfiles/mutt/muttrc .muttrc
 
 # Install vim plugin manager + plugins
 # Reconstruct ~/.marks directory

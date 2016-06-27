@@ -22,9 +22,3 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' \
 # pasting with tabs doesn't perform completion
 zstyle ':completion:*' insert-tab pending
 
-# Completion from ~.marks folder
-function _completemarks {
-  reply=($(ls $MARKPATH))
-}
-compctl -K _completemarks jmp
-compctl -K _completemarks unmark

@@ -12,10 +12,6 @@
   <equal>com.barebones.bbedit</equal>
 </appdef>
 <appdef>
-  <appname>ATOM</appname>
-  <equal>com.github.atom</equal>
-</appdef>
-<appdef>
   <appname>ITERM</appname>
   <equal>com.googlecode.iterm2</equal>
 </appdef>
@@ -78,6 +74,16 @@
   <appendix>Remaps Shift_R Control_L to Caps-Lock</appendix>
   <identifier>private.control2caps</identifier>
   <autogen>--KeyToKey-- KeyCode::CONTROL_L, ModifierFlag::SHIFT_R, KeyCode::CAPSLOCK</autogen>
+</item>
+
+<item>
+  <name>Right Option to Hyper</name>
+  <appendix>Changes right option key to "control + option + command"</appendix>
+  <identifier>private.roption2hyper</identifier>
+  <autogen>
+      --KeyToKey--
+      KeyCode::OPTION_R,
+      KeyCode::OPTION_R, ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L</autogen>
 </item>
 
 <item>

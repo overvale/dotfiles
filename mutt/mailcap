@@ -1,0 +1,2 @@
+application/*; mutt-open '%s'; test=test -n "$DISPLAY"
+text/*; less

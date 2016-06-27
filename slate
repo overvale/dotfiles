@@ -6,7 +6,7 @@ config resizePercentOf screenSize
 # ALIASES
 alias current-dims windowSizeX;windowSizeY
 alias center-both move screenOriginX+(screenSizeX-windowSizeX)/2;screenOriginY+(screenSizeY-windowSizeY)/2 ${current-dims}
-alias hyper ctrl;cmd
+alias hyper alt;ctrl;cmd
 
 # WINDOW HINTS
 bind esc:cmd hint

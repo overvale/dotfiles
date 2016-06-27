@@ -17,6 +17,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'thinca/vim-ft-markdown_fold'
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
+Plug 'frankier/neovim-colors-solarized-truecolor-only'
 call plug#end()
 
 " }}}
@@ -25,11 +26,11 @@ call plug#end()
 
 syntax enable
 
-colorscheme gruvbox
 
 if has("nvim")
     set termguicolors
-    set background=light
+    set background=dark
+    colorscheme gruvbox
 else
     colorscheme seoul256
     set background=dark
@@ -37,7 +38,7 @@ else
 endif 
 
 " Each machine has settings specific to it
-source $DOT/vim/localvimrc
+source ~/code/private-dotfiles/vimrc
 
 set backspace=eol
 set clipboard=unnamed

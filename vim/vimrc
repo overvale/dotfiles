@@ -26,6 +26,12 @@ call plug#end()
 
 syntax enable
 
+" Gruvbox - these need to get called before the colorscheme itself
+    let g:gruvbox_italic = 1
+    let g:gruvbox_bold = 1
+    let g:gruvbox_contrast_dark = 'soft'
+    let g:gruvbox_contrast_light = 'hard'
+    let g:gruvbox_italicize_comments = 1
 
 if has("nvim")
     set termguicolors
@@ -36,6 +42,7 @@ else
     set background=dark
     set encoding=utf-8
 endif 
+
 
 " Each machine has settings specific to it
 source ~/code/private-dotfiles/vimrc
@@ -60,7 +67,7 @@ set statusline=%f\ %m\ %=\ %y\ %l\,%c%V\ %P
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set thesaurus+=/Users/oliver/code/mthesaur.txt
 set undofile undodir=~/code/vimundo
-set wildmenu wildmode=list:longest
+set wildmenu wildmode=longest:full
 set wrap linebreak breakindent
 set wrapscan
 set nostartofline
@@ -235,13 +242,6 @@ set foldtext=MyFoldText()
 
     " Advanced customization using autoload functions
     inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
-
-" Gruvbox
-    let g:gruvbox_italic = 1
-    let g:gruvbox_bold = 1
-    let g:gruvbox_contrast_dark = 'soft'
-    let g:gruvbox_contrast_light = 'hard'
-    let g:gruvbox_italicize_comments = 1
 
 " MARKDOWN
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold

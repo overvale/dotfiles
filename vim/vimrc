@@ -17,32 +17,29 @@ Plug 'plasticboy/vim-markdown'
 Plug 'thinca/vim-ft-markdown_fold'
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
-Plug 'frankier/neovim-colors-solarized-truecolor-only'
+Plug 'chriskempson/base16-vim'
 call plug#end()
 
 " }}}
-" {{{ Settings
+" {{{ Colors
 " ------------------------------------------------------------------------------
 
 syntax enable
 
-" Gruvbox - these need to get called before the colorscheme itself
-    let g:gruvbox_italic = 1
-    let g:gruvbox_bold = 1
-    let g:gruvbox_contrast_dark = 'soft'
-    let g:gruvbox_contrast_light = 'hard'
-    let g:gruvbox_italicize_comments = 1
+let base16colorspace=256
+colorscheme base16-oceanicnext
+set cursorline
 
 if has("nvim")
-    set termguicolors
-    set background=dark
-    colorscheme gruvbox
+    " set termguicolors
 else
-    colorscheme seoul256
-    set background=dark
     set encoding=utf-8
 endif 
 
+
+" }}}
+" {{{ Settings
+" ------------------------------------------------------------------------------
 
 " Each machine has settings specific to it
 source ~/code/private-dotfiles/vimrc

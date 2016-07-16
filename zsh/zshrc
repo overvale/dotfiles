@@ -14,3 +14,7 @@ unset config_files
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 source ~/code/other-repos/fzf-marks/fzf-marks.plugin.zsh
+#
+# Base16 Shell
+BASE16_SHELL="$HOME/.config/base16-shell/scripts/base16-oceanicnext.sh"
+[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL

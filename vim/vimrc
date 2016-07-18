@@ -13,36 +13,36 @@ Plug 'junegunn/vim-oblique'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/fzf.vim'
+Plug 'kshenoy/vim-signature'
+
 Plug 'plasticboy/vim-markdown'
 Plug 'thinca/vim-ft-markdown_fold'
+
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
-Plug 'frankier/neovim-colors-solarized-truecolor-only'
+Plug 'chriskempson/base16-vim'
+Plug 'altercation/vim-colors-solarized'
 call plug#end()
 
 " }}}
-" {{{ Settings
+" {{{ Colors
 " ------------------------------------------------------------------------------
 
 syntax enable
 
-" Gruvbox - these need to get called before the colorscheme itself
-    let g:gruvbox_italic = 1
-    let g:gruvbox_bold = 1
-    let g:gruvbox_contrast_dark = 'soft'
-    let g:gruvbox_contrast_light = 'hard'
-    let g:gruvbox_italicize_comments = 1
+let base16colorspace=256
+colorscheme base16-oceanicnext
 
 if has("nvim")
-    set termguicolors
-    set background=dark
-    colorscheme gruvbox
+    " set termguicolors
 else
-    colorscheme seoul256
-    set background=dark
     set encoding=utf-8
 endif 
 
+
+" }}}
+" {{{ Settings
+" ------------------------------------------------------------------------------
 
 " Each machine has settings specific to it
 source ~/code/private-dotfiles/vimrc
@@ -146,7 +146,11 @@ nnoremap m- :move .-2<cr>
 nnoremap m+ :move .+1<cr>
 
 " Faster spelling correction
-nnoremap z- ms[s1z=`s
+nnoremap z- ms[s1z=`sdms
+
+" Delete autocompleted lists/comments on new lines
+inoremap <c-l> <bs><bs><space><space>
+
 
 nnoremap <leader>n :set relativenumber!<cr>
 
@@ -190,6 +194,20 @@ endfunction
 function! InsertLeave()
     set timeoutlen=3000
 endfunction
+
+function! SolarizedLight()
+    silent !source ~/.config/base16-shell/scripts/base16-solarized-light.sh
+    colorscheme base16-solarized-light
+    set background=light
+endfunction
+command! SolarizedLight call SolarizedLight()
+
+function! SolarizedDark()
+    silent !source ~/.config/base16-shell/scripts/base16-solarized-dark.sh
+    colorscheme base16-solarized-dark
+    set background=dark
+endfunction
+command! SolarizedDark call SolarizedDark()
 
 " }}}
 " {{{ Autocommands

@@ -47,4 +47,4 @@ bind down:${hyper}     focus down
 # MOVE WINDOW TO OTHER SCREEN
 bind return:${hyper} move screenOriginX;screenOriginY windowSizeX;windowSizeY next
 
-# bind f10 shell 'pmset displaysleepnow'
+bind f10 shell '/usr/bin/pmset displaysleepnow'

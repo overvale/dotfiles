@@ -55,9 +55,9 @@
 
 <item>
   <name>Return to Return/Control_R</name>
-  <appendix>(+ When you type Return only, send Return) + [KeyRepeat]</appendix>
+  <appendix>(+ When you type Return only, send Return)</appendix>
   <identifier>private.return2controlR_return_keyrepeat</identifier>
-  <autogen>__KeyOverlaidModifierWithRepeat__ KeyCode::RETURN, KeyCode::CONTROL_R, KeyCode::RETURN</autogen>
+  <autogen>__KeyOverlaidModifier__ KeyCode::RETURN, KeyCode::CONTROL_R, KeyCode::RETURN</autogen>
 </item>
 
 <item>

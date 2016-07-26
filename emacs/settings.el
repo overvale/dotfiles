@@ -22,17 +22,17 @@
 
 ;; Per mode settings
 (add-hook 'text-mode-hook 'turn-on-flyspell)
-;;(add-hook 'org-mode-hook
-;;  (lambda ()
-;;	(org-indent-mode t)
-;;	)
-;;  t)
+(add-hook 'org-mode-hook
+  (lambda ()
+	(org-indent-mode t)
+	)
+  t)
 
 ;; Font settings
 (set-face-attribute 'default nil
-                    :family "Operator Mono" :height 130 :weight 'normal)
+                    :family "SF Mono" :height 120 :weight 'normal)
 (set-face-attribute 'variable-pitch nil
-		    :family "Operator SSm" :height 120 :weight 'normal)
+		    :family "Merriweather" :height 120 :weight 'normal)
 ;; switch to non-monospace with 'variable-pitch-mode'
 
 ;; Org Mode

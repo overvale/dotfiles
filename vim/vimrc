@@ -20,18 +20,17 @@ Plug 'thinca/vim-ft-markdown_fold'
 
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
-Plug 'chriskempson/base16-vim'
 Plug 'altercation/vim-colors-solarized'
+Plug 'NLKNguyen/papercolor-theme'
 call plug#end()
 
 " }}}
 " {{{ Colors
 " ------------------------------------------------------------------------------
 
-syntax enable
+syntax off
 
-let base16colorspace=256
-colorscheme base16-oceanicnext
+colorscheme PaperColor
 
 if has("nvim")
     " set termguicolors

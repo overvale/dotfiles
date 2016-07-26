@@ -48,8 +48,6 @@ source ~/code/private-dotfiles/vimrc
 
 set backspace=eol
 set clipboard=unnamed
-set complete+=kspell
-set complete+=s
 set formatoptions+=ron1j formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
 set hidden
@@ -58,19 +56,26 @@ set laststatus=2 showcmd
 set listchars=tab:»\ ,eol:¬,trail:¿,extends:→,precedes:←,nbsp:╌
 set scrolloff=0 sidescrolloff=5
 set shortmess+=I
-set smartindent autoindent
+"set smartindent autoindent
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
 set splitbelow splitright
-set statusline=%f\ %m\ %=\ %y\ %l\,%c%V\ %P
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
-set thesaurus+=/Users/oliver/code/mthesaur.txt
 set undofile undodir=~/code/vimundo
 set wildmenu wildmode=longest:full
 set wrap linebreak breakindent
 set wrapscan
 set nostartofline
 set relativenumber
+
+" Statusline setup
+set statusline=              "set statusline to null
+set statusline+=%f           "path to file
+set statusline+=\ %m         "[modified] flag
+set statusline+=\ %=         "left/right seperator
+set statusline+=\ %y         "[filetype]
+set statusline+=\ %l\,%c%V   "ruler
+set statusline+=\ %P         "percentage through file
 
 let mapleader = " "
 
@@ -150,7 +155,7 @@ nnoremap z- ms[s1z=`sdms
 " Delete autocompleted lists/comments on new lines
 inoremap <c-l> <bs><bs><space><space>
 
-
+" Toggle relativenumber
 nnoremap <leader>n :set relativenumber!<cr>
 
 " }}}
@@ -265,6 +270,7 @@ set foldtext=MyFoldText()
     let g:vim_markdown_folding_disabled=1
     " Disable ge mapping
     map <Plug> <Plug>Markdown_EditUrlUnderCursor
+    let g:vim_markdown_folding_style_pythonic = 1
 
 " TABOO
     let g:taboo_tab_format=" %N: %f%m "

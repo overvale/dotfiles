@@ -14,6 +14,7 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/fzf.vim'
 Plug 'kshenoy/vim-signature'
+Plug 'tweekmonster/spellrotate.vim'
 
 Plug 'plasticboy/vim-markdown'
 Plug 'thinca/vim-ft-markdown_fold'
@@ -22,15 +23,17 @@ Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'altercation/vim-colors-solarized'
 Plug 'NLKNguyen/papercolor-theme'
+Plug 'romainl/Apprentice'
+
 call plug#end()
 
 " }}}
 " {{{ Colors
 " ------------------------------------------------------------------------------
 
-syntax off
+syntax enable
 
-colorscheme PaperColor
+colorscheme Apprentice
 
 if has("nvim")
     " set termguicolors
@@ -47,13 +50,15 @@ endif
 source ~/code/private-dotfiles/vimrc
 
 set backspace=eol
-set clipboard=unnamed
+set cursorline
+"set clipboard=unnamed
 set formatoptions+=ron1j formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
 set hidden
-set incsearch ignorecase
+set incsearch ignorecase gdefault
 set laststatus=2 showcmd
 set listchars=tab:»\ ,eol:¬,trail:¿,extends:→,precedes:←,nbsp:╌
+set mouse=n
 set scrolloff=0 sidescrolloff=5
 set shortmess+=I
 "set smartindent autoindent
@@ -135,7 +140,7 @@ vnoremap gcj :Join<cr>
 nnoremap gcj V:Join<cr>
 command! -range Join :'<,'>!clause-join
 
-" Quickly go to next/previous tab/buffer
+" Quickly go to next/previous tab/buffer/window/quickfix
 nnoremap ]b :bnext<cr>
 nnoremap [b :bprev<cr>
 nnoremap ]t :tabn<cr>
@@ -146,17 +151,17 @@ nnoremap [q :cN<cr>
 nnoremap ]q :cn<cr>
 
 " Move lines up / down
-nnoremap m- :move .-2<cr>
-nnoremap m+ :move .+1<cr>
-
-" Faster spelling correction
-nnoremap z- ms[s1z=`sdms
+nnoremap <c-k> :move .-2<cr>
+nnoremap <c-j> :move .+1<cr>
 
 " Delete autocompleted lists/comments on new lines
 inoremap <c-l> <bs><bs><space><space>
 
 " Toggle relativenumber
 nnoremap <leader>n :set relativenumber!<cr>
+
+" Quickly correct last spelling error
+nnoremap z- [s1z=`^
 
 " }}}
 " {{{ Commands
@@ -177,6 +182,7 @@ command! WW :set wrap!
 command! UT :UndotreeToggle
 command! TODO vimgrep TODO % | cw
 command! DATES vimgrep /\v<\d{4}-\d{2}-\d{2}>/j % | cw
+command! Wqa wa | qa
 
 " allow saving a sudo file if forgot to open as sudo
 cmap w!! w !sudo tee % >/dev/null
@@ -275,6 +281,13 @@ set foldtext=MyFoldText()
 " TABOO
     let g:taboo_tab_format=" %N: %f%m "
     let g:taboo_modified_tab_flag=" +"
+
+" SPELLROTATE
+
+    nmap <silent> zn <Plug>(SpellRotateForward)
+    nmap <silent> zN <Plug>(SpellRotateBackward)
+    vmap <silent> zn <Plug>(SpellRotateForwardV)
+    vmap <silent> zN <Plug>(SpellRotateBackwardV)
 
 " }}}
 " {{{ Snippets

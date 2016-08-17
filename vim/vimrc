@@ -176,6 +176,7 @@ command! Erc :e $MYVIMRC
 command! WW :set wrap!
 command! UT :UndotreeToggle
 command! TODO vimgrep TODO % | cw
+command! DELG vimgrep DELG % | cw
 command! DATES vimgrep /\v<\d{4}-\d{2}-\d{2}>/j % | cw
 
 " allow saving a sudo file if forgot to open as sudo

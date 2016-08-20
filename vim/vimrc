@@ -54,7 +54,7 @@ set cursorline
 "set clipboard=unnamed
 set formatoptions+=ron1j formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
-set hidden
+set hidden confirm
 set incsearch ignorecase gdefault
 set laststatus=2 showcmd
 set listchars=tab:»\ ,eol:¬,trail:¿,extends:→,precedes:←,nbsp:╌
@@ -149,9 +149,14 @@ nnoremap [w <c-w>W
 nnoremap ]w <c-w>w
 nnoremap [q :cN<cr>
 nnoremap ]q :cn<cr>
+nnoremap [j <c-o>
+nnoremap ]j <c-i>
+
+nnoremap <c-o> <nop>
+nnoremap <c-i> <nop>
 
 " Move lines up / down
-nnoremap <c-k> :move .-2<cr>
+nnoremap <c-k> :move .--1<cr>
 nnoremap <c-j> :move .+1<cr>
 
 " Delete autocompleted lists/comments on new lines
@@ -162,6 +167,11 @@ nnoremap <leader>n :set relativenumber!<cr>
 
 " Quickly correct last spelling error
 nnoremap z- [s1z=`^
+
+" Add j/k motions with a count to the jump list
+nnoremap <silent> k :<C-U>execute 'normal!' (v:count > 1 ? "m'" . v:count : '') . 'k'<CR>
+nnoremap <silent> j :<C-U>execute 'normal!' (v:count > 1 ? "m'" . v:count : '') . 'j'<CR>
+
 
 " }}}
 " {{{ Commands

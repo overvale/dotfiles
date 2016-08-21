@@ -51,7 +51,6 @@ source ~/code/private-dotfiles/vimrc
 
 set backspace=eol
 set cursorline
-"set clipboard=unnamed
 set formatoptions+=ron1j formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
 set hidden confirm
@@ -61,7 +60,6 @@ set listchars=tab:»\ ,eol:¬,trail:¿,extends:→,precedes:←,nbsp:╌
 set mouse=n
 set scrolloff=0 sidescrolloff=5
 set shortmess+=I
-"set smartindent autoindent
 set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
 set splitbelow splitright
@@ -118,6 +116,10 @@ noremap $ g_
 " Use 'gk' for k, unless a count is given. Useful for relative numbered lines.
 nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
+" Add j/k motions with a count to the jump list
+nnoremap <silent> k :<C-U>execute 'normal!' (v:count > 1 ? "m'" . v:count : '') . 'k'<CR>
+nnoremap <silent> j :<C-U>execute 'normal!' (v:count > 1 ? "m'" . v:count : '') . 'j'<CR>
+
 
 " }}}
 " {{{ Mappings
@@ -140,7 +142,7 @@ vnoremap gcj :Join<cr>
 nnoremap gcj V:Join<cr>
 command! -range Join :'<,'>!clause-join
 
-" Quickly go to next/previous tab/buffer/window/quickfix
+" Quickly go to next/previous tab/buffer/window/quickfix/jump
 nnoremap ]b :bnext<cr>
 nnoremap [b :bprev<cr>
 nnoremap ]t :tabn<cr>
@@ -170,22 +172,15 @@ nnoremap <leader>n :set relativenumber!<cr>
 " Quickly correct last spelling error
 nnoremap z- [s1z=`^
 
-" Add j/k motions with a count to the jump list
-nnoremap <silent> k :<C-U>execute 'normal!' (v:count > 1 ? "m'" . v:count : '') . 'k'<CR>
-nnoremap <silent> j :<C-U>execute 'normal!' (v:count > 1 ? "m'" . v:count : '') . 'j'<CR>
-
 
 " }}}
 " {{{ Commands
 " ------------------------------------------------------------------------------
 
 " Never use a mapping when a command will do! This is Vim!
-command! Cdf :cd %:h<cr>
 command! MM :call Markdown()
 command! H1 :normal VUyypVr=
 command! H2 :normal yypVr-
-command! NN :set number!
-command! NR :set relativenumber!
 command! PP :set paste! | set paste?
 command! SS :set spell! | set spell?
 command! Src :source $MYVIMRC
@@ -194,7 +189,6 @@ command! WW :set wrap!
 command! UT :UndotreeToggle
 command! TODO vimgrep TODO % | cw
 command! DATES vimgrep /\v<\d{4}-\d{2}-\d{2}>/j % | cw
-command! Wqa wa | qa
 
 " allow saving a sudo file if forgot to open as sudo
 cmap w!! w !sudo tee % >/dev/null
@@ -216,20 +210,6 @@ endfunction
 function! InsertLeave()
     set timeoutlen=3000
 endfunction
-
-function! SolarizedLight()
-    silent !source ~/.config/base16-shell/scripts/base16-solarized-light.sh
-    colorscheme base16-solarized-light
-    set background=light
-endfunction
-command! SolarizedLight call SolarizedLight()
-
-function! SolarizedDark()
-    silent !source ~/.config/base16-shell/scripts/base16-solarized-dark.sh
-    colorscheme base16-solarized-dark
-    set background=dark
-endfunction
-command! SolarizedDark call SolarizedDark()
 
 " }}}
 " {{{ Autocommands

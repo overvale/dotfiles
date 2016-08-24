@@ -39,6 +39,8 @@ brew install pandoc
 brew install zsh
 brew install ispell
 brew install awscli
+brew install urlview
+brew install contacts
 
 git lfs install
 easy_install readability-lxml

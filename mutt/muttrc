@@ -64,7 +64,7 @@ bind attach <return> view-mailcap
 
 
 
-source ~/code/dotfiles/mutt/vombatidae.mutt
+source ~/code/dotfiles/mutt/rookie.mutt
 
 # color  normal	     brightwhite     black
 # color  attachment    brightyellow    black

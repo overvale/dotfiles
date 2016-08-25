@@ -116,10 +116,9 @@ noremap $ g_
 " Use 'gk' for k, unless a count is given. Useful for relative numbered lines.
 nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
-" Add j/k motions with a count to the jump list
-nnoremap <silent> k :<C-U>execute 'normal!' (v:count > 1 ? "m'" . v:count : '') . 'k'<CR>
-nnoremap <silent> j :<C-U>execute 'normal!' (v:count > 1 ? "m'" . v:count : '') . 'j'<CR>
 
+" Remap U to redo
+nnoremap U <c-r>
 
 " }}}
 " {{{ Mappings

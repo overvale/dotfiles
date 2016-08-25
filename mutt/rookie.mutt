@@ -1,0 +1,64 @@
+#   * attachment
+#   * body              (match regexp in the body of messages)
+#   * bold              (hiliting bold patterns in the body of messages)
+#   * error             (error messages printed by Mutt)
+#   * header            (match regexp in the message header)
+#   * hdrdefault        (default color of the message header in the pager)
+#   * index             (match pattern in the message index)
+#   * indicator         (arrow or bar used to indicate the current item in a menu)
+#   * markers           (the '+' markers at the beginning of wrapped lines in the pager)
+#   * message           (informational messages)
+#   * normal            (normal (not quoted) text
+#   * quoted            (text matching $quote_regexp in the body of a message)
+#   * quoted1, quotedN  (higher levels of quoting)
+#   * search            (hiliting of words in the pager)
+#   * signature
+#   * status            (mode lines used to display info about the mailbox or message)
+#   * tilde             (the '~' used to pad blank lines in the pager)
+#   * tree              (thread tree drawn in the message index and attachment menu)
+#   * underline         (hiliting underlined patterns in the body of messages)
+
+color normal	  default	     black
+color indicator   black          blue
+color status      black          yellow
+color tree        red            black
+color tilde       red            black
+color attachment  brightblue     black
+color bold        default        black
+color error       brightred      black
+color markers     cyan           black
+color message     brightyellow   black
+color search      black          brightgreen
+
+color index       white          black        ~Q  # those I have already replied to.
+color index       white          black        ~D  # deleted
+color index       white          black        ~O  # old
+color index       white          black        ~P  # mail from myself
+color index       yellow         black        ~T  # tagged
+color index       brightred      black        ~F  # flagged
+color index       blue           brightblack  ~v  # collapsed thread
+color index       brightyellow   black        ~N  # new
+
+color signature   yellow         black 
+
+color search      yellow         default 
+color markers     brightyellow   default 
+
+color quoted      green          black
+color quoted1     yellow         black
+color quoted2     blue           black
+color quoted3     magenta        black
+color quoted4     cyan           black
+color quoted5     red            black
+color quoted6     brightgreen    black
+color quoted7     brightblue     black
+color quoted8     brightmagenta  black
+color quoted9     brightcyan     black
+
+color hdrdefault  default        white
+color header      white          black        '^date:'
+color header      brightgreen    black        '^(to|cc|bcc):'
+color header      brightblue     black        '^from:'
+color header      brightyellow   black        '^subject:'
+color header      white          black        '^user-agent:'
+color header      white          black        '^reply-to:'

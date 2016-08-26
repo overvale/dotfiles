@@ -10,8 +10,12 @@ set realname = 'Oliver Taylor'
 
 set sort = threads
 set fast_reply
+set include
+set nomark_old
+set nomarkers
 
-
+set sig_on_top
+set signature = '~/code/dotfiles/mutt/signature'
 
 
 

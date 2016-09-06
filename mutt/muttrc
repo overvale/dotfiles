@@ -7,7 +7,7 @@ set message_cachedir =~/.muttfiles/cache/bodies
 set certificate_file =~/.muttfiles/certificates
 
 set realname = 'Oliver Taylor'
-
+set mark_old=no
 set sort = threads
 set fast_reply
 

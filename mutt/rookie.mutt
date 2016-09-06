@@ -55,10 +55,10 @@ color quoted7     brightblue     black
 color quoted8     brightmagenta  black
 color quoted9     brightcyan     black
 
-color hdrdefault  default        white
-color header      white          black        '^date:'
-color header      brightgreen    black        '^(to|cc|bcc):'
-color header      brightblue     black        '^from:'
-color header      brightyellow   black        '^subject:'
-color header      white          black        '^user-agent:'
-color header      white          black        '^reply-to:'
+color hdrdefault  default        brightblack
+color header      white          brightblack        '^date:'
+color header      brightgreen    brightblack        '^(to|cc|bcc):'
+color header      brightblue     brightblack        '^from:'
+color header      brightyellow   brightblack        '^subject:'
+color header      white          brightblack        '^user-agent:'
+color header      white          brightblack        '^reply-to:'

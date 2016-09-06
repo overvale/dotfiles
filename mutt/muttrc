@@ -10,11 +10,14 @@ set realname = 'Oliver Taylor'
 set mark_old=no
 set sort = threads
 set fast_reply
+set include
+set nomark_old
+set nomarkers
+
+set sig_on_top
+set signature = '~/code/dotfiles/mutt/signature'
 
 
-
-
-macro generic <f1> "<shell-escape>open http://gmail.com<enter>" "Open Gmail in browser"
 
 # Open urlview
 macro pager \Cu "|urlview<enter>" "call urlview to open links"
@@ -38,6 +41,7 @@ set sort_re                                # thread based on regex
 bind index gr imap-fetch-mail
 bind index gg       first-entry
 bind index G        last-entry
+macro index <esc>g "<shell-escape>open http://gmail.com<enter>" "Open Gmail in browser"
 bind index R        group-reply
 bind index <space>  collapse-thread
 

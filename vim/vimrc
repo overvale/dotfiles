@@ -171,6 +171,9 @@ nnoremap <leader>n :set relativenumber!<cr>
 " Quickly correct last spelling error
 nnoremap z- [s1z=`^
 
+" Add '@TODO' to beginning of bulleted list
+nnoremap <leader>t 0f-a @TODO<esc>
+
 
 " }}}
 " {{{ Commands

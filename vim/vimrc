@@ -26,8 +26,6 @@ Plug 'morhetz/gruvbox'
 Plug 'romainl/Apprentice'
 Plug 'trevordmiller/nova-vim'
 Plug 'jeetsukumaran/vim-nefertiti'
-Plug 'therubymug/vim-pyte'
-Plug 'reedes/vim-colors-pencil'
 
 call plug#end()
 
@@ -36,14 +34,14 @@ call plug#end()
 " ------------------------------------------------------------------------------
 
 " syntax enable
-set termguicolors
+"set termguicolors
 set encoding=utf-8
 
 let g:seoul256_background = 254
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'hard'
 set background=light
-colorscheme gruvbox
+colorscheme seoul256-light
 
 
 " }}}

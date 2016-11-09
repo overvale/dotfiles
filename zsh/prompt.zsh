@@ -60,6 +60,11 @@ italicsoff=%{$'\e[23m'%}
 
 
 # The prompt itself
+# PROMPT='
+# ${italics}${myUsermachine}${myDir}${myBackgroundjobs}${vcs_info_msg_0_}${italicsoff}
+# ${myPrompt}'
+
+# Prompt without git info
 PROMPT='
-${italics}${myUsermachine}${myDir}${myBackgroundjobs}${vcs_info_msg_0_}${italicsoff}
+${italics}${myUsermachine}${myDir}${myBackgroundjobs}${italicsoff}
 ${myPrompt}'

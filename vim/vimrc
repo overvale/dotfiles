@@ -23,10 +23,11 @@ Plug 'thinca/vim-ft-markdown_fold'
 
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
-Plug 'altercation/vim-colors-solarized'
-Plug 'NLKNguyen/papercolor-theme'
 Plug 'romainl/Apprentice'
-Plug 'rakr/vim-two-firewatch'
+Plug 'trevordmiller/nova-vim'
+Plug 'jeetsukumaran/vim-nefertiti'
+Plug 'therubymug/vim-pyte'
+Plug 'reedes/vim-colors-pencil'
 
 call plug#end()
 
@@ -34,15 +35,15 @@ call plug#end()
 " {{{ Colors
 " ------------------------------------------------------------------------------
 
-syntax enable
+" syntax enable
+set termguicolors
+set encoding=utf-8
 
-colorscheme Apprentice
-
-if has("nvim")
-    set termguicolors
-else
-    set encoding=utf-8
-endif 
+let g:seoul256_background = 254
+let g:gruvbox_contrast_dark = 'soft'
+let g:gruvbox_contrast_light = 'hard'
+set background=light
+colorscheme gruvbox
 
 
 " }}}
@@ -55,7 +56,7 @@ source ~/code/private-dotfiles/vimrc
 set backspace=eol
 " set cursorline
 set formatoptions+=ron1j formatprg=par\ -w78rq nojoinspaces
-" set foldlevelstart=99
+set foldlevelstart=99
 set hidden confirm
 set incsearch ignorecase gdefault
 set laststatus=2 showcmd
@@ -72,7 +73,7 @@ set wildmenu wildmode=longest:full
 set wrap linebreak breakindent
 set wrapscan
 set nostartofline
-set relativenumber
+" set relativenumber
 
 " Statusline setup
 set statusline=              "set statusline to null
@@ -174,6 +175,8 @@ nnoremap <leader>n :set relativenumber!<cr>
 " Quickly correct last spelling error
 nnoremap z- [s1z=`^
 
+" Select last pasted text
+nnoremap gV `[v`]
 
 " }}}
 " {{{ Commands
@@ -181,7 +184,7 @@ nnoremap z- [s1z=`^
 
 " Never use a mapping when a command will do! This is Vim!
 command! MM :call Markdown()
-command! H1 :normal VUyypVr=
+command! H1 :normal yypVr=
 command! H2 :normal yypVr-
 command! PP :set paste! | set paste?
 command! SS :set spell! | set spell?
@@ -211,7 +214,7 @@ function! InsertEnter()
 endfunction
 
 function! InsertLeave()
-    set timeoutlen=3000
+    set timeoutlen=1000
 endfunction
 
 " }}}
@@ -268,7 +271,6 @@ augroup END
     vmap <silent> zN <Plug>(SpellRotateBackwardV)
 
 " SPIFFY FOLDTEXT
-
     let g:SpiffyFoldtext_format = "%c{=}...%<%f{ }%l{+}"
 
 " }}}

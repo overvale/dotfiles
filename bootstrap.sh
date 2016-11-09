@@ -23,10 +23,9 @@ chsh -s /bin/zsh
 
 # install homebrew - worth checking hompage
 # for, potentially, updated instructions
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 brew install vim
-brew install neovim/neovim/neovim
 brew install fzf
 brew install par
 brew install git

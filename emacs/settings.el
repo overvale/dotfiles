@@ -1,7 +1,8 @@
 ;; Packages
 (setq package-archives '(("gnu"          . "http://elpa.gnu.org/packages/")
                          ("org"          . "http://orgmode.org/elpa/")
-                         ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")))
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+			 ("melpa"        . "https://melpa.org/packages/")))
 (package-initialize)
 
 ;; Set some defaults
@@ -30,9 +31,9 @@
 
 ;; Font settings
 (set-face-attribute 'default nil
-                    :family "SF Mono" :height 120 :weight 'normal)
+                    :family "Pragmata Pro" :height 140 :weight 'normal)
 (set-face-attribute 'variable-pitch nil
-		    :family "Merriweather" :height 120 :weight 'normal)
+		    :family "Merriweather" :height 140 :weight 'normal)
 ;; switch to non-monospace with 'variable-pitch-mode'
 
 ;; Org Mode

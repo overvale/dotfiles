@@ -9,7 +9,6 @@
 [apply]
     whitespace = nowarn
 
-
 [alias]
     co = checkout
     br = branch
@@ -22,27 +21,8 @@
     unstage = rm --cached
     all = add -A
 
-
-[color]
-    ui = true
-[color "branch"]
-    current = red bold
-    local = blue
-    remote = green
-[color "diff"]
-    meta = yellow
-    frag = magenta
-    old = red
-    new = green
-    commit = magenta
-[color "status"]
-    header = 8
-    added = green
-    changed = yellow
-    untracked = red
 [log]
     decorate = full
-
 
 [difftool "Kaleidoscope"]
 	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
@@ -69,3 +49,55 @@
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
 	required = true
+
+[color]
+  pager = true
+  ui = auto
+  status = auto
+  diff = auto
+  branch = auto
+  showBranch = auto
+  interactive = auto
+  grep = auto
+[color "status"]
+  header = yellow bold
+  branch = cyan
+  nobranch = red
+  unmerged = red
+  untracked = cyan
+  added = cyan
+  changed = red
+[color "diff"]
+  meta = red bold
+  frag = yellow bold
+  func = blue
+  old = red strike
+  new = cyan
+  commit = blue
+  whitespace = red
+  context = normal
+[color "branch"]
+  current = cyan
+  local = blue
+  remote = magenta
+  upstream = magenta
+  plain = normal
+[color "decorate"]
+  branch = blue
+  remoteBranch = magenta
+  tag = magenta
+  stash = cyan
+  HEAD = blue
+[color "interactive"]
+  prompt = red
+  header = red bold
+  error = red
+  help = yellow bold
+[color "grep"]
+  context = normal
+  match = cyan
+  filename = blue 
+  function = blue
+  selected = normal
+  separator = red bold
+  linenumber = normal

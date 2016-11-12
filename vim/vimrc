@@ -37,10 +37,8 @@ call plug#end()
 "set termguicolors
 set encoding=utf-8
 
-let g:seoul256_background = 254
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'hard'
-set background=light
 colorscheme seoul256-light
 
 

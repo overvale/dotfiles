@@ -39,6 +39,7 @@ set encoding=utf-8
 
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'hard'
+let g:seoul256_light_background = 254
 colorscheme seoul256-light
 
 
@@ -268,5 +269,10 @@ augroup END
 
 " SPIFFY FOLDTEXT
     let g:SpiffyFoldtext_format = "%c{=}...%<%f{ }%l{+}"
+
+" GOYO
+    let g:goyo_width = 100
+    let g:goyo_height = "100%"
+    nnoremap <leader>g :Goyo<cr>
 
 " }}}

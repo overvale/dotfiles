@@ -2,7 +2,7 @@
     name = Oliver Taylor
     email = mail@olivertaylor.net
 [core]
-    excludesfile = /Users/oliver/.gitignore_global
+    excludesfile = /Users/olivertaylor/.gitignore_global
     editor = vim
 [push]
     default = simple

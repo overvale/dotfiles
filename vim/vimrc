@@ -1,6 +1,7 @@
 " {{{ Plugins
 " ------------------------------------------------------------------------------
 
+" This automatically installs vim-plug, and all your plugins
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -32,6 +33,8 @@ Plug 'morhetz/gruvbox'
 Plug 'romainl/Apprentice'
 Plug 'trevordmiller/nova-vim'
 Plug 'jeetsukumaran/vim-nefertiti'
+Plug 'rakr/vim-one'
+Plug 'rakr/vim-two-firewatch'
 
 call plug#end()
 
@@ -39,15 +42,16 @@ call plug#end()
 " {{{ Colors
 " ------------------------------------------------------------------------------
 
-" syntax enable
-"set termguicolors
+syntax enable
 set encoding=utf-8
+set termguicolors
 
+let g:two_firewatch_italics=1
+let g:one_allow_italics = 1
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'hard'
-let g:seoul256_light_background = 254
-colorscheme seoul256-light
-
+let g:seoul256_light_background = 253
+colorscheme gruvbox
 
 " }}}
 " {{{ Settings
@@ -57,7 +61,7 @@ colorscheme seoul256-light
 source ~/code/private-dotfiles/vimrc
 
 set backspace=eol
-" set cursorline
+"set cursorline
 set formatoptions+=ron1j formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
 set hidden confirm
@@ -76,7 +80,6 @@ set wildmenu wildmode=longest:full
 set wrap linebreak breakindent
 set wrapscan
 set nostartofline
-" set relativenumber
 
 " Statusline setup
 set statusline=              "set statusline to null
@@ -186,6 +189,7 @@ nnoremap gV `[v`]
 " ------------------------------------------------------------------------------
 
 " Never use a mapping when a command will do! This is Vim!
+command! BGT :call BackgroundToggle()
 command! MM :call Markdown()
 command! H1 :normal yypVr=
 command! H2 :normal yypVr-
@@ -218,6 +222,14 @@ endfunction
 
 function! InsertLeave()
     set timeoutlen=1000
+endfunction
+
+function! BackgroundToggle()
+    if (&background == 'dark')
+        set background=light
+    else
+        set background=dark
+    endif
 endfunction
 
 " }}}

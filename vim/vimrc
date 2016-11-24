@@ -66,7 +66,7 @@ set formatoptions+=ron1j formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
 set hidden confirm
 set incsearch ignorecase gdefault
-set laststatus=2 showcmd
+set laststatus=2 showcmd noshowmode
 set listchars=tab:»\ ,eol:¬,trail:¿,extends:→,precedes:←,nbsp:╌
 set mouse=n
 set scrolloff=0 sidescrolloff=5
@@ -80,15 +80,6 @@ set wildmenu wildmode=longest:full
 set wrap linebreak breakindent
 set wrapscan
 set nostartofline
-
-" Statusline setup
-set statusline=              "set statusline to null
-set statusline+=%f           "path to file
-set statusline+=\ %m         "[modified] flag
-set statusline+=\ %=         "left/right seperator
-set statusline+=\ %y         "[filetype]
-set statusline+=\ %l\,%c%V   "ruler
-set statusline+=\ %P         "percentage through file
 
 let mapleader = " "
 
@@ -129,6 +120,50 @@ nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 
 " Remap U to redo
 nnoremap U <c-r>
+
+" }}}
+" {{{ Status Line
+
+let g:currentmode={
+      \ 'n'  : 'Normal ',
+      \ 'no' : 'N·Operator Pending ',
+      \ 'v'  : 'Visual ',
+      \ 'V'  : 'V·Line ',
+      \ '' : 'V·Block ',
+      \ 's'  : 'Select ',
+      \ 'S'  : 'S·Line ',
+      \ '' : 'S·Block ',
+      \ 'i'  : 'Insert ',
+      \ 'R'  : 'Replace ',
+      \ 'Rv' : 'V·Replace ',
+      \ 'c'  : 'Command ',
+      \ 'cv' : 'Vim Ex ',
+      \ 'ce' : 'Ex ',
+      \ 'r'  : 'Prompt ',
+      \ 'rm' : 'More ',
+      \ 'r?' : 'Confirm ',
+      \ '!'  : 'Shell ',
+      \ 't'  : 'Terminal '
+      \}
+
+highlight link User1 StatuslineNC
+
+augroup statusline
+    autocmd!
+    autocmd InsertEnter * highlight link User1 DiffAdd
+    autocmd InsertLeave * highlight link User1 ModeMsg
+augroup END
+
+set statusline=              "set statusline to null
+set statusline+=%1*
+set statusline+=\ %{toupper(g:currentmode[mode()])}
+set statusline+=%0*
+set statusline+=\ %f           "path to file
+set statusline+=\ %m         "[modified] flag
+set statusline+=\ %=         "left/right seperator
+set statusline+=\ %y         "[filetype]
+set statusline+=\ %l\,%c%V   "ruler
+set statusline+=\ %P         "percentage through file
 
 " }}}
 " {{{ Mappings

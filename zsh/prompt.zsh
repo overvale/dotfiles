@@ -47,6 +47,7 @@ function +vi-git-aheadbehind() {
   hook_com[misc]+=${(j::)gitstatus}
 }
 
+# ------------------------------------------------------------------------------
 # And finally the prompt...
 
 # Setup the variables used in the prompt
@@ -65,6 +66,4 @@ italicsoff=%{$'\e[23m'%}
 # ${myPrompt}'
 
 # Prompt without git info
-PROMPT='
-${italics}${myUsermachine}${myDir}${myBackgroundjobs}${italicsoff}
-${myPrompt}'
+PROMPT='${italics}${myUsermachine}${myDir}${myBackgroundjobs}${italicsoff} ${myPrompt}'

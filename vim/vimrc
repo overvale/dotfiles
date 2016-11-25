@@ -143,47 +143,59 @@ nnoremap U <c-r>
 
 " }}}
 " {{{ Status Line
+" ------------------------------------------------------------------------------
 
-let g:currentmode={
-      \ 'n'  : 'Normal ',
-      \ 'no' : 'N·Operator Pending ',
-      \ 'v'  : 'Visual ',
-      \ 'V'  : 'V·Line ',
-      \ '' : 'V·Block ',
-      \ 's'  : 'Select ',
-      \ 'S'  : 'S·Line ',
-      \ '' : 'S·Block ',
-      \ 'i'  : 'Insert ',
-      \ 'R'  : 'Replace ',
-      \ 'Rv' : 'V·Replace ',
-      \ 'c'  : 'Command ',
-      \ 'cv' : 'Vim Ex ',
-      \ 'ce' : 'Ex ',
-      \ 'r'  : 'Prompt ',
-      \ 'rm' : 'More ',
-      \ 'r?' : 'Confirm ',
-      \ '!'  : 'Shell ',
-      \ 't'  : 'Terminal '
-      \}
+" Start by linking the modes defined in g:mode_map
+" to things likely to be in all colorschemes
+highlight link NormalMode StatusLine
+highlight link InsertMode DiffAdd
+highlight link VisualMode PmenuSel
+highlight link ReplaceMode Error
 
-highlight link User1 StatuslineNC
+" Create a map of modes to highlight groups
+let g:mode_map = {
+      \ 'n':  ['NORMAL',  'NormalMode' ], 'no':     ['PENDING', 'NormalMode' ], 'v': ['VISUAL',  'VisualMode' ],
+      \ 'V':  ['V-LINE',  'VisualMode' ], "\<c-v>": ['V-BLOCK', 'VisualMode' ], 's': ['SELECT',  'VisualMode' ],
+      \ 'S':  ['S-LINE',  'VisualMode' ], "\<c-s>": ['S-BLOCK', 'VisualMode' ], 'i': ['INSERT',  'InsertMode' ],
+      \ 'R':  ['REPLACE', 'ReplaceMode'], 'Rv':     ['REPLACE', 'ReplaceMode'], 'c': ['COMMAND', 'CommandMode'],
+      \ 'cv': ['COMMAND', 'CommandMode'], 'ce':     ['COMMAND', 'CommandMode'], 'r': ['PROMPT',  'CommandMode'],
+      \ 'rm': ['-MORE-',  'CommandMode'], 'r?':     ['CONFIRM', 'CommandMode'], '!': ['SHELL',   'CommandMode'],
+      \ 't':  ['TERMINAL', 'CommandMode']}
 
-augroup statusline
-    autocmd!
-    autocmd InsertEnter * highlight link User1 DiffAdd
-    autocmd InsertLeave * highlight link User1 ModeMsg
-augroup END
+" This updates the line highlight when you change modes
+fun! s:updateStatusLineHighlight(newMode)
+  execute 'hi! link CurrMode' get(g:mode_map, a:newMode, ["", a:newMode])[1]
+  return 1
+endf
 
-set statusline=              "set statusline to null
-set statusline+=%1*
-set statusline+=\ %{toupper(g:currentmode[mode()])}
-set statusline+=%0*
-set statusline+=\ %f           "path to file
-set statusline+=\ %m         "[modified] flag
-set statusline+=\ %=         "left/right seperator
-set statusline+=\ %y         "[filetype]
-set statusline+=\ %l\,%c%V   "ruler
-set statusline+=\ %P         "percentage through file
+" This, and the next function, build the status line
+" This first one, is focused on putting the current mode
+" in ONLY the active window
+fun! SetupStl(nr)
+  " In a %{} context, winnr() always refers to the window to which the status line being drawn belongs.
+  return get(extend(w:, {
+        \ "lf_active": winnr() != a:nr
+          \ ? 0
+          \ : (mode(1) ==# get(g:, "lf_cached_mode", "")
+            \ ? 1
+            \ : s:updateStatusLineHighlight(get(extend(g:, { "lf_cached_mode": mode(1) }), "lf_cached_mode"))
+            \ ),
+        \ "lf_winwd": winwidth(winnr())
+        \ }), "", "")
+endf
+
+" This is where the actual statusline is built
+function! BuildStatusLine(nr)
+    return '%{SetupStl('.a:nr.')}
+          \%#CurrMode#%{w:["lf_active"] ? "  " . get(g:mode_map, mode(1), [mode(1)])[0] . (&paste ? " PASTE " : " ") : ""}%*
+          \ %f %m
+          \ %=
+          \ %y %l,%c%V %P
+          \ '
+endfunction
+
+" And, finally, this puts the entire thing together
+set statusline=%!BuildStatusLine(winnr())
 
 " }}}
 " {{{ Mappings

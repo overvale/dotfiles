@@ -13,10 +13,9 @@ HISTSIZE=10000
 LC_CTYPE=en_US.UTF-8
 LC_ALL=en_US.UTF-8
 
-export PATH=/usr/local/bin:$PATH:~/code/dotfiles/bin:~/code/text-utilities
+export PATH=/usr/local/bin:$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs
 export EDITOR=vim
 export DOT=~/code/dotfiles
-export FZF_DEFAULT_OPTS="--color=light"
 
 # enable completion
 autoload -U compinit
@@ -65,3 +64,42 @@ alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall 
 alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
 alias server='python -m SimpleHTTPServer 8000'
 alias unquarantine='xattr -d com.apple.quarantine'
+
+# ---------- FZF Settings ---------- #
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+source ~/code/other-repos/fzf-marks/fzf-marks.plugin.zsh
+
+export FZF_FS_OPENER=vim
+alias ffs='fzf-fs'
+
+# fshow - git commit browser
+fshow() {
+  git log --graph --color=always \
+      --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
+      --bind "ctrl-m:execute:
+                (grep -o '[a-f0-9]\{7\}' | head -1 |
+                xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                {}
+FZF-EOF"
+}
+
+# fe [FUZZY PATTERN] - Open the selected file with the default editor
+#   - Bypass fuzzy finder if there's only one match (--select-1)
+#   - Exit if there's no match (--exit-0)
+fe() {
+  local files
+  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+}
+
+# v - open files in ~/.viminfo
+v() {
+  local files
+  files=$(grep '^>' ~/.viminfo | cut -c3- |
+          while read line; do
+            [ -f "${line/\~/$HOME}" ] && echo "$line"
+          done | fzf-tmux -d -m -q "$*" -1) && vim ${files//\~/$HOME}
+}

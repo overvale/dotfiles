@@ -13,7 +13,7 @@ HISTSIZE=10000
 LC_CTYPE=en_US.UTF-8
 LC_ALL=en_US.UTF-8
 
-export PATH=/usr/local/bin:$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs
+export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs
 export EDITOR=vim
 export DOT=~/code/dotfiles
 

@@ -13,8 +13,7 @@ Plug 'mbbill/undotree'
 Plug 'gcmt/taboo.vim'
     let g:taboo_tab_format=" %N: %f%m "
     let g:taboo_modified_tab_flag=" +"
-Plug 'junegunn/vim-pseudocl'
-Plug 'junegunn/vim-oblique'
+Plug 'junegunn/vim-slash'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/goyo.vim'
     let g:goyo_width = 100
@@ -37,6 +36,7 @@ Plug 'Konfekt/FastFold'
 Plug 'atimholt/spiffy_foldtext'
     let g:SpiffyFoldtext_format = "%c{=}...%<%f{ }%l{+}"
 Plug 'justinmk/vim-sneak'
+Plug 'tpope/vim-dispatch'
 
 " ----- Languages -----
 
@@ -52,6 +52,7 @@ Plug 'thinca/vim-ft-markdown_fold'
 
 Plug 'junegunn/seoul256.vim'
     let g:seoul256_light_background = 253
+    let g:seoul256_background = 238
 Plug 'morhetz/gruvbox'
     let g:gruvbox_contrast_dark = 'soft'
     let g:gruvbox_contrast_light = 'hard'
@@ -70,19 +71,13 @@ call plug#end()
 syntax enable
 set encoding=utf-8
 
-function! AcmeStatusLine()
-    highlight! StatusLine   guibg=#aeeeee guifg=#000000 gui=NONE ctermbg=159 ctermfg=232 cterm=underline
-    highlight! StatusLineNC guibg=#EDFDFE guifg=#434326 gui=NONE ctermbg=159 ctermfg=232 cterm=underline
-endfunction
-
 if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
     set termguicolors
-    colorscheme gruvbox
+    colorscheme vacme
     set background=light
-    call AcmeStatusLine()
 else
-    colorscheme seoul256-light
-    set background=light
+    colorscheme seoul256
+    set background=dark
 endif
 
 " }}}
@@ -93,7 +88,7 @@ endif
 source ~/code/private-dotfiles/vimrc
 
 set backspace=eol
-set formatoptions+=ron1j formatprg=par\ -w78rq nojoinspaces
+set formatoptions=croqn1jl formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
 set hidden confirm
 set incsearch ignorecase gdefault
@@ -113,7 +108,7 @@ set wrapscan
 set nostartofline
 
 " Enter command-mode with <space>
-nnoremap <space> :
+noremap <space> :
 
 " Set proper italic escape-codes
 let &t_ZH="\e[3m"
@@ -181,15 +176,12 @@ fun! SetupStl(nr)
         \ }), "", "")
 endf
 
-let g:status_tail = '%n'
 
 function! BuildStatusLine(nr)
     return '%{SetupStl('.a:nr.')}
-          \%#CurrMode#%{w:["lf_active"] ? "  " . get(g:mode_map, mode(1), [mode(1)])[0] . (&paste ? " PASTE " : " ") : ""}%*
-          \ %f %M
-          \ %=
-          \ %{&spell ? "SPELL " : "" }%y ¶ %l,%c%V %P %*
-          \'
+    \%#CurrMode#%{w:["lf_active"] ? "  " . get(g:mode_map, mode(1), [mode(1)])[0] . (&paste ? " PASTE " : " ") : ""}%*
+    \ %f %M %=
+    \ %{&spell ? "SPELL " : "" }%y ¶ %l,%c%V %P %* '
 endfunction
 
 set statusline=%!BuildStatusLine(winnr())
@@ -214,6 +206,11 @@ command! -range Break :'<,'>!clause-break
 vnoremap gcj :Join<cr>
 nnoremap gcj V:Join<cr>
 command! -range Join :'<,'>!clause-join
+
+" Mappings/Commands for 'titlecase.pl'
+vnoremap gct :Title<cr>
+nnoremap gct V:Title<cr>
+command! -range Title :'<,'>!titlecase.pl
 
 " Quickly go to next/previous tab/buffer/window/quickfix/jump
 nnoremap ]b :bnext<cr>
@@ -254,9 +251,9 @@ command! H1 :normal yypVr=
 command! H2 :normal yypVr-
 command! PP :set paste! | set paste?
 command! SS :set spell! | set spell?
-command! Src :source $MYVIMRC
+command! Src :source $MYVIMRC | :echom "vimrc reloaded!"
 command! Erc :e $MYVIMRC
-command! Wrc :w|Src
+command! Wrc :w | :source $MYVIMRC | :echom "vimrc saved and reloaded!"
 command! WW :set wrap!
 command! UT :UndotreeToggle
 command! TODO vimgrep TODO % | cw
@@ -280,7 +277,18 @@ augroup custom_misc
     autocmd InsertEnter * set timeoutlen=0
     autocmd InsertLeave * set timeoutlen=1000
     autocmd BufRead,BufNewFile *.text,*.md setlocal spell filetype=markdown syntax=markdown
+    autocmd ColorScheme * call CustomizeColors()
 augroup END
+
+function! CustomizeColors()
+    if (g:colors_name == 'vacme')
+        highlight link NormalMode  StatusLine
+        highlight link InsertMode  PMenuSel
+        highlight link VisualMode  Visual
+        highlight link ReplaceMode Error
+        highlight link CommandMode Search
+    endif
+endfunction
 
 function! Markdown()
     setlocal spell
@@ -295,5 +303,17 @@ function! BackgroundToggle()
         set background=dark
     endif
 endfunction
+
+" }}}
+" {{{ Abbriviations
+" ------------------------------------------------------------------------------
+
+inoreabbrev <expr> #!! "#!/usr/bin/env" . (empty(&filetype) ? '' : ' '.&filetype)
+
+" ----------------------------------------------------------------------------
+" <Leader>I/A | Prepend/Append to all adjacent lines with same indentation
+" ----------------------------------------------------------------------------
+nmap <silent> <leader>I ^vio<C-V>I
+nmap <silent> <leader>A ^vio<C-V>$A
 
 " }}}

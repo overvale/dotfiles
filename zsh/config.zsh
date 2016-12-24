@@ -65,6 +65,14 @@ alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall F
 alias server='python -m SimpleHTTPServer 8000'
 alias unquarantine='xattr -d com.apple.quarantine'
 
+function makepdf(){
+    if test -z $3; then
+	echo "USAGE: makepdf format /source /destination"
+    else
+	pandoc --smart -f $1 -t html < $2 | prince -s ~/code/print_css/print.css - -o $3
+    fi
+}
+
 # ---------- FZF Settings ---------- #
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

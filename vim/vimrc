@@ -73,8 +73,8 @@ set encoding=utf-8
 
 if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
     set termguicolors
-    colorscheme vacme
-    set background=light
+    colorscheme gruvbox
+    set background=dark
 else
     colorscheme seoul256
     set background=dark

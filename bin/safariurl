@@ -1,1 +1,3 @@
+#!/bin/sh
+
 osascript -e "tell application \"Safari\" to return the URL of current tab of window 1"

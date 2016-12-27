@@ -50,6 +50,7 @@ ln -s ~/code/dotfiles/zsh .zsh;
 ln -s ~/code/dotfiles/zsh/zshrc .zshrc;
 ln -s ~/code/dotfiles/vim .vim;
 ln -s ~/code/dotfiles/emacs ~/.emacs.d;
+ln -s ~/code/dotfiles/hammerspoon ~/.hammerspoon;
 
 # Install vim plugin manager + plugins
 # Reconstruct ~/.marks directory
@@ -63,8 +64,8 @@ ln -s ~/code/dotfiles/emacs ~/.emacs.d;
 # BBEdit
 # Emacs
 # Google Chrome
+# Hammerspoon
 # Name Mangler (Mac App Store)
-# Omnifocus
 # Pixelmator (Mac App Store)
 # QuickTime Player 7
 # Slack

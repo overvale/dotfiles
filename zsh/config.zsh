@@ -67,10 +67,54 @@ alias unquarantine='xattr -d com.apple.quarantine'
 
 function makepdf(){
     if test -z $3; then
-	echo "USAGE: makepdf format /source /destination"
+	echo "USAGE: makepdf format /source /destination" >&2
+	return 1
+	
     else
-	pandoc --smart -f $1 -t html < $2 | prince -s ~/code/print_css/print.css - -o $3
+	pandoc --smart -f $1 -t html < $2 || prince -s ~/code/print_css/print.css - -o $3
+	return 0
+	
     fi
+}
+
+function surround(){
+	if test -z $1; then
+		echo "ERROR: requires argument 1 to be surround character" >&2
+		return 1
+	elif [ $1 = "{" ]; then
+		echo "{$(cat)}"
+		return 0
+	elif [ $1 = "<" ]; then
+		echo "<$(cat)>"
+		return 0
+	elif [ $1 = "[" ]; then
+		echo "[$(cat)]"
+		return 0
+	elif [ $1 = "(" ]; then
+		echo "($(cat))"
+		return 0
+	elif [ $1 = "\"" ]; then
+		echo "\"$(cat)\""
+		return 0
+	elif [ $1 = "'" ]; then
+		echo "'$(cat)'"
+		return 0
+	elif [ $1 = "*" ]; then
+		echo "*$(cat)*"
+		return 0
+	elif [ $1 = "**" ]; then
+		echo "**$(cat)**"
+		return 0
+	elif [ $1 = "_" ]; then
+		echo "_$(cat)_"
+		return 0
+	elif [ $1 = "\`" ]; then
+		echo "\`$(cat)\`"
+		return 0
+	else
+		echo "Unknown surround character" >&2
+		return 1	
+	fi
 }
 
 # ---------- FZF Settings ---------- #

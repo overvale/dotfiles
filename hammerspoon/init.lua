@@ -22,3 +22,5 @@ require('windows')
 -- Miro's Window Management
 -- These bindings use hyper
 require('position')
+
+hs.hotkey.bind(half_hyper, 't', function() hs.alert.show(os.date("%A %b %d, %Y - %I:%M%p"), 4) end)

@@ -23,16 +23,15 @@ chsh -s /bin/zsh
 # for, potentially, updated instructions
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-brew install vim
-brew install fzf
-brew install par
-brew install git
-brew install tree
-brew install ranger
-brew install pandoc
-brew install zsh
-brew install ispell
 brew install emacs --with-cocoa
+brew install fzf
+brew install git
+brew install ispell
+brew install pandoc
+brew install par
+brew install tree
+brew install vim
+brew install zsh
 
 # Install ~/code/other-repos from backup
 
@@ -54,16 +53,17 @@ ln -s ~/code/dotfiles/hammerspoon ~/.hammerspoon;
 # Install vim plugin manager + plugins
 # Reconstruct ~/.marks directory
 
-# Install dropbox
-
 # Install apps:
 
 # Adobe Lightroom
 # Arq
 # BBEdit
+# Dropbox
 # Emacs
+# Gitup
 # Google Chrome
 # Hammerspoon
+# Karabiner
 # Name Mangler (Mac App Store)
 # Pixelmator (Mac App Store)
 # QuickTime Player 7
@@ -71,4 +71,20 @@ ln -s ~/code/dotfiles/hammerspoon ~/.hammerspoon;
 # SuperDuper
 # Transmit
 
+# Install work windows-path tools
 # Install fonts from server
+
+# ----------------------------------------------------------
+
+# They keyboard setup is rather spesific.
+# At the moment Karabiner doesn't work with MacOS Sierra,
+# so I'm using Karabiner Elements to remap 2 things:
+# 1. Caps lock -> Left control
+# 2. Right option -> right control
+# I would much prefer my old setup, which was:
+# a. Caps -> Escape/Control
+# b. Return -> Return/Control
+# c. Right option -> hyper
+#
+# At the moment I'm faking Caps -> Escape/Control via Karabiner + Hammerspoon
+# but there's some lag, which is dissapointing, and Return -> Return/Control is impossible.

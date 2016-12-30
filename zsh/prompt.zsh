@@ -1,3 +1,7 @@
+#!/usr/bin/env zsh 
+
+# THIS FILE IS NOT CURRENTLY USED, BUT LEFT IN PLACE IN CASE I WANT TO USE IT LATER
+
 # Enable what needs to be enabled
 setopt prompt_subst
 autoload -Uz vcs_info
@@ -59,11 +63,10 @@ myPrompt='%F{5}❯ %f'
 italics=%{$'\e[3m'%}
 italicsoff=%{$'\e[23m'%}
 
-
-# The prompt itself
-# PROMPT='
-# ${italics}${myUsermachine}${myDir}${myBackgroundjobs}${vcs_info_msg_0_}${italicsoff}
-# ${myPrompt}'
-
 # Prompt without git info
 PROMPT='${italics}${myUsermachine}${myDir}${myBackgroundjobs}${italicsoff} ${myPrompt}'
+
+# Prompt with git info
+PROMPT='
+${italics}${myUsermachine}${myDir}${myBackgroundjobs}${vcs_info_msg_0_}${italicsoff}
+${myPrompt}'

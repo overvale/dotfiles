@@ -46,7 +46,6 @@ mkdir ~/.config
 # Symlink a bunch of things - run from $HOME
 ln -s ~/code/dotfiles/git/gitconfig .gitconfig;
 ln -s ~/code/dotfiles/git/gitignore_global .gitignore_global;
-ln -s ~/code/dotfiles/zsh .zsh;
 ln -s ~/code/dotfiles/zsh/zshrc .zshrc;
 ln -s ~/code/dotfiles/vim .vim;
 ln -s ~/code/dotfiles/emacs ~/.emacs.d;

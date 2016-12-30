@@ -1,12 +1,143 @@
-# Start by saying that anything ending in .zsh in my dotfiles folder should be sourced
-typeset -U config_files
-config_files=(~/code/dotfiles/**/*.zsh)
+#!/usr/bin/env zsh
+
+# These files are hosted on github, and there are a few things I don't want up there
 source ~/code/private-dotfiles/localrc.zsh
 
-# Then load the actual files
-for file in ${(M)config_files}
-do
-  source $file
-done
+# OPTIONS
+# ----------------------------------------------------------------------------
 
-unset config_files
+setopt HIST_IGNORE_DUPS     # ignore duplication command history list
+setopt SHARE_HISTORY        # share history data between sessions
+setopt APPEND_HISTORY       # new sessions append history data rather than overwrite
+setopt EXTENDED_HISTORY     # Save each command’s beginning timestamp
+setopt NOCLOBBER            # disallow overwriting of files using >
+# setopt CORRECT             # try to correct the spelling of commands
+# setopt CORRECTALL          # try to correct the spelling of all arguments
+setopt complete_aliases           # don't expand aliases _before_ completion has finished
+set    completion-ignore-case on  # ignore case for tab completion
+set    show-all-if-ambiguous on   # show all suggestions after pressing tab once instead of twice
+
+HISTFILE=~/.zsh_history
+SAVEHIST=10000
+HISTSIZE=10000
+
+export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs
+export EDITOR=vim
+export DOT=~/code/dotfiles
+
+# Setting for the new UTF-8 terminal support in Lion
+LC_CTYPE=en_US.UTF-8
+LC_ALL=en_US.UTF-8
+
+# enable completion
+autoload -U compinit
+compinit -C
+
+# Arrow driven menu for complete
+zstyle ':completion:*' menu select
+
+## case-insensitive (all),partial-word and then substring completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' \
+    'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+# pasting with tabs doesn't perform completion
+zstyle ':completion:*' insert-tab pending
+
+# PROMPT
+# ----------------------------------------------------------------------------
+
+setopt prompt_subst
+
+# Setup the variables used in the prompt
+if [ -n "$SSH_CLIENT" ]; then
+    local myUsermachine='%F{8}%n@%m:%f'
+fi
+myDir='%F{4}%~%f'
+myBackgroundjobs='%F{1}%(1j. (%j jobs).)%f'
+myPrompt='%F{5}❯ %f'
+italics=%{$'\e[3m'%}
+italicsoff=%{$'\e[23m'%}
+
+# Prompt without git info
+PROMPT='${italics}${myUsermachine}${myDir}${myBackgroundjobs}${italicsoff} ${myPrompt}'
+
+# ALIASES
+# ----------------------------------------------------------------------------
+
+bindkey "^K" history-beginning-search-backward
+bindkey "^J" history-beginning-search-forward
+alias rm="rm -i"        # overwrite protection
+alias mv="mv -i"        # overwrite protection
+alias l='ls -1p'        # my favorite options
+alias la="ls -AohGp"    # long list, all, colors
+alias ..="cd .."
+alias ax="chmod a+x"
+alias cpwd='pwd|tr -d "\n"|pbcopy' # copy pwd
+alias tmn='tmux new -s `basename $PWD`'
+alias tma='tmux attach -t '
+alias tml='tmux list-sessions'
+alias tmk='tmux kill-session -t '
+function size(){ du -sh "$1" }
+function rt(){ mv $1 ~/.Trash; }
+alias cdf='cd $(osascript -e "tell application \"Finder\" to POSIX path of (target of window 1 as alias)")'
+function cfp(){ echo "$PWD/$1"|pbcopy && echo "File-Path is on the clipboard" }
+alias batt="pmset -g batt"
+myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
+alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+alias server='python -m SimpleHTTPServer 8000'
+alias unquarantine='xattr -d com.apple.quarantine'
+
+# FUNCTIONS
+# ----------------------------------------------------------------------------
+
+function makepdf(){
+    if test -z $3; then
+        echo "USAGE: makepdf format /source /destination" >&2
+        return 1
+    else
+        pandoc --smart -f $1 -t html < $2 || prince -s ~/code/print_css/print.css - -o $3
+        return 0
+    fi
+}
+
+# FZF OPTIONS / FUNCTIONS
+# ----------------------------------------------------------------------------
+
+source /usr/local/opt/fzf/shell/completion.zsh
+source /usr/local/opt/fzf/shell/key-bindings.zsh
+source ~/code/other-repos/fzf-marks/fzf-marks.plugin.zsh
+
+export FZF_DEFAULT_OPTS='--color light'
+export FZF_FS_OPENER=vim
+alias ffs='fzf-fs'
+
+# fshow - git commit browser
+fshow() {
+  git log --graph --color=always \
+      --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
+      --bind "ctrl-m:execute:
+                (grep -o '[a-f0-9]\{7\}' | head -1 |
+                xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                {}
+FZF-EOF"
+}
+
+# fe [FUZZY PATTERN] - Open the selected file with the default editor
+#   - Bypass fuzzy finder if there's only one match (--select-1)
+#   - Exit if there's no match (--exit-0)
+fe() {
+  local files
+  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+}
+
+# v - open files in ~/.viminfo
+v() {
+  local files
+  files=$(grep '^>' ~/.viminfo | cut -c3- |
+          while read line; do
+            [ -f "${line/\~/$HOME}" ] && echo "$line"
+          done | fzf-tmux -d -m -q "$*" -1) && vim ${files//\~/$HOME}
+}

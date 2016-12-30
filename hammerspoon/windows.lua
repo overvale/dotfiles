@@ -12,6 +12,8 @@ hs.hotkey.bind(half_hyper, "'", function() hs.fnutils.map(hs.window.visibleWindo
 
 hs.hotkey.bind(half_hyper, 'm', hs.grid.maximizeWindow)
 
+hs.hotkey.bind(half_hyper, 'c', function() hs.window.centerOnScreen(hs.window.focusedWindow()) end)
+
 hs.hotkey.bind(half_hyper, 'j', hs.grid.pushWindowDown)
 hs.hotkey.bind(half_hyper, 'k', hs.grid.pushWindowUp)
 hs.hotkey.bind(half_hyper, 'h', hs.grid.pushWindowLeft)

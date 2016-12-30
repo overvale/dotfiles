@@ -1,4 +1,4 @@
--- I found this here:
+-- When you press and relese control, without pressing any other keys, send escape.
 -- https://github.com/jasoncodes/dotfiles/blob/master/hammerspoon/control_escape.lua
 
 send_escape = false

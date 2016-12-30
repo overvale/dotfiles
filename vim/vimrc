@@ -35,8 +35,7 @@ Plug 'tweekmonster/spellrotate.vim'
 Plug 'Konfekt/FastFold'
 Plug 'atimholt/spiffy_foldtext'
     let g:SpiffyFoldtext_format = "%c{=}...%<%f{ }%l{+}"
-Plug 'justinmk/vim-sneak'
-Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-rsi'
 
 " ----- Languages -----
 
@@ -51,7 +50,7 @@ Plug 'thinca/vim-ft-markdown_fold'
 " ----- Colors -----
 
 Plug 'junegunn/seoul256.vim'
-    let g:seoul256_light_background = 253
+    let g:seoul256_light_background = 254
     let g:seoul256_background = 238
 Plug 'morhetz/gruvbox'
     let g:gruvbox_contrast_dark = 'soft'
@@ -76,8 +75,8 @@ if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
     colorscheme gruvbox
     set background=dark
 else
-    colorscheme seoul256
-    set background=dark
+    colorscheme seoul256-light
+    set background=light
 endif
 
 " }}}
@@ -87,7 +86,7 @@ endif
 " Each machine has settings specific to it
 source ~/code/private-dotfiles/vimrc
 
-set backspace=eol
+set backspace=indent,eol,start
 set formatoptions=croqn1jl formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
 set hidden confirm
@@ -101,6 +100,8 @@ set spellfile=~/.vim/custom-dictionary.utf-8.add
 set spelllang=en_us
 set splitbelow splitright
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+set notimeout ttimeout
+set timeoutlen=1000 ttimeoutlen=0
 set undofile undodir=~/code/vimundo
 set wildmenu wildmode=longest:full
 set wrap linebreak breakindent
@@ -274,8 +275,6 @@ augroup custom_misc
     autocmd Filetype rst setlocal foldmethod=expr
     autocmd FileType gitcommit setlocal spell
     autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
-    autocmd InsertEnter * set timeoutlen=0
-    autocmd InsertLeave * set timeoutlen=1000
     autocmd BufRead,BufNewFile *.text,*.md setlocal spell filetype=markdown syntax=markdown
     autocmd ColorScheme * call CustomizeColors()
 augroup END

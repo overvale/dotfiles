@@ -75,8 +75,7 @@ if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
     colorscheme gruvbox
     set background=dark
 else
-    colorscheme seoul256-light
-    set background=light
+    colorscheme seoul256
 endif
 
 " }}}
@@ -258,6 +257,7 @@ command! Wrc :w | :source $MYVIMRC | :echom "vimrc saved and reloaded!"
 command! WW :set wrap!
 command! UT :UndotreeToggle
 command! TODO vimgrep TODO % | cw
+command! GLTODO vimgrep TODO ~/Dropbox/life.text ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | cw
 command! DATES vimgrep /\v<\d{4}-\d{2}-\d{2}>/j % | cw
 
 " allow saving a sudo file if forgot to open as sudo

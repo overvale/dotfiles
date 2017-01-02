@@ -17,7 +17,7 @@
     df = diff -b --word-diff
     ks = difftool
     last = log -1 HEAD
-    lg = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%cd%C(reset) %s%C(red)%d%C(reset) %C(cyan)%cn%C(reset), %C(green)%cr%C(reset)' --abbrev-commit --date=short --branches --tags --remotes
+    lg = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%cd%C(reset) %s%C(red)%d%C(reset)' --abbrev-commit --date=short --branches --tags --remotes
     unstage = rm --cached
     all = add -A
 

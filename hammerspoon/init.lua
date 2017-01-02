@@ -31,12 +31,9 @@ anycomplete.registerDefaultBindings()
 hs.hotkey.bind(half_hyper, "s", function() hs.application.launchOrFocus("Safari") end)
 hs.hotkey.bind(half_hyper, "t", function() hs.application.launchOrFocus("Terminal") end)
 hs.hotkey.bind(half_hyper, "i", function() hs.application.launchOrFocus("iTunes") end)
-
+hs.hotkey.bind(half_hyper, "b", function() hs.application.launchOrFocus("Finder") end)
 
 -- ---------------------- --
-
--- Define a function you want to later execute
--- tab2escape = hs.hotkey.bind({}, 'tab', function() hs.eventtap.keyStroke({}, "escape") end)
 
 -- For the app "Terminal" enable/disable the function when app is focused/unfocused
 -- hs.window.filter.new('Terminal')

@@ -1,8 +1,3 @@
-#!/usr/bin/env zsh
-
-# These files are hosted on github, and there are a few things I don't want up there
-source ~/code/private-dotfiles/localrc.zsh
-
 # OPTIONS
 # ----------------------------------------------------------------------------
 
@@ -11,8 +6,6 @@ setopt SHARE_HISTORY        # share history data between sessions
 setopt APPEND_HISTORY       # new sessions append history data rather than overwrite
 setopt EXTENDED_HISTORY     # Save each command’s beginning timestamp
 setopt NOCLOBBER            # disallow overwriting of files using >
-# setopt CORRECT             # try to correct the spelling of commands
-# setopt CORRECTALL          # try to correct the spelling of all arguments
 setopt complete_aliases           # don't expand aliases _before_ completion has finished
 set    completion-ignore-case on  # ignore case for tab completion
 set    show-all-if-ambiguous on   # show all suggestions after pressing tab once instead of twice
@@ -25,9 +18,9 @@ export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/f
 export EDITOR=vim
 export DOT=~/code/dotfiles
 
-# Setting for the new UTF-8 terminal support in Lion
-LC_CTYPE=en_US.UTF-8
-LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 # enable completion
 autoload -U compinit
@@ -59,7 +52,7 @@ italics=%{$'\e[3m'%}
 italicsoff=%{$'\e[23m'%}
 
 # Prompt without git info
-PROMPT='${italics}${myUsermachine}${myDir}${myBackgroundjobs}${italicsoff} ${myPrompt}'
+PROMPT='${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
 
 # ALIASES
 # ----------------------------------------------------------------------------
@@ -83,10 +76,12 @@ alias cdf='cd $(osascript -e "tell application \"Finder\" to POSIX path of (targ
 function cfp(){ echo "$PWD/$1"|pbcopy && echo "File-Path is on the clipboard" }
 alias batt="pmset -g batt"
 myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
-alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
-alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
 alias server='python -m SimpleHTTPServer 8000'
 alias unquarantine='xattr -d com.apple.quarantine'
+alias vvrc="vim $DOT/vim/vimrc"
+
+alias gs='git status -sb'
+alias gl='git lg'
 
 # FUNCTIONS
 # ----------------------------------------------------------------------------
@@ -101,6 +96,13 @@ function makepdf(){
     fi
 }
 
+function todo() {
+    vim $(find ~/Dropbox/life.text ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | fzf)
+}
+function gltodo(){
+    grep TODO ~/Dropbox/life.text ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | sed -E "s/(.+\/)(.+)(\..+)(TODO +)(.+)/\2: \5/g" | column -t -s :
+}
+
 # FZF OPTIONS / FUNCTIONS
 # ----------------------------------------------------------------------------
 
@@ -108,9 +110,15 @@ source /usr/local/opt/fzf/shell/completion.zsh
 source /usr/local/opt/fzf/shell/key-bindings.zsh
 source ~/code/other-repos/fzf-marks/fzf-marks.plugin.zsh
 
-export FZF_DEFAULT_OPTS='--color light'
+export FZF_DEFAULT_OPTS='--color dark'
 export FZF_FS_OPENER=vim
 alias ffs='fzf-fs'
+
+# fd - cd to selected directory
+fd() {
+  DIR=`find ${1:-*} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf-tmux` \
+    && cd "$DIR"
+}
 
 # fshow - git commit browser
 fshow() {

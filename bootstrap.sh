@@ -12,6 +12,8 @@
 # Install ~/code/other-repos from backup
 # pull-down your dotfiles, or copy from backup
 
+chsh -s /bin/zsh
+
 # Installs the developer command line tools
 xcode-select --install
 

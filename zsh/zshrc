@@ -14,7 +14,7 @@ HISTFILE=~/.zsh_history
 SAVEHIST=10000
 HISTSIZE=10000
 
-export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs
+export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs:/Applications/Racket\ v6.7/bin
 export EDITOR=vim
 export DOT=~/code/dotfiles
 
@@ -59,6 +59,7 @@ PROMPT='${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
 
 bindkey "^K" history-beginning-search-backward
 bindkey "^J" history-beginning-search-forward
+
 alias rm="rm -i"        # overwrite protection
 alias mv="mv -i"        # overwrite protection
 alias l='ls -1p'        # my favorite options
@@ -91,16 +92,16 @@ function makepdf(){
         echo "USAGE: makepdf format /source /destination" >&2
         return 1
     else
-        pandoc --smart -f $1 -t html < $2 || prince -s ~/code/print_css/print.css - -o $3
+        pandoc --smart -f $1 -t html < $2 | prince -s ~/code/print_css/print.css - -o $3
         return 0
     fi
 }
 
 function todo() {
-    vim $(find ~/Dropbox/life.text ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | fzf)
+    vim $(find ~/Dropbox/life.text ~/Documents/screenwriting/career/writing.txt ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | fzf)
 }
 function gltodo(){
-    grep TODO ~/Dropbox/life.text ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | sed -E "s/(.+\/)(.+)(\..+)(TODO +)(.+)/\2: \5/g" | column -t -s :
+    grep TODO ~/Dropbox/life.text ~/Documents/screenwriting/career/writing.txt ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | sed -E "s/(.+\/)(.+)(\..+)(TODO +)(.+)/\2: \5/g" | column -t -s :
 }
 
 # FZF OPTIONS / FUNCTIONS

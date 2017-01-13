@@ -14,7 +14,7 @@ HISTSIZE=5000
 
 set -o noclobber
 
-export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs
+export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs:/Applications/Racket\ v6.7/bin
 export EDITOR=vim
 export DOT=~/code/dotfiles
 
@@ -30,7 +30,7 @@ if [ -n "$SSH_CLIENT" ]; then
     myUsermachine='\u@\h:'
 fi
 myDir='\w'
-myPrompt='❯ '
+myPrompt='$ '
 myJobs='\j '
 
 PS1="\033[1;33m"${myUsermachine}"\033[0;32m"${myDir}"\033[0;34m"${myPrompt}"\033[0m"
@@ -72,16 +72,16 @@ function makepdf(){
         echo "USAGE: makepdf format /source /destination" >&2
         return 1
     else
-        pandoc --smart -f $1 -t html < $2 || prince -s ~/code/print_css/print.css - -o $3
+        pandoc --smart -f $1 -t html < $2 | prince -s ~/code/print_css/print.css - -o $3
         return 0
     fi
 }
 
 function todo() {
-    vim $(find ~/Dropbox/life.text ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | fzf)
+    vim $(find ~/Dropbox/life.text ~/Documents/screenwriting/career/writing.txt ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | fzf)
 }
 function gltodo(){
-    grep TODO ~/Dropbox/life.text ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | sed -E "s/(.+\/)(.+)(\..+)(TODO +)(.+)/\2: \5/g" | column -t -s :
+    grep TODO ~/Dropbox/life.text ~/Documents/screenwriting/career/writing.txt ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | sed -E "s/(.+\/)(.+)(\..+)(TODO +)(.+)/\2: \5/g" | column -t -s :
 }
 
 # FZF OPTIONS / FUNCTIONS

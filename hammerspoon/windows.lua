@@ -19,8 +19,8 @@ hs.hotkey.bind(half_hyper, 'k', hs.grid.pushWindowUp)
 hs.hotkey.bind(half_hyper, 'h', hs.grid.pushWindowLeft)
 hs.hotkey.bind(half_hyper, 'l', hs.grid.pushWindowRight)
 
-hs.hotkey.bind(half_hyper, '.', hs.grid.resizeWindowTaller)
-hs.hotkey.bind(half_hyper, ',', hs.grid.resizeWindowShorter)
+hs.hotkey.bind(half_hyper, ',', hs.grid.resizeWindowTaller)
+hs.hotkey.bind(half_hyper, '.', hs.grid.resizeWindowShorter)
 hs.hotkey.bind(half_hyper, ']', hs.grid.resizeWindowWider)
 hs.hotkey.bind(half_hyper, '[', hs.grid.resizeWindowThinner)
 

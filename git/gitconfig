@@ -60,19 +60,19 @@
   interactive = auto
   grep = auto
 [color "status"]
-  header = yellow bold
-  branch = cyan
+  header = black bold
+  branch = blue bold
   nobranch = red
   unmerged = red
-  untracked = cyan
-  added = cyan
+  untracked = yellow
+  added = green
   changed = red
 [color "diff"]
-  meta = red bold
-  frag = yellow bold
+  meta = blue bold
+  frag = blue bold
   func = blue
   old = red strike
-  new = cyan
+  new = green
   commit = blue
   whitespace = red
   context = normal

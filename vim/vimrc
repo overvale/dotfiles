@@ -50,7 +50,7 @@ Plug 'thinca/vim-ft-markdown_fold'
 " ----- Colors -----
 
 Plug 'junegunn/seoul256.vim'
-    let g:seoul256_light_background = 254
+    let g:seoul256_light_background = 255
     let g:seoul256_background = 238
 Plug 'morhetz/gruvbox'
     let g:gruvbox_contrast_dark = 'soft'
@@ -60,6 +60,7 @@ Plug 'romainl/Apprentice'
 Plug 'jeetsukumaran/vim-nefertiti'
 Plug 'lifepillar/vim-solarized8'
 Plug 'w0ng/vim-hybrid'
+Plug 'https://bitbucket.org/kisom/eink.vim.git'
 
 call plug#end()
 
@@ -75,7 +76,7 @@ if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
     colorscheme gruvbox
     set background=dark
 else
-    colorscheme seoul256
+    colorscheme vacme
 endif
 
 " }}}
@@ -141,8 +142,8 @@ nnoremap U <c-r>
 " Start by linking the modes defined in g:mode_map
 " to things likely to be in all colorschemes
 highlight link NormalMode  StatusLine
-highlight link InsertMode  DiffAdd
-highlight link VisualMode  PmenuSel
+highlight link InsertMode  PmenuSel
+highlight link VisualMode  IncSearch
 highlight link ReplaceMode Error
 highlight link CommandMode Search
 
@@ -224,8 +225,11 @@ nnoremap ]q :cn<cr>
 nnoremap [j <c-o>
 nnoremap ]j <c-i>
 
+" Use the above mappings instead...
 nnoremap <c-o> <nop>
 nnoremap <c-i> <nop>
+" ...and that frees up <tab> because terms see <c-i> and <tab> as the same
+nnoremap <tab> <c-w><c-w>
 
 " Move lines
 nnoremap <c-k> :<c-u>execute 'move .' . '--' . v:count1<cr>

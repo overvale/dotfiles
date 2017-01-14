@@ -1,14 +1,14 @@
 # OPTIONS
 # ----------------------------------------------------------------------------
 
-setopt HIST_IGNORE_DUPS     # ignore duplication command history list
-setopt SHARE_HISTORY        # share history data between sessions
-setopt APPEND_HISTORY       # new sessions append history data rather than overwrite
-setopt EXTENDED_HISTORY     # Save each command’s beginning timestamp
-setopt NOCLOBBER            # disallow overwriting of files using >
-setopt complete_aliases           # don't expand aliases _before_ completion has finished
-set    completion-ignore-case on  # ignore case for tab completion
-set    show-all-if-ambiguous on   # show all suggestions after pressing tab once instead of twice
+setopt HIST_IGNORE_DUPS           # Ignore duplication command history list
+setopt SHARE_HISTORY              # Share history data between sessions
+setopt APPEND_HISTORY             # New sessions append history data rather than overwrite
+setopt EXTENDED_HISTORY           # save each command’s beginning timestamp
+setopt NOCLOBBER                  # Disallow overwriting of files using >
+setopt complete_aliases           # Don't expand aliases _before_ completion has finished
+set    completion-ignore-case on  # Ignore case for tab completion
+set    show-all-if-ambiguous on   # Show all suggestions after pressing tab once instead of twice
 
 HISTFILE=~/.zsh_history
 SAVEHIST=10000
@@ -18,6 +18,7 @@ export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/f
 export EDITOR=vim
 export DOT=~/code/dotfiles
 
+# encoding
 export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
@@ -42,8 +43,10 @@ zstyle ':completion:*' insert-tab pending
 setopt prompt_subst
 
 # Setup the variables used in the prompt
+# color start = %F{1}
+# color end   = %f
 if [ -n "$SSH_CLIENT" ]; then
-    local myUsermachine='%F{8}%n@%m:%f'
+    local myUsermachine='%F{3}%n@%m:%f'
 fi
 myDir='%F{4}%~%f'
 myBackgroundjobs='%F{1}%(1j. (%j jobs).)%f'
@@ -51,7 +54,7 @@ myPrompt='%F{5}❯ %f'
 italics=%{$'\e[3m'%}
 italicsoff=%{$'\e[23m'%}
 
-# Prompt without git info
+# The Prompt
 PROMPT='${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
 
 # ALIASES
@@ -60,32 +63,70 @@ PROMPT='${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
 bindkey "^K" history-beginning-search-backward
 bindkey "^J" history-beginning-search-forward
 
-alias rm="rm -i"        # overwrite protection
-alias mv="mv -i"        # overwrite protection
-alias l='ls -1p'        # my favorite options
-alias la="ls -AohGp"    # long list, all, colors
+alias rm="rm -i"
+alias mv="mv -i"
+alias l='ls -1p'
+alias la="ls -AohGp"
 alias ..="cd .."
 alias ax="chmod a+x"
-alias cpwd='pwd|tr -d "\n"|pbcopy' # copy pwd
+alias cpwd='pwd|tr -d "\n"|pbcopy'
+alias cdf='cd $(osascript -e "tell application \"Finder\" to POSIX path of (target of window 1 as alias)")'
+alias batt="pmset -g batt"
+alias server='python -m SimpleHTTPServer 8000'
+alias unquarantine='xattr -d com.apple.quarantine'
+alias vvrc="vim $DOT/vim/vimrc"
+alias pbp="pbpaste"
+alias pbc="pbcopy"
+alias gs='git status -sb'
+alias gl='git lg'
+
 alias tmn='tmux new -s `basename $PWD`'
 alias tma='tmux attach -t '
 alias tml='tmux list-sessions'
 alias tmk='tmux kill-session -t '
-function size(){ du -sh "$1" }
-function rt(){ mv $1 ~/.Trash; }
-alias cdf='cd $(osascript -e "tell application \"Finder\" to POSIX path of (target of window 1 as alias)")'
-function cfp(){ echo "$PWD/$1"|pbcopy && echo "File-Path is on the clipboard" }
-alias batt="pmset -g batt"
-myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
-alias server='python -m SimpleHTTPServer 8000'
-alias unquarantine='xattr -d com.apple.quarantine'
-alias vvrc="vim $DOT/vim/vimrc"
 
-alias gs='git status -sb'
-alias gl='git lg'
+tmh() {
+echo "
+    tmn - New tmux session
+    tma - Attach tmux session
+    tml - List tmux sessions
+    tmk - Kill tmux session
+" }
 
 # FUNCTIONS
 # ----------------------------------------------------------------------------
+
+myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
+
+size(){
+    if test -z $1; then
+        echo "File size. USAGE: size file" >&2
+        return 1
+    else
+        du -sh "$1"
+        return 0
+    fi
+}
+
+rt(){
+    if test -z $1; then
+        echo "Move file to trash. USAGE: rt file" >&2
+        return 1
+    else
+        mv $1 ~/.Trash;
+        return 0
+    fi
+}
+
+cfp(){
+    if test -z $1; then
+        echo "Copy file path. USAGE: cfp file" >&2
+        return 1
+    else
+        echo "$PWD/$1" | pbcopy && echo "File-Path is on the clipboard"
+        return 0
+    fi
+}
 
 function makepdf(){
     if test -z $3; then
@@ -97,12 +138,36 @@ function makepdf(){
     fi
 }
 
-function todo() {
-    vim $(find ~/Dropbox/life.text ~/Documents/screenwriting/career/writing.txt ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | fzf)
+# Define a list of todo files
+export TODOS="\
+~/Dropbox/life.text \
+~/Documents/screenwriting/career/writing.txt \
+~/code/notes/code.text \
+~/Dropbox/ingenuity/ingenuity.text"
+
+# Utility function for grep'ing files for TODO items
+# This assumes they're formatting like this:
+# - TODO this is the item
+# I probably need to make it more robust
+function td() {
+    if test -z $1; then
+        echo "ERROR: requires argument" >&2
+        return 1
+    elif test -z $2; then
+        grep TODO $1 | sed -E "s/(.+)(TODO +)(.+)/\3/g" | column -t -s :
+        return 0
+    else
+        grep TODO $* | sed -E "s/(.+\/)(.+)(\..+)(TODO +)(.+)/\2: \5/g" | column -t -s :
+        return 0
+    fi
 }
-function gltodo(){
-    grep TODO ~/Dropbox/life.text ~/Documents/screenwriting/career/writing.txt ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | sed -E "s/(.+\/)(.+)(\..+)(TODO +)(.+)/\2: \5/g" | column -t -s :
+
+alias gtd="eval td $TODOS"
+
+function etd() {
+    vim $(eval find $TODOS | fzf)
 }
+
 
 # FZF OPTIONS / FUNCTIONS
 # ----------------------------------------------------------------------------

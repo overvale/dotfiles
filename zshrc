@@ -60,6 +60,9 @@ PROMPT='${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
 # ALIASES
 # ----------------------------------------------------------------------------
 
+alias evrc="vim $DOT/vim/vimrc"
+alias ezrc="vim $DOT/zshrc && source $DOT/zshrc"
+
 bindkey "^K" history-beginning-search-backward
 bindkey "^J" history-beginning-search-forward
 
@@ -74,7 +77,6 @@ alias cdf='cd $(osascript -e "tell application \"Finder\" to POSIX path of (targ
 alias batt="pmset -g batt"
 alias server='python -m SimpleHTTPServer 8000'
 alias unquarantine='xattr -d com.apple.quarantine'
-alias vvrc="vim $DOT/vim/vimrc"
 alias pbp="pbpaste"
 alias pbc="pbcopy"
 alias gs='git status -sb'
@@ -143,7 +145,10 @@ export TODOS="\
 ~/Dropbox/life.text \
 ~/Documents/screenwriting/career/writing.txt \
 ~/code/notes/code.text \
-~/Dropbox/ingenuity/ingenuity.text"
+~/Dropbox/ingenuity/ingenuity.text \
+~/Dropbox/ingenuity/grand_plan.txt \
+~/Dropbox/ingenuity/BAW_pilot_notes.txt \
+~/Dropbox/ingenuity/project_software.txt"
 
 # Utility function for grep'ing files for TODO items
 # This assumes they're formatting like this:
@@ -151,12 +156,15 @@ export TODOS="\
 # I probably need to make it more robust
 function td() {
     if test -z $1; then
+        # if no arguments
         echo "ERROR: requires argument" >&2
         return 1
     elif test -z $2; then
+        # if there's only one argument, this pattern
         grep TODO $1 | sed -E "s/(.+)(TODO +)(.+)/\3/g" | column -t -s :
         return 0
     else
+        # if more than one argument, this pattern
         grep TODO $* | sed -E "s/(.+\/)(.+)(\..+)(TODO +)(.+)/\2: \5/g" | column -t -s :
         return 0
     fi
@@ -166,6 +174,10 @@ alias gtd="eval td $TODOS"
 
 function etd() {
     vim $(eval find $TODOS | fzf)
+}
+
+function ltd() {
+    td $(eval find $TODOS | fzf)
 }
 
 

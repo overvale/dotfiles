@@ -145,8 +145,8 @@ if [ "$HOST" = 'Oliver-Mini.local' ]; then
 export TODOS="\
 ~/Dropbox/operations/ingenuity.text \
 ~/Dropbox/operations/grand_plan.txt \
-~/Dropbox/operations/BAW_pilot_notes.txt \
-~/Dropbox/operations/project_software.txt"
+~/Dropbox/operations/project_software.txt \
+~/Dropbox/operations/producer_evaluations/evaluations.text"
 else
 export TODOS"\
 ~/Dropbox/life.text \
@@ -154,7 +154,6 @@ export TODOS"\
 ~/code/notes/code.text \
 ~/Dropbox/ingenuity/ingenuity.text \
 ~/Dropbox/ingenuity/grand_plan.txt \
-~/Dropbox/ingenuity/BAW_pilot_notes.txt \
 ~/Dropbox/ingenuity/project_software.txt"
 fi
 

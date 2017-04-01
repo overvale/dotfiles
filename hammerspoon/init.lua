@@ -29,16 +29,17 @@ anycomplete.registerDefaultBindings()
 
 HostName = hs.host.localizedName()
 if HostName == "Oliver Mini" then
-	hs.hotkey.bind(half_hyper, "s", function() hs.application.launchOrFocus("Slack") end)
 	hs.hotkey.bind({}, "f10", function() hs.execute("pmset displaysleepnow") end)
 else
-	hs.hotkey.bind(half_hyper, "s", function() hs.application.launchOrFocus("Safari") end)
 end
 
 -- Application switching
+hs.hotkey.bind(half_hyper, "s", function() hs.application.launchOrFocus("Safari") end)
+hs.hotkey.bind(half_hyper, "c", function() hs.application.launchOrFocus("Google Chrome") end)
 hs.hotkey.bind(half_hyper, "t", function() hs.application.launchOrFocus("Terminal") end)
 hs.hotkey.bind(half_hyper, "i", function() hs.application.launchOrFocus("iTunes") end)
 hs.hotkey.bind(half_hyper, "b", function() hs.application.launchOrFocus("Finder") end)
+hs.hotkey.bind(half_hyper, "k", function() hs.application.launchOrFocus("Slack") end)
 
 -- ---------------------- --
 

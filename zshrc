@@ -152,10 +152,10 @@ export TODOS"\
 ~/Dropbox/life.text \
 ~/Documents/screenwriting/career/writing.txt \
 ~/code/notes/code.text \
-~/Dropbox/ingenuity/ingenuity.text \
-~/Dropbox/ingenuity/grand_plan.txt \
-~/Dropbox/ingenuity/project_software.txt"
-fi
+~/Dropbox_Ingenuity/operations/ingenuity.text \
+~/Dropbox_Ingenuity/operations/grand_plan.txt \
+~/Dropbox_Ingenuity/operations/BAW_pilot_notes.txt \
+~/Dropbox_Ingenuity/operations/project_software.txt"
 
 # Utility function for grep'ing files for TODO items
 # This assumes they're formatting like this:
@@ -195,7 +195,7 @@ source /usr/local/opt/fzf/shell/completion.zsh
 source /usr/local/opt/fzf/shell/key-bindings.zsh
 source ~/code/other-repos/fzf-marks/fzf-marks.plugin.zsh
 
-export FZF_DEFAULT_OPTS='--color dark'
+export FZF_DEFAULT_OPTS="--color dark --height 40% --preview 'cat {}'"
 export FZF_FS_OPENER=vim
 alias ffs='fzf-fs'
 

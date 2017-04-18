@@ -156,6 +156,8 @@ export TODOS"\
 ~/Dropbox_Ingenuity/operations/grand_plan.txt \
 ~/Dropbox_Ingenuity/operations/BAW_pilot_notes.txt \
 ~/Dropbox_Ingenuity/operations/project_software.txt"
+fi
+
 
 # Utility function for grep'ing files for TODO items
 # This assumes they're formatting like this:

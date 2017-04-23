@@ -60,9 +60,8 @@ Plug 'morhetz/gruvbox'
     let g:gruvbox_italic = 1
 Plug 'romainl/Apprentice'
 Plug 'jeetsukumaran/vim-nefertiti'
-Plug 'lifepillar/vim-solarized8'
 Plug 'w0ng/vim-hybrid'
-Plug 'https://bitbucket.org/kisom/eink.vim.git'
+Plug 'rakr/vim-one'
 
 call plug#end()
 

@@ -3,8 +3,7 @@
 ;; Set up packages sources
 (setq package-archives '(("gnu"          . "http://elpa.gnu.org/packages/")
                          ("org"          . "http://orgmode.org/elpa/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
-			 ("melpa"        . "https://melpa.org/packages/")))
+                         ("melpa"        . "https://melpa.org/packages/")))
 
 ;; Defines a function that will be used to install packages
 (defun ensure-package-installed (&rest packages)
@@ -28,7 +27,8 @@ Return a list of installed packages or nil for every skipped package."
 (ensure-package-installed 'evil
                           'magit
                           'helm
-			  'spacemacs-theme
+                          'spacemacs-theme
+                          'exec-path-from-shell
 )
 
 ;; Settings
@@ -61,6 +61,10 @@ Return a list of installed packages or nil for every skipped package."
 (setq initial-scratch-message nil)
 
 (add-hook 'text-mode-hook 'turn-on-flyspell)
+
+;; Using the system $PATH
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
 
 ;; Appearance
 ;; --------------------------------------------------------------------------------

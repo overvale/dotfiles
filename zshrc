@@ -140,22 +140,19 @@ function makepdf(){
     fi
 }
 
+# Oliver's Todo system
+# ----------------------------------------------------------------------------
+
 # Define a list of todo files
 if [ "$HOST" = 'Oliver-Mini.local' ]; then
-export TODOS="\
-~/Dropbox/operations/ingenuity.text \
-~/Dropbox/operations/grand_plan.txt \
-~/Dropbox/operations/project_software.txt \
-~/Dropbox/operations/producer_evaluations/evaluations.text"
+    export TODOS="\
+    ~/Dropbox/operations/ingenuity.org"
 else
-export TODOS"\
-~/Dropbox/life.text \
-~/Documents/screenwriting/career/writing.txt \
-~/code/notes/code.text \
-~/Dropbox_Ingenuity/operations/ingenuity.text \
-~/Dropbox_Ingenuity/operations/grand_plan.txt \
-~/Dropbox_Ingenuity/operations/BAW_pilot_notes.txt \
-~/Dropbox_Ingenuity/operations/project_software.txt"
+    export TODOS="\
+    ~/Dropbox/life.org \
+    ~/Documents/screenwriting/career/writing.org \
+    ~/code/notes/code.org \
+    ~/Dropbox_Ingenuity/operations/ingenuity.org"
 fi
 
 

@@ -1,5 +1,5 @@
-set guifont="Fira Mono":h12
+set guifont="Pragmata Pro":h14
 set guioptions=g
-colorscheme vacme
+colorscheme gruvbox
 set background=light
 set linespace=1

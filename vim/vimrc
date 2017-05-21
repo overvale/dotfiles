@@ -1,6 +1,9 @@
 " {{{ Plugins & Plugin Settings
 " ------------------------------------------------------------------------------
 
+" This has to come before any mappings with <leader>
+let mapleader = ','
+
 " This automatically installs vim-plug, and all your plugins
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -36,6 +39,7 @@ Plug 'Konfekt/FastFold'
 Plug 'atimholt/spiffy_foldtext'
     let g:SpiffyFoldtext_format = "%c{=}...%<%f{ }%l{+}"
 Plug 'tpope/vim-rsi'
+Plug 'gerw/vim-HiLinkTrace'
 
 " ----- Languages -----
 
@@ -49,7 +53,7 @@ Plug 'thinca/vim-ft-markdown_fold'
 
 " ----- Colors -----
 
-Plug 'olivertaylor/vacme'
+Plug '~/code/vacme/'
 
 Plug 'junegunn/seoul256.vim'
     let g:seoul256_light_background = 255
@@ -61,7 +65,6 @@ Plug 'morhetz/gruvbox'
 Plug 'romainl/Apprentice'
 Plug 'jeetsukumaran/vim-nefertiti'
 Plug 'w0ng/vim-hybrid'
-Plug 'rakr/vim-one'
 
 call plug#end()
 
@@ -74,8 +77,7 @@ set encoding=utf-8
 
 if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
     set termguicolors
-    colorscheme gruvbox
-    set background=dark
+    colorscheme 2ToneMorning
 else
     colorscheme vacme
 endif
@@ -111,6 +113,9 @@ set nostartofline
 
 " Enter command-mode with <space>
 noremap <space> :
+
+inoremap <esc> <nop>
+inoremap kj <esc>
 
 " Set proper italic escape-codes
 let &t_ZH="\e[3m"
@@ -244,6 +249,9 @@ nnoremap <leader>N :set number!<cr>
 
 " Select last pasted text
 nnoremap gV `[v`]
+
+" Correct Spelling in Insert Mode
+imap <c-f> <c-g>u<Esc>[s1z=`]a<c-g>u
 
 " }}}
 " {{{ Commands

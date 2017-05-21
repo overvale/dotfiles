@@ -24,12 +24,41 @@ Plug 'junegunn/goyo.vim'
     nnoremap <leader>g :Goyo<cr>
 Plug 'junegunn/fzf.vim'
     set rtp+=/usr/local/opt/fzf
+    " Lines in current buffer
     nnoremap <leader>l :BLines<cr>
+    " Lines in loaded buffers
     nnoremap <leader>L :Lines<cr>
+    " Files in dir
     nnoremap <leader>f :Files<cr>
+    " Lines in all files in dir
+    nnoremap <leader>a :Ag<cr>
     nnoremap <leader>b :Buffers<cr>
     nnoremap <leader>h :Helptags<cr>
     nnoremap <leader>c :Colors<cr>
+    nnoremap <leader>t :Filetypes<cr>
+
+    imap <C-x><C-f> <plug>(fzf-complete-file-ag)
+    imap <C-x><C-l> <plug>(fzf-complete-line)
+
+    function! SearchWordWithAg()
+        execute 'Ag' expand('<cword>')
+    endfunction
+
+    function! SearchVisualSelectionWithAg() range
+        let old_reg = getreg('"')
+        let old_regtype = getregtype('"')
+        let old_clipboard = &clipboard
+        set clipboard&
+        normal! ""gvy
+        let selection = getreg('"')
+        call setreg('"', old_reg, old_regtype)
+        let &clipboard = old_clipboard
+        execute 'Ag' selection
+    endfunction
+
+    nnoremap <silent> K :call SearchWordWithAg()<CR>
+    vnoremap <silent> K :call SearchVisualSelectionWithAg()<CR>
+
 Plug 'tweekmonster/spellrotate.vim'
     nmap <silent> zn <Plug>(SpellRotateForward)
     nmap <silent> zN <Plug>(SpellRotateBackward)
@@ -125,7 +154,7 @@ let &t_ZR="\e[23m"
 inoremap <C-U> <C-G>u<C-U>
 
 " Instead of using man for word lookups, use the OSX dictionary
-nnoremap K :!open dict:///<cword><cr>
+" nnoremap K :!open dict:///<cword><cr>
 
 " Maintain selection on in/de-dent
 xnoremap > >gv
@@ -321,11 +350,5 @@ endfunction
 " ------------------------------------------------------------------------------
 
 inoreabbrev <expr> #!! "#!/usr/bin/env" . (empty(&filetype) ? '' : ' '.&filetype)
-
-" ----------------------------------------------------------------------------
-" <Leader>I/A | Prepend/Append to all adjacent lines with same indentation
-" ----------------------------------------------------------------------------
-nmap <silent> <leader>I ^vio<C-V>I
-nmap <silent> <leader>A ^vio<C-V>$A
 
 " }}}

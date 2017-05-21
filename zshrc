@@ -193,6 +193,7 @@ function ltd() {
 source /usr/local/opt/fzf/shell/completion.zsh
 source /usr/local/opt/fzf/shell/key-bindings.zsh
 source ~/code/other-repos/fzf-marks/fzf-marks.plugin.zsh
+source ~/code/other-repos/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 
 export FZF_DEFAULT_OPTS="--color dark --height 40% --preview 'cat {}'"
 export FZF_FS_OPENER=vim

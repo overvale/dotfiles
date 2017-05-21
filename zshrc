@@ -195,15 +195,13 @@ source /usr/local/opt/fzf/shell/key-bindings.zsh
 source ~/code/other-repos/fzf-marks/fzf-marks.plugin.zsh
 source ~/code/other-repos/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 
-export FZF_DEFAULT_OPTS="--color dark --height 40% --preview 'cat {}'"
+export FZF_DEFAULT_OPTS="--color light --height 40%"
+export FZF_CTRL_T_OPTS="--preview '(cat {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden --bind '?:toggle-preview'"
 export FZF_FS_OPENER=vim
 alias ffs='fzf-fs'
-
-# fd - cd to selected directory
-fd() {
-  DIR=`find ${1:-*} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf-tmux` \
-    && cd "$DIR"
-}
+alias fzfnotes='less ~/code/notes/fzf_notes'
 
 # fshow - git commit browser
 fshow() {
@@ -215,15 +213,6 @@ fshow() {
                 xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
                 {}
 FZF-EOF"
-}
-
-# fe [FUZZY PATTERN] - Open the selected file with the default editor
-#   - Bypass fuzzy finder if there's only one match (--select-1)
-#   - Exit if there's no match (--exit-0)
-fe() {
-  local files
-  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
-  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 }
 
 # v - open files in ~/.viminfo

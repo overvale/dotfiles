@@ -44,8 +44,8 @@ ln -s ~/code/dotfiles/git/gitignore_global .gitignore_global;
 ln -s ~/code/dotfiles/vim .vim;
 ln -s ~/code/dotfiles/emacs ~/.emacs.d;
 ln -s ~/code/dotfiles/hammerspoon ~/.hammerspoon;
-ln -s ~/code/dotfiles/bashrc ~/.bashrc
-ln -s ~/code/dotfiles/bashrc ~/.bash_profile
+ln -s ~/code/dotfiles/zshrc ~/.zshrc
+ln -s ~/code/dotfiles/zshenv ~/.zshenv
 
 # Install vim plugin manager + plugins
 # Reconstruct ~/.marks directory

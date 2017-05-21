@@ -1,3 +1,8 @@
+# TAKE NOTE!!
+# Everything in this file is only loaded for interactive shells.
+# For non-interactive shells, like those used by emacs & vim, use 'zshenv'
+
+
 # OPTIONS
 # ----------------------------------------------------------------------------
 
@@ -14,7 +19,6 @@ HISTFILE=~/.zsh_history
 SAVEHIST=10000
 HISTSIZE=10000
 
-export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs:/Applications/Racket\ v6.7/bin
 export EDITOR=vim
 export DOT=~/code/dotfiles
 
@@ -98,8 +102,6 @@ echo "
 # FUNCTIONS
 # ----------------------------------------------------------------------------
 
-myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
-
 size(){
     if test -z $1; then
         echo "File size. USAGE: size file" >&2
@@ -139,6 +141,7 @@ function makepdf(){
         return 0
     fi
 }
+
 
 # Oliver's Todo system
 # ----------------------------------------------------------------------------

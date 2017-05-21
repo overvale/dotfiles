@@ -22,7 +22,6 @@ hs.window.animationDuration = 0
 local anycomplete = require "anycomplete/anycomplete"
 anycomplete.registerDefaultBindings()
 
-
 -- Functions
 -- -----------------------------------------------
 
@@ -49,12 +48,19 @@ end
 -- Application switching - USE 'HALF_HYPER'
 -- -----------------------------------------------
 
+-- Keys already taken elsewhere
+-- r
+-- return
+-- arrow keys
+
 hs.hotkey.bind(half_hyper, "s", function() hs.application.launchOrFocus("Safari") end)
 hs.hotkey.bind(half_hyper, "c", function() hs.application.launchOrFocus("Google Chrome") end)
-hs.hotkey.bind(half_hyper, "t", function() hs.application.launchOrFocus("Terminal") end)
+hs.hotkey.bind(half_hyper, "t", function() hs.application.launchOrFocus("iTerm") end)
 hs.hotkey.bind(half_hyper, "i", function() hs.application.launchOrFocus("iTunes") end)
 hs.hotkey.bind(half_hyper, "f", function() hs.application.launchOrFocus("Finder") end)
 hs.hotkey.bind(half_hyper, "k", function() hs.application.launchOrFocus("Slack") end)
+hs.hotkey.bind(half_hyper, "m", function() hs.application.launchOrFocus("Mail") end)
+hs.hotkey.bind(half_hyper, "e", function() hs.application.launchOrFocus("Emacs") end)
 
 
 -- Shortcuts - USE 'HALF_HYPER'
@@ -91,6 +97,8 @@ hs.hotkey.bind(half_hyper, 'down',  function() hs.window.focusedWindow():focusWi
 
 -- Resize/Move Window - USE 'HYPER'
 -- -----------------------------------------------
+
+-- Hyper 'g' taken by anycomplete plugin
 
 -- Miro's Window Management (uses HYPER)
 require('position')

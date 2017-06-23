@@ -1,9 +1,9 @@
 ;; Packages
 ;; --------------------------------------------------------------------------------
 
-(setq package-archives '(("gnu"          . "https://elpa.gnu.org/packages/")
+(setq package-archives '(("gnu"          . "http://elpa.gnu.org/packages/")
                          ("org"          . "http://orgmode.org/elpa/")
-                         ("melpa"        . "https://melpa.org/packages/")))
+                         ("melpa"        . "http://melpa.org/packages/")))
 
 (defun ensure-package-installed (&rest packages)
   "Assure every package is installed, ask for installation if it’s not.
@@ -26,6 +26,7 @@ Return a list of installed packages or nil for every skipped package."
 			  'markdown-mode
 			  'counsel
 			  'ace-window
+			  'yasnippet
 )
 
 ;; Settings
@@ -40,8 +41,6 @@ Return a list of installed packages or nil for every skipped package."
 (set-default 'cursor-type 'bar)
 
 (add-hook 'text-mode-hook 'turn-on-flyspell)
-
-(setq visible-bell 1)
 
 ;; Startup options
 (setq inhibit-startup-screen +1)
@@ -70,7 +69,7 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Font settings
 (set-face-attribute 'default nil
-                    :family "PragmataPro" :height 140 :weight 'normal)
+                    :family "Fira Mono" :height 140 :weight 'normal)
 (set-face-attribute 'variable-pitch nil
 		    :family "Fira Sans" :height 140 :weight 'normal)
 ;; switch to non-monospace with 'variable-pitch-mode'
@@ -112,7 +111,14 @@ Return a list of installed packages or nil for every skipped package."
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 
-
-
-
 (global-set-key (kbd "M-p") 'ace-window)
+
+
+;; Yasnippets
+;; --------------------------------------------------------------------------------
+
+(setq yas-snippet-dirs
+      '("~/.emacs.d/snippets"                 ;; personal snippets
+        ))
+
+(yas-global-mode 1) ;; or M-x yas-reload-all if you've started YASnippet already.

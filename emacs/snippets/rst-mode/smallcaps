@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: SmallCaps
+# key: smc
+# --
+:sc:\`$1\` $0

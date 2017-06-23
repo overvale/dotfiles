@@ -19,7 +19,7 @@
  '(org-agenda-files (quote ("~/Dropbox_Ingenuity/operations/ingenuity.org")) t)
  '(package-selected-packages
    (quote
-    (ace-window doom-thmese markdown-mode exec-path-from-shell spacemacs-theme magit evil))))
+    (yasnippet ace-window doom-thmese markdown-mode exec-path-from-shell spacemacs-theme magit evil))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

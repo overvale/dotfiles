@@ -6,21 +6,15 @@ hyper = {"ctrl", "alt", "cmd"}
 -- HALF_HYPER is used for shortcuts
 half_hyper = {"ctrl", "cmd"}
 
--- Set grid size.
-hs.grid.GRIDWIDTH  = 12
-hs.grid.GRIDHEIGHT = 12
-hs.grid.MARGINX    = 0
-hs.grid.MARGINY    = 0
--- Set window animation off. It's much smoother.
-hs.window.animationDuration = 0
 
-
--- Plugins (Spoons)
+-- Plugins
 -- -----------------------------------------------
 
 -- Anycomplete Plugin
-local anycomplete = require "anycomplete/anycomplete"
+local anycomplete = require "anycomplete"
 anycomplete.registerDefaultBindings()
+
+require('position')
 
 -- Functions
 -- -----------------------------------------------
@@ -48,39 +42,11 @@ end
 -- Application switching - USE 'HALF_HYPER'
 -- -----------------------------------------------
 
--- Keys already taken elsewhere
--- r
--- return
--- arrow keys
-
-hs.hotkey.bind(half_hyper, "s", function() hs.application.launchOrFocus("Safari") end)
-hs.hotkey.bind(half_hyper, "c", function() hs.application.launchOrFocus("Google Chrome") end)
-hs.hotkey.bind(half_hyper, "t", function() hs.application.launchOrFocus("iTerm") end)
-hs.hotkey.bind(half_hyper, "i", function() hs.application.launchOrFocus("iTunes") end)
-hs.hotkey.bind(half_hyper, "f", function() hs.application.launchOrFocus("Finder") end)
-hs.hotkey.bind(half_hyper, "k", function() hs.application.launchOrFocus("Slack") end)
-hs.hotkey.bind(half_hyper, "m", function() hs.application.launchOrFocus("Mail") end)
-hs.hotkey.bind(half_hyper, "e", function() hs.application.launchOrFocus("Emacs") end)
-
-
--- Shortcuts - USE 'HALF_HYPER'
--- -----------------------------------------------
-
--- Sleep displays
-HostName = hs.host.localizedName()
-if HostName == "Oliver Mini" then
-	hs.hotkey.bind({}, "f10", function() hs.execute("pmset displaysleepnow") end)
-else
-end
-
 -- Reload Hammerspoon config
 hs.hotkey.bind( half_hyper, 'r', function() 
 	hs.reload()
 	hs.notify.new({title="Hammerspoon", informativeText="Configuration reloaded"}):send()
 end)
-
--- Window Focus - USE 'HALF_HYPER'
--- -----------------------------------------------
 
 -- Show window hints
 hs.hints.style='vimperator'
@@ -94,36 +60,31 @@ hs.hotkey.bind(half_hyper, 'right', function() hs.window.focusedWindow():focusWi
 hs.hotkey.bind(half_hyper, 'up',    function() hs.window.focusedWindow():focusWindowNorth() end)
 hs.hotkey.bind(half_hyper, 'down',  function() hs.window.focusedWindow():focusWindowSouth() end)
 
+-- Lauch Apps
+-- Don't use "f" (full-screen)
+local appList = {
+	s = 'Safari',
+	c = 'Google Chrome',
+	t = 'iTerm',
+	i = 'iTunes',
+	k = 'Slack',
+	m = 'Mail',
+	e = 'Emacs',
+	b = 'BBEdit',
+}
+
+for key, app in pairs(appList) do
+	hs.hotkey.bind(half_hyper, key, function() hs.application.launchOrFocus(app) end)
+end
+
 
 -- Resize/Move Window - USE 'HYPER'
 -- -----------------------------------------------
 
+-- Hyper + arrows taken by 'position.lua'
 -- Hyper 'g' taken by anycomplete plugin
 
--- Miro's Window Management (uses HYPER)
-require('position')
-
 -- Move windows around the screen
-hs.hotkey.bind(hyper, "[", function() snap_window('left')  end)
-hs.hotkey.bind(hyper, "]", function() snap_window('right')  end)
--- hs.hotkey.bind(hyper, "", function() snap_window('up')    end)
--- hs.hotkey.bind(hyper, "", function() snap_window('down') end)
+hs.hotkey.bind(hyper, "[", function() snap_window('left') end)
+hs.hotkey.bind(hyper, "]", function() snap_window('right') end)
 hs.hotkey.bind(hyper, '=', function() hs.window.centerOnScreen(hs.window.focusedWindow()) end)
-
-hs.hotkey.bind(hyper, 'm', hs.grid.maximizeWindow)
-
--- -- Snap windows to the grid
--- hs.hotkey.bind(hyper, ';', function() hs.grid.snap(hs.window.focusedWindow()) end)
--- hs.hotkey.bind(hyper, "'", function() hs.fnutils.map(hs.window.visibleWindows(), hs.grid.snap) end)
-
--- -- Move windows around the grid
--- hs.hotkey.bind(hyper, 'j', hs.grid.pushWindowDown)
--- hs.hotkey.bind(hyper, 'k', hs.grid.pushWindowUp)
--- hs.hotkey.bind(hyper, 'h', hs.grid.pushWindowLeft)
--- hs.hotkey.bind(hyper, 'l', hs.grid.pushWindowRight)
-
--- -- Resize windows on the grid
--- hs.hotkey.bind(hyper, ',', hs.grid.resizeWindowTaller)
--- hs.hotkey.bind(hyper, '.', hs.grid.resizeWindowShorter)
--- hs.hotkey.bind(hyper, '],', hs.grid.resizeWindowWider)
--- hs.hotkey.bind(hyper, '[', hs.grid.resizeWindowThinner)

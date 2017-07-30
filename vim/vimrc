@@ -286,6 +286,20 @@ nnoremap gV `[v`]
 " Correct Spelling in Insert Mode
 imap <c-f> <c-g>u<Esc>[s1z=`]a<c-g>u
 
+" Easy yank-put from system clipboard
+nnoremap <Leader>p "*p
+nnoremap <Leader>P "*P
+nnoremap <Leader>y "*y
+nnoremap <Leader>Y "*y$
+nnoremap <Leader>d "*d
+nnoremap <Leader>D "*D
+vnoremap <Leader>p "*p
+vnoremap <Leader>P "*P
+vnoremap <Leader>y "*y
+vnoremap <Leader>Y "*y$
+vnoremap <Leader>d "*d
+vnoremap <Leader>D "*D
+
 " }}}
 " {{{ Commands
 " ------------------------------------------------------------------------------

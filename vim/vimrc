@@ -36,6 +36,7 @@ Plug 'junegunn/fzf.vim'
     nnoremap <leader>h :Helptags<cr>
     nnoremap <leader>c :Colors<cr>
     nnoremap <leader>t :Filetypes<cr>
+    nnoremap <leader><space> :Commands<cr>
 
     imap <c-x><c-k> <plug>(fzf-complete-word)
     imap <c-x><c-f> <plug>(fzf-complete-path)
@@ -70,6 +71,7 @@ Plug 'Konfekt/FastFold'
 Plug 'atimholt/spiffy_foldtext'
     let g:SpiffyFoldtext_format = "%c{=}...%<%f{ }%l{+}"
 Plug 'tpope/vim-rsi'
+Plug 'tpope/vim-dispatch'
 Plug 'gerw/vim-HiLinkTrace'
 
 " ----- Languages -----
@@ -85,6 +87,7 @@ Plug 'thinca/vim-ft-markdown_fold'
 " ----- Colors -----
 
 Plug '~/code/vacme/'
+Plug '~/code/baselight/'
 
 Plug 'junegunn/seoul256.vim'
     let g:seoul256_light_background = 255
@@ -96,6 +99,7 @@ Plug 'morhetz/gruvbox'
 Plug 'romainl/Apprentice'
 Plug 'jeetsukumaran/vim-nefertiti'
 Plug 'w0ng/vim-hybrid'
+Plug 'ajmwagar/vim-dues'
 
 call plug#end()
 
@@ -108,10 +112,11 @@ set encoding=utf-8
 
 if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
     set termguicolors
-    colorscheme 2ToneMorning
+    colorscheme baselight
 else
     colorscheme vacme
 endif
+
 
 " }}}
 " {{{ Settings
@@ -144,9 +149,6 @@ set nostartofline
 
 " Enter command-mode with <space>
 noremap <space> :
-
-inoremap <esc> <nop>
-inoremap kj <esc>
 
 " Set proper italic escape-codes
 let &t_ZH="\e[3m"
@@ -330,7 +332,13 @@ function! CustomizeColors()
         highlight link VisualMode  Visual
         highlight link ReplaceMode Error
         highlight link CommandMode Search
-    endif
+    elseif (g:colors_name == 'dues')
+        highlight link NormalMode  StatusLine
+        highlight link InsertMode  DiffAdd
+        highlight link VisualMode  DiffText
+        highlight link ReplaceMode DiffDelete
+        highlight link CommandMode PmenuSel
+    end
 endfunction
 
 function! Markdown()
@@ -348,7 +356,7 @@ function! BackgroundToggle()
 endfunction
 
 " }}}
-" {{{ Abbriviations
+" {{{ Abbreviations
 " ------------------------------------------------------------------------------
 
 inoreabbrev <expr> #!! "#!/usr/bin/env" . (empty(&filetype) ? '' : ' '.&filetype)

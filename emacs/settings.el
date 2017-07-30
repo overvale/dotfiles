@@ -83,10 +83,6 @@ Return a list of installed packages or nil for every skipped package."
 			     "~/Dropbox_Ingenuity/operations/ingenuity.org"
 			     ))
 
-(setq org-todo-keywords
-      '((sequence "TODO" "DELIGATED" "DONE")))
-
-
 (add-hook 'org-mode-hook
   (lambda ()
     (org-indent-mode t)

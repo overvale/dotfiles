@@ -14,6 +14,7 @@ setopt NOCLOBBER                  # Disallow overwriting of files using >
 setopt complete_aliases           # Don't expand aliases _before_ completion has finished
 set    completion-ignore-case on  # Ignore case for tab completion
 set    show-all-if-ambiguous on   # Show all suggestions after pressing tab once instead of twice
+bindkey -e                        # Use emacs bindings
 
 HISTFILE=~/.zsh_history
 SAVEHIST=10000
@@ -198,7 +199,7 @@ source /usr/local/opt/fzf/shell/key-bindings.zsh
 source ~/code/other-repos/fzf-marks/fzf-marks.plugin.zsh
 source ~/code/other-repos/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 
-export FZF_DEFAULT_OPTS="--color light --height 40%"
+export FZF_DEFAULT_OPTS="--color dark --height 40%"
 export FZF_CTRL_T_OPTS="--preview '(cat {} || tree -C {}) 2> /dev/null | head -200'"
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden --bind '?:toggle-preview'"

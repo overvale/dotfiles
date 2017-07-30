@@ -1,4 +1,4 @@
-export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs:/Applications/Racket\ v6.7/bin
+export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs
 
 function asp(){
     if test -z $1; then

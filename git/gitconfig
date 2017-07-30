@@ -60,7 +60,7 @@
   interactive = auto
   grep = auto
 [color "status"]
-  header = black bold
+  header = green
   branch = blue bold
   nobranch = red
   unmerged = red

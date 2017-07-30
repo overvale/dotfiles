@@ -1,0 +1,56 @@
+#!/usr/bin/ruby
+
+# BRKT is a lightweight markup and pre-processor for writing HTML divs & spans with classes.
+#
+# MARKUP - SPANS
+# 
+#       INPUT: Her favorite book is {book_title Double Cross}.
+#      OUTPUT: Her favorite book is <span class="book_title">Double Cross</span>.
+# 
+# MARKUP - DIVS
+# 
+#       INPUT: {{sidebar
+#              This is sidebar text.
+#              }}
+#
+#      OUTPUT: <div class="sidebar">
+#              This is sidebar text.
+#              </div>
+#
+# ESCAPING
+#
+# If you want BRKT to ignore bracket characters in your document, escape them with a backslash.
+# After it finishes the other conversions, BRKT will remove the backslash.
+# 
+#       INPUT: This is how you escape a \} character.
+#      OUTPUT: This is how you escape a } character.
+#
+# USAGE
+# 
+# Call it on the command-line like any other command.
+# 
+# 	$ cat test.md | brkt | markdown
+# 	$ brkt < test.md | pandoc --smart -f markdown -t html
+# 
+# WARNINGS
+# 
+# *	BRKT is not designed to handle nested divs or spans.
+#   But spans inside divs should work fine.
+
+ARGF.set_encoding(Encoding::UTF_8)
+input = ARGF.read
+
+# Remove comments
+input = input.gsub(/(?<!\\){(comment)[ \t]+(.+)(?<!\\)}/, '<!-- \2 -->')
+
+# Start with multi-line divs
+input = input.gsub(/(?<!\\){{(\w+)((\S|\s)+?)(?<!\\)}}/, '<div class="\1">\2</div>')
+
+# Then inline spans
+input = input.gsub(/(?<!\\){(\w+)[ \t]+(.+)(?<!\\)}/, '<span class="\1">\2</span>')
+
+# And remove escaping backslashes
+input = input.gsub(/\\([{}])/, '\1')
+
+# Finally, print it all
+print input

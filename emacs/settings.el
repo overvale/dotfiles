@@ -29,6 +29,8 @@ Return a list of installed packages or nil for every skipped package."
 			  'yasnippet
 )
 
+
+
 ;; Settings
 ;; --------------------------------------------------------------------------------
 
@@ -60,6 +62,15 @@ Return a list of installed packages or nil for every skipped package."
 ;; Using the system $PATH
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
+
+
+
+;; Bindings
+;; --------------------------------------------------------------------------------
+
+(global-set-key (kbd "M-<tab>") 'other-window)
+
+
 
 ;; Appearance
 ;; --------------------------------------------------------------------------------

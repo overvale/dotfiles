@@ -356,6 +356,15 @@ function! CustomizeColors()
     end
 endfunction
 
+" This is required to get your customizations on statup
+call CustomizeColors()
+
+" This calls your customizations when you change schemes
+augroup mycolorschemes
+    au!
+    au ColorScheme * call CustomizeColors()
+augroup END
+
 function! Markdown()
     setlocal spell
     setlocal filetype=markdown

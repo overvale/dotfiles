@@ -11,7 +11,7 @@ setopt SHARE_HISTORY              # Share history data between sessions
 setopt APPEND_HISTORY             # New sessions append history data rather than overwrite
 setopt EXTENDED_HISTORY           # save each command’s beginning timestamp
 setopt NOCLOBBER                  # Disallow overwriting of files using >
-setopt complete_aliases           # Don't expand aliases _before_ completion has finished
+setopt complete_aliases           # Dont expand aliases _before_ completion has finished
 set    completion-ignore-case on  # Ignore case for tab completion
 set    show-all-if-ambiguous on   # Show all suggestions after pressing tab once instead of twice
 bindkey -e                        # Use emacs bindings
@@ -42,6 +42,7 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' \
 # pasting with tabs doesn't perform completion
 zstyle ':completion:*' insert-tab pending
 
+
 # PROMPT
 # ----------------------------------------------------------------------------
 
@@ -51,13 +52,11 @@ setopt prompt_subst
 # color start = %F{1}
 # color end   = %f
 if [ -n "$SSH_CLIENT" ]; then
-    local myUsermachine='%F{3}%n@%m:%f'
+    local myUsermachine='%n@%m:'
 fi
-myDir='%F{4}%~%f'
-myBackgroundjobs='%F{1}%(1j. (%j jobs).)%f'
-myPrompt='%F{5}❯ %f'
-italics=%{$'\e[3m'%}
-italicsoff=%{$'\e[23m'%}
+myDir='%~'
+myBackgroundjobs='%(1j. (%j jobs).)'
+myPrompt='❯ '
 
 # The Prompt
 PROMPT='${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
@@ -100,8 +99,12 @@ echo "
     tmk - Kill tmux session
 " }
 
+alias acme=acme.rc
+
 # FUNCTIONS
 # ----------------------------------------------------------------------------
+
+myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 
 size(){
     if test -z $1; then

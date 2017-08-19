@@ -1,0 +1,8 @@
+#!/usr/bin/env rc
+
+TERM=dumb
+SHELL=rc
+
+font='/mnt/font/SFMono-Regular/14a/font'
+
+exec acme -a -f $font $*

@@ -1,4 +1,7 @@
-export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs
+export PATH=$PATH:~/code/dotfiles/bin:~/code/other-repos/text-utilities:~/code/other-repos/fzf-fs
+
+PLAN9=/usr/local/plan9port export PLAN9
+PATH=$PATH:$PLAN9/bin export PATH
 
 function asp(){
     if test -z $1; then

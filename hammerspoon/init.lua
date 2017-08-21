@@ -7,6 +7,15 @@ hyper = {"ctrl", "alt", "cmd"}
 half_hyper = {"ctrl", "cmd"}
 
 
+-- Snippets
+-- -----------------------------------------------
+
+hs.hotkey.bind( "ctrl", "`", function()
+	hs.eventtap.keyStrokes("/Users/olivertaylor/")
+end)
+
+
+
 -- Plugins
 -- -----------------------------------------------
 
@@ -65,7 +74,7 @@ hs.hotkey.bind(half_hyper, 'down',  function() hs.window.focusedWindow():focusWi
 local appList = {
 	s = 'Safari',
 	c = 'Google Chrome',
-	t = 'iTerm',
+	t = 'Terminal',
 	i = 'iTunes',
 	k = 'Slack',
 	m = 'Mail',

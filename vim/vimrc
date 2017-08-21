@@ -99,6 +99,8 @@ Plug 'morhetz/gruvbox'
 Plug 'romainl/Apprentice'
 Plug 'jeetsukumaran/vim-nefertiti'
 Plug 'w0ng/vim-hybrid'
+    let g:hybrid_custom_term_colors = 1
+    let g:hybrid_reduced_contrast = 1
 Plug 'ajmwagar/vim-dues'
 
 call plug#end()
@@ -115,6 +117,7 @@ if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
     colorscheme baselight
 else
     colorscheme vacme
+    syntax off
 endif
 
 
@@ -353,8 +356,23 @@ function! CustomizeColors()
         highlight link VisualMode  DiffText
         highlight link ReplaceMode DiffDelete
         highlight link CommandMode PmenuSel
+    elseif (g:colors_name == 'hybrid')
+        highlight link NormalMode  SpellLocal
+        highlight link InsertMode  DiffAdd
+        highlight link VisualMode  Visual
+        highlight link ReplaceMode DiffDelete
+        highlight link CommandMode Search
     end
 endfunction
+
+" This is required to get your customizations on statup
+call CustomizeColors()
+
+" This calls your customizations when you change schemes
+augroup mycolorschemes
+    au!
+    au ColorScheme * call CustomizeColors()
+augroup END
 
 function! Markdown()
     setlocal spell

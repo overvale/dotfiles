@@ -99,8 +99,6 @@ echo "
     tmk - Kill tmux session
 " }
 
-alias acme=acme.rc
-
 # FUNCTIONS
 # ----------------------------------------------------------------------------
 

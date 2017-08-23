@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+TERM=dumb
+SHELL=rc
+
+fixfont='/mnt/font/SFMono-Regular/13a/font'
+varfont='/mnt/font/SFProText-Regular/14a/font'
+
+# If argument list is empty, open acme scratch file
+if test -z $1; then
+	exec acme -a -f $varfont -F $fixfont /Users/olivertaylor/code/acme/scratch 
+else
+	exec acme -a -f $font -F $fixfont $*
+fi
+

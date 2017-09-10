@@ -3,14 +3,20 @@
 export TERM=dumb
 export SHELL=rc
 export PAGER=nobs
+tabstop=4
 
 fixfont='/mnt/font/SFMono-Regular/13a/font'
-varfont='/mnt/font/SFProText-Regular/14a/font'
+varfont='/mnt/font/SFProText-Regular/15a/font'
 
 # If argument list is empty, open acme scratch file
 if test -z $1; then
-	exec acme -a -f $varfont -F $fixfont /Users/olivertaylor/Dropbox/acme/scratch
+	if [[ $(hostname -s) = "MacBook-Pro" ]]; then
+		exec acme -a -f $varfont -F $fixfont /Users/olivertaylor/Dropbox/acme/scratch
+	else
+		exec acme -a -f $varfont -F $fixfont /Users/olivertaylor/dropbox/operations/acme
+	fi
 else
 	exec acme -a -f $varfont -F $fixfont $*
 fi
+
 

@@ -86,6 +86,11 @@ for key, app in pairs(appList) do
 	hs.hotkey.bind(half_hyper, key, function() hs.application.launchOrFocus(app) end)
 end
 
+-- Open Folder
+hs.hotkey.bind(hyper, "b", function()
+	hs.execute("open /Users/olivertaylor/Dropbox_Ingenuity/Bidding/")
+end)
+
 
 -- Resize/Move Window - USE 'HYPER'
 -- -----------------------------------------------

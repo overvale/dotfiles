@@ -102,3 +102,7 @@ end)
 hs.hotkey.bind(hyper, "[", function() snap_window('left') end)
 hs.hotkey.bind(hyper, "]", function() snap_window('right') end)
 hs.hotkey.bind(hyper, '=', function() hs.window.centerOnScreen(hs.window.focusedWindow()) end)
+
+
+-- Bindings
+-- -----------------------------------------------

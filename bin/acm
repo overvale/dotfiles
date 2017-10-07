@@ -11,12 +11,12 @@ varfont='/mnt/font/SFProText-Regular/15a/font'
 # If argument list is empty, open acme scratch file
 if test -z $1; then
 	if [[ $(hostname -s) = "MacBook-Pro" ]]; then
-		exec acme -a -f $varfont -F $fixfont /Users/olivertaylor/Dropbox/acme/scratch
+		exec acme -a -f $varfont -F $fixfont /Users/olivertaylor/Dropbox/acme/scratch &
 	else
-		exec acme -a -f $varfont -F $fixfont /Users/olivertaylor/dropbox/operations/acme
+		exec acme -a -f $varfont -F $fixfont /Users/olivertaylor/dropbox/operations/acme &
 	fi
 else
-	exec acme -a -f $varfont -F $fixfont $*
+	exec acme -a -f $varfont -F $fixfont $* &
 fi
 
 

@@ -139,7 +139,7 @@ function makepdf(){
         echo "USAGE: makepdf format /source /destination" >&2
         return 1
     else
-        pandoc --smart -f $1 -t html < $2 | prince -s ~/code/print_css/print.css - -o $3
+        pandoc -f $1+smart -t html < $2 | prince -s ~/code/print_css/print.css - -o $3
         return 0
     fi
 }

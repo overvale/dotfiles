@@ -5,8 +5,8 @@ export SHELL=rc
 export PAGER=nobs
 tabstop=4
 
-fixfont='/mnt/font/SFMono-Regular/13a/font'
-varfont='/mnt/font/SFProText-Regular/15a/font'
+fixfont='/mnt/font/IBMPlexMono/12a/font'
+varfont='/mnt/font/IBMPlexSans/14a/font'
 
 # If argument list is empty, open acme scratch file
 if test -z $1; then

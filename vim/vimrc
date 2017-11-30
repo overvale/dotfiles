@@ -116,7 +116,7 @@ if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
     set termguicolors
     colorscheme baselight
 else
-    colorscheme vacme
+    colorscheme seoul256
     syntax off
 endif
 

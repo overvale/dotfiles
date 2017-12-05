@@ -1,0 +1,9 @@
+{
+	"^w" = "deleteWordBackward:";
+	"^u" = "deleteToBeginningOfLine:";
+	"~w" = selectWord:;
+	"~l" = selectParagraph:;
+	"~-" = lowercaseWord:;
+	"~=" = uppercaseWord:;
+	"~." = capitalizeWord:;
+}

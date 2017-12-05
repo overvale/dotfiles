@@ -46,6 +46,7 @@ ln -s ~/code/dotfiles/emacs ~/.emacs.d;
 ln -s ~/code/dotfiles/hammerspoon ~/.hammerspoon;
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
 ln -s ~/code/dotfiles/zshenv ~/.zshenv
+ln -s ~/code/dotfiles/DefaultKeyBinding.dict ~/Library/KeyBindings/
 
 # Install vim plugin manager + plugins
 # Reconstruct ~/.marks directory

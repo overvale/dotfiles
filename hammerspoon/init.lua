@@ -70,7 +70,7 @@ hs.hotkey.bind(half_hyper, 'up',    function() hs.window.focusedWindow():focusWi
 hs.hotkey.bind(half_hyper, 'down',  function() hs.window.focusedWindow():focusWindowSouth() end)
 
 -- Lauch Apps
--- Don't use "f" (full-screen)
+-- Don't use "f" (full-screen) or "r"
 local appList = {
 	s = 'Safari',
 	c = 'Google Chrome',
@@ -89,6 +89,10 @@ end
 -- Open Folder
 hs.hotkey.bind(hyper, "b", function()
 	hs.execute("open /Users/olivertaylor/Dropbox_Ingenuity/Bidding/")
+end)
+
+hs.hotkey.bind(hyper, "r", function()
+	hs.execute("open /Volumes/ramburglar_work/")
 end)
 
 

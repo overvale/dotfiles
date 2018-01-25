@@ -8,6 +8,8 @@
     default = simple
 [apply]
     whitespace = nowarn
+[log]
+    decorate = full
 
 [alias]
     co = checkout
@@ -20,9 +22,6 @@
     lg = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%cd%C(reset) %s%C(red)%d%C(reset)' --abbrev-commit --date=short --branches --tags --remotes
     unstage = rm --cached
     all = add -A
-
-[log]
-    decorate = full
 
 [difftool "Kaleidoscope"]
 	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
@@ -37,6 +36,8 @@
 	prompt = false
 [merge]
 	tool = Kaleidoscope
+
+
 [filter "media"]
 	required = true
 	clean = git media clean %f
@@ -49,6 +50,7 @@
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
 	required = true
+
 
 [color]
   pager = true

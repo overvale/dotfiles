@@ -80,9 +80,9 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Font settings
 (set-face-attribute 'default nil
-                    :family "Fira Mono" :height 140 :weight 'normal)
+                    :family "IBM Plex Mono" :height 120 :weight 'normal)
 (set-face-attribute 'variable-pitch nil
-		    :family "Fira Sans" :height 140 :weight 'normal)
+		    :family "IBM Plex Sans" :height 140 :weight 'normal)
 ;; switch to non-monospace with 'variable-pitch-mode'
 
 (load-theme 'spacemacs-light t)

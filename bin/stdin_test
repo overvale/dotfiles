@@ -1,0 +1,16 @@
+#!/usr/bin/ruby
+
+# puts STDIN.isatty
+
+
+# if STDIN.fcntl(Fcntl::F_GETFL, 0) == 0
+# 
+# 	
+#   
+# else
+# 
+# 	m = STDIN.fcntl(Fcntl::F_GETFL, 0)
+# 	print m
+# 	
+# end
+

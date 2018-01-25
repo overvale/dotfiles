@@ -12,11 +12,13 @@
 # Install ~/code/other-repos from backup
 # pull-down your dotfiles, or copy from backup
 
+# Change your shell to zsh
 chsh -s /bin/zsh
 
 # Installs the developer command line tools
 xcode-select --install
 
+# Add a welcome message to your terminal
 sudo echo "Welcome to UNIX!" > /etc/motd
 
 # Set up ssh keys
@@ -36,6 +38,7 @@ brew install vim
 # Install princeXML
 # make install textplay (symlink)
 
+# Karabiner (and a few other things) require this
 mkdir ~/.config
 
 # Symlink a bunch of things - run from $HOME
@@ -57,7 +60,6 @@ ln -s ~/code/dotfiles/DefaultKeyBinding.dict ~/Library/KeyBindings/
 # Arq
 # BBEdit
 # Dropbox
-# Emacs
 # Gitup
 # Google Chrome
 # Hammerspoon
@@ -71,18 +73,3 @@ ln -s ~/code/dotfiles/DefaultKeyBinding.dict ~/Library/KeyBindings/
 
 # Install work windows-path tools
 # Install fonts from server
-
-# ----------------------------------------------------------
-
-# They keyboard setup is rather specific.
-# At the moment Karabiner doesn't work with MacOS Sierra,
-# so I'm using Karabiner Elements to remap 2 things:
-# 1. Caps lock -> Left control
-# 2. Right option -> right control
-# I would much prefer my old setup, which was:
-# a. Caps -> Escape/Control
-# b. Return -> Return/Control
-# c. Right option -> hyper
-#
-# At the moment I'm faking Caps -> Escape/Control via Karabiner + Hammerspoon
-# but there's some lag, which is disappointing, and Return -> Return/Control is impossible.

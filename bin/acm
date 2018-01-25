@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 
+export PATH=/usr/local/bin:$PATH
+export user=$USER
 export TERM=dumb
 export SHELL=rc
 export PAGER=nobs
+export LANG=en_US.UTF-8
 tabstop=4
 
-fixfont='/mnt/font/IBMPlexMono/12a/font'
+# I have no idea what these do...
+export EDITOR=E
+unset FCEDIT VISUAL
+
+plumber
+
+fixfont='/mnt/font/IBMPlexMono/14a/font'
 varfont='/mnt/font/IBMPlexSans/14a/font'
 
-# If argument list is empty, open acme scratch file
+# If the argument list is empty, load dump file
 if test -z $1; then
-	if [[ $(hostname -s) = "MacBook-Pro" ]]; then
-		exec acme -a -f $varfont -F $fixfont /Users/olivertaylor/Dropbox/acme/scratch &
-	else
-		exec acme -a -f $varfont -F $fixfont /Users/olivertaylor/dropbox/operations/acme &
-	fi
+	exec acme -l acme.dump &
 else
 	exec acme -a -f $varfont -F $fixfont $* &
 fi
-
-

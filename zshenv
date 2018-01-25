@@ -3,3 +3,5 @@ export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/f
 # plan9
 export PLAN9=/usr/local/plan9port
 export PATH=$PATH:$PLAN9/bin
+
+alias o='open'

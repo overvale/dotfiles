@@ -26,12 +26,15 @@ sudo echo "Welcome to UNIX!" > /etc/motd
 # install homebrew - worth checking homepage for, potentially, updated instructions
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
+brew install aspell
 brew install emacs --with-cocoa
 brew install fzf
 brew install git
 brew install ispell
 brew install pandoc
 brew install par
+brew install plan9port
+brew install the_silver_searcher
 brew install tree
 brew install vim
 
@@ -42,14 +45,16 @@ brew install vim
 mkdir ~/.config
 
 # Symlink a bunch of things - run from $HOME
-ln -s ~/code/dotfiles/git/gitconfig .gitconfig;
-ln -s ~/code/dotfiles/git/gitignore_global .gitignore_global;
 ln -s ~/code/dotfiles/vim .vim;
 ln -s ~/code/dotfiles/emacs ~/.emacs.d;
 ln -s ~/code/dotfiles/hammerspoon ~/.hammerspoon;
+ln -s ~/code/dotfiles/DefaultKeyBinding.dict ~/Library/KeyBindings/
+ln -s ~/code/dotfiles/git/gitconfig .gitconfig;
+ln -s ~/code/dotfiles/git/gitignore_global .gitignore_global;
 ln -s ~/code/dotfiles/zshrc ~/.zshrc
 ln -s ~/code/dotfiles/zshenv ~/.zshenv
-ln -s ~/code/dotfiles/DefaultKeyBinding.dict ~/Library/KeyBindings/
+ln -s ~/code/dotfiles/bashrc ~/.bashrc
+ln -s ~/code/dotfiles/bashrc ~/.bash_profile
 
 # Install vim plugin manager + plugins
 # Reconstruct ~/.marks directory

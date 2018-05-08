@@ -78,11 +78,11 @@ Plug 'gerw/vim-HiLinkTrace'
 
 Plug 'plasticboy/vim-markdown'
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
-    let g:vim_markdown_folding_disabled=1
+    "let g:vim_markdown_folding_disabled=1
     " Disable ge mapping
     map <Plug> <Plug>Markdown_EditUrlUnderCursor
     let g:vim_markdown_toc_autofit = 1
-Plug 'thinca/vim-ft-markdown_fold'
+"Plug 'thinca/vim-ft-markdown_fold'
 
 " ----- Colors -----
 
@@ -102,6 +102,7 @@ Plug 'w0ng/vim-hybrid'
     let g:hybrid_custom_term_colors = 1
     let g:hybrid_reduced_contrast = 1
 Plug 'ajmwagar/vim-dues'
+Plug 'fenetikm/falcon'
 
 call plug#end()
 
@@ -116,8 +117,7 @@ if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
     set termguicolors
     colorscheme baselight
 else
-    colorscheme seoul256
-    syntax off
+    colorscheme scales
 endif
 
 
@@ -129,6 +129,7 @@ endif
 source ~/code/private-dotfiles/vimrc
 
 set backspace=indent,eol,start
+set display+=lastline
 set formatoptions=croqn1jl formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
 set hidden confirm
@@ -161,7 +162,7 @@ let &t_ZR="\e[23m"
 inoremap <C-U> <C-G>u<C-U>
 
 " Instead of using man for word lookups, use the OSX dictionary
-" nnoremap K :!open dict:///<cword><cr>
+nnoremap gK :!open dict:///<cword><cr>
 
 " Maintain selection on in/de-dent
 xnoremap > >gv

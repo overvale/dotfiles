@@ -1,4 +1,4 @@
-set guifont="Pragmata Pro":h14
+set guifont=IBMPlexMono-Text:h13
 set guioptions=g
 colorscheme gruvbox
 set background=light

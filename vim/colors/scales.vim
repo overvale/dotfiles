@@ -172,7 +172,9 @@ hi! helpHyperTextEntry      ctermfg=05
 
 hi link mk04ockquote Normal
 
+hi! htmlH1 ctermfg=04 ctermbg=14 cterm=bold,italic
 hi! htmlH2 ctermfg=04 cterm=bold
+hi! htmlH3 ctermfg=00 cterm=bold
 
 "hi! NormalMode   ctermfg=15  ctermbg=
 hi! InsertMode   ctermfg=15  ctermbg=02

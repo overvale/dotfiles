@@ -13,6 +13,7 @@ endif
 
 call plug#begin('~/.vim/plugged')
 Plug 'mbbill/undotree'
+    let g:undotree_WindowLayout = 2
 Plug 'gcmt/taboo.vim'
     let g:taboo_tab_format=" %N: %f%m "
     let g:taboo_modified_tab_flag=" +"
@@ -72,17 +73,16 @@ Plug 'atimholt/spiffy_foldtext'
     let g:SpiffyFoldtext_format = "%c{=}...%<%f{ }%l{+}"
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-dispatch'
-Plug 'gerw/vim-HiLinkTrace'
 
 " ----- Languages -----
 
 Plug 'plasticboy/vim-markdown'
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
-    "let g:vim_markdown_folding_disabled=1
+    let g:vim_markdown_folding_disabled=1
     " Disable ge mapping
     map <Plug> <Plug>Markdown_EditUrlUnderCursor
     let g:vim_markdown_toc_autofit = 1
-"Plug 'thinca/vim-ft-markdown_fold'
+Plug 'thinca/vim-ft-markdown_fold'
 
 " ----- Colors -----
 
@@ -102,7 +102,7 @@ Plug 'w0ng/vim-hybrid'
     let g:hybrid_custom_term_colors = 1
     let g:hybrid_reduced_contrast = 1
 Plug 'ajmwagar/vim-dues'
-Plug 'fenetikm/falcon'
+Plug 'AlessandroYorba/Alduin'
 
 call plug#end()
 
@@ -120,6 +120,21 @@ else
     colorscheme scales
 endif
 
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
 
 " }}}
 " {{{ Settings
@@ -233,6 +248,9 @@ set statusline=%!BuildStatusLine(winnr())
 " }}}
 " {{{ Mappings
 " ------------------------------------------------------------------------------
+
+" Make Y behave like other capitals
+nnoremap Y y$
 
 " Convert sentence junctions
 nnoremap gc. r.wvUb
@@ -396,7 +414,26 @@ function! BackgroundToggle()
     endif
 endfunction
 
-" }}}
+" Display highlight group under cursor
+function! s:hl()
+  echo join(map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")'), '/')
+endfunction
+command! HL call <SID>hl()" }}}
+
+" Google / Feeling lucky
+function! s:goog(pat, lucky)
+  let q = '"'.substitute(a:pat, '["\n]', ' ', 'g').'"'
+  let q = substitute(q, '[[:punct:] ]',
+       \ '\=printf("%%%02X", char2nr(submatch(0)))', 'g')
+  call system(printf('open "https://www.google.com/search?%sq=%s"',
+                   \ a:lucky ? 'btnI&' : '', q))
+endfunction
+
+nnoremap <leader>? :call <SID>goog(expand("<cWORD>"), 0)<cr>
+nnoremap <leader>! :call <SID>goog(expand("<cWORD>"), 1)<cr>
+xnoremap <leader>? "gy:call <SID>goog(@g, 0)<cr>gv
+xnoremap <leader>! "gy:call <SID>goog(@g, 1)<cr>gv
+
 " {{{ Abbreviations
 " ------------------------------------------------------------------------------
 

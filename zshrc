@@ -56,10 +56,11 @@ if [ -n "$SSH_CLIENT" ]; then
 fi
 myDir='%~'
 myBackgroundjobs='%(1j. (%j jobs).)'
-myPrompt='❯❯❯ '
+myPrompt='❯ '
 
 # The Prompt
-PROMPT='${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
+PROMPT='
+${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
 
 # ALIASES
 # ----------------------------------------------------------------------------

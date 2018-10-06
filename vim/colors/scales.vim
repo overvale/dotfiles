@@ -91,7 +91,7 @@ hi!  rstEmphasis   term=NONE  cterm=NONE  ctermfg=NONE  ctermbg=NONE  gui=NONE  
 hi! Normal         ctermfg=00     ctermbg=15
 hi! Visual         ctermfg=00     ctermbg=14
 hi! NonText        ctermfg=09
-hi! StatusLine     ctermfg=15     ctermbg=06    cterm=bold
+hi! StatusLine     ctermfg=15     ctermbg=08
 hi! StatusLineNC   ctermfg=15     ctermbg=13
 hi! LineNr         ctermfg=13     ctermbg=15
 hi! CursorLineNr   ctermfg=09
@@ -143,7 +143,7 @@ hi! fzf3  ctermfg=07 ctermbg=08
 " {{{ Syntax highlighting
 " *********************************************************
 
-hi! Comment                                 cterm=bold,italic
+hi! Comment     ctermfg=04
 hi! Underlined                              cterm=underline
 hi! Title                                   cterm=bold
    
@@ -157,7 +157,6 @@ hi! htmlItalic                              cterm=italic
    
 hi! Ignore                                  cterm=bold
 hi! Error       ctermfg=15  ctermbg=01
-hi! Todo                                    cterm=bold
                        
 hi! Special                                 cterm=italic
 hi! MatchParen                              cterm=bold
@@ -166,13 +165,17 @@ hi! Ignore                                  cterm=bold
 hi! rstEmphasis                             cterm=italic
 hi! todo                                    cterm=bold
 hi! MatchParen                              cterm=bold
-               
+
+"hi! PreProc  cterm=bold
+hi! Todo     ctermbg=14
+"hi! String   ctermfg=09
+
 hi! helpHyperTextJump       ctermfg=05
 hi! helpHyperTextEntry      ctermfg=05
 
 hi link mk04ockquote Normal
 
-hi! htmlH1 ctermfg=04 ctermbg=14 cterm=bold,italic
+hi! htmlH1 ctermfg=01 cterm=bold,italic
 hi! htmlH2 ctermfg=04 cterm=bold
 hi! htmlH3 ctermfg=00 cterm=bold
 

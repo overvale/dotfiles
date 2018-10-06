@@ -10,6 +10,8 @@ half_hyper = {"ctrl", "cmd"}
 -- Snippets
 -- -----------------------------------------------
 
+-- When you press C-` type the path to the home folder.
+-- Useful for when ~ doesn't work (looking at you ACME).
 hs.hotkey.bind( "ctrl", "`", function()
 	hs.eventtap.keyStrokes("/Users/olivertaylor/")
 end)

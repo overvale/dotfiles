@@ -74,6 +74,8 @@ Plug 'atimholt/spiffy_foldtext'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-dispatch'
 Plug 'gerw/vim-HiLinkTrace'
+Plug 'tpope/vim-fugitive'
+Plug 'sunaku/vim-modusline'
 
 " ----- Languages -----
 
@@ -97,16 +99,13 @@ Plug 'morhetz/gruvbox'
     let g:gruvbox_contrast_dark = 'soft'
     let g:gruvbox_contrast_light = 'hard'
     let g:gruvbox_italic = 1
-Plug 'romainl/Apprentice'
-Plug 'jeetsukumaran/vim-nefertiti'
 Plug 'w0ng/vim-hybrid'
     let g:hybrid_custom_term_colors = 1
     let g:hybrid_reduced_contrast = 1
 Plug 'ajmwagar/vim-dues'
-Plug 'AlessandroYorba/Alduin'
-Plug 'atelierbram/Base2Tone-vim'
 Plug 'andreypopp/vim-colors-plain'
 Plug 'NLKNguyen/papercolor-theme'
+Plug 'cormacrelf/vim-colors-github'
 
 call plug#end()
 
@@ -200,54 +199,31 @@ nnoremap U <c-r>
 " }}}
 " {{{ Status Line
 " ------------------------------------------------------------------------------
- 
-" Start by linking the modes defined in g:mode_map
-" to things likely to be in all colorschemes
-highlight link NormalMode  StatusLine
-highlight link InsertMode  PmenuSel
-highlight link VisualMode  IncSearch
-highlight link ReplaceMode Error
-highlight link CommandMode Search
 
-" Create a map of modes to highlight groups
-let g:mode_map = {
-      \ 'n':  ['NORMAL',  'NormalMode' ], 'no':     ['PENDING', 'NormalMode' ], 'v': ['VISUAL',  'VisualMode' ],
-      \ 'V':  ['V-LINE',  'VisualMode' ], "\<c-v>": ['V-BLOCK', 'VisualMode' ], 's': ['SELECT',  'VisualMode' ],
-      \ 'S':  ['S-LINE',  'VisualMode' ], "\<c-s>": ['S-BLOCK', 'VisualMode' ], 'i': ['INSERT',  'InsertMode' ],
-      \ 'R':  ['REPLACE', 'ReplaceMode'], 'Rv':     ['REPLACE', 'ReplaceMode'], 'c': ['COMMAND', 'CommandMode'],
-      \ 'cv': ['COMMAND', 'CommandMode'], 'ce':     ['COMMAND', 'CommandMode'], 'r': ['PROMPT',  'CommandMode'],
-      \ 'rm': ['-MORE-',  'CommandMode'], 'r?':     ['CONFIRM', 'CommandMode'], '!': ['SHELL',   'CommandMode'],
-      \ 't':  ['TERMINAL', 'CommandMode']}
+set statusline=%<%f\ %h%m%r%=%y\ ¶\ %(%l,%c%V%)\ %P
 
-" This updates the line highlight when you change modes
-fun! s:updateStatusLineHighlight(newMode)
-  execute 'hi! link CurrMode' get(g:mode_map, a:newMode, ["", a:newMode])[1]
-  return 1
-endf
-
-" This sets things up for highlighting the active window
-fun! SetupStl(nr)
-  " In a %{} context, winnr() always refers to the window to which the status line being drawn belongs.
-  return get(extend(w:, {
-        \ "lf_active": winnr() != a:nr
-          \ ? 0
-          \ : (mode(1) ==# get(g:, "lf_cached_mode", "")
-            \ ? 1
-            \ : s:updateStatusLineHighlight(get(extend(g:, { "lf_cached_mode": mode(1) }), "lf_cached_mode"))
-            \ ),
-        \ "lf_winwd": winwidth(winnr())
-        \ }), "", "")
-endf
-
-
-function! BuildStatusLine(nr)
-    return '%{SetupStl('.a:nr.')}
-    \%#CurrMode#%{w:["lf_active"] ? "  " . get(g:mode_map, mode(1), [mode(1)])[0] . (&paste ? " PASTE " : " ") : ""}%*
-    \ %f %M %=
-    \ %{&spell ? "SPELL " : "" }%y ¶ %l,%c%V %P %* '
-endfunction
-
-set statusline=%!BuildStatusLine(winnr())
+let g:modusline_labels           = {}              " see :help mode()
+let g:modusline_labels['n']      = 'NORMAL'              " Normal
+let g:modusline_labels['no']     = 'PENDING' " Operator-pending
+let g:modusline_labels['v']      = 'VISUAL'   " Visual by character
+let g:modusline_labels['V']      = 'V-LINE'   " Visual by line
+let g:modusline_labels["\<C-V>"] = 'V-BLOCK'   " Visual blockwise
+let g:modusline_labels['s']      = 'SELECT'   " Select by character
+let g:modusline_labels['S']      = 'S-LINE'   " Select by line
+let g:modusline_labels["\<C-S>"] = 'S-BLOCK'   " Select blockwise
+let g:modusline_labels['i']      = 'INSERT'    " Insert
+let g:modusline_labels['R']      = 'REPLACE' " Replace |R|
+let g:modusline_labels['Rv']     = 'REPLACE' " Virtual Replace |gR|
+let g:modusline_labels['c']      = 'COMMAND'     " Command-line
+let g:modusline_labels['cv']     = 'COMMAND' " Vim Ex mode |gQ|
+let g:modusline_labels['ce']     = 'COMMAND' " Normal Ex mode |Q|
+let g:modusline_labels['r']      = 'PROMPT'       " Hit-enter prompt
+let g:modusline_labels['rm']     = '-MORE-'       " The -- more -- prompt
+let g:modusline_labels['r?']     = 'CONFIRM'       " A |:confirm| query of some sort
+let g:modusline_labels['!']      = 'SHELL'  " Shell or external command is executing
+let g:modusline_labels['t']      = 'TERMINAL'    " Terminal mode: keys go to the job
+let g:modusline_labels['ic']     = 'COMPLETE' " see :help ins-completion
+let g:modusline_labels['Rc']     = 'COMPLETE' " see :help ins-completion
 
 " }}}
 " {{{ Mappings
@@ -276,7 +252,7 @@ command! -range Join :'<,'>!cjoin
 " Mappings/Commands for 'titlecase.pl'
 vnoremap gct :Title<cr>
 nnoremap gct V:Title<cr>
-command! -range Title :'<,'>!titlecase.pl
+command! -range Title :'<,'>!tcase
 
 " Quickly go to next/previous tab/buffer/window/quickfix/jump
 nnoremap ]b :bnext<cr>

@@ -26,7 +26,7 @@ Return a list of installed packages or nil for every skipped package."
 			  'markdown-mode
 			  'counsel
 			  'ace-window
-			  'yasnippet
+			  'which-key
 )
 
 
@@ -43,6 +43,11 @@ Return a list of installed packages or nil for every skipped package."
 (set-default 'cursor-type 'bar)
 
 (add-hook 'text-mode-hook 'turn-on-flyspell)
+
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+
+(which-key-mode)
+
 
 ;; Startup options
 (setq inhibit-startup-screen +1)
@@ -90,10 +95,6 @@ Return a list of installed packages or nil for every skipped package."
 ;; Org Mode
 ;; --------------------------------------------------------------------------------
 
-(setq org-agenda-files (list "~/Dropbox/life.org"
-			     "~/Dropbox_Ingenuity/operations/ingenuity.org"
-			     ))
-
 (add-hook 'org-mode-hook
   (lambda ()
     (org-indent-mode t)
@@ -119,13 +120,3 @@ Return a list of installed packages or nil for every skipped package."
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 
 (global-set-key (kbd "M-p") 'ace-window)
-
-
-;; Yasnippets
-;; --------------------------------------------------------------------------------
-
-(setq yas-snippet-dirs
-      '("~/.emacs.d/snippets"                 ;; personal snippets
-        ))
-
-(yas-global-mode 1) ;; or M-x yas-reload-all if you've started YASnippet already.

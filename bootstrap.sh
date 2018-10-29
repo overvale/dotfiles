@@ -33,7 +33,6 @@ brew install git
 brew install ispell
 brew install pandoc
 brew install par
-brew install plan9port
 brew install the_silver_searcher
 brew install tree
 brew install vim

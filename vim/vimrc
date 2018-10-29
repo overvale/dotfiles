@@ -70,9 +70,10 @@ Plug 'tweekmonster/spellrotate.vim'
     vmap <silent> zN <Plug>(SpellRotateBackwardV)
 Plug 'Konfekt/FastFold'
 Plug 'atimholt/spiffy_foldtext'
-    let g:SpiffyFoldtext_format = "%c{=}...%<%f{ }%l{+}"
+    let g:SpiffyFoldtext_format = "%c{ }...%<%f{ }%l{+}"
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-dispatch'
+Plug 'gerw/vim-HiLinkTrace'
 
 " ----- Languages -----
 
@@ -103,6 +104,9 @@ Plug 'w0ng/vim-hybrid'
     let g:hybrid_reduced_contrast = 1
 Plug 'ajmwagar/vim-dues'
 Plug 'AlessandroYorba/Alduin'
+Plug 'atelierbram/Base2Tone-vim'
+Plug 'andreypopp/vim-colors-plain'
+Plug 'NLKNguyen/papercolor-theme'
 
 call plug#end()
 
@@ -115,7 +119,7 @@ set encoding=utf-8
 
 if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
     set termguicolors
-    colorscheme baselight
+    colorscheme gruvbox
 else
     colorscheme scales
 endif
@@ -187,8 +191,8 @@ xnoremap < <gv
 noremap $ g_
 
 " Use 'gk' for k, unless a count is given. Useful for relative numbered lines.
-nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
-nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
+noremap <expr> k (v:count == 0 ? 'gk' : 'k')
+noremap <expr> j (v:count == 0 ? 'gj' : 'j')
 
 " Remap U to redo
 nnoremap U <c-r>
@@ -264,10 +268,10 @@ xnoremap gc; s;<esc>wvub
 " Mappings/Commands for 'clause-break' & 'clause-join'
 vnoremap gcb :Break<cr>
 nnoremap gcb V:Break<cr>
-command! -range Break :'<,'>!clause-break
+command! -range Break :'<,'>!cbreak
 vnoremap gcj :Join<cr>
 nnoremap gcj V:Join<cr>
-command! -range Join :'<,'>!clause-join
+command! -range Join :'<,'>!cjoin
 
 " Mappings/Commands for 'titlecase.pl'
 vnoremap gct :Title<cr>
@@ -315,12 +319,6 @@ nnoremap <Leader>y "*y
 nnoremap <Leader>Y "*y$
 nnoremap <Leader>d "*d
 nnoremap <Leader>D "*D
-vnoremap <Leader>p "*p
-vnoremap <Leader>P "*P
-vnoremap <Leader>y "*y
-vnoremap <Leader>Y "*y$
-vnoremap <Leader>d "*d
-vnoremap <Leader>D "*D
 
 " }}}
 " {{{ Commands
@@ -340,7 +338,6 @@ command! WW :set wrap!
 command! UT :UndotreeToggle
 command! RST :call RST()
 command! TODO vimgrep TODO % | cw
-command! GLTODO vimgrep TODO ~/Dropbox/life.text ~/code/notes/code.text ~/Dropbox/ingenuity/ingenuity.text | cw
 command! DATES vimgrep /\v<\d{4}-\d{2}-\d{2}>/j % | cw
 
 " allow saving a sudo file if forgot to open as sudo
@@ -414,12 +411,6 @@ function! BackgroundToggle()
     endif
 endfunction
 
-" Display highlight group under cursor
-function! s:hl()
-  echo join(map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")'), '/')
-endfunction
-command! HL call <SID>hl()" }}}
-
 " Google / Feeling lucky
 function! s:goog(pat, lucky)
   let q = '"'.substitute(a:pat, '["\n]', ' ', 'g').'"'
@@ -434,6 +425,7 @@ nnoremap <leader>! :call <SID>goog(expand("<cWORD>"), 1)<cr>
 xnoremap <leader>? "gy:call <SID>goog(@g, 0)<cr>gv
 xnoremap <leader>! "gy:call <SID>goog(@g, 1)<cr>gv
 
+" }}}
 " {{{ Abbreviations
 " ------------------------------------------------------------------------------
 

@@ -90,6 +90,8 @@ alias tma='tmux attach -t '
 alias tml='tmux list-sessions'
 alias tmk='tmux kill-session -t '
 
+alias spelling="aspell -a | cut -d ' ' -f 2 | grep -v '*' | grep -v '^$'"
+
 tmh() {
 echo "
     tmn - New tmux session

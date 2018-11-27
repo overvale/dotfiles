@@ -84,8 +84,6 @@ alias server='python -m SimpleHTTPServer 8000'
 alias unquarantine='xattr -d com.apple.quarantine'
 alias pbp="pbpaste"
 alias pbc="pbcopy"
-alias gs='git status -sb'
-alias gl='git lg'
 
 alias tmn='tmux new -s `basename $PWD`'
 alias tma='tmux attach -t '

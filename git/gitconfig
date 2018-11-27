@@ -1,6 +1,6 @@
 [user]
 	name = Oliver Taylor
-	email = olivertaylor@me.com
+    email = olivertaylor@me.com
 [core]
     excludesfile = /Users/olivertaylor/.gitignore_global
     editor = vim
@@ -12,16 +12,11 @@
     decorate = full
 
 [alias]
-    co = checkout
-    br = branch
-    cm = commit
-    st = status
-    df = diff -b --word-diff
-    ks = difftool
-    last = log -1 HEAD
-    lg = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%cd%C(reset) %s%C(red)%d%C(reset)' --abbrev-commit --date=short --branches --tags --remotes
-    unstage = rm --cached
-    all = add -A
+    s = status -sb
+    l = git log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%cd%C(reset) %s%C(red)%d%C(reset)' --abbrev-commit --date=short --branches --tags --remotes
+    a = add -A
+    d = diff -b --word-diff
+    c = commit
 
 [difftool "Kaleidoscope"]
 	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"

@@ -75,7 +75,6 @@ Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-dispatch'
 Plug 'gerw/vim-HiLinkTrace'
 Plug 'tpope/vim-fugitive'
-Plug 'sunaku/vim-modusline'
 
 " ----- Languages -----
 
@@ -99,13 +98,11 @@ Plug 'morhetz/gruvbox'
     let g:gruvbox_contrast_dark = 'soft'
     let g:gruvbox_contrast_light = 'hard'
     let g:gruvbox_italic = 1
-Plug 'w0ng/vim-hybrid'
-    let g:hybrid_custom_term_colors = 1
-    let g:hybrid_reduced_contrast = 1
 Plug 'ajmwagar/vim-dues'
 Plug 'andreypopp/vim-colors-plain'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'cormacrelf/vim-colors-github'
+Plug 'arcticicestudio/nord-vim'
 
 call plug#end()
 
@@ -115,13 +112,7 @@ call plug#end()
 
 syntax enable
 set encoding=utf-8
-
-if has('termguicolors') && $TERM_PROGRAM == 'iTerm.app'
-    set termguicolors
-    colorscheme gruvbox
-else
-    colorscheme scales
-endif
+colorscheme nord
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
@@ -142,6 +133,10 @@ let g:fzf_colors =
 " }}}
 " {{{ Settings
 " ------------------------------------------------------------------------------
+
+" Statusline
+set statusline=🖖\ %f\ %m\ %=\ %y\ ¶\ %l,%c%V\ %P
+set showmode
 
 " Each machine has settings specific to it
 source ~/code/private-dotfiles/vimrc
@@ -168,6 +163,7 @@ set wildmenu wildmode=longest:full
 set wrap linebreak breakindent
 set wrapscan
 set nostartofline
+set relativenumber
 
 " Enter command-mode with <space>
 noremap <space> :
@@ -195,35 +191,6 @@ noremap <expr> j (v:count == 0 ? 'gj' : 'j')
 
 " Remap U to redo
 nnoremap U <c-r>
-
-" }}}
-" {{{ Status Line
-" ------------------------------------------------------------------------------
-
-set statusline=%<%f\ %h%m%r%=%y\ ¶\ %(%l,%c%V%)\ %P
-
-let g:modusline_labels           = {}              " see :help mode()
-let g:modusline_labels['n']      = 'NORMAL'              " Normal
-let g:modusline_labels['no']     = 'PENDING' " Operator-pending
-let g:modusline_labels['v']      = 'VISUAL'   " Visual by character
-let g:modusline_labels['V']      = 'V-LINE'   " Visual by line
-let g:modusline_labels["\<C-V>"] = 'V-BLOCK'   " Visual blockwise
-let g:modusline_labels['s']      = 'SELECT'   " Select by character
-let g:modusline_labels['S']      = 'S-LINE'   " Select by line
-let g:modusline_labels["\<C-S>"] = 'S-BLOCK'   " Select blockwise
-let g:modusline_labels['i']      = 'INSERT'    " Insert
-let g:modusline_labels['R']      = 'REPLACE' " Replace |R|
-let g:modusline_labels['Rv']     = 'REPLACE' " Virtual Replace |gR|
-let g:modusline_labels['c']      = 'COMMAND'     " Command-line
-let g:modusline_labels['cv']     = 'COMMAND' " Vim Ex mode |gQ|
-let g:modusline_labels['ce']     = 'COMMAND' " Normal Ex mode |Q|
-let g:modusline_labels['r']      = 'PROMPT'       " Hit-enter prompt
-let g:modusline_labels['rm']     = '-MORE-'       " The -- more -- prompt
-let g:modusline_labels['r?']     = 'CONFIRM'       " A |:confirm| query of some sort
-let g:modusline_labels['!']      = 'SHELL'  " Shell or external command is executing
-let g:modusline_labels['t']      = 'TERMINAL'    " Terminal mode: keys go to the job
-let g:modusline_labels['ic']     = 'COMPLETE' " see :help ins-completion
-let g:modusline_labels['Rc']     = 'COMPLETE' " see :help ins-completion
 
 " }}}
 " {{{ Mappings
@@ -332,38 +299,6 @@ augroup custom_misc
     autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
     autocmd BufRead,BufNewFile *.text,*.md setlocal spell filetype=markdown syntax=markdown
     autocmd BufRead,BufNewFile *.rst setlocal spell foldmethod=marker
-    autocmd ColorScheme * call CustomizeColors()
-augroup END
-
-function! CustomizeColors()
-    if (g:colors_name == 'vacme')
-        highlight link NormalMode  StatusLine
-        highlight link InsertMode  PMenuSel
-        highlight link VisualMode  Visual
-        highlight link ReplaceMode Error
-        highlight link CommandMode Search
-    elseif (g:colors_name == 'dues')
-        highlight link NormalMode  StatusLine
-        highlight link InsertMode  DiffAdd
-        highlight link VisualMode  DiffText
-        highlight link ReplaceMode DiffDelete
-        highlight link CommandMode PmenuSel
-    elseif (g:colors_name == 'hybrid')
-        highlight link NormalMode  SpellLocal
-        highlight link InsertMode  DiffAdd
-        highlight link VisualMode  Visual
-        highlight link ReplaceMode DiffDelete
-        highlight link CommandMode Search
-    end
-endfunction
-
-" This is required to get your customizations on statup
-call CustomizeColors()
-
-" This calls your customizations when you change schemes
-augroup mycolorschemes
-    au!
-    au ColorScheme * call CustomizeColors()
 augroup END
 
 function! Markdown()
@@ -386,20 +321,6 @@ function! BackgroundToggle()
         set background=dark
     endif
 endfunction
-
-" Google / Feeling lucky
-function! s:goog(pat, lucky)
-  let q = '"'.substitute(a:pat, '["\n]', ' ', 'g').'"'
-  let q = substitute(q, '[[:punct:] ]',
-       \ '\=printf("%%%02X", char2nr(submatch(0)))', 'g')
-  call system(printf('open "https://www.google.com/search?%sq=%s"',
-                   \ a:lucky ? 'btnI&' : '', q))
-endfunction
-
-nnoremap <leader>? :call <SID>goog(expand("<cWORD>"), 0)<cr>
-nnoremap <leader>! :call <SID>goog(expand("<cWORD>"), 1)<cr>
-xnoremap <leader>? "gy:call <SID>goog(@g, 0)<cr>gv
-xnoremap <leader>! "gy:call <SID>goog(@g, 1)<cr>gv
 
 " }}}
 " {{{ Abbreviations

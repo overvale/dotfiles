@@ -8,6 +8,7 @@ export SHELL=rc
 export PAGER=nobs
 export LANG=en_US.UTF-8
 tabstop=4
+devdrawretina=1
 
 # Plumb files instead of starting new editor.
 EDITOR=E

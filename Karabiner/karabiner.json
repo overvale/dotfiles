@@ -117,7 +117,7 @@
                                 "conditions": [
                                     {
                                         "file_paths": [
-                                            "/usr/local/plan9/bin/devdraw"
+                                            "/usr/local/plan9port/bin/devdraw"
                                         ],
                                         "type": "frontmost_application_if"
                                     }
@@ -149,7 +149,7 @@
                                 "conditions": [
                                     {
                                         "file_paths": [
-                                            "/usr/local/plan9/bin/devdraw"
+                                            "/usr/local/plan9port/bin/devdraw"
                                         ],
                                         "type": "frontmost_application_if"
                                     }

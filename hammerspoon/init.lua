@@ -6,30 +6,13 @@ hyper = {"ctrl", "alt", "cmd"}
 -- HALF_HYPER is used for shortcuts
 half_hyper = {"ctrl", "cmd"}
 
-
--- Snippets
--- -----------------------------------------------
-
--- When you press C-` type the path to the home folder.
--- Useful for when ~ doesn't work (looking at you ACME).
-hs.hotkey.bind( "ctrl", "`", function()
-	hs.eventtap.keyStrokes("/Users/olivertaylor/")
-end)
-
-
-
--- Plugins
--- -----------------------------------------------
-
 -- Anycomplete Plugin
 local anycomplete = require "anycomplete"
 anycomplete.registerDefaultBindings()
 
 require('position')
 
--- Functions
--- -----------------------------------------------
-
+-- Setup snap_window for use later
 function snap_window(dir)
     local thiswindow = hs.window.frontmostWindow()
     local loc = thiswindow:frame()
@@ -65,12 +48,6 @@ hs.hotkey.bind( half_hyper, "return", function()
 	hs.hints.windowHints()
 end)
 
--- Change focused window
-hs.hotkey.bind(half_hyper, 'left',  function() hs.window.focusedWindow():focusWindowWest()  end)
-hs.hotkey.bind(half_hyper, 'right', function() hs.window.focusedWindow():focusWindowEast()  end)
-hs.hotkey.bind(half_hyper, 'up',    function() hs.window.focusedWindow():focusWindowNorth() end)
-hs.hotkey.bind(half_hyper, 'down',  function() hs.window.focusedWindow():focusWindowSouth() end)
-
 -- Lauch Apps
 -- Don't use "f" (full-screen) or "r"
 local appList = {
@@ -88,16 +65,6 @@ for key, app in pairs(appList) do
 	hs.hotkey.bind(half_hyper, key, function() hs.application.launchOrFocus(app) end)
 end
 
--- Open Folder
-hs.hotkey.bind(hyper, "b", function()
-	hs.execute("open /Users/olivertaylor/Dropbox_Ingenuity/Bidding/")
-end)
-
-hs.hotkey.bind(hyper, "r", function()
-	hs.execute("open /Volumes/ramburglar_work/")
-end)
-
-
 -- Resize/Move Window - USE 'HYPER'
 -- -----------------------------------------------
 
@@ -108,7 +75,3 @@ end)
 hs.hotkey.bind(hyper, "[", function() snap_window('left') end)
 hs.hotkey.bind(hyper, "]", function() snap_window('right') end)
 hs.hotkey.bind(hyper, '=', function() hs.window.centerOnScreen(hs.window.focusedWindow()) end)
-
-
--- Bindings
--- -----------------------------------------------

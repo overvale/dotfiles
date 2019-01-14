@@ -13,7 +13,7 @@
 
 [alias]
     s = status -sb
-    l = git log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%cd%C(reset) %s%C(red)%d%C(reset)' --abbrev-commit --date=short --branches --tags --remotes
+    l = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%cd%C(reset) %s%C(red)%d%C(reset)' --abbrev-commit --date=short --branches --tags --remotes
     a = add -A
     d = diff -b --word-diff
     c = commit

@@ -21,7 +21,7 @@ SAVEHIST=10000
 HISTSIZE=10000
 
 export EDITOR=vim
-export DOT=~/code/dotfiles
+export DOT=~/d/src/dot
 
 # encoding
 export LANG=en_US.UTF-8
@@ -140,7 +140,7 @@ function makepdf(){
         echo "USAGE: makepdf format /source /destination" >&2
         return 1
     else
-        pandoc -f $1+smart -t html < $2 | prince -s ~/code/print_css/print.css - -o $3
+        pandoc -f $1+smart -t html < $2 | prince -s ~/d/src/print_css/print.css - -o $3
         return 0
     fi
 }
@@ -157,7 +157,7 @@ else
     export TODOS="\
     ~/Dropbox/life.org \
     ~/Documents/screenwriting/career/writing.org \
-    ~/code/notes/code.org \
+    ~/d/src/notes/code.org \
     ~/Dropbox_Ingenuity/operations/ingenuity.org"
 fi
 
@@ -198,8 +198,8 @@ function ltd() {
 
 source /usr/local/opt/fzf/shell/completion.zsh
 source /usr/local/opt/fzf/shell/key-bindings.zsh
-source ~/code/other-repos/fzf-marks/fzf-marks.plugin.zsh
-source ~/code/other-repos/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
+source ~/dev/other-repos/fzf-marks/fzf-marks.plugin.zsh
+source ~/dev/other-repos/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 
 export FZF_DEFAULT_OPTS="--color dark --height 40%"
 export FZF_CTRL_T_OPTS="--preview '(cat {} || tree -C {}) 2> /dev/null | head -200'"
@@ -207,7 +207,7 @@ export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden --bind '?:toggle-preview'"
 export FZF_FS_OPENER=vim
 alias ffs='fzf-fs'
-alias fzfnotes='less ~/code/notes/fzf_notes'
+alias fzfnotes='less ~/d/src/notes/fzf_notes'
 
 # fshow - git commit browser
 fshow() {

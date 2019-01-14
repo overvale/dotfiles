@@ -1,4 +1,4 @@
-source ~/code/private-dotfiles/muttrc
+source ~/dev/private-dotfiles/muttrc
 
 set spoolfile = '+INBOX'
 set postponed = '+[Google Mail]/Drafts'
@@ -15,7 +15,7 @@ set nomark_old
 set nomarkers
 
 set sig_on_top
-set signature = '~/code/dotfiles/mutt/signature'
+set signature = '~/d/src/dot/mutt/signature'
 
 
 
@@ -68,7 +68,7 @@ bind attach <return> view-mailcap
 
 
 
-source ~/code/dotfiles/mutt/rookie.mutt
+source ~/d/src/dot/mutt/rookie.mutt
 
 # color  normal	     brightwhite     black
 # color  attachment    brightyellow    black

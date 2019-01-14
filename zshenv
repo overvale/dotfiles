@@ -1,4 +1,4 @@
-export PATH=$PATH:~/code/dotfiles/bin:~/code/other-repos/text-utilities:~/code/other-repos/fzf-fs
+export PATH=$PATH:~/d/src/bin:~/d/src/text-utilities:~/dev/other-repos/fzf-fs
 
 PLAN9=/usr/local/plan9port export PLAN9
 PATH=$PATH:$PLAN9/bin export PATH

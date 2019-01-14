@@ -9,9 +9,9 @@ HISTSIZE=5000
 
 set -o noclobber
 
-export PATH=$PATH:~/code/dotfiles/bin:~/code/text-utilities:~/code/other-repos/fzf-fs
+export PATH=$PATH:~/d/src/bin:~/d/src/text-utilities:~/dev/other-repos/fzf-fs
 export EDITOR=vim
-export DOT=~/code/dotfiles
+export DOT=~/d/src/dot
 
 export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8

@@ -9,7 +9,7 @@
 # Change caps-lock to control
 
 # Copy files from backup
-# Install ~/code/other-repos from backup
+# Install ~/dev/other-repos from backup
 # pull-down your dotfiles, or copy from backup
 
 # Change your shell to zsh
@@ -44,16 +44,16 @@ brew install vim
 mkdir ~/.config
 
 # Symlink a bunch of things - run from $HOME
-ln -s ~/code/dotfiles/vim .vim;
-ln -s ~/code/dotfiles/emacs ~/.emacs.d;
-ln -s ~/code/dotfiles/hammerspoon ~/.hammerspoon;
-ln -s ~/code/dotfiles/DefaultKeyBinding.dict ~/Library/KeyBindings/
-ln -s ~/code/dotfiles/git/gitconfig .gitconfig;
-ln -s ~/code/dotfiles/git/gitignore_global .gitignore_global;
-ln -s ~/code/dotfiles/zshrc ~/.zshrc
-ln -s ~/code/dotfiles/zshenv ~/.zshenv
-ln -s ~/code/dotfiles/bashrc ~/.bashrc
-ln -s ~/code/dotfiles/bashrc ~/.bash_profile
+ln -s ~/d/src/dot/vim .vim;
+ln -s ~/dev/emacs ~/.emacs.d;
+ln -s ~/d/src/dot/hammerspoon ~/.hammerspoon;
+ln -s ~/d/src/dot/DefaultKeyBinding.dict ~/Library/KeyBindings/
+ln -s ~/d/src/dot/git/gitconfig .gitconfig;
+ln -s ~/d/src/dot/git/gitignore_global .gitignore_global;
+ln -s ~/d/src/dot/zshrc ~/.zshrc
+ln -s ~/d/src/dot/zshenv ~/.zshenv
+ln -s ~/d/src/dot/bashrc ~/.bashrc
+ln -s ~/d/src/dot/bashrc ~/.bash_profile
 
 # Install vim plugin manager + plugins
 # Reconstruct ~/.marks directory

@@ -1,2 +1,0 @@
-#!/bin/bash
-cat > /tmp/feed2safari.html && open -a Safari /tmp/feed2safari.html

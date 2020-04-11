@@ -81,8 +81,8 @@ Plug 'thinca/vim-ft-markdown_fold'
 
 " ----- Colors -----
 
-Plug '~/d/src/colors/vacme/'
-Plug '~/d/src/colors/baselight/'
+Plug '~/dev/src/colors/vacme/'
+Plug '~/dev/src/colors/baselight/'
 
 Plug 'junegunn/seoul256.vim'
     let g:seoul256_light_background = 255
@@ -105,7 +105,8 @@ call plug#end()
 
 syntax enable
 set encoding=utf-8
-colorscheme nord
+colorscheme gruvbox
+set background=dark
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
@@ -129,7 +130,6 @@ let g:fzf_colors =
 
 " Statusline
 set statusline=🖖\ %f\ %m\ %=\ %y\ ¶\ %l,%c%V\ %P
-set showmode
 
 " Each machine has settings specific to it
 source ~/dev/private-dotfiles/vimrc
@@ -140,7 +140,7 @@ set formatoptions=croqn1jl formatprg=par\ -w78rq nojoinspaces
 set foldlevelstart=99
 set hidden confirm
 set incsearch ignorecase gdefault
-set laststatus=2 showcmd noshowmode
+set laststatus=2 showcmd showmode
 set listchars=tab:▶\ ,eol:¬,trail:¿,extends:⟩,precedes:⟨,nbsp:╌
 set mouse=n
 set scrolloff=0 sidescrolloff=5

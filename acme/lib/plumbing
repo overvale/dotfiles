@@ -1,0 +1,12 @@
+# This doesn't currently work and I have no idea why
+
+editor = acme
+
+include /usr/local/plan9/plumb/basic
+
+type is text
+data matches '[a-zA-Z¡-�0-9_\-./]+'
+data matches '([a-zA-Z¡-�0-9_\-./]+)\.(ps|PS|eps|EPS|pdf|PDF|dvi|DVI)'
+arg isfile	$0
+plumb to postscript
+plumb start open $file

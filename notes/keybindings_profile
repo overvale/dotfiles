@@ -1,10 +1,4 @@
 Keybindings
-Mac OS X + emacs + BBEdit
-A full set
-
-Character, Word, and Line shortcuts should be available system-wide.
-In BBEdit, scripts extend the set to include Sentences and Paragraphs.
-Wherever possible arrow keys are avoided.
 
 ctl+v : page down
 alt+v : page up

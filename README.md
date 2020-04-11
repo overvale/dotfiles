@@ -1,3 +1,6 @@
-# Oliver’s Dot Files
+# Dot Files
 
-These are my dot-files. Eventually I’ll add more info.
+I've learned a lot by reading other people's dot files,
+I hope you can learn something from reading mine.
+
+~oliver

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+export BROWSER='safari'
+export PATH=$PATH:~/cloud/src/dot/acme/bin
+export TERM=dumb
+export SHELL=rc
+export PAGER=nobs
+export LANG=en_US.UTF-8
+
+fixfont='/mnt/font/GoMono/14a/font'
+varfont='/mnt/font/GoRegular/14a/font'
+
+# list files in directory of open file
+alias lf="$PLAN9/bin/lc -F"
+
+# If the argument list is empty, load dump file
+if test -z $1; then
+	exec acme -l $HOME/acme.dump &
+else
+	exec acme -a -f $varfont -F $fixfont $* &
+fi
+
+#exec acme -a -f $varfont -F $fixfont $* &

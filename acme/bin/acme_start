@@ -13,6 +13,16 @@ varfont='/mnt/font/GoRegular/14a/font'
 # list files in directory of open file
 alias lf="$PLAN9/bin/lc -F"
 
+if [ "$(pgrep plumber)" ]; then
+	echo plumber is running
+else
+	echo starting plumber
+	plumber
+	# order matters, the first matched rule wins
+	# see /usr/local/plan9port/plumb/basic 
+	cat $DOT/acme/lib/plumbing $PLAN9/plumb/basic | 9p write plumb/rules
+fi
+
 # If the argument list is empty, load dump file
 if test -z $1; then
 	exec acme -l $HOME/acme.dump &

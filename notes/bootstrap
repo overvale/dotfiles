@@ -1,15 +1,14 @@
 # Use this document to setup a new Mac.
 # This is not meant to be run as a shell-script, rather, as a guide.
 
-# Sign in to iCloud
-# Sign in to iTunes Match
+# Sign in with AppleID
 
 # Check for software updates
-# Install ad blocking
+# Install ad blocking - I currently use 1Blocker
 # Change caps-lock to control
 
 # Copy files from backup
-# Install ~/dev/other-repos from backup
+# Install ~/dev from backup
 # pull-down your dotfiles, or copy from backup
 
 # Change your shell to zsh
@@ -28,52 +27,59 @@ sudo echo "Welcome to UNIX!" > /etc/motd
 
 brew install aspell
 brew install emacs --with-cocoa
+brew install exa
 brew install fzf
 brew install git
 brew install ispell
 brew install pandoc
 brew install par
 brew install the_silver_searcher
+brew install tldr
 brew install tree
 brew install vim
+brew install zsh
 
 # Install princeXML
 # make install textplay (symlink)
 
-# Karabiner (and a few other things) require this
-mkdir ~/.config
+mkdir ~.config
+ln -s ~/dev/Karabiner .config/karabiner
 
 # Symlink a bunch of things - run from $HOME
-ln -s ~/d/src/dot/vim .vim;
+ln -s ~/Library/Mobile\ Documents/com~apple~CloudDocs/oht cloud;
 ln -s ~/dev/emacs ~/.emacs.d;
-ln -s ~/d/src/dot/hammerspoon ~/.hammerspoon;
-ln -s ~/d/src/dot/DefaultKeyBinding.dict ~/Library/KeyBindings/
-ln -s ~/d/src/dot/git/gitconfig .gitconfig;
-ln -s ~/d/src/dot/git/gitignore_global .gitignore_global;
-ln -s ~/d/src/dot/zshrc ~/.zshrc
-ln -s ~/d/src/dot/zshenv ~/.zshenv
-ln -s ~/d/src/dot/bashrc ~/.bashrc
-ln -s ~/d/src/dot/bashrc ~/.bash_profile
+ln -s ~/cloud/src/dot/vim .vim;
+ln -s ~/cloud/src/dot/git/gitconfig .gitconfig;
+ln -s ~/cloud/src/dot/git/gitignore_global .gitignore_global;
+ln -s ~/cloud/src/dot/zsh/zshrc ~/.zshrc
+ln -s ~/cloud/src/dot/zsh/zshenv ~/.zshenv
 
 # Install vim plugin manager + plugins
 # Reconstruct ~/.marks directory
 
 # Install apps:
 
+# 1Blocker
+# 1Password7
 # Adobe Lightroom
 # Arq
 # BBEdit
-# Dropbox
+# Fantastical
+# Finda
+# Front and Center
 # Gitup
 # Google Chrome
-# Hammerspoon
 # Karabiner
-# Name Mangler (Mac App Store)
-# Pixelmator (Mac App Store)
-# QuickTime Player 7
+# Keyboard Maestro
+# Microsoft Office
+# Monodraw
+# Name Mangler
+# NetNewsWire
+# Pixelmator
 # Slack
 # SuperDuper
+# Tot
 # Transmit
+# ViDL
 
-# Install work windows-path tools
 # Install fonts from server

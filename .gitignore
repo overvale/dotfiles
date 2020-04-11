@@ -1,15 +1,5 @@
 .DS_Store
-keyboard_maestro_macros.kmsync
-vim/bundle/
-vim/plugged/
-vim/autoload/
 vim/.netrwhist
 vim/custom-dictionary.*
 plug.vim
-emacs/auto-save-list
-emacs/bookmarks
-emacs/elpa
-emacs/saves
-emacs/url
-emacs/eshell
-emacs/recentf
+plug.vim.old

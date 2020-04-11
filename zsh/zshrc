@@ -21,7 +21,7 @@ SAVEHIST=10000
 HISTSIZE=10000
 
 export EDITOR=vim
-export DOT=~/d/src/dot
+export DOT=~/cloud/src/dot
 
 # encoding
 export LANG=en_US.UTF-8
@@ -73,8 +73,8 @@ bindkey "^J" history-beginning-search-forward
 
 alias rm="rm -i"
 alias mv="mv -i"
-alias l='ls -1p'
-alias la="ls -AohGp"
+alias l='exa -1'
+alias la="exa -la"
 alias ..="cd .."
 alias ax="chmod a+x"
 alias cpwd='pwd|tr -d "\n"|pbcopy'
@@ -90,7 +90,8 @@ alias tma='tmux attach -t '
 alias tml='tmux list-sessions'
 alias tmk='tmux kill-session -t '
 
-alias spelling="aspell -a | cut -d ' ' -f 2 | grep -v '*' | grep -v '^$'"
+alias acm="~/cloud/src/dot/acme/bin/acme_start"
+alias ffs='~/dev/other-repos/fzf-fs'
 
 tmh() {
 echo "
@@ -99,6 +100,11 @@ echo "
     tml - List tmux sessions
     tmk - Kill tmux session
 " }
+
+# cdg - cd into directories in "/Volumes/GoogleDrive/Shared drives"
+alias cdg='open "$(find /Volumes/GoogleDrive/Shared\ drives -maxdepth 3 -type d | fzf)"'
+# dfind - find all directories
+alias dfind='find . -type d'
 
 # FUNCTIONS
 # ----------------------------------------------------------------------------
@@ -140,7 +146,7 @@ function makepdf(){
         echo "USAGE: makepdf format /source /destination" >&2
         return 1
     else
-        pandoc -f $1+smart -t html < $2 | prince -s ~/d/src/print_css/print.css - -o $3
+        pandoc -f $1+smart -t html < $2 | prince -s ~/cloud/src/print_css/print.css - -o $3
         return 0
     fi
 }
@@ -201,13 +207,12 @@ source /usr/local/opt/fzf/shell/key-bindings.zsh
 source ~/dev/other-repos/fzf-marks/fzf-marks.plugin.zsh
 source ~/dev/other-repos/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 
-export FZF_DEFAULT_OPTS="--color dark --height 40%"
+export FZF_DEFAULT_OPTS="--color light --height 40%"
 export FZF_CTRL_T_OPTS="--preview '(cat {} || tree -C {}) 2> /dev/null | head -200'"
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden --bind '?:toggle-preview'"
 export FZF_FS_OPENER=vim
-alias ffs='fzf-fs'
-alias fzfnotes='less ~/d/src/notes/fzf_notes'
+alias fzfnotes='less ~/cloud/src/notes/fzf_notes'
 
 # fshow - git commit browser
 fshow() {
@@ -229,3 +234,4 @@ v() {
             [ -f "${line/\~/$HOME}" ] && echo "$line"
           done | fzf-tmux -d -m -q "$*" -1) && vim ${files//\~/$HOME}
 }
+

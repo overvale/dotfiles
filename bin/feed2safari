@@ -1,0 +1,3 @@
+#!/bin/bash
+# opens HTML on STDIN in Safari
+cat > /tmp/feed2safari.html && open -a Safari /tmp/feed2safari.html

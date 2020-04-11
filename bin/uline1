@@ -1,0 +1,5 @@
+#!/usr/bin/awk -f
+
+# Underline text with 1 "line" ----
+
+{print; gsub(/./, "-"); print}

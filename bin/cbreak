@@ -1,0 +1,30 @@
+#!/usr/bin/ruby
+
+# Breaks lines at clause delimiters
+
+ARGF.set_encoding(Encoding::UTF_8)
+x = ARGF.read
+
+periods = /
+\.\s|\b\.{3}\s|\s\.{3}\b
+/x
+
+dashes = /
+\s\-\-?\s|\b--\s|\s?--\b
+/x
+
+misc = /
+[\.,?!]"\ |[,;:?!]\ 
+/x
+
+# substitue clause delimiters with newlines
+# retaining the punctuation
+x = x.gsub(/(#{periods}|#{dashes}|#{misc})/, '\1' + "\n")
+
+# this minimizes the addition of extra empty lines in the output
+x = x.gsub(/^\n^\n|\n\n\z/, "\n")
+
+# strip trailing spaces
+x = x.gsub(/ +$/,"")
+
+print x

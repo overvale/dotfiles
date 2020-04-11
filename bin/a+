@@ -1,0 +1,8 @@
+#!/usr/bin/awk -f
+
+# indent using TABS
+
+{
+    $0 = "\t"$0
+    print $0
+}

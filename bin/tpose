@@ -1,0 +1,15 @@
+#!/usr/bin/ruby
+
+# Transposes words on either side of a seperator
+
+punc=/[\\\/\|\-,+<>~=:;«»‹›–—]+/
+conj=/and|or/
+
+print ARGF.read.gsub(/
+(.+?)
+	(
+		(\s?
+			(?i:#{punc}|#{conj})
+		\s?))
+(.+)
+/x,  '\4\3\1')

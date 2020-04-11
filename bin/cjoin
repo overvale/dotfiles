@@ -1,0 +1,22 @@
+#!/usr/bin/ruby
+
+# Removes line-breaks between clauses
+
+ARGF.set_encoding(Encoding::UTF_8)
+x = ARGF.read
+
+# Pass letters after terminal punctuation to block
+x = x.gsub(/(?<=[^\.])[!\.\?]["”'’\*\_]{0,2}[ ]*\n\w/) do |y|
+# then capitalize the match
+y.upcase
+end
+
+# Now upcase the first word character in the string
+x = x.sub(/\w/) do |z|
+z.upcase
+end
+
+# Now remove newlines
+x = x.gsub(/(?!^) *\n(?=\S)/, ' ')
+
+print x

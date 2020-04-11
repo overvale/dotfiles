@@ -1,0 +1,5 @@
+#!/usr/bin/awk -f
+
+# Underline text with 2 "lines" ====
+
+{print; gsub(/./, "="); print}

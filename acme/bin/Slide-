@@ -1,0 +1,18 @@
+#!/usr/local/plan9/bin/rc
+
+name=$%
+current=`{basename $name}
+currentx=`{9 grep -n '^'$current'([ ]|$)' index | sed 's/:.*//'}
+
+pagex=`{echo $currentx - 1 | hoc}
+if(~ $pagex 0){
+	echo no such page
+	exit 0
+}
+page=`{sed -n $pagex^p index | awk '{print $1}'}
+if(~ $#page 0){
+	echo no such page
+	exit 0
+}
+
+Slide $page

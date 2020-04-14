@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 export BROWSER='safari'
-export PATH=$PATH:~/cloud/src/dot/acme/bin
 export TERM=dumb
 export SHELL=rc
 export PAGER=nobs
@@ -10,9 +9,7 @@ export LANG=en_US.UTF-8
 fixfont='/mnt/font/GoMono/14a/font'
 varfont='/mnt/font/GoRegular/14a/font'
 
-# list files in directory of open file
-alias lf="$PLAN9/bin/lc -F"
-
+# Start plumber
 if [ "$(pgrep plumber)" ]; then
 	echo plumber is running
 else

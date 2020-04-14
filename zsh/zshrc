@@ -66,7 +66,7 @@ ${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
 # ----------------------------------------------------------------------------
 
 alias evrc="vim $DOT/vim/vimrc"
-alias ezrc="vim $DOT/zshrc && source $DOT/zshrc"
+alias ezrc="vim $DOT/zsh/zshrc && source $DOT/zsh/zshrc"
 
 bindkey "^K" history-beginning-search-backward
 bindkey "^J" history-beginning-search-forward
@@ -90,7 +90,7 @@ alias tma='tmux attach -t '
 alias tml='tmux list-sessions'
 alias tmk='tmux kill-session -t '
 
-alias acm="~/cloud/src/dot/acme/bin/acme_start"
+alias acm="~/cloud/src/dot/acme/bin/acme"
 alias ffs='~/dev/other-repos/fzf-fs'
 
 tmh() {

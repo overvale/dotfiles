@@ -81,8 +81,8 @@ Plug 'thinca/vim-ft-markdown_fold'
 
 " ----- Colors -----
 
-Plug '~/dev/src/colors/vacme/'
-Plug '~/dev/src/colors/baselight/'
+Plug '~/cloud/src/colors/vacme/'
+Plug '~/cloud/src/colors/baselight/'
 
 Plug 'junegunn/seoul256.vim'
     let g:seoul256_light_background = 255

@@ -1,0 +1,12 @@
+1. Clone https://github.com/9fans/plan9port to /usr/local/
+
+2. Add this to your zshenv:
+
+	# This is required for parts of acme/plan9 to work
+	export PLAN9=/usr/local/plan9port
+
+	# Also add this to your path, to get all the plan9 scripts in there
+	export PATH=$PATH:~/cloud/src/dot/bin:~/cloud/src/dot/acme/bin:$PLAN9/bin
+
+3. Only launch acme via ../bin/acme - which is super important because
+it gives you nice fonts and sets up plumber correctly.

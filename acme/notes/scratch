@@ -1,11 +1,8 @@
-/Users/otc/src/dot/bin
-/Users/otc/src/dot/acme
-
+/Users/otc/src/dot/
 /Users/otc/src/textplay/textplay
 /Users/otc/src/print_css/print.css
+/Users/otc/writing/
 
-/Users/otc/writing/kindred/
-/Users/otc/writing/tripwire/
 |cbreak • |joinlines • >aspell -a • |wrap • |dent+ • |dent- • make series_doc
 
 Font /mnt/font/PragmataPro-Regular/13a/font

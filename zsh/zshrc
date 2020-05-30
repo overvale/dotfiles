@@ -2,38 +2,26 @@
 # Everything in this file is only loaded for interactive shells.
 # For non-interactive shells, like those used by emacs & vim, use 'zshenv'
 
-
-# OPTIONS
+# {{{ OPTIONS
 # ----------------------------------------------------------------------------
 
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 setopt HIST_IGNORE_DUPS           # Ignore duplication command history list
 setopt SHARE_HISTORY              # Share history data between sessions
 setopt APPEND_HISTORY             # New sessions append history data rather than overwrite
 setopt EXTENDED_HISTORY           # save each command’s beginning timestamp
+HISTFILE=~/.zsh_history
+SAVEHIST=10000
+HISTSIZE=10000
 setopt NOCLOBBER                  # Disallow overwriting of files using >
 setopt complete_aliases           # Dont expand aliases _before_ completion has finished
 set    completion-ignore-case on  # Ignore case for tab completion
 set    show-all-if-ambiguous on   # Show all suggestions after pressing tab once instead of twice
 bindkey -e                        # Use emacs bindings
-
-HISTFILE=~/.zsh_history
-SAVEHIST=10000
-HISTSIZE=10000
-
-export EDITOR=vim
-export DOT=~/cloud/src/dot
-
-# encoding
-export LANG=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-# enable completion
 autoload -U compinit
 compinit -C
-
-# Arrow driven menu for complete
-zstyle ':completion:*' menu select
 
 ## case-insensitive (all),partial-word and then substring completion
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' \
@@ -42,34 +30,43 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' \
 # pasting with tabs doesn't perform completion
 zstyle ':completion:*' insert-tab pending
 
+bindkey "^K" history-beginning-search-backward
+bindkey "^J" history-beginning-search-forward
 
-# PROMPT
+export EDITOR=vim
+export DOT=~/cloud/src/dot
+export CLOUD=~/cloud
+
+# }}}
+# {{{ PROMPT
 # ----------------------------------------------------------------------------
 
 setopt prompt_subst
 
 # Setup the variables used in the prompt
-# color start = %F{1}
-# color end   = %f
 if [ -n "$SSH_CLIENT" ]; then
     local myUsermachine='%n@%m:'
 fi
 myDir='%~'
 myBackgroundjobs='%(1j. (%j jobs).)'
-myPrompt='🖖 '
+myPrompt='⑆ '
 
-# The Prompt
+# Build the Prompt
 PROMPT='
 ${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
 
-# ALIASES
+# }}}
+# {{{ ALIASES
 # ----------------------------------------------------------------------------
-
 alias evrc="vim $DOT/vim/vimrc"
 alias ezrc="vim $DOT/zsh/zshrc && source $DOT/zsh/zshrc"
+alias szrc="source $DOT/zsh/zshrc"
 
-bindkey "^K" history-beginning-search-backward
-bindkey "^J" history-beginning-search-forward
+alias ,gs="git status -sb"
+alias ,gl="git log --all --graph --pretty=format:'%C(blue)%cd%C(reset) %C(yellow)%h%C(reset) %s%C(red)%d%C(reset)' --abbrev-commit --date=short --branches --tags --remotes"
+alias ,gd="git diff -b"
+alias ,ga="git add"
+alias ,gc="git commit"
 
 alias rm="rm -i"
 alias mv="mv -i"
@@ -77,23 +74,20 @@ alias l='exa -1'
 alias la="exa -la"
 alias ..="cd .."
 alias ax="chmod a+x"
-alias cpwd='pwd|tr -d "\n"|pbcopy'
-alias cdf='cd $(osascript -e "tell application \"Finder\" to POSIX path of (target of window 1 as alias)")'
 alias batt="pmset -g batt"
-alias server='python -m SimpleHTTPServer 8000'
+alias server='python -m http.server 8000'
 alias unquarantine='xattr -d com.apple.quarantine'
 alias pbp="pbpaste"
 alias pbc="pbcopy"
+alias bbe="bbedit"
+alias python=python3
 
-alias tmn='tmux new -s `basename $PWD`'
-alias tma='tmux attach -t '
-alias tml='tmux list-sessions'
-alias tmk='tmux kill-session -t '
-
-alias acm="~/cloud/src/dot/acme/bin/acme"
-alias ffs='~/dev/other-repos/fzf-fs'
-
-tmh() {
+# TMUX
+alias ,tmn='tmux new -s `basename $PWD`'
+alias ,tma='tmux attach -t '
+alias ,tml='tmux list-sessions'
+alias ,tmk='tmux kill-session -t '
+,tmh() {
 echo "
     tmn - New tmux session
     tma - Attach tmux session
@@ -101,13 +95,14 @@ echo "
     tmk - Kill tmux session
 " }
 
-# cdg - cd into directories in "/Volumes/GoogleDrive/Shared drives"
-alias cdg='open "$(find /Volumes/GoogleDrive/Shared\ drives -maxdepth 3 -type d | fzf)"'
-# dfind - find all directories
-alias dfind='find . -type d'
-
-# FUNCTIONS
+# }}}
+# {{{ FUNCTIONS
 # ----------------------------------------------------------------------------
+
+# did file - listing things you've done
+did (){
+    echo "$(ddate): $@" >> ~/cloud/did.txt
+}
 
 myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
 
@@ -151,27 +146,21 @@ function makepdf(){
     fi
 }
 
-
-# Oliver's Todo system
+# }}}
+# {{{ Project Management System
 # ----------------------------------------------------------------------------
 
-# Define a list of todo files
-if [ "$HOST" = 'Oliver-Mini.local' ]; then
-    export TODOS="\
-    ~/Dropbox/operations/ingenuity.org"
-else
-    export TODOS="\
-    ~/Dropbox/life.org \
-    ~/Documents/screenwriting/career/writing.org \
-    ~/d/src/notes/code.org \
-    ~/Dropbox_Ingenuity/operations/ingenuity.org"
-fi
+fzf-launcher() {
+    eval "$(~/cloud/src/launcher | fzf)"
+    local ret=$?
+    zle fzf-redraw-prompt
+    return $ret
+}
+zle     -N   fzf-launcher
+bindkey '^f' fzf-launcher
 
 
-# Utility function for grep'ing files for TODO items
-# This assumes they're formatting like this:
-# - TODO this is the item
-# I probably need to make it more robust
+# Generic function that searches for "TODO" in the paths given
 function td() {
     if test -z $1; then
         # if no arguments
@@ -179,40 +168,28 @@ function td() {
         return 1
     elif test -z $2; then
         # if there's only one argument, this pattern
-        grep TODO $1 | sed -E "s/(.+)(TODO +)(.+)/\3/g" | column -t -s :
+        ag TODO $1
         return 0
     else
         # if more than one argument, this pattern
-        grep TODO $* | sed -E "s/(.+\/)(.+)(\..+)(TODO +)(.+)/\2: \5/g" | column -t -s :
+        ag TODO $*
         return 0
     fi
 }
 
-alias gtd="eval td $TODOS"
-
-function etd() {
-    vim $(eval find $TODOS | fzf)
-}
-
-function ltd() {
-    td $(eval find $TODOS | fzf)
-}
-
-
-# FZF OPTIONS / FUNCTIONS
+# }}}
+# {{{ FZF OPTIONS / FUNCTIONS
 # ----------------------------------------------------------------------------
 
 source /usr/local/opt/fzf/shell/completion.zsh
 source /usr/local/opt/fzf/shell/key-bindings.zsh
-source ~/dev/other-repos/fzf-marks/fzf-marks.plugin.zsh
-source ~/dev/other-repos/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 
-export FZF_DEFAULT_OPTS="--color light --height 40%"
+export FZF_DEFAULT_OPTS="--color=light --height 60%"
 export FZF_CTRL_T_OPTS="--preview '(cat {} || tree -C {}) 2> /dev/null | head -200'"
+# don't forget to set "use option key as meta" for this to work:
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden --bind '?:toggle-preview'"
 export FZF_FS_OPENER=vim
-alias fzfnotes='less ~/cloud/src/notes/fzf_notes'
 
 # fshow - git commit browser
 fshow() {
@@ -235,3 +212,8 @@ v() {
           done | fzf-tmux -d -m -q "$*" -1) && vim ${files//\~/$HOME}
 }
 
+# This stuff has to be last
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source ~/dev/other-repos/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
+
+# }}}

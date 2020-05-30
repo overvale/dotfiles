@@ -6,56 +6,27 @@ let mapleader = ','
 
 call plug#begin('~/dev/vim/plugged')
 Plug 'mbbill/undotree'
-    let g:undotree_WindowLayout = 2
+    let g:undotree_WindowLayout = 4
 Plug 'gcmt/taboo.vim'
     let g:taboo_tab_format=" %N: %f%m "
     let g:taboo_modified_tab_flag=" +"
 Plug 'junegunn/vim-slash'
 Plug 'junegunn/vim-peekaboo'
-Plug 'junegunn/goyo.vim'
-    let g:goyo_width = 100
-    let g:goyo_height = "100%"
-    nnoremap <leader>g :Goyo<cr>
 Plug 'junegunn/fzf.vim'
     set rtp+=/usr/local/opt/fzf
-    " Lines in current buffer
-    nnoremap <leader>l :BLines<cr>
-    " Lines in loaded buffers
-    nnoremap <leader>L :Lines<cr>
-    " Files in dir
-    nnoremap <leader>f :Files<cr>
-    " Lines in all files in dir
-    nnoremap <leader>a :Ag<cr>
+    nnoremap <leader>l :BLines<cr>      " Lines in current buffer
+    nnoremap <leader>L :Lines<cr>       " Lines in all loaded buffers
+    nnoremap <leader>f :Files<cr>       " Files in dir
+    nnoremap <leader>a :Ag<cr>          " Lines in all files in dir
     nnoremap <leader>b :Buffers<cr>
     nnoremap <leader>h :Helptags<cr>
     nnoremap <leader>c :Colors<cr>
     nnoremap <leader>t :Filetypes<cr>
     nnoremap <leader><space> :Commands<cr>
-
     imap <c-x><c-k> <plug>(fzf-complete-word)
     imap <c-x><c-f> <plug>(fzf-complete-path)
     imap <c-x><c-j> <plug>(fzf-complete-file-ag)
     imap <c-x><c-l> <plug>(fzf-complete-line)
-
-    function! SearchWordWithAg()
-        execute 'Ag' expand('<cword>')
-    endfunction
-
-    function! SearchVisualSelectionWithAg() range
-        let old_reg = getreg('"')
-        let old_regtype = getregtype('"')
-        let old_clipboard = &clipboard
-        set clipboard&
-        normal! ""gvy
-        let selection = getreg('"')
-        call setreg('"', old_reg, old_regtype)
-        let &clipboard = old_clipboard
-        execute 'Ag' selection
-    endfunction
-
-    nnoremap <silent> K :call SearchWordWithAg()<CR>
-    vnoremap <silent> K :call SearchVisualSelectionWithAg()<CR>
-
 Plug 'tweekmonster/spellrotate.vim'
     nmap <silent> zn <Plug>(SpellRotateForward)
     nmap <silent> zN <Plug>(SpellRotateBackward)
@@ -65,12 +36,6 @@ Plug 'Konfekt/FastFold'
 Plug 'atimholt/spiffy_foldtext'
     let g:SpiffyFoldtext_format = "%c{ }...%<%f{ }%l{+}"
 Plug 'tpope/vim-rsi'
-Plug 'tpope/vim-dispatch'
-Plug 'gerw/vim-HiLinkTrace'
-Plug 'tpope/vim-fugitive'
-
-" ----- Languages -----
-
 Plug 'plasticboy/vim-markdown'
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
     let g:vim_markdown_folding_disabled=1
@@ -78,12 +43,6 @@ Plug 'plasticboy/vim-markdown'
     map <Plug> <Plug>Markdown_EditUrlUnderCursor
     let g:vim_markdown_toc_autofit = 1
 Plug 'thinca/vim-ft-markdown_fold'
-
-" ----- Colors -----
-
-Plug '~/cloud/src/colors/vacme/'
-Plug '~/cloud/src/colors/baselight/'
-
 Plug 'junegunn/seoul256.vim'
     let g:seoul256_light_background = 255
     let g:seoul256_background = 238
@@ -91,22 +50,21 @@ Plug 'morhetz/gruvbox'
     let g:gruvbox_contrast_dark = 'soft'
     let g:gruvbox_contrast_light = 'hard'
     let g:gruvbox_italic = 1
-Plug 'ajmwagar/vim-dues'
-Plug 'andreypopp/vim-colors-plain'
-Plug 'NLKNguyen/papercolor-theme'
-Plug 'cormacrelf/vim-colors-github'
-Plug 'arcticicestudio/nord-vim'
-
+Plug 'yasukotelin/shirotelin'
+Plug 'skywind3000/asyncrun.vim'
+    xnoremap gz :'<,'>AsyncRun zsh<cr>
+Plug 'axvr/org.vim'
+Plug 'thinca/vim-localrc'
 call plug#end()
 
 " }}}
 " {{{ Colors
 " ------------------------------------------------------------------------------
 
-syntax enable
 set encoding=utf-8
-colorscheme gruvbox
-set background=dark
+colorscheme shirotelin
+set background=light
+syntax enable
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
@@ -129,10 +87,7 @@ let g:fzf_colors =
 " ------------------------------------------------------------------------------
 
 " Statusline
-set statusline=🖖\ %f\ %m\ %=\ %y\ ¶\ %l,%c%V\ %P
-
-" Each machine has settings specific to it
-source ~/dev/private-dotfiles/vimrc
+set statusline=%f\ %m\ %=\ %y\ ¶\ %l,%c%V\ %P
 
 set backspace=indent,eol,start
 set display+=lastline
@@ -156,63 +111,38 @@ set wildmenu wildmode=longest:full
 set wrap linebreak breakindent
 set wrapscan
 set nostartofline
-set relativenumber
+"set relativenumber
+
+" Remap U to redo
+nnoremap U <c-r>
 
 " Enter command-mode with <space>
 noremap <space> :
 
-" Set proper italic escape-codes
-let &t_ZH="\e[3m"
-let &t_ZR="\e[23m"
+" Make Y behave like other capitals
+nnoremap Y y$
 
-" Break undo before CTRL-U
-inoremap <C-U> <C-G>u<C-U>
-
-" Instead of using man for word lookups, use the OSX dictionary
-nnoremap gK :!open dict:///<cword><cr>
+" In Visual Mode I almost never want $ to select the newline
+noremap $ g_
 
 " Maintain selection on in/de-dent
 xnoremap > >gv
 xnoremap < <gv
 
-" In Visual Mode I almost never want $ to select the newline
-noremap $ g_
-
 " Use 'gk' for k, unless a count is given. Useful for relative numbered lines.
 noremap <expr> k (v:count == 0 ? 'gk' : 'k')
 noremap <expr> j (v:count == 0 ? 'gj' : 'j')
 
-" Remap U to redo
-nnoremap U <c-r>
+" Break undo before CTRL-U
+inoremap <C-U> <C-G>u<C-U>
+
+" Set proper italic escape-codes
+let &t_ZH="\e[3m"
+let &t_ZR="\e[23m"
 
 " }}}
 " {{{ Mappings
 " ------------------------------------------------------------------------------
-
-" Make Y behave like other capitals
-nnoremap Y y$
-
-" Convert sentence junctions
-nnoremap gc. r.wvUb
-nnoremap gc, r,wvub
-nnoremap gc; r;wvub
-nnoremap gc- s -<esc>wvub
-xnoremap gc. s.<esc>wvUb
-xnoremap gc, s,<esc>wvub
-xnoremap gc; s;<esc>wvub
-
-" Mappings/Commands for 'clause-break' & 'clause-join'
-vnoremap gcb :Break<cr>
-nnoremap gcb V:Break<cr>
-command! -range Break :'<,'>!cbreak
-vnoremap gcj :Join<cr>
-nnoremap gcj V:Join<cr>
-command! -range Join :'<,'>!cjoin
-
-" Mappings/Commands for 'titlecase.pl'
-vnoremap gct :Title<cr>
-nnoremap gct V:Title<cr>
-command! -range Title :'<,'>!tcase
 
 " Quickly go to next/previous tab/buffer/window/quickfix/jump
 nnoremap ]b :bnext<cr>
@@ -245,34 +175,23 @@ nnoremap <leader>N :set number!<cr>
 " Select last pasted text
 nnoremap gV `[v`]
 
-" Correct Spelling in Insert Mode
-imap <c-f> <c-g>u<Esc>[s1z=`]a<c-g>u
-
-" Easy yank-put from system clipboard
-nnoremap <Leader>p "*p
-nnoremap <Leader>P "*P
-nnoremap <Leader>y "*y
-nnoremap <Leader>Y "*y$
-nnoremap <Leader>d "*d
-nnoremap <Leader>D "*D
+" Quickly read-in from shell
+nnoremap ! :r!
 
 " }}}
 " {{{ Commands
 " ------------------------------------------------------------------------------
 
 " Never use a mapping when a command will do! This is Vim!
-command! BGT :call BackgroundToggle()
 command! MM :call Markdown()
 command! H1 :normal yypVr=
 command! H2 :normal yypVr-
-command! PP :set paste! | set paste?
 command! SS :set spell! | set spell?
 command! Src :source $MYVIMRC | :echom "vimrc reloaded!"
 command! Erc :e $MYVIMRC
 command! Wrc :w | :source $MYVIMRC | :echom "vimrc saved and reloaded!"
 command! WW :set wrap!
 command! UT :UndotreeToggle
-command! RST :call RST()
 command! TODO vimgrep TODO % | cw
 command! DATES vimgrep /\v<\d{4}-\d{2}-\d{2}>/j % | cw
 
@@ -288,6 +207,7 @@ cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 augroup custom_misc
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker nowrap
+    autocmd FileType zsh setlocal foldmethod=marker nowrap
     autocmd FileType gitcommit setlocal spell
     autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
     autocmd BufRead,BufNewFile *.text,*.md setlocal spell filetype=markdown syntax=markdown
@@ -305,14 +225,6 @@ function! RST()
     setlocal filetype=rst
     setlocal syntax=rst
     setlocal foldmethod=marker
-endfunction
-
-function! BackgroundToggle()
-    if (&background == 'dark')
-        set background=light
-    else
-        set background=dark
-    endif
 endfunction
 
 " }}}

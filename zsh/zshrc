@@ -151,7 +151,7 @@ function makepdf(){
 # ----------------------------------------------------------------------------
 
 fzf-launcher() {
-    eval "$(~/cloud/src/launcher | fzf)"
+    eval "$(~/cloud/src/launcher | fzf) && echo '\n'"
     local ret=$?
     zle fzf-redraw-prompt
     return $ret

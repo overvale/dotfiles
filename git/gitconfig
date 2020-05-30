@@ -2,7 +2,7 @@
 	name = Oliver Taylor
     email = olivertaylor@me.com
 [core]
-    excludesfile = /Users/olivertaylor/.gitignore_global
+    excludesfile = /Users/oht/.gitignore_global
     editor = vim
 [push]
     default = simple
@@ -12,26 +12,8 @@
     decorate = full
 
 [alias]
-    s = status -sb
-    l = log --all --graph --pretty=format:'%C(yellow)%h%C(reset) %C(blue)%cd%C(reset) %s%C(red)%d%C(reset)' --abbrev-commit --date=short --branches --tags --remotes
-    a = add -A
-    d = diff -b --word-diff
+    a = add
     c = commit
-
-[difftool "Kaleidoscope"]
-	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
-[diff]
-	tool = Kaleidoscope
-[difftool]
-	prompt = false
-[mergetool "Kaleidoscope"]
-	cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
-	trustExitCode = true
-[mergetool]
-	prompt = false
-[merge]
-	tool = Kaleidoscope
-
 
 [filter "media"]
 	required = true
@@ -42,9 +24,10 @@
 	smudge = git hawser smudge %f
 	required = true
 [filter "lfs"]
-	clean = git-lfs clean %f
-	smudge = git-lfs smudge %f
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
 	required = true
+	process = git-lfs filter-process
 
 
 [color]
@@ -98,3 +81,6 @@
   selected = normal
   separator = red bold
   linenumber = normal
+
+[diff]
+	tool = vimdiff

@@ -1,26 +1,30 @@
 hi clear
 syntax reset
-let g:colors_name = "scales"
+let g:colors_name = "NASA"
+
+" {{{ Info
+" *********************************************************
 
 " Made by Oliver Taylor <olivertaylor.net>.
 " This is a TERMINAL ONLY color-scheme.
 " It assumes a specially designed terminal theme.
-" 00 = Base 0 (Black)
-" 09 = Base 1
-" 10 = Base 2
-" 08 = Base 3
-" 11 = Base 4
-" 12 = Base 5
-" 07 = Base 6
-" 13 = Base 7
-" 14 = Base 8
-" 15 = Base 9 (White)
-" 01 = Red
-" 02 = Green
-" 04 = Blue
-" 03 = Highlight 1
-" 05 = Highlight 2
-" 06 = Highlight 3
+
+" 00 = black (grey 1)
+" 01 = red
+" 02 = green
+" 03 = yellow
+" 04 = blue
+" 05 = magenta
+" 06 = cyan
+" 07 = white (grey 3)
+" 08 = bright black (grey 2)
+" 09 = bright red
+" 10 = bright green
+" 11 = bright yellow
+" 12 = bright blue
+" 13 = bright magenta
+" 14 = bright cyan
+" 15 = bright white (grey 4)
 
 " }}}
 " {{{ Reset Highlight Groups
@@ -89,19 +93,19 @@ hi!  rstEmphasis   term=NONE  cterm=NONE  ctermfg=NONE  ctermbg=NONE  gui=NONE  
 " *********************************************************
 
 hi! Normal         ctermfg=00     ctermbg=15
-hi! Visual         ctermfg=00     ctermbg=14
-hi! NonText        ctermfg=09
-hi! StatusLine     ctermfg=15     ctermbg=08
-hi! StatusLineNC   ctermfg=15     ctermbg=13
-hi! LineNr         ctermfg=13     ctermbg=15
-hi! CursorLineNr   ctermfg=09
-hi! VertSplit      ctermfg=13     ctermbg=13
-hi! Folded         ctermfg=09     ctermbg=14
+hi! Visual         ctermfg=00     ctermbg=12
+hi! NonText        ctermfg=08
+hi! StatusLine     ctermfg=15     ctermbg=04    cterm=bold
+hi! StatusLineNC   ctermfg=08     ctermbg=07
+hi! LineNr         ctermfg=08     ctermbg=12
+hi! CursorLineNr   ctermfg=00
+hi! VertSplit      ctermfg=07     ctermbg=07
+hi! Folded         ctermfg=00     ctermbg=14
 hi! FoldColumn     ctermfg=11     ctermbg=15
-hi! TabLineSel     ctermfg=15     ctermbg=06
+hi! TabLineSel     ctermfg=15     ctermbg=04
 
-hi! Search         ctermfg=15     ctermbg=06
-hi! IncSearch      ctermfg=15     ctermbg=02
+hi! Search         ctermfg=00     ctermbg=11
+hi! IncSearch      ctermfg=15     ctermbg=03
 
 hi! WildMenu       ctermfg=15     ctermbg=10
 hi! Pmenu          ctermfg=15     ctermbg=06
@@ -109,8 +113,8 @@ hi! PmenuSel       ctermfg=15     ctermbg=01
 hi! PmenuSbar      ctermfg=15     ctermbg=06
 hi! PmenuThumb     ctermfg=15     ctermbg=09
 
-hi! CursorColumn   ctermbg=14
-hi! CursorLine     ctermbg=14
+hi! CursorColumn   ctermbg=11
+hi! CursorLine     ctermbg=11
 
 hi! link TabLine StatusLineNC
 hi! link TabLineFill StatusLineNC

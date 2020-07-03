@@ -3,3 +3,4 @@ vim/.netrwhist
 vim/custom-dictionary.*
 plug.vim
 plug.vim.old
+bin/textplay

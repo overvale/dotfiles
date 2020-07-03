@@ -1,2 +1,2 @@
 export PLAN9=/usr/local/plan9port
-export PATH=$PATH:~/cloud/src/dot/bin:$PLAN9/bin
+export PATH=$PATH:~/dot/bin:$PLAN9/bin

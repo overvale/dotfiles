@@ -34,8 +34,9 @@ bindkey "^K" history-beginning-search-backward
 bindkey "^J" history-beginning-search-forward
 
 export EDITOR=vim
-export DOT=~/cloud/src/dot
+export DOT=~/dot
 export CLOUD=~/cloud
+export BORG_REMOTE_PATH=/usr/local/bin/borg1/borg1
 
 # }}}
 # {{{ PROMPT
@@ -47,13 +48,18 @@ setopt prompt_subst
 if [ -n "$SSH_CLIENT" ]; then
     local myUsermachine='%n@%m:'
 fi
-myDir='%~'
+
+ExitStatus='%(?..%F{red}✗ %f)'
+myDir='[%~]'
 myBackgroundjobs='%(1j. (%j jobs).)'
 myPrompt='⑆ '
 
 # Build the Prompt
-PROMPT='
-${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
+PROMPT='${ExitStatus}${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
+
+# Simpler prompt
+#PROMPT='${myBackgroundjobs}${myPrompt}'
+#PROMPT='%(?..%F{red}✗ )%F{blue}$([ "${SSH_TTY}" ]&&print "⎋ ")%n%f at %F{green}%m%f in %F{magenta}%~%f] → '
 
 # }}}
 # {{{ ALIASES
@@ -151,14 +157,9 @@ function makepdf(){
 # ----------------------------------------------------------------------------
 
 fzf-launcher() {
-    eval "$(~/cloud/src/launcher | fzf) && echo '\n'"
-    local ret=$?
-    zle fzf-redraw-prompt
-    return $ret
+    eval "$(~/opt/launcher/launcher | fzf)"
 }
-zle     -N   fzf-launcher
-bindkey '^f' fzf-launcher
-
+alias ll=fzf-launcher
 
 # Generic function that searches for "TODO" in the paths given
 function td() {
@@ -214,6 +215,6 @@ v() {
 
 # This stuff has to be last
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-source ~/dev/other-repos/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
+source ~/opt/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 
 # }}}

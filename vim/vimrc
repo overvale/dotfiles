@@ -4,7 +4,9 @@
 " This has to come before any mappings with <leader>
 let mapleader = ','
 
-call plug#begin('~/dev/vim/plugged')
+call plug#begin('~/lib/vim/plugged')
+
+" Vim
 Plug 'mbbill/undotree'
     let g:undotree_WindowLayout = 4
 Plug 'gcmt/taboo.vim'
@@ -12,6 +14,15 @@ Plug 'gcmt/taboo.vim'
     let g:taboo_modified_tab_flag=" +"
 Plug 'junegunn/vim-slash'
 Plug 'junegunn/vim-peekaboo'
+Plug 'Konfekt/FastFold'
+Plug 'atimholt/spiffy_foldtext'
+    let g:SpiffyFoldtext_format = "%c{ }...%<%f{ }%l{+}"
+Plug 'tpope/vim-rsi'
+Plug 'skywind3000/asyncrun.vim'
+    xnoremap gz :'<,'>AsyncRun zsh<cr>
+Plug 'thinca/vim-localrc'
+
+"FZF
 Plug 'junegunn/fzf.vim'
     set rtp+=/usr/local/opt/fzf
     nnoremap <leader>l :BLines<cr>      " Lines in current buffer
@@ -27,15 +38,21 @@ Plug 'junegunn/fzf.vim'
     imap <c-x><c-f> <plug>(fzf-complete-path)
     imap <c-x><c-j> <plug>(fzf-complete-file-ag)
     imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" Edit
 Plug 'tweekmonster/spellrotate.vim'
     nmap <silent> zn <Plug>(SpellRotateForward)
     nmap <silent> zN <Plug>(SpellRotateBackward)
     vmap <silent> zn <Plug>(SpellRotateForwardV)
     vmap <silent> zN <Plug>(SpellRotateBackwardV)
-Plug 'Konfekt/FastFold'
-Plug 'atimholt/spiffy_foldtext'
-    let g:SpiffyFoldtext_format = "%c{ }...%<%f{ }%l{+}"
-Plug 'tpope/vim-rsi'
+Plug 'AndrewRadev/switch.vim'
+    let g:switch_mapping = '-'
+    let g:switch_custom_definitions = [
+    \   ['MON', 'TUE', 'WED', 'THU', 'FRI'],
+    \   ['TODO', 'DONE', 'WAITING'],
+    \ ]
+
+" Lang
 Plug 'plasticboy/vim-markdown'
     " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
     let g:vim_markdown_folding_disabled=1
@@ -43,28 +60,33 @@ Plug 'plasticboy/vim-markdown'
     map <Plug> <Plug>Markdown_EditUrlUnderCursor
     let g:vim_markdown_toc_autofit = 1
 Plug 'thinca/vim-ft-markdown_fold'
-Plug 'junegunn/seoul256.vim'
-    let g:seoul256_light_background = 255
-    let g:seoul256_background = 238
-Plug 'morhetz/gruvbox'
-    let g:gruvbox_contrast_dark = 'soft'
-    let g:gruvbox_contrast_light = 'hard'
-    let g:gruvbox_italic = 1
-Plug 'yasukotelin/shirotelin'
-Plug 'skywind3000/asyncrun.vim'
-    xnoremap gz :'<,'>AsyncRun zsh<cr>
 Plug 'axvr/org.vim'
-Plug 'thinca/vim-localrc'
+
+" Colors
+Plug 'lifepillar/vim-gruvbox8'
+"Plug 'morhetz/gruvbox'
+"    let g:gruvbox_contrast_dark = 'medium'
+"    let g:gruvbox_contrast_light = 'hard'
+"    let g:gruvbox_italic = 1
+"    let g:gruvbox_invert_selection = 0
+Plug 'junegunn/seoul256.vim'
+    let g:seoul256_light_background = 256
+    let g:seoul256_background = 235
+Plug 'yasukotelin/shirotelin'
+
 call plug#end()
 
 " }}}
 " {{{ Colors
 " ------------------------------------------------------------------------------
 
-set encoding=utf-8
-colorscheme shirotelin
-set background=light
+set background=dark
+colorscheme gruvbox8
 syntax enable
+
+" Custom colors for shirotelin
+" hi Statusline ctermbg=0
+" hi Vertsplit cterm=none ctermbg=245 ctermfg=245
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
@@ -87,11 +109,12 @@ let g:fzf_colors =
 " ------------------------------------------------------------------------------
 
 " Statusline
-set statusline=%f\ %m\ %=\ %y\ ¶\ %l,%c%V\ %P
+set statusline=\ %f\ %m\ %=\ %l/%c%V\ (%P)\ %y\ 
 
+set encoding=utf-8
 set backspace=indent,eol,start
 set display+=lastline
-set formatoptions=croqn1jl formatprg=par\ -w78rq nojoinspaces
+set formatoptions=croqn1jl nojoinspaces
 set foldlevelstart=99
 set hidden confirm
 set incsearch ignorecase gdefault
@@ -106,12 +129,11 @@ set splitbelow splitright
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set notimeout ttimeout
 set timeoutlen=1000 ttimeoutlen=0
-set undofile undodir=~/dev/vim/vimundo
+set undofile undodir=~/lib/vim/vimundo
 set wildmenu wildmode=longest:full
 set wrap linebreak breakindent
 set wrapscan
 set nostartofline
-"set relativenumber
 
 " Remap U to redo
 nnoremap U <c-r>
@@ -178,6 +200,9 @@ nnoremap gV `[v`]
 " Quickly read-in from shell
 nnoremap ! :r!
 
+" Insert-Mode Spelling Correction
+inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+
 " }}}
 " {{{ Commands
 " ------------------------------------------------------------------------------
@@ -212,6 +237,7 @@ augroup custom_misc
     autocmd BufWritePre /Volumes/secret_files/* setlocal noundofile
     autocmd BufRead,BufNewFile *.text,*.md setlocal spell filetype=markdown syntax=markdown
     autocmd BufRead,BufNewFile *.rst setlocal spell foldmethod=marker
+    autocmd BufRead,BufNewFile *.org setlocal spell
 augroup END
 
 function! Markdown()
@@ -232,5 +258,9 @@ endfunction
 " ------------------------------------------------------------------------------
 
 inoreabbrev <expr> #!! "#!/usr/bin/env" . (empty(&filetype) ? '' : ' '.&filetype)
+inoreabbrev <expr> odate strftime("<%Y-%m-%d %a>")
+
+iabbrev ;-> →
+iabbrev ;v ✓
 
 " }}}

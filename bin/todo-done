@@ -1,0 +1,14 @@
+#!/usr/bin/env awk -f
+
+# This script toggles TODO -> DONE -> TODO -> etc.
+{
+
+    if ( $0 ~ /TODO/ ) {
+        gsub(/TODO/, "DONE" string);
+        print $0;
+    } else if ( $0 ~ /DONE/ ) {
+        gsub(/DONE/, "TODO" string);
+        print $0;
+    }
+
+}

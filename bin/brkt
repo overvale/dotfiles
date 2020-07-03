@@ -1,68 +1,33 @@
 #!/usr/bin/ruby
 
-=begin
-------------------------------------------------------------
-BRKT is a lightweight markup and pre-processor for writing HTML divs & spans with classes.
-
-MARKUP - SPANS
-
-      INPUT: Her favorite book is {book_title Double Cross}.
-     OUTPUT: Her favorite book is <span class="book_title">Double Cross</span>.
-
-MARKUP - COMMENTS
-
-      INPUT: It was the heaviest rain in decades. {comment need citation}
-     OUTPUT: It was the heaviest rain in decades.
-
-ESCAPING
-
-If you want BRKT to ignore bracket characters in your document, escape them with a backslash.
-After it finishes the other conversions, BRKT will remove the backslash.
-
-      INPUT: This is how you escape a \} character.
-     OUTPUT: This is how you escape a } character.
-
-USAGE
-
-Call it on the command-line like any other command.
-
-	$ cat test.md | brkt | markdown
-	$ brkt < test.md | pandoc --smart -f markdown -t html
-
-WARNINGS
-
-BRKT is not designed to handle nested divs or spans.
-But spans inside divs should work fine.
-
-TODO
-
-	IMAGES
-	INPUT: ./imgs/cat_dog.jpg
-	OUTPUT: <img src="img/cat_dog.jpg" />
-
-------------------------------------------------------------
-=end
-
-
 ARGF.set_encoding(Encoding::UTF_8)
 input = ARGF.read
 
-# Comments
-input = input.gsub(/(?<!\\){(comment|§|!)[ \t]+(.+?)(?<!\\)}/, '<!-- \2 -->')
+# NOTE: brkt does not handle nested markup, or multi-line markup
 
-# Comment out lines starting with #
-input = input.gsub(/(?<!\\)#+:[ \t]+(.+)/, '<!-- \2 -->')
+# COMMENTS
+# {comment foo} => <!-- foo -->
+# {! foo} => <!-- foo -->
+input = input.gsub(/(?<!\\){(comment|!):?[ \t]+(.+?)(?<!\\)}/, '<!-- \2 -->')
 
-# Break divs
+# SPECIAL
+# {break} => <div class="break"></div>
+# {code foo} => <code>foo</code>
 input = input.gsub(/^\s*{break}\s*$/, "\n<div class=\"break\"></div>\n")
+input = input.gsub(/(?<!\\){(code):?[ \t]+(.+?)(?<!\\)}/, '<code>\2</code>')
 
-# Code markup
-input = input.gsub(/(?<!\\){(code)[ \t]+(.+?)(?<!\\)}/, '<code>\2</code>')
+# ARBITRARY
+# {bar foo} => <span class="bar">foo</span>
+input = input.gsub(/(?<!\\){(\w+):?[ \t]+(.+?)(?<!\\)}/, '<span class="\1">\2</span>')
 
-# Inline spans
-input = input.gsub(/(?<!\\){(\w+)[ \t]+(.+?)(?<!\\)}/, '<span class="\1">\2</span>')
+# Images
+# {img /path/to/img.jpg} => <img src="/path/to/img.jpg" />
+# {/path/to/img.jpg} => <img src="/path/to/img.jpg" />
+input = input.gsub(/(?<!\\){img:?[ \t]+(.+?)(?<!\\)}/, '<img src="\1" />')
+input = input.gsub(/(?<!\\){(\S+?).(jpg|png|gif)(?<!\\)}/, '<img src="\1" />')
 
-# Remove escaping backslashes
+# ESCAPED
+# \{foo\} => {foo}
 input = input.gsub(/\\([{}])/, '\1')
 
 # Finally, print it all

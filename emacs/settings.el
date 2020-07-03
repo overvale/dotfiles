@@ -17,12 +17,6 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
-;; this turns off the use of tabs when Emacs formats text
-;; (setq-default indent-tabs-mode nil)
-
-;; disable pop-wins
-;; (setq pop-up-windows nil)
-
 ;; General Settings
 ;; --------------------------------------------------------
 
@@ -86,7 +80,6 @@
 (global-set-key (kbd "C-c f") 'counsel-fzf)
 (global-set-key (kbd "C-c l") 'swiper-all)
 (global-set-key (kbd "C-c SPC") 'counsel-M-x)
-;; (global-set-key (kbd "") ')
 
 ;; Move Lines
 (defun move-line-up ()

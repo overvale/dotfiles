@@ -11,12 +11,24 @@
 (setq initial-scratch-message nil)
 (setq initial-major-mode 'org-mode)
 
+;;; Mac-Like Settings
+;; Command to super
+(setq mac-right-command-modifier 'super)
+(setq mac-command-modifier 'super)
+;; Left-option to meta for commands
+(setq mac-option-modifier 'meta)
+(setq mac-left-option-modifier 'meta)
+;; Right-option to option, for special characters: ¡™£¢∞§¶•ªº
+(setq mac-right-option-modifier 'meta)
+(setq mac-right-option-modifier 'nil)
+
 ;; if you visit 2 files named 'makefile' this will name them:
 ;; foo/makefile & bar/makefile
 ;; Emacs defualt is makefile<foo/foo> & makefile<bar/bar>
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
+(setq visible-bell 1)
 (tool-bar-mode 0)
 (set-default 'cursor-type 'bar)
 (global-visual-line-mode t) ; word-wrap
@@ -29,25 +41,11 @@
 (global-undo-tree-mode t)
 (show-paren-mode t)
 (delete-selection-mode t)
-
-;; counsel settings
 (counsel-mode t)
-(setq ivy-use-virtual-buffers t)
-(setq enable-recursive-minibuffers t)
-(setq ivy-count-format "(%d/%d) ")
+(require 'expand-region)
+(cua-selection-mode t)
+(global-auto-revert-mode t)
 
-;;; Mac-Like Settings
-;; Command to super
-(setq mac-right-command-modifier 'super)
-(setq mac-command-modifier 'super)
-
-;; Left-option to meta for commands
-(setq mac-option-modifier 'meta)
-(setq mac-left-option-modifier 'meta)
-
-;; Right-option to option, for special characters: ¡™£¢∞§¶•ªº
-(setq mac-right-option-modifier 'meta)
-(setq mac-right-option-modifier 'nil)
 
 ;;; Apperance
 ;;; --------------------------------------------------------
@@ -64,6 +62,12 @@
 
 ;;; Mode Settings
 ;;; --------------------------------------------------------
+
+;; counsel settings
+(setq ivy-use-virtual-buffers t)
+(setq enable-recursive-minibuffers t)
+(setq ivy-count-format "(%d/%d) ")
+;(setq ivy-initial-inputs-alist nil) ;removes ^ from initial input
 
 ;; When markdown-mode, turn on variable-pitch and spelling
 (add-hook 'markdown-mode-hook
@@ -134,6 +138,12 @@
     (transpose-lines 1)
     (forward-line -1)))
 
+(defun mark-whole-line ()
+  (interactive)
+  (beginning-of-line)
+  (set-mark-command nil)
+  (end-of-line))
+
 (defun toggle-window-split ()
   "Toggle between vertical and horizontal split."
   ;; Source: https://www.emacswiki.org/emacs/ToggleWindowSplit.
@@ -162,27 +172,55 @@
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 
+(defun open-in-bbedit ()
+  "Open current file or dir in BBEdit.
+Adapted from:
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
+  (interactive)
+  (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ) )))
+    (message "path is %s" $path)
+    (string-equal system-type "darwin")
+      (shell-command (format "open -a BBEdit \"%s\"" $path))))
+
+;;; Hydra
+;;; --------------------------------------------------------
+
+(global-set-key (kbd "s-j")
+		(defhydra hydra-vim (:color red)
+		  "VIM POWER"
+		  ("h" backward-char "left")
+		  ("l" forward-char "right")
+		  ("j" next-line "next")
+		  ("k" previous-line "previous")
+		  ("b" backward-word "previous word")
+		  ("e" forward-word "next word")
+		  ("0" beginning-of-visual-line "start of line")
+		  ("$" end-of-visual-line "end of line")
+		  ("/" swiper-isearch "search forward")
+		  ("?" swiper-isearch-backward "search backward")
+		  ("{" backward-paragraph "back paragraph")
+		  ("}" forward-paragraph "forward paragraph")
+		  ("(" backward-sentence "back sentence")
+		  (")" forward-sentence "forward sentence")
+		  ("q" nil "cancel" :color blue)))
+
 
 ;;; Keybindings
 ;;; --------------------------------------------------------
 
-(global-set-key (kbd "C-x k") 'custom/kill-this-buffer)
-
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
-(global-set-key (kbd "C-s") 'swiper)
+(global-set-key (kbd "C-s") 'swiper-isearch)
+(global-set-key (kbd "C-r") 'swiper-isearch-backward)
 (global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "s-/") 'comment-line)
 
-;; Quick Shortcuts
-(global-set-key (kbd "C-c o") 'other-window)
-(global-set-key (kbd "C-c v") 'split-window-right)
-(global-set-key (kbd "C-c s") 'split-window-below)
-
-(global-set-key (kbd "C-c b") 'counsel-switch-buffer)
-(global-set-key (kbd "C-c f") 'counsel-fzf)
-(global-set-key (kbd "C-c l") 'swiper-all)
-(global-set-key (kbd "C-c x") 'counsel-M-x)
-(global-set-key (kbd "C-c t") 'counsel-load-theme)
+(global-set-key (kbd "s-k o") 'other-window)
+(global-set-key (kbd "s-k v") 'split-window-right)
+(global-set-key (kbd "s-k s") 'split-window-below)
+(global-set-key (kbd "s-k 1") 'delete-other-windows)
+(global-set-key (kbd "s-k 0") 'delete-window)
+(global-set-key (kbd "s-k r") 'toggle-window-split)
 
 (global-set-key (kbd "M-s-<right>") 'next-buffer)
 (global-set-key (kbd "M-s-<left>") 'previous-buffer)
@@ -190,10 +228,21 @@
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
+(global-set-key (kbd "s-p") 'counsel-M-x)
 (global-set-key (kbd "s-a") 'org-agenda)
-
-;; Mac-like save, undo, cut, copy, paste, etc.
+(global-set-key (kbd "s-b") 'counsel-switch-buffer)
 (global-set-key (kbd "s-o") 'counsel-find-file)
+(global-set-key (kbd "M-s-o") 'counsel-buffer-or-recentf)
+(global-set-key (kbd "s-e") 'er/expand-region)
+(global-set-key (kbd "s-m") 'magit-status)
+(global-set-key (kbd "s-f") 'swiper)
+(global-set-key (kbd "M-s-f") 'swiper-all)
+(global-set-key (kbd "C-M-s-f") 'counsel-ag)
+
+;; Standard Mac Shortcuts
+;; https://support.apple.com/en-us/HT201236
+(global-set-key (kbd "s-,") 'settings-edit-file)
+(global-set-key (kbd "s-n") 'make-frame-command)
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-z") 'undo-tree-undo)
 (global-set-key (kbd "s-Z") 'undo-tree-redo)
@@ -202,7 +251,15 @@
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "s-w") 'custom/kill-this-buffer)
-(global-set-key (kbd "s-<right>") (kbd "C-e"))
-(global-set-key (kbd "s-<left>") (kbd "C-a"))
 (global-set-key (kbd "s-<up>") (kbd "M-<"))
 (global-set-key (kbd "s-<down>") (kbd "M->"))
+(global-set-key (kbd "s-<left>") (kbd "C-a"))
+(global-set-key (kbd "s-<right>") (kbd "C-e"))
+(global-set-key (kbd "s-l") 'mark-whole-line)
+(global-set-key (kbd "s-M-l") 'mark-paragraph)
+(global-set-key (kbd "s-]") 'indent-rigidly-right-to-tab-stop)
+(global-set-key (kbd "s-[") 'indent-rigidly-left-to-tab-stop)
+
+(global-set-key (kbd "s-;") 'flyspell-buffer)
+(global-set-key (kbd "s-'") 'flyspell-goto-next-error)
+(global-set-key (kbd "s-\"") 'flyspell-correct-word-before-point)

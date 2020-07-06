@@ -53,12 +53,18 @@
 ;; Font settings
 ;; switch to non-monospace with 'variable-pitch-mode'
 (set-face-attribute 'default nil
-                    :family "IBM Plex Mono" :height 130 :weight 'normal)
+                    :family "Iosevka" :height 130 :weight 'normal)
 (set-face-attribute 'variable-pitch nil
-		    :family "IBM Plex Serif" :height 160 :weight 'normal)
+		    :family "SF Pro Text" :height 130 :weight 'normal)
 
-(load-theme 'gruvbox-light-hard t)
+(load-theme 'gruvbox-dark-soft t)
 
+;; theme customizations
+(setq modus-operandi-theme-bold-constructs t
+      modus-vivendi-theme-bold-constructs t
+      modus-operandi-theme-slanted-constructs t
+      modus-vivendi-theme-slanted-constructs t
+      )
 
 ;;; Mode Settings
 ;;; --------------------------------------------------------
@@ -86,7 +92,7 @@
   t)
 
 (setq org-todo-keywords
-  '((sequence "TODO" "DELG" "|" "OMIT" "DONE")))
+  '((sequence "TODO" "|" "DONE")))
 
 (setq org-agenda-files
       (quote (
@@ -185,8 +191,48 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
 ;;; Hydra
 ;;; --------------------------------------------------------
 
+(defhydra hydra-buffer-menu (:color pink
+                             :hint nil)
+  "
+^Mark^             ^Unmark^           ^Actions^          ^Search
+^^^^^^^^-----------------------------------------------------------------
+_m_: mark          _u_: unmark        _x_: execute       _R_: re-isearch
+_s_: save          _U_: unmark up     _b_: bury          _I_: isearch
+_d_: delete        ^ ^                _g_: refresh       _O_: multi-occur
+_D_: delete up     ^ ^                _T_: files only: % -28`Buffer-menu-files-only
+_~_: modified
+"
+  ("m" Buffer-menu-mark)
+  ("u" Buffer-menu-unmark)
+  ("U" Buffer-menu-backup-unmark)
+  ("d" Buffer-menu-delete)
+  ("D" Buffer-menu-delete-backwards)
+  ("s" Buffer-menu-save)
+  ("~" Buffer-menu-not-modified)
+  ("x" Buffer-menu-execute)
+  ("b" Buffer-menu-bury)
+  ("g" revert-buffer)
+  ("T" Buffer-menu-toggle-files-only)
+  ("O" Buffer-menu-multi-occur :color blue)
+  ("I" Buffer-menu-isearch-buffers :color blue)
+  ("R" Buffer-menu-isearch-buffers-regexp :color blue)
+  ("c" nil "cancel")
+  ("v" Buffer-menu-select "select" :color blue)
+  ("o" Buffer-menu-other-window "other-window" :color blue)
+  ("q" quit-window "quit" :color blue))
+
+(define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
+
+;; vim-mode cursor adjustments
+(defun hydra-vim/pre ()
+  (set-default 'cursor-type 'box))
+(defun hydra-vim/post ()
+  (set-default 'cursor-type 'bar))
+
+;; the VIM-POWER Hydra!
+;; Since the color is set to amaranth, only actions labeled :blue will quit
 (global-set-key (kbd "s-j")
-		(defhydra hydra-vim (:color red)
+		(defhydra hydra-vim (:columns 4 :pre hydra-vim/pre :post hydra-vim/post :color amaranth)
 		  "VIM POWER"
 		  ("h" backward-char "left")
 		  ("l" forward-char "right")
@@ -196,12 +242,44 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
 		  ("e" forward-word "next word")
 		  ("0" beginning-of-visual-line "start of line")
 		  ("$" end-of-visual-line "end of line")
-		  ("/" swiper-isearch "search forward")
-		  ("?" swiper-isearch-backward "search backward")
 		  ("{" backward-paragraph "back paragraph")
 		  ("}" forward-paragraph "forward paragraph")
 		  ("(" backward-sentence "back sentence")
 		  (")" forward-sentence "forward sentence")
+		  ("v" set-mark-command "mark")
+		  ("d" delete-region "del" :color blue)
+		  ("y" kill-ring-save "yank" :color blue)
+		  ("/" swiper-isearch "search forward")
+		  ("?" swiper-isearch-backward "search backward")
+		  ("C-l" recenter-top-bottom "cycle recenter")
+		  ("q" nil "cancel" :color blue))
+		)
+
+(global-set-key (kbd "s-k")
+		(defhydra hydra-windows (:color red)
+		  "Windows & Splits"
+		  ("<tab>" other-window "Cycle active window")
+		  ("v" split-window-right "Vertical Split")
+		  ("s" split-window-below "Split, Horizonal")
+		  ("o" delete-other-windows "Only This Window")
+		  ("k" delete-window "Delete Window")
+		  ("r" toggle-window-split "Rotate Window Split")
+		  ("b" balance-windows "Balance")
+		  ("<up>" enlarge-window "Bigger VERT")
+		  ("<down>" shrink-window "Smaller VERT")
+		  ("=" enlarge-window-horizontally "Bigger HORZ")
+		  ("-" shrink-window-horizontally "Smaler HORZ")
+		  ("q" nil "cancel" :color blue)))
+
+
+(defun hydra-flyspell/pre ()
+  (flyspell-buffer))
+
+(global-set-key (kbd "s-;")
+		(defhydra hydra-flyspell (:columns 2 :pre hydra-flyspell/pre :color red)
+		  "Spelling"
+		  (";" flyspell-goto-next-error "Next")
+		  (":" flyspell-correct-word-before-point "Correct")
 		  ("q" nil "cancel" :color blue)))
 
 
@@ -215,12 +293,6 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "s-/") 'comment-line)
 
-(global-set-key (kbd "s-k o") 'other-window)
-(global-set-key (kbd "s-k v") 'split-window-right)
-(global-set-key (kbd "s-k s") 'split-window-below)
-(global-set-key (kbd "s-k 1") 'delete-other-windows)
-(global-set-key (kbd "s-k 0") 'delete-window)
-(global-set-key (kbd "s-k r") 'toggle-window-split)
 
 (global-set-key (kbd "M-s-<right>") 'next-buffer)
 (global-set-key (kbd "M-s-<left>") 'previous-buffer)
@@ -230,7 +302,8 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
 
 (global-set-key (kbd "s-p") 'counsel-M-x)
 (global-set-key (kbd "s-a") 'org-agenda)
-(global-set-key (kbd "s-b") 'counsel-switch-buffer)
+(global-set-key (kbd "s-b") 'counsel-ibuffer)
+(global-set-key (kbd "M-s-b") 'list-buffers)
 (global-set-key (kbd "s-o") 'counsel-find-file)
 (global-set-key (kbd "M-s-o") 'counsel-buffer-or-recentf)
 (global-set-key (kbd "s-e") 'er/expand-region)
@@ -241,9 +314,11 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
 
 ;; Standard Mac Shortcuts
 ;; https://support.apple.com/en-us/HT201236
-(global-set-key (kbd "s-,") 'settings-edit-file)
+(global-set-key (kbd "s-,") 'settings-edit-file) ;preferences
 (global-set-key (kbd "s-n") 'make-frame-command)
-(global-set-key (kbd "s-s") 'save-buffer)
+(global-set-key (kbd "s-s") 'save-buffer)         ;save
+(global-set-key (kbd "s-S") 'write-file)          ;save as
+(global-set-key (kbd "M-s-s") 'save-some-buffers) ;save others
 (global-set-key (kbd "s-z") 'undo-tree-undo)
 (global-set-key (kbd "s-Z") 'undo-tree-redo)
 (global-set-key (kbd "s-x") 'kill-region)
@@ -259,7 +334,3 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
 (global-set-key (kbd "s-M-l") 'mark-paragraph)
 (global-set-key (kbd "s-]") 'indent-rigidly-right-to-tab-stop)
 (global-set-key (kbd "s-[") 'indent-rigidly-left-to-tab-stop)
-
-(global-set-key (kbd "s-;") 'flyspell-buffer)
-(global-set-key (kbd "s-'") 'flyspell-goto-next-error)
-(global-set-key (kbd "s-\"") 'flyspell-correct-word-before-point)

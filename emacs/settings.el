@@ -100,9 +100,23 @@
 	      "~/Documents/life_log.org"
 	      "~/Documents/ingenuity/ingenuity.org"
 	      "~/Documents/ingenuity/ing_log.org"
+	      "~/Documents/src_notes/emacs_notes.org"
 	      )))
 
-
+(setq org-capture-templates
+      '(("p" "Personal Inbox" entry
+	 (file+headline "~/Documents/life.org" "Inbox")
+	 "* %?")
+	("P" "Personal Log Entry" entry
+	 (file "~/Documents/life_log.org")
+	 "* %?\n%t\n")
+	("i" "Ingenuity Inbox" entry
+	 (file+headline "~/Documents/ingenuity/ingenuity.org" "Inbox")
+	 "* %?")
+	("I" "Ingenuity Log Entry" entry
+	 (file "~/Documents/ingenuity/ing_log.org")
+	 "* %^{Log type|Meeting: |Call: } %? %t")
+	))
 
 ;;; Functions
 ;;; --------------------------------------------------------
@@ -300,8 +314,12 @@ _~_: modified
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
-(global-set-key (kbd "s-p") 'counsel-M-x)
+;;                    s-j    hydra-vim
+;;                    s-k    hydra-windows
+;;                    s-;    hydra-flyspell
+(global-set-key (kbd "s-g") 'org-capture)
 (global-set-key (kbd "s-a") 'org-agenda)
+(global-set-key (kbd "s-p") 'counsel-M-x)
 (global-set-key (kbd "s-b") 'counsel-ibuffer)
 (global-set-key (kbd "M-s-b") 'list-buffers)
 (global-set-key (kbd "s-o") 'counsel-find-file)

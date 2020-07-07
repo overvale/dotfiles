@@ -37,14 +37,15 @@
 (setq ispell-list-command "list")
 (add-to-list 'load-path "~/.emacs.d/colors/")
 
-(which-key-mode t)
+(which-key-mode t)              ;hints
 (global-undo-tree-mode t)
-(show-paren-mode t)
+(show-paren-mode t)             ;highlight parens
 (delete-selection-mode t)
 (counsel-mode t)
 (require 'expand-region)
-(cua-selection-mode t)
-(global-auto-revert-mode t)
+(cua-selection-mode t)          ;shift-select
+(global-auto-revert-mode t)     ;detects on-disk file changes
+(desktop-save-mode 1)           ;save sessions
 
 
 ;;; Apperance
@@ -122,7 +123,7 @@
 ;;; --------------------------------------------------------
 
 ;; quickly open my settings (this) file
-(defun settings-edit-file ()
+(defun find-file-settings ()
   (interactive)
   (find-file "~/dot/emacs/settings.el"))
 
@@ -290,7 +291,7 @@ _~_: modified
   (flyspell-buffer))
 
 (global-set-key (kbd "s-;")
-		(defhydra hydra-flyspell (:columns 2 :pre hydra-flyspell/pre :color red)
+		(defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
 		  "Spelling"
 		  (";" flyspell-goto-next-error "Next")
 		  (":" flyspell-correct-word-before-point "Correct")
@@ -332,7 +333,7 @@ _~_: modified
 
 ;; Standard Mac Shortcuts
 ;; https://support.apple.com/en-us/HT201236
-(global-set-key (kbd "s-,") 'settings-edit-file) ;preferences
+(global-set-key (kbd "s-,") 'find-file-settings) ;preferences
 (global-set-key (kbd "s-n") 'make-frame-command)
 (global-set-key (kbd "s-s") 'save-buffer)         ;save
 (global-set-key (kbd "s-S") 'write-file)          ;save as

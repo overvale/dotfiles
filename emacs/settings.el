@@ -1,15 +1,31 @@
 ;;; General Settings
 ;;; --------------------------------------------------------
 
-;; garbage collection
+;; garbage collection - I'm not sure what this does but
+;; a lot of smart people have it in their init files
+;; so I'm just jumping on that bandwagon
 (setq gc-cons-threshold (* 100 1024 1024))
 
-;; startup preferences
+;; if you visit 2 files named 'makefile' this will name them:
+;; foo/makefile & bar/makefile
+;; Emacs defualt is makefile<foo/foo> & makefile<bar/bar>
+;; Which is... not ideal.
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
+;; Emacs starts up in a state that's a little odd
+;; these just make things start-up in a way that seems natural to me
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-echo-area-message t)
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
 (setq initial-major-mode 'org-mode)
+
+;; Now tell Emacs to use paths/apps unique to my setup
+(add-to-list 'load-path "~/.emacs.d/colors/")
+(setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
+(setq ispell-program-name "/usr/local/bin/aspell")
+(setq ispell-list-command "list")
 
 ;;; Mac-Like Settings
 ;; Command to super
@@ -22,55 +38,72 @@
 (setq mac-right-option-modifier 'meta)
 (setq mac-right-option-modifier 'nil)
 
-;; if you visit 2 files named 'makefile' this will name them:
-;; foo/makefile & bar/makefile
-;; Emacs defualt is makefile<foo/foo> & makefile<bar/bar>
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
+
+;;; Apperance
+;;; --------------------------------------------------------
 
 (setq visible-bell 1)
 (tool-bar-mode 0)
 (set-default 'cursor-type 'bar)
 (global-visual-line-mode t) ; word-wrap
-(setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
-(setq ispell-program-name "/usr/local/bin/aspell")
-(setq ispell-list-command "list")
-(add-to-list 'load-path "~/.emacs.d/colors/")
 
-(which-key-mode t)              ;hints
-(global-undo-tree-mode t)
-(show-paren-mode t)             ;highlight parens
-(delete-selection-mode t)
-(counsel-mode t)
-(require 'expand-region)
-(cua-selection-mode t)          ;shift-select
-(global-auto-revert-mode t)     ;detects on-disk file changes
-(desktop-save-mode 1)           ;save sessions
-
-
-;;; Apperance
-;;; --------------------------------------------------------
-
-;; Font settings
-;; switch to non-monospace with 'variable-pitch-mode'
-(set-face-attribute 'default nil
-                    :family "Iosevka" :height 130 :weight 'normal)
-(set-face-attribute 'variable-pitch nil
-		    :family "SF Pro Text" :height 130 :weight 'normal)
-
-(load-theme 'gruvbox-dark-soft t)
-
-;; theme customizations
+;; Modus theme customizations
 (setq modus-operandi-theme-bold-constructs t
       modus-vivendi-theme-bold-constructs t
       modus-operandi-theme-slanted-constructs t
       modus-vivendi-theme-slanted-constructs t
       )
 
+;; Setup functions for my favorite fonts
+(defun font-iosevka ()
+  (set-face-attribute 'default nil
+		      :family "Iosevka" :height 130 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "Iosevka Sparkle" :height 140 :weight 'normal))
+
+(defun font-fira ()
+  (set-face-attribute 'default nil
+		      :family "Fira Mono" :height 130 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "Fira Sans" :height 150 :weight 'normal))
+
+(defun font-roboto ()
+  (set-face-attribute 'default nil
+		      :family "Roboto Mono" :height 130 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "Roboto Sans" :height 150 :weight 'normal))
+
+(defun font-sf ()
+  (set-face-attribute 'default nil
+		      :family "SF Mono" :height 130 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "SF Compact Text" :height 150 :weight 'normal))
+
+(defun font-ibm ()
+  (set-face-attribute 'default nil
+		      :family "IBM Plex Mono" :height 130 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "IBM Plex Serif" :height 150 :weight 'normal))
+
+(font-ibm)
+(load-theme 'modus-operandi t)
+
+
 ;;; Mode Settings
 ;;; --------------------------------------------------------
 
+;; Activate the modes/packages I like to use
+(which-key-mode t)              ;hints
+(global-undo-tree-mode t)       ;activate undo-tree everywhere
+(show-paren-mode t)             ;highlight parens
+(delete-selection-mode t)       ;why is this not the default?
+(cua-selection-mode t)          ;shift-select
+(global-auto-revert-mode t)     ;detects on-disk file changes
+(desktop-save-mode 1)           ;save sessions
+(require 'expand-region)        ;lovely plugin
+
 ;; counsel settings
+(counsel-mode t)
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 (setq ivy-count-format "(%d/%d) ")
@@ -92,43 +125,62 @@
 	)
   t)
 
+
+;;; Org Settings
+;;; --------------------------------------------------------
+
 (setq org-todo-keywords
-  '((sequence "TODO" "|" "DONE")))
+  '((sequence "TODAY" "TODO" "TASK" "|" "WAIT" "DONE" "OMIT")))
+
+(setq org-agenda-custom-commands
+      ;; More info about these can be found at:
+      ;; https://orgmode.org/manual/Storing-searches.html
+      ;; https://orgmode.org/manual/Block-agenda.html
+      '(("d" "Today's tasks" todo "TODAY")
+	("D" "Agenda and TODAY"
+         ((agenda "")
+          (todo "TODAY")))
+	))
+
+;; To turn this off per-file insert:
+;; #+STARTUP: noptag
+(setq org-tag-persistent-alist
+      '(("comms")
+	("errands")
+	("focus")
+	("urgent")
+	))
 
 (setq org-agenda-files
-      (quote (
-	      "~/Documents/life.org"
-	      "~/Documents/life_log.org"
-	      "~/Documents/ingenuity/ingenuity.org"
-	      "~/Documents/ingenuity/ing_log.org"
-	      "~/Documents/src_notes/emacs_notes.org"
-	      )))
+      (quote ("~/Documents/org-files/")))
 
 (setq org-capture-templates
       '(("p" "Personal Inbox" entry
-	 (file+headline "~/Documents/life.org" "Inbox")
+	 (file+headline "~/Documents/org-files/life.org" "Inbox")
 	 "* %?")
 	("P" "Personal Log Entry" entry
-	 (file "~/Documents/life_log.org")
+	 (file "~/Documents/org-files/life_log.org")
 	 "* %?\n%t\n")
 	("i" "Ingenuity Inbox" entry
-	 (file+headline "~/Documents/ingenuity/ingenuity.org" "Inbox")
+	 (file+headline "~/Documents/org-files/ingenuity/ingenuity.org" "Inbox")
 	 "* %?")
 	("I" "Ingenuity Log Entry" entry
-	 (file "~/Documents/ingenuity/ing_log.org")
+	 (file "~/Documents/org-files/ingenuity/ing_log.org")
 	 "* %^{Log type|Meeting: |Call: } %? %t")
 	))
+
+	
 
 ;;; Functions
 ;;; --------------------------------------------------------
 
-;; quickly open my settings (this) file
 (defun find-file-settings ()
+  "Quickly open ~/dot/emacs/settings.el"
   (interactive)
   (find-file "~/dot/emacs/settings.el"))
 
-;; quickly kill current buffer
 (defun custom/kill-this-buffer ()
+  "Quickly kill current buffer"
   (interactive)
   (kill-buffer (current-buffer)))
 
@@ -148,11 +200,13 @@
        (move-to-column column))))
 (put 'save-column 'lisp-indent-function 0)
 (defun move-line-up ()
+  "Move the current line up by 1 line"
   (interactive)
   (save-column
     (transpose-lines 1)
     (forward-line -2)))
 (defun move-line-down ()
+  "More the current line down by 1 line"
   (interactive)
   (save-column
     (forward-line 1)
@@ -160,6 +214,7 @@
     (forward-line -1)))
 
 (defun mark-whole-line ()
+  "Mark the entirety of the current line."
   (interactive)
   (beginning-of-line)
   (set-mark-command nil)
@@ -203,6 +258,19 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
     (string-equal system-type "darwin")
       (shell-command (format "open -a BBEdit \"%s\"" $path))))
 
+(defun expand-to-beginning-of-visual-line ()
+  "Set mark and move to beginning of visual line"
+  (interactive)
+  (set-mark-command nil)
+  (beginning-of-visual-line)
+  )
+(defun expand-to-end-of-visual-line ()
+  "Set mark and move to end of visual line"
+  (interactive)
+  (set-mark-command nil)
+  (end-of-visual-line)
+  )
+
 ;;; Hydra
 ;;; --------------------------------------------------------
 
@@ -238,10 +306,11 @@ _~_: modified
 
 (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
 
-;; vim-mode cursor adjustments
 (defun hydra-vim/pre ()
+  "When activating the hydra-vim, change the cursor to a box"
   (set-default 'cursor-type 'box))
 (defun hydra-vim/post ()
+    "When exiting the hydra-vim, change the cursor to a bar"
   (set-default 'cursor-type 'bar))
 
 ;; the VIM-POWER Hydra!
@@ -276,7 +345,7 @@ _~_: modified
 		  ("<tab>" other-window "Cycle active window")
 		  ("v" split-window-right "Vertical Split")
 		  ("s" split-window-below "Split, Horizonal")
-		  ("o" delete-other-windows "Only This Window")
+		  ("o" delete-other-windows "Only This Window" :color blue)
 		  ("k" delete-window "Delete Window")
 		  ("r" toggle-window-split "Rotate Window Split")
 		  ("b" balance-windows "Balance")
@@ -297,6 +366,15 @@ _~_: modified
 		  (":" flyspell-correct-word-before-point "Correct")
 		  ("q" nil "cancel" :color blue)))
 
+(global-set-key (kbd "s-g")
+ 		(defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
+ 		  "Org-Mode"
+		  ("n" org-narrow-to-subtree "Narrow")
+		  ("w" widen "Widen")
+ 		  ("c" counsel-org-capture "Capture")
+ 		  ("t" counsel-org-tag "Tag")
+ 		  ("q" nil "cancel" :color blue)))
+
 
 ;;; Keybindings
 ;;; --------------------------------------------------------
@@ -308,7 +386,6 @@ _~_: modified
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "s-/") 'comment-line)
 
-
 (global-set-key (kbd "M-s-<right>") 'next-buffer)
 (global-set-key (kbd "M-s-<left>") 'previous-buffer)
 
@@ -318,7 +395,6 @@ _~_: modified
 ;;                    s-j    hydra-vim
 ;;                    s-k    hydra-windows
 ;;                    s-;    hydra-flyspell
-(global-set-key (kbd "s-g") 'org-capture)
 (global-set-key (kbd "s-a") 'org-agenda)
 (global-set-key (kbd "s-p") 'counsel-M-x)
 (global-set-key (kbd "s-b") 'counsel-ibuffer)
@@ -353,3 +429,5 @@ _~_: modified
 (global-set-key (kbd "s-M-l") 'mark-paragraph)
 (global-set-key (kbd "s-]") 'indent-rigidly-right-to-tab-stop)
 (global-set-key (kbd "s-[") 'indent-rigidly-left-to-tab-stop)
+(global-set-key (kbd "S-s-<left>") 'expand-to-beginning-of-visual-line)
+(global-set-key (kbd "S-s-<right>") 'expand-to-end-of-visual-line)

@@ -164,10 +164,10 @@
 	 (file "~/Documents/org-files/life_log.org")
 	 "* %?\n%t\n")
 	("i" "Ingenuity Inbox" entry
-	 (file+headline "~/Documents/org-files/ingenuity/ingenuity.org" "Inbox")
+	 (file+headline "~/Documents/org-files/ingenuity.org" "Inbox")
 	 "* %?")
 	("I" "Ingenuity Log Entry" entry
-	 (file "~/Documents/org-files/ingenuity/ing_log.org")
+	 (file "~/Documents/org-files/ing_log.org")
 	 "* %^{Log type|Meeting: |Call: } %? %t")
 	))
 

@@ -129,6 +129,8 @@
 ;;; § Org Settings
 ;;; --------------------------------------------------------
 
+(setq org-log-done 'time)
+
 (setq org-todo-keywords
   '((sequence "TODAY" "TODO" "TASK" "|" "WAIT" "DONE" "OMIT")))
 

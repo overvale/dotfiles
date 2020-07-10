@@ -1,4 +1,4 @@
-;;; General Settings
+;;; § General Settings
 ;;; --------------------------------------------------------
 
 ;; garbage collection - I'm not sure what this does but
@@ -34,12 +34,12 @@
 ;; Left-option to meta for commands
 (setq mac-option-modifier 'meta)
 (setq mac-left-option-modifier 'meta)
-;; Right-option to option, for special characters: ¡™£¢∞§¶•ªº
+;; Right-option to option, for special characters: ¡™£¢∞¶•ªº
 (setq mac-right-option-modifier 'meta)
 (setq mac-right-option-modifier 'nil)
 
 
-;;; Apperance
+;;; § Apperance
 ;;; --------------------------------------------------------
 
 (setq visible-bell 1)
@@ -89,7 +89,7 @@
 (load-theme 'modus-operandi t)
 
 
-;;; Mode Settings
+;;; § Mode Settings
 ;;; --------------------------------------------------------
 
 ;; Activate the modes/packages I like to use
@@ -126,7 +126,7 @@
   t)
 
 
-;;; Org Settings
+;;; § Org Settings
 ;;; --------------------------------------------------------
 
 (setq org-todo-keywords
@@ -171,7 +171,7 @@
 
 	
 
-;;; Functions
+;;; § Functions
 ;;; --------------------------------------------------------
 
 (defun find-file-settings ()
@@ -271,8 +271,13 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (end-of-visual-line)
   )
 
-;;; Hydra
+;;; § Hydra
 ;;; --------------------------------------------------------
+
+;; Hydras should be reserved for modes,
+;; ie: places where you'll want to call several functions in a row.
+;; If all you're doing is grouping similar commands
+;; then which-key should suffice.
 
 (defhydra hydra-buffer-menu (:color pink
                              :hint nil)
@@ -376,7 +381,7 @@ _~_: modified
  		  ("q" nil "cancel" :color blue)))
 
 
-;;; Keybindings
+;;; § Keybindings
 ;;; --------------------------------------------------------
 
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))

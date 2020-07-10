@@ -371,16 +371,6 @@ _~_: modified
 		  (":" flyspell-correct-word-before-point "Correct")
 		  ("q" nil "cancel" :color blue)))
 
-(global-set-key (kbd "s-g")
- 		(defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
- 		  "Org-Mode"
-		  ("n" org-narrow-to-subtree "Narrow")
-		  ("w" widen "Widen")
- 		  ("c" counsel-org-capture "Capture")
- 		  ("t" counsel-org-tag "Tag")
- 		  ("q" nil "cancel" :color blue)))
-
-
 ;;; § Keybindings
 ;;; --------------------------------------------------------
 
@@ -411,6 +401,11 @@ _~_: modified
 (global-set-key (kbd "s-f") 'swiper)
 (global-set-key (kbd "M-s-f") 'swiper-all)
 (global-set-key (kbd "C-M-s-f") 'counsel-ag)
+
+(global-set-key (kbd "s-g c") 'org-capture)
+(global-set-key (kbd "s-g t") 'counsel-org-tag)
+(global-set-key (kbd "s-g n") 'org-narrow-to-subtree)
+(global-set-key (kbd "s-g w") 'widen)
 
 ;; Standard Mac Shortcuts
 ;; https://support.apple.com/en-us/HT201236

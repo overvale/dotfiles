@@ -1,6 +1,11 @@
 ;;; § General Settings
 ;;; --------------------------------------------------------
 
+(setq-default buffer-file-coding-system 'utf-8-unix)
+(set-default-coding-systems 'utf-8-unix)
+(setq locale-coding-system 'utf-8-unix)
+(prefer-coding-system 'utf-8-unix)
+
 ;; garbage collection - I'm not sure what this does but
 ;; a lot of smart people have it in their init files
 ;; so I'm just jumping on that bandwagon
@@ -27,6 +32,15 @@
 (setq ispell-program-name "/usr/local/bin/aspell")
 (setq ispell-list-command "list")
 
+
+(show-paren-mode t)             ;highlight parens
+(setq show-paren-delay 0)
+(delete-selection-mode t)       ;why is this not the default?
+(cua-selection-mode t)          ;shift-select
+(global-auto-revert-mode t)     ;detects on-disk file changes
+(desktop-save-mode 1)           ;save sessions
+
+
 ;;; Mac-Like Settings
 ;; Command to super
 (setq mac-right-command-modifier 'super)
@@ -46,6 +60,11 @@
 (tool-bar-mode 0)
 (set-default 'cursor-type 'bar)
 (global-visual-line-mode t) ; word-wrap
+;; with visual-line-mode set C-a and C-b
+;; go to beginning/end-of-visual-line
+;; which is inconsistant with standard Mac behaviour
+(global-set-key (kbd "C-a") 'beginning-of-line)
+(global-set-key (kbd "C-e") 'end-of-line)
 
 ;; Modus theme customizations
 (setq modus-operandi-theme-bold-constructs t
@@ -95,11 +114,6 @@
 ;; Activate the modes/packages I like to use
 (which-key-mode t)              ;hints
 (global-undo-tree-mode t)       ;activate undo-tree everywhere
-(show-paren-mode t)             ;highlight parens
-(delete-selection-mode t)       ;why is this not the default?
-(cua-selection-mode t)          ;shift-select
-(global-auto-revert-mode t)     ;detects on-disk file changes
-(desktop-save-mode 1)           ;save sessions
 (require 'expand-region)        ;lovely plugin
 
 ;; counsel settings
@@ -406,7 +420,6 @@ _~_: modified
 (global-set-key (kbd "C-s") 'swiper-isearch)
 (global-set-key (kbd "C-r") 'swiper-isearch-backward)
 (global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "s-/") 'comment-line)
 
 (global-set-key (kbd "M-s-<right>") 'next-buffer)
 (global-set-key (kbd "M-s-<left>") 'previous-buffer)
@@ -434,6 +447,9 @@ _~_: modified
 (global-set-key (kbd "s-g n") 'org-narrow-to-subtree)
 (global-set-key (kbd "s-g w") 'widen)
 
+(global-set-key (kbd "s-.") 'org-time-stamp)
+(global-set-key (kbd "s-t") 'org-todo)
+
 ;; Standard Mac Shortcuts
 ;; https://support.apple.com/en-us/HT201236
 (global-set-key (kbd "s-,") 'find-file-settings) ;preferences
@@ -448,6 +464,7 @@ _~_: modified
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "s-w") 'custom/kill-this-buffer)
+(global-set-key (kbd "s-/") 'comment-line)
 (global-set-key (kbd "s-<up>") (kbd "M-<"))
 (global-set-key (kbd "s-<down>") (kbd "M->"))
 (global-set-key (kbd "s-<left>") (kbd "C-a"))

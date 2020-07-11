@@ -132,17 +132,42 @@
 (setq org-log-done 'time)
 
 (setq org-todo-keywords
-  '((sequence "TODAY" "TODO" "TASK" "|" "WAIT" "DONE" "OMIT")))
+      '((sequence "TODO(t)" "|" "DONE(d!)")
+	(sequence "NOW(n)" "LATER(l)" "WAIT(w)" )
+	(sequence "|" "CANCELLED(c!)")))
 
 (setq org-agenda-custom-commands
-      ;; More info about these can be found at:
-      ;; https://orgmode.org/manual/Storing-searches.html
-      ;; https://orgmode.org/manual/Block-agenda.html
-      '(("d" "Today's tasks" todo "TODAY")
-	("D" "Agenda and TODAY"
+      '(
+
+	("d" "Do Now - Agenda and NOW"
+         ((agenda "d" ((org-agenda-span 'day)))
+          (todo "NOW")))
+
+	("c" "Complete - Agenda and ALL todos"
          ((agenda "")
-          (todo "TODAY")))
-	))
+	 (alltodo)))
+
+	("y" "All Tasks By TYPE"
+	 ((tags "/NOW"
+	       ((org-agenda-overriding-header "Tasks you should do NOW:")))
+
+	 (tags "/TODO"
+	       ((org-agenda-overriding-header "All your misc TODOs:")))
+
+	 (tags "/LATER"
+	       ((org-agenda-overriding-header "Tasks you can do LATER:")))))
+
+	("p" "All Tasks (grouped by Priority)"
+	 ((tags-todo "PRIORITY={A}"
+		     ((org-agenda-overriding-header "HIGH Priority Tasks:")
+		      (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled 'todo '("WAITING" "DONE" "DELEGATED" "CANCELLED")))))
+	  (tags-todo "PRIORITY={B}"
+		     ((org-agenda-overriding-header "MEDIUM Priority Tasks:")
+		      (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled 'todo '("WAITING" "DONE" "DELEGATED" "CANCELLED")))))
+	  (tags-todo "PRIORITY={C}"
+		     ((org-agenda-overriding-header "LOW Priority Tasks:")
+		      (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled 'todo '("WAITING" "DONE" "DELEGATED" "CANCELLED")))))
+		))))
 
 ;; To turn this off per-file insert:
 ;; #+STARTUP: noptag

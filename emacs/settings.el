@@ -1,47 +1,65 @@
+;;; NOTE
+
+;; Many ideas stolen from:
+;; https://github.com/aaronbieber
+;; https://protesilaos.com
+
+
 ;;; § General Settings
 ;;; --------------------------------------------------------
 
+;; Set default encoding
 (setq-default buffer-file-coding-system 'utf-8-unix)
 (set-default-coding-systems 'utf-8-unix)
 (setq locale-coding-system 'utf-8-unix)
 (prefer-coding-system 'utf-8-unix)
 
-;; garbage collection - I'm not sure what this does but
-;; a lot of smart people have it in their init files
-;; so I'm just jumping on that bandwagon
-(setq gc-cons-threshold (* 100 1024 1024))
-
-;; if you visit 2 files named 'makefile' this will name them:
+;; When visiting 2 files with the same name, use this:
 ;; foo/makefile & bar/makefile
-;; Emacs defualt is makefile<foo/foo> & makefile<bar/bar>
-;; Which is... not ideal.
+;; instead of this: makefile<foo/foo> & makefile<bar/bar>
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
-;; Emacs starts up in a state that's a little odd
-;; these just make things start-up in a way that seems natural to me
-(setq inhibit-startup-screen t)
-(setq inhibit-startup-echo-area-message t)
-(setq inhibit-startup-message t)
-(setq initial-scratch-message nil)
-(setq initial-major-mode 'org-mode)
+;; Startup preferences
+(setq initial-scratch-message
+      (concat
+       ";; This buffer is for text that is not saved, and for Lisp evaluation.\n"
+       ";; To create a file, visit it with C-x C-f and enter text in its buffer.\n"
+       ";; WELCOME TO EMACS\n"))
+(setq inhibit-splash-screen t
+      inhibit-startup-message t
+      inhibit-startup-echo-area-message t)
 
-;; Now tell Emacs to use paths/apps unique to my setup
-(add-to-list 'load-path "~/.emacs.d/colors/")
+
+;;; What you might call "App Preferences"
+
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(show-paren-mode t)
+(setq show-paren-delay 0)
+(delete-selection-mode t)
+(cua-selection-mode t)
+(global-auto-revert-mode t)
+;;(desktop-save-mode 1) ;sessions
+
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+(setq-default left-fringe-width nil)
+(setq-default indicate-empty-lines t)
+(setq-default indent-tabs-mode nil)
+
+(setq visible-bell t)
+(setq vc-follow-symlinks t)
+(setq tab-width 4)
+
+;; Tell Emacs to use paths/apps unique to my setup
+(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 (setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
 (setq ispell-program-name "/usr/local/bin/aspell")
 (setq ispell-list-command "list")
 
 
-(show-paren-mode t)             ;highlight parens
-(setq show-paren-delay 0)
-(delete-selection-mode t)       ;why is this not the default?
-(cua-selection-mode t)          ;shift-select
-(global-auto-revert-mode t)     ;detects on-disk file changes
-(desktop-save-mode 1)           ;save sessions
-
-
 ;;; Mac-Like Settings
+
 ;; Command to super
 (setq mac-right-command-modifier 'super)
 (setq mac-command-modifier 'super)
@@ -56,8 +74,6 @@
 ;;; § Apperance
 ;;; --------------------------------------------------------
 
-(setq visible-bell 1)
-(tool-bar-mode 0)
 (set-default 'cursor-type 'bar)
 (global-visual-line-mode t) ; word-wrap
 ;; with visual-line-mode set C-a and C-b
@@ -128,7 +144,7 @@
   (lambda ()
     (variable-pitch-mode t)
     (flyspell-mode t)
-	)
+    )
   t)
 
 ;; When org-mode, turn on variable-pitch and spelling
@@ -136,7 +152,7 @@
   (lambda ()
     (variable-pitch-mode t)
     (flyspell-mode t)
-	)
+    )
   t)
 
 
@@ -150,8 +166,7 @@
 	(sequence "NOW(n)" "LATER(l)" "WAIT(w)" )
 	(sequence "|" "CANCELLED(c!)")))
 
-(setq org-agenda-custom-commands
-      '(
+(setq org-agenda-custom-commands '(
 
 	("d" "Do Now - Agenda and NOW"
          ((agenda "d" ((org-agenda-span 'day)))
@@ -423,9 +438,9 @@ _~_: modified
 
 (global-set-key (kbd "M-s-<right>") 'next-buffer)
 (global-set-key (kbd "M-s-<left>") 'previous-buffer)
-
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
+(global-set-key (kbd "M-<tab>") 'other-window)
 
 ;;                    s-j    hydra-vim
 ;;                    s-k    hydra-windows
@@ -475,3 +490,7 @@ _~_: modified
 (global-set-key (kbd "s-[") 'indent-rigidly-left-to-tab-stop)
 (global-set-key (kbd "S-s-<left>") 'expand-to-beginning-of-visual-line)
 (global-set-key (kbd "S-s-<right>") 'expand-to-end-of-visual-line)
+
+
+(provide 'settings)
+;;; settings.el ends here

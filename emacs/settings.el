@@ -1,9 +1,15 @@
-;;; NOTE
-
+;; NOTE:
 ;; Many ideas stolen from:
-;; https://github.com/aaronbieber
-;; https://protesilaos.com
+;; https://github.com/aaronbieber/dotfiles/tree/master/configs/emacs.d
+;; https://protesilaos.com/dotemacs/
 
+(setq package-archives
+      '(;; Restore gnu back to https when they fix their cert.
+        ("gnu" . "http://elpa.gnu.org/packages/")
+        ("org" . "https://orgmode.org/elpa/")
+        ;;("melpa" . "http://melpa.org/packages/")
+        ("melpa-stable" . "http://stable.melpa.org/packages/")
+        ))
 
 ;;; § General Settings
 ;;; --------------------------------------------------------
@@ -33,7 +39,7 @@
 
 ;;; What you might call "App Preferences"
 
-(menu-bar-mode -1)
+(menu-bar-mode 1) ;this effects full-screen
 (tool-bar-mode -1)
 (show-paren-mode t)
 (setq show-paren-delay 0)
@@ -42,7 +48,7 @@
 (global-auto-revert-mode t)
 ;;(desktop-save-mode 1) ;sessions
 
-(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+;;(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 (setq-default left-fringe-width nil)
 (setq-default indicate-empty-lines t)
 (setq-default indent-tabs-mode nil)
@@ -139,7 +145,6 @@
 (setq ivy-count-format "(%d/%d) ")
 ;(setq ivy-initial-inputs-alist nil) ;removes ^ from initial input
 
-;; When markdown-mode, turn on variable-pitch and spelling
 (add-hook 'markdown-mode-hook
   (lambda ()
     (variable-pitch-mode t)
@@ -147,7 +152,6 @@
     )
   t)
 
-;; When org-mode, turn on variable-pitch and spelling
 (add-hook 'org-mode-hook
   (lambda ()
     (variable-pitch-mode t)
@@ -380,56 +384,70 @@ _~_: modified
 
 ;; the VIM-POWER Hydra!
 ;; Since the color is set to amaranth, only actions labeled :blue will quit
-(global-set-key (kbd "s-j")
-		(defhydra hydra-vim (:columns 4 :pre hydra-vim/pre :post hydra-vim/post :color amaranth)
-		  "VIM POWER"
-		  ("h" backward-char "left")
-		  ("l" forward-char "right")
-		  ("j" next-line "next")
-		  ("k" previous-line "previous")
-		  ("b" backward-word "previous word")
-		  ("e" forward-word "next word")
-		  ("0" beginning-of-visual-line "start of line")
-		  ("$" end-of-visual-line "end of line")
-		  ("{" backward-paragraph "back paragraph")
-		  ("}" forward-paragraph "forward paragraph")
-		  ("(" backward-sentence "back sentence")
-		  (")" forward-sentence "forward sentence")
-		  ("v" set-mark-command "mark")
-		  ("d" delete-region "del" :color blue)
-		  ("y" kill-ring-save "yank" :color blue)
-		  ("/" swiper-isearch "search forward")
-		  ("?" swiper-isearch-backward "search backward")
-		  ("C-l" recenter-top-bottom "cycle recenter")
-		  ("q" nil "cancel" :color blue))
-		)
+(global-set-key
+ (kbd "s-j")
+ (defhydra hydra-vim (:columns 4 :pre hydra-vim/pre :post hydra-vim/post :color amaranth)
+   "VIM POWER"
+   ("h" backward-char "left")
+   ("l" forward-char "right")
+   ("j" next-line "next")
+   ("k" previous-line "previous")
+   ("b" backward-word "previous word")
+   ("e" forward-word "next word")
+   ("0" beginning-of-visual-line "start of line")
+   ("$" end-of-visual-line "end of line")
+   ("{" backward-paragraph "back paragraph")
+   ("}" forward-paragraph "forward paragraph")
+   ("(" backward-sentence "back sentence")
+   (")" forward-sentence "forward sentence")
+   ("v" set-mark-command "mark")
+   ("o" exchange-point-and-mark "swap point/mark")
+   ("C-v" rectangle-mark-mode "rectangle mark")
+   ("d" delete-region "del" :color blue)
+   ("y" kill-ring-save "yank" :color blue)
+   ("/" swiper-isearch "search forward")
+   ("?" swiper-isearch-backward "search backward")
+   ("C-l" recenter-top-bottom "cycle recenter")
+   ("q" nil "cancel" :color blue))
+ )
 
-(global-set-key (kbd "s-k")
-		(defhydra hydra-windows (:color red)
-		  "Windows & Splits"
-		  ("<tab>" other-window "Cycle active window")
-		  ("v" split-window-right "Vertical Split")
-		  ("s" split-window-below "Split, Horizonal")
-		  ("o" delete-other-windows "Only This Window" :color blue)
-		  ("k" delete-window "Delete Window")
-		  ("r" toggle-window-split "Rotate Window Split")
-		  ("b" balance-windows "Balance")
-		  ("<up>" enlarge-window "Bigger VERT")
-		  ("<down>" shrink-window "Smaller VERT")
-		  ("=" enlarge-window-horizontally "Bigger HORZ")
-		  ("-" shrink-window-horizontally "Smaler HORZ")
-		  ("q" nil "cancel" :color blue)))
+;; Window Management
+(global-set-key
+ (kbd "s-k")
+ (defhydra hydra-windows (:color red)
+   "Windows & Splits"
+   ("<tab>" other-window "Cycle active window")
+   ("v" (lambda ()
+          (interactive)
+          (split-window-right)
+          (windmove-right))
+    "Vertical Split")
+   ("s" (lambda ()
+          (interactive)
+          (split-window-below)
+          (windmove-down))
+    "Split, Horizonal")
+   ("o" delete-other-windows "Only This Window" :color blue)
+   ("k" delete-window "Delete Window")
+   ("r" toggle-window-split "Rotate Window Split")
+   ("b" balance-windows "Balance")
+   ("<up>" enlarge-window "Bigger VERT")
+   ("<down>" shrink-window "Smaller VERT")
+   ("=" enlarge-window-horizontally "Bigger HORZ")
+   ("-" shrink-window-horizontally "Smaler HORZ")
+   ("q" nil "cancel" :color blue)))
 
-
+;; Spelling
 (defun hydra-flyspell/pre ()
   (flyspell-buffer))
 
-(global-set-key (kbd "s-;")
-		(defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
-		  "Spelling"
-		  (";" flyspell-goto-next-error "Next")
-		  (":" flyspell-correct-word-before-point "Correct")
-		  ("q" nil "cancel" :color blue)))
+(global-set-key
+ (kbd "s-;")
+ (defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
+   "Spelling"
+   (";" flyspell-goto-next-error "Next")
+   (":" flyspell-correct-word-before-point "Correct")
+   ("q" nil "cancel" :color blue)))
 
 ;;; § Keybindings
 ;;; --------------------------------------------------------
@@ -497,4 +515,4 @@ _~_: modified
 
 
 (provide 'settings)
-;;; settings.el ends here
+;; settings.el ends here

@@ -188,7 +188,7 @@
 
 	("y" "All Tasks By TYPE"
 	 ((tags "/NOW"
-	       ((org-agenda-overriding-header "Tasks you should do NOW:")))
+               ((org-agenda-overriding-header "Tasks you should do NOW:")))
 
 	 (tags "/TODO"
 	       ((org-agenda-overriding-header "All your misc TODOs:")))
@@ -210,12 +210,12 @@
 
 ;; To turn this off per-file insert:
 ;; #+STARTUP: noptag
-(setq org-tag-persistent-alist
-      '(("comms")
-	("errands")
-	("focus")
-	("urgent")
-	))
+;;(setq org-tag-persistent-alist
+;;      '(("comms")
+;;	("errands")
+;;	("focus")
+;;	("urgent")
+;;	))
 
 (setq org-agenda-files
       (quote ("~/Documents/org-files/")))

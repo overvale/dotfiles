@@ -210,19 +210,23 @@
 (setq org-agenda-files
       (quote ("~/Documents/org-files/")))
 
+(setq org-refile-targets
+      '((org-agenda-files :maxlevel . 3)))
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+
 (setq org-capture-templates
       '(("p" "Personal Inbox" entry
-	 (file+headline "~/Documents/org-files/life.org" "Inbox")
-	 "* %?")
+	 (file+headline "~/Documents/org-files/inbox.org" "Inbox")
+	 "* %?\n\n")
 	("P" "Personal Log Entry" entry
-	 (file "~/Documents/org-files/life_log.org")
-	 "* %?\n%t\n")
+	 (file "~/Documents/org-files/logbook.org")
+	 "* %?\n%t\n\n")
 	("i" "Ingenuity Inbox" entry
-	 (file+headline "~/Documents/org-files/ingenuity.org" "Inbox")
-	 "* %?")
+	 (file+headline "~/Documents/org-files/ing_inbox.org" "Inbox")
+	 "* %?\n\n")
 	("I" "Ingenuity Log Entry" entry
-	 (file "~/Documents/org-files/ing_log.org")
-	 "* %^{Log type|Meeting: |Call: } %? %t")
+	 (file "~/Documents/org-files/ing_logbook.org")
+	 "* %^{Log type|Meeting: |Call: } %? %t\n\n")
 	))
 
 	

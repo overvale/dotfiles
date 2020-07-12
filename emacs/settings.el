@@ -344,6 +344,22 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
 ;; If all you're doing is grouping similar commands
 ;; then which-key should suffice.
 
+;; Transpose
+;; There are so many ways to transpose in Emacs, why not get help?
+(global-set-key
+ (kbd "M-t")
+ (defhydra hydra-transpose (:color red)
+   "Transpose"
+   ("c" transpose-chars "characters")
+   ("w" transpose-words "words")
+   ("o" org-transpose-words "Org mode words")
+   ("l" transpose-lines "lines")
+   ("s" transpose-sentences "sentences")
+   ("e" org-transpose-elements "Org mode elements")
+   ("p" transpose-paragraphs "paragraphs")
+   ("t" org-table-transpose-table-at-point "Org mode table")
+   ("q" nil "cancel" :color blue)))
+
 ;; Buffer-menu
 (defhydra hydra-buffer-menu (:color pink
                              :hint nil)

@@ -11,8 +11,9 @@
         ("melpa-stable" . "http://stable.melpa.org/packages/")
         ))
 
-;;; § General Settings
-;;; --------------------------------------------------------
+
+;;; General Settings
+;;  --------------------------------------------------------
 
 ;; Set default encoding
 (setq-default buffer-file-coding-system 'utf-8-unix)
@@ -77,8 +78,8 @@
 (setq mac-right-option-modifier 'nil)
 
 
-;;; § Apperance
-;;; --------------------------------------------------------
+;;; Apperance
+;;  --------------------------------------------------------
 
 (set-default 'cursor-type 'bar)
 (global-visual-line-mode t) ; word-wrap
@@ -130,8 +131,8 @@
 (load-theme 'modus-operandi t)
 
 
-;;; § Mode Settings
-;;; --------------------------------------------------------
+;;; Mode Settings
+;;  --------------------------------------------------------
 
 ;; Activate the modes/packages I like to use
 (which-key-mode t)              ;hints
@@ -160,8 +161,8 @@
   t)
 
 
-;;; § Org Settings
-;;; --------------------------------------------------------
+;;; Org Settings
+;;  --------------------------------------------------------
 
 (setq org-log-done 'time)
 
@@ -235,8 +236,8 @@
 
 	
 
-;;; § Functions
-;;; --------------------------------------------------------
+;;; Functions
+;;  --------------------------------------------------------
 
 (defun find-file-settings ()
   "Quickly open ~/dot/emacs/settings.el"
@@ -335,14 +336,15 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (end-of-visual-line)
   )
 
-;;; § Hydra
-;;; --------------------------------------------------------
+;;; Hydra
+;;  --------------------------------------------------------
 
 ;; Hydras should be reserved for modes,
 ;; ie: places where you'll want to call several functions in a row.
 ;; If all you're doing is grouping similar commands
 ;; then which-key should suffice.
 
+;; Buffer-menu
 (defhydra hydra-buffer-menu (:color pink
                              :hint nil)
   "
@@ -375,6 +377,8 @@ _~_: modified
 
 (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
 
+
+;; VIM-POWER functions
 (defun hydra-vim/pre ()
   "When activating the hydra-vim, change the cursor to a box"
   (set-default 'cursor-type 'box))
@@ -449,8 +453,8 @@ _~_: modified
    (":" flyspell-correct-word-before-point "Correct")
    ("q" nil "cancel" :color blue)))
 
-;;; § Keybindings
-;;; --------------------------------------------------------
+;;; Keybindings
+;;  --------------------------------------------------------
 
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 

@@ -482,6 +482,8 @@ _~_: modified
 (global-set-key (kbd "C-s") 'swiper-isearch)
 (global-set-key (kbd "C-r") 'swiper-isearch-backward)
 (global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "M-o") 'counsel-outline)
+(global-set-key (kbd "M-y") 'counsel-yank-pop)
 
 (global-set-key (kbd "M-s-<right>") 'next-buffer)
 (global-set-key (kbd "M-s-<left>") 'previous-buffer)
@@ -504,10 +506,12 @@ _~_: modified
 (global-set-key (kbd "M-s-f") 'swiper-all)
 (global-set-key (kbd "C-M-s-f") 'counsel-ag)
 
+(global-set-key (kbd "s-g f") 'counsel-org-goto-all)
 (global-set-key (kbd "s-g c") 'org-capture)
 (global-set-key (kbd "s-g t") 'counsel-org-tag)
 (global-set-key (kbd "s-g n") 'org-narrow-to-subtree)
 (global-set-key (kbd "s-g w") 'widen)
+(global-set-key (kbd "s-g s") 'org-search-view)
 
 (global-set-key (kbd "s-.") 'org-time-stamp)
 (global-set-key (kbd "s-t") 'org-todo)

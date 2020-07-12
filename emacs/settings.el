@@ -160,6 +160,11 @@
     )
   t)
 
+(add-hook 'emacs-lisp-mode
+  (lambda ()
+    (outline-minor-mode t)
+    )
+  t)
 
 ;;; Org Settings
 ;;  --------------------------------------------------------

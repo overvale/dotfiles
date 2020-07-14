@@ -186,15 +186,18 @@
          ((agenda "")
 	 (alltodo)))
 
-	("y" "All Tasks By TYPE"
-	 ((tags "/NOW"
-               ((org-agenda-overriding-header "Tasks you should do NOW:")))
+	("y" "All Non-Scheduled, by TYPE"
+         ((tags "/NOW"
+                ((org-agenda-overriding-header "Tasks you should do NOW:")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
 
-	 (tags "/TODO"
-	       ((org-agenda-overriding-header "All your misc TODOs:")))
+          (tags "/TODO"
+                ((org-agenda-overriding-header "All your misc TODOs:")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
 
-	 (tags "/LATER"
-	       ((org-agenda-overriding-header "Tasks you can do LATER:")))))
+          (tags "/LATER"
+                ((org-agenda-overriding-header "Tasks you can do LATER:")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
 
 	("p" "All Tasks (grouped by Priority)"
 	 ((tags-todo "PRIORITY={A}"

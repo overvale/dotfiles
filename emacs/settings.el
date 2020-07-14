@@ -45,11 +45,9 @@
 (show-paren-mode t)
 (setq show-paren-delay 0)
 (delete-selection-mode t)
-(cua-selection-mode t)
 (global-auto-revert-mode t)
 ;;(desktop-save-mode 1) ;sessions
 
-;;(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 (setq-default left-fringe-width nil)
 (setq-default indicate-empty-lines t)
 (setq-default indent-tabs-mode nil)
@@ -119,7 +117,7 @@
   (set-face-attribute 'default nil
 		      :family "SF Mono" :height 130 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "SF Compact Text" :height 150 :weight 'normal))
+		      :family "New York Medium" :height 160 :weight 'normal))
 
 (defun font-ibm ()
   (set-face-attribute 'default nil
@@ -169,7 +167,8 @@
 ;;; Org Settings
 ;;  --------------------------------------------------------
 
-(setq org-log-done 'time)
+;; This adds [COMPLETED: DATE] and logs status changes
+;;(setq org-log-done 'time)
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "|" "DONE(d!)")

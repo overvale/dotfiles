@@ -233,23 +233,21 @@
 ;;; Functions
 ;;  --------------------------------------------------------
 
-(defun find-file-settings ()
+(defun oht/find-file-settings ()
   "Quickly open ~/dot/emacs/settings.el"
   (interactive)
   (find-file "~/dot/emacs/settings.el"))
 
-(defun custom/kill-this-buffer ()
+(defun oht/kill-this-buffer ()
   "Quickly kill current buffer"
   (interactive)
   (kill-buffer (current-buffer)))
 
-;; Quickly switch to scratch buffer with Cmd+0:
-(global-set-key (kbd "s-0")
- (lambda ()
-   (interactive)
-   (if (string= (buffer-name) "*scratch*")
+(defun oht/find-scratch ()
+  (interactive)
+  (if (string= (buffer-name) "*scratch*")
        (previous-buffer)
-     (switch-to-buffer "*scratch*"))))
+     (switch-to-buffer "*scratch*")))
 
 ;; Move Lines
 (defmacro save-column (&rest body)
@@ -272,14 +270,14 @@
     (transpose-lines 1)
     (forward-line -1)))
 
-(defun mark-whole-line ()
+(defun oht/mark-whole-line ()
   "Mark the entirety of the current line."
   (interactive)
   (beginning-of-line)
   (set-mark-command nil)
   (end-of-line))
 
-(defun toggle-window-split ()
+(defun oht/toggle-window-split ()
   "Toggle between vertical and horizontal split."
   ;; Source: https://www.emacswiki.org/emacs/ToggleWindowSplit.
   ;; Author: Jeff Dwork
@@ -307,7 +305,7 @@
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 
-(defun open-in-bbedit ()
+(defun oht/open-in-bbedit ()
   "Open current file or dir in BBEdit.
 Adapted from:
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
@@ -317,18 +315,52 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
     (string-equal system-type "darwin")
       (shell-command (format "open -a BBEdit \"%s\"" $path))))
 
-(defun expand-to-beginning-of-visual-line ()
+(defun oht/expand-to-beginning-of-visual-line ()
   "Set mark and move to beginning of visual line"
   (interactive)
   (set-mark-command nil)
   (beginning-of-visual-line)
   )
-(defun expand-to-end-of-visual-line ()
+(defun oht/expand-to-end-of-visual-line ()
   "Set mark and move to end of visual line"
   (interactive)
   (set-mark-command nil)
   (end-of-visual-line)
   )
+
+(defun oht/kill-line-backward ()
+  "Kill from the point to beginning of visual line"
+  (interactive)
+  (kill-line 0))
+
+(defun oht/toggle-line-numbers ()
+    "Toggles display of line numbers. Applies to all buffers."
+  (interactive)
+  (if (bound-and-true-p display-line-numbers-mode)
+      (global-display-line-numbers-mode -1)
+    (global-display-line-numbers-mode)))
+
+(defun oht/toggle-whitespace ()
+    "Toggles display of indentation and space characters."
+  (interactive)
+  (if (bound-and-true-p whitespace-mode)
+      (whitespace-mode -1)
+    (whitespace-mode)))
+
+(defun oht/open-line-below (arg)
+  "Open a new indented line below the current one."
+  (interactive "p")
+  (end-of-line)
+  (open-line arg)
+  (next-line 1)
+  (indent-according-to-mode))
+
+(defun oht/open-line-above (arg)
+  "Open a new indented line above the current one."
+  (interactive "p")
+  (beginning-of-line)
+  (open-line arg)
+  (indent-according-to-mode))
 
 ;;; Hydra
 ;;  --------------------------------------------------------
@@ -443,7 +475,7 @@ _~_: modified
     "Split, Horizonal")
    ("o" delete-other-windows "Only This Window" :color blue)
    ("k" delete-window "Delete Window")
-   ("r" toggle-window-split "Rotate Window Split")
+   ("r" oht/toggle-window-split "Rotate Window Split")
    ("b" balance-windows "Balance")
    ("<up>" enlarge-window "Bigger VERT")
    ("<down>" shrink-window "Smaller VERT")
@@ -467,13 +499,15 @@ _~_: modified
 ;;  --------------------------------------------------------
 
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 
 (global-set-key (kbd "C-s") 'swiper-isearch)
 (global-set-key (kbd "C-r") 'swiper-isearch-backward)
+(global-set-key (kbd "C-S-k") 'oht/kill-line-backward)
+
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "M-o") 'counsel-outline)
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
-
 (global-set-key (kbd "M-s-<right>") 'next-buffer)
 (global-set-key (kbd "M-s-<left>") 'previous-buffer)
 (global-set-key (kbd "M-<up>") 'move-line-up)
@@ -494,6 +528,8 @@ _~_: modified
 (global-set-key (kbd "s-f") 'swiper)
 (global-set-key (kbd "M-s-f") 'swiper-all)
 (global-set-key (kbd "C-M-s-f") 'counsel-ag)
+(global-set-key (kbd "s-<return>") 'oht/open-line-below)
+(global-set-key (kbd "S-s-<return>") 'oht/open-line-above)
 
 (global-set-key (kbd "s-g f") 'counsel-org-goto-all)
 (global-set-key (kbd "s-g c") 'org-capture)
@@ -501,13 +537,15 @@ _~_: modified
 (global-set-key (kbd "s-g n") 'org-narrow-to-subtree)
 (global-set-key (kbd "s-g w") 'widen)
 (global-set-key (kbd "s-g s") 'org-search-view)
+(global-set-key (kbd "s-g ,") 'org-insert-structure-template)
 
 (global-set-key (kbd "s-.") 'org-time-stamp)
 (global-set-key (kbd "s-t") 'org-todo)
+(global-set-key (kbd "s-0") 'oht/find-scratch)
 
 ;; Standard Mac Shortcuts
 ;; https://support.apple.com/en-us/HT201236
-(global-set-key (kbd "s-,") 'find-file-settings) ;preferences
+(global-set-key (kbd "s-,") 'oht/find-file-settings) ;preferences
 (global-set-key (kbd "s-n") 'make-frame-command)
 (global-set-key (kbd "s-s") 'save-buffer)         ;save
 (global-set-key (kbd "s-S") 'write-file)          ;save as
@@ -518,18 +556,18 @@ _~_: modified
 (global-set-key (kbd "s-c") 'kill-ring-save)
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
-(global-set-key (kbd "s-w") 'custom/kill-this-buffer)
+(global-set-key (kbd "s-w") 'oht/kill-this-buffer)
 (global-set-key (kbd "s-/") 'comment-line)
 (global-set-key (kbd "s-<up>") (kbd "M-<"))
 (global-set-key (kbd "s-<down>") (kbd "M->"))
 (global-set-key (kbd "s-<left>") (kbd "C-a"))
 (global-set-key (kbd "s-<right>") (kbd "C-e"))
-(global-set-key (kbd "s-l") 'mark-whole-line)
+(global-set-key (kbd "s-l") 'oht/mark-whole-line)
 (global-set-key (kbd "s-M-l") 'mark-paragraph)
 (global-set-key (kbd "s-]") 'indent-rigidly-right-to-tab-stop)
 (global-set-key (kbd "s-[") 'indent-rigidly-left-to-tab-stop)
-(global-set-key (kbd "S-s-<left>") 'expand-to-beginning-of-visual-line)
-(global-set-key (kbd "S-s-<right>") 'expand-to-end-of-visual-line)
+(global-set-key (kbd "S-s-<left>") 'oht/expand-to-beginning-of-visual-line)
+(global-set-key (kbd "S-s-<right>") 'oht/expand-to-end-of-visual-line)
 
 
 (provide 'settings)

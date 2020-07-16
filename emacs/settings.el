@@ -362,6 +362,10 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (open-line arg)
   (indent-according-to-mode))
 
+(defun oht/join-line-next ()
+  (interactive)
+  (join-line -1))
+
 ;;; Hydra
 ;;  --------------------------------------------------------
 
@@ -494,6 +498,21 @@ _~_: modified
    (";" flyspell-goto-next-error "Next")
    (":" flyspell-correct-word-before-point "Correct")
    ("q" nil "cancel" :color blue)))
+
+;; Text Manipulation
+(global-set-key
+ (kbd "s-\\")
+ (defhydra hydra-manipulate (:color red)
+   "Manipulate Text"
+   ("|" shell-command-on-region "Pipe to shell" :color blue)
+   ("j" oht/join-line-next "Join line with next")
+   ("d" downcase-region "Downcase")
+   ("u" upcase-region "Upcase")
+   ("c" capitalize-region "Capitalise")
+   ("s" sort-lines "Sort")
+   ("-" delete-duplicate-lines "Del Dupes")
+   ("q" nil "cancel" :color blue)))
+
 
 ;;; Keybindings
 ;;  --------------------------------------------------------

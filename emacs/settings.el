@@ -46,7 +46,7 @@
 (setq show-paren-delay 0)
 (delete-selection-mode t)
 (global-auto-revert-mode t)
-;;(desktop-save-mode 1) ;sessions
+(desktop-save-mode 1) ;sessions
 
 (setq-default left-fringe-width nil)
 (setq-default indicate-empty-lines t)
@@ -136,6 +136,7 @@
 (which-key-mode t)              ;hints
 (global-undo-tree-mode t)       ;activate undo-tree everywhere
 (require 'expand-region)        ;lovely plugin
+(smart-mode-line-enable)
 
 ;; counsel settings
 (counsel-mode t)
@@ -163,8 +164,10 @@
 (add-hook 'emacs-lisp-mode
   (lambda ()
     (outline-minor-mode t)
+    (rainbow-delimiters-mode t)
     )
   t)
+
 
 ;;; Org Settings
 ;;  --------------------------------------------------------
@@ -176,12 +179,14 @@
 (setq org-catch-invisible-edits 'show-and-error)
 
 ;; This sets the sequence of plain list bullets
-(setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "*") ("*" . "+")))
+(setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
 
 ;; Increase sub-item indentation by this amount
 ;; the default is 2 so the below means 2+2 = 4 (spaces)
 (setq org-list-indent-offset 2)
 
+;; this tells org to use the current window for agenda
+;; rather than creating a split
 (setq org-agenda-window-setup 'current-window)
 
 (setq org-todo-keywords

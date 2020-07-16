@@ -153,9 +153,10 @@
 
 (add-hook 'org-mode-hook
   (lambda ()
-    (variable-pitch-mode t)
-    (flyspell-mode t)
-    (org-indent-mode t)
+    (variable-pitch-mode 1)
+    (flyspell-mode)
+    (org-indent-mode)
+    (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
     )
   t)
 
@@ -232,6 +233,13 @@
 
 ;;; Functions
 ;;  --------------------------------------------------------
+
+(defun oht/fix-variable-org-indent ()
+  "Fix for org-indent not hiding markup in org-indent-mode.
+from: https://maxjmartin.com/Emacs%20Dotfile.html"
+  (interactive)
+  (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+  )
 
 (defun oht/find-file-settings ()
   "Quickly open ~/dot/emacs/settings.el"

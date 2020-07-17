@@ -1,18 +1,26 @@
 ;;; Functions
 ;;  --------------------------------------------------------
 
+(defun oht/writing-mode ()
+  "Enable variable-pitch, flyspell, and increased line-spacing and margins."
+  (interactive)
+  (cursor-color "#24B0FF")
+  (variable-pitch-mode t)
+  (flyspell-mode t)
+  (setq-local line-spacing 0.15)
+  ;; define width of buffer margins
+  (setq-default left-margin-width 1 right-margin-width 1)
+  ;;(set-window-buffer nil (current-buffer)) ; Use them now.
+  )
+
 ;;; Mode Hooks
 
 (defun oht/markdown-mode-hook ()
-  "Enable variable-pitch and flyspell."
-  (variable-pitch-mode t)
-  (flyspell-mode t)
+  (oht/writing-mode)
   )
 
 (defun oht/org-mode-hook ()
-  (variable-pitch-mode 1)
-  (flyspell-mode)
-  ;; (org-indent-mode)
+  (oht/writing-mode)
   )
 
 (defun oht/emacs-lisp-mode ()

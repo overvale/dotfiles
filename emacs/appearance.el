@@ -42,7 +42,3 @@
 
 (load-theme 'modus-operandi t)
 (font-ibm)
-
-;; define width of buffer margins
-(setq-default left-margin-width 1 right-margin-width 1)
-;;(set-window-buffer nil (current-buffer)) ; Use them now.

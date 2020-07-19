@@ -175,11 +175,22 @@ This currently replicates the default mode-line. At some point in the future I m
 
 #+begin_src emacs-lisp
 
+;; fix the look of source code blocks
+(setq org-src-fontify-natively t)
+(setq org-src-tab-acts-natively t)
+(setq org-edit-src-content-indentation 0)
+
 ;; Hide org-markup
 (setq org-hide-emphasis-markers t)
 
+;; Style quote and verse blocks
+(setq org-fontify-quote-and-verse-blocks t)
+
 ;; This adds [COMPLETED: DATE] when you move something to a "done" state
 (setq org-log-done 'time)
+
+;; Tags start immediately after the headline
+(setq org-tags-column 0)
 
 ;; This prevents editing inside folded sections
 (setq org-catch-invisible-edits 'show-and-error)
@@ -196,6 +207,12 @@ This currently replicates the default mode-line. At some point in the future I m
 ;; this tells org to use the current window for agenda
 ;; rather than creating a split
 (setq org-agenda-window-setup 'current-window)
+
+;; Ensure that a task can’t be marked as done if it contains
+;; unfinished subtasks or checklist items. This is handy for
+;; organizing “blocking” tasks hierarchically.
+(setq org-enforce-todo-dependencies t)
+(setq org-enforce-todo-checkbox-dependencies t)
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "|" "DONE(d)")
@@ -218,7 +235,10 @@ This currently replicates the default mode-line. At some point in the future I m
           ))
         ))
 
-(setq org-agenda-files (quote ("~/Documents/org-files/")))
+(setq org-agenda-files (quote (
+                               "~/Documents/org-files/"
+                               "~/Documents/writing/kindred/compendium.org"
+                               )))
 
 ;; this sets "refile targets" to any headline, level 1-3, in you agenda files.
 (setq org-refile-targets
@@ -240,6 +260,8 @@ This currently replicates the default mode-line. At some point in the future I m
          "* %^{Log type|Meeting: |Call: } %? %t\n\n")
         ))
 
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("f" . "src fountain"))
 
 #+end_src
 
@@ -670,6 +692,8 @@ I use =⌘-\= as the leader for mode-spesific bindings.
   (define-key org-mode-map (kbd "s-\\ w") 'widen)
   (define-key org-mode-map (kbd "s-\\ s") 'org-search-view)
   (define-key org-mode-map (kbd "s-\\ <") 'org-insert-structure-template)
+  (define-key org-mode-map (kbd "s-\\ l") 'org-store-link)
+  (define-key org-mode-map (kbd "s-\\ i") 'org-insert-last-stored-link)
   )
 
 ;; buffer menu bindings

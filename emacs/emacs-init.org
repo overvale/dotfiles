@@ -114,14 +114,10 @@
 (setq ivy-count-format "(%d/%d) ")
 ;;(setq ivy-initial-inputs-alist nil) ;removes ^ from initial input
 
-
-;;; Hooks
-;;  --------------------------------------------------------
-
-(add-hook 'markdown-mode-hook 'oht/markdown-mode-hook)
-(add-hook 'org-mode-hook      'oht/org-mode-hook)
-(add-hook 'emacs-lisp-mode    'oht/emacs-lisp-mode)
-
+;; Hide details in dired mode
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (dired-hide-details-mode 1)))
 #+end_src
 
 * Fonts Setup
@@ -416,15 +412,18 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
 (defun oht/markdown-mode-hook ()
   (oht/writing-mode)
   )
+(add-hook 'markdown-mode-hook 'oht/markdown-mode-hook)
 
 (defun oht/org-mode-hook ()
   (oht/writing-mode)
   )
-  
+(add-hook 'org-mode-hook 'oht/org-mode-hook)
+
 (defun oht/emacs-lisp-mode ()
   (outline-minor-mode t)
   (rainbow-delimiters-mode t)
   )
+(add-hook 'emacs-lisp-mode 'oht/emacs-lisp-mode)
 
 #+end_src
 

@@ -157,22 +157,22 @@ This currently replicates the default mode-line. At some point in the future I m
 
 #+begin_src emacs-lisp
 (setq-default mode-line-format
-'("%e"
-mode-line-front-space
-mode-line-mule-info
-mode-line-client
-mode-line-modified
-mode-line-remote
-mode-line-frame-identification
-mode-line-buffer-identification
-"  "
-mode-line-position
-(vc-mode vc-mode)
-" "
-mode-line-modes
-" "
-mode-line-misc-info
-mode-line-end-spaces))
+              '("%e"
+                mode-line-front-space
+                mode-line-mule-info
+                mode-line-client
+                mode-line-modified
+                mode-line-remote
+                mode-line-frame-identification
+                mode-line-buffer-identification
+                "  "
+                mode-line-position
+                (vc-mode vc-mode)
+                " "
+                mode-line-modes
+                " "
+                mode-line-misc-info
+                mode-line-end-spaces))
 #+end_src
 
 * Org
@@ -203,21 +203,22 @@ mode-line-end-spaces))
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "|" "DONE(d)")
-	(sequence "WAIT(w)" "|" "CANCELLED(c)")))
+        (sequence "WAIT(w)" "|" "CANCELLED(c)")))
 
-(setq org-agenda-custom-commands '(
-	("d" "Do Now - Not scheduled, #A, TODO"
+(setq org-agenda-custom-commands
+      '(
+        ("d" "Do Now - Not scheduled, #A, TODO"
          ((agenda "d" ((org-agenda-span 'day)))
           (tags "+PRIORITY={A}/TODO"
                 ((org-agenda-overriding-header "Tasks you should do NOW:")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                  ))))
-	("c" "Complete - Agenda and ALL todos"
+        ("c" "Complete - Agenda and ALL todos"
          ((agenda "")
           (todo "TODO|WAIT"
-           ((org-agenda-overriding-header "Global list of TODO items of type: ALL (non-scheduled)")
-            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-            ))
+                ((org-agenda-overriding-header "Global list of TODO items of type: ALL (non-scheduled)")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                 ))
           ))
         ))
 
@@ -230,18 +231,19 @@ mode-line-end-spaces))
 
 (setq org-capture-templates
       '(("p" "Personal Inbox" entry
-	 (file+headline "~/Documents/org-files/refile.org" "Personal")
-	 "* %?\n\n")
-	("P" "Personal Log Entry" entry
-	 (file "~/Documents/org-files/logbook.org")
-	 "* %?\n%t\n\n")
-	("i" "Ingenuity Inbox" entry
-	 (file+headline "~/Documents/org-files/refile.org" "Ingenuity")
-	 "* %?\n\n")
-	("I" "Ingenuity Log Entry" entry
-	 (file "~/Documents/org-files/ing_log.org")
-	 "* %^{Log type|Meeting: |Call: } %? %t\n\n")
-	))
+         (file+headline "~/Documents/org-files/refile.org" "Personal")
+         "* %?\n\n")
+        ("P" "Personal Log Entry" entry
+         (file "~/Documents/org-files/logbook.org")
+         "* %?\n%t\n\n")
+        ("i" "Ingenuity Inbox" entry
+         (file+headline "~/Documents/org-files/refile.org" "Ingenuity")
+         "* %?\n\n")
+        ("I" "Ingenuity Log Entry" entry
+         (file "~/Documents/org-files/ing_log.org")
+         "* %^{Log type|Meeting: |Call: } %? %t\n\n")
+        ))
+
 
 #+end_src
 
@@ -285,8 +287,8 @@ from: https://maxjmartin.com/Emacs%20Dotfile.html"
 (defun oht/find-scratch ()
   (interactive)
   (if (string= (buffer-name) "*scratch*")
-       (previous-buffer)
-     (switch-to-buffer "*scratch*")))
+      (previous-buffer)
+    (switch-to-buffer "*scratch*")))
 
 ;; Move Lines
 (defmacro save-column (&rest body)
@@ -352,7 +354,7 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ) )))
     (message "path is %s" $path)
     (string-equal system-type "darwin")
-      (shell-command (format "open -a BBEdit \"%s\"" $path))))
+    (shell-command (format "open -a BBEdit \"%s\"" $path))))
 
 (defun oht/expand-to-beginning-of-visual-line ()
   "Set mark and move to beginning of visual line"
@@ -373,14 +375,14 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (kill-line 0))
 
 (defun oht/toggle-line-numbers ()
-    "Toggles display of line numbers. Applies to all buffers."
+  "Toggles display of line numbers. Applies to all buffers."
   (interactive)
   (if (bound-and-true-p display-line-numbers-mode)
       (global-display-line-numbers-mode -1)
     (global-display-line-numbers-mode)))
 
 (defun oht/toggle-whitespace ()
-    "Toggles display of indentation and space characters."
+  "Toggles display of indentation and space characters."
   (interactive)
   (if (bound-and-true-p whitespace-mode)
       (whitespace-mode -1)
@@ -437,23 +439,22 @@ then which-key should suffice.
 
 ;; Transpose
 ;; There are so many ways to transpose in Emacs, why not get help?
-
 (defhydra hydra-transpose (:color red)
-"Transpose"
-("c" transpose-chars "characters")
-("w" transpose-words "words")
-("o" org-transpose-words "Org mode words")
-("l" transpose-lines "lines")
-("s" transpose-sentences "sentences")
-("e" org-transpose-elements "Org mode elements")
-("p" transpose-paragraphs "paragraphs")
-("t" org-table-transpose-table-at-point "Org mode table")
-("q" nil "cancel" :color blue))
-    
+  "Transpose"
+  ("c" transpose-chars "characters")
+  ("w" transpose-words "words")
+  ("o" org-transpose-words "Org mode words")
+  ("l" transpose-lines "lines")
+  ("s" transpose-sentences "sentences")
+  ("e" org-transpose-elements "Org mode elements")
+  ("p" transpose-paragraphs "paragraphs")
+  ("t" org-table-transpose-table-at-point "Org mode table")
+  ("q" nil "cancel" :color blue))
+
 ;; Buffer-menu
 (defhydra hydra-buffer-menu (:color pink
-:hint nil)
-"
+                                    :hint nil)
+  "
 ^Mark^             ^Unmark^           ^Actions^          ^Search
 ^^^^^^^^-----------------------------------------------------------------
 _m_: mark          _u_: unmark        _x_: execute       _R_: re-isearch
@@ -462,24 +463,24 @@ _d_: delete        ^ ^                _g_: refresh       _O_: multi-occur
 _D_: delete up     ^ ^                _T_: files only: % -28`Buffer-menu-files-only
 _~_: modified
 "
-("m" Buffer-menu-mark)
-("u" Buffer-menu-unmark)
-("U" Buffer-menu-backup-unmark)
-("d" Buffer-menu-delete)
-("D" Buffer-menu-delete-backwards)
-("s" Buffer-menu-save)
-("~" Buffer-menu-not-modified)
-("x" Buffer-menu-execute)
-("b" Buffer-menu-bury)
-("g" revert-buffer)
-("T" Buffer-menu-toggle-files-only)
-("O" Buffer-menu-multi-occur :color blue)
-("I" Buffer-menu-isearch-buffers :color blue)
-("R" Buffer-menu-isearch-buffers-regexp :color blue)
-("c" nil "cancel")
-("v" Buffer-menu-select "select" :color blue)
-("o" Buffer-menu-other-window "other-window" :color blue)
-("q" quit-window "quit" :color blue))
+  ("m" Buffer-menu-mark)
+  ("u" Buffer-menu-unmark)
+  ("U" Buffer-menu-backup-unmark)
+  ("d" Buffer-menu-delete)
+  ("D" Buffer-menu-delete-backwards)
+  ("s" Buffer-menu-save)
+  ("~" Buffer-menu-not-modified)
+  ("x" Buffer-menu-execute)
+  ("b" Buffer-menu-bury)
+  ("g" revert-buffer)
+  ("T" Buffer-menu-toggle-files-only)
+  ("O" Buffer-menu-multi-occur :color blue)
+  ("I" Buffer-menu-isearch-buffers :color blue)
+  ("R" Buffer-menu-isearch-buffers-regexp :color blue)
+  ("c" nil "cancel")
+  ("v" Buffer-menu-select "select" :color blue)
+  ("o" Buffer-menu-other-window "other-window" :color blue)
+  ("q" quit-window "quit" :color blue))
 
 ;; VIM-POWER functions
 (defun hydra-vim/pre ()
@@ -493,72 +494,72 @@ _~_: modified
 ;; the VIM-POWER Hydra!
 ;; Since the color is set to amaranth, only actions labeled :blue will quit
 (defhydra hydra-vim (:columns 4 :pre hydra-vim/pre :post hydra-vim/post :color amaranth)
-"VIM POWER"
-("h" backward-char "left")
-("l" forward-char "right")
-("j" next-line "next")
-("k" previous-line "previous")
-("b" backward-word "previous word")
-("e" forward-word "next word")
-("0" beginning-of-visual-line "start of line")
-("$" end-of-visual-line "end of line")
-("{" backward-paragraph "back paragraph")
-("}" forward-paragraph "forward paragraph")
-("(" backward-sentence "back sentence")
-(")" forward-sentence "forward sentence")
-("v" set-mark-command "mark")
-("o" exchange-point-and-mark "swap point/mark")
-("C-v" rectangle-mark-mode "rectangle mark")
-("d" delete-region "del" :color blue)
-("y" kill-ring-save "yank" :color blue)
-("/" swiper-isearch "search forward")
-("?" swiper-isearch-backward "search backward")
-("C-l" recenter-top-bottom "cycle recenter")
-("q" nil "cancel" :color blue))
+  "VIM POWER"
+  ("h" backward-char "left")
+  ("l" forward-char "right")
+  ("j" next-line "next")
+  ("k" previous-line "previous")
+  ("b" backward-word "previous word")
+  ("e" forward-word "next word")
+  ("0" beginning-of-visual-line "start of line")
+  ("$" end-of-visual-line "end of line")
+  ("{" backward-paragraph "back paragraph")
+  ("}" forward-paragraph "forward paragraph")
+  ("(" backward-sentence "back sentence")
+  (")" forward-sentence "forward sentence")
+  ("v" set-mark-command "mark")
+  ("o" exchange-point-and-mark "swap point/mark")
+  ("C-v" rectangle-mark-mode "rectangle mark")
+  ("d" delete-region "del" :color blue)
+  ("y" kill-ring-save "yank" :color blue)
+  ("/" swiper-isearch "search forward")
+  ("?" swiper-isearch-backward "search backward")
+  ("C-l" recenter-top-bottom "cycle recenter")
+  ("q" nil "cancel" :color blue))
 
 ;; Window Management
 (defhydra hydra-windows (:color red)
-"Windows & Splits"
-("<tab>" other-window "Cycle active window")
-("v" (lambda ()
-  (interactive)
-  (split-window-right)
-  (windmove-right) )"Vertical Split")
-("s" (lambda ()
+  "Windows & Splits"
+  ("<tab>" other-window "Cycle active window")
+  ("v" (lambda ()
+         (interactive)
+         (split-window-right)
+         (windmove-right) )"Vertical Split")
+  ("s" (lambda ()
   (interactive)
   (split-window-below)
   (windmove-down)) "Split, Horizonal")
-("o" delete-other-windows "Only This Window" :color blue)
-("k" delete-window "Delete Window")
-("r" oht/toggle-window-split "Rotate Window Split")
-("b" balance-windows "Balance")
-("<up>" enlarge-window "Bigger VERT")
-("<down>" shrink-window "Smaller VERT")
-("=" enlarge-window-horizontally "Bigger HORZ")
-("-" shrink-window-horizontally "Smaler HORZ")
-("q" nil "cancel" :color blue))
+  ("o" delete-other-windows "Only This Window" :color blue)
+  ("k" delete-window "Delete Window")
+  ("r" oht/toggle-window-split "Rotate Window Split")
+  ("b" balance-windows "Balance")
+  ("<up>" enlarge-window "Bigger VERT")
+  ("<down>" shrink-window "Smaller VERT")
+  ("=" enlarge-window-horizontally "Bigger HORZ")
+  ("-" shrink-window-horizontally "Smaler HORZ")
+  ("q" nil "cancel" :color blue))
 
 ;; Spelling
 (defun hydra-flyspell/pre ()
-)
-    
+  )
+
 (defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
-"Spelling"
-(";" flyspell-goto-next-error "Next")
-(":" flyspell-correct-word-before-point "Correct")
-("q" nil "cancel" :color blue))
-    
+  "Spelling"
+  (";" flyspell-goto-next-error "Next")
+  (":" flyspell-correct-word-before-point "Correct")
+  ("q" nil "cancel" :color blue))
+
 ;; Text Manipulation
 (defhydra hydra-manipulate (:color red)
-"Manipulate Text"
-("|" shell-command-on-region "Pipe to shell" :color blue)
-("j" oht/join-line-next "Join line with next")
-("d" downcase-region "Downcase")
-("u" upcase-region "Upcase")
-("c" capitalize-region "Capitalise")
-("s" sort-lines "Sort")
-("-" delete-duplicate-lines "Del Dupes")
-("q" nil "cancel" :color blue))
+  "Manipulate Text"
+  ("|" shell-command-on-region "Pipe to shell" :color blue)
+  ("j" oht/join-line-next "Join line with next")
+  ("d" downcase-region "Downcase")
+  ("u" upcase-region "Upcase")
+  ("c" capitalize-region "Capitalise")
+  ("s" sort-lines "Sort")
+  ("-" delete-duplicate-lines "Del Dupes")
+  ("q" nil "cancel" :color blue))
 
 #+end_src
 

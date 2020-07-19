@@ -690,7 +690,14 @@ _~_: modified
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
 (global-set-key (kbd "M-<tab>") 'other-window)
+#+end_src
 
+This cycles the spacing around point between:
+- A single space,
+- No spaces, or
+- the original spacing.
+#+begin_src emacs-lisp
+(global-set-key (kbd "M-SPC") 'cycle-spacing)
 #+end_src
 
 *** Primary Bindings

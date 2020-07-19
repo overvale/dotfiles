@@ -442,6 +442,27 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
 
 #+end_src
 
+* Custom Minor Modes
+
+You might want to think about creating a minor-mode you can call when switching to a new mode.
+
+The below code is +stolen+ adapted from /prot/.
+
+#+begin_example
+(define-minor-mode oht/writing-mode
+	“Explaination”
+	:init-value nil
+	:global nil
+	(if oht/writing-mode
+		(progn
+		  (olivetti-mode 1)
+		  (hl-line-mode 1)
+		  (setq-local cursor-type ‘(bar . 4))
+	  (olivetti-mode -1)
+	  (hl-line-mode 1)
+	  ((setq-local cursor-type ‘(bar . 2))))
+#+end_example
+
 * Mode Hooks
 
 #+begin_src emacs-lisp

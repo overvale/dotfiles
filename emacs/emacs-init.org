@@ -120,7 +120,7 @@
             (dired-hide-details-mode 1)))
 #+end_src
 
-* Fonts Setup
+* Appearance
 
 Here the fonts are setup in a function so I can change them all in once step by calling =oht/set-font=.
 
@@ -144,6 +144,13 @@ Here the fonts are setup in a function so I can change them all in once step by 
 
 (load-theme 'modus-operandi t)
 (oht/set-font)
+
+(defadvice load-theme (before clear-previous-themes activate)
+  "Clear existing theme settings instead of layering them"
+  (mapc #'disable-theme custom-enabled-themes))
+
+;; Underline line at descent position, not baseline position
+(setq x-underline-at-descent-line t)
 
 #+end_src
 
@@ -169,6 +176,14 @@ This currently replicates the default mode-line. At some point in the future I m
                 " "
                 mode-line-misc-info
                 mode-line-end-spaces))
+#+end_src
+
+** Minions
+
+Hide all minor-modes behind a menu in the modeline.
+
+#+begin_src emacs-lisp
+(minions-mode t)
 #+end_src
 
 * Org
@@ -388,7 +403,7 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   )
 
 (defun oht/kill-line-backward ()
-  "Kill from the point to beginning of visual line"
+  "Kill from the point to beginning of whole line"
   (interactive)
   (kill-line 0))
 

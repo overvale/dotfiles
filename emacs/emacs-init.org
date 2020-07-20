@@ -3,55 +3,79 @@
 
 * Introduction
 
-/Welcome!/ I'm not writing this for you, I'm writing this for /future/-me. The idea is that I don't want to forget how this configuration file works or why I did things this way, so I write it in this format ([[https://en.wikipedia.org/wiki/Literate_programming][literate programming]]) so I can read it later and understand what the hell /past/-me was thinking.
+/Welcome!/ Sorry, but I'm not writing this for you, I'm writing this for me --- well, /future/-me. I don't want to forget how this configuration file works, or why I did things this way, so I write it in this format ([[https://en.wikipedia.org/wiki/Literate_programming][literate programming]]) so I can read it later and understand what the hell /past/-me was thinking.
 
-** The "Oliver" Emacs Way
+** What is This?
 
-1. Using Emacs makes no sense unless you customize it. I agree that learning "the Emacs way" is useful (particularly because many of those keybindings, like =^a= work everywhere on a Mac), but the whole point of using an editor like this is that you can customize it to do anything you want.
+This document does 2 things simultaneously, it is both the configuration file containing all my settings and preferences that Emacs reads when it starts-up /and/ it is a document that's meant to be read by a human which explains what the configuration and settings do and why I want them done that way.
 
-2. Accept that you will never remember Emacs keybindings, and that even if you do it will injure your pinky. That's not a down-side, it means you can make Emacs do what makes the most sense to you.
+** My Emacs Philosophy
 
-3. Use =counsel-M-x= to explore what Emacs is capable of. It's a superpower.
+1. Using Emacs makes no sense unless you customize it extensively. If you're not interested in, or don't want to bother with, customizing Emacs to the point where it molds around what you expect of it (rather than requiring /you to mold to it/) then save yourself the trouble and use another editor, there are a lot of great ones.
 
-4. Use =which-key= to give you hints for difficult to remember shortcuts.
+2. Accept that you will never remember Emacs keybindings, and that even if you do it will injure your pinky, and don't even bother trying. That's not a down-side, it means you don't have to learn anything new (!), just learn to make Emacs work the way you expect it to. That sounds like it might be difficult, but once you get the hang of customizing Emacs it becomes easy.
 
-5. Use =hydra= to save keystrokes (and ease memory) by setting up what are basically "mini-modes". I don't know how I'd function without the one I have setup for window management.
+3. There's a few things you should learn to use in order to learn about Emacs's capabilities. Poke around =C-h ?= for Help. Use =counsel-M-x= to explore. Use =which-key= to give you hints for difficult to remember shortcuts.
+
+4. Use =hydra= to save keystrokes (and ease memory) by setting up what are basically "mini-modes". I don't know how I'd function without the one I have setup for window management.
+
+** Inspiration and References
+
+Anyone learning vim, emacs, zsh, bash, awk, or something similar, spends a lot of time looking at other people's configuration files (much like this one). I've learned from some wonderful (and well documented) examples. Here is a list of the ones I've learned the most from:
+
+- [[https://protesilaos.com/dotemacs/][Protesilaos Stavrou Dotemacs]]
+- [[https://blog.aaronbieber.com][Aaron Bieber, Blog & Dotfiles]]
+- [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org][Harry R. Schwartz dotfiles]]
+- [[https://yiufung.net/post/org-mode-hidden-gems-pt1/][Org-Mode Hidden Gems]]
+
+For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
 
 * General Setup
 
+Set encoding to be UTF-8 everywhere.
+
 #+begin_src emacs-lisp
-;;; ENCODING
-;; Set default encoding
 (setq-default buffer-file-coding-system 'utf-8-unix)
 (set-default-coding-systems 'utf-8-unix)
 (setq locale-coding-system 'utf-8-unix)
 (prefer-coding-system 'utf-8-unix)
+#+end_src
 
-;;; CUSTOM.EL
-;; Don't add custom section directly under init.el.
-;; https://www.reddit.com/r/emacs/comments/53zpv9/how_do_i_get_emacs_to_stop_adding_custom_fields/
+When customizing Emacs interactively (ie: not in this document or =init.el=) Emacs appends code to your =init.el= file, which can be annoying when editing it by hand. This tells Emacs to place these customizations in a separate file.
+
+#+begin_src emacs-lisp
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file :noerror))
+#+end_src
 
-;;; FILENAMES
-;; When visiting 2 files with the same name, use this:
-;; foo/makefile & bar/makefile
-;; instead of this: makefile<foo/foo> & makefile<bar/bar>
-;;(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
+The below is probably the biggest reason why I managed get over the intimidation of using Emacs in those first few days. Here's what it does:
 
-;;; MAC-LIKE SETTINGS
+- Makes the command keys act as =super=. =super= keybindings are basically not used by Emacs so they're a safe playground for assigning your own keybindings. I setup =s-q= for quit,  =s-s= for save, =s-z= for undo, =s-o= for open file, basically, all the standard Mac shortcuts. Once I did that Emacs became very usable immediately and that ease-of-use made learning Emacs a lot less painful.
+- Makes the right option key act as =meta= and the makes the left option key act as =alt=. This lets me use =meta= keybindings /and/ type characters that require =option/alt=. If you don't do that you can't insert characters like: £¢∞§¶•≠.
+
+#+begin_src emacs-lisp
 ;; Command to super
 (setq mac-right-command-modifier 'super)
 (setq mac-command-modifier 'super)
-;; Left-option to meta for commands
+;; Left-option to meta
 (setq mac-option-modifier 'meta)
 (setq mac-left-option-modifier 'meta)
-;; Right-option to option, for special characters: ¡™£¢∞¶•ªº
+;; Right-option to option
 (setq mac-right-option-modifier 'meta)
 (setq mac-right-option-modifier 'nil)
+#+end_src
 
+When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=. This makes Emacs refer to them as =foo/file= and =bar/file=.
+
+#+begin_src emacs-lisp
+;;(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+#+end_src
+
+
+
+#+begin_src emacs-lisp
 ;; STARTUP PREFERENCES
 (setq initial-scratch-message
       (concat

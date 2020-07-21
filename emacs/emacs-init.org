@@ -564,37 +564,37 @@ _~_: modified
   ("q" quit-window "quit" :color blue))
 
 ;; VIM-POWER functions
-(defun hydra-vim/pre ()
-  "When activating the hydra-vim, change the cursor to a box"
+(defun hydra-modal/pre ()
+  "When activating the hydra-modal, change the cursor to a box"
   (set-default 'cursor-type 'box))
 
-(defun hydra-vim/post ()
-  "When exiting the hydra-vim, change the cursor to a bar"
+(defun hydra-modal/post ()
+  "When exiting the hydra-modal, change the cursor to a bar"
   (set-default 'cursor-type 'bar))
 
-;; the VIM-POWER Hydra!
+;; the MODAL Hydra!
 ;; Since the color is set to amaranth, only actions labeled :blue will quit
-(defhydra hydra-vim (:columns 4 :pre hydra-vim/pre :post hydra-vim/post :color amaranth)
-  "VIM POWER"
-  ("h" backward-char "left")
-  ("l" forward-char "right")
-  ("j" next-line "next")
-  ("k" previous-line "previous")
+(defhydra hydra-modal (:columns 4 :pre hydra-modal/pre :post hydra-modal/post :color amaranth)
+  "MODAL POWER"
+  ("<left>" backward-char "left")
+  ("<right>" forward-char "right")
+  ("<down>" next-line "next")
+  ("<up>" previous-line "previous")
   ("b" backward-word "previous word")
-  ("e" forward-word "next word")
-  ("0" beginning-of-visual-line "start of line")
-  ("$" end-of-visual-line "end of line")
+  ("f" forward-word "end of next word")
+  ("a" beginning-of-visual-line "start of line")
+  ("e" end-of-visual-line "end of line")
   ("{" backward-paragraph "back paragraph")
   ("}" forward-paragraph "forward paragraph")
   ("(" backward-sentence "back sentence")
   (")" forward-sentence "forward sentence")
-  ("v" set-mark-command "mark")
-  ("o" exchange-point-and-mark "swap point/mark")
-  ("C-v" rectangle-mark-mode "rectangle mark")
-  ("d" delete-region "del" :color blue)
+  ("x" exchange-point-and-mark "swap point/mark")
+  ("m" set-mark-command "mark")
+  ("M" oht/mark-whole-line "mark whole line")
+  ("C-m" rectangle-mark-mode "rectangle mark")
   ("y" kill-ring-save "yank" :color blue)
-  ("/" swiper-isearch "search forward")
-  ("?" swiper-isearch-backward "search backward")
+  ("s" swiper-isearch "search forward" :color blue)
+  ("r" swiper-isearch-backward "search backward" :color blue)
   ("C-l" recenter-top-bottom "cycle recenter")
   ("q" nil "cancel" :color blue))
 
@@ -770,8 +770,8 @@ I use =⌘-\= as the leader for mode-spesific bindings.
 *** Hydras
 
 #+begin_src emacs-lisp
-(global-set-key (kbd "s-j") 'hydra-vim/body)
-(global-set-key (kbd "s-k") 'hydra-windows/body)
+(global-set-key (kbd "s-<escape>") 'hydra-modal/body)
+(global-set-key (kbd "s-w") 'hydra-windows/body)
 (global-set-key (kbd "s-;") 'hydra-flyspell/body)
 (global-set-key (kbd "s-|") 'hydra-manipulate/body)
 #+end_src

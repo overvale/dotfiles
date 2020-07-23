@@ -265,6 +265,12 @@ Hide all minor-modes behind a menu in the modeline.
                 ((org-agenda-overriding-header "Tasks you should do NOW:")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                  ))))
+        ("i" "Important, today"
+         ((agenda "d" ((org-agenda-span 'day)))
+          (tags "-buy-read-PRIORITY={C}/TODO"
+                ((org-agenda-overriding-header "Important Tasks")
+                (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
+                )))
         ("c" "Complete - Agenda and ALL todos"
          ((agenda "")
           (todo "TODO|WAIT"
@@ -518,6 +524,59 @@ then which-key should suffice.
 
 #+begin_src emacs-lisp
 
+(define-key org-agenda-mode-map
+    "v" 'hydra-org-agenda-view/body)
+
+(defun org-agenda-cts ()
+  (let ((args (get-text-property
+               (min (1- (point-max)) (point))
+               'org-last-args)))
+    (nth 2 args)))
+
+(defhydra hydra-org-agenda-view (:hint none)
+  "
+_d_: ?d? day        _g_: time grid=?g? _a_: arch-trees
+_w_: ?w? week       _[_: inactive      _A_: arch-files
+_t_: ?t? fortnight  _f_: follow=?f?    _r_: report=?r?
+_m_: ?m? month      _e_: entry =?e?    _D_: diary=?D?
+_y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
+  ("SPC" org-agenda-reset-view)
+  ("d" org-agenda-day-view
+   (if (eq 'day (org-agenda-cts))
+       "[x]" "[ ]"))
+  ("w" org-agenda-week-view
+   (if (eq 'week (org-agenda-cts))
+           "[x]" "[ ]"))
+  ("t" org-agenda-fortnight-view
+       (if (eq 'fortnight (org-agenda-cts))
+           "[x]" "[ ]"))
+  ("m" org-agenda-month-view
+       (if (eq 'month (org-agenda-cts)) "[x]" "[ ]"))
+  ("y" org-agenda-year-view
+       (if (eq 'year (org-agenda-cts)) "[x]" "[ ]"))
+  ("l" org-agenda-log-mode
+       (format "% -3S" org-agenda-show-log))
+  ("L" (org-agenda-log-mode '(4)))
+  ("c" (org-agenda-log-mode 'clockcheck))
+  ("f" org-agenda-follow-mode
+       (format "% -3S" org-agenda-follow-mode))
+  ("a" org-agenda-archives-mode)
+  ("A" (org-agenda-archives-mode 'files))
+  ("r" org-agenda-clockreport-mode
+       (format "% -3S" org-agenda-clockreport-mode))
+  ("e" org-agenda-entry-text-mode
+       (format "% -3S" org-agenda-entry-text-mode))
+  ("g" org-agenda-toggle-time-grid
+       (format "% -3S" org-agenda-use-time-grid))
+  ("D" org-agenda-toggle-diary
+       (format "% -3S" org-agenda-include-diary))
+  ("!" org-agenda-toggle-deadlines)
+  ("["
+   (let ((org-agenda-include-inactive-timestamps t))
+     (org-agenda-check-type t 'timeline 'agenda)
+     (org-agenda-redo)))
+  ("q" (message "Abort") :exit t))
+
 ;; Transpose
 ;; There are so many ways to transpose in Emacs, why not get help?
 (defhydra hydra-transpose (:color red)
@@ -644,7 +703,33 @@ _~_: modified
 
 #+end_src
 
+** Make a Hydra for org agenda filtering
+
+#+begin_src emacs-lisp
+
+(defhydra hydra-org-agenda-filter (:color red)
+  "Filter org-agenda"
+  ("/" org-agenda-filter "filter")
+  ("c" org-agenda-filter-by-category "category")
+  ("r" org-agenda-filter-by-regexp "regexp")
+  ("t" org-agenda-filter-by-tag "tag")
+  ("h" org-agenda-filter-by-top-headlines "headlines")
+  ("e" org-agenda-filter-by-effort "effort")
+  ("|" org-agenda-filter-remove-all "remove")
+  ("q" nil "cancel" :color blue))
+
+(define-key org-agenda-mode-map
+    "." 'hydra-org-agenda-filter/body)
+
+#+end_src
+
 * Keybindings
+
+An idea...
+- Rather than follow macOS defaults, group particular commands under =s-<key>= combinations that made sense in an Emacs-y way.
+- Group all window commands under =s-w=.
+- Group all buffer commands under =s-b=.
+- Group all org-commands under =s-o=.
 
 ***  Keybindings Philosophy
 

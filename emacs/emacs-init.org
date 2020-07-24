@@ -666,6 +666,7 @@ _~_: modified
   ("m" set-mark-command "mark")
   ("M" oht/mark-whole-line "mark whole line")
   ("C-m" rectangle-mark-mode "rectangle mark")
+  ("<DEL>" kill-region "kill region" :color blue)
   ("y" kill-ring-save "yank" :color blue)
   ("s" swiper-isearch "search forward" :color blue)
   ("r" swiper-isearch-backward "search backward" :color blue)
@@ -681,17 +682,21 @@ _~_: modified
          (split-window-right)
          (windmove-right) )"Vertical Split")
   ("s" (lambda ()
-  (interactive)
-  (split-window-below)
-  (windmove-down)) "Split, Horizonal")
+         (interactive)
+         (split-window-below)
+         (windmove-down)) "Split, Horizonal")
   ("o" delete-other-windows "Only This Window" :color blue)
   ("k" delete-window "Delete Window")
   ("r" oht/toggle-window-split "Rotate Window Split")
   ("b" balance-windows "Balance")
-  ("<up>" enlarge-window "Bigger VERT")
-  ("<down>" shrink-window "Smaller VERT")
-  ("=" enlarge-window-horizontally "Bigger HORZ")
-  ("-" shrink-window-horizontally "Smaler HORZ")
+  ("[" shrink-window "Smaller VERT")
+  ("]" enlarge-window "Bigger VERT")
+  ("{" shrink-window-horizontally "Smaler HORZ")
+  ("}" enlarge-window-horizontally "Bigger HORZ")
+  ("<up>" windmove-up "Move UP")
+  ("<down>" windmove-down "Move DOWN")
+  ("<left>" windmove-left "Move LEFT")
+  ("<right>" windmove-right "Move RIGHT")
   ("q" nil "cancel" :color blue))
 
 ;; Spelling
@@ -733,8 +738,8 @@ _~_: modified
   ("|" org-agenda-filter-remove-all "remove")
   ("q" nil "cancel" :color blue))
 
-(define-key org-agenda-mode-map
-    "." 'hydra-org-agenda-filter/body)
+;; (define-key org-agenda-mode-map
+;;             "." 'hydra-org-agenda-filter/body)
 
 #+end_src
 
@@ -778,7 +783,7 @@ An idea...
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-<backspace>") 'oht/kill-line-backward)
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
-(global-set-key (kbd "s-w") 'oht/kill-this-buffer)
+;; (global-set-key (kbd "s-w") 'oht/kill-this-buffer)
 (global-set-key (kbd "s-/") 'comment-line)
 (global-set-key (kbd "s-<up>") (kbd "M-<"))
 (global-set-key (kbd "s-<down>") (kbd "M->"))
@@ -808,12 +813,12 @@ An idea...
 ;; No reason not to use command-u for this
 (global-set-key (kbd "s-u") 'universal-argument)
 (global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "M-o") 'counsel-outline)
 (global-set-key (kbd "M-t") 'hydra-transpose/body)
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
-(global-set-key (kbd "M-<tab>") 'other-window)
+(global-set-key (kbd "M-o") 'other-window)
+(global-set-key (kbd "M-z") 'zap-up-to-char) ;the default is 'zap-to-char
 #+end_src
 
 This cycles the spacing around point between:
@@ -838,8 +843,15 @@ This cycles the spacing around point between:
 *** Global Leader Bindings
 
 #+begin_src emacs-lisp
+(global-set-key (kbd "s-' a") 'counsel-ag)
 (global-set-key (kbd "s-' c") 'org-capture)
-(global-set-key (kbd "s-' o") 'oht/counsel-find-org)
+(global-set-key (kbd "s-' d") 'counsel-descbinds)
+(global-set-key (kbd "s-' f") 'oht/counsel-find-org)
+(global-set-key (kbd "s-' h") 'hl-line-mode)
+(global-set-key (kbd "s-' l") 'oht/toggle-line-numbers)
+(global-set-key (kbd "s-' o") 'counsel-outline)
+(global-set-key (kbd "s-' s-o") 'counsel-org-goto-all)
+(global-set-key (kbd "s-' w") 'oht/toggle-whitespace)
 #+end_src
 
 *** Mode Spesific Bindings
@@ -852,7 +864,6 @@ I use =⌘-\= as the leader for mode-spesific bindings.
   (define-key org-mode-map (kbd "s-\\ .") 'org-time-stamp)
   (define-key org-mode-map (kbd "s-\\ t") 'org-todo)
   (define-key org-mode-map (kbd "s-\\ s-t") 'counsel-org-tag)
-  (define-key org-mode-map (kbd "s-\\ g") 'counsel-org-goto-all)
   (define-key org-mode-map (kbd "s-\\ n") 'org-narrow-to-subtree)
   (define-key org-mode-map (kbd "s-\\ w") 'widen)
   (define-key org-mode-map (kbd "s-\\ s") 'org-search-view)

@@ -4,3 +4,4 @@ vim/custom-dictionary.*
 plug.vim
 plug.vim.old
 bin/textplay
+emacs/emacs-init.el

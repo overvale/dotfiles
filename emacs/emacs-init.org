@@ -279,9 +279,8 @@ Hide all minor-modes behind a menu in the modeline.
                 ((org-agenda-overriding-header "Tasks you should do NOW:")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                  ))))
-        ("i" "Important, today"
-         ((agenda "d" ((org-agenda-span 'day)))
-          (tags "-buy-read-PRIORITY={C}/TODO"
+        ("i" "Important Tasks"
+         ((tags "-buy-read-PRIORITY={C}/TODO"
                 ((org-agenda-overriding-header "Important Tasks")
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
                 )))

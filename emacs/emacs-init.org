@@ -527,6 +527,13 @@ The below code is +stolen+ adapted from /prot/.
   )
 (add-hook 'emacs-lisp-mode 'oht/emacs-lisp-mode)
 
+;; (defun oht/fountain-mode-hook ()
+;;   (fountain-add-continued-dialog nil)
+;;   (fountain-highlight-elements (quote (section-heading)))
+;;   )
+;; (add-hook 'fountain-mode 'oht/fountain-mode-hook)
+
+
 #+end_src
 
 * Hydra

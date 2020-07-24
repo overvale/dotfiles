@@ -158,19 +158,22 @@ Here the fonts are setup in a function so I can change them all in once step by 
 
 (defun oht/set-font ()
 (set-face-attribute 'default nil
-		     :family "Hack" :height 130 :weight 'normal)
+		     :family "SF Mono" :height 130 :weight 'normal)
 (set-face-attribute 'fixed-pitch nil
                      :family "Iosevka Fixed SS08" :height 140 :weight 'normal)
 (set-face-attribute 'variable-pitch nil
 	             :family "IBM Plex Serif" :height 150 :weight 'normal))
 
+(set-face-attribute 'bold nil :weight 'semibold)
 (set-default 'cursor-type 'bar)
 
 ;; the bold settings here do not seem to effect variable-pitch settings
-(setq modus-operandi-theme-bold-constructs nil
-      modus-vivendi-theme-bold-constructs nil
-      modus-operandi-theme-slanted-constructs t
-      modus-vivendi-theme-slanted-constructs t)
+(setq modus-operandi-theme-slanted-constructs t
+      modus-vivendi-theme-slanted-constructs t
+      modus-operandi-theme-rainbow-headings nil
+      modus-operandi-theme-distinct-org-blocks t
+      modus-operandi-theme-org-blocks 'rainbow
+      )
 
 (load-theme 'modus-operandi t)
 (oht/set-font)
@@ -181,6 +184,11 @@ Here the fonts are setup in a function so I can change them all in once step by 
 
 ;; Underline line at descent position, not baseline position
 (setq x-underline-at-descent-line t)
+
+;; size of frame at startup
+(setq initial-frame-alist '((height . 60)(width . 80)))
+;; size of new frames
+(setq default-frame-alist '((height . 60)(width . 80)))
 
 #+end_src
 
@@ -327,7 +335,8 @@ Hide all minor-modes behind a menu in the modeline.
   (flyspell-mode t)
   (setq-local line-spacing 0.15)
   ;; define width of buffer margins
-  (setq-default left-margin-width 1 right-margin-width 1)
+  (setq-local left-margin-width 1)
+  (setq-local right-margin-width 1)
   ;;(set-window-buffer nil (current-buffer)) ; Use them now.
   )
 

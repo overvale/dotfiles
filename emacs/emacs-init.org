@@ -110,7 +110,8 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 (setq show-paren-delay 0)
 (delete-selection-mode t)
 (global-auto-revert-mode t)
-;; (desktop-save-mode 1) ;sessions
+(desktop-save-mode 1) ;sessions
+(save-place-mode 1) ;reopens the file to the same spot you left
 (recentf-mode 1) ;enables "Open Recent..." in file menu
 ;;(setq-default left-fringe-width nil)
 (setq-default indicate-empty-lines t)
@@ -136,7 +137,6 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 (setq ispell-program-name "/usr/local/bin/aspell")
 (setq ispell-list-command "list")
 
-
 ;;; Packages
 ;;  --------------------------------------------------------
 
@@ -144,7 +144,7 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 (which-key-mode t)              ;hints
 (global-undo-tree-mode t)       ;activate undo-tree everywhere
 (require 'expand-region)        ;lovely plugin
-;;(smart-mode-line -1)
+(require 'sdcv-mode)            ;dictionary lookup, requires sdcv
 
 ;; counsel settings
 (counsel-mode t)
@@ -232,6 +232,16 @@ Hide all minor-modes behind a menu in the modeline.
 #+begin_src emacs-lisp
 (minions-mode t)
 #+end_src
+
+* Packages
+
+You can ensure packages are installed with something like:
+
+#+begin_example
+(unless (package-installed-p 'super-save)
+  (package-refresh-contents)
+  (package-install 'super-save))
+#+end_example
 
 * Org
 

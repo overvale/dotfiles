@@ -608,15 +608,19 @@ T - tag prefix
 
 (define-key dired-mode-map "." 'hydra-dired/body)
 
-(define-key org-agenda-mode-map
-  "v" 'hydra-org-agenda-view/body)
+;; You have to wait until org-agenda loads because org itself
+;; doesn't know what 'org-agenda-mode-map' is.
+(eval-after-load "org-agenda"
+'(progn
+	(define-key org-agenda-mode-map
+		"v" 'hydra-org-agenda-view/body)
+		))
 
 (defun org-agenda-cts ()
   (let ((args (get-text-property
                (min (1- (point-max)) (point))
                'org-last-args)))
     (nth 2 args)))
-
 (defhydra hydra-org-agenda-view (:hint none)
   "
 _d_: ?d? day        _g_: time grid=?g? _a_: arch-trees

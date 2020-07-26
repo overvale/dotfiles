@@ -782,10 +782,32 @@ _~_: modified
   (":" flyspell-correct-word-before-point "Correct")
   ("q" nil "cancel" :color blue))
 
+(defun oht/shell-command-on-region ()
+  "Like shell-command-on-region but replaces region."
+  (interactive)
+  (if (use-region-p)
+      (shell-command-on-region
+       (region-beginning)
+       (region-end)
+       (read-from-minibuffer "Shell command on region (replace): " nil nil nil 'shell-command-history)
+       t)))
+
+(defun oht/shell-command-on-region-replace (start end command)
+  "Run shell-command-on-region interactivly replacing the region in place"
+  (interactive (let (string)
+                 (unless (mark)
+                   (error "The mark is not set now, so there is no region"))
+                 (setq string (read-from-minibuffer "Shell command on region: "
+                                                    nil nil nil
+                                                    'shell-command-history))
+                 (list (region-beginning) (region-end)
+                       string)))
+  (shell-command-on-region start end command t t))
+
 ;; Text Manipulation
 (defhydra hydra-manipulate (:color red)
   "Manipulate Text"
-  ("|" shell-command-on-region "Pipe to shell" :color blue)
+  ("|" oht/shell-command-on-region-replace "Pipe to shell" :color blue)
   ("j" oht/join-line-next "Join line with next")
   ("d" downcase-region "Downcase")
   ("u" upcase-region "Upcase")

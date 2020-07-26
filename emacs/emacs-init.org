@@ -484,6 +484,15 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
   (join-line -1))
 
+(defun oht/org-hide-emphasis-markers ()
+  "Toggle whether or not the emphasis markers ~, =, *, _ are displayed"
+  (interactive)
+  (if (bound-and-true-p org-hide-emphasis-markers)
+      (setq-local org-hide-emphasis-markers nil)
+    (setq-local org-hide-emphasis-markers t))
+  (font-lock-fontify-buffer)
+  )
+
 #+end_src
 
 * Custom Minor Modes
@@ -930,6 +939,7 @@ I use =⌘-\= as the leader for mode-spesific bindings.
   (define-key org-mode-map (kbd "s-\\ <") 'org-insert-structure-template)
   (define-key org-mode-map (kbd "s-\\ l") 'org-store-link)
   (define-key org-mode-map (kbd "s-\\ i") 'org-insert-last-stored-link)
+  (define-key org-mode-map (kbd "s-\\ m") 'oht/org-hide-emphasis-markers)
   )
 
 ;; buffer menu bindings

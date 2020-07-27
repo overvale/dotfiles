@@ -937,7 +937,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 
 ***  Keybindings Philosophy
 
-1. Standard mac shortcuts should be supported wherever possible. And since mac inherits a lot of emacs keybindings anyway (and I use them outside emacs) I can leverage a lot of muscle memory. Additionally, I've largely internalized the =readline= keybindings (since I worked in =vim= for a long time) and so =^w,= =^u=, and =^h= are second-nature.
+1. Standard mac shortcuts should be supported wherever possible. And since mac inherits a lot of emacs keybindings anyway (and I use them outside emacs) I can leverage a lot of muscle memory. Additionally, I've largely internalized the =readline= keybindings (since I worked in =vim= for a long time) and so =^w=, =^u=, and =^h= are second-nature.
 
 2. Enhance Emacs built-in bindings with improved alternatives. For example, I've replaced =^s= with =swiper-isearch=. So the binding still does the same thing, just better.
 
@@ -1009,10 +1009,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 (global-set-key (kbd "M-z") 'zap-up-to-char) ;the default is 'zap-to-char
 #+end_src
 
-This cycles the spacing around point between:
-- A single space,
-- No spaces, or
-- the original spacing.
+This cycles the spacing around point between a single space, no spaces, or the original spacing:
 
 #+begin_src emacs-lisp
 (global-set-key (kbd "M-SPC") 'cycle-spacing)
@@ -1030,9 +1027,15 @@ This cycles the spacing around point between:
 ;; vim has the wonderful . command, and emacs has repeat
 ;; s-y is my keybinding because excel has (a version of) repeat bound to that
 (bind-key "s-y" 'repeat)
+(global-set-key (kbd "s-j") 'hydra-modal/body)
+(global-set-key (kbd "s-w") 'hydra-windows/body)
+(global-set-key (kbd "s-;") 'hydra-flyspell/body)
+(global-set-key (kbd "s-|") 'hydra-manipulate/body)
 #+end_src
 
 *** Global Leader Bindings
+
+I use =⌘-'= as the my leader.
 
 #+begin_src emacs-lisp
 (global-set-key (kbd "s-' a") 'counsel-ag)
@@ -1070,13 +1073,3 @@ I use =⌘-\= as the leader for mode-spesific bindings.
 ;; buffer menu bindings
 (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
 #+end_src
-
-*** Hydras
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "s-j") 'hydra-modal/body)
-(global-set-key (kbd "s-w") 'hydra-windows/body)
-(global-set-key (kbd "s-;") 'hydra-flyspell/body)
-(global-set-key (kbd "s-|") 'hydra-manipulate/body)
-#+end_src
-

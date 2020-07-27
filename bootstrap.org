@@ -114,7 +114,13 @@ Only if you must (as they violate philosophy rule 4):
 
 - Copy files from old machine / backup (thunderbolt bridge is nice if you have the cable).
 - Copy fonts from backup.
-- Install [[http://git.io/textplay][textplay]] with =cd ~/dev/textplay && make install=.
+- Install [[http://git.io/textplay][textplay]] with =cd ~/opt/textplay && make install=.
+
+** Home Dir Layout
+
+- =~/dot= - my dotfiles
+- =~/lib= - stuff that programs and scripts will need access to
+- =~/opt= - basically a place for software installed via a =git clone= or personal projects along those same lines.
 
 ** Symlinks
     
@@ -132,14 +138,8 @@ ln -s ~/dot/zsh/zshrc ~/.zshrc
 ln -s ~/dot/zsh/zshenv ~/.zshenv
 #+end_src
 
-- Rewrite all paths pointing to repos in =~/dev/git/=
+- Rewrite all paths pointing to repos in =~/lib/git/=
 - Open vim, emacs, zsh, etc. and verify everything is functioning correctly (plugins and whatnot).
-
-** Home Dir Layout
-
-- =~/dot= - my dotfiles
-- =~/lib= - stuff that programs and scripts will need access to
-- =~/opt= - basically a place for software installed via a =git clone= or personal projects along those same lines.
 
 ** Dictionaries
 

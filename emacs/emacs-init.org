@@ -1,9 +1,9 @@
 #+TITLE: Emacs Settings & Configuration
 #+AUTHOR: Oliver Taylor
 
-* Introduction
+* Hello!
 
-/Welcome!/ Sorry, but I'm not writing this for you, I'm writing this for me --- well, /future/-me. I don't want to forget how this configuration file works, or why I did things this way, so I write it in this format ([[https://en.wikipedia.org/wiki/Literate_programming][literate programming]]) so I can read it later and understand what the hell /past/-me was thinking.
+/Welcome!/ I'm sorry, but I'm not writing this for you, I'm writing this for me---well, /future/-me. I don't want to forget how this configuration file works, or why I did things this way, so I write it in [[https://en.wikipedia.org/wiki/Literate_programming][this format]] so I can read it later and understand what the hell /past/-me was thinking.
 
 ** What is This?
 
@@ -18,13 +18,13 @@ This file is called =emacs-init.org= and to make it work, you need the following
 
 ** My Emacs Philosophy
 
-1. Using Emacs makes no sense unless you customize it extensively. If you're not interested in, or don't want to bother with, customizing Emacs to the point where it molds around what you expect of it (rather than requiring /you to mold to it/) then save yourself the trouble and use another editor, there are a lot of great ones. I like BBEdit, Vim, and Acme.
+1. Using Emacs makes no sense unless you customize it extensively. If you're not interested in, or don't want to bother with, customizing Emacs to the point where it molds around what you expect of it (rather than requiring /you to mold to it/) then save yourself the trouble and use another editor, there are a lot of great ones.
 
 2. Accept that you will never remember Emacs keybindings, and that even if you do it will injure your pinky, and don't even bother trying. That's not a down-side, it means you don't have to learn anything new (!), just learn to make Emacs work the way you expect it to. That sounds like it might be difficult, but once you get the hang of customizing Emacs it becomes easy.
 
 3. There's a few things you should learn to use in order to learn about Emacs's capabilities. Poke around =C-h ?= for Help. Use =counsel-M-x= to explore. Use =which-key= to give you hints for difficult to remember shortcuts.
 
-4. Use =hydra= to save keystrokes (and ease memory) by setting up what are basically "mini-modes". I don't know how I'd function without the one I have setup for window management.
+4. Use =hydra= to set up what are basically "mini-modes". I don't know how I'd function without the one I have setup for window management. And the vim-ish hydra below is very useful indeed. As the saying goes "the best editor is not vim or emacs, but both".
 
 ** Inspiration and References
 
@@ -37,7 +37,9 @@ Anyone learning vim, emacs, zsh, bash, or something similar, spends a lot of tim
 
 For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
 
-* General Setup
+* Settings
+
+** Setup
 
 Set encoding to be UTF-8 everywhere.
 
@@ -56,10 +58,17 @@ When customizing Emacs interactively (ie: not in this document or =init.el=) Ema
   (load custom-file :noerror))
 #+end_src
 
+This tells emacs how I've laid-out by emacs directory.
+
+#+begin_src emacs-lisp
+(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
+(setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
+#+end_src
+
 The below is probably the biggest reason why I managed get over the intimidation of using Emacs in those first few days. Here's what it does:
 
-- Makes the command keys act as =super=. =super= keybindings are basically not used by Emacs so they're a safe playground for assigning your own keybindings. I setup =s-q= for quit,  =s-s= for save, =s-z= for undo, =s-o= for open file, basically, all the standard Mac shortcuts. Once I did that Emacs became very usable immediately and that ease-of-use made learning Emacs a lot less painful.
-- Makes the right option key act as =meta= and the makes the left option key act as =alt=. This lets me use =meta= keybindings /and/ type characters that require =option/alt=. If you don't do that you can't insert characters like: £¢∞§¶•≠.
+1. Makes the command keys act as =super=. =super= keybindings are basically not used by Emacs so they're a safe playground for assigning your own keybindings. I setup =s-q= for quit,  =s-s= for save, =s-z= for undo, =s-o= for open file, basically, all the standard Mac shortcuts. Once I did that Emacs became very usable immediately and that ease-of-use made learning Emacs a lot less painful.
+2. Makes the right option key act as =meta= and the makes the left option key act as =alt=. This lets me use =meta= keybindings /and/ type characters that require =option/alt=. If you don't do that you can't insert characters like: £¢∞§¶•≠. Which is, I guess, only sometimes useful, but at least this way I /can/.
 
 #+begin_src emacs-lisp
 ;; Command to super
@@ -73,7 +82,7 @@ The below is probably the biggest reason why I managed get over the intimidation
 (setq mac-right-option-modifier 'nil)
 #+end_src
 
-Due to historical reasons, emacs thinks =C-i= is the same as =TAB= and =C-m= is the same as =RETURN=. The below
+Due to historical reasons, emacs thinks =C-i= is the same as =TAB= and =C-m= is the same as =RETURN=. The below undoes that assumption.
 
 #+begin_src emacs-lisp
 (define-key input-decode-map [?\C-i] [C-i])
@@ -89,9 +98,9 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 (setq uniquify-buffer-name-style 'forward)
 #+end_src
 
+This tells emacs to startup with a scratch buffer, with custom content, and to do it quietly.
 
 #+begin_src emacs-lisp
-;; STARTUP PREFERENCES
 (setq initial-scratch-message
       (concat
        ";; This buffer is for text that is not saved, and for Lisp evaluation.\n"
@@ -100,26 +109,37 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 (setq inhibit-splash-screen t
       inhibit-startup-message t
       inhibit-startup-echo-area-message t)
+#+end_src
 
-;;; General Settings
-;;  --------------------------------------------------------
+** General
 
-(menu-bar-mode 1) ;this effects full-screen
+#+begin_src emacs-lisp
+;; The menu-bar-mode must be set to 1 to integrate well with macOS
+(menu-bar-mode 1) 
 (tool-bar-mode -1)
-(show-paren-mode t)
+(show-paren-mode t) ;highlight parens
 (setq show-paren-delay 0)
 (delete-selection-mode t)
 (global-auto-revert-mode t)
 (desktop-save-mode 1) ;sessions
 (save-place-mode 1) ;reopens the file to the same spot you left
 (recentf-mode 1) ;enables "Open Recent..." in file menu
-;;(setq-default left-fringe-width nil)
-(setq-default indicate-empty-lines t)
-(setq-default indent-tabs-mode nil)
 (setq visible-bell t)
 (setq tab-width 4)
+
+;; I type one space after sentences, because I'm not a monster.
 (setq sentence-end-double-space nil)
 
+(setq ispell-program-name "/usr/local/bin/aspell")
+(customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
+(setq ispell-list-command "list")
+#+end_src
+
+** Visual Line Mode
+
+Visual line mode is super helpful, but out-of-the-box it behaves inconsistently with the rest of macOS, so this includes code to make it the same.
+
+#+begin_src emacs-lisp
 ;; WORD WRAP
 (global-visual-line-mode t)
 ;; with visual-line-mode set,
@@ -130,41 +150,49 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 (global-set-key (kbd "C-e") 'end-of-line)
 (global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
 (global-set-key (kbd "s-<right>") 'end-of-visual-line)
+#+end_src
 
-;; Tell Emacs to use paths/apps unique to my setup
-(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
-(setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
-(setq ispell-program-name "/usr/local/bin/aspell")
-(setq ispell-list-command "list")
+** Enable Packages, and Their Basic Settings
 
-;;; Packages
-;;  --------------------------------------------------------
-
-;; Activate the modes/packages I like to use
+#+begin_src emacs-lisp
 (which-key-mode t)              ;hints
 (global-undo-tree-mode t)       ;activate undo-tree everywhere
 (require 'expand-region)        ;lovely plugin
-(require 'sdcv-mode)            ;dictionary lookup, requires sdcv
+
+(add-to-list 'load-path (expand-file-name "lisp/emacs-sdcv" user-emacs-directory))
+(require 'sdcv-mode)            ;dictionary lookup, requires sdcv on $PATH
 
 ;; counsel settings
 (counsel-mode t)
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 (setq ivy-count-format "(%d/%d) ")
-;;(setq ivy-initial-inputs-alist nil) ;removes ^ from initial input
+;; by default ivy starts up with ^ in the input area this means you
+;; have to know the first letter of what you're looking for. You can
+;; set this to nil to change that.
+;; (setq ivy-initial-inputs-alist nil)
 
 ;; Hide details in dired mode
 (add-hook 'dired-mode-hook
           (lambda ()
             (dired-hide-details-mode 1)))
+
+(require 'bind-key)
 #+end_src
+
+You can ensure packages are installed with something like this (no need for use-package!):
+
+#+begin_example
+(unless (package-installed-p 'super-save)
+  (package-refresh-contents)
+  (package-install 'super-save))
+#+end_example
 
 * Appearance
 
 Here the fonts are setup in a function so I can change them all in once step by calling =oht/set-font=.
 
 #+begin_src emacs-lisp
-
 (defun oht/set-font ()
 (set-face-attribute 'default nil
 		     :family "SF Mono" :height 130 :weight 'normal)
@@ -173,8 +201,9 @@ Here the fonts are setup in a function so I can change them all in once step by 
 (set-face-attribute 'variable-pitch nil
 	             :family "IBM Plex Serif" :height 150 :weight 'normal))
 
-(set-face-attribute 'bold nil :weight 'semibold)
 (set-default 'cursor-type 'bar)
+;; Underline line at descent position, not baseline position
+(setq x-underline-at-descent-line t)
 
 ;; the bold settings here do not seem to effect variable-pitch settings
 (setq modus-operandi-theme-slanted-constructs t
@@ -191,17 +220,21 @@ Here the fonts are setup in a function so I can change them all in once step by 
   "Clear existing theme settings instead of layering them"
   (mapc #'disable-theme custom-enabled-themes))
 
-;; Underline line at descent position, not baseline position
-(setq x-underline-at-descent-line t)
-
 ;; size of frame at startup
 (setq initial-frame-alist '((height . 60)(width . 80)))
 ;; size of new frames
 (setq default-frame-alist '((height . 60)(width . 80)))
-
 #+end_src
 
-* ModeLine
+** Minions
+
+Hide all minor-modes behind a menu in the modeline.
+
+#+begin_src emacs-lisp
+(minions-mode t)
+#+end_src
+
+** ModeLine
 
 This currently replicates the default mode-line. At some point in the future I may want to customize it.
 
@@ -225,34 +258,23 @@ This currently replicates the default mode-line. At some point in the future I m
                 mode-line-end-spaces))
 #+end_src
 
-** Minions
-
-Hide all minor-modes behind a menu in the modeline.
-
-#+begin_src emacs-lisp
-(minions-mode t)
-#+end_src
-
-* Packages
-
-You can ensure packages are installed with something like:
-
-#+begin_example
-(unless (package-installed-p 'super-save)
-  (package-refresh-contents)
-  (package-install 'super-save))
-#+end_example
-
 * Org
 
-#+begin_src emacs-lisp
+** General
 
+#+begin_src emacs-lisp
 ;; fix the look of source code blocks
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
 (setq org-edit-src-content-indentation 0)
 
-;; Hide org-markup
+;; do not indent text below a headline
+(setq org-adapt-indentation nil)
+
+(setq org-hide-leading-stars 't)
+
+;; by default, hide org-markup
+;; I have a toggle for this defined in functions
 (setq org-hide-emphasis-markers t)
 
 ;; Style quote and verse blocks
@@ -286,9 +308,26 @@ You can ensure packages are installed with something like:
 (setq org-enforce-todo-dependencies t)
 (setq org-enforce-todo-checkbox-dependencies t)
 
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("f" . "src fountain"))
+
+;; this sets "refile targets" to any headline, level 1-3, in you agenda files.
+(setq org-refile-targets
+      '((org-agenda-files :maxlevel . 3)))
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+#+end_src
+
+** Org Agenda & TODOs
+
+#+begin_src emacs-lisp
 (setq org-todo-keywords
       '((sequence "TODO(t)" "|" "DONE(d)")
         (sequence "WAIT(w)" "|" "CANCELLED(c)")))
+
+(setq org-agenda-files (quote (
+                               "~/Documents/org-files/"
+                               "~/Documents/writing/kindred/compendium.org"
+                               )))
 
 (setq org-agenda-custom-commands
       '(
@@ -299,7 +338,7 @@ You can ensure packages are installed with something like:
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                  ))))
         ("i" "Important Tasks"
-         ((tags "-buy-read-PRIORITY={C}/TODO"
+         ((tags "-consume-PRIORITY={C}/TODO"
                 ((org-agenda-overriding-header "Important Tasks")
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
                 )))
@@ -311,16 +350,6 @@ You can ensure packages are installed with something like:
                  ))
           ))
         ))
-
-(setq org-agenda-files (quote (
-                               "~/Documents/org-files/"
-                               "~/Documents/writing/kindred/compendium.org"
-                               )))
-
-;; this sets "refile targets" to any headline, level 1-3, in you agenda files.
-(setq org-refile-targets
-      '((org-agenda-files :maxlevel . 3)))
-(setq org-refile-allow-creating-parent-nodes 'confirm)
 
 (setq org-capture-templates
       '(("p" "Personal Inbox" entry
@@ -336,16 +365,27 @@ You can ensure packages are installed with something like:
          (file "~/Documents/org-files/ing_log.org")
          "* %^{Log type|Meeting: |Call: } %? %t\n\n")
         ))
+#+end_src
 
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("f" . "src fountain"))
+** Tags
 
+I find tags to be of very limited utility, but it is useful to tag truly unimportant things to that you can match filter them out of your agenda view. You can group those tags so that you only have to match against the group name.
+
+#+begin_src emacs-lisp
+(setq org-tag-alist '(
+		      (:startgroup)
+		      ("consume" . ?c)
+		      (:grouptags)
+		      ("read" . ?r) ("buy" . ?b)
+		      (:endgroup)
+		      ;; below, ungrouped
+		      ("errand" . ?e)
+		      ))
 #+end_src
 
 * Functions
 
 #+begin_src emacs-lisp
-
 (defun oht/writing-mode ()
   "Enable variable-pitch, flyspell, and increased line-spacing and margins."
   (interactive)
@@ -512,9 +552,22 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (font-lock-fontify-buffer)
   )
 
+(defun oht/shell-command-on-region-replace (start end command)
+  "Run shell-command-on-region interactivly replacing the region in place"
+  (interactive (let (string)
+                 (unless (mark)
+                   (error "The mark is not set now, so there is no region"))
+                 (setq string (read-from-minibuffer "Shell command on region: "
+                                                    nil nil nil
+                                                    'shell-command-history))
+                 (list (region-beginning) (region-end)
+                       string)))
+  (shell-command-on-region start end command t t))
 #+end_src
 
 * Custom Minor Modes
+
+/For future reference.../
 
 You might want to think about creating a minor-mode you can call when switching to a new mode.
 
@@ -566,13 +619,45 @@ The below code is +stolen+ adapted from /prot/.
 
 * Hydra
 
-Hydras should be reserved for mini-modes,
-ie: places where you'll want to call several functions in a row.
-If all you're doing is grouping similar commands
-then which-key should suffice.
+Hydras should be reserved for mini-modes, /ie/ places where you'll want to call several functions in a row. If all you're doing is grouping similar commands then which-key should suffice.
+
+** Text Manipulation
+
+These commands pretty much require a region.
 
 #+begin_src emacs-lisp
+(defhydra hydra-manipulate (:color red)
+  "Manipulate Text"
+  ("|" oht/shell-command-on-region-replace "Pipe to shell" :color blue)
+  ("j" oht/join-line-next "Join line with next")
+  ("d" downcase-region "Downcase")
+  ("u" upcase-region "Upcase")
+  ("c" capitalize-region "Capitalise")
+  ("s" sort-lines "Sort")
+  ("-" delete-duplicate-lines "Del Dupes")
+  ("q" nil "cancel" :color blue))
+#+end_src
 
+** Transpose
+There are so many ways to transpose in Emacs, why not get help?
+
+#+begin_src emacs-lisp
+(defhydra hydra-transpose (:color red)
+  "Transpose"
+  ("c" transpose-chars "characters")
+  ("w" transpose-words "words")
+  ("o" org-transpose-words "Org mode words")
+  ("l" transpose-lines "lines")
+  ("s" transpose-sentences "sentences")
+  ("e" org-transpose-elements "Org mode elements")
+  ("p" transpose-paragraphs "paragraphs")
+  ("t" org-table-transpose-table-at-point "Org mode table")
+  ("q" nil "cancel" :color blue))
+#+end_src
+
+** Dired
+
+#+begin_src emacs-lisp
 ;; dired commands
 (defhydra hydra-dired (:hint nil :color pink)
   "
@@ -626,7 +711,170 @@ T - tag prefix
   ("." nil :color blue))
 
 (define-key dired-mode-map "." 'hydra-dired/body)
+#+end_src
 
+** Buffer Menu
+
+#+begin_src emacs-lisp
+;; Buffer-menu
+(defhydra hydra-buffer-menu (:color pink
+                                    :hint nil)
+  "
+^Mark^             ^Unmark^           ^Actions^          ^Search
+^^^^^^^^-----------------------------------------------------------------
+_m_: mark          _u_: unmark        _x_: execute       _R_: re-isearch
+_s_: save          _U_: unmark up     _b_: bury          _I_: isearch
+_d_: delete        ^ ^                _g_: refresh       _O_: multi-occur
+_D_: delete up     ^ ^                _T_: files only: % -28`Buffer-menu-files-only
+_~_: modified
+"
+  ("m" Buffer-menu-mark)
+  ("u" Buffer-menu-unmark)
+  ("U" Buffer-menu-backup-unmark)
+  ("d" Buffer-menu-delete)
+  ("D" Buffer-menu-delete-backwards)
+  ("s" Buffer-menu-save)
+  ("~" Buffer-menu-not-modified)
+  ("x" Buffer-menu-execute)
+  ("b" Buffer-menu-bury)
+  ("g" revert-buffer)
+  ("T" Buffer-menu-toggle-files-only)
+  ("O" Buffer-menu-multi-occur :color blue)
+  ("I" Buffer-menu-isearch-buffers :color blue)
+  ("R" Buffer-menu-isearch-buffers-regexp :color blue)
+  ("c" nil "cancel")
+  ("v" Buffer-menu-select "select" :color blue)
+  ("o" Buffer-menu-other-window "other-window" :color blue)
+  ("q" quit-window "quit" :color blue))
+#+end_src
+
+** Window Management
+
+#+begin_src emacs-lisp
+(defhydra hydra-windows (:color red)
+  "Windows & Splits"
+  ("<tab>" other-window "Cycle active window")
+  ("v" (lambda ()
+         (interactive)
+         (split-window-right)
+         (windmove-right) )"Vertical Split")
+  ("s" (lambda ()
+         (interactive)
+         (split-window-below)
+         (windmove-down)) "Split, Horizonal")
+  ("o" delete-other-windows "Only This Window" :color blue)
+  ("k" delete-window "Delete Window")
+  ("r" oht/toggle-window-split "Rotate Window Split")
+  ("b" balance-windows "Balance")
+  ("[" shrink-window "Smaller VERT")
+  ("]" enlarge-window "Bigger VERT")
+  ("{" shrink-window-horizontally "Smaler HORZ")
+  ("}" enlarge-window-horizontally "Bigger HORZ")
+  ("<up>" windmove-up "Move UP")
+  ("<down>" windmove-down "Move DOWN")
+  ("<left>" windmove-left "Move LEFT")
+  ("<right>" windmove-right "Move RIGHT")
+  ("q" nil "cancel" :color blue))
+#+end_src
+
+** Vim-ish
+
+I don't really want to use =evil-mode=. It does too much for my taste. I much prefer this simpler solution.
+
+#+begin_src emacs-lisp
+;; VIM-POWER functions
+(defun hydra-modal/pre ()
+  "When activating the hydra-modal, change the cursor to a box"
+  (set-default 'cursor-type 'box))
+
+(defun hydra-modal/post ()
+  "When exiting the hydra-modal, change the cursor to a bar"
+  (set-default 'cursor-type 'bar))
+
+;; VIM-ISH HYDRA!
+;; Since the color is set to amaranth, only actions labeled :blue will quit
+(defhydra hydra-modal (:hint none :pre hydra-modal/pre :post hydra-modal/post :color amaranth)
+  "
+>>> VIM-ISH POWER ~ it's like vim, sort-of <<<"
+  ("h" backward-char "left")
+  ("l" forward-char "right")
+  ("j" next-line "next")
+  ("k" previous-line "previous")
+  ("C-h" backward-word "previous word")
+  ("C-l" forward-word "end of next word")
+  ("C-k" backward-paragraph "back paragraph")
+  ("C-j" forward-paragraph "forward paragraph")
+  ("J" oht/join-line-next "join")
+  ("u" beginning-of-visual-line "start of line")
+  ("p" end-of-visual-line "end of line")
+  ("P" yank "paste")
+  ("[" scroll-down-line "scroll line up")
+  ("]" scroll-up-line"scroll line down")
+  ("{" scroll-down-command "scroll up")
+  ("}" scroll-up-command "scroll down")
+  ("o" exchange-point-and-mark "swap point/mark")
+  ("v" set-mark-command "mark")
+  ("V" oht/mark-whole-line "mark whole line")
+  ("C-v" rectangle-mark-mode "rectangle mark")
+  ("<DEL>" kill-region "kill region")
+  ("d" kill-region "kill region")
+  ("x" delete-char "delete-char")
+  ("c" kill-region "change" :color blue)
+  ("z" recenter-top-bottom "cycle recenter")
+  ("s-z" undo-tree-undo "undo")
+  ("s-Z" undo-tree-redo "redo")
+  ("s-x" kill-region "cut")
+  ("s-c" kill-ring-save "copy")
+  ("s-v" yank "paste")
+  ("I" beginning-of-visual-line "append" :color blue)
+  ("a" forward-char "append" :color blue)
+  ("A" end-of-visual-line "append line" :color blue)
+  ("s-j" nil "cancel" :color blue)
+  ("i" nil "cancel" :color blue))
+#+end_src
+
+** Spelling
+
+#+begin_src emacs-lisp
+(defun hydra-flyspell/pre ()
+  ;;(flyspell-mode t)
+  )
+
+(defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
+  "Spelling"
+  (";" flyspell-goto-next-error "Next")
+  (":" flyspell-correct-word-before-point "Correct")
+  ("q" nil "cancel" :color blue))
+#+end_src
+
+** Org-Agenda
+
+#+begin_src emacs-lisp
+(defhydra hydra-org-agenda-filter (:color red)
+  "Filter org-agenda"
+  ("/" org-agenda-filter "filter")
+  ("c" org-agenda-filter-by-category "category")
+  ("r" org-agenda-filter-by-regexp "regexp")
+  ("t" org-agenda-filter-by-tag "tag")
+  ("h" org-agenda-filter-by-top-headlines "headlines")
+  ("e" org-agenda-filter-by-effort "effort")
+  ("|" org-agenda-filter-remove-all "remove")
+  ("q" nil "cancel" :color blue))
+
+;; You have to wait until org-agenda loads because org itself
+;; doesn't know what 'org-agenda-mode-map' is.
+(eval-after-load "org-agenda"
+'(progn
+	(define-key org-agenda-mode-map
+		"." 'hydra-org-agenda-filter/body)
+		))
+#+end_src
+
+** Org-Agenda View Toggle
+
+This is beautiful. It is taken from [[https://oremacs.com/2016/04/04/hydra-doc-syntax/][abo-abo]] (creator of hydra). It creates view toggles and displays the status of those toggles.
+
+#+begin_src emacs-lisp
 ;; You have to wait until org-agenda loads because org itself
 ;; doesn't know what 'org-agenda-mode-map' is.
 (eval-after-load "org-agenda"
@@ -683,212 +931,21 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
      (org-agenda-check-type t 'timeline 'agenda)
      (org-agenda-redo)))
   ("q" (message "Abort") :exit t))
-
-;; Transpose
-;; There are so many ways to transpose in Emacs, why not get help?
-(defhydra hydra-transpose (:color red)
-  "Transpose"
-  ("c" transpose-chars "characters")
-  ("w" transpose-words "words")
-  ("o" org-transpose-words "Org mode words")
-  ("l" transpose-lines "lines")
-  ("s" transpose-sentences "sentences")
-  ("e" org-transpose-elements "Org mode elements")
-  ("p" transpose-paragraphs "paragraphs")
-  ("t" org-table-transpose-table-at-point "Org mode table")
-  ("q" nil "cancel" :color blue))
-
-;; Buffer-menu
-(defhydra hydra-buffer-menu (:color pink
-                                    :hint nil)
-  "
-^Mark^             ^Unmark^           ^Actions^          ^Search
-^^^^^^^^-----------------------------------------------------------------
-_m_: mark          _u_: unmark        _x_: execute       _R_: re-isearch
-_s_: save          _U_: unmark up     _b_: bury          _I_: isearch
-_d_: delete        ^ ^                _g_: refresh       _O_: multi-occur
-_D_: delete up     ^ ^                _T_: files only: % -28`Buffer-menu-files-only
-_~_: modified
-"
-  ("m" Buffer-menu-mark)
-  ("u" Buffer-menu-unmark)
-  ("U" Buffer-menu-backup-unmark)
-  ("d" Buffer-menu-delete)
-  ("D" Buffer-menu-delete-backwards)
-  ("s" Buffer-menu-save)
-  ("~" Buffer-menu-not-modified)
-  ("x" Buffer-menu-execute)
-  ("b" Buffer-menu-bury)
-  ("g" revert-buffer)
-  ("T" Buffer-menu-toggle-files-only)
-  ("O" Buffer-menu-multi-occur :color blue)
-  ("I" Buffer-menu-isearch-buffers :color blue)
-  ("R" Buffer-menu-isearch-buffers-regexp :color blue)
-  ("c" nil "cancel")
-  ("v" Buffer-menu-select "select" :color blue)
-  ("o" Buffer-menu-other-window "other-window" :color blue)
-  ("q" quit-window "quit" :color blue))
-
-;; VIM-POWER functions
-(defun hydra-modal/pre ()
-  "When activating the hydra-modal, change the cursor to a box"
-  (set-default 'cursor-type 'box))
-
-(defun hydra-modal/post ()
-  "When exiting the hydra-modal, change the cursor to a bar"
-  (set-default 'cursor-type 'bar))
-
-;; VIM-ISH HYDRA!
-;; Since the color is set to amaranth, only actions labeled :blue will quit
-(defhydra hydra-modal (:hint none :pre hydra-modal/pre :post hydra-modal/post :color amaranth)
-  "
->>> VIM-ISH POWER ~ it's like vim, sort-of <<<"
-  ("h" backward-char "left")
-  ("l" forward-char "right")
-  ("j" next-line "next")
-  ("k" previous-line "previous")
-  ("C-h" backward-word "previous word")
-  ("C-l" forward-word "end of next word")
-  ("C-k" backward-paragraph "back paragraph")
-  ("C-j" forward-paragraph "forward paragraph")
-  ("u" beginning-of-visual-line "start of line")
-  ("p" end-of-visual-line "end of line")
-  ("P" yank "paste")
-  ("[" scroll-down-line "scroll line up")
-  ("]" scroll-up-line"scroll line down")
-  ("{" scroll-down-command "scroll up")
-  ("}" scroll-up-command "scroll down")
-  ("o" exchange-point-and-mark "swap point/mark")
-  ("v" set-mark-command "mark")
-  ("V" oht/mark-whole-line "mark whole line")
-  ("C-v" rectangle-mark-mode "rectangle mark")
-  ("<DEL>" kill-region "kill region")
-  ("d" kill-region "kill region")
-  ("x" delete-char "delete-char")
-  ("c" kill-region "change" :color blue)
-  ("z" recenter-top-bottom "cycle recenter")
-  ("s-z" undo-tree-undo "undo")
-  ("s-Z" undo-tree-redo "redo")
-  ("s-x" kill-region "cut")
-  ("s-c" kill-ring-save "copy")
-  ("s-v" yank "paste")
-  ("I" beginning-of-visual-line "append" :color blue)
-  ("a" forward-char "append" :color blue)
-  ("A" end-of-visual-line "append line" :color blue)
-  ("s-j" nil "cancel" :color blue)
-  ("i" nil "cancel" :color blue))
-
-;; Window Management
-(defhydra hydra-windows (:color red)
-  "Windows & Splits"
-  ("<tab>" other-window "Cycle active window")
-  ("v" (lambda ()
-         (interactive)
-         (split-window-right)
-         (windmove-right) )"Vertical Split")
-  ("s" (lambda ()
-         (interactive)
-         (split-window-below)
-         (windmove-down)) "Split, Horizonal")
-  ("o" delete-other-windows "Only This Window" :color blue)
-  ("k" delete-window "Delete Window")
-  ("r" oht/toggle-window-split "Rotate Window Split")
-  ("b" balance-windows "Balance")
-  ("[" shrink-window "Smaller VERT")
-  ("]" enlarge-window "Bigger VERT")
-  ("{" shrink-window-horizontally "Smaler HORZ")
-  ("}" enlarge-window-horizontally "Bigger HORZ")
-  ("<up>" windmove-up "Move UP")
-  ("<down>" windmove-down "Move DOWN")
-  ("<left>" windmove-left "Move LEFT")
-  ("<right>" windmove-right "Move RIGHT")
-  ("q" nil "cancel" :color blue))
-
-;; Spelling
-(defun hydra-flyspell/pre ()
-  )
-
-(defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
-  "Spelling"
-  (";" flyspell-goto-next-error "Next")
-  (":" flyspell-correct-word-before-point "Correct")
-  ("q" nil "cancel" :color blue))
-
-(defun oht/shell-command-on-region ()
-  "Like shell-command-on-region but replaces region."
-  (interactive)
-  (if (use-region-p)
-      (shell-command-on-region
-       (region-beginning)
-       (region-end)
-       (read-from-minibuffer "Shell command on region (replace): " nil nil nil 'shell-command-history)
-       t)))
-
-(defun oht/shell-command-on-region-replace (start end command)
-  "Run shell-command-on-region interactivly replacing the region in place"
-  (interactive (let (string)
-                 (unless (mark)
-                   (error "The mark is not set now, so there is no region"))
-                 (setq string (read-from-minibuffer "Shell command on region: "
-                                                    nil nil nil
-                                                    'shell-command-history))
-                 (list (region-beginning) (region-end)
-                       string)))
-  (shell-command-on-region start end command t t))
-
-;; Text Manipulation
-(defhydra hydra-manipulate (:color red)
-  "Manipulate Text"
-  ("|" oht/shell-command-on-region-replace "Pipe to shell" :color blue)
-  ("j" oht/join-line-next "Join line with next")
-  ("d" downcase-region "Downcase")
-  ("u" upcase-region "Upcase")
-  ("c" capitalize-region "Capitalise")
-  ("s" sort-lines "Sort")
-  ("-" delete-duplicate-lines "Del Dupes")
-  ("q" nil "cancel" :color blue))
-
-#+end_src
-
-** Make a Hydra for org agenda filtering
-
-#+begin_src emacs-lisp
-
-(defhydra hydra-org-agenda-filter (:color red)
-  "Filter org-agenda"
-  ("/" org-agenda-filter "filter")
-  ("c" org-agenda-filter-by-category "category")
-  ("r" org-agenda-filter-by-regexp "regexp")
-  ("t" org-agenda-filter-by-tag "tag")
-  ("h" org-agenda-filter-by-top-headlines "headlines")
-  ("e" org-agenda-filter-by-effort "effort")
-  ("|" org-agenda-filter-remove-all "remove")
-  ("q" nil "cancel" :color blue))
-
-;; (define-key org-agenda-mode-map
-;;             "." 'hydra-org-agenda-filter/body)
-
 #+end_src
 
 * Keybindings
 
-An idea...
-- Rather than follow macOS defaults, group particular commands under =s-<key>= combinations that made sense in an Emacs-y way.
-- Group all window commands under =s-w=.
-- Group all buffer commands under =s-b=.
-- Group all org-commands under =s-o=.
-
 ***  Keybindings Philosophy
 
-1. Standard mac shortcuts should be supported wherever possible. And since mac inherits a lot of emacs keybindings anyway (and I use them outside emacs) I can leverage a lot of muscle memory.
+1. Standard mac shortcuts should be supported wherever possible. And since mac inherits a lot of emacs keybindings anyway (and I use them outside emacs) I can leverage a lot of muscle memory. Additionally, I've largely internalized the =readline= keybindings (since I worked in =vim= for a long time) and so =^w,= =^u=, and =^h= are second-nature.
 
 2. Enhance Emacs built-in bindings with improved alternatives. For example, I've replaced =^s= with =swiper-isearch=. So the binding still does the same thing, just better.
 
 3. Global Leader - I borrow the concept of a "leader key" from vim and put every custom function I can there. This prevents conflicts with existing bindings and, since I'm using which-key, helps me remember the possibilities.
 
-4. Uniform Mode-Leader - All mode-spesific bindings (for example org-time-stamp), which don't make any sense elsewhere should go behind a uniform mode-leader key.
+4. Mode Leader - All mode-spesific bindings (for example org-time-stamp), which don't make any sense elsewhere should go behind a uniform mode-leader key.
 
-5. Keybindings which I use all the time, get taken out from behind leaders for faster access.
+5. Keybindings which I use all the time, get taken out from behind leaders for faster access. For example, the org-agenda command.
 
 *** Standard Mac Shortcuts
 
@@ -926,6 +983,16 @@ An idea...
 (global-set-key (kbd "S-s-<return>") 'oht/open-line-above)
 (global-set-key (kbd "M-s-<right>") 'next-buffer)
 (global-set-key (kbd "M-s-<left>") 'previous-buffer)
+; Mac follows the UNIX convention of C-h being the same as <DEL>
+(global-set-key (kbd "C-h") 'delete-backward-char)
+;; Normally, C-? is used for undo/redo,
+;; but I've rebound that elsewhere, so I can use it here
+(bind-key* "C-?" 'help-command)
+;; readline-style shortcuts, because I love them
+(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-u") 'oht/kill-line-backward)
+;; No reason not to use command-u for this
+(global-set-key (kbd "s-u") 'universal-argument)
 #+end_src
 
 *** Enhance Emacs
@@ -933,11 +1000,6 @@ An idea...
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-s") 'swiper-isearch)
 (global-set-key (kbd "C-r") 'swiper-isearch-backward)
-;; readline-style shortcuts, because I love them
-(global-set-key (kbd "C-w") 'backward-kill-word)
-(global-set-key (kbd "C-u") 'oht/kill-line-backward)
-;; No reason not to use command-u for this
-(global-set-key (kbd "s-u") 'universal-argument)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "M-t") 'hydra-transpose/body)
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
@@ -951,6 +1013,7 @@ This cycles the spacing around point between:
 - A single space,
 - No spaces, or
 - the original spacing.
+
 #+begin_src emacs-lisp
 (global-set-key (kbd "M-SPC") 'cycle-spacing)
 #+end_src
@@ -964,6 +1027,9 @@ This cycles the spacing around point between:
 (global-set-key (kbd "M-s-b") 'ibuffer)
 (global-set-key (kbd "s-e") 'er/expand-region)
 (global-set-key (kbd "s-m") 'magit-status)
+;; vim has the wonderful . command, and emacs has repeat
+;; s-y is my keybinding because excel has (a version of) repeat bound to that
+(bind-key "s-y" 'repeat)
 #+end_src
 
 *** Global Leader Bindings
@@ -1013,3 +1079,4 @@ I use =⌘-\= as the leader for mode-spesific bindings.
 (global-set-key (kbd "s-;") 'hydra-flyspell/body)
 (global-set-key (kbd "s-|") 'hydra-manipulate/body)
 #+end_src
+

@@ -62,6 +62,8 @@ Plug 'plasticboy/vim-markdown'
 Plug 'thinca/vim-ft-markdown_fold'
 Plug 'axvr/org.vim'
 
+" TODO: check-out: aaronbieber/vim-quicktask
+
 " Colors
 Plug 'lifepillar/vim-gruvbox8'
 "Plug 'morhetz/gruvbox'
@@ -80,13 +82,13 @@ call plug#end()
 " {{{ Colors
 " ------------------------------------------------------------------------------
 
-set background=dark
-colorscheme gruvbox8
+set background=light
+colorscheme shirotelin
 syntax enable
 
 " Custom colors for shirotelin
-" hi Statusline ctermbg=0
-" hi Vertsplit cterm=none ctermbg=245 ctermfg=245
+hi Statusline ctermbg=0
+hi Vertsplit cterm=none ctermbg=245 ctermfg=245
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =

@@ -1025,7 +1025,7 @@ This cycles the spacing around point between:
 (global-set-key (kbd "s-p") 'counsel-M-x)
 (global-set-key (kbd "s-b") 'counsel-ibuffer)
 (global-set-key (kbd "M-s-b") 'ibuffer)
-(global-set-key (kbd "s-e") 'er/expand-region)
+(bind-key* "s-e" er/expand-region)
 (global-set-key (kbd "s-m") 'magit-status)
 ;; vim has the wonderful . command, and emacs has repeat
 ;; s-y is my keybinding because excel has (a version of) repeat bound to that

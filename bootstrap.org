@@ -1,0 +1,175 @@
+#+TITLE: How I Setup My Mac
+#+AUTHOR: Oliver Taylor
+
+* Introduction
+
+This document describes, and includes some code for, how I like to set up my Mac. You might ask "How often do you buy a new computer? What's the point in documenting all this if you only have to do it once?" The answer is that I find that writing clarifies my thinking and writing everything down helps me remember why I did what I did (which is occasionally important). Additionally, I'd hate to lose the knowledge accumulated here simply from disuse or by losing my laptop.
+
+I bought a new laptop in the summer of 2020 and as I set it up I documented pretty much everything I did. I'm doing my best to remember to keep this document up to date.
+
+Some of the stuff below might seem a little militant (running as a non-admin user, installing as little as possible into =/Applications=, turning off analytics, using an ad-blocker, and digging through the nitty-gritty of background processes in the terminal) but I can tell you that since I started doing this I've seen a dramatic improvement in battery life on my laptop. Plus, it's more secure and private. So there.
+
+* Philosophy
+
+1. Use default apps and services first.
+2. Adding software should speed the system (ie: ad-blockers), not slow it (ie: background app that checks the status of something).
+3. Never use an electron app when a website is available (Slack, Figma).
+     1. If working offline isn't a big concern then there's an argument to be made (which puts aside usability) that you should do as much in the browser as possible. Browsers are basically VMs for running wild-west code, seriously, who the hell knows what javascript code a random blogger is using. Thus, browsers are built as very secure environments, sandboxed from the rest of the system. If you're running code you don't trust the web browser is a good place to do it.
+4. Don't use apps that install background update deamons, if you can
+   help it (Microsoft, Adobe, Chrome).
+5. ~#hottip~: turn Wi-Fi on only when you need it, and to make backups, etc.
+   Makes your computer faster, have less distractions, and greatly
+   improves battery life.
+
+[[https://github.com/drduh/macOS-Security-and-Privacy-Guide][This page]] has some good advice for general security and privacy.
+
+* Accounts Setup
+
+- The first account you create will be an admin account, only use this when you must.
+- The second account will be the account you use day-to-day.
+    + Doing this will make a few things more of a pain for you, but it will put the applications you install and use in a smaller box. Basically, I don't trust the software I install, this simple step limits the potential damage.
+
+* Settings
+
+- Sign in with AppleID.
+- Turn off automatic installation of system updates.
+- Check for software updates, install if you want.
+- Enable trackpad tap-to-click.
+- Enable three-finger-drag in =System Prefs > Accessibility=.
+- Change caps-lock to Control.
+- Set computer name in =System Prefs > Sharing=.
+- Require password immediately.
+- Enable FileVault encryption.
+- Turn on firewall.
+- Verify =SIP= is enabled with =csrutil status=.
+- Disable Spotlight Suggestions in Spotlight preferences.
+- Give Terminal full disk access.
+- Change finder pref: search current folder.
+- Add lock-screen message.
+- Disable "Safari Suggestions" and "Show Favorites" in =Safari Prefs > Search=.
+- Turn off Safari's "Open 'safe' files after downloading" setting.
+- On your iPhone, enable text message forwarded to your new computer.
+- Verify you're not sending analytics here: =System Preferences > Security & Privacy > Analytics & Improvements=.
+- Add unix welcome message =sudo echo "Welcome to UNIX!" > /etc/motd=.
+- Block Google Analytics =echo '\n0.0.0.0 google-analytics.com\n0.0.0.0 www.google-analytics.com` >> /etc/hosts=
+- Set up ssh keys - use [[(https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh][GitHub instructions]] - don't forget to set a password, and store the password in your keychain.
+- Enable Terminal's "Secure Keyboard Entry".
+
+* Install
+
+While anyone could, in theory, adopt the settings above, the utilities and applications I need are unique to me. So, the below is simply a window into my specific workflow. Lucky you.
+
+** Utilities
+
+- Install command-line dev tools with =xcode-select --install=.
+- Install [[https://1blocker.com][1Blocker]]
+- Install [[https://underpassapp.com/StopTheMadness/][StopTheMadness]]
+- Install [[https://www.princexml.com][princeXML]]
+- Install [[https://brew.sh][Homebrew]]
+
+Install brew packages (you can run =brew leaves= to find out what you have installed right now):
+
+#+begin_src bash
+brew install \
+aspell \
+exa \
+fzf \
+fd  \
+git \
+pandoc \
+parallel \
+sdcv \
+the_silver_searcher \
+tldr \
+tree \
+vim \
+zsh
+#+end_src
+
+- Run =parallel --citation= to suppress the warning message that comes up on first-run.
+
+** Applications
+
+Install as many app as you can into =~/Applications=, most work just fine from there, and apps in that directory run with the user's permissions, not admin permissions. Some tools, like Excel, require installation to =/Applications= so they can run background processes, some others, like 1 Password, complain every launch but work just fine.
+
+- 1Password7
+- Arq
+- BBEdit
+- Emacs (the [[https://github.com/railwaycat/homebrew-emacsmacport][correct version]], [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][more info]])
+- Fantastical (don’t fotget to add accounts)
+- Kaleidoscope
+- Microsoft Excel (installs auto-launching background processes)
+- Monodraw
+- SuperDuper
+- Tot
+- Transmit
+- ViDL
+
+Only if you must (as they violate philosophy rule 4):
+
+- Adobe Lightroom
+- Google Filestream
+
+* My Stuff
+
+- Copy files from old machine / backup (thunderbolt bridge is nice if you have the cable).
+- Copy fonts from backup.
+- Install [[http://git.io/textplay][textplay]] with =cd ~/dev/textplay && make install=.
+
+** Symlinks
+    
+1. Link your cloud service provider of choice to =~/cloud=.
+2. Route everything through that link. That way, if you change cloud providers you only have to change one link.
+
+Run from =$HOME=:
+#+begin_src bash
+ln -s ~/Library/Mobile\ Documents/com~apple~CloudDocs/oht cloud;
+ln -s ~/dot/vim .vim;
+ln -s ~/dot/emacs/init.el ~/.emacs.d/init.el
+ln -s ~/dot/git/gitconfig .gitconfig;
+ln -s ~/dot/git/gitignore_global .gitignore_global;
+ln -s ~/dot/zsh/zshrc ~/.zshrc
+ln -s ~/dot/zsh/zshenv ~/.zshenv
+#+end_src
+
+- Rewrite all paths pointing to repos in =~/dev/git/=
+- Open vim, emacs, zsh, etc. and verify everything is functioning correctly (plugins and whatnot).
+
+** Home Dir Layout
+
+- =~/dot= - my dotfiles
+- =~/lib= - stuff that programs and scripts will need access to
+- =~/opt= - basically a place for software installed via a =git clone= or personal projects along those same lines.
+
+** Dictionaries
+
+This installs Webster's 1913 dictionary. Which is awesome.
+
+1. Download the newest release [[https://github.com/ponychicken/WebsterParser][here]].
+2. Move it to =~/Library/Dictionaries=.
+
+To get it working in emacs [[http://mbork.pl/2017-01-14_I'm_now_using_the_right_dictionary][more info here]]:
+
+1. =brew install sdcv=.
+2. [[https://s3.amazonaws.com/jsomers/dictionary.zip][Download the stardict file]].
+3. Install the [[https://github.com/gucong/emacs-sdcv/][emacs-sdcv package]].
+
+* More Info about Background Processes
+
+First check =System Preferences > Users & Groups > Login Items= and =System Preferences > Extensions > All= for anything listed there. Removing entries from this list often disables the corresponding background processes.
+
+- Check for Launch Deamons and Agents with =ls -al /Library/Launch* ~/Library/Launch*=
+    + If there's anything you don't want, just move them into a =disabled= folder.
+- List all non-apple "running /user/ agents/daemons" =launchctl list | grep -v 'com.apple.' | tail -n+2 | sort -k 3=
+- List all non-apple "running /system/ agent/daemons" =sudo launchctl list | grep -v 'com.apple.' | tail -n+2 | sort -k 3=
+- Check for kernel extensions with: =kextstat | grep -v com.apple=
+- List all running processes, minus system stuff: =ps -ax | grep -v '/System\|/Applications\|/usr\|/sbin\|ttys00[0-9]'=
+
+This kills Aspera in all its forms - if chrome + plugin is running, you'll need to quit Chrome:
+
+#+begin_src bash
+ps -Ax | grep -i asperacrypt   | sed /grep/d | awk '{ print $1 }' | xargs kill -9
+ps -Ax | grep -i asperaconnect | sed /grep/d | awk '{ print $1 }' | xargs kill -9
+#+end_src
+
+For details on killing Adobe processes: https://www.ravbug.com/tutorials/stop-adobe-daemons/

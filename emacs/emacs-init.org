@@ -111,6 +111,13 @@ This tells emacs to startup with a scratch buffer, with custom content, and to d
       inhibit-startup-echo-area-message t)
 #+end_src
 
+Emacs can automatically create backup files. This tells Emacs to put all backups in =~/.emacs.d/backups=. [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html][More info]].
+
+#+begin_src emacs-lisp
+(setq backup-directory-alist `(("." . ,(concat user-emacs-directory
+                                               "backups"))))
+#+end_src
+
 ** General
 
 #+begin_src emacs-lisp
@@ -126,6 +133,7 @@ This tells emacs to startup with a scratch buffer, with custom content, and to d
 (recentf-mode 1) ;enables "Open Recent..." in file menu
 (setq visible-bell t)
 (setq tab-width 4)
+(setq default-tab-width 4)
 
 ;; I type one space after sentences, because I'm not a monster.
 (setq sentence-end-double-space nil)
@@ -133,6 +141,12 @@ This tells emacs to startup with a scratch buffer, with custom content, and to d
 (setq ispell-program-name "/usr/local/bin/aspell")
 (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
 (setq ispell-list-command "list")
+
+;; Changes all yes/no questions to y/n type
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; No need for ~ files when editing
+(setq create-lockfiles nil)
 #+end_src
 
 ** Visual Line Mode
@@ -175,7 +189,9 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 ;; Hide details in dired mode
 (add-hook 'dired-mode-hook
           (lambda ()
-            (dired-hide-details-mode 1)))
+            (dired-hide-details-mode 1)
+	    (auto-revert-mode)
+	  ))
 
 (require 'bind-key)
 #+end_src
@@ -231,7 +247,7 @@ Here the fonts are setup in a function so I can change them all in once step by 
 Hide all minor-modes behind a menu in the modeline.
 
 #+begin_src emacs-lisp
-(minions-mode t)
+(minions-mode 1)
 #+end_src
 
 ** ModeLine

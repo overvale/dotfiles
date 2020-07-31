@@ -179,6 +179,7 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 ;; counsel settings
 (counsel-mode t)
 (setq ivy-use-virtual-buffers t)
+(setq ivy-count-format "%d/%d ")
 (setq enable-recursive-minibuffers t)
 (setq ivy-count-format "(%d/%d) ")
 ;; by default ivy starts up with ^ in the input area this means you
@@ -194,6 +195,10 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 	  ))
 
 (require 'bind-key)
+
+(require 'ivy-rich)
+(ivy-rich-mode 1)
+(setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
 #+end_src
 
 You can ensure packages are installed with something like this (no need for use-package!):
@@ -1036,7 +1041,7 @@ This cycles the spacing around point between a single space, no spaces, or the o
 #+begin_src emacs-lisp
 (global-set-key (kbd "s-a") 'org-agenda)
 (global-set-key (kbd "s-p") 'counsel-M-x)
-(global-set-key (kbd "s-b") 'counsel-ibuffer)
+(global-set-key (kbd "s-b") 'ivy-switch-buffer)
 (global-set-key (kbd "M-s-b") 'ibuffer)
 (bind-key* "s-e" 'er/expand-region)
 (global-set-key (kbd "s-m") 'magit-status)

@@ -303,7 +303,7 @@ This currently replicates the default mode-line. At some point in the future I m
 ;; Style quote and verse blocks
 (setq org-fontify-quote-and-verse-blocks t)
 
-;; This adds [COMPLETED: DATE] when you move something to a "done" state
+;; This adds 'COMPLETED: DATE' when you move something to a DONE state
 (setq org-log-done 'time)
 
 ;; Tags start immediately after the headline
@@ -1108,7 +1108,7 @@ I use =⌘-'= as the my leader.
 (global-set-key (kbd "s-' w") 'oht/toggle-whitespace)
 #+end_src
 
-*** Mode Spesific Bindings
+*** Mode Specific Bindings
 
 I use =⌘-\= as the leader for mode-spesific bindings.
 
@@ -1132,3 +1132,5 @@ I use =⌘-\= as the leader for mode-spesific bindings.
 ;; buffer menu bindings
 (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
 #+end_src
+
+# end of emacs-init.org

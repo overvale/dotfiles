@@ -199,6 +199,8 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 (require 'ivy-rich)
 (ivy-rich-mode 1)
 (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+
+(require 'multiple-cursors)
 #+end_src
 
 You can ensure packages are installed with something like this (no need for use-package!):
@@ -1100,6 +1102,7 @@ This cycles the spacing around point between a single space, no spaces, or the o
 (global-set-key (kbd "s-w") 'hydra-windows/body)
 (global-set-key (kbd "s-;") 'hydra-flyspell/body)
 (global-set-key (kbd "s-|") 'hydra-manipulate/body)
+(bind-key "C-S-<mouse-1>" 'mc/add-cursor-on-click)
 #+end_src
 
 *** Global Leader Bindings
@@ -1118,6 +1121,7 @@ I use =⌘-'= as the my leader.
 (global-set-key (kbd "s-' o") 'counsel-outline)
 (global-set-key (kbd "s-' s-o") 'counsel-org-goto-all)
 (global-set-key (kbd "s-' w") 'oht/toggle-whitespace)
+(bind-key "s-' m" 'mc/edit-lines)
 #+end_src
 
 *** Mode Specific Bindings

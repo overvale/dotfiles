@@ -1076,6 +1076,73 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   ("q" (message "Abort") :exit t))
 #+end_src
 
+* Secondary Selection
+
+** Background
+
+In the olden days, many computer programs (like the X-Windows system and WordStar) had something called =secondary-selection=. Robert Sawyer, [[https://arstechnica.com/information-technology/2017/03/wordstar-a-writers-word-processor/][writing in Ars Technica]], described the feature thus (WordStar called them "blocks"):
+
+#+begin_quote
+WordStar was rare among word processing programs in that it permitted the user to mark (highlight) a block of text (with ^KB and ^KK commands) and leave it marked in place, and then go to a different position in the document and later (even after considerable work on other things) copy the block (with ^KC) or move it to a new location (with ^KV). Many users found it much easier to manipulate blocks this way than with the Microsoft Word system of highlighting with a mouse and then being forced by Word's select-then-do approach to immediately deal with the marked block, lest any typing replace it.
+#+end_quote
+
+Emacs, in fact, supports this and calls it "secondary selection" but it is not exactly well documented, and the Emacs-literati haven't seemed to have written much about it. I did a deep dive and wrapped everything in my own functions and then in a hydra for easy access.
+
+- =meta-left-click/drag= to mark a secondary selection.
+- You can also use the hydra to make the current region the secondary selection.
+- Once the secondary selection is active you can go about your typing, including copy/paste actions.
+- Then, when you want to do something with the secondary selection, activate the hydra.
+
+** Functions
+
+All but one of these functions is built-in, but in their default form they're not =interactive= so any keybindings need to include =(lambda () (interactive) (function-name))= in order to work, and some of their documentation is a little sketchy, so I've wrapped them all in my own functions. Just makes things a little easier to work with.
+
+#+begin_src emacs-lisp
+(defun oht/cut-secondary-selection ()
+  "Cut the secondary selection."
+  (interactive)
+  (mouse-kill-secondary))
+
+(defun oht/copy-secondary-selection ()
+  "Copy the secondary selection."
+  (interactive)
+  ;; there isn't a keybinding-addressable function to kill-ring-save
+  ;; the 2nd selection so here I've made my own. This is extracted
+  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
+  (kill-new 
+   (buffer-substring (overlay-start mouse-secondary-overlay)
+		     (overlay-end mouse-secondary-overlay))
+   t))
+
+(defun oht/cut-secondary-selection-paste ()
+  "Cut the secondary selection and paste at point."
+  (interactive)
+  (mouse-kill-secondary)
+  (yank))
+
+(defun oht/copy-secondary-selection-paste ()
+  "Paste the secondary selection and paste at point."
+  (interactive)
+  (oht/copy-secondary-selection)
+  (yank))
+#+end_src
+
+** Secondary Selection Hydra
+
+#+begin_src emacs-lisp
+(defhydra hydra-secondary-selection (:color blue)
+  "Secondary Selection"
+  ("xx" oht/cut-secondary-selection "Cut 2nd")
+  ("cc" oht/copy-secondary-selection "Copy 2nd")
+  ("xv" oht/cut-secondary-selection-paste "Cut 2nd & Paste")
+  ("cv" oht/copy-secondary-selection-paste "Copy 2nd & Paste")
+  ("m" (lambda () (interactive)(secondary-selection-from-region)) "Mark as 2nd")
+  ("g" (lambda () (interactive)(secondary-selection-to-region)) "Goto 2nd")
+  ("q" nil "cancel"))
+
+(bind-key "s-2" 'hydra-secondary-selection/body)
+#+end_src
+
 * Keybindings
 
 ***  Keybindings Philosophy

@@ -368,10 +368,10 @@ This currently replicates the default mode-line. At some point in the future I m
       '((sequence "TODO(t)" "|" "DONE(d)")
         (sequence "WAIT(w)" "|" "CANCELLED(c)")))
 
-(setq org-agenda-files (quote (
-                               "~/Documents/org-files/"
-                               "~/Documents/writing/kindred/compendium.org"
-                               )))
+(setq org-agenda-files
+      '("~/Documents/org-files/"
+	"~/Documents/writing/kindred/compendium.org"
+	))
 
 (setq org-agenda-custom-commands
       '(
@@ -1011,29 +1011,6 @@ Org                    Links                 Outline
   ("p" org-previous-link)
   ("s" org-store-link)
   ("v" org-overview))
-#+end_src
-
-** Org-Agenda
-
-#+begin_src emacs-lisp
-(defhydra hydra-org-agenda-filter (:color red)
-  "Filter org-agenda"
-  ("/" org-agenda-filter "filter")
-  ("c" org-agenda-filter-by-category "category")
-  ("r" org-agenda-filter-by-regexp "regexp")
-  ("t" org-agenda-filter-by-tag "tag")
-  ("h" org-agenda-filter-by-top-headlines "headlines")
-  ("e" org-agenda-filter-by-effort "effort")
-  ("|" org-agenda-filter-remove-all "remove")
-  ("q" nil "cancel" :color blue))
-
-;; You have to wait until org-agenda loads because org itself
-;; doesn't know what 'org-agenda-mode-map' is.
-(eval-after-load "org-agenda"
-'(progn
-	(define-key org-agenda-mode-map
-		"." 'hydra-org-agenda-filter/body)
-		))
 #+end_src
 
 ** Org-Agenda View Toggle

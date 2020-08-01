@@ -203,12 +203,31 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 (require 'multiple-cursors)
 #+end_src
 
+** Info: explicit package installation
+
 You can ensure packages are installed with something like this (no need for use-package!):
 
 #+begin_example
 (unless (package-installed-p 'super-save)
   (package-refresh-contents)
   (package-install 'super-save))
+#+end_example
+
+The variable =package-selected-packages= stores all packages installed explicitly by the user.
+
+You can install anything that's not in that list with:
+#+begin_example
+;; install packages if needed
+(unless (every 'package-installed-p package-selected-packages)
+  (message "Missing packages detected, please wait...")
+  (package-refresh-contents)
+  (package-install-selected-packages))
+#+end_example
+
+You can also set this variable with:
+#+begin_example
+(setq package-selected-packages
+      '(multiple-cursors ivy-rich bind-key acme-theme minions))
 #+end_example
 
 * Appearance

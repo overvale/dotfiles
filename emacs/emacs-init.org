@@ -222,9 +222,9 @@ Here the fonts are setup in a function so I can change them all in once step by 
 (set-face-attribute 'fixed-pitch nil
                      :family "Iosevka Fixed SS08" :height 140 :weight 'normal)
 (set-face-attribute 'variable-pitch nil
-	             :family "IBM Plex Serif" :height 150 :weight 'normal))
-
+	             :family "IBM Plex Serif" :height 150 :weight 'normal)
 (set-face-attribute 'bold nil :weight 'semibold)
+)
 
 (set-default 'cursor-type 'bar)
 ;; Underline line at descent position, not baseline position

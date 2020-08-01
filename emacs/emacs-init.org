@@ -354,14 +354,14 @@ This currently replicates the default mode-line. At some point in the future I m
 
 (setq org-agenda-custom-commands
       '(
-        ("d" "Do Now - Not scheduled, #A, TODO"
+        ("v" "Today + Tasks: not scheduled, not WAIT"
          ((agenda "d" ((org-agenda-span 'day)))
-          (tags "+PRIORITY={A}/TODO"
-                ((org-agenda-overriding-header "Tasks you should do NOW:")
+          (tags "/TODO"
+                ((org-agenda-overriding-header "Available Tasks")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                  ))))
         ("i" "Important Tasks"
-         ((tags "-emacs-PRIORITY={C}/TODO"
+         ((tags "-emacs-/TODO"
                 ((org-agenda-overriding-header "Important Tasks")
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
                 )))
@@ -410,6 +410,18 @@ Each type of agenda view can be independently customized. The only thing I chang
 	 (todo category-up priority-down)
 	 (tags priority-down category-keep)
 	 (search category-keep))))
+#+end_src
+
+** Org Agenda Keybindings
+
+#+begin_src emacs-lisp
+;; You have to wait until org-agenda loads because org itself
+;; doesn't know what 'org-agenda-mode-map' is.
+(eval-after-load "org-agenda"
+'(progn
+	(define-key org-agenda-mode-map
+		"S" 'org-agenda-schedule)
+		))
 #+end_src
 
 ** Tags

@@ -722,12 +722,24 @@ The below code is +stolen+ adapted from /prot/.
 
 Hydras should be reserved for mini-modes, /ie/ places where you'll want to call several functions in a row. If all you're doing is grouping similar commands then which-key should suffice.
 
+** Info: Hydra Colors
+
+[[https://github.com/abo-abo/hydra/wiki/Hydra-Colors][Official Documentation]]
+
+| Color    | Defined keys | Other keys               |
+|----------+--------------+--------------------------|
+| red      | Stay Alive   | Pass-thru and Exit       |
+| pink     | Stay Alive   | Pass-thru and Stay Alive |
+| amaranth | Stay Alive   | Reject and Stay Alive    |
+| teal     | Exit         | Reject and Stay Alive    |
+| blue     | Exit         | Pass-thru and Exit       |
+
 ** Text Manipulation
 
 These commands pretty much require a region.
 
 #+begin_src emacs-lisp
-(defhydra hydra-manipulate (:color red)
+(defhydra hydra-manipulate (:color amaranth)
   "Manipulate Text"
   ("|" oht/shell-command-on-region-replace "Pipe to shell" :color blue)
   ("j" oht/join-line-next "Join line with next")
@@ -743,7 +755,7 @@ These commands pretty much require a region.
 There are so many ways to transpose in Emacs, why not get help?
 
 #+begin_src emacs-lisp
-(defhydra hydra-transpose (:color red)
+(defhydra hydra-transpose (:color pink)
   "Transpose"
   ("c" transpose-chars "characters")
   ("w" transpose-words "words")

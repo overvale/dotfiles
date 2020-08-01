@@ -34,12 +34,19 @@ Anyone learning vim, emacs, zsh, bash, or something similar, spends a lot of tim
 - [[https://blog.aaronbieber.com][Aaron Bieber, Blog & Dotfiles]]
 - [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org][Harry R. Schwartz dotfiles]]
 - [[https://yiufung.net/post/org-mode-hidden-gems-pt1/][Org-Mode Hidden Gems]]
+- [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org][Angry Bacon dotemacs]]
 
 For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
 
 * Settings
 
 ** Setup
+
+I've seen it listed in a few places, so I'm trying it on, but this is supposed to help reduce emacs startup time.
+
+#+begin_src emacs-lisp
+(setq gc-cons-threshold 50000000)
+#+end_src
 
 Set encoding to be UTF-8 everywhere.
 
@@ -121,32 +128,29 @@ Emacs can automatically create backup files. This tells Emacs to put all backups
 ** General
 
 #+begin_src emacs-lisp
-;; The menu-bar-mode must be set to 1 to integrate well with macOS
-(menu-bar-mode 1) 
-(tool-bar-mode -1)
-(show-paren-mode t) ;highlight parens
-(setq show-paren-delay 0)
-(delete-selection-mode t)
-(global-auto-revert-mode t)
-(desktop-save-mode 1) ;sessions
-(save-place-mode 1) ;reopens the file to the same spot you left
-(recentf-mode 1) ;enables "Open Recent..." in file menu
-(setq visible-bell t)
-(setq tab-width 4)
-(setq default-tab-width 4)
+(menu-bar-mode 1)                     ; ensures full-screen avail on macOS
+(tool-bar-mode -1)                    ; hide menu-bar
+(show-paren-mode t)                   ; highlight parens
+(setq show-paren-delay 0)             ; and show immediately
+(delete-selection-mode t)             ; typing on region deletes region
+(global-auto-revert-mode t)           ; update buffer when file on disk changes
+(desktop-save-mode 1)                 ; sessions
+(save-place-mode 1)                   ; reopens the file to the same spot you left
+(recentf-mode 1)                      ; enables "Open Recent..." in file menu
+(setq visible-bell t)                 ; disable beep
+(setq tab-width 4)                    ; tabs=4 char
+(setq help-window-select t)           ; focus new help windows when opened
+(setq sentence-end-double-space nil)  ; ends sentence after 1 space
+(fset 'yes-or-no-p 'y-or-n-p)        ; Changes all yes/no questions to y/n type
+(setq create-lockfiles nil)          ; No need for ~ files when editing
+#+end_src
 
-;; I type one space after sentences, because I'm not a monster.
-(setq sentence-end-double-space nil)
+*** Spelling
 
+#+begin_src emacs-lisp
 (setq ispell-program-name "/usr/local/bin/aspell")
 (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
 (setq ispell-list-command "list")
-
-;; Changes all yes/no questions to y/n type
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;; No need for ~ files when editing
-(setq create-lockfiles nil)
 #+end_src
 
 ** Visual Line Mode

@@ -957,6 +957,31 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
   ("q" nil "cancel" :color blue))
 #+end_src
 
+** Org
+
+#+begin_src emacs-lisp
+(defhydra hydra-org (:color pink :hint nil)
+  "
+Org                    Links                 Outline
+ _q_ quit              _i_ insert            _<_ previous
+ _o_ edit              _n_ next              _>_ next
+ ^^                    _p_ previous          _a_ all
+ ^^                    _s_ store             _g_ go
+ ^^                    ^^                    _v_ overview
+"
+  ("q" nil)
+  ("<" org-backward-element)
+  (">" org-forward-element)
+  ("a" outline-show-all)
+  ("g" counsel-org-goto :color blue)
+  ("i" org-insert-link :color blue)
+  ("n" org-next-link)
+  ("o" org-edit-special :color blue)
+  ("p" org-previous-link)
+  ("s" org-store-link)
+  ("v" org-overview))
+#+end_src
+
 ** Org-Agenda
 
 #+begin_src emacs-lisp
@@ -1179,9 +1204,10 @@ I use =⌘-\= as the leader for mode-spesific bindings.
   (define-key org-mode-map (kbd "s-\\ <") 'org-insert-structure-template)
   (define-key org-mode-map (kbd "s-\\ l") 'org-store-link)
   (define-key org-mode-map (kbd "s-\\ i") 'org-insert-last-stored-link)
-  (define-key org-mode-map (kbd "s-\\ m") 'oht/org-hide-emphasis-markers)
+  (define-key org-mode-map (kbd "s-\\ m") 'org-toggle-link-display)
   (define-key org-mode-map (kbd "s-\\ I") 'org-clock-in)
   (define-key org-mode-map (kbd "s-\\ O") 'org-clock-out)
+  (bind-key "s-\\ h" 'hydra-org/body)
   )
 
 ;; buffer menu bindings

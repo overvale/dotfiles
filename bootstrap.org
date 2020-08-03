@@ -97,6 +97,7 @@ Install as many app as you can into =~/Applications=, most work just fine from t
 - BBEdit
 - Emacs (the [[https://github.com/railwaycat/homebrew-emacsmacport][correct version]], [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][more info]])
 - Fantastical (don’t fotget to add accounts)
+- Hammerspoon
 - Kaleidoscope
 - Microsoft Excel (installs auto-launching background processes)
 - Monodraw
@@ -136,6 +137,7 @@ ln -s ~/dot/git/gitconfig .gitconfig;
 ln -s ~/dot/git/gitignore_global .gitignore_global;
 ln -s ~/dot/zsh/zshrc ~/.zshrc
 ln -s ~/dot/zsh/zshenv ~/.zshenv
+ln -s ~/dot/hammerspoon ~/.hammerspoon
 #+end_src
 
 - Rewrite all paths pointing to repos in =~/lib/git/=

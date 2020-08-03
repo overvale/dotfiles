@@ -95,7 +95,7 @@ Due to historical reasons, emacs thinks =C-i= is the same as =TAB= and =C-m= is 
 (define-key input-decode-map [?\C-i] [C-i])
 (global-set-key (kbd "<C-i>") nil)
 (define-key input-decode-map [?\C-m] [C-m])
-(global-set-key (kbd "<C-m>") nil)
+(global-set-key (kbd "<C-m>") 'set-mark-command)
 #+end_src
 
 When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=. This makes Emacs refer to them as =foo/file= and =bar/file=, like a sane program.
@@ -1215,6 +1215,11 @@ All but one of these functions is built-in, but in their default form they're no
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-s") 'swiper-isearch)
 (global-set-key (kbd "C-r") 'swiper-isearch-backward)
+(bind-key* "C-," 'backward-word)
+(bind-key* "C-." 'forward-word)
+(bind-key* "C-;" 'backward-kill-word)
+(bind-key* "C-'" 'kill-word)
+(bind-key* "C-/" 'flyspell-auto-correct-previous-word)
 (bind-key "M-`" 'my-ido-or-ivy-hippie-expand)
 (global-set-key (kbd "M-t") 'hydra-transpose/body)
 (global-set-key (kbd "M-y") 'counsel-yank-pop)

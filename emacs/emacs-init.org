@@ -762,16 +762,17 @@ Hydras should be reserved for mini-modes, /ie/ places where you'll want to call 
 These commands pretty much require a region.
 
 #+begin_src emacs-lisp
-(defhydra hydra-manipulate (:color amaranth)
+(defhydra hydra-manipulate (:color teal)
   "Manipulate Text"
-  ("|" oht/shell-command-on-region-replace "Pipe to shell" :color blue)
-  ("j" oht/join-line-next "Join line with next")
+  ("|" oht/shell-command-on-region-replace "Pipe to shell")
+  ("j" oht/join-line-next "Join line with next" :color red)
+  ("J" unfill-region "Unfill region")
   ("d" downcase-region "Downcase")
   ("u" upcase-region "Upcase")
   ("c" capitalize-region "Capitalise")
   ("s" sort-lines "Sort")
   ("-" delete-duplicate-lines "Del Dupes")
-  ("q" nil "cancel" :color blue))
+  ("q" nil "cancel"))
 #+end_src
 
 ** Transpose

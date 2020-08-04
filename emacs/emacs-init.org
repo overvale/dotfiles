@@ -1167,6 +1167,11 @@ All but one of these functions is built-in, but in their default form they're no
 [[https://support.apple.com/en-us/HT201236]]
 
 #+begin_src emacs-lisp
+;; in emacs <del> is backward-delete and <delete> is forward-delete
+;; and by default option+forward-delete has no mapping
+(global-set-key (kbd "M-<delete>") 'kill-word)
+;; I don't think I've used ESC as a prefix one time
+;; and C-[ does the same thing
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 (global-set-key (kbd "s-,") 'oht/counsel-find-settings)
 (global-set-key (kbd "s-n") 'make-frame-command)
@@ -1215,12 +1220,6 @@ All but one of these functions is built-in, but in their default form they're no
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-s") 'swiper-isearch)
 (global-set-key (kbd "C-r") 'swiper-isearch-backward)
-(bind-key* "C-," 'backward-word)
-(bind-key* "C-." 'forward-word)
-(bind-key* "C-;" 'backward-kill-word)
-(bind-key* "C-'" 'kill-word)
-(bind-key* "C-/" 'flyspell-auto-correct-previous-word)
-(bind-key "M-`" 'my-ido-or-ivy-hippie-expand)
 (global-set-key (kbd "M-t") 'hydra-transpose/body)
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
 (global-set-key (kbd "M-<up>") 'move-line-up)

@@ -343,8 +343,8 @@ Here the fonts are setup in a function so I can change them all in once step by 
 
 #+begin_src emacs-lisp
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "|" "DONE(d)")
-        (sequence "WAIT(w)" "|" "CANCELLED(c)")))
+      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+        (sequence "WAITING(w)" "HOLD(h)" "|" "CANCELLED(c)")))
 
 (setq org-agenda-files
       '("~/Documents/org-files/"
@@ -384,7 +384,7 @@ Here the fonts are setup in a function so I can change them all in once step by 
          (file+headline "~/Documents/org-files/refile.org" "Ingenuity")
          "* %?\n\n")
         ("I" "Ingenuity Log Entry" entry
-         (file "~/Documents/org-files/ing_log.org")
+         (file "~/Documents/org-files/ingenuity_logbook.org")
          "* %^{Log type|Meeting: |Call: } %? %t\n\n")
         ))
 #+end_src
@@ -1080,6 +1080,14 @@ Emacs, in fact, supports this and calls it "secondary selection" but it is not e
 - You can also use the hydra to make the current region the secondary selection.
 - Once the secondary selection is active you can go about your typing, including copy/paste actions.
 - Then, when you want to do something with the secondary selection, activate the hydra.
+
+Another scenario: when you realize, mid-typing, that you want to paste text from elsewhere, you can leave the insertion point where it is, make a secondary selection, and insert it directly.
+
+** References
+
+- The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Secondary-Selection.html][official documentation]] is somewhat sparse, and assumes you'll only use the mouse for this.
+- [[https://www.emacswiki.org/emacs/SecondarySelection][The Emacs Wiki has some info]], but seems a little out of date given that there are so many built-in functions for this now.
+- Charles Lindsey made [[http://www.cs.man.ac.uk/~lindsec/secondary-selection.html][a video]] that nicely explains the basic idea behind secondary selection.
 
 ** Functions
 

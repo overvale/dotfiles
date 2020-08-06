@@ -9,6 +9,7 @@ Check out:
 - ControlEscape.spoon
 - https://github.com/dbalatero/VimMode.spoon (seems staggeringly complete)
 - http://www.hammerspoon.org/Spoons/Seal.html
+- https://medium.com/@robhowlett/hammerspoon-the-best-mac-software-youve-never-heard-of-40c2df6db0f8
 
 ]]
 
@@ -130,8 +131,8 @@ hs.hotkey.bind({'cmd'}, 'end',  function() hs.eventtap.keyStroke({'ctrl'}, 'k') 
 
 hs.hotkey.bind({'ctrl'}, 'w', function() hs.eventtap.keyStroke({'alt'}, 'delete') end)
 hs.hotkey.bind({'ctrl'}, 'u', function() hs.eventtap.keyStroke({'cmd'}, 'delete') end)
-hs.hotkey.bind({'ctrl'}, ';', function() hs.eventtap.keyStroke({'alt'}, 'left') end)
-hs.hotkey.bind({'ctrl'}, "'", function() hs.eventtap.keyStroke({'alt'}, 'right') end)
+hs.hotkey.bind({'ctrl'}, ';', function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'b') end)
+hs.hotkey.bind({'ctrl'}, "'", function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'f') end)
 hs.hotkey.bind({'ctrl'}, ',', function() hs.eventtap.keyStroke({'alt'}, 'delete') end)
 hs.hotkey.bind({'ctrl'}, '.', function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)
 

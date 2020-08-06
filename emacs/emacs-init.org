@@ -617,6 +617,18 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
                  (list (region-beginning) (region-end)
                        string)))
   (shell-command-on-region start end command t t))
+
+(defun oht/split-below ()
+"Split horizontally and switch to that new window."
+  (interactive)
+  (split-window-below)
+  (windmove-down))
+
+(defun oht/split-beside ()
+"Split vertically and switch to that new window."
+  (interactive)
+  (split-window-right)
+  (windmove-right))
 #+end_src
 
 * Auto-complete
@@ -861,18 +873,14 @@ _~_: modified
 
 ** Window Management
 
+Many of these commands are duplicated under [[*Windows Leader][Windows Leader]] below. Those are for one-off actions, this hydra is for entering a mini-mode where I want to do a series of window actions. The two compliment each other.
+
 #+begin_src emacs-lisp
 (defhydra hydra-windows (:color red)
   "Windows & Splits"
   ("<tab>" other-window "Cycle active window")
-  ("v" (lambda ()
-         (interactive)
-         (split-window-right)
-         (windmove-right) )"Vertical Split")
-  ("s" (lambda ()
-         (interactive)
-         (split-window-below)
-         (windmove-down)) "Split, Horizonal")
+  ("v" oht/split-beside "Vertical Split")
+  ("s" oht/split-below "Split, Horizonal")
   ("o" delete-other-windows "Only This Window" :color blue)
   ("k" delete-window "Delete Window")
   ("r" oht/toggle-window-split "Rotate Window Split")
@@ -926,6 +934,7 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
   ("d" kill-region "kill region")
   ("x" delete-char "delete-char")
   ("c" kill-region "change" :color blue)
+  ("C" kill-line "change to EOL" :color blue)
   ("I" beginning-of-visual-line "append" :color blue)
   ("a" forward-char "append" :color blue)
   ("A" end-of-visual-line "append line" :color blue)
@@ -963,7 +972,7 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
 (defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
   "Spelling"
   (";" flyspell-goto-next-error "Next")
-  (":" flyspell-correct-word-before-point "Correct")
+  (":" flyspell-auto-correct-word "Correct")
   ("q" nil "cancel" :color blue))
 #+end_src
 
@@ -1141,17 +1150,17 @@ All but one of these functions is built-in, but in their default form they're no
 [[https://support.apple.com/en-us/HT201236]]
 
 #+begin_src emacs-lisp
-;; in emacs <del> is backward-delete and <delete> is forward-delete
+;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
 ;; and by default option+forward-delete has no mapping
 (global-set-key (kbd "M-<delete>") 'kill-word)
-;; I don't think I've used ESC as a prefix one time
-;; and C-[ does the same thing
+;; C-[ sends ESC so let's make ESC more predictable
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 (global-set-key (kbd "s-,") 'oht/counsel-find-settings)
 (global-set-key (kbd "s-n") 'make-frame-command)
 (global-set-key (kbd "s-s") 'save-buffer)         ;save
 (global-set-key (kbd "s-S") 'write-file)          ;save as
 (global-set-key (kbd "M-s-s") 'save-some-buffers) ;save others
+(bind-key "s-a" 'mark-whole-buffer)
 (global-set-key (kbd "s-o") 'counsel-find-file)
 (global-set-key (kbd "M-s-o") 'counsel-buffer-or-recentf)
 (global-set-key (kbd "s-z") 'undo-tree-undo)
@@ -1160,6 +1169,7 @@ All but one of these functions is built-in, but in their default form they're no
 (global-set-key (kbd "s-c") 'kill-ring-save)
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-<backspace>") 'oht/kill-line-backward)
+(bind-key "s-w" 'oht/kill-this-buffer)
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "s-/") 'comment-line)
 (global-set-key (kbd "s-<up>") (kbd "M-<"))
@@ -1187,6 +1197,9 @@ All but one of these functions is built-in, but in their default form they're no
 (global-set-key (kbd "C-u") 'oht/kill-line-backward)
 ;; No reason not to use command-u for this
 (global-set-key (kbd "s-u") 'universal-argument)
+;; since ctrl+alt+b/f are system shortcuts, respect that
+(bind-key* "C-M-b" 'left-word)
+(bind-key* "C-M-f" 'right-word)
 #+end_src
 
 *** Enhance Emacs
@@ -1200,6 +1213,7 @@ All but one of these functions is built-in, but in their default form they're no
 (global-set-key (kbd "M-<down>") 'move-line-down)
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-z") 'zap-up-to-char) ;the default is 'zap-to-char
+(bind-key "C-/" 'flyspell-auto-correct-previous-word)
 #+end_src
 
 This cycles the spacing around point between a single space, no spaces, or the original spacing:
@@ -1211,7 +1225,6 @@ This cycles the spacing around point between a single space, no spaces, or the o
 *** Primary Bindings
 
 #+begin_src emacs-lisp
-(global-set-key (kbd "s-a") 'org-agenda)
 (global-set-key (kbd "s-p") 'counsel-M-x)
 (global-set-key (kbd "s-b") 'ivy-switch-buffer)
 (global-set-key (kbd "M-s-b") 'ibuffer)
@@ -1221,7 +1234,6 @@ This cycles the spacing around point between a single space, no spaces, or the o
 ;; s-y is my keybinding because excel has (a version of) repeat bound to that
 (bind-key "s-y" 'repeat)
 (global-set-key (kbd "s-j") 'hydra-modal/body)
-(global-set-key (kbd "s-w") 'hydra-windows/body)
 (global-set-key (kbd "s-;") 'hydra-flyspell/body)
 (global-set-key (kbd "s-|") 'hydra-manipulate/body)
 (bind-key "C-S-<mouse-1>" 'mc/add-cursor-on-click)
@@ -1232,18 +1244,28 @@ This cycles the spacing around point between a single space, no spaces, or the o
 I use =⌘-'= as the my leader.
 
 #+begin_src emacs-lisp
-(global-set-key (kbd "s-' a") 'counsel-ag)
-(global-set-key (kbd "s-' b") 'counsel-descbinds)
-(global-set-key (kbd "s-' c") 'org-capture)
-(global-set-key (kbd "s-' d") 'sdcv-search)
-(global-set-key (kbd "s-' f") 'oht/counsel-find-org)
-(global-set-key (kbd "s-' h") 'hl-line-mode)
-(global-set-key (kbd "s-' k") 'oht/kill-this-buffer)
-(global-set-key (kbd "s-' l") 'oht/toggle-line-numbers)
-(global-set-key (kbd "s-' o") 'counsel-outline)
-(global-set-key (kbd "s-' s-o") 'counsel-org-goto-all)
-(global-set-key (kbd "s-' w") 'oht/toggle-whitespace)
+(bind-key "s-' a" 'org-agenda)
+(bind-key "s-' b" 'counsel-descbinds)
+(bind-key "s-' c" 'org-capture)
+(bind-key "s-' d" 'sdcv-search)
+(bind-key "s-' f" 'oht/counsel-find-org)
+(bind-key "s-' h" 'hl-line-mode)
+(bind-key "s-' l" 'oht/toggle-line-numbers)
+(bind-key "s-' o" 'counsel-outline)
+(bind-key "s-' s-o" 'counsel-org-goto-all)
+(bind-key "s-' w" 'oht/toggle-whitespace)
 (bind-key "s-' m" 'mc/edit-lines)
+#+end_src
+
+*** Windows Leader
+
+#+begin_src emacs-lisp
+(bind-key "s-= s" 'oht/split-below)
+(bind-key "s-= v" 'oht/split-beside)
+(bind-key "s-= h" 'hydra-windows/body)
+(bind-key "s-= k" 'delete-window)
+(bind-key "s-= o" 'delete-other-windows)
+(bind-key "s-= b" 'balance-windows)
 #+end_src
 
 *** Mode Specific Bindings

@@ -1,9 +1,0 @@
-# run tic ./tmux.terminfo
-# then make sure this is in your tmux.conf:
-# set -g default-terminal 'tmux-256color'
-# set -as terminal-overrides ',xterm*:sitm=\E[3m'
-
-
-xterm-256color-italic|xterm with 256 colors and italic,
-  sitm=\E[3m, ritm=\E[23m,
-  use=xterm-256color,

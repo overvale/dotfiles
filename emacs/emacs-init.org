@@ -168,6 +168,8 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 (global-set-key (kbd "C-e") 'end-of-line)
 (global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
 (global-set-key (kbd "s-<right>") 'end-of-visual-line)
+;; C-k only killing the visual line also isn't how macOS works
+(bind-key* "C-k" 'kill-line)
 #+end_src
 
 ** Enable Packages, and Their Basic Settings
@@ -564,6 +566,13 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
   (kill-line 0))
 
+(defun oht/kill-region-or-char ()
+  "If there's a region, kill it, if not, kill the next character."
+  (interactive)
+  (if (use-region-p)
+      (kill-region (region-beginning) (region-end))
+    (delete-forward-char 1 nil)))
+
 (defun oht/toggle-line-numbers ()
   "Toggles display of line numbers. Applies to all buffers."
   (interactive)
@@ -923,17 +932,21 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
   ;; move larger
   ("C-h" backward-word "previous word")
   ("C-l" forward-word "end of next word")
+  ("b" backward-word "previous word")
+  ("e" forward-word "end of next word")
   ("C-k" backward-paragraph "back paragraph")
   ("C-j" forward-paragraph "forward paragraph")
   ("u" beginning-of-visual-line "start of line")
   ("p" end-of-visual-line "end of line")
+  ("0" beginning-of-visual-line "start of line")
+  ("$" end-of-visual-line "end of line")
   ;; edit
   ("J" oht/join-line-next "join")
+  ("y" kill-ring-save "Copy")
   ("P" yank "paste")
   ("<DEL>" kill-region "kill region")
-  ("d" kill-region "kill region")
-  ("x" delete-char "delete-char")
-  ("c" kill-region "change" :color blue)
+  ("d" oht/kill-region-or-char "kill region")
+  ("c" oht/kill-region-or-char "change" :color blue)
   ("C" kill-line "change to EOL" :color blue)
   ("I" beginning-of-visual-line "append" :color blue)
   ("a" forward-char "append" :color blue)
@@ -942,13 +955,14 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
   ;; view
   ("z" recenter-top-bottom "cycle recenter")
   ("[" scroll-down-line "scroll line up")
-  ("]" scroll-up-line"scroll line down")
+  ("]" scroll-up-line "scroll line down")
   ("{" scroll-down-command "scroll up")
   ("}" scroll-up-command "scroll down")
   ;; select
   ("v" set-mark-command "mark")
   ("V" oht/mark-whole-line "mark whole line")
   ("C-v" rectangle-mark-mode "rectangle mark")
+  ("C-r" replace-rectangle "replace rectangle")
   ("o" exchange-point-and-mark "swap point/mark")
   ;; pass-through
   ("s-z" undo-tree-undo "undo")

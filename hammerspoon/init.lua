@@ -39,6 +39,13 @@ spoon.MiroWindowsManager:bindHotkeys({
   fullscreen = {hyper, "f"}
 })
 
+local VimMode = hs.loadSpoon('VimMode')
+local vim = VimMode:new()
+vim:bindHotKeys({ enter = {{'ctrl'}, '['} })
+vim:disableForApp('Terminal')
+vim:disableForApp('Emacs')
+vim:shouldDimScreenInNormalMode(nil)
+
 -- Window Snapping
 -- -----------------------------------------------
 
@@ -133,32 +140,5 @@ hs.hotkey.bind({'ctrl'}, 'w', function() hs.eventtap.keyStroke({'alt'}, 'delete'
 hs.hotkey.bind({'ctrl'}, 'u', function() hs.eventtap.keyStroke({'cmd'}, 'delete') end)
 hs.hotkey.bind({'ctrl'}, ';', function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'b') end)
 hs.hotkey.bind({'ctrl'}, "'", function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'f') end)
-hs.hotkey.bind({'ctrl'}, ',', function() hs.eventtap.keyStroke({'alt'}, 'delete') end)
-hs.hotkey.bind({'ctrl'}, '.', function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)
-
--- VIM Mode
--- -----------------------------------------------
-
-local normal = hs.hotkey.modal.new()
-
-enterNormal = hs.hotkey.bind({"ctrl"}, "[", function()
-      normal:enter()
-      hs.alert.show('Normal mode')
-end)
-
-function left() hs.eventtap.keyStroke({}, "Left") end
-normal:bind({}, 'h', left, nil, left)
-
-function right() hs.eventtap.keyStroke({}, "Right") end
-normal:bind({}, 'l', right, nil, right)
-
-function up() hs.eventtap.keyStroke({}, "Up") end
-normal:bind({}, 'k', up, nil, up)
-
-function down() hs.eventtap.keyStroke({}, "Down") end
-normal:bind({}, 'j', down, nil, down)
-
-normal:bind({}, 'i', function()
-    normal:exit()
-    hs.alert.show('Insert mode')
-end)
+--hs.hotkey.bind({'ctrl'}, ',', function() hs.eventtap.keyStroke({'alt'}, 'delete') end)
+--hs.hotkey.bind({'ctrl'}, '.', function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)

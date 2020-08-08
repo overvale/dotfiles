@@ -129,3 +129,31 @@ hs.hotkey.bind(mash, "m", function() toggleApplication("Mail") end)
 hs.hotkey.bind(mash, "p", function() toggleApplication("System Preferences") end)
 hs.hotkey.bind(mash, "s", function() toggleApplication("Spotify") end)
 hs.hotkey.bind(mash, "t", function() toggleApplication("Terminal") end)
+
+-- VIM Mode
+-- -----------------------------------------------
+
+local normal = hs.hotkey.modal.new()
+
+enterNormal = hs.hotkey.bind({"ctrl"}, "[", function()
+      normal:enter()
+      hs.alert.show('Normal mode')
+end)
+
+function left() hs.eventtap.keyStroke({}, "Left") end
+normal:bind({}, 'h', left, nil, left)
+
+function right() hs.eventtap.keyStroke({}, "Right") end
+normal:bind({}, 'l', right, nil, right)
+
+function up() hs.eventtap.keyStroke({}, "Up") end
+normal:bind({}, 'k', up, nil, up)
+
+function down() hs.eventtap.keyStroke({}, "Down") end
+normal:bind({}, 'j', down, nil, down)
+
+normal:bind({}, 'i', function()
+    normal:exit()
+    hs.alert.show('Insert mode')
+end)
+

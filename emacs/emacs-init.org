@@ -193,13 +193,6 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 ;; set this to nil to change that.
 ;; (setq ivy-initial-inputs-alist nil)
 
-;; Hide details in dired mode
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (dired-hide-details-mode 1)
-	    (auto-revert-mode)
-	  ))
-
 (require 'bind-key)
 
 (require 'ivy-rich)
@@ -744,7 +737,12 @@ The below code is +stolen+ adapted from /prot/.
 ;;   )
 ;; (add-hook 'fountain-mode 'oht/fountain-mode-hook)
 
-
+;; Hide details in dired mode
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (dired-hide-details-mode 1)
+	    (auto-revert-mode)
+	  ))
 #+end_src
 
 * Hydra

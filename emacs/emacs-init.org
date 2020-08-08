@@ -40,6 +40,10 @@ For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmar
 
 * Settings
 
+** Installation
+
+First, make sure you're using the correct version. I like [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][Mitsuharu Yamamoto's Emacs fork]] because it provides [[https://bitbucket.org/mituharu/emacs-mac/src/f3402395995bf70e50d6e65f841e44d5f9b4603c/README-mac?at=master&fileviewer=file-view-default][a lot of nice stuff]] for people who want their Emacs to be a better macOS citizen.
+
 ** Setup
 
 I've seen it listed in a few places, so I'm trying it on, but this is supposed to help reduce emacs startup time.
@@ -1103,8 +1107,7 @@ Emacs, in fact, supports this and calls it "secondary selection" but it is not e
 - You can also use the hydra to make the current region the secondary selection.
 - Once the secondary selection is active you can go about your typing, including copy/paste actions.
 - Then, when you want to do something with the secondary selection, activate the hydra.
-
-Another scenario: when you realize, mid-typing, that you want to paste text from elsewhere, you can leave the insertion point where it is, make a secondary selection, and insert it directly.
+- Another scenario: when you realize, mid-typing, that you want to paste text from elsewhere, you can leave the insertion point where it is, make a secondary selection, and insert it directly.
 
 ** References
 

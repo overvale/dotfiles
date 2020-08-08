@@ -211,6 +211,14 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 ;; add columns to the mode-line
 (column-number-mode t)
 (minions-mode t)
+
+(setq org-superstar-headline-bullets-list
+      '("❡" "✿" "❖" "※"))
+(require 'org-superstar)
+(setq org-superstar-item-bullet-alist
+      '((?- . ?•)
+	(?+ . ?▶)
+	(?* . ?▷)))
 #+end_src
 
 ** Info: explicit package installation
@@ -713,6 +721,9 @@ The below code is +stolen+ adapted from /prot/.
 
 (defun oht/org-mode-hook ()
   (oht/writing-mode)
+  (org-superstar-mode 1)
+  ;; this shouldn't be needed, debugging
+  (undo-tree-mode)
   )
 (add-hook 'org-mode-hook 'oht/org-mode-hook)
 

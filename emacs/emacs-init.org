@@ -1244,7 +1244,7 @@ All but one of these functions is built-in, but in their default form they're no
 (global-set-key (kbd "M-<down>") 'move-line-down)
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-z") 'zap-up-to-char) ;the default is 'zap-to-char
-(bind-key "C-/" 'flyspell-auto-correct-previous-word)
+(bind-key* "C-/" 'flyspell-auto-correct-previous-word)
 #+end_src
 
 This cycles the spacing around point between a single space, no spaces, or the original spacing:

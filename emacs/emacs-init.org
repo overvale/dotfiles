@@ -210,7 +210,8 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 (minions-mode t)
 
 (setq org-superstar-headline-bullets-list
-      '("❡" "✿" "❖" "※"))
+      '("§" "¶" "†" "◊"))
+(setq org-superstar-special-todo-items nil)
 (require 'org-superstar)
 (setq org-superstar-item-bullet-alist
       '((?- . ?•)
@@ -321,7 +322,7 @@ Here the fonts are setup in a function so I can change them all in once step by 
 ;; This sets the sequence of plain list bullets
 ;; The syntax is confusing and I don't understand it,
 ;; but I like the results.
-(setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
+(setq org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+")))
 
 ;; Increase sub-item indentation by this amount
 ;; the default is 2 so the below means 2+2 = 4 (spaces)

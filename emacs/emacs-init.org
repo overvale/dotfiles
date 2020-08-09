@@ -173,7 +173,7 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 (global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
 (global-set-key (kbd "s-<right>") 'end-of-visual-line)
 ;; C-k only killing the visual line also isn't how macOS works
-(bind-key* "C-k" 'kill-line)
+(bind-key* "C-k" 'oht/kill-line)
 #+end_src
 
 ** Enable Packages, and Their Basic Settings
@@ -565,6 +565,12 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
   (set-mark-command nil)
   (end-of-visual-line)
+  )
+
+(defun oht/kill-line ()
+  "Kill to end of line. This custom function is needed because binding c-k to kill-line doesn't work due to kill-line being remapped, so the remapped value is always executed. But calling a custom function obviates this and allows kill-line to be called directly. Nil is required."
+  (interactive)
+  (kill-line nil)
   )
 
 (defun oht/kill-line-backward ()

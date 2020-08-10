@@ -181,6 +181,9 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 #+begin_src emacs-lisp
 (which-key-mode t)              ;hints
 (global-undo-tree-mode t)       ;activate undo-tree everywhere
+(setq-default undo-tree-visualizer-timestamps t)
+(setq-default undo-tree-visualizer-diff t)
+
 (require 'expand-region)        ;lovely plugin
 
 (add-to-list 'load-path (expand-file-name "lisp/emacs-sdcv" user-emacs-directory))
@@ -1263,6 +1266,7 @@ All but one of these functions is built-in, but in their default form they're no
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-z") 'zap-up-to-char) ;the default is 'zap-to-char
 (bind-key* "C-/" 'flyspell-auto-correct-previous-word)
+(bind-key "s-M-z" 'undo-tree-visualize)
 #+end_src
 
 This cycles the spacing around point between a single space, no spaces, or the original spacing:

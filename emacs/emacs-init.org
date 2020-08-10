@@ -805,7 +805,7 @@ These commands pretty much require a region.
 There are so many ways to transpose in Emacs, why not get help?
 
 #+begin_src emacs-lisp
-(defhydra hydra-transpose (:color pink)
+(defhydra hydra-transpose (:color blue)
   "Transpose"
   ("c" transpose-chars "characters")
   ("w" transpose-words "words")
@@ -815,7 +815,8 @@ There are so many ways to transpose in Emacs, why not get help?
   ("e" org-transpose-elements "Org mode elements")
   ("p" transpose-paragraphs "paragraphs")
   ("t" org-table-transpose-table-at-point "Org mode table")
-  ("q" nil "cancel" :color blue))
+  ("x" transpose-sexps "s expressions")
+  ("q" nil "cancel"))
 #+end_src
 
 ** Dired
@@ -1222,6 +1223,7 @@ All but one of these functions is built-in, but in their default form they're no
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-<backspace>") 'oht/kill-line-backward)
 (bind-key "s-w" 'oht/kill-this-buffer)
+(bind-key "s-t" 'hydra-transpose/body)
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "s-/") 'comment-line)
 (global-set-key (kbd "s-<up>") (kbd "M-<"))
@@ -1259,7 +1261,6 @@ All but one of these functions is built-in, but in their default form they're no
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-s") 'swiper-isearch)
 (global-set-key (kbd "C-r") 'swiper-isearch-backward)
-(global-set-key (kbd "M-t") 'hydra-transpose/body)
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)

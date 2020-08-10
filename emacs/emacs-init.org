@@ -38,19 +38,34 @@ Anyone learning vim, emacs, zsh, bash, or something similar, spends a lot of tim
 
 For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
 
-* Settings
-
-** Installation
+* Installation
 
 First, make sure you're using the correct version. I like [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][Mitsuharu Yamamoto's Emacs fork]] because it provides [[https://bitbucket.org/mituharu/emacs-mac/src/f3402395995bf70e50d6e65f841e44d5f9b4603c/README-mac?at=master&fileviewer=file-view-default][a lot of nice stuff]] for people who want their Emacs to be a better macOS citizen.
 
-** Setup
+* Settings
+
+** Emacs Startup
 
 I've seen it listed in a few places, so I'm trying it on, but this is supposed to help reduce emacs startup time.
 
 #+begin_src emacs-lisp
 (setq gc-cons-threshold 50000000)
 #+end_src
+
+This tells emacs to startup with a scratch buffer, with custom content, and to do it quietly.
+
+#+begin_src emacs-lisp
+(setq initial-scratch-message
+      (concat
+       ";; This buffer is for text that is not saved, and for Lisp evaluation.\n"
+       ";; To create a file, visit it with C-x C-f and enter text in its buffer.\n"
+       ";; WELCOME TO EMACS\n"))
+(setq inhibit-splash-screen t
+      inhibit-startup-message t
+      inhibit-startup-echo-area-message t)
+#+end_src
+
+** Encoding
 
 Set encoding to be UTF-8 everywhere.
 
@@ -61,6 +76,8 @@ Set encoding to be UTF-8 everywhere.
 (prefer-coding-system 'utf-8-unix)
 #+end_src
 
+** Customizing
+
 When customizing Emacs interactively (ie: not in this document or =init.el=) Emacs appends code to your =init.el= file, which can be annoying when editing it by hand. This tells Emacs to place these customizations in a separate file.
 
 #+begin_src emacs-lisp
@@ -69,12 +86,25 @@ When customizing Emacs interactively (ie: not in this document or =init.el=) Ema
   (load custom-file :noerror))
 #+end_src
 
+** emacs.d layout
+
 This tells emacs how I've laid-out by emacs directory.
 
 #+begin_src emacs-lisp
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 (setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
 #+end_src
+
+Emacs can automatically create backup files. This tells Emacs to put all backups in =~/.emacs.d/backups=. [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html][More info]].
+
+#+begin_src emacs-lisp
+(setq backup-directory-alist `(("." . ,(concat user-emacs-directory
+                                               "backups"))))
+#+end_src
+
+** Making Emacs More Consistent with macOS
+
+*** Keybindings
 
 The below is probably the biggest reason why I managed get over the intimidation of using Emacs in those first few days. Here's what it does:
 
@@ -99,68 +129,17 @@ Due to historical reasons, emacs thinks =C-i= is the same as =TAB= and =C-m= is 
 (define-key input-decode-map [?\C-i] [C-i])
 (global-set-key (kbd "<C-i>") nil)
 (define-key input-decode-map [?\C-m] [C-m])
-(global-set-key (kbd "<C-m>") 'set-mark-command)
 #+end_src
 
-When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=. This makes Emacs refer to them as =foo/file= and =bar/file=, like a sane program.
+*** Replace Selection
+
+By default, Emacs doesn't replace the selection (region) with anything you type, it just deletes your selection and appends what you type. The below makes what you type /replace/ your selection.
 
 #+begin_src emacs-lisp
-;;(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
+(delete-selection-mode t)
 #+end_src
 
-This tells emacs to startup with a scratch buffer, with custom content, and to do it quietly.
-
-#+begin_src emacs-lisp
-(setq initial-scratch-message
-      (concat
-       ";; This buffer is for text that is not saved, and for Lisp evaluation.\n"
-       ";; To create a file, visit it with C-x C-f and enter text in its buffer.\n"
-       ";; WELCOME TO EMACS\n"))
-(setq inhibit-splash-screen t
-      inhibit-startup-message t
-      inhibit-startup-echo-area-message t)
-#+end_src
-
-Emacs can automatically create backup files. This tells Emacs to put all backups in =~/.emacs.d/backups=. [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html][More info]].
-
-#+begin_src emacs-lisp
-(setq backup-directory-alist `(("." . ,(concat user-emacs-directory
-                                               "backups"))))
-#+end_src
-
-** General
-
-#+begin_src emacs-lisp
-(menu-bar-mode 1)                     ; ensures full-screen avail on macOS
-(tool-bar-mode -1)                    ; hide menu-bar
-(show-paren-mode t)                   ; highlight parens
-(setq show-paren-delay 0)             ; and show immediately
-(delete-selection-mode t)             ; typing on region deletes region
-(global-auto-revert-mode t)           ; update buffer when file on disk changes
-;;(desktop-save-mode 1)                 ; sessions
-(save-place-mode 1)                   ; reopens the file to the same spot you left
-(recentf-mode 1)                      ; enables "Open Recent..." in file menu
-(setq visible-bell t)                 ; disable beep
-(setq tab-width 4)                    ; tabs=4 char
-(setq help-window-select t)           ; focus new help windows when opened
-(setq sentence-end-double-space nil)  ; ends sentence after 1 space
-(fset 'yes-or-no-p 'y-or-n-p)        ; Changes all yes/no questions to y/n type
-(setq create-lockfiles nil)          ; No need for ~ files when editing
-
-;;(setq-default indicate-empty-lines nil)
-(setq-default frame-title-format '("%b %f %I"))
-#+end_src
-
-*** Spelling
-
-#+begin_src emacs-lisp
-(setq ispell-program-name "/usr/local/bin/aspell")
-(customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
-(setq ispell-list-command "list")
-#+end_src
-
-** Visual Line Mode
+*** Visual Line Mode
 
 Visual line mode is super helpful, but out-of-the-box it behaves inconsistently with the rest of macOS, so this includes code to make it the same.
 
@@ -170,16 +149,47 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 ;; with visual-line-mode set,
 ;; C-a and C-b go to beginning/end-of-visual-line
 ;; which is inconsistant with standard Mac behaviour
-;; so I've bound those to command-left/right
 (global-set-key (kbd "C-a") 'beginning-of-line)
 (global-set-key (kbd "C-e") 'end-of-line)
 (global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
 (global-set-key (kbd "s-<right>") 'end-of-visual-line)
-;; C-k only killing the visual line also isn't how macOS works
+;; C-k only killing the visual line also isn't how macOS works.
+;; This has to be set to a custom function so minor modes can't hijack it.
 (bind-key* "C-k" 'oht/kill-line)
 #+end_src
 
-** Enable Packages, and Their Basic Settings
+** Uniquify!
+
+When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=. This makes Emacs refer to them as =foo/file= and =bar/file=, like a sane program.
+
+#+begin_src emacs-lisp
+;;(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+#+end_src
+
+** Spelling
+
+#+begin_src emacs-lisp
+(setq ispell-program-name "/usr/local/bin/aspell")
+(customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
+(setq ispell-list-command "list")
+#+end_src
+
+** General Settings
+
+#+begin_src emacs-lisp
+(global-auto-revert-mode t)           ; update buffer when file on disk changes
+;;(desktop-save-mode 1)                 ; sessions
+(save-place-mode 1)                   ; reopens the file to the same spot you left
+(recentf-mode 1)                      ; enables "Open Recent..." in file menu
+(setq tab-width 4)                    ; tabs=4 char
+(setq help-window-select t)           ; focus new help windows when opened
+(setq sentence-end-double-space nil)  ; ends sentence after 1 space
+(fset 'yes-or-no-p 'y-or-n-p)         ; Changes all yes/no questions to y/n type
+(setq create-lockfiles nil)           ; No need for ~ files when editing
+#+end_src
+
+* Packages
 
 #+begin_src emacs-lisp
 (which-key-mode t)              ;hints
@@ -211,17 +221,7 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 
 (require 'multiple-cursors)
 
-;; add columns to the mode-line
-(column-number-mode t)
 (minions-mode t)
-(setq display-time-format "%H:%M  %Y-%m-%d")
-;;;; Covered by `display-time-format'
-;; (setq display-time-24hr-format t)
-;; (setq display-time-day-and-date t)
-(setq display-time-interval 60)
-(setq display-time-mail-directory nil)
-(setq display-time-default-load-average nil)
-(display-time-mode t)
 
 (setq org-superstar-headline-bullets-list
       '("§" "¶" "†" "◊"))
@@ -232,8 +232,6 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 	(?+ . ?▶)
 	(?* . ?▷)))
 #+end_src
-
-** Info: explicit package installation
 
 You can ensure packages are installed with something like this (no need for use-package!):
 
@@ -262,6 +260,21 @@ You can also set this variable with:
 
 * Appearance
 
+** Display
+
+#+begin_src emacs-lisp
+(menu-bar-mode 1)                          ; ensures full-screen avail on macOS
+(tool-bar-mode -1)                         ; hide menu-bar
+(show-paren-mode t)                        ; highlight parens
+(setq show-paren-delay 0)                  ; and show immediately
+(setq visible-bell t)                      ; disable beep
+(setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
+(set-default 'cursor-type 'bar)            ; use bar here, box in modes
+(setq x-underline-at-descent-line t)       ; underline at descent, not baseline
+#+end_src
+
+** Fonts
+
 Here the fonts are setup in a function so I can change them all in once step by calling =oht/set-font=.
 
 #+begin_src emacs-lisp
@@ -289,10 +302,13 @@ Here the fonts are setup in a function so I can change them all in once step by 
   (set-face-attribute 'bold nil :weight 'semibold)
   )
 
-(set-default 'cursor-type 'bar)
-;; Underline line at descent position, not baseline position
-(setq x-underline-at-descent-line t)
+(oht/set-font)
 
+#+end_src
+
+** Theme
+
+#+begin_src emacs-lisp
 ;; https://gitlab.com/protesilaos/modus-themes
 (setq
  modus-operandi-theme-faint-syntax t
@@ -306,71 +322,41 @@ Here the fonts are setup in a function so I can change them all in once step by 
  modus-operandi-theme-3d-modeline t
  modus-vivendi-theme-3d-modeline t
  )
-
 (load-theme 'modus-operandi t)
-(oht/set-font)
 
 (defadvice load-theme (before clear-previous-themes activate)
   "Clear existing theme settings instead of layering them"
   (mapc #'disable-theme custom-enabled-themes))
 #+end_src
 
-* Org
-
-** General
+** Mode Line
 
 #+begin_src emacs-lisp
-;; fix the look of source code blocks
-(setq org-src-fontify-natively t)
-(setq org-src-tab-acts-natively t)
-(setq org-edit-src-content-indentation 0)
+;; add columns to the mode-line
+(column-number-mode t)
+(setq display-time-format "%H:%M  %Y-%m-%d")
+;;;; Covered by `display-time-format'
+;; (setq display-time-24hr-format t)
+;; (setq display-time-day-and-date t)
+(setq display-time-interval 60)
+(setq display-time-mail-directory nil)
+(setq display-time-default-load-average nil)
+(display-time-mode t)
+#+end_src
 
+* Org
+
+** Settings
+
+#+begin_src emacs-lisp
 ;; do not indent text below a headline
 (setq org-adapt-indentation nil)
 
 ;; I don't like not seeing the stars, since those are markup
 (setq org-hide-leading-stars nil)
 
-;; by default, hide org-markup
-;; I have a toggle for this defined in functions
-(setq org-hide-emphasis-markers t)
-
-;; Style quote and verse blocks
-(setq org-fontify-quote-and-verse-blocks t)
-
-;; This adds 'COMPLETED: DATE' when you move something to a DONE state
-(setq org-log-done 'time)
-
-;; Tags start immediately after the headline
-(setq org-tags-column 0)
-
 ;; This prevents editing inside folded sections
 (setq org-catch-invisible-edits 'show-and-error)
-
-;; Lists may be labelled with letters.
-(setq org-list-allow-alphabetical t)
-
-;; This sets the sequence of plain list bullets
-;; The syntax is confusing and I don't understand it,
-;; but I like the results.
-(setq org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+")))
-
-;; Character to display at the end of a folded headline
-(setq org-ellipsis " ⬎")
-
-;; Increase sub-item indentation by this amount
-;; the default is 2 so the below means 2+2 = 4 (spaces)
-(setq org-list-indent-offset 2)
-
-;; this tells org to use the current window for agenda
-;; rather than creating a split
-(setq org-agenda-window-setup 'current-window)
-
-;; Ensure that a task can’t be marked as done if it contains
-;; unfinished subtasks or checklist items. This is handy for
-;; organizing “blocking” tasks hierarchically.
-(setq org-enforce-todo-dependencies t)
-(setq org-enforce-todo-checkbox-dependencies t)
 
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
@@ -381,18 +367,117 @@ Here the fonts are setup in a function so I can change them all in once step by 
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 #+end_src
 
-** Org Agenda & TODOs
+** Look & Feel
+
+#+begin_src emacs-lisp
+;; by default, hide org-markup
+;; I have a toggle for this defined in functions
+(setq org-hide-emphasis-markers t)
+
+;; Style quote and verse blocks
+(setq org-fontify-quote-and-verse-blocks t)
+
+;; Character to display at the end of a folded headline
+(setq org-ellipsis " ⬎")
+
+;; this tells org to use the current window for agenda
+;; rather than creating a split
+(setq org-agenda-window-setup 'current-window)
+#+end_src
+
+** Source Code Blocks
+
+#+begin_src emacs-lisp
+(setq org-src-fontify-natively t)
+(setq org-src-tab-acts-natively t)
+(setq org-edit-src-content-indentation 0)
+#+end_src
+
+** Lists
+
+#+begin_src emacs-lisp
+;; Lists may be labelled with letters.
+(setq org-list-allow-alphabetical t)
+
+;; This sets the sequence of plain list bullets
+;; The syntax is confusing and I don't understand it,
+;; but I like the results.
+(setq org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+")))
+
+;; Increase sub-item indentation by this amount
+;; the default is 2 so the below means 2+2 = 4 (spaces)
+(setq org-list-indent-offset 2)
+#+end_src
+
+** Keywords
 
 #+begin_src emacs-lisp
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
         (sequence "WAITING(w)" "HOLD(h)" "|" "CANCELLED(c)")))
 
+;; Ensure that a task can’t be marked as done if it contains
+;; unfinished subtasks or checklist items. This is handy for
+;; organizing "blocking" tasks hierarchically.
+(setq org-enforce-todo-dependencies t)
+(setq org-enforce-todo-checkbox-dependencies t)
+
+;; This adds 'COMPLETED: DATE' when you move something to a DONE state
+(setq org-log-done 'time)
+#+end_src
+
+** Tags
+
+I find tags to be of very limited utility, but it is useful to tag truly unimportant things to that you can match filter them out of your agenda view. You can group those tags so that you only have to match against the group name.
+
+#+begin_src emacs-lisp
+(setq org-tag-alist '(("research" . ?r)
+		      ("buy"      . ?b)
+		      ("mac"      . ?m)
+		      ("emacs"    . ?k)
+		      ("org"      . ?o)
+		      ("errand"   . ?e)
+		      ))
+
+;; Tags start immediately after the headline
+;; I have this set because I'm typically in variable-pitch-mode
+;; when editing org-files, in which the tag column doesn't align correctly
+(setq org-tags-column 0)
+#+end_src
+
+** Capture Templates
+
+#+begin_src emacs-lisp
+(setq org-capture-templates
+      '(("p" "Personal Inbox" entry
+         (file+headline "~/Documents/org-files/refile.org" "Personal")
+         "* %?\n\n")
+        ("P" "Personal Log Entry" entry
+         (file "~/Documents/org-files/logbook.org")
+         "* %?\n%t\n\n")
+        ("i" "Ingenuity Inbox" entry
+         (file+headline "~/Documents/org-files/refile.org" "Ingenuity")
+         "* %?\n\n")
+        ("I" "Ingenuity Log Entry" entry
+         (file "~/Documents/org-files/ingenuity_logbook.org")
+         "* %^{Log type|Meeting: |Call: } %? %t\n\n")
+        ))
+#+end_src
+
+** Agenda
+
+This defines which files you want included in your agenda/TODO views.
+
+#+begin_src emacs-lisp
 (setq org-agenda-files
       '("~/Documents/org-files/"
 	"~/Documents/writing/kindred/compendium.org"
 	))
+#+end_src
 
+This defines custom agendas.
+
+#+begin_src emacs-lisp
 (setq org-agenda-custom-commands
       '(
         ("v" "Today + Tasks: not scheduled, not WAIT"
@@ -414,35 +499,9 @@ Here the fonts are setup in a function so I can change them all in once step by 
                  ))
           ))
         ))
-
-(setq org-capture-templates
-      '(("p" "Personal Inbox" entry
-         (file+headline "~/Documents/org-files/refile.org" "Personal")
-         "* %?\n\n")
-        ("P" "Personal Log Entry" entry
-         (file "~/Documents/org-files/logbook.org")
-         "* %?\n%t\n\n")
-        ("i" "Ingenuity Inbox" entry
-         (file+headline "~/Documents/org-files/refile.org" "Ingenuity")
-         "* %?\n\n")
-        ("I" "Ingenuity Log Entry" entry
-         (file "~/Documents/org-files/ingenuity_logbook.org")
-         "* %^{Log type|Meeting: |Call: } %? %t\n\n")
-        ))
 #+end_src
 
-** Org Agenda Sorting
-
-For more info see the documentation for the variable =org-agenda-sorting-strategy=. The default setting for this is:
-
-#+begin_example
-((agenda habit-down time-up priority-down category-keep)
-  (todo priority-down category-keep)
-  (tags priority-down category-keep)
-  (search category-keep))
-#+end_example
-
-Each type of agenda view can be independently customized. The only thing I changed below is that in the todo view I want things sorted first by category, then by priority within that.
+Each type of agenda view can be independently customized. The only thing I've changed from the default is that in the todo view I want things sorted first by category, then by priority within that. For more info see the documentation for the variable =org-agenda-sorting-strategy=.
 
 #+begin_src emacs-lisp
 (setq org-agenda-sorting-strategy
@@ -453,7 +512,7 @@ Each type of agenda view can be independently customized. The only thing I chang
 	 (search category-keep))))
 #+end_src
 
-** Org Agenda Keybindings
+And here we have some custom commands for the agenda view.
 
 #+begin_src emacs-lisp
 ;; You have to wait until org-agenda loads because org itself
@@ -465,18 +524,178 @@ Each type of agenda view can be independently customized. The only thing I chang
 		))
 #+end_src
 
-** Tags
+* Auto-complete
 
-I find tags to be of very limited utility, but it is useful to tag truly unimportant things to that you can match filter them out of your agenda view. You can group those tags so that you only have to match against the group name.
+I've tried a few completion packages and they've all left me cold. =hippy-expand= generally gets me what I want, but I'd like the pop-up list to use =ivy/counsel=. Some googling led me to this.
 
 #+begin_src emacs-lisp
-(setq org-tag-alist '(("research" . ?r)
-		      ("buy"      . ?b)
-		      ("mac"      . ?m)
-		      ("emacs"    . ?k)
-		      ("org"      . ?o)
-		      ("errand"   . ?e)
-		      ))
+;; https://gist.github.com/JohnLunzer/7c6d72a14c76c0a3057535e4f6148ef8
+(defun my-hippie-expand-completions (&optional hippie-expand-function)
+  "Return list of completions generated by `hippie-expand'."
+  (save-excursion
+    (let ((this-command 'my-hippie-expand-completions)
+          (last-command last-command)
+          (hippie-expand-function (or hippie-expand-function 'hippie-expand)))
+      (while (progn
+               (funcall hippie-expand-function nil)
+               (setq last-command 'my-hippie-expand-completions)
+               (not (equal he-num -1))))
+      ;; Provide the options in the order in which they are normally generated.
+      (delete he-search-string (reverse he-tried-table)))))
+
+(defun my-ido-or-ivy-hippie-expand-with (hippie-expand-function)
+  "Offer ido or ivy based completion using the specified hippie-expand function."
+  (let* ((options (my-hippie-expand-completions hippie-expand-function)))
+    (if options
+        (progn
+          (if (> (safe-length options) 1)
+              (if (require 'ivy nil t)
+                  (setq selection (ivy-read "Completions: " options))
+                (setq selection (ido-completing-read "Completions: " options)))
+            (setq selection (car options)))
+          (if selection
+              (he-substitute-string selection t)))
+      (message "No expansion found"))))
+
+(defun my-ido-or-ivy-hippie-expand ()
+  "Offer ido or ivy based completion for the word at point."
+  (interactive)
+  (my-ido-or-ivy-hippie-expand-with 'hippie-expand))
+#+end_src
+
+* Custom Minor Modes
+
+/For future reference.../
+
+You might want to think about creating a minor-mode you can call when switching to a new mode.
+
+The below code is +stolen+ adapted from /prot/.
+
+#+begin_example
+(define-minor-mode oht/writing-mode
+	“Explaination”
+	:init-value nil
+	:global nil
+	(if oht/writing-mode
+		(progn
+		  (olivetti-mode 1)
+		  (hl-line-mode 1)
+		  (setq-local cursor-type ‘(bar . 4))
+	  (olivetti-mode -1)
+	  (hl-line-mode 1)
+	  ((setq-local cursor-type ‘(bar . 2))))
+#+end_example
+
+* Mode Hooks
+
+#+begin_src emacs-lisp
+(defun oht/markdown-mode-hook ()
+  (oht/writing-mode)
+  )
+(add-hook 'markdown-mode-hook 'oht/markdown-mode-hook)
+
+(defun oht/org-mode-hook ()
+  (oht/writing-mode)
+  (org-superstar-mode 1)
+  ;; this shouldn't be needed, debugging
+  (undo-tree-mode)
+  )
+(add-hook 'org-mode-hook 'oht/org-mode-hook)
+
+(defun oht/org-agenda-hook ()
+  (hl-line-mode 1)
+  )
+(add-hook 'org-agenda-hook 'oht/org-agenda-hook)
+
+(defun oht/emacs-lisp-mode ()
+  (outline-minor-mode t)
+  (rainbow-delimiters-mode t)
+  )
+(add-hook 'emacs-lisp-mode 'oht/emacs-lisp-mode)
+
+(defun oht/fountain-mode-hook ()
+  (fountain-add-continued-dialog nil)
+  (fountain-highlight-elements (quote (section-heading)))
+  )
+(add-hook 'fountain-mode 'oht/fountain-mode-hook)
+
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (dired-hide-details-mode 1)
+	    (auto-revert-mode)
+	  ))
+#+end_src
+
+* Secondary Selection
+
+** Background
+
+In the olden days, many computer programs (like the X-Windows system and WordStar) had something called =secondary-selection=. Robert Sawyer, [[https://arstechnica.com/information-technology/2017/03/wordstar-a-writers-word-processor/][writing in Ars Technica]], described the feature thus (WordStar called them "blocks"):
+
+#+begin_quote
+WordStar was rare among word processing programs in that it permitted the user to mark (highlight) a block of text (with ^KB and ^KK commands) and leave it marked in place, and then go to a different position in the document and later (even after considerable work on other things) copy the block (with ^KC) or move it to a new location (with ^KV). Many users found it much easier to manipulate blocks this way than with the Microsoft Word system of highlighting with a mouse and then being forced by Word's select-then-do approach to immediately deal with the marked block, lest any typing replace it.
+#+end_quote
+
+Emacs, in fact, supports this and calls it "secondary selection" but it is not exactly well documented, and the Emacs-literati haven't seemed to have written much about it. I did a deep dive and wrapped everything in my own functions and then in a hydra for easy access.
+
+- =meta-left-click/drag= to mark a secondary selection.
+- You can also use the hydra to make the current region the secondary selection.
+- Once the secondary selection is active you can go about your typing, including copy/paste actions.
+- Then, when you want to do something with the secondary selection, activate the hydra.
+- Another scenario: when you realize, mid-typing, that you want to paste text from elsewhere, you can leave the insertion point where it is, make a secondary selection, and insert it directly.
+
+** References
+
+- The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Secondary-Selection.html][official documentation]] is somewhat sparse, and assumes you'll only use the mouse for this.
+- [[https://www.emacswiki.org/emacs/SecondarySelection][The Emacs Wiki has some info]], but seems a little out of date given that there are so many built-in functions for this now.
+- Charles Lindsey made [[http://www.cs.man.ac.uk/~lindsec/secondary-selection.html][a video]] that nicely explains the basic idea behind secondary selection.
+
+** Functions
+
+All but one of these functions is built-in, but in their default form they're not =interactive= so any keybindings need to include =(lambda () (interactive) (function-name))= in order to work, and some of their documentation is a little sketchy, so I've wrapped them all in my own functions. Just makes things a little easier to work with.
+
+#+begin_src emacs-lisp
+(defun oht/cut-secondary-selection ()
+  "Cut the secondary selection."
+  (interactive)
+  (mouse-kill-secondary))
+
+(defun oht/copy-secondary-selection ()
+  "Copy the secondary selection."
+  (interactive)
+  ;; there isn't a keybinding-addressable function to kill-ring-save
+  ;; the 2nd selection so here I've made my own. This is extracted
+  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
+  (kill-new 
+   (buffer-substring (overlay-start mouse-secondary-overlay)
+		     (overlay-end mouse-secondary-overlay))
+   t))
+
+(defun oht/cut-secondary-selection-paste ()
+  "Cut the secondary selection and paste at point."
+  (interactive)
+  (mouse-kill-secondary)
+  (yank))
+
+(defun oht/copy-secondary-selection-paste ()
+  "Paste the secondary selection and paste at point."
+  (interactive)
+  (oht/copy-secondary-selection)
+  (yank))
+#+end_src
+
+** Secondary Selection Hydra
+
+#+begin_src emacs-lisp
+(defhydra hydra-secondary-selection (:color blue)
+  "Secondary Selection"
+  ("xx" oht/cut-secondary-selection "Cut 2nd")
+  ("cc" oht/copy-secondary-selection "Copy 2nd")
+  ("xv" oht/cut-secondary-selection-paste "Cut 2nd & Paste")
+  ("cv" oht/copy-secondary-selection-paste "Copy 2nd & Paste")
+  ("m" (lambda () (interactive)(secondary-selection-from-region)) "Mark as 2nd")
+  ("g" (lambda () (interactive)(secondary-selection-to-region)) "Goto 2nd")
+  ("q" nil "cancel"))
 #+end_src
 
 * Functions
@@ -684,110 +903,6 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
   (split-window-right)
   (windmove-right))
-#+end_src
-
-* Auto-complete
-
-I've tried a few completion packages and they've all left me cold. =hippy-expand= generally gets me what I want, but I'd like the pop-up list to use =ivy/counsel=. Some googling led me to this.
-
-#+begin_src emacs-lisp
-;; https://gist.github.com/JohnLunzer/7c6d72a14c76c0a3057535e4f6148ef8
-(defun my-hippie-expand-completions (&optional hippie-expand-function)
-  "Return list of completions generated by `hippie-expand'."
-  (save-excursion
-    (let ((this-command 'my-hippie-expand-completions)
-          (last-command last-command)
-          (hippie-expand-function (or hippie-expand-function 'hippie-expand)))
-      (while (progn
-               (funcall hippie-expand-function nil)
-               (setq last-command 'my-hippie-expand-completions)
-               (not (equal he-num -1))))
-      ;; Provide the options in the order in which they are normally generated.
-      (delete he-search-string (reverse he-tried-table)))))
-
-(defun my-ido-or-ivy-hippie-expand-with (hippie-expand-function)
-  "Offer ido or ivy based completion using the specified hippie-expand function."
-  (let* ((options (my-hippie-expand-completions hippie-expand-function)))
-    (if options
-        (progn
-          (if (> (safe-length options) 1)
-              (if (require 'ivy nil t)
-                  (setq selection (ivy-read "Completions: " options))
-                (setq selection (ido-completing-read "Completions: " options)))
-            (setq selection (car options)))
-          (if selection
-              (he-substitute-string selection t)))
-      (message "No expansion found"))))
-
-(defun my-ido-or-ivy-hippie-expand ()
-  "Offer ido or ivy based completion for the word at point."
-  (interactive)
-  (my-ido-or-ivy-hippie-expand-with 'hippie-expand))
-#+end_src
-
-* Custom Minor Modes
-
-/For future reference.../
-
-You might want to think about creating a minor-mode you can call when switching to a new mode.
-
-The below code is +stolen+ adapted from /prot/.
-
-#+begin_example
-(define-minor-mode oht/writing-mode
-	“Explaination”
-	:init-value nil
-	:global nil
-	(if oht/writing-mode
-		(progn
-		  (olivetti-mode 1)
-		  (hl-line-mode 1)
-		  (setq-local cursor-type ‘(bar . 4))
-	  (olivetti-mode -1)
-	  (hl-line-mode 1)
-	  ((setq-local cursor-type ‘(bar . 2))))
-#+end_example
-
-* Mode Hooks
-
-#+begin_src emacs-lisp
-
-(defun oht/markdown-mode-hook ()
-  (oht/writing-mode)
-  )
-(add-hook 'markdown-mode-hook 'oht/markdown-mode-hook)
-
-(defun oht/org-mode-hook ()
-  (oht/writing-mode)
-  (org-superstar-mode 1)
-  ;; this shouldn't be needed, debugging
-  (undo-tree-mode)
-  )
-(add-hook 'org-mode-hook 'oht/org-mode-hook)
-
-(defun oht/org-agenda-hook ()
-  (hl-line-mode 1)
-  )
-(add-hook 'org-agenda-hook 'oht/org-agenda-hook)
-
-(defun oht/emacs-lisp-mode ()
-  (outline-minor-mode t)
-  (rainbow-delimiters-mode t)
-  )
-(add-hook 'emacs-lisp-mode 'oht/emacs-lisp-mode)
-
-;; (defun oht/fountain-mode-hook ()
-;;   (fountain-add-continued-dialog nil)
-;;   (fountain-highlight-elements (quote (section-heading)))
-;;   )
-;; (add-hook 'fountain-mode 'oht/fountain-mode-hook)
-
-;; Hide details in dired mode
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (dired-hide-details-mode 1)
-	    (auto-revert-mode)
-	  ))
 #+end_src
 
 * Hydra
@@ -1133,83 +1248,13 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
   ("q" (message "Abort") :exit t))
 #+end_src
 
-* Secondary Selection
-
-** Background
-
-In the olden days, many computer programs (like the X-Windows system and WordStar) had something called =secondary-selection=. Robert Sawyer, [[https://arstechnica.com/information-technology/2017/03/wordstar-a-writers-word-processor/][writing in Ars Technica]], described the feature thus (WordStar called them "blocks"):
-
-#+begin_quote
-WordStar was rare among word processing programs in that it permitted the user to mark (highlight) a block of text (with ^KB and ^KK commands) and leave it marked in place, and then go to a different position in the document and later (even after considerable work on other things) copy the block (with ^KC) or move it to a new location (with ^KV). Many users found it much easier to manipulate blocks this way than with the Microsoft Word system of highlighting with a mouse and then being forced by Word's select-then-do approach to immediately deal with the marked block, lest any typing replace it.
-#+end_quote
-
-Emacs, in fact, supports this and calls it "secondary selection" but it is not exactly well documented, and the Emacs-literati haven't seemed to have written much about it. I did a deep dive and wrapped everything in my own functions and then in a hydra for easy access.
-
-- =meta-left-click/drag= to mark a secondary selection.
-- You can also use the hydra to make the current region the secondary selection.
-- Once the secondary selection is active you can go about your typing, including copy/paste actions.
-- Then, when you want to do something with the secondary selection, activate the hydra.
-- Another scenario: when you realize, mid-typing, that you want to paste text from elsewhere, you can leave the insertion point where it is, make a secondary selection, and insert it directly.
-
-** References
-
-- The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Secondary-Selection.html][official documentation]] is somewhat sparse, and assumes you'll only use the mouse for this.
-- [[https://www.emacswiki.org/emacs/SecondarySelection][The Emacs Wiki has some info]], but seems a little out of date given that there are so many built-in functions for this now.
-- Charles Lindsey made [[http://www.cs.man.ac.uk/~lindsec/secondary-selection.html][a video]] that nicely explains the basic idea behind secondary selection.
-
-** Functions
-
-All but one of these functions is built-in, but in their default form they're not =interactive= so any keybindings need to include =(lambda () (interactive) (function-name))= in order to work, and some of their documentation is a little sketchy, so I've wrapped them all in my own functions. Just makes things a little easier to work with.
-
-#+begin_src emacs-lisp
-(defun oht/cut-secondary-selection ()
-  "Cut the secondary selection."
-  (interactive)
-  (mouse-kill-secondary))
-
-(defun oht/copy-secondary-selection ()
-  "Copy the secondary selection."
-  (interactive)
-  ;; there isn't a keybinding-addressable function to kill-ring-save
-  ;; the 2nd selection so here I've made my own. This is extracted
-  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
-  (kill-new 
-   (buffer-substring (overlay-start mouse-secondary-overlay)
-		     (overlay-end mouse-secondary-overlay))
-   t))
-
-(defun oht/cut-secondary-selection-paste ()
-  "Cut the secondary selection and paste at point."
-  (interactive)
-  (mouse-kill-secondary)
-  (yank))
-
-(defun oht/copy-secondary-selection-paste ()
-  "Paste the secondary selection and paste at point."
-  (interactive)
-  (oht/copy-secondary-selection)
-  (yank))
-#+end_src
-
-** Secondary Selection Hydra
-
-#+begin_src emacs-lisp
-(defhydra hydra-secondary-selection (:color blue)
-  "Secondary Selection"
-  ("xx" oht/cut-secondary-selection "Cut 2nd")
-  ("cc" oht/copy-secondary-selection "Copy 2nd")
-  ("xv" oht/cut-secondary-selection-paste "Cut 2nd & Paste")
-  ("cv" oht/copy-secondary-selection-paste "Copy 2nd & Paste")
-  ("m" (lambda () (interactive)(secondary-selection-from-region)) "Mark as 2nd")
-  ("g" (lambda () (interactive)(secondary-selection-to-region)) "Goto 2nd")
-  ("q" nil "cancel"))
-
-(bind-key "s-2" 'hydra-secondary-selection/body)
-#+end_src
-
 * Keybindings
 
-***  Keybindings Philosophy
+** TODO Change all keybindings to bind-key
+
+You can use =M-x describe-personal-keybindings= for a cheat-sheet.
+
+** Keybindings Philosophy
 
 1. Standard mac shortcuts should be supported wherever possible. And since mac inherits a lot of emacs keybindings anyway (and I use them outside emacs) I can leverage a lot of muscle memory. Additionally, I've largely internalized the =readline= keybindings (since I worked in =vim= for a long time) and so =^w=, =^u=, and =^h= are second-nature.
 
@@ -1221,7 +1266,7 @@ All but one of these functions is built-in, but in their default form they're no
 
 5. Keybindings which I use all the time, get taken out from behind leaders for faster access. For example, the org-agenda command.
 
-*** Standard Mac Shortcuts
+** Standard Mac Shortcuts
 
 [[https://support.apple.com/en-us/HT201236]]
 
@@ -1279,7 +1324,7 @@ All but one of these functions is built-in, but in their default form they're no
 (bind-key* "C-M-f" 'right-word)
 #+end_src
 
-*** Enhance Emacs
+** Enhance Emacs
 
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-s") 'swiper-isearch)
@@ -1299,7 +1344,7 @@ This cycles the spacing around point between a single space, no spaces, or the o
 (global-set-key (kbd "M-SPC") 'cycle-spacing)
 #+end_src
 
-*** Primary Bindings
+** Primary Bindings
 
 #+begin_src emacs-lisp
 (global-set-key (kbd "s-p") 'counsel-M-x)
@@ -1314,14 +1359,16 @@ This cycles the spacing around point between a single space, no spaces, or the o
 (global-set-key (kbd "s-;") 'hydra-flyspell/body)
 (global-set-key (kbd "s-|") 'hydra-manipulate/body)
 (bind-key "C-S-<mouse-1>" 'mc/add-cursor-on-click)
+
+(bind-key "s-1" 'org-agenda)
+(bind-key "s-2" 'hydra-secondary-selection/body)
 #+end_src
 
-*** Global Leader Bindings
+** Global Leader Bindings
 
 I use =⌘-'= as the my leader.
 
 #+begin_src emacs-lisp
-(bind-key "s-' a" 'org-agenda)
 (bind-key "s-' b" 'counsel-descbinds)
 (bind-key "s-' c" 'org-capture)
 (bind-key "s-' d" 'sdcv-search)
@@ -1334,7 +1381,7 @@ I use =⌘-'= as the my leader.
 (bind-key "s-' m" 'mc/edit-lines)
 #+end_src
 
-*** Windows Leader
+** Windows Leader
 
 #+begin_src emacs-lisp
 (bind-key "s-= s" 'oht/split-below)
@@ -1345,7 +1392,7 @@ I use =⌘-'= as the my leader.
 (bind-key "s-= b" 'balance-windows)
 #+end_src
 
-*** Mode Specific Bindings
+** Mode Specific Bindings
 
 I use =⌘-\= as the leader for mode-spesific bindings.
 

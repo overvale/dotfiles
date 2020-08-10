@@ -9,8 +9,9 @@
         ))
 (package-initialize)
 
-(require 'org)
 (setq vc-follow-symlinks t)
+
+(require 'org)
 (org-babel-load-file (expand-file-name "~/dot/emacs/emacs-init.org"))
 
 ;; init.el ends here

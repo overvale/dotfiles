@@ -127,7 +127,7 @@ Due to historical reasons, emacs thinks =C-i= is the same as =TAB= and =C-m= is 
 
 #+begin_src emacs-lisp
 (define-key input-decode-map [?\C-i] [C-i])
-(global-set-key (kbd "<C-i>") nil)
+(bind-key "<C-i>" nil)
 (define-key input-decode-map [?\C-m] [C-m])
 #+end_src
 
@@ -149,10 +149,10 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 ;; with visual-line-mode set,
 ;; C-a and C-b go to beginning/end-of-visual-line
 ;; which is inconsistant with standard Mac behaviour
-(global-set-key (kbd "C-a") 'beginning-of-line)
-(global-set-key (kbd "C-e") 'end-of-line)
-(global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
-(global-set-key (kbd "s-<right>") 'end-of-visual-line)
+(bind-key* "C-a" 'beginning-of-line)
+(bind-key* "C-e" 'end-of-line)
+(bind-key "s-<left>" 'beginning-of-visual-line)
+(bind-key "s-<right>" 'end-of-visual-line)
 ;; C-k only killing the visual line also isn't how macOS works.
 ;; This has to be set to a custom function so minor modes can't hijack it.
 (bind-key* "C-k" 'oht/kill-line)
@@ -1250,8 +1250,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 
 * Keybindings
 
-** TODO Change all keybindings to bind-key
-
 You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 
 ** Keybindings Philosophy
@@ -1273,52 +1271,52 @@ You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 #+begin_src emacs-lisp
 ;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
 ;; and by default option+forward-delete has no mapping
-(global-set-key (kbd "M-<delete>") 'kill-word)
+(bind-key "M-<delete>" 'kill-word)
 ;; C-[ sends ESC so let's make ESC more predictable
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-(global-set-key (kbd "s-,") 'oht/counsel-find-settings)
-(global-set-key (kbd "s-n") 'make-frame-command)
-(global-set-key (kbd "s-s") 'save-buffer)         ;save
-(global-set-key (kbd "s-S") 'write-file)          ;save as
-(global-set-key (kbd "M-s-s") 'save-some-buffers) ;save others
+(bind-key "s-," 'oht/counsel-find-settings)
+(bind-key "s-n" 'make-frame-command)
+(bind-key "s-s" 'save-buffer)         ;save
+(bind-key "s-S" 'write-file)          ;save as
+(bind-key "M-s-s" 'save-some-buffers) ;save others
 (bind-key "s-a" 'mark-whole-buffer)
-(global-set-key (kbd "s-o") 'counsel-find-file)
-(global-set-key (kbd "M-s-o") 'counsel-buffer-or-recentf)
-(global-set-key (kbd "s-z") 'undo-tree-undo)
-(global-set-key (kbd "s-Z") 'undo-tree-redo)
-(global-set-key (kbd "s-x") 'kill-region)
-(global-set-key (kbd "s-c") 'kill-ring-save)
-(global-set-key (kbd "s-v") 'yank)
-(global-set-key (kbd "s-<backspace>") 'oht/kill-line-backward)
+(bind-key "s-o" 'counsel-find-file)
+(bind-key "M-s-o" 'counsel-buffer-or-recentf)
+(bind-key "s-z" 'undo-tree-undo)
+(bind-key "s-Z" 'undo-tree-redo)
+(bind-key "s-x" 'kill-region)
+(bind-key "s-c" 'kill-ring-save)
+(bind-key "s-v" 'yank)
+(bind-key "s-<backspace>" 'oht/kill-line-backward)
 (bind-key "s-w" 'oht/kill-this-buffer)
 (bind-key "s-t" 'hydra-transpose/body)
-(global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
-(global-set-key (kbd "s-/") 'comment-line)
-(global-set-key (kbd "s-<up>") (kbd "M-<"))
-(global-set-key (kbd "s-<down>") (kbd "M->"))
-(global-set-key (kbd "s-l") 'oht/mark-whole-line)
-(global-set-key (kbd "s-M-l") 'mark-paragraph)
-(global-set-key (kbd "s-]") 'indent-rigidly-right-to-tab-stop)
-(global-set-key (kbd "s-[") 'indent-rigidly-left-to-tab-stop)
-(global-set-key (kbd "S-s-<left>") 'oht/expand-to-beginning-of-visual-line)
-(global-set-key (kbd "S-s-<right>") 'oht/expand-to-end-of-visual-line)
-(global-set-key (kbd "s-f") 'swiper)
-(global-set-key (kbd "M-s-f") 'swiper-all)
-(global-set-key (kbd "S-s-f") 'counsel-ag)
-(global-set-key (kbd "s-<return>") 'oht/open-line-below)
-(global-set-key (kbd "S-s-<return>") 'oht/open-line-above)
-(global-set-key (kbd "M-s-<right>") 'next-buffer)
-(global-set-key (kbd "M-s-<left>") 'previous-buffer)
+(bind-key "s-q" 'save-buffers-kill-terminal)
+(bind-key "s-/" 'comment-line)
+(bind-key "s-<up>" (kbd "M-<"))
+(bind-key "s-<down>" (kbd "M->"))
+(bind-key "s-l" 'oht/mark-whole-line)
+(bind-key "s-M-l" 'mark-paragraph)
+(bind-key "s-]" 'indent-rigidly-right-to-tab-stop)
+(bind-key "s-[" 'indent-rigidly-left-to-tab-stop)
+(bind-key "S-s-<left>" 'oht/expand-to-beginning-of-visual-line)
+(bind-key "S-s-<right>" 'oht/expand-to-end-of-visual-line)
+(bind-key "s-f" 'swiper)
+(bind-key "M-s-f" 'swiper-all)
+(bind-key "S-s-f" 'counsel-ag)
+(bind-key "s-<return>" 'oht/open-line-below)
+(bind-key "S-s-<return>" 'oht/open-line-above)
+(bind-key "M-s-<right>" 'next-buffer)
+(bind-key "M-s-<left>" 'previous-buffer)
 ; Mac follows the UNIX convention of C-h being the same as <DEL>
-(global-set-key (kbd "C-h") 'delete-backward-char)
+(bind-key "C-h" 'delete-backward-char)
 ;; Normally, C-? is used for undo/redo,
 ;; but I've rebound that elsewhere, so I can use it here
 (bind-key* "C-?" 'help-command)
 ;; readline-style shortcuts, because I love them
-(global-set-key (kbd "C-w") 'backward-kill-word)
-(global-set-key (kbd "C-u") 'oht/kill-line-backward)
+(bind-key "C-w" 'backward-kill-word)
+(bind-key "C-u" 'oht/kill-line-backward)
 ;; No reason not to use command-u for this
-(global-set-key (kbd "s-u") 'universal-argument)
+(bind-key "s-u" 'universal-argument)
 ;; since ctrl+alt+b/f are system shortcuts, respect that
 (bind-key* "C-M-b" 'left-word)
 (bind-key* "C-M-f" 'right-word)
@@ -1327,13 +1325,13 @@ You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 ** Enhance Emacs
 
 #+begin_src emacs-lisp
-(global-set-key (kbd "C-s") 'swiper-isearch)
-(global-set-key (kbd "C-r") 'swiper-isearch-backward)
-(global-set-key (kbd "M-y") 'counsel-yank-pop)
-(global-set-key (kbd "M-<up>") 'move-line-up)
-(global-set-key (kbd "M-<down>") 'move-line-down)
-(global-set-key (kbd "M-o") 'other-window)
-(global-set-key (kbd "M-z") 'zap-up-to-char) ;the default is 'zap-to-char
+(bind-key "C-s" 'swiper-isearch)
+(bind-key "C-r" 'swiper-isearch-backward)
+(bind-key "M-y" 'counsel-yank-pop)
+(bind-key "M-<up>" 'move-line-up)
+(bind-key "M-<down>" 'move-line-down)
+(bind-key "M-o" 'other-window)
+(bind-key "M-z" 'zap-up-to-char) ;the default is 'zap-to-char
 (bind-key* "C-/" 'flyspell-auto-correct-previous-word)
 (bind-key "s-M-z" 'undo-tree-visualize)
 #+end_src
@@ -1341,23 +1339,23 @@ You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 This cycles the spacing around point between a single space, no spaces, or the original spacing:
 
 #+begin_src emacs-lisp
-(global-set-key (kbd "M-SPC") 'cycle-spacing)
+(bind-key "M-SPC" 'cycle-spacing)
 #+end_src
 
 ** Primary Bindings
 
 #+begin_src emacs-lisp
-(global-set-key (kbd "s-p") 'counsel-M-x)
-(global-set-key (kbd "s-b") 'ivy-switch-buffer)
-(global-set-key (kbd "M-s-b") 'ibuffer)
+(bind-key "s-p" 'counsel-M-x)
+(bind-key "s-b" 'ivy-switch-buffer)
+(bind-key "M-s-b" 'ibuffer)
 (bind-key* "s-e" 'er/expand-region)
-(global-set-key (kbd "s-m") 'magit-status)
+(bind-key "s-m" 'magit-status)
 ;; vim has the wonderful . command, and emacs has repeat
 ;; s-y is my keybinding because excel has (a version of) repeat bound to that
 (bind-key "s-y" 'repeat)
-(global-set-key (kbd "s-j") 'hydra-modal/body)
-(global-set-key (kbd "s-;") 'hydra-flyspell/body)
-(global-set-key (kbd "s-|") 'hydra-manipulate/body)
+(bind-key "s-j" 'hydra-modal/body)
+(bind-key "s-;" 'hydra-flyspell/body)
+(bind-key "s-|" 'hydra-manipulate/body)
 (bind-key "C-S-<mouse-1>" 'mc/add-cursor-on-click)
 
 (bind-key "s-1" 'org-agenda)

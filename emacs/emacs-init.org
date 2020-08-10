@@ -1278,10 +1278,8 @@ You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 (bind-key "s-n" 'make-frame-command)
 (bind-key "s-s" 'save-buffer)         ;save
 (bind-key "s-S" 'write-file)          ;save as
-(bind-key "M-s-s" 'save-some-buffers) ;save others
 (bind-key "s-a" 'mark-whole-buffer)
 (bind-key "s-o" 'counsel-find-file)
-(bind-key "M-s-o" 'counsel-buffer-or-recentf)
 (bind-key "s-z" 'undo-tree-undo)
 (bind-key "s-Z" 'undo-tree-redo)
 (bind-key "s-x" 'kill-region)
@@ -1289,9 +1287,7 @@ You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 (bind-key "s-v" 'yank)
 (bind-key "s-<backspace>" 'oht/kill-line-backward)
 (bind-key "s-w" 'oht/kill-this-buffer)
-(bind-key "s-t" 'hydra-transpose/body)
 (bind-key "s-q" 'save-buffers-kill-terminal)
-(bind-key "s-/" 'comment-line)
 (bind-key "s-<up>" (kbd "M-<"))
 (bind-key "s-<down>" (kbd "M->"))
 (bind-key "s-l" 'oht/mark-whole-line)
@@ -1301,23 +1297,22 @@ You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 (bind-key "S-s-<left>" 'oht/expand-to-beginning-of-visual-line)
 (bind-key "S-s-<right>" 'oht/expand-to-end-of-visual-line)
 (bind-key "s-f" 'swiper)
-(bind-key "M-s-f" 'swiper-all)
-(bind-key "S-s-f" 'counsel-ag)
 (bind-key "s-<return>" 'oht/open-line-below)
 (bind-key "S-s-<return>" 'oht/open-line-above)
-(bind-key "M-s-<right>" 'next-buffer)
-(bind-key "M-s-<left>" 'previous-buffer)
+;; Use same shortcuts as tab-movement for buffer movement
+(bind-key "s-}" 'next-buffer)
+(bind-key "s-{" 'previous-buffer)
 ; Mac follows the UNIX convention of C-h being the same as <DEL>
 (bind-key "C-h" 'delete-backward-char)
 ;; Normally, C-? is used for undo/redo,
 ;; but I've rebound that elsewhere, so I can use it here
 (bind-key* "C-?" 'help-command)
 ;; readline-style shortcuts, because I love them
-(bind-key "C-w" 'backward-kill-word)
+(bind-key* "C-w" 'backward-kill-word)
 (bind-key "C-u" 'oht/kill-line-backward)
 ;; No reason not to use command-u for this
 (bind-key "s-u" 'universal-argument)
-;; since ctrl+alt+b/f are system shortcuts, respect that
+;; since ctrl+alt+b/f are system shortcuts for word movement, do that
 (bind-key* "C-M-b" 'left-word)
 (bind-key* "C-M-f" 'right-word)
 #+end_src
@@ -1334,6 +1329,10 @@ You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 (bind-key "M-z" 'zap-up-to-char) ;the default is 'zap-to-char
 (bind-key* "C-/" 'flyspell-auto-correct-previous-word)
 (bind-key "s-M-z" 'undo-tree-visualize)
+(bind-key "M-s-s" 'save-some-buffers) ;save others
+(bind-key "M-s-o" 'counsel-buffer-or-recentf)
+(bind-key "M-s-f" 'swiper-all)
+(bind-key "S-s-f" 'counsel-ag)
 #+end_src
 
 This cycles the spacing around point between a single space, no spaces, or the original spacing:
@@ -1356,6 +1355,7 @@ This cycles the spacing around point between a single space, no spaces, or the o
 (bind-key "s-j" 'hydra-modal/body)
 (bind-key "s-;" 'hydra-flyspell/body)
 (bind-key "s-|" 'hydra-manipulate/body)
+(bind-key "s-t" 'hydra-transpose/body)
 (bind-key "C-S-<mouse-1>" 'mc/add-cursor-on-click)
 
 (bind-key "s-1" 'org-agenda)

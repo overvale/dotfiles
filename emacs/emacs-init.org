@@ -35,6 +35,7 @@ Anyone learning vim, emacs, zsh, bash, or something similar, spends a lot of tim
 - [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org][Harry R. Schwartz dotfiles]]
 - [[https://yiufung.net/post/org-mode-hidden-gems-pt1/][Org-Mode Hidden Gems]]
 - [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org][Angry Bacon dotemacs]]
+- [[https://gitlab.com/Kaligule/emacs-config/-/blob/master/config.org][Kaligule config.org]]
 
 For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
 
@@ -131,6 +132,61 @@ Due to historical reasons, emacs thinks =C-i= is the same as =TAB= and =C-m= is 
 (define-key input-decode-map [?\C-m] [C-m])
 #+end_src
 
+*** Standard Mac Shortcuts
+
+[[https://support.apple.com/en-us/HT201236]]
+
+#+begin_src emacs-lisp
+;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
+;; and by default option+forward-delete has no mapping
+(bind-key "M-<delete>" 'kill-word)
+;; C-[ sends ESC so let's make ESC more predictable
+(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+(bind-key "s-," 'oht/counsel-find-settings)
+(bind-key "s-n" 'make-frame-command)
+(bind-key "s-s" 'save-buffer)         ;save
+(bind-key "s-S" 'write-file)          ;save as
+(bind-key "s-a" 'mark-whole-buffer)
+(bind-key "s-o" 'counsel-find-file)
+(bind-key "s-z" 'undo-tree-undo)
+(bind-key "s-Z" 'undo-tree-redo)
+(bind-key "s-x" 'kill-region)
+(bind-key "s-c" 'kill-ring-save)
+(bind-key "s-v" 'yank)
+(bind-key "s-<backspace>" 'oht/kill-visual-line-backward)
+(bind-key "s-w" 'oht/kill-this-buffer)
+(bind-key "s-q" 'save-buffers-kill-terminal)
+(bind-key "s-<up>" (kbd "M-<"))
+(bind-key "s-<down>" (kbd "M->"))
+(bind-key "s-l" 'oht/mark-whole-line)
+(bind-key "s-M-l" 'mark-paragraph)
+(bind-key "s-]" 'indent-rigidly-right-to-tab-stop)
+(bind-key "s-[" 'indent-rigidly-left-to-tab-stop)
+(bind-key "S-s-<left>" 'oht/expand-to-beginning-of-visual-line)
+(bind-key "S-s-<right>" 'oht/expand-to-end-of-visual-line)
+(bind-key "s-f" 'swiper)
+(bind-key "s-<return>" 'oht/open-line-below)
+(bind-key "S-s-<return>" 'oht/open-line-above)
+;; Use same shortcuts as tab-movement for buffer movement
+(bind-key "s-}" 'next-buffer)
+(bind-key "s-{" 'previous-buffer)
+; Mac follows the UNIX convention of C-h being the same as <DEL>
+(bind-key "C-h" 'delete-backward-char)
+;; Normally, C-? is used for undo/redo,
+;; but I've rebound that elsewhere, so I can use it here
+(bind-key* "C-?" 'help-command)
+;; readline-style shortcuts, because I love them
+(bind-key* "C-w" 'backward-kill-word)
+(bind-key "C-u" 'oht/kill-line-backward)
+;; No reason not to use command-u for this
+(bind-key "s-u" 'universal-argument)
+;; since ctrl+alt+b/f are system shortcuts for word movement, do that
+(bind-key* "C-M-b" 'left-word)
+(bind-key* "C-M-f" 'right-word)
+;; respect alt+forward-delete
+(bind-key* "M-<delete>" 'kill-word)
+#+end_src
+
 *** Replace Selection
 
 By default, Emacs doesn't replace the selection (region) with anything you type, it just deletes your selection and appends what you type. The below makes what you type /replace/ your selection.
@@ -192,71 +248,104 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 * Packages
 
 #+begin_src emacs-lisp
-(which-key-mode t)              ;hints
-(global-undo-tree-mode t)       ;activate undo-tree everywhere
-(setq-default undo-tree-visualizer-timestamps t)
-(setq-default undo-tree-visualizer-diff t)
+(use-package magit)
+(use-package bind-key)
+(use-package exec-path-from-shell)
 
-(require 'expand-region)        ;lovely plugin
+(use-package counsel
+  :config (counsel-mode t)
+  :custom
+  (ivy-use-virtual-buffers t)
+  (ivy-count-format "%d/%d ")
+  (enable-recursive-minibuffers t)
+  (ivy-count-format "(%d/%d) ")
+  ;; by default ivy starts up with ^ in the input area this means you
+  ;; have to know the first letter of what you're looking for. You can
+  ;; set this to nil to change that.
+  ;; (setq ivy-initial-inputs-alist nil)
+)
 
-(add-to-list 'load-path (expand-file-name "lisp/emacs-sdcv" user-emacs-directory))
-(require 'sdcv-mode)            ;dictionary lookup, requires sdcv on $PATH
+(use-package ivy-rich
+  :config (ivy-rich-mode 1)
+  :custom (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
-;; counsel settings
-(counsel-mode t)
-(setq ivy-use-virtual-buffers t)
-(setq ivy-count-format "%d/%d ")
-(setq enable-recursive-minibuffers t)
-(setq ivy-count-format "(%d/%d) ")
-;; by default ivy starts up with ^ in the input area this means you
-;; have to know the first letter of what you're looking for. You can
-;; set this to nil to change that.
-;; (setq ivy-initial-inputs-alist nil)
+(use-package multiple-cursors)
+(use-package olivetti)
+(use-package org
+  :hook (org-mode . oht/org-mode-hook))
+(use-package try)
+(use-package unfill)
 
-(require 'bind-key)
+(use-package fountain-mode)
+(use-package lua-mode)
+(use-package markdown-mode
+  :hook oht/writing-mode
+)
 
-(require 'ivy-rich)
-(ivy-rich-mode 1)
-(setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+(use-package gruvbox-theme
+  :defer t)
+(use-package nord-theme
+  :defer t)
+(use-package tron-legacy-theme
+  :defer t)
 
-(require 'multiple-cursors)
+(use-package use-package-chords
+  :ensure t
+  :config
+  (key-chord-mode 1)
+  (key-chord-define-global ",." "<>\C-b"))
 
-(minions-mode t)
+(use-package hydra
+  :chords (("fj" . hydra-modal/body)))
 
-(setq org-superstar-headline-bullets-list
-      '("§" "¶" "†" "◊"))
-(setq org-superstar-special-todo-items nil)
-(require 'org-superstar)
-(setq org-superstar-item-bullet-alist
-      '((?- . ?•)
-	(?+ . ?▶)
-	(?* . ?▷)))
+(use-package which-key
+  :config (which-key-mode t))
+
+(use-package undo-tree
+  :ensure t
+  :config (global-undo-tree-mode 1)
+  :custom
+  (undo-tree-visualizer-timestamps t "Show timestamps in the undo-tree.")
+  (undo-tree-visualizer-diff t "Show a diff of changes for the current node.")
+  )
+
+(use-package expand-region
+  :bind
+  ("s-e" . er/expand-region)
+  ("s-E" . er/contract-region)
+)
+
+(use-package sdcv-mode
+  :load-path "lisp/emacs-sdcv/")
 #+end_src
 
-You can ensure packages are installed with something like this (no need for use-package!):
+** Mode Hooks
 
-#+begin_example
-(unless (package-installed-p 'super-save)
-  (package-refresh-contents)
-  (package-install 'super-save))
-#+end_example
+#+begin_src emacs-lisp
+(defun oht/org-mode-hook ()
+  (oht/writing-mode)
+  (org-superstar-mode 1)
+  (undo-tree-mode)
+  )
+(defun oht/emacs-lisp-mode ()
+  (undo-tree-mode)
+  (outline-minor-mode t)
+  (rainbow-delimiters-mode t)
+  )
+(add-hook 'emacs-lisp-mode 'oht/emacs-lisp-mode)
 
-The variable =package-selected-packages= stores all packages installed explicitly by the user.
+(defun oht/fountain-mode-hook ()
+  (fountain-add-continued-dialog nil)
+  (fountain-highlight-elements (quote (section-heading)))
+  )
+(add-hook 'fountain-mode 'oht/fountain-mode-hook)
 
-You can install anything that's not in that list with:
-#+begin_example
-;; install packages if needed
-(unless (every 'package-installed-p package-selected-packages)
-  (message "Missing packages detected, please wait...")
-  (package-refresh-contents)
-  (package-install-selected-packages))
-#+end_example
-
-You can also set this variable with:
-#+begin_example
-(setq package-selected-packages
-      '(multiple-cursors ivy-rich bind-key acme-theme minions))
-#+end_example
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (dired-hide-details-mode 1)
+	    (auto-revert-mode)
+	  ))
+#+end_src
 
 * Appearance
 
@@ -265,6 +354,7 @@ You can also set this variable with:
 #+begin_src emacs-lisp
 (menu-bar-mode 1)                          ; ensures full-screen avail on macOS
 (tool-bar-mode -1)                         ; hide menu-bar
+(scroll-bar-mode -1)                       ; hide scroll bars
 (show-paren-mode t)                        ; highlight parens
 (setq show-paren-delay 0)                  ; and show immediately
 (setq visible-bell t)                      ; disable beep
@@ -286,7 +376,7 @@ Here the fonts are setup in a function so I can change them all in once step by 
   (set-face-attribute 'fixed-pitch nil
 		      :family "Iosevka Fixed SS08" :height 140 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "IBM Plex Serif" :height 160 :weight 'normal)
+		      :family "IBM Plex Serif" :height 150 :weight 'normal)
   (set-face-attribute 'bold nil :weight 'semibold)
   )
 
@@ -303,26 +393,29 @@ Here the fonts are setup in a function so I can change them all in once step by 
   )
 
 (oht/set-font)
-
 #+end_src
 
 ** Theme
 
 #+begin_src emacs-lisp
 ;; https://gitlab.com/protesilaos/modus-themes
-(setq
- modus-operandi-theme-faint-syntax t
- modus-vivendi-theme-faint-syntax t
- modus-vivendi-theme-slanted-constructs t
- modus-operandi-theme-slanted-constructs t
- modus-vivendi-theme-bold-constructs t
- modus-operandi-theme-bold-constructs t
- modus-operandi-theme-org-blocks 'greyscale
- modus-operandi-theme-variable-pitch-headings t
- modus-operandi-theme-3d-modeline t
- modus-vivendi-theme-3d-modeline t
- )
-(load-theme 'modus-operandi t)
+
+(use-package modus-vivendi-theme
+  :defer t
+  :custom
+  (modus-vivendi-theme-faint-syntax t)
+  (modus-vivendi-theme-slanted-constructs t)
+  (modus-vivendi-theme-bold-constructs t)
+  (modus-vivendi-theme-3d-modeline t))
+
+(use-package modus-operandi-theme
+  :custom
+  (modus-operandi-theme-faint-syntax t)
+  (modus-operandi-theme-slanted-constructs t)
+  (modus-operandi-theme-bold-constructs t)
+  (modus-operandi-theme-org-blocks 'greyscale)
+  (modus-operandi-theme-variable-pitch-headings t)
+  (modus-operandi-theme-3d-modeline t))
 
 (defadvice load-theme (before clear-previous-themes activate)
   "Clear existing theme settings instead of layering them"
@@ -332,6 +425,9 @@ Here the fonts are setup in a function so I can change them all in once step by 
 ** Mode Line
 
 #+begin_src emacs-lisp
+(use-package minions
+  :config (minions-mode t))
+
 ;; add columns to the mode-line
 (column-number-mode t)
 (setq display-time-format "%H:%M  %Y-%m-%d")
@@ -378,11 +474,24 @@ Here the fonts are setup in a function so I can change them all in once step by 
 (setq org-fontify-quote-and-verse-blocks t)
 
 ;; Character to display at the end of a folded headline
-(setq org-ellipsis " ⬎")
+;;(setq org-ellipsis " ⬎")
 
 ;; this tells org to use the current window for agenda
 ;; rather than creating a split
 (setq org-agenda-window-setup 'current-window)
+#+end_src
+
+I use =org-superstar= to replace headline and list-markup with more attractive options. An added benefit is that by transforming the markup into fancy bullets I get visual confirmation that the markup is going what I intend.
+
+#+begin_src emacs-lisp
+(use-package org-superstar
+  :custom
+  (org-superstar-headline-bullets-list '("❖ "))
+  (org-superstar-special-todo-items nil)
+  (org-superstar-item-bullet-alist
+      '((?- . ?•)
+	(?+ . ?▶)
+	(?* . ?▷))))
 #+end_src
 
 ** Source Code Blocks
@@ -561,69 +670,6 @@ I've tried a few completion packages and they've all left me cold. =hippy-expand
   "Offer ido or ivy based completion for the word at point."
   (interactive)
   (my-ido-or-ivy-hippie-expand-with 'hippie-expand))
-#+end_src
-
-* Custom Minor Modes
-
-/For future reference.../
-
-You might want to think about creating a minor-mode you can call when switching to a new mode.
-
-The below code is +stolen+ adapted from /prot/.
-
-#+begin_example
-(define-minor-mode oht/writing-mode
-	“Explaination”
-	:init-value nil
-	:global nil
-	(if oht/writing-mode
-		(progn
-		  (olivetti-mode 1)
-		  (hl-line-mode 1)
-		  (setq-local cursor-type ‘(bar . 4))
-	  (olivetti-mode -1)
-	  (hl-line-mode 1)
-	  ((setq-local cursor-type ‘(bar . 2))))
-#+end_example
-
-* Mode Hooks
-
-#+begin_src emacs-lisp
-(defun oht/markdown-mode-hook ()
-  (oht/writing-mode)
-  )
-(add-hook 'markdown-mode-hook 'oht/markdown-mode-hook)
-
-(defun oht/org-mode-hook ()
-  (oht/writing-mode)
-  (org-superstar-mode 1)
-  ;; this shouldn't be needed, debugging
-  (undo-tree-mode)
-  )
-(add-hook 'org-mode-hook 'oht/org-mode-hook)
-
-(defun oht/org-agenda-hook ()
-  (hl-line-mode 1)
-  )
-(add-hook 'org-agenda-hook 'oht/org-agenda-hook)
-
-(defun oht/emacs-lisp-mode ()
-  (outline-minor-mode t)
-  (rainbow-delimiters-mode t)
-  )
-(add-hook 'emacs-lisp-mode 'oht/emacs-lisp-mode)
-
-(defun oht/fountain-mode-hook ()
-  (fountain-add-continued-dialog nil)
-  (fountain-highlight-elements (quote (section-heading)))
-  )
-(add-hook 'fountain-mode 'oht/fountain-mode-hook)
-
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (dired-hide-details-mode 1)
-	    (auto-revert-mode)
-	  ))
 #+end_src
 
 * Secondary Selection
@@ -831,6 +877,14 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
   (kill-line 0))
 
+(defun oht/kill-visual-line-backward ()
+  "Kill from the point to beginning of visual line"
+  (interactive)
+  (set-mark-command nil)
+  (beginning-of-visual-line)
+  (kill-region (region-beginning) (region-end))
+  )
+
 (defun oht/kill-region-or-char ()
   "If there's a region, kill it, if not, kill the next character."
   (interactive)
@@ -903,6 +957,93 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
   (split-window-right)
   (windmove-right))
+
+(defun oht/forward-word-beginning ()
+  "Go to the end of the next word."
+  (interactive)
+  (forward-word 2)
+  (backward-word))
+
+#+end_src
+
+* Modal Editing
+
+I don't really want to use =evil-mode=. It does too much for my taste. I much prefer this simpler solution.
+
+#+begin_src emacs-lisp
+;; hydra-modal functions
+(defun hydra-modal/pre ()
+  "When activating the hydra-modal, change the cursor to a box"
+  (set-default 'cursor-type 'box)
+  (blink-cursor-mode -1))
+
+(defun hydra-modal/post ()
+  "When exiting the hydra-modal, change the cursor to a bar"
+  (set-default 'cursor-type 'bar)
+  (blink-cursor-mode 1))
+
+;; MODAL HYDRA!
+;; Since the color is set to amaranth, only actions labeled :blue will quit
+(defhydra hydra-modal (:hint none :pre hydra-modal/pre :post hydra-modal/post :color amaranth)
+  "/// MODAL HYDRA"
+  ;; move one character
+  ("h" backward-char "left")
+  ("l" forward-char "right")
+  ("j" next-line "next")
+  ("k" previous-line "previous")
+  ;; move larger
+  ("C-h" backward-word "previous word")
+  ("C-l" forward-word "end of next word")
+  ("b" backward-word "previous word")
+  ("w" oht/forward-word-beginning "beginning of next word")
+  ("e" forward-word "end of next word")
+  ("C-k" backward-paragraph "back paragraph")
+  ("C-j" forward-paragraph "forward paragraph")
+  ("u" beginning-of-visual-line "start of line")
+  ("p" end-of-visual-line "end of line")
+  ("0" beginning-of-visual-line "start of line")
+  ("$" end-of-visual-line "end of line")
+  ("/" swiper-isearch "search forward")
+  ("?" swiper-isearch-backward "search backward")
+  ;; edit
+  ("J" oht/join-line-next "join")
+  ("y" kill-ring-save "Copy")
+  ("P" yank "paste")
+  ("<DEL>" kill-region "kill region")
+  ("d" oht/kill-region-or-char "kill region")
+  ("D" kill-line "Kill to EOL")
+  ("c" oht/kill-region-or-char "change" :color blue)
+  ("C" kill-line "change to EOL" :color blue)
+  ("I" beginning-of-visual-line "append" :color blue)
+  ("a" forward-char "append" :color blue)
+  ("A" end-of-visual-line "append line" :color blue)
+  ("o" oht/open-line-below "open below" :color blue)
+  ("O" oht/open-line-above "open above" :color blue)
+  ("!" hydra-manipulate/body "manipulate" :color blue)
+  ;; view
+  ("z" recenter-top-bottom "cycle recenter")
+  ("[" scroll-down-line "scroll line up")
+  ("]" scroll-up-line "scroll line down")
+  ("{" scroll-down-command "scroll up")
+  ("}" scroll-up-command "scroll down")
+  ;; select
+  ("v" set-mark-command "mark")
+  ("V" oht/mark-whole-line "mark whole line")
+  ("C-v" rectangle-mark-mode "rectangle mark")
+  ("C-r" replace-rectangle "replace rectangle")
+  ("x" exchange-point-and-mark "swap point/mark")
+  ;; pass-through
+  ("s-s" save-buffer "save")
+  ("s-z" undo-tree-undo "undo")
+  ("s-Z" undo-tree-redo "redo")
+  ("s-x" kill-region "cut")
+  ("s-c" kill-ring-save "copy")
+  ("s-v" yank "paste")
+  ("s-e" er/expand-region "expand region")
+  ("s-E" er/contract-region "contract region")
+  ("<tab>" org-cycle "org-cycle")
+  ("s-j" nil "cancel" :color blue)
+  ("i" nil "cancel" :color blue))
 #+end_src
 
 * Hydra
@@ -913,13 +1054,13 @@ Hydras should be reserved for mini-modes, /ie/ places where you'll want to call 
 
 [[https://github.com/abo-abo/hydra/wiki/Hydra-Colors][Official Documentation]]
 
-| Color    | Defined keys | Other keys               |
-|----------+--------------+--------------------------|
-| red      | Stay Alive   | Pass-thru and Exit       |
-| pink     | Stay Alive   | Pass-thru and Stay Alive |
-| amaranth | Stay Alive   | Reject and Stay Alive    |
-| teal     | Exit         | Reject and Stay Alive    |
-| blue     | Exit         | Pass-thru and Exit       |
+| Color    | Defined keys        | Other keys          |
+|----------+---------------------+---------------------|
+| red      | Accept and Continue | Accept and Exit     |
+| pink     | Accept and Continue | Accept and Continue |
+| amaranth | Accept and Continue | Reject and Continue |
+| teal     | Exit                | Reject and Continue |
+| blue     | Exit                | Accept and Exit     |
 
 ** Text Manipulation
 
@@ -1075,77 +1216,6 @@ Many of these commands are duplicated under [[*Windows Leader][Windows Leader]] 
   ("q" nil "cancel" :color blue))
 #+end_src
 
-** Vim-ish
-
-I don't really want to use =evil-mode=. It does too much for my taste. I much prefer this simpler solution.
-
-#+begin_src emacs-lisp
-;; VIM-POWER functions
-(defun hydra-modal/pre ()
-  "When activating the hydra-modal, change the cursor to a box"
-  (set-default 'cursor-type 'box))
-
-(defun hydra-modal/post ()
-  "When exiting the hydra-modal, change the cursor to a bar"
-  (set-default 'cursor-type 'bar))
-
-;; VIM-ISH HYDRA!
-;; Since the color is set to amaranth, only actions labeled :blue will quit
-(defhydra hydra-modal (:hint none :pre hydra-modal/pre :post hydra-modal/post :color amaranth)
-  "
->>> VIM-ISH POWER ~ it's like vim, sort-of <<<"
-  ;; move one character
-  ("h" backward-char "left")
-  ("l" forward-char "right")
-  ("j" next-line "next")
-  ("k" previous-line "previous")
-  ;; move larger
-  ("C-h" backward-word "previous word")
-  ("C-l" forward-word "end of next word")
-  ("b" backward-word "previous word")
-  ("e" forward-word "end of next word")
-  ("C-k" backward-paragraph "back paragraph")
-  ("C-j" forward-paragraph "forward paragraph")
-  ("u" beginning-of-visual-line "start of line")
-  ("p" end-of-visual-line "end of line")
-  ("0" beginning-of-visual-line "start of line")
-  ("$" end-of-visual-line "end of line")
-  ;; edit
-  ("J" oht/join-line-next "join")
-  ("y" kill-ring-save "Copy")
-  ("P" yank "paste")
-  ("<DEL>" kill-region "kill region")
-  ("d" oht/kill-region-or-char "kill region")
-  ("c" oht/kill-region-or-char "change" :color blue)
-  ("C" kill-line "change to EOL" :color blue)
-  ("I" beginning-of-visual-line "append" :color blue)
-  ("a" forward-char "append" :color blue)
-  ("A" end-of-visual-line "append line" :color blue)
-  ("!" hydra-manipulate/body "manipulate" :color blue)
-  ;; view
-  ("z" recenter-top-bottom "cycle recenter")
-  ("[" scroll-down-line "scroll line up")
-  ("]" scroll-up-line "scroll line down")
-  ("{" scroll-down-command "scroll up")
-  ("}" scroll-up-command "scroll down")
-  ;; select
-  ("v" set-mark-command "mark")
-  ("V" oht/mark-whole-line "mark whole line")
-  ("C-v" rectangle-mark-mode "rectangle mark")
-  ("C-r" replace-rectangle "replace rectangle")
-  ("o" exchange-point-and-mark "swap point/mark")
-  ;; pass-through
-  ("s-z" undo-tree-undo "undo")
-  ("s-Z" undo-tree-redo "redo")
-  ("s-x" kill-region "cut")
-  ("s-c" kill-ring-save "copy")
-  ("s-v" yank "paste")
-  ("s-<return>" oht/open-line-below "open below" :color blue)
-  ("S-s-<return>" oht/open-line-above "open above" :color blue)
-  ("s-j" nil "cancel" :color blue)
-  ("i" nil "cancel" :color blue))
-#+end_src
-
 ** Spelling
 
 #+begin_src emacs-lisp
@@ -1264,59 +1334,6 @@ You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 
 5. Keybindings which I use all the time, get taken out from behind leaders for faster access. For example, the org-agenda command.
 
-** Standard Mac Shortcuts
-
-[[https://support.apple.com/en-us/HT201236]]
-
-#+begin_src emacs-lisp
-;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
-;; and by default option+forward-delete has no mapping
-(bind-key "M-<delete>" 'kill-word)
-;; C-[ sends ESC so let's make ESC more predictable
-(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-(bind-key "s-," 'oht/counsel-find-settings)
-(bind-key "s-n" 'make-frame-command)
-(bind-key "s-s" 'save-buffer)         ;save
-(bind-key "s-S" 'write-file)          ;save as
-(bind-key "s-a" 'mark-whole-buffer)
-(bind-key "s-o" 'counsel-find-file)
-(bind-key "s-z" 'undo-tree-undo)
-(bind-key "s-Z" 'undo-tree-redo)
-(bind-key "s-x" 'kill-region)
-(bind-key "s-c" 'kill-ring-save)
-(bind-key "s-v" 'yank)
-(bind-key "s-<backspace>" 'oht/kill-line-backward)
-(bind-key "s-w" 'oht/kill-this-buffer)
-(bind-key "s-q" 'save-buffers-kill-terminal)
-(bind-key "s-<up>" (kbd "M-<"))
-(bind-key "s-<down>" (kbd "M->"))
-(bind-key "s-l" 'oht/mark-whole-line)
-(bind-key "s-M-l" 'mark-paragraph)
-(bind-key "s-]" 'indent-rigidly-right-to-tab-stop)
-(bind-key "s-[" 'indent-rigidly-left-to-tab-stop)
-(bind-key "S-s-<left>" 'oht/expand-to-beginning-of-visual-line)
-(bind-key "S-s-<right>" 'oht/expand-to-end-of-visual-line)
-(bind-key "s-f" 'swiper)
-(bind-key "s-<return>" 'oht/open-line-below)
-(bind-key "S-s-<return>" 'oht/open-line-above)
-;; Use same shortcuts as tab-movement for buffer movement
-(bind-key "s-}" 'next-buffer)
-(bind-key "s-{" 'previous-buffer)
-; Mac follows the UNIX convention of C-h being the same as <DEL>
-(bind-key "C-h" 'delete-backward-char)
-;; Normally, C-? is used for undo/redo,
-;; but I've rebound that elsewhere, so I can use it here
-(bind-key* "C-?" 'help-command)
-;; readline-style shortcuts, because I love them
-(bind-key* "C-w" 'backward-kill-word)
-(bind-key "C-u" 'oht/kill-line-backward)
-;; No reason not to use command-u for this
-(bind-key "s-u" 'universal-argument)
-;; since ctrl+alt+b/f are system shortcuts for word movement, do that
-(bind-key* "C-M-b" 'left-word)
-(bind-key* "C-M-f" 'right-word)
-#+end_src
-
 ** Enhance Emacs
 
 #+begin_src emacs-lisp
@@ -1347,7 +1364,6 @@ This cycles the spacing around point between a single space, no spaces, or the o
 (bind-key "s-p" 'counsel-M-x)
 (bind-key "s-b" 'ivy-switch-buffer)
 (bind-key "M-s-b" 'ibuffer)
-(bind-key* "s-e" 'er/expand-region)
 (bind-key "s-m" 'magit-status)
 ;; vim has the wonderful . command, and emacs has repeat
 ;; s-y is my keybinding because excel has (a version of) repeat bound to that
@@ -1382,12 +1398,14 @@ I use =⌘-'= as the my leader.
 ** Windows Leader
 
 #+begin_src emacs-lisp
-(bind-key "s-= s" 'oht/split-below)
-(bind-key "s-= v" 'oht/split-beside)
-(bind-key "s-= h" 'hydra-windows/body)
-(bind-key "s-= k" 'delete-window)
-(bind-key "s-= o" 'delete-other-windows)
-(bind-key "s-= b" 'balance-windows)
+(bind-keys :prefix-map oht/windows-leader
+	   :prefix "s-="
+	   ("s" . oht/split-below)
+	   ("v" . oht/split-beside)
+	   ("h" . hydra-windows/body)
+	   ("k" . delete-window)
+	   ("o" . delete-other-windows)
+	   ("b" . balance-windows))
 #+end_src
 
 ** Mode Specific Bindings

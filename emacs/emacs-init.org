@@ -982,9 +982,7 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
   (set-default 'cursor-type 'bar)
   (blink-cursor-mode 1))
 
-;; MODAL HYDRA!
-;; Since the color is set to amaranth, only actions labeled :blue will quit
-(defhydra hydra-modal (:hint none :pre hydra-modal/pre :post hydra-modal/post :color amaranth)
+(defhydra hydra-modal (:hint none :pre hydra-modal/pre :post hydra-modal/post :color pink)
   "/// MODAL HYDRA"
   ;; move one character
   ("h" backward-char "left")
@@ -1032,16 +1030,7 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
   ("C-v" rectangle-mark-mode "rectangle mark")
   ("C-r" replace-rectangle "replace rectangle")
   ("x" exchange-point-and-mark "swap point/mark")
-  ;; pass-through
-  ("s-s" save-buffer "save")
-  ("s-z" undo-tree-undo "undo")
-  ("s-Z" undo-tree-redo "redo")
-  ("s-x" kill-region "cut")
-  ("s-c" kill-ring-save "copy")
-  ("s-v" yank "paste")
-  ("s-e" er/expand-region "expand region")
-  ("s-E" er/contract-region "contract region")
-  ("<tab>" org-cycle "org-cycle")
+  ;; exit
   ("s-j" nil "cancel" :color blue)
   ("i" nil "cancel" :color blue))
 #+end_src

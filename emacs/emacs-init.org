@@ -1372,16 +1372,18 @@ This cycles the spacing around point between a single space, no spaces, or the o
 I use =⌘-'= as the my leader.
 
 #+begin_src emacs-lisp
-(bind-key "s-' b" 'counsel-descbinds)
-(bind-key "s-' c" 'org-capture)
-(bind-key "s-' d" 'sdcv-search)
-(bind-key "s-' f" 'oht/counsel-find-org)
-(bind-key "s-' h" 'hl-line-mode)
-(bind-key "s-' l" 'oht/toggle-line-numbers)
-(bind-key "s-' o" 'counsel-outline)
-(bind-key "s-' s-o" 'counsel-org-goto-all)
-(bind-key "s-' w" 'oht/toggle-whitespace)
-(bind-key "s-' m" 'mc/edit-lines)
+(bind-keys :prefix-map oht/global-leader
+	   :prefix "s-'"
+	   ("b" . counsel-descbinds)
+	   ("c" . org-capture)
+	   ("d" . sdcv-search)
+	   ("f" . oht/counsel-find-org)
+	   ("h" . hl-line-mode)
+	   ("l" . oht/toggle-line-numbers)
+	   ("o" . counsel-outline)
+	   ("s-o" . counsel-org-goto-all)
+	   ("w" . oht/toggle-whitespace)
+	   ("m" . mc/edit-lines))
 #+end_src
 
 ** Windows Leader

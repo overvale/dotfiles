@@ -253,7 +253,13 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 (use-package bind-key)
 (use-package exec-path-from-shell)
 
+(use-package orderless
+  :ensure t
+  :init ;(icomplete-mode 1)
+  :custom (completion-styles '(orderless)))
+
 (use-package counsel
+  :ensure t
   :config (counsel-mode t)
   :custom
   (ivy-use-virtual-buffers t)
@@ -266,9 +272,15 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
   ;; (setq ivy-initial-inputs-alist nil)
 )
 
+(use-package ivy
+  :config
+  (setq ivy-re-builders-alist '((t . orderless-ivy-re-builder))))
+
 (use-package ivy-rich
-  :config (ivy-rich-mode 1)
-  :custom (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+  :ensure t
+  :config
+  (ivy-rich-mode 1)
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
 (use-package multiple-cursors)
 (use-package olivetti)

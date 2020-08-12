@@ -31,6 +31,7 @@ This file is called =emacs-init.org= and to make it work, you need the following
 Anyone learning vim, emacs, zsh, bash, or something similar, spends a lot of time looking at other people's configuration files (much like this one). I've learned from some wonderful (and well documented) examples. Here is a list of the ones I've learned the most from:
 
 - [[https://protesilaos.com/dotemacs/][Protesilaos Stavrou Dotemacs]]
+- [[https://github.com/oantolin/emacs-config/blob/master/init.el][Oantolin emacs config]]
 - [[https://blog.aaronbieber.com][Aaron Bieber, Blog & Dotfiles]]
 - [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org][Harry R. Schwartz dotfiles]]
 - [[https://yiufung.net/post/org-mode-hidden-gems-pt1/][Org-Mode Hidden Gems]]
@@ -105,9 +106,9 @@ Emacs can automatically create backup files. This tells Emacs to put all backups
 
 ** Making Emacs More Consistent with macOS
 
-*** Keybindings
+The below is probably the biggest reason why I managed get over the intimidation of using Emacs in those first few days.
 
-The below is probably the biggest reason why I managed get over the intimidation of using Emacs in those first few days. Here's what it does:
+*** Modifiers
 
 1. Makes the command keys act as =super=. =super= keybindings are basically not used by Emacs so they're a safe playground for assigning your own keybindings. I setup =s-q= for quit,  =s-s= for save, =s-z= for undo, =s-o= for open file, basically, all the standard Mac shortcuts. Once I did that Emacs became very usable immediately and that ease-of-use made learning Emacs a lot less painful.
 2. Makes the right option key act as =meta= and the makes the left option key act as =alt=. This lets me use =meta= keybindings /and/ type characters that require =option/alt=. If you don't do that you can't insert characters like: £¢∞§¶•≠. Which is, I guess, only sometimes useful, but at least this way I /can/.
@@ -142,7 +143,7 @@ Due to historical reasons, emacs thinks =C-i= is the same as =TAB= and =C-m= is 
 (bind-key "M-<delete>" 'kill-word)
 ;; C-[ sends ESC so let's make ESC more predictable
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-(bind-key "s-," 'oht/counsel-find-settings)
+(bind-key "s-," 'oht/find-settings)
 (bind-key "s-n" 'make-frame-command)
 (bind-key "s-s" 'save-buffer)         ;save
 (bind-key "s-S" 'write-file)          ;save as
@@ -197,10 +198,10 @@ By default, Emacs doesn't replace the selection (region) with anything you type,
 
 *** Visual Line Mode
 
-Visual line mode is super helpful, but out-of-the-box it behaves inconsistently with the rest of macOS, so this includes code to make it the same.
+Visual line mode is super helpful, but out-of-the-box it behaves inconsistently with the rest of macOS, so the below code brings it back in line.
 
 #+begin_src emacs-lisp
-;; WORD WRAP
+;; Turn on word-wrap globally
 (global-visual-line-mode t)
 ;; with visual-line-mode set,
 ;; C-a and C-b go to beginning/end-of-visual-line
@@ -273,7 +274,6 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 (use-package olivetti)
 (use-package org
   :hook (org-mode . oht/org-mode-hook))
-(use-package try)
 (use-package unfill)
 
 (use-package fountain-mode)
@@ -317,6 +317,7 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 
 (use-package sdcv-mode
   :load-path "lisp/emacs-sdcv/")
+
 #+end_src
 
 ** Mode Hooks
@@ -380,26 +381,14 @@ Here the fonts are setup in a function so I can change them all in once step by 
   (set-face-attribute 'bold nil :weight 'semibold)
   )
 
-(defun oht/set-font-triplicate ()
-  (interactive)
-  "These settings are placed inside a function so that I can set them all at once by calling the function."
-  (set-face-attribute 'default nil
-		      :family "Triplicate T4c" :height 140 :weight 'normal)
-  (set-face-attribute 'fixed-pitch nil
-		      :family "Triplicate T4c" :height 140 :weight 'normal)
-  (set-face-attribute 'variable-pitch nil
-		      :family "Triplicate T4p" :height 150 :weight 'normal)
-  (set-face-attribute 'bold nil :weight 'semibold)
-  )
-
 (oht/set-font)
 #+end_src
 
 ** Theme
 
-#+begin_src emacs-lisp
-;; https://gitlab.com/protesilaos/modus-themes
+I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus Themes]].
 
+#+begin_src emacs-lisp
 (use-package modus-vivendi-theme
   :defer t
   :custom
@@ -415,7 +404,7 @@ Here the fonts are setup in a function so I can change them all in once step by 
   (modus-operandi-theme-bold-constructs t)
   (modus-operandi-theme-org-blocks 'greyscale)
   (modus-operandi-theme-variable-pitch-headings t)
-  (modus-operandi-theme-3d-modeline t))
+  (modus-operandi-theme-3d-modeline nil))
 
 (defadvice load-theme (before clear-previous-themes activate)
   "Clear existing theme settings instead of layering them"
@@ -766,7 +755,7 @@ from: https://maxjmartin.com/Emacs%20Dotfile.html"
   (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
   )
 
-(defun oht/counsel-find-settings ()
+(defun oht/find-settings ()
   "Quickly open emacs-init.org"
   (interactive)
   (find-file "~/dot/emacs/emacs-init.org"))

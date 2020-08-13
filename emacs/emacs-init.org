@@ -912,13 +912,13 @@ from: https://maxjmartin.com/Emacs%20Dotfile.html"
          (progn ,@body)
        (move-to-column column))))
 (put 'save-column 'lisp-indent-function 0)
-(defun move-line-up ()
+(defun oht/move-line-up ()
   "Move the current line up by 1 line"
   (interactive)
   (save-column
     (transpose-lines 1)
     (forward-line -2)))
-(defun move-line-down ()
+(defun oht/move-line-down ()
   "More the current line down by 1 line"
   (interactive)
   (save-column
@@ -1432,8 +1432,8 @@ You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 #+begin_src emacs-lisp
 (bind-key "C-s" 'ctrlf-forward-fuzzy)
 (bind-key "C-r" 'ctrlf-backward-fuzzy)
-(bind-key "M-<up>" 'move-line-up)
-(bind-key "M-<down>" 'move-line-down)
+(bind-key "M-<up>" 'oht/move-line-up)
+(bind-key "M-<down>" 'oht/move-line-down)
 (bind-key "M-o" 'other-window)
 (bind-key "M-z" 'zap-up-to-char) ;the default is 'zap-to-char
 (bind-key* "C-/" 'flyspell-correct-previous)

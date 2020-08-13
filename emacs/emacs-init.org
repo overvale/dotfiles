@@ -282,6 +282,16 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
   (ivy-rich-mode 1)
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
+(use-package flyspell-correct
+  :ensure t
+  :custom
+  (flyspell-correct-interface 'flyspell-correct-dummy)
+)
+(advice-add 'flyspell-correct-dummy :around
+	    (defun my--fsc-wrapper (func &rest args)
+	      (let ((selectrum-should-sort-p nil))
+		(apply func args))))
+
 (use-package multiple-cursors)
 (use-package olivetti)
 (use-package org
@@ -1216,7 +1226,7 @@ Many of these commands are duplicated under [[*Windows Leader][Windows Leader]] 
 (defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
   "Spelling"
   (";" flyspell-goto-next-error "Next")
-  (":" flyspell-auto-correct-word "Correct")
+  (":" flyspell-correct-at-point "Correct")
   ("q" nil "cancel" :color blue))
 #+end_src
 
@@ -1334,7 +1344,7 @@ You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 (bind-key "M-<down>" 'move-line-down)
 (bind-key "M-o" 'other-window)
 (bind-key "M-z" 'zap-up-to-char) ;the default is 'zap-to-char
-(bind-key* "C-/" 'flyspell-auto-correct-previous-word)
+(bind-key* "C-/" 'flyspell-correct-previous)
 (bind-key "s-M-z" 'undo-tree-visualize)
 (bind-key "M-s-s" 'save-some-buffers) ;save others
 (bind-key "M-s-o" 'counsel-buffer-or-recentf)

@@ -49,12 +49,6 @@ First, make sure you're using the correct version. I like [[https://bitbucket.or
 
 ** Emacs Startup
 
-I've seen it listed in a few places, so I'm trying it on, but this is supposed to help reduce emacs startup time.
-
-#+begin_src emacs-lisp
-(setq gc-cons-threshold 50000000)
-#+end_src
-
 This tells emacs to startup with a scratch buffer, with custom content, and to do it quietly.
 
 #+begin_src emacs-lisp

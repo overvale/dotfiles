@@ -121,6 +121,8 @@ Emacs can automatically create backup files. This tells Emacs to put all backups
 (setq create-lockfiles nil)           ; No need for ~ files when editing
 #+end_src
 
+* Spelling
+
 Tell ispell where to find the =aspell= executable, and some settings.
 
 #+begin_src emacs-lisp
@@ -128,6 +130,23 @@ Tell ispell where to find the =aspell= executable, and some settings.
 (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
 (setq ispell-list-command "list")
 #+end_src
+
+** Spelling Hydra
+
+#+begin_src emacs-lisp
+(defun hydra-flyspell/pre ()
+  ;;(flyspell-mode t)
+  )
+
+(defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
+  "Spelling"
+  (";" flyspell-goto-next-error "Next")
+  (":" flyspell-correct-at-point "Correct")
+  ("q" nil "cancel" :color blue))
+
+(bind-key "s-;" 'hydra-flyspell/body)
+#+end_src
+
 
 * Making Emacs More Consistent with macOS
 
@@ -1304,20 +1323,6 @@ Many of these commands are duplicated under [[*Windows Leader][Windows Leader]] 
   ("q" nil "cancel" :color blue))
 #+end_src
 
-** Spelling
-
-#+begin_src emacs-lisp
-(defun hydra-flyspell/pre ()
-  ;;(flyspell-mode t)
-  )
-
-(defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
-  "Spelling"
-  (";" flyspell-goto-next-error "Next")
-  (":" flyspell-correct-at-point "Correct")
-  ("q" nil "cancel" :color blue))
-#+end_src
-
 ** Org
 
 #+begin_src emacs-lisp
@@ -1453,7 +1458,6 @@ This cycles the spacing around point between a single space, no spaces, or the o
 ;; s-y is my keybinding because excel has (a version of) repeat bound to that
 (bind-key "s-y" 'repeat)
 (bind-key "s-j" 'hydra-modal/body)
-(bind-key "s-;" 'hydra-flyspell/body)
 (bind-key "s-|" 'hydra-manipulate/body)
 (bind-key "s-t" 'hydra-transpose/body)
 (bind-key "C-S-<mouse-1>" 'mc/add-cursor-on-click)

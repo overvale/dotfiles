@@ -91,7 +91,7 @@ When customizing Emacs interactively (ie: not in this document or =init.el=) Ema
   (load custom-file :noerror))
 #+end_src
 
-** emacs.d layout
+** emacs.d Folder Layout
 
 This tells emacs how I've laid-out by emacs directory.
 
@@ -107,24 +107,43 @@ Emacs can automatically create backup files. This tells Emacs to put all backups
                                                "backups"))))
 #+end_src
 
-** Making Emacs More Consistent with macOS
+** General
+
+#+begin_src emacs-lisp
+(global-auto-revert-mode t)           ; update buffer when file on disk changes
+;;(desktop-save-mode 1)                 ; sessions
+(save-place-mode 1)                   ; reopens the file to the same spot you left
+(recentf-mode 1)                      ; enables "Open Recent..." in file menu
+(setq tab-width 4)                    ; tabs=4 char
+(setq help-window-select t)           ; focus new help windows when opened
+(setq sentence-end-double-space nil)  ; ends sentence after 1 space
+(fset 'yes-or-no-p 'y-or-n-p)         ; Changes all yes/no questions to y/n type
+(setq create-lockfiles nil)           ; No need for ~ files when editing
+#+end_src
+
+Tell ispell where to find the =aspell= executable, and some settings.
+
+#+begin_src emacs-lisp
+(setq ispell-program-name "/usr/local/bin/aspell")
+(customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
+(setq ispell-list-command "list")
+#+end_src
+
+* Making Emacs More Consistent with macOS
 
 The below is probably the biggest reason why I managed get over the intimidation of using Emacs in those first few days.
 
-*** Modifiers
+** Modifiers & Terminal Anachronisms
+
+The below does 3 things:
 
 1. Makes the command keys act as =super=. =super= keybindings are basically not used by Emacs so they're a safe playground for assigning your own keybindings. I setup =s-q= for quit,  =s-s= for save, =s-z= for undo, =s-o= for open file, basically, all the standard Mac shortcuts. Once I did that Emacs became very usable immediately and that ease-of-use made learning Emacs a lot less painful.
-2. Makes the right option key act as =meta= and the makes the left option key act as =alt=. This lets me use =meta= keybindings /and/ type characters that require =option/alt=. If you don't do that you can't insert characters like: £¢∞§¶•≠. Which is, I guess, only sometimes useful, but at least this way I /can/.
+2. Makes the left option key act =meta= so I can use meta-keybindings.
+3. Makes the right option key act as =option= to I can insert characters like: £¢∞§¶•≠.
 
 #+begin_src emacs-lisp
-;; Command to super
 (setq mac-command-modifier 'super)
-(setq mac-right-command-modifier 'super)
-;; Left-option to meta
 (setq mac-option-modifier 'meta)
-(setq mac-left-option-modifier 'meta)
-;; Right-option to option
-(setq mac-right-option-modifier 'meta)
 (setq mac-right-option-modifier 'nil)
 #+end_src
 
@@ -136,71 +155,22 @@ Due to historical reasons, emacs thinks =C-i= is the same as =TAB= and =C-m= is 
 (define-key input-decode-map [?\C-m] [C-m])
 #+end_src
 
-*** Standard Mac Shortcuts
-
-[[https://support.apple.com/en-us/HT201236]]
-
-#+begin_src emacs-lisp
-;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
-;; and by default option+forward-delete has no mapping
-(bind-key "M-<delete>" 'kill-word)
-;; C-[ sends ESC so let's make ESC more predictable
-(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-(bind-key "s-," 'oht/find-settings)
-(bind-key "s-n" 'make-frame-command)
-(bind-key "s-s" 'save-buffer)         ;save
-(bind-key "s-S" 'write-file)          ;save as
-(bind-key "s-a" 'mark-whole-buffer)
-(bind-key "s-o" 'find-file)
-(bind-key "s-z" 'undo-tree-undo)
-(bind-key "s-Z" 'undo-tree-redo)
-(bind-key "s-x" 'kill-region)
-(bind-key "s-c" 'kill-ring-save)
-(bind-key "s-v" 'yank)
-(bind-key "s-<backspace>" 'oht/kill-visual-line-backward)
-(bind-key "s-w" 'oht/kill-this-buffer)
-(bind-key "s-q" 'save-buffers-kill-terminal)
-(bind-key "s-<up>" (kbd "M-<"))
-(bind-key "s-<down>" (kbd "M->"))
-(bind-key "s-l" 'oht/mark-whole-line)
-(bind-key "s-M-l" 'mark-paragraph)
-(bind-key "s-]" 'indent-rigidly-right-to-tab-stop)
-(bind-key "s-[" 'indent-rigidly-left-to-tab-stop)
-(bind-key "S-s-<left>" 'oht/expand-to-beginning-of-visual-line)
-(bind-key "S-s-<right>" 'oht/expand-to-end-of-visual-line)
-(bind-key "s-<return>" 'oht/open-line-below)
-(bind-key "S-s-<return>" 'oht/open-line-above)
-;; Use same shortcuts as tab-movement for buffer movement
-(bind-key "s-}" 'next-buffer)
-(bind-key "s-{" 'previous-buffer)
-; Mac follows the UNIX convention of C-h being the same as <DEL>
-(bind-key "C-h" 'delete-backward-char)
-;; Normally, C-? is used for undo/redo,
-;; but I've rebound that elsewhere, so I can use it here
-(bind-key* "C-?" 'help-command)
-;; readline-style shortcuts, because I love them
-(bind-key* "C-w" 'backward-kill-word)
-(bind-key "C-u" 'oht/kill-line-backward)
-;; No reason not to use command-u for this
-(bind-key "s-u" 'universal-argument)
-;; since ctrl+alt+b/f are system shortcuts for word movement, do that
-(bind-key* "C-M-b" 'left-word)
-(bind-key* "C-M-f" 'right-word)
-;; respect alt+forward-delete
-(bind-key* "M-<delete>" 'kill-word)
-#+end_src
-
-*** Replace Selection
-
 By default, Emacs doesn't replace the selection (region) with anything you type, it just deletes your selection and appends what you type. The below makes what you type /replace/ your selection.
 
 #+begin_src emacs-lisp
 (delete-selection-mode t)
 #+end_src
 
-*** Visual Line Mode
+When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=. This makes Emacs refer to them as =foo/file= and =bar/file=, like a sane program.
 
-Visual line mode is super helpful, but out-of-the-box it behaves inconsistently with the rest of macOS, so the below code brings it back in line.
+#+begin_src emacs-lisp
+;;(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+#+end_src
+
+** Visual Line Mode
+
+Visual line mode is super helpful, but out-of-the-box movement commands behave inconsistently with the rest of macOS, so the below code brings them back in line.
 
 #+begin_src emacs-lisp
 ;; Turn on word-wrap globally
@@ -217,35 +187,63 @@ Visual line mode is super helpful, but out-of-the-box it behaves inconsistently 
 (bind-key* "C-k" 'oht/kill-line)
 #+end_src
 
-** Uniquify!
+** Standard Mac Shortcuts
 
-When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=. This makes Emacs refer to them as =foo/file= and =bar/file=, like a sane program.
-
-#+begin_src emacs-lisp
-;;(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
-#+end_src
-
-** Spelling
+[[https://support.apple.com/en-us/HT201236]]
 
 #+begin_src emacs-lisp
-(setq ispell-program-name "/usr/local/bin/aspell")
-(customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
-(setq ispell-list-command "list")
-#+end_src
-
-** General Settings
-
-#+begin_src emacs-lisp
-(global-auto-revert-mode t)           ; update buffer when file on disk changes
-;;(desktop-save-mode 1)                 ; sessions
-(save-place-mode 1)                   ; reopens the file to the same spot you left
-(recentf-mode 1)                      ; enables "Open Recent..." in file menu
-(setq tab-width 4)                    ; tabs=4 char
-(setq help-window-select t)           ; focus new help windows when opened
-(setq sentence-end-double-space nil)  ; ends sentence after 1 space
-(fset 'yes-or-no-p 'y-or-n-p)         ; Changes all yes/no questions to y/n type
-(setq create-lockfiles nil)           ; No need for ~ files when editing
+;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
+;; and by default option+forward-delete has no mapping
+(bind-key "M-<delete>" 'kill-word)
+;; C-[ sends ESC so let's make ESC more predictable
+(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+(bind-keys
+ ("s-," . oht/find-settings)
+ ("s-n" . make-frame-command)
+ ("s-s" . save-buffer)
+ ("s-S" . write-file)			;save as
+ ("s-a" . mark-whole-buffer)
+ ("s-o" . find-file)
+ ("s-z" . undo-tree-undo)
+ ("s-Z" . undo-tree-redo)
+ ("s-x" . kill-region)
+ ("s-c" . kill-ring-save)
+ ("s-v" . yank)
+ ("s-<backspace>" . oht/kill-visual-line-backward)
+ ("s-w" . oht/kill-this-buffer)
+ ("s-q" . save-buffers-kill-terminal)
+ ("s-l" . oht/mark-whole-line)
+ ("s-M-l" . mark-paragraph)
+ ("s-]" . indent-rigidly-right-to-tab-stop)
+ ("s-[" . indent-rigidly-left-to-tab-stop)
+ ("S-s-<left>" . oht/expand-to-beginning-of-visual-line)
+ ("S-s-<right>" . oht/expand-to-end-of-visual-line)
+ ("s-<return>" . oht/open-line-below)
+ ("S-s-<return>" . oht/open-line-above)
+ )
+;; these don't work with 'bind-keys' (above)
+(bind-key "s-<up>" (kbd "M-<"))
+(bind-key "s-<down>" (kbd "M->"))
+;; Use same shortcuts as tab-movement for buffer movement
+(bind-key "s-}" 'next-buffer)
+(bind-key "s-{" 'previous-buffer)
+;; Mac follows the UNIX convention of C-h being the same as <DEL>
+(bind-key* "C-h" 'delete-backward-char)
+;; Normally, C-? is used for undo/redo,
+;; but I've rebound that elsewhere, so I can use it here
+(bind-key* "C-?" 'help-command)
+;; and I rarely hide apps, so make this easier to hit
+(bind-key* "s-h" 'help-command)
+;; readline-style shortcuts, because I love them
+(bind-key* "C-w" 'backward-kill-word)
+(bind-key "C-u" 'oht/kill-line-backward)
+;; No reason not to use command-u for this
+(bind-key "s-u" 'universal-argument)
+;; since ctrl+alt+b/f are system shortcuts for word movement, do that
+(bind-key* "C-M-b" 'left-word)
+(bind-key* "C-M-f" 'right-word)
+;; respect alt+forward-delete
+(bind-key* "M-<delete>" 'kill-word)
 #+end_src
 
 * Packages

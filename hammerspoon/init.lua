@@ -140,5 +140,4 @@ hs.hotkey.bind({'ctrl'}, 'w', function() hs.eventtap.keyStroke({'alt'}, 'delete'
 hs.hotkey.bind({'ctrl'}, 'u', function() hs.eventtap.keyStroke({'cmd'}, 'delete') end)
 hs.hotkey.bind({'ctrl'}, ';', function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'b') end)
 hs.hotkey.bind({'ctrl'}, "'", function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'f') end)
---hs.hotkey.bind({'ctrl'}, ',', function() hs.eventtap.keyStroke({'alt'}, 'delete') end)
---hs.hotkey.bind({'ctrl'}, '.', function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)
+hs.hotkey.bind({'alt'}, 'd', function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)

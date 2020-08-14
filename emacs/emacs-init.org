@@ -137,7 +137,7 @@ Tell ispell where to find the =aspell= executable, and some settings.
 (setq ispell-list-command "list")
 #+end_src
 
-** Spelling
+** Flyspell-Correct
 
 =flyspell-correct= allows you to pass spelling suggestions to completion and search frameworks, such as =selectrum=. This setup code is copied directly from the selectrum documentation.
 
@@ -187,12 +187,13 @@ The below does 3 things:
 (setq mac-right-option-modifier 'nil)
 #+end_src
 
-Due to historical reasons, Emacs thinks =C-i= is the same as =TAB= and =C-m= is the same as =RETURN=. The below undoes that assumption.
+Due to historical reasons, Emacs thinks =C-i= is the same as =TAB= and =C-m= is the same as =RETURN=. The below undoes that assumption. This will allow you to re-bind them later.
 
 #+begin_src emacs-lisp
 (define-key input-decode-map [?\C-i] [C-i])
 (bind-key "<C-i>" nil)
 (define-key input-decode-map [?\C-m] [C-m])
+(bind-key "<C-m>" nil)
 #+end_src
 
 By default, Emacs doesn't replace the selection (region) with anything you type, it just removes your selection and appends what you type. The below makes what you type /replace/ your selection.
@@ -351,8 +352,6 @@ The creator of these packages also created an enhanced version of =isearch= whic
 (use-package exec-path-from-shell)
 (use-package multiple-cursors)
 (use-package olivetti)
-(use-package org
-  :hook (org-mode . oht/org-mode-hook))
 (use-package unfill)
 (use-package use-package-chords
   :ensure t
@@ -511,6 +510,11 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 #+end_src
 
 * Org
+
+#+begin_src emacs-lisp
+(use-package org
+  :hook (org-mode . oht/org-mode-hook))
+#+end_src
 
 ** Settings
 

@@ -26,6 +26,18 @@ This file is called =emacs-init.org= and to make it work, you need the following
 
 4. Use =hydra= to set up what are basically "mini-modes". I don't know how I'd function without the one I have setup for window management. And the vim-ish hydra below is very useful indeed. As the saying goes "the best editor is not vim or emacs, but both".
 
+** Keybindings Philosophy
+
+1. Standard mac shortcuts should be supported wherever possible. And since mac inherits a lot of emacs keybindings anyway (and I use them outside emacs) I can leverage a lot of muscle memory. Additionally, I've largely internalized the =readline= keybindings (since I worked in =vim= for a long time) and so =^w=, =^u=, and =^h= are second-nature.
+
+2. Enhance Emacs built-in bindings with improved alternatives. For example, I've replaced =^s= and =^r= with =ctrlf-=. So the binding still does the same thing, just better.
+
+3. Global Leader - I borrow the concept of a "leader key" from vim and use it as a dumping ground for my most important commands, which don't have mac or Emacs equivalents.
+
+4. Mode Leader - All mode-spesific bindings (for example org-time-stamp), which don't make any sense in any other mode go behind a uniform mode-leader key. I've picked =s-\=.
+
+5. Keybindings which I use all the time, get taken out from behind leaders for faster access. For example, the org-agenda command.
+
 ** Inspiration and References
 
 Anyone learning vim, emacs, zsh, bash, or something similar, spends a lot of time looking at other people's configuration files (much like this one). I've learned from some wonderful (and well documented) examples. Here is a list of the ones I've learned the most from:
@@ -40,6 +52,12 @@ Anyone learning vim, emacs, zsh, bash, or something similar, spends a lot of tim
 - [[https://github.com/andschwa/.emacs.d][Andrew Schwartzmeyer’s Emacs configurations]]
 
 For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
+
+** How This Document is Organized
+
+I used to organize this document by type of customization---keybindings together, functions together, packages together, etc.---but have switched to a topic-based organization.
+
+*#hotTip:* When picking binding for a new command, check =describe-personal-keybindings= first.
 
 * Installation
 
@@ -1183,20 +1201,6 @@ _~_: modified
 
 * Keybindings
 
-You can use =M-x describe-personal-keybindings= for a cheat-sheet.
-
-** Keybindings Philosophy
-
-1. Standard mac shortcuts should be supported wherever possible. And since mac inherits a lot of emacs keybindings anyway (and I use them outside emacs) I can leverage a lot of muscle memory. Additionally, I've largely internalized the =readline= keybindings (since I worked in =vim= for a long time) and so =^w=, =^u=, and =^h= are second-nature.
-
-2. Enhance Emacs built-in bindings with improved alternatives. For example, I've replaced =^s= with =swiper-isearch=. So the binding still does the same thing, just better.
-
-3. Global Leader - I borrow the concept of a "leader key" from vim and put every custom function I can there. This prevents conflicts with existing bindings and, since I'm using which-key, helps me remember the possibilities.
-
-4. Mode Leader - All mode-spesific bindings (for example org-time-stamp), which don't make any sense elsewhere should go behind a uniform mode-leader key.
-
-5. Keybindings which I use all the time, get taken out from behind leaders for faster access. For example, the org-agenda command.
-
 ** Enhance Emacs
 
 #+begin_src emacs-lisp
@@ -1236,8 +1240,6 @@ This cycles the spacing around point between a single space, no spaces, or the o
 #+end_src
 
 ** Global Leader Bindings
-
-I use =⌘-'= as the my leader.
 
 #+begin_src emacs-lisp
 (bind-keys :prefix-map oht/global-leader

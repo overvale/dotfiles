@@ -273,8 +273,7 @@ Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201
 ;; Normally, C-? is used for undo/redo,
 ;; but I've rebound that elsewhere, so I can use it here
 (bind-key* "C-?" 'help-command)
-;; and I rarely hide apps, so make this easier to hit
-(bind-key* "s-h" 'help-command)
+(bind-key* "s-/" 'help-command)
 ;; readline-style shortcuts, because I love them
 (bind-key* "C-w" 'backward-kill-word)
 (bind-key "C-u" 'oht/kill-line-backward)

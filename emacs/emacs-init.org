@@ -422,6 +422,15 @@ The creator of these packages also created an enhanced version of =isearch= whic
 )
 (use-package sdcv-mode
   :load-path "lisp/emacs-sdcv/")
+
+(use-package buffer-move
+  :ensure t
+  :bind
+  ("M-s-<left>" . buf-move-left)
+  ("M-s-<right>" . buf-move-right)
+  ("M-s-<up>" . buf-move-up)
+  ("M-s-<down>" . buf-move-down)
+)
 #+end_src
 
 ** Modes

@@ -369,6 +369,7 @@ The creator of these packages also created an enhanced version of =isearch= whic
   :custom
   (undo-tree-visualizer-timestamps t "Show timestamps in the undo-tree.")
   (undo-tree-visualizer-diff t "Show a diff of changes for the current node.")
+  ;; DO NOT be a fool and rebind "C-/", it will prevent you from enabling the global mode
   )
 (use-package expand-region
   :bind
@@ -1202,7 +1203,7 @@ You can use =M-x describe-personal-keybindings= for a cheat-sheet.
 (bind-key "M-<down>" 'oht/move-line-down)
 (bind-key "M-o" 'other-window)
 (bind-key "M-z" 'zap-up-to-char) ;the default is 'zap-to-char
-(bind-key* "C-/" 'flyspell-correct-previous)
+(bind-key "M-;" 'flyspell-correct-previous)
 (bind-key "s-M-z" 'undo-tree-visualize)
 (bind-key "M-s-s" 'save-some-buffers) ;save others
 #+end_src

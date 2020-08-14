@@ -50,6 +50,7 @@ Anyone learning vim, emacs, zsh, bash, or something similar, spends a lot of tim
 - [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org][Angry Bacon dotemacs]]
 - [[https://gitlab.com/Kaligule/emacs-config/-/blob/master/config.org][Kaligule config.org]]
 - [[https://github.com/andschwa/.emacs.d][Andrew Schwartzmeyer’s Emacs configurations]]
+- [[https://github.com/raxod502/radian][Radian]]
 
 For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
 
@@ -66,6 +67,15 @@ First, make sure you're using the correct version. I like [[https://bitbucket.or
 * Settings
 
 ** Emacs Startup
+
+As recommended in Radian...
+
+#+begin_src emacs-lisp
+;; Disable frequency of GC. This helps performance both during init
+;; and after init. Value is in bytes so this is 100MB, as suggested in
+;; <https://github.com/emacs-lsp/lsp-mode#performance>.
+(setq gc-cons-threshold (* 100 1024 1024))
+#+end_src
 
 This tells emacs to startup with a scratch buffer, with custom content, and to do it quietly.
 
@@ -143,6 +153,19 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 (setq sentence-end-double-space nil)  ; ends sentence after 1 space
 (fset 'yes-or-no-p 'y-or-n-p)         ; Changes all yes/no questions to y/n type
 (setq create-lockfiles nil)           ; No need for ~ files when editing
+#+end_src
+
+** Package Setup
+
+From Radian...
+
+#+begin_src emacs-lisp
+;; Tell `use-package' to always load features lazily unless told
+;; otherwise. It's nicer to have this kind of thing be deterministic:
+;; if `:demand' is present, the loading is eager; otherwise, the
+;; loading is lazy. See
+;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
+(setq use-package-always-defer t)
 #+end_src
 
 * Spelling
@@ -390,6 +413,7 @@ The creator of these packages also created an enhanced version of =isearch= whic
 (use-package unfill)
 (use-package use-package-chords
   :ensure t
+  :demand
   :config
   (key-chord-mode 1)
   (key-chord-define-global ",." "<>\C-b"))
@@ -502,6 +526,7 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
   (modus-vivendi-theme-3d-modeline t))
 
 (use-package modus-operandi-theme
+  :demand
   :custom
   (modus-operandi-theme-faint-syntax t)
   (modus-operandi-theme-slanted-constructs t)
@@ -586,6 +611,10 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 (setq org-refile-targets
       '((org-agenda-files :maxlevel . 3)))
 (setq org-refile-allow-creating-parent-nodes 'confirm)
+
+;; Make C-a, C-e, and C-k smarter with regard to headline tags.
+(setq org-special-ctrl-a/e t)
+(setq org-special-ctrl-k t)
 #+end_src
 
 ** Look & Feel
@@ -1226,6 +1255,12 @@ _~_: modified
 (bind-key "M-;" 'flyspell-correct-previous)
 (bind-key "s-M-z" 'undo-tree-visualize)
 (bind-key "M-s-s" 'save-some-buffers) ;save others
+
+;; When region is active, make `capitalize-word' and friends act on
+;; it.
+(bind-key "M-c" #'capitalize-dwim)
+(bind-key "M-l" #'downcase-dwim)
+(bind-key "M-u" #'upcase-dwim)
 #+end_src
 
 This cycles the spacing around point between a single space, no spaces, or the original spacing:

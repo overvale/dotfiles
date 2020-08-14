@@ -187,6 +187,28 @@ Tell ispell where to find the =aspell= executable, and some settings.
 (bind-key "s-;" 'hydra-flyspell/body)
 #+end_src
 
+* Emacs Help
+
+=helpful= is a really neat package that brings together a lot of useful information when you ask Emacs for help.
+
+#+begin_src emacs-lisp
+(use-package helpful
+  ;; https://github.com/Wilfred/helpful
+  :ensure t
+  :bind
+  ("C-h f" . #'helpful-callable)
+  ("C-h F" . #'helpful-function)
+  ("C-h v" . #'helpful-variable)
+  ("C-h k" . #'helpful-key)
+  ("C-h C" . #'helpful-command)
+ )
+
+;; Normally, C-? is used for undo/redo,
+;; but I've rebound that elsewhere, so I can use it here
+(bind-key* "C-?" 'help-command)
+(bind-key* "s-/" 'help-command)
+#+end_src
+
 * macOS Consistency
 
 The below is probably the biggest reason why I managed get over the intimidation of using Emacs in those first few days.
@@ -288,10 +310,6 @@ Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201
 (bind-key "s-{" 'previous-buffer)
 ;; Mac follows the UNIX convention of C-h being the same as <DEL>
 (bind-key* "C-h" 'delete-backward-char)
-;; Normally, C-? is used for undo/redo,
-;; but I've rebound that elsewhere, so I can use it here
-(bind-key* "C-?" 'help-command)
-(bind-key* "s-/" 'help-command)
 ;; readline-style shortcuts, because I love them
 (bind-key* "C-w" 'backward-kill-word)
 (bind-key "C-u" 'oht/kill-line-backward)

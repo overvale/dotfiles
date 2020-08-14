@@ -298,7 +298,7 @@ I've tried a number of them (including =ivy=, =helm=, and =icomplete=) but I fin
   :ensure t
   :config (selectrum-mode +1)
   :bind
-  ("s-0" . selectrum-switch-buffer+)
+  ("s-b" . selectrum-switch-buffer+)
   ("M-y" . yank-pop+)
   ("M-s-o" . recentf-open-files+)
   )
@@ -1217,7 +1217,6 @@ This cycles the spacing around point between a single space, no spaces, or the o
 
 #+begin_src emacs-lisp
 (bind-key "s-p" 'execute-extended-command)
-(bind-key "s-b" 'switch-to-buffer)
 (bind-key "M-s-b" 'ibuffer)
 (bind-key "s-m" 'magit-status)
 ;; vim has the wonderful . command, and emacs has repeat

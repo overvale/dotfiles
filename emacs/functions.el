@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 (defun oht/writing-mode ()
   "Enable variable-pitch, flyspell, and increased line-spacing and margins."
   (interactive)

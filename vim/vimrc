@@ -63,6 +63,7 @@ Plug 'thinca/vim-ft-markdown_fold'
 Plug 'axvr/org.vim'
 
 " TODO: check-out: aaronbieber/vim-quicktask
+" TODO: check-out: lifepillar/vim-mucomplete
 
 " Colors
 Plug 'lifepillar/vim-gruvbox8'

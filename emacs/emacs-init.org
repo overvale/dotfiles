@@ -22,7 +22,7 @@ This file is called =emacs-init.org= and to make it work, you need the following
 
 2. Accept that you will never remember Emacs keybindings, and that even if you do it will injure your pinky, and don't even bother trying. That's not a down-side, it means you don't have to learn anything new (!), just learn to make Emacs work the way you expect it to. That sounds like it might be difficult, but once you get the hang of customizing Emacs it becomes easy.
 
-3. There's a few things you should learn to use in order to learn about Emacs's capabilities. Poke around =C-h ?= for Help. Use =counsel-M-x= to explore. Use =which-key= to give you hints for difficult to remember shortcuts.
+3. There's a few things you should learn to use in order to learn about Emacs's capabilities. Poke around =C-h ?= for Help. Use =M-x= to explore. Use =which-key= to give you hints for difficult to remember shortcuts.
 
 4. Use =hydra= to set up what are basically "mini-modes". I don't know how I'd function without the one I have setup for window management. And the vim-ish hydra below is very useful indeed. As the saying goes "the best editor is not vim or emacs, but both".
 
@@ -107,6 +107,12 @@ Emacs can automatically create backup files. This tells Emacs to put all backups
                                                "backups"))))
 #+end_src
 
+I have a bunch of misc custom functions that I keep in a separate file to make this document a little cleaner.
+
+#+begin_src emacs-lisp
+(load "~/dot/emacs/functions.el")
+#+end_src
+
 ** General
 
 #+begin_src emacs-lisp
@@ -131,6 +137,22 @@ Tell ispell where to find the =aspell= executable, and some settings.
 (setq ispell-list-command "list")
 #+end_src
 
+** Spelling
+
+=flyspell-correct= allows you to pass spelling suggestions to completion and search frameworks, such as =selectrum=. This setup code is copied directly from the selectrum documentation.
+
+#+begin_src emacs-lisp
+(use-package flyspell-correct
+  :ensure t
+  :custom
+  (flyspell-correct-interface 'flyspell-correct-dummy)
+)
+(advice-add 'flyspell-correct-dummy :around
+	    (defun my--fsc-wrapper (func &rest args)
+	      (let ((selectrum-should-sort-p nil))
+		(apply func args))))
+#+end_src
+
 ** Spelling Hydra
 
 #+begin_src emacs-lisp
@@ -147,12 +169,11 @@ Tell ispell where to find the =aspell= executable, and some settings.
 (bind-key "s-;" 'hydra-flyspell/body)
 #+end_src
 
-
-* Making Emacs More Consistent with macOS
+* macOS Consistency
 
 The below is probably the biggest reason why I managed get over the intimidation of using Emacs in those first few days.
 
-** Modifiers & Terminal Anachronisms
+** Modifiers & Emacs Anachronisms
 
 The below does 3 things:
 
@@ -166,7 +187,7 @@ The below does 3 things:
 (setq mac-right-option-modifier 'nil)
 #+end_src
 
-Due to historical reasons, emacs thinks =C-i= is the same as =TAB= and =C-m= is the same as =RETURN=. The below undoes that assumption.
+Due to historical reasons, Emacs thinks =C-i= is the same as =TAB= and =C-m= is the same as =RETURN=. The below undoes that assumption.
 
 #+begin_src emacs-lisp
 (define-key input-decode-map [?\C-i] [C-i])
@@ -174,7 +195,7 @@ Due to historical reasons, emacs thinks =C-i= is the same as =TAB= and =C-m= is 
 (define-key input-decode-map [?\C-m] [C-m])
 #+end_src
 
-By default, Emacs doesn't replace the selection (region) with anything you type, it just deletes your selection and appends what you type. The below makes what you type /replace/ your selection.
+By default, Emacs doesn't replace the selection (region) with anything you type, it just removes your selection and appends what you type. The below makes what you type /replace/ your selection.
 
 #+begin_src emacs-lisp
 (delete-selection-mode t)
@@ -208,7 +229,7 @@ Visual line mode is super helpful, but out-of-the-box movement commands behave i
 
 ** Standard Mac Shortcuts
 
-[[https://support.apple.com/en-us/HT201236]]
+Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201236][macOS shortcuts]]. macOS actually inherits many Emacs keybindings, but adds to it a few from =readline= and old terminal interfaces. Because these are available system-wide I want Emacs to do the same thing. That way the way I type/move in Mail.app or Safari is the same as Emacs. There are also conventions that, while not officially standard, have become widely accepted, those should be respected too. Some of these require custom functions, but that's usually a simple matter of stringing a couple existing commands together into a function.
 
 #+begin_src emacs-lisp
 ;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
@@ -265,17 +286,45 @@ Visual line mode is super helpful, but out-of-the-box movement commands behave i
 (bind-key* "M-<delete>" 'kill-word)
 #+end_src
 
-* Packages
+* Narrowing & Searching
+
+Navigating and using the thousands of things Emacs can do is built around the idea of searching and narrowing a selection down to the thing you're looking for. To make this easier I've installed a few packages that enhance Emacs built-in facilities for doing this.
+
+I've tried a number of them (including =ivy=, =helm=, and =icomplete=) but I find =selectrum= to be the most Emacs-y (in a good way). It is very simple, very fast, and doesn't try to do more than its basic function.
 
 #+begin_src emacs-lisp
-(use-package magit)
-(use-package bind-key)
-(use-package exec-path-from-shell)
+;; selectrum is the live-search framework
+(use-package selectrum
+  :ensure t
+  :config (selectrum-mode +1)
+  :bind
+  ("s-0" . selectrum-switch-buffer+)
+  ("M-y" . yank-pop+)
+  ("M-s-o" . recentf-open-files+)
+  )
 
+;; prescient is for sorting search candidates
+(use-package prescient
+  :ensure t
+  :config (prescient-persist-mode +1)
+  )
+
+;; this combines them
+(use-package selectrum-prescient
+  :ensure t
+  :config (selectrum-prescient-mode +1)
+)
+
+;; this sublime package makes it so your fuzzy searches can be out of order
+;; which is extremely useful when searching thousands of candidates (m-x)
 (use-package orderless
   :ensure t
   :custom (completion-styles '(orderless)))
+#+end_src
 
+The creator of these packages also created an enhanced version of =isearch= which I find very useful, and in keeping with the philosophy of minimalism.
+
+#+begin_src emacs-lisp
 (use-package ctrlf
   :ensure t
   :config (ctrlf-mode +1)
@@ -290,146 +339,30 @@ Visual line mode is super helpful, but out-of-the-box movement commands behave i
   ;; C-o s - change search style
   ;; see ctrlf-minibuffer-bindings
   )
+#+end_src
 
-(use-package selectrum
-  :ensure t
-  :config (selectrum-mode +1)
-  :bind
-  ("s-0" . selectrum-switch-buffer+)
-  ("M-y" . yank-pop+)
-  ("M-s-o" . recentf-open-files+)
-  )
+* Packages
 
-(defun recentf-open-files+ ()
-  "Use `completing-read' to open a recent file."
-  (interactive)
-  (let ((files (mapcar 'abbreviate-file-name recentf-list)))
-    (find-file (completing-read "Find recent file: " files nil t))))
+** General
 
-(defun yank-pop+ (&optional arg)
- "Call `yank-pop' with ARG when appropriate, or offer completion."
- (interactive "*P")
- (if arg (yank-pop arg)
-   (let* ((old-last-command last-command)
-          (selectrum-should-sort-p nil)
-          (enable-recursive-minibuffers t)
-          (text (completing-read
-                 "Yank: "
-                 (cl-remove-duplicates
-                  kill-ring :test #'string= :from-end t)
-                 nil t nil nil))
-          ;; Find `text' in `kill-ring'.
-          (pos (cl-position text kill-ring :test #'string=))
-          ;; Translate relative to `kill-ring-yank-pointer'.
-          (n (+ pos (length kill-ring-yank-pointer))))
-     (unless (string= text (current-kill n t))
-       (error "Could not setup for `current-kill'"))
-     ;; Restore `last-command' over Selectrum commands.
-     (setq last-command old-last-command)
-     ;; Delegate to `yank-pop' if appropriate or just insert.
-     (if (eq last-command 'yank)
-         (yank-pop n) (insert-for-yank text)))))
-
-(defun selectrum-switch-buffer+ ()
-  (interactive)
-  (let* ((selectrum-should-sort-p nil)
-         (candidates
-          (let* ((cb (window-buffer
-                      (minibuffer-selected-window)))
-                 (bf (or (buffer-file-name cb) "")))
-            (lambda (input)
-              (let* ((buffers (mapcar #'buffer-name
-                                      (cl-delete-if
-                                       (lambda (buf)
-                                         (eq buf cb))
-                                       (buffer-list))))
-                     (files (cl-delete-if (lambda (f) (string= f bf))
-                                          (copy-sequence recentf-list)))
-                     (candidates ()))
-                (cond ((string-prefix-p " " input)
-                       (setq input (substring input 1))
-                       (setq candidates
-                             (cl-delete-if-not
-                              (lambda (name)
-                                (string-prefix-p " " name))
-                              buffers)))
-                      ((string-prefix-p "b " input)
-                       (setq input (substring input 2))
-                       (setq candidates
-                             (cl-delete-if
-                              (lambda (name)
-                                (string-prefix-p " " name))
-                              buffers)))
-                      ((string-prefix-p "f " input)
-                       (setq input (substring input 2))
-                       (setq candidates files))
-                      (t
-                       (setq candidates
-                             (append
-                              (cl-delete-if
-                               (lambda (name)
-                                 (string-prefix-p " " name))
-                               buffers)
-                              files))))
-                `((candidates . ,candidates)
-                  (input . ,input))))))
-         (cand (selectrum-read "Switch to: " candidates)))
-    (cond ((member cand recentf-list)
-           (find-file cand))
-          (t
-           (switch-to-buffer cand)))))
-
-(use-package prescient
-  :ensure t
-  :config (prescient-persist-mode +1)
-  )
-
-(use-package selectrum-prescient
-  :ensure t
-  :config (selectrum-prescient-mode +1)
-)
-
-(use-package flyspell-correct
-  :ensure t
-  :custom
-  (flyspell-correct-interface 'flyspell-correct-dummy)
-)
-(advice-add 'flyspell-correct-dummy :around
-	    (defun my--fsc-wrapper (func &rest args)
-	      (let ((selectrum-should-sort-p nil))
-		(apply func args))))
-
+#+begin_src emacs-lisp
+(use-package magit)
+(use-package bind-key)
+(use-package exec-path-from-shell)
 (use-package multiple-cursors)
 (use-package olivetti)
 (use-package org
   :hook (org-mode . oht/org-mode-hook))
 (use-package unfill)
-
-(use-package fountain-mode)
-(use-package lua-mode)
-(use-package markdown-mode
-  :hook oht/writing-mode
-)
-
-(use-package gruvbox-theme
-  :defer t)
-(use-package nord-theme
-  :defer t)
-(use-package tron-legacy-theme
-  :defer t)
-
 (use-package use-package-chords
   :ensure t
   :config
   (key-chord-mode 1)
   (key-chord-define-global ",." "<>\C-b"))
-
 (use-package hydra
   :chords (("fj" . hydra-modal/body)))
-
 (use-package which-key
   :config (which-key-mode t))
-
 (use-package undo-tree
   :ensure t
   :config (global-undo-tree-mode 1)
@@ -437,16 +370,23 @@ Visual line mode is super helpful, but out-of-the-box movement commands behave i
   (undo-tree-visualizer-timestamps t "Show timestamps in the undo-tree.")
   (undo-tree-visualizer-diff t "Show a diff of changes for the current node.")
   )
-
 (use-package expand-region
   :bind
   ("s-e" . er/expand-region)
   ("s-E" . er/contract-region)
 )
-
 (use-package sdcv-mode
   :load-path "lisp/emacs-sdcv/")
+#+end_src
 
+** Modes
+
+#+begin_src emacs-lisp
+(use-package fountain-mode)
+(use-package lua-mode)
+(use-package markdown-mode
+  :hook oht/writing-mode
+)
 #+end_src
 
 ** Mode Hooks
@@ -540,6 +480,17 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
   (mapc #'disable-theme custom-enabled-themes))
 #+end_src
 
+Though I rarely use them, I like these themes too. I find =modus-vivendi= too extreme for my tastes.
+
+#+begin_src emacs-lisp
+(use-package gruvbox-theme
+  :defer t)
+(use-package nord-theme
+  :defer t)
+(use-package tron-legacy-theme
+  :defer t)
+#+end_src
+
 ** Mode Line
 
 #+begin_src emacs-lisp
@@ -602,14 +553,14 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
 I use =org-superstar= to replace headline and list-markup with more attractive options. An added benefit is that by transforming the markup into fancy bullets I get visual confirmation that the markup is going what I intend.
 
 #+begin_src emacs-lisp
-(use-package org-superstar
-  :custom
-  (org-superstar-headline-bullets-list '("❖ "))
-  (org-superstar-special-todo-items nil)
-  (org-superstar-item-bullet-alist
-      '((?- . ?•)
-	(?+ . ?▶)
-	(?* . ?▷))))
+;; (use-package org-superstar
+;;   :custom
+;;   (org-superstar-headline-bullets-list '("❖ "))
+;;   (org-superstar-special-todo-items nil)
+;;   (org-superstar-item-bullet-alist
+;;       '((?- . ?•)
+;; 	(?+ . ?▶)
+;; 	(?* . ?▷))))
 #+end_src
 
 ** Source Code Blocks
@@ -751,6 +702,115 @@ And here we have some custom commands for the agenda view.
 		))
 #+end_src
 
+** Keybindings
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "s-\\ v") 'oht/fix-variable-org-indent)
+  (define-key org-mode-map (kbd "s-\\ .") 'org-time-stamp)
+  (define-key org-mode-map (kbd "s-\\ t") 'org-todo)
+  (define-key org-mode-map (kbd "s-\\ s-t") 'counsel-org-tag)
+  (define-key org-mode-map (kbd "s-\\ n") 'org-narrow-to-subtree)
+  (define-key org-mode-map (kbd "s-\\ w") 'widen)
+  (define-key org-mode-map (kbd "s-\\ s") 'org-search-view)
+  (define-key org-mode-map (kbd "s-\\ <") 'org-insert-structure-template)
+  (define-key org-mode-map (kbd "s-\\ l") 'org-store-link)
+  (define-key org-mode-map (kbd "s-\\ i") 'org-insert-last-stored-link)
+  (define-key org-mode-map (kbd "s-\\ m") 'org-toggle-link-display)
+  (define-key org-mode-map (kbd "s-\\ I") 'org-clock-in)
+  (define-key org-mode-map (kbd "s-\\ O") 'org-clock-out)
+  (bind-key "s-\\ h" 'hydra-org/body)
+  )
+#+end_src
+
+** Org hydra
+
+#+begin_src emacs-lisp
+(defhydra hydra-org (:color pink :hint nil)
+  "
+Org                    Links                 Outline
+ _q_ quit              _i_ insert            _<_ previous
+ _o_ edit              _n_ next              _>_ next
+ ^^                    _p_ previous          _a_ all
+ ^^                    _s_ store             _g_ go
+ ^^                    ^^                    _v_ overview
+"
+  ("q" nil)
+  ("<" org-backward-element)
+  (">" org-forward-element)
+  ("a" outline-show-all)
+  ("g" counsel-org-goto :color blue)
+  ("i" org-insert-link :color blue)
+  ("n" org-next-link)
+  ("o" org-edit-special :color blue)
+  ("p" org-previous-link)
+  ("s" org-store-link)
+  ("v" org-overview))
+#+end_src
+
+** Org-Agenda Hydra
+
+This is beautiful. It is taken from [[https://oremacs.com/2016/04/04/hydra-doc-syntax/][abo-abo]] (creator of hydra). It creates view toggles and displays the status of those toggles.
+
+#+begin_src emacs-lisp
+;; You have to wait until org-agenda loads because org itself
+;; doesn't know what 'org-agenda-mode-map' is.
+(eval-after-load "org-agenda"
+'(progn
+	(define-key org-agenda-mode-map
+		"v" 'hydra-org-agenda-view/body)
+		))
+
+(defun org-agenda-cts ()
+  (let ((args (get-text-property
+               (min (1- (point-max)) (point))
+               'org-last-args)))
+    (nth 2 args)))
+(defhydra hydra-org-agenda-view (:hint none)
+  "
+_d_: ?d? day        _g_: time grid=?g? _a_: arch-trees
+_w_: ?w? week       _[_: inactive      _A_: arch-files
+_t_: ?t? fortnight  _f_: follow=?f?    _r_: report=?r?
+_m_: ?m? month      _e_: entry =?e?    _D_: diary=?D?
+_y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
+  ("SPC" org-agenda-reset-view)
+  ("d" org-agenda-day-view
+   (if (eq 'day (org-agenda-cts))
+       "[x]" "[ ]"))
+  ("w" org-agenda-week-view
+   (if (eq 'week (org-agenda-cts))
+           "[x]" "[ ]"))
+  ("t" org-agenda-fortnight-view
+       (if (eq 'fortnight (org-agenda-cts))
+           "[x]" "[ ]"))
+  ("m" org-agenda-month-view
+       (if (eq 'month (org-agenda-cts)) "[x]" "[ ]"))
+  ("y" org-agenda-year-view
+       (if (eq 'year (org-agenda-cts)) "[x]" "[ ]"))
+  ("l" org-agenda-log-mode
+       (format "% -3S" org-agenda-show-log))
+  ("L" (org-agenda-log-mode '(4)))
+  ("c" (org-agenda-log-mode 'clockcheck))
+  ("f" org-agenda-follow-mode
+       (format "% -3S" org-agenda-follow-mode))
+  ("a" org-agenda-archives-mode)
+  ("A" (org-agenda-archives-mode 'files))
+  ("r" org-agenda-clockreport-mode
+       (format "% -3S" org-agenda-clockreport-mode))
+  ("e" org-agenda-entry-text-mode
+       (format "% -3S" org-agenda-entry-text-mode))
+  ("g" org-agenda-toggle-time-grid
+       (format "% -3S" org-agenda-use-time-grid))
+  ("D" org-agenda-toggle-diary
+       (format "% -3S" org-agenda-include-diary))
+  ("!" org-agenda-toggle-deadlines)
+  ("["
+   (let ((org-agenda-include-inactive-timestamps t))
+     (org-agenda-check-type t 'timeline 'agenda)
+     (org-agenda-redo)))
+  ("q" (message "Abort") :exit t))
+#+end_src
+
 * Auto-complete
 
 I've tried a few completion packages and they've all left me cold. =hippy-expand= generally gets me what I want, but I'd like the pop-up list to use =ivy/counsel=. Some googling led me to this.
@@ -862,228 +922,6 @@ All but one of these functions is built-in, but in their default form they're no
   ("q" nil "cancel"))
 #+end_src
 
-* Functions
-
-#+begin_src emacs-lisp
-(defun oht/writing-mode ()
-  "Enable variable-pitch, flyspell, and increased line-spacing and margins."
-  (interactive)
-  (variable-pitch-mode t)
-  (flyspell-mode t)
-  (setq-local line-spacing 0.15)
-  ;; define width of buffer margins
-  (setq-local left-margin-width 1)
-  (setq-local right-margin-width 1)
-  ;;(set-window-buffer nil (current-buffer)) ; Use them now.
-  )
-
-(defun oht/fix-variable-org-indent ()
-  "Fix for org-indent not hiding markup in org-indent-mode.
-from: https://maxjmartin.com/Emacs%20Dotfile.html"
-  (interactive)
-  (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
-  )
-
-(defun oht/find-settings ()
-  "Quickly open emacs-init.org"
-  (interactive)
-  (find-file "~/dot/emacs/emacs-init.org"))
-
-(defun oht/counsel-find-org ()
-  "Quickly open ~/Documents/org-files/"
-  (interactive)
-  (counsel-find-file "~/Documents/org-files/"))
-
-(defun oht/kill-this-buffer ()
-  "Quickly kill current buffer"
-  (interactive)
-  (kill-buffer (current-buffer)))
-
-(defun oht/find-scratch ()
-  (interactive)
-  (if (string= (buffer-name) "*scratch*")
-      (previous-buffer)
-    (switch-to-buffer "*scratch*")))
-
-;; Move Lines
-(defmacro save-column (&rest body)
-  `(let ((column (current-column)))
-     (unwind-protect
-         (progn ,@body)
-       (move-to-column column))))
-(put 'save-column 'lisp-indent-function 0)
-(defun oht/move-line-up ()
-  "Move the current line up by 1 line"
-  (interactive)
-  (save-column
-    (transpose-lines 1)
-    (forward-line -2)))
-(defun oht/move-line-down ()
-  "More the current line down by 1 line"
-  (interactive)
-  (save-column
-    (forward-line 1)
-    (transpose-lines 1)
-    (forward-line -1)))
-
-(defun oht/mark-whole-line ()
-  "Mark the entirety of the current line."
-  (interactive)
-  (beginning-of-line)
-  (set-mark-command nil)
-  (end-of-line))
-
-(defun oht/toggle-window-split ()
-  "Toggle between vertical and horizontal split."
-  ;; Source: https://www.emacswiki.org/emacs/ToggleWindowSplit.
-  ;; Author: Jeff Dwork
-  (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-             (next-win-buffer (window-buffer (next-window)))
-             (this-win-edges (window-edges (selected-window)))
-             (next-win-edges (window-edges (next-window)))
-             (this-win-2nd (not (and (<= (car this-win-edges)
-                                         (car next-win-edges))
-                                     (<= (cadr this-win-edges)
-                                         (cadr next-win-edges)))))
-             (splitter
-              (if (= (car this-win-edges)
-                     (car (window-edges (next-window))))
-                  'split-window-horizontally
-                'split-window-vertically)))
-        (delete-other-windows)
-        (let ((first-win (selected-window)))
-          (funcall splitter)
-          (if this-win-2nd (other-window 1))
-          (set-window-buffer (selected-window) this-win-buffer)
-          (set-window-buffer (next-window) next-win-buffer)
-          (select-window first-win)
-          (if this-win-2nd (other-window 1))))))
-
-(defun oht/open-in-bbedit ()
-  "Open current file or dir in BBEdit.
-Adapted from:
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
-  (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ) )))
-    (message "path is %s" $path)
-    (string-equal system-type "darwin")
-    (shell-command (format "open -a BBEdit \"%s\"" $path))))
-
-(defun oht/expand-to-beginning-of-visual-line ()
-  "Set mark and move to beginning of visual line"
-  (interactive)
-  (set-mark-command nil)
-  (beginning-of-visual-line)
-  )
-(defun oht/expand-to-end-of-visual-line ()
-  "Set mark and move to end of visual line"
-  (interactive)
-  (set-mark-command nil)
-  (end-of-visual-line)
-  )
-
-(defun oht/kill-line ()
-  "Kill to end of line. This custom function is needed because binding c-k to kill-line doesn't work due to kill-line being remapped, so the remapped value is always executed. But calling a custom function obviates this and allows kill-line to be called directly. Nil is required."
-  (interactive)
-  (kill-line nil)
-  )
-
-(defun oht/kill-line-backward ()
-  "Kill from the point to beginning of whole line"
-  (interactive)
-  (kill-line 0))
-
-(defun oht/kill-visual-line-backward ()
-  "Kill from the point to beginning of visual line"
-  (interactive)
-  (set-mark-command nil)
-  (beginning-of-visual-line)
-  (kill-region (region-beginning) (region-end))
-  )
-
-(defun oht/kill-region-or-char ()
-  "If there's a region, kill it, if not, kill the next character."
-  (interactive)
-  (if (use-region-p)
-      (kill-region (region-beginning) (region-end))
-    (delete-forward-char 1 nil)))
-
-(defun oht/toggle-line-numbers ()
-  "Toggles display of line numbers. Applies to all buffers."
-  (interactive)
-  (if (bound-and-true-p display-line-numbers-mode)
-      (global-display-line-numbers-mode -1)
-    (global-display-line-numbers-mode)))
-
-(defun oht/toggle-whitespace ()
-  "Toggles display of indentation and space characters."
-  (interactive)
-  (if (bound-and-true-p whitespace-mode)
-      (whitespace-mode -1)
-    (whitespace-mode)))
-
-(defun oht/open-line-below (arg)
-  "Open a new indented line below the current one."
-  (interactive "p")
-  (end-of-line)
-  (open-line arg)
-  (next-line 1)
-  (indent-according-to-mode))
-
-(defun oht/open-line-above (arg)
-  "Open a new indented line above the current one."
-  (interactive "p")
-  (beginning-of-line)
-  (open-line arg)
-  (indent-according-to-mode))
-
-(defun oht/join-line-next ()
-  (interactive)
-  (join-line -1))
-
-(defun oht/org-hide-emphasis-markers ()
-  "Toggle whether or not the emphasis markers ~, =, *, _ are displayed"
-  (interactive)
-  (if (bound-and-true-p org-hide-emphasis-markers)
-      (setq-local org-hide-emphasis-markers nil)
-    (setq-local org-hide-emphasis-markers t))
-  (font-lock-fontify-buffer)
-  )
-
-(defun oht/shell-command-on-region-replace (start end command)
-  "Run shell-command-on-region interactivly replacing the region in place"
-  (interactive (let (string)
-                 (unless (mark)
-                   (error "The mark is not set now, so there is no region"))
-                 (setq string (read-from-minibuffer "Shell command on region: "
-                                                    nil nil nil
-                                                    'shell-command-history))
-                 (list (region-beginning) (region-end)
-                       string)))
-  (shell-command-on-region start end command t t))
-
-(defun oht/split-below ()
-"Split horizontally and switch to that new window."
-  (interactive)
-  (split-window-below)
-  (windmove-down))
-
-(defun oht/split-beside ()
-"Split vertically and switch to that new window."
-  (interactive)
-  (split-window-right)
-  (windmove-right))
-
-(defun oht/forward-word-beginning ()
-  "Go to the end of the next word."
-  (interactive)
-  (forward-word 2)
-  (backward-word))
-
-#+end_src
-
 * Modal Editing
 
 I don't really want to use =evil-mode=. It does too much for my taste. I much prefer this simpler solution.
@@ -1153,7 +991,48 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
   ("i" nil "cancel" :color blue))
 #+end_src
 
-* Hydra
+* Window Management
+
+** Hydra
+
+Many of these commands are duplicated under [[*Windows Leader][Windows Leader]] below. Those are for one-off actions, this hydra is for entering a mini-mode where I want to do a series of window actions. The two compliment each other.
+
+#+begin_src emacs-lisp
+(defhydra hydra-windows (:color red)
+  "Windows & Splits"
+  ("<tab>" other-window "Cycle active window")
+  ("v" oht/split-beside "Vertical Split")
+  ("s" oht/split-below "Split, Horizonal")
+  ("o" delete-other-windows "Only This Window" :color blue)
+  ("k" delete-window "Delete Window")
+  ("r" oht/toggle-window-split "Rotate Window Split")
+  ("b" balance-windows "Balance")
+  ("[" shrink-window "Smaller VERT")
+  ("]" enlarge-window "Bigger VERT")
+  ("{" shrink-window-horizontally "Smaler HORZ")
+  ("}" enlarge-window-horizontally "Bigger HORZ")
+  ("<up>" windmove-up "Move UP")
+  ("<down>" windmove-down "Move DOWN")
+  ("<left>" windmove-left "Move LEFT")
+  ("<right>" windmove-right "Move RIGHT")
+  ("q" nil "cancel" :color blue))
+#+end_src
+
+** Windows Leader
+
+#+begin_src emacs-lisp
+(bind-keys :prefix-map oht/windows-leader
+	   :prefix "s-="
+	   ("s" . oht/split-below)
+	   ("v" . oht/split-beside)
+	   ("h" . hydra-windows/body)
+	   ("k" . delete-window)
+	   ("o" . delete-other-windows)
+	   ("b" . balance-windows)
+	   ("r" . oht/toggle-window-split))
+#+end_src
+
+* Hydras
 
 Hydras should be reserved for mini-modes, /ie/ places where you'll want to call several functions in a row. If all you're doing is grouping similar commands then which-key should suffice.
 
@@ -1298,119 +1177,6 @@ _~_: modified
   ("q" quit-window "quit" :color blue))
 #+end_src
 
-** Window Management
-
-Many of these commands are duplicated under [[*Windows Leader][Windows Leader]] below. Those are for one-off actions, this hydra is for entering a mini-mode where I want to do a series of window actions. The two compliment each other.
-
-#+begin_src emacs-lisp
-(defhydra hydra-windows (:color red)
-  "Windows & Splits"
-  ("<tab>" other-window "Cycle active window")
-  ("v" oht/split-beside "Vertical Split")
-  ("s" oht/split-below "Split, Horizonal")
-  ("o" delete-other-windows "Only This Window" :color blue)
-  ("k" delete-window "Delete Window")
-  ("r" oht/toggle-window-split "Rotate Window Split")
-  ("b" balance-windows "Balance")
-  ("[" shrink-window "Smaller VERT")
-  ("]" enlarge-window "Bigger VERT")
-  ("{" shrink-window-horizontally "Smaler HORZ")
-  ("}" enlarge-window-horizontally "Bigger HORZ")
-  ("<up>" windmove-up "Move UP")
-  ("<down>" windmove-down "Move DOWN")
-  ("<left>" windmove-left "Move LEFT")
-  ("<right>" windmove-right "Move RIGHT")
-  ("q" nil "cancel" :color blue))
-#+end_src
-
-** Org
-
-#+begin_src emacs-lisp
-(defhydra hydra-org (:color pink :hint nil)
-  "
-Org                    Links                 Outline
- _q_ quit              _i_ insert            _<_ previous
- _o_ edit              _n_ next              _>_ next
- ^^                    _p_ previous          _a_ all
- ^^                    _s_ store             _g_ go
- ^^                    ^^                    _v_ overview
-"
-  ("q" nil)
-  ("<" org-backward-element)
-  (">" org-forward-element)
-  ("a" outline-show-all)
-  ("g" counsel-org-goto :color blue)
-  ("i" org-insert-link :color blue)
-  ("n" org-next-link)
-  ("o" org-edit-special :color blue)
-  ("p" org-previous-link)
-  ("s" org-store-link)
-  ("v" org-overview))
-#+end_src
-
-** Org-Agenda View Toggle
-
-This is beautiful. It is taken from [[https://oremacs.com/2016/04/04/hydra-doc-syntax/][abo-abo]] (creator of hydra). It creates view toggles and displays the status of those toggles.
-
-#+begin_src emacs-lisp
-;; You have to wait until org-agenda loads because org itself
-;; doesn't know what 'org-agenda-mode-map' is.
-(eval-after-load "org-agenda"
-'(progn
-	(define-key org-agenda-mode-map
-		"v" 'hydra-org-agenda-view/body)
-		))
-
-(defun org-agenda-cts ()
-  (let ((args (get-text-property
-               (min (1- (point-max)) (point))
-               'org-last-args)))
-    (nth 2 args)))
-(defhydra hydra-org-agenda-view (:hint none)
-  "
-_d_: ?d? day        _g_: time grid=?g? _a_: arch-trees
-_w_: ?w? week       _[_: inactive      _A_: arch-files
-_t_: ?t? fortnight  _f_: follow=?f?    _r_: report=?r?
-_m_: ?m? month      _e_: entry =?e?    _D_: diary=?D?
-_y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
-  ("SPC" org-agenda-reset-view)
-  ("d" org-agenda-day-view
-   (if (eq 'day (org-agenda-cts))
-       "[x]" "[ ]"))
-  ("w" org-agenda-week-view
-   (if (eq 'week (org-agenda-cts))
-           "[x]" "[ ]"))
-  ("t" org-agenda-fortnight-view
-       (if (eq 'fortnight (org-agenda-cts))
-           "[x]" "[ ]"))
-  ("m" org-agenda-month-view
-       (if (eq 'month (org-agenda-cts)) "[x]" "[ ]"))
-  ("y" org-agenda-year-view
-       (if (eq 'year (org-agenda-cts)) "[x]" "[ ]"))
-  ("l" org-agenda-log-mode
-       (format "% -3S" org-agenda-show-log))
-  ("L" (org-agenda-log-mode '(4)))
-  ("c" (org-agenda-log-mode 'clockcheck))
-  ("f" org-agenda-follow-mode
-       (format "% -3S" org-agenda-follow-mode))
-  ("a" org-agenda-archives-mode)
-  ("A" (org-agenda-archives-mode 'files))
-  ("r" org-agenda-clockreport-mode
-       (format "% -3S" org-agenda-clockreport-mode))
-  ("e" org-agenda-entry-text-mode
-       (format "% -3S" org-agenda-entry-text-mode))
-  ("g" org-agenda-toggle-time-grid
-       (format "% -3S" org-agenda-use-time-grid))
-  ("D" org-agenda-toggle-diary
-       (format "% -3S" org-agenda-include-diary))
-  ("!" org-agenda-toggle-deadlines)
-  ("["
-   (let ((org-agenda-include-inactive-timestamps t))
-     (org-agenda-check-type t 'timeline 'agenda)
-     (org-agenda-redo)))
-  ("q" (message "Abort") :exit t))
-#+end_src
-
 * Keybindings
 
 You can use =M-x describe-personal-keybindings= for a cheat-sheet.
@@ -1485,41 +1251,11 @@ I use =⌘-'= as the my leader.
 	   ("m" . mc/edit-lines))
 #+end_src
 
-** Windows Leader
-
-#+begin_src emacs-lisp
-(bind-keys :prefix-map oht/windows-leader
-	   :prefix "s-="
-	   ("s" . oht/split-below)
-	   ("v" . oht/split-beside)
-	   ("h" . hydra-windows/body)
-	   ("k" . delete-window)
-	   ("o" . delete-other-windows)
-	   ("b" . balance-windows))
-#+end_src
-
 ** Mode Specific Bindings
 
 I use =⌘-\= as the leader for mode-spesific bindings.
 
 #+begin_src emacs-lisp
-(with-eval-after-load 'org
-  (define-key org-mode-map (kbd "s-\\ v") 'oht/fix-variable-org-indent)
-  (define-key org-mode-map (kbd "s-\\ .") 'org-time-stamp)
-  (define-key org-mode-map (kbd "s-\\ t") 'org-todo)
-  (define-key org-mode-map (kbd "s-\\ s-t") 'counsel-org-tag)
-  (define-key org-mode-map (kbd "s-\\ n") 'org-narrow-to-subtree)
-  (define-key org-mode-map (kbd "s-\\ w") 'widen)
-  (define-key org-mode-map (kbd "s-\\ s") 'org-search-view)
-  (define-key org-mode-map (kbd "s-\\ <") 'org-insert-structure-template)
-  (define-key org-mode-map (kbd "s-\\ l") 'org-store-link)
-  (define-key org-mode-map (kbd "s-\\ i") 'org-insert-last-stored-link)
-  (define-key org-mode-map (kbd "s-\\ m") 'org-toggle-link-display)
-  (define-key org-mode-map (kbd "s-\\ I") 'org-clock-in)
-  (define-key org-mode-map (kbd "s-\\ O") 'org-clock-out)
-  (bind-key "s-\\ h" 'hydra-org/body)
-  )
-
 ;; buffer menu bindings
 (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
 #+end_src

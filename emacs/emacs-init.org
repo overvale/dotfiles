@@ -155,19 +155,6 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 (setq create-lockfiles nil)           ; No need for ~ files when editing
 #+end_src
 
-** Package Setup
-
-From Radian...
-
-#+begin_src emacs-lisp
-;; Tell `use-package' to always load features lazily unless told
-;; otherwise. It's nicer to have this kind of thing be deterministic:
-;; if `:demand' is present, the loading is eager; otherwise, the
-;; loading is lazy. See
-;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
-(setq use-package-always-defer t)
-#+end_src
-
 * Spelling
 
 Tell ispell where to find the =aspell= executable, and some settings.
@@ -413,7 +400,6 @@ The creator of these packages also created an enhanced version of =isearch= whic
 (use-package unfill)
 (use-package use-package-chords
   :ensure t
-  :demand
   :config
   (key-chord-mode 1)
   (key-chord-define-global ",." "<>\C-b"))
@@ -526,7 +512,6 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
   (modus-vivendi-theme-3d-modeline t))
 
 (use-package modus-operandi-theme
-  :demand
   :custom
   (modus-operandi-theme-faint-syntax t)
   (modus-operandi-theme-slanted-constructs t)

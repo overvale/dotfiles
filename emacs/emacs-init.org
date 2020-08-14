@@ -548,7 +548,23 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 
 #+begin_src emacs-lisp
 (use-package org
-  :hook (org-mode . oht/org-mode-hook))
+  :hook (org-mode . oht/org-mode-hook)
+  :bind (:map org-mode-map
+	      ("s-\\ v" . oht/fix-variable-org-indent)
+	      ("s-\\ ." . org-time-stamp)
+	      ("s-\\ t" . org-todo)
+	      ("s-\\ s-t" . counsel-org-tag)
+	      ("s-\\ n" . org-narrow-to-subtree)
+	      ("s-\\ w" . widen)
+	      ("s-\\ s" . org-search-view)
+	      ("s-\\ <" . org-insert-structure-template)
+	      ("s-\\ l" . org-store-link)
+	      ("s-\\ i" . org-insert-last-stored-link)
+	      ("s-\\ m" . org-toggle-link-display)
+	      ("s-\\ I" . org-clock-in)
+	      ("s-\\ O" . org-clock-out)
+	      ("s-\\ h" . hydra-org/body)
+		))
 #+end_src
 
 ** Settings
@@ -740,27 +756,6 @@ And here we have some custom commands for the agenda view.
 	(define-key org-agenda-mode-map
 		"S" 'org-agenda-schedule)
 		))
-#+end_src
-
-** Keybindings
-
-#+begin_src emacs-lisp
-(with-eval-after-load 'org
-  (define-key org-mode-map (kbd "s-\\ v") 'oht/fix-variable-org-indent)
-  (define-key org-mode-map (kbd "s-\\ .") 'org-time-stamp)
-  (define-key org-mode-map (kbd "s-\\ t") 'org-todo)
-  (define-key org-mode-map (kbd "s-\\ s-t") 'counsel-org-tag)
-  (define-key org-mode-map (kbd "s-\\ n") 'org-narrow-to-subtree)
-  (define-key org-mode-map (kbd "s-\\ w") 'widen)
-  (define-key org-mode-map (kbd "s-\\ s") 'org-search-view)
-  (define-key org-mode-map (kbd "s-\\ <") 'org-insert-structure-template)
-  (define-key org-mode-map (kbd "s-\\ l") 'org-store-link)
-  (define-key org-mode-map (kbd "s-\\ i") 'org-insert-last-stored-link)
-  (define-key org-mode-map (kbd "s-\\ m") 'org-toggle-link-display)
-  (define-key org-mode-map (kbd "s-\\ I") 'org-clock-in)
-  (define-key org-mode-map (kbd "s-\\ O") 'org-clock-out)
-  (bind-key "s-\\ h" 'hydra-org/body)
-  )
 #+end_src
 
 ** Org hydra

@@ -448,7 +448,6 @@ The creator of these packages also created an enhanced version of =isearch= whic
 #+begin_src emacs-lisp
 (defun oht/org-mode-hook ()
   (oht/writing-mode)
-  (org-superstar-mode 1)
   (undo-tree-mode)
   )
 (defun oht/emacs-lisp-mode ()
@@ -629,19 +628,6 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 (setq org-agenda-window-setup 'current-window)
 #+end_src
 
-I use =org-superstar= to replace headline and list-markup with more attractive options. An added benefit is that by transforming the markup into fancy bullets I get visual confirmation that the markup is going what I intend.
-
-#+begin_src emacs-lisp
-;; (use-package org-superstar
-;;   :custom
-;;   (org-superstar-headline-bullets-list '("❖ "))
-;;   (org-superstar-special-todo-items nil)
-;;   (org-superstar-item-bullet-alist
-;;       '((?- . ?•)
-;; 	(?+ . ?▶)
-;; 	(?* . ?▷))))
-#+end_src
-
 ** Source Code Blocks
 
 #+begin_src emacs-lisp
@@ -761,12 +747,12 @@ This defines custom agendas.
 Each type of agenda view can be independently customized. The only thing I've changed from the default is that in the todo view I want things sorted first by category, then by priority within that. For more info see the documentation for the variable =org-agenda-sorting-strategy=.
 
 #+begin_src emacs-lisp
-(setq org-agenda-sorting-strategy
-      '(
-	((agenda habit-down time-up priority-down category-up)
-	 (todo category-up priority-down)
-	 (tags priority-down category-keep)
-	 (search category-keep))))
+;; (setq org-agenda-sorting-strategy
+;;       '(
+;; 	((agenda habit-down time-up priority-down category-up)
+;; 	 (todo category-up priority-down)
+;; 	 (tags priority-down category-keep)
+;; 	 (search category-keep))))
 #+end_src
 
 And here we have some custom commands for the agenda view.

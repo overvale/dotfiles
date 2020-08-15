@@ -54,6 +54,7 @@ Some of the stuff below might seem a little militant (running as a non-admin use
 - Block Google Analytics =echo '\n0.0.0.0 google-analytics.com\n0.0.0.0 www.google-analytics.com` >> /etc/hosts=
 - Set up ssh keys - use [[(https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh][GitHub instructions]] - don't forget to set a password, and store the password in your keychain.
 - Enable Terminal's "Secure Keyboard Entry".
+- Run =defaults write -g NSWindowShouldDragOnGesture yes= in the terminal, then you can drag windows around with =ctrl+option+cmd= mouse-drag from anywhere in the window.
 
 * Install
 

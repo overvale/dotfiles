@@ -294,3 +294,34 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
            (find-file cand))
           (t
            (switch-to-buffer cand)))))
+
+(defun oht/new-tab ()
+  "macOS follows this convention: command-N creates a new window and command-T creates a new tab in the same window. The Mac Port version of Emacs has functions and variables that makes following this convention possible.
+
+This function works by setting the new-frame behaviour to use tabs, creating a new frame (thus, tab), then changing the setting back to system default."
+  (interactive)
+  (setq mac-frame-tabbing t)
+  (make-frame-command)
+  (setq mac-frame-tabbing 'automatic)
+  )
+
+(defun oht/show-tab-bar ()
+  (interactive)
+  (mac-set-frame-tab-group-property nil :tab-bar-visible-p t)
+  )
+(defun oht/hide-tab-bar ()
+  (interactive)
+  (mac-set-frame-tab-group-property nil :tab-bar-visible-p nil)
+  )
+(defun oht/show-tab-bar-overview ()
+  (interactive)
+  (mac-set-frame-tab-group-property nil :overview-visible-p t)
+  )
+
+(defun oht/next-frame ()
+  (interactive)
+  (select-frame-set-input-focus (next-frame)))
+(defun oht/previous-frame ()
+  (interactive)
+  (select-frame-set-input-focus (previous-frame)))
+

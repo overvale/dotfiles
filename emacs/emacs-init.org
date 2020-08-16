@@ -445,8 +445,7 @@ The creator of these packages also created an enhanced version of =isearch= whic
 (use-package fountain-mode)
 (use-package lua-mode)
 (use-package markdown-mode
-  :hook oht/writing-mode
-)
+  :hook oht/writing-mode)
 #+end_src
 
 ** Mode Hooks
@@ -574,10 +573,8 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 (use-package org
   :hook (org-mode . oht/org-mode-hook)
   :bind (:map org-mode-map
-	      ("s-\\ v" . oht/fix-variable-org-indent)
 	      ("s-\\ ." . org-time-stamp)
 	      ("s-\\ t" . org-todo)
-	      ("s-\\ s-t" . counsel-org-tag)
 	      ("s-\\ n" . org-narrow-to-subtree)
 	      ("s-\\ w" . widen)
 	      ("s-\\ s" . org-search-view)
@@ -1277,14 +1274,10 @@ This cycles the spacing around point between a single space, no spaces, or the o
 #+begin_src emacs-lisp
 (bind-keys :prefix-map oht/global-leader
 	   :prefix "s-'"
-	   ("b" . counsel-descbinds)
 	   ("c" . org-capture)
 	   ("d" . sdcv-search)
-	   ("f" . oht/counsel-find-org)
 	   ("h" . hl-line-mode)
 	   ("l" . oht/toggle-line-numbers)
-	   ("o" . counsel-outline)
-	   ("s-o" . counsel-org-goto-all)
 	   ("w" . oht/toggle-whitespace)
 	   ("m" . magit-status)
 	   ("<left>" . winner-undo)

@@ -433,6 +433,10 @@ The creator of these packages also created an enhanced version of =isearch= whic
   ("M-s-<up>" . buf-move-up)
   ("M-s-<down>" . buf-move-down)
 )
+
+;; Winner Mode is built-in Since emacs seems to love spawning new
+;; windows, and taking over your existing ones, this allows you to undo and redo those arrangements. So you if a command kills a window arrangement you were using you can go back to it with winner-undo and winner-redo.
+(winner-mode 1)
 #+end_src
 
 ** Modes
@@ -1283,6 +1287,8 @@ This cycles the spacing around point between a single space, no spaces, or the o
 	   ("s-o" . counsel-org-goto-all)
 	   ("w" . oht/toggle-whitespace)
 	   ("m" . magit-status)
+	   ("<left>" . winner-undo)
+	   ("<right>" . winner-redo)
 	   ("k" . oht/kill-this-buffer)
 	   )
 #+end_src

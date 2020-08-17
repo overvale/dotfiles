@@ -637,11 +637,13 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 	      ("s-\\ <" . org-insert-structure-template)
 	      ("s-\\ l" . org-store-link)
 	      ("s-\\ i" . org-insert-last-stored-link)
-	      ("s-\\ m" . org-toggle-link-display)
+	      ("s-\\ m" . visible-mode)
 	      ("s-\\ I" . org-clock-in)
 	      ("s-\\ O" . org-clock-out)
 	      ("s-\\ h" . hydra-org/body)
-		))
+	      ("s-\\ a" . org-archive-subtree)
+	      ("s-\\ r" . org-refile)
+	      ))
 #+end_src
 
 ** Settings
@@ -731,6 +733,8 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 
 ;; This adds 'COMPLETED: DATE' when you move something to a DONE state
 (setq org-log-done 'time)
+;; And record those in a LOGBOOK drawer
+(setq org-log-into-drawer t)
 #+end_src
 
 ** Tags

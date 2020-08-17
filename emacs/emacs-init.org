@@ -649,6 +649,7 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 	      ("s-\\ h" . hydra-org/body)
 	      ("s-\\ a" . org-archive-subtree)
 	      ("s-\\ r" . org-refile)
+	      ("s-\\ g" . org-goto)
 	      ))
 #+end_src
 

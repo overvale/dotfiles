@@ -213,6 +213,9 @@ Tell ispell where to find the =aspell= executable, and some settings.
 	    (defun my--fsc-wrapper (func &rest args)
 	      (let ((selectrum-should-sort-p nil))
 		(apply func args))))
+
+(bind-key "M-;" 'flyspell-auto-correct-previous-word)
+(bind-key "M-:" 'flyspell-correct-at-point)
 #+end_src
 
 ** Spelling Hydra
@@ -1304,7 +1307,6 @@ _~_: modified
 (bind-key "M-<down>" 'oht/move-line-down)
 (bind-key "M-o" 'other-window)
 (bind-key "M-z" 'zap-up-to-char) ;the default is 'zap-to-char
-(bind-key "M-;" 'flyspell-correct-previous)
 (bind-key "s-M-z" 'undo-tree-visualize)
 (bind-key "M-s-s" 'save-some-buffers) ;save others
 

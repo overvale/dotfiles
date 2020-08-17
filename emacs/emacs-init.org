@@ -68,6 +68,7 @@ First, make sure you're using the correct version. I like [[https://bitbucket.or
 
 ** Emacs Startup
 
+*** Garbage Collection
 As recommended in Radian...
 
 #+begin_src emacs-lisp
@@ -77,6 +78,7 @@ As recommended in Radian...
 (setq gc-cons-threshold (* 100 1024 1024))
 #+end_src
 
+*** Scratch Buffer
 This tells emacs to startup with a scratch buffer, with custom content, and to do it quietly.
 
 #+begin_src emacs-lisp
@@ -89,6 +91,21 @@ This tells emacs to startup with a scratch buffer, with custom content, and to d
       inhibit-startup-message t
       inhibit-startup-echo-area-message t)
 #+end_src
+
+*** Display Settings
+
+#+begin_src emacs-lisp
+(menu-bar-mode 1)                          ; ensures full-screen avail on macOS
+(tool-bar-mode -1)                         ; hide menu-bar
+(scroll-bar-mode -1)                       ; hide scroll bars
+(show-paren-mode t)                        ; highlight parens
+(setq show-paren-delay 0)                  ; and show immediately
+(setq visible-bell t)                      ; disable beep
+(setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
+(set-default 'cursor-type 'bar)            ; use bar here, box in modes
+(setq x-underline-at-descent-line t)       ; underline at descent, not baseline
+#+end_src
+
 
 ** Encoding
 
@@ -532,20 +549,6 @@ To use flyspell for programming there is flyspell-prog-mode, that only enables s
 
 * Appearance
 
-** Display
-
-#+begin_src emacs-lisp
-(menu-bar-mode 1)                          ; ensures full-screen avail on macOS
-(tool-bar-mode -1)                         ; hide menu-bar
-(scroll-bar-mode -1)                       ; hide scroll bars
-(show-paren-mode t)                        ; highlight parens
-(setq show-paren-delay 0)                  ; and show immediately
-(setq visible-bell t)                      ; disable beep
-(setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
-(set-default 'cursor-type 'bar)            ; use bar here, box in modes
-(setq x-underline-at-descent-line t)       ; underline at descent, not baseline
-#+end_src
-
 ** Fonts
 
 Here the fonts are setup in a function so I can change them all in once step by calling =oht/set-font=.
@@ -834,6 +837,7 @@ And here we have some custom commands for the agenda view.
 		"S" 'org-agenda-schedule)
 		))
 #+end_src
+
 
 ** Org hydra
 

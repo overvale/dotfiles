@@ -171,7 +171,6 @@ Tell ispell where to find the =aspell= executable, and some settings.
 
 #+begin_src emacs-lisp
 (use-package flyspell-correct
-  :ensure t
   :custom
   (flyspell-correct-interface 'flyspell-correct-dummy)
 )
@@ -204,7 +203,6 @@ Tell ispell where to find the =aspell= executable, and some settings.
 #+begin_src emacs-lisp
 (use-package helpful
   ;; https://github.com/Wilfred/helpful
-  :ensure t
   :bind
   ("C-h f" . #'helpful-callable)
   ("C-h F" . #'helpful-function)
@@ -343,7 +341,6 @@ I've tried a number of them (including =ivy=, =helm=, and =icomplete=) but I fin
 #+begin_src emacs-lisp
 ;; selectrum is the live-search framework
 (use-package selectrum
-  :ensure t
   :config (selectrum-mode +1)
   :bind
   ("s-b" . selectrum-switch-buffer+)
@@ -353,20 +350,17 @@ I've tried a number of them (including =ivy=, =helm=, and =icomplete=) but I fin
 
 ;; prescient is for sorting search candidates
 (use-package prescient
-  :ensure t
   :config (prescient-persist-mode +1)
   )
 
 ;; this combines them
 (use-package selectrum-prescient
-  :ensure t
   :config (selectrum-prescient-mode +1)
 )
 
 ;; this sublime package makes it so your fuzzy searches can be out of order
 ;; which is extremely useful when searching thousands of candidates (m-x)
 (use-package orderless
-  :ensure t
   :custom (completion-styles '(orderless)))
 #+end_src
 
@@ -374,7 +368,6 @@ The creator of these packages also created an enhanced version of =isearch= whic
 
 #+begin_src emacs-lisp
 (use-package ctrlf
-  :ensure t
   :config (ctrlf-mode +1)
   ;; C-s - ctrlf-forward-literal
   ;; C-r - ctrlf-backward-literal
@@ -394,6 +387,9 @@ The creator of these packages also created an enhanced version of =isearch= whic
 ** General
 
 #+begin_src emacs-lisp
+;; make sure everything I declare is installed
+(setq use-package-always-ensure t)
+
 (use-package magit)
 (use-package bind-key)
 (use-package exec-path-from-shell)
@@ -401,7 +397,6 @@ The creator of these packages also created an enhanced version of =isearch= whic
 (use-package olivetti)
 (use-package unfill)
 (use-package use-package-chords
-  :ensure t
   :config
   (key-chord-mode 1)
   (key-chord-define-global ",." "<>\C-b"))
@@ -410,7 +405,6 @@ The creator of these packages also created an enhanced version of =isearch= whic
 (use-package which-key
   :config (which-key-mode t))
 (use-package undo-tree
-  :ensure t
   :config (global-undo-tree-mode 1)
   :custom
   (undo-tree-visualizer-timestamps t "Show timestamps in the undo-tree.")
@@ -426,7 +420,6 @@ The creator of these packages also created an enhanced version of =isearch= whic
   :load-path "lisp/emacs-sdcv/")
 
 (use-package buffer-move
-  :ensure t
   :bind
   ("M-s-<left>" . buf-move-left)
   ("M-s-<right>" . buf-move-right)

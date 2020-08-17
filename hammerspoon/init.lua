@@ -109,6 +109,7 @@ local appList = {
    m = 'Mail',
    e = 'Emacs',
    b = 'BBEdit',
+   o = 'Tot',
 }
 
 for key, app in pairs(appList) do

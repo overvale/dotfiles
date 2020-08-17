@@ -921,7 +921,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
 
 * Auto-complete
 
-I've tried a few completion packages and they've all left me cold. =hippy-expand= generally gets me what I want, but I'd like the pop-up list to use =ivy/counsel=. Some googling led me to this.
+I've tried a few completion packages and they've all left me cold. =hippy-expand= generally gets me what I want, but I'd like the pop-up list to use the completion framework. Some googling led me to this fucntion, built for ivy, which I've modified for use with =selectum=.
 
 #+begin_src emacs-lisp
 ;; https://gist.github.com/JohnLunzer/7c6d72a14c76c0a3057535e4f6148ef8
@@ -938,24 +938,24 @@ I've tried a few completion packages and they've all left me cold. =hippy-expand
       ;; Provide the options in the order in which they are normally generated.
       (delete he-search-string (reverse he-tried-table)))))
 
-(defun my-ido-or-ivy-hippie-expand-with (hippie-expand-function)
-  "Offer ido or ivy based completion using the specified hippie-expand function."
+(defun my-hippie-expand-with (hippie-expand-function)
+  "Offer completion using the specified hippie-expand function."
   (let* ((options (my-hippie-expand-completions hippie-expand-function)))
     (if options
         (progn
           (if (> (safe-length options) 1)
-              (if (require 'ivy nil t)
-                  (setq selection (ivy-read "Completions: " options))
-                (setq selection (ido-completing-read "Completions: " options)))
+              (setq selection (completing-read "Completions: " options))
             (setq selection (car options)))
           (if selection
               (he-substitute-string selection t)))
       (message "No expansion found"))))
 
-(defun my-ido-or-ivy-hippie-expand ()
-  "Offer ido or ivy based completion for the word at point."
+(defun my-hippie-expand ()
+  "Offer completion for the word at point."
   (interactive)
-  (my-ido-or-ivy-hippie-expand-with 'hippie-expand))
+  (my-hippie-expand-with 'hippie-expand))
+
+(global-set-key (kbd "M-/") 'my-hippie-expand)
 #+end_src
 
 * Secondary Selection

@@ -667,6 +667,11 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 ;; Make C-a, C-e, and C-k smarter with regard to headline tags.
 (setq org-special-ctrl-a/e t)
 (setq org-special-ctrl-k t)
+
+;; Setup org-goto to send headlines to completion-read
+(setq org-goto-interface 'outline-path-completion
+      org-goto-max-level 10)
+(setq org-outline-path-complete-in-steps nil)
 #+end_src
 
 ** Look & Feel
@@ -842,7 +847,7 @@ Org                    Links                 Outline
   ("<" org-backward-element)
   (">" org-forward-element)
   ("a" outline-show-all)
-  ("g" counsel-org-goto :color blue)
+  ("g" org-goto :color blue)
   ("i" org-insert-link :color blue)
   ("n" org-next-link)
   ("o" org-edit-special :color blue)

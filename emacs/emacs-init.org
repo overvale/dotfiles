@@ -153,6 +153,24 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 (setq sentence-end-double-space nil)  ; ends sentence after 1 space
 (fset 'yes-or-no-p 'y-or-n-p)         ; Changes all yes/no questions to y/n type
 (setq create-lockfiles nil)           ; No need for ~ files when editing
+(setq confirm-kill-emacs 'yes-or-no-p) ; Ask if you really want to quit
+#+end_src
+
+Use the system trash folder to delete files.
+
+#+begin_src emacs-lisp
+(setq delete-by-moving-to-trash t)
+(setq trash-directory "~/.Trash/emacs")
+#+end_src
+
+If I ever accidentally kill the scratch buffer, just bury it instead.
+
+#+begin_src emacs-lisp
+(defadvice kill-buffer (around kill-buffer-around-advice activate)
+  (let ((buffer-to-kill (ad-get-arg 0)))
+    (if (equal buffer-to-kill "*scratch*")
+        (bury-buffer)
+      ad-do-it)))
 #+end_src
 
 * Spelling
@@ -255,6 +273,34 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 #+begin_src emacs-lisp
 ;;(require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
+#+end_src
+
+By default Emacs window sizes always line-up with the character-grid, meaning the windows resize only by character-widths and line-heights. This setting allows the windows to be unconstrained by the grid, thus resize smoothly.
+
+#+begin_src emacs-lisp
+(setq frame-resize-pixelwise t)
+#+end_src
+
+When no region is active (nothing is selected), and you invoke the =kill-region= (cut) or =kill-ring-save= (copy) commands, Emacs acts on the range of characters between the mark and the point. This is a really good way to accidentally kill half your document. I have done this more times than I'd like to admit.
+
+The below code changes the =kill-region= and =kill-ring-save= commands so that, without a selection, they act on the current line instead of the range between mark and point. It also, helpfully, prints a message saying what it did.
+
+#+begin_src emacs-lisp
+(defadvice kill-ring-save (before slick-copy activate compile)
+  "When called interactively with no active region, copy a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (message "Copied line")
+     (list (line-beginning-position)
+	   (line-beginning-position 2)))))
+
+(defadvice kill-region (before slick-cut activate compile)
+  "When called interactively with no active region, kill a single line instead."
+  (interactive
+    (if mark-active (list (region-beginning) (region-end))
+      (message "Killed line")
+      (list (line-beginning-position)
+	    (line-beginning-position 2)))))
 #+end_src
 
 ** Visual Line Mode
@@ -443,6 +489,22 @@ The creator of these packages also created an enhanced version of =isearch= whic
 
 ** Mode Hooks
 
+*** Spelling
+
+Flyspell offers on-the-fly spell checking. We can enable flyspell for all text-modes with this snippet.
+
+#+begin_src emacs-lisp
+(add-hook 'text-mode-hook 'turn-on-flyspell)
+#+end_src
+
+To use flyspell for programming there is flyspell-prog-mode, that only enables spell checking for comments and strings. We can enable it for all programming modes using the prog-mode-hook.
+
+#+begin_src emacs-lisp
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+#+end_src
+
+*** General
+
 #+begin_src emacs-lisp
 (defun oht/org-mode-hook ()
   (oht/writing-mode)
@@ -562,6 +624,7 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 
 * Org
 
+** Keybindings
 #+begin_src emacs-lisp
 (use-package org
   :hook (org-mode . oht/org-mode-hook)

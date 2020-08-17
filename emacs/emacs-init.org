@@ -725,12 +725,54 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 (setq org-list-indent-offset 2)
 #+end_src
 
+** Custom Agendas
+
+This defines custom agendas.
+
+#+begin_src emacs-lisp
+(setq org-agenda-custom-commands
+      '(
+        ("1" "TODAY: Agenda + TODAY Tasks"
+         ((agenda "d" ((org-agenda-span 'day)))
+          (todo "TODAY"
+                ((org-agenda-overriding-header "Today's Tasks: ")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                 ))))
+        ("2" "TODO: Not Today, not delayed."
+         ((todo "TODO"
+                ((org-agenda-overriding-header "Things You Might Want To Do: ")
+                (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
+                )))
+        ("3" "STALLED: Things you've put off for later: "
+          ((todo "SNOOZED|DELG|LATER"
+                ((org-agenda-overriding-header "It can wait: ")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
+		)))
+	))
+#+end_src
+
+The variables
+:   org-agenda-todo-ignore-with-date,
+:   org-agenda-todo-ignore-timestamp,
+:   org-agenda-todo-ignore-scheduled,
+:   org-agenda-todo-ignore-deadlines
+make the global TODO list skip entries that have time stamps of certain
+kinds.  If this option (=org-agenda-tags-todo-honor-ignore-options)= is set,
+the same options will also apply for the tags-todo search,
+which is the general tags/property matcher restricted to
+unfinished TODO entries only.
+
+#+begin_src emacs-lisp
+(setq org-agenda-todo-ignore-scheduled 'future)
+(setq org-agenda-tags-todo-honor-ignore-options t)
+#+end_src
+
 ** Keywords
 
 #+begin_src emacs-lisp
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-        (sequence "WAITING(w)" "HOLD(h)" "|" "CANCELLED(c)")))
+      '((sequence "TODO(t)" "TODAY(T)" "LATER(l)" "|" "DONE(d)")
+        (sequence "SNOOZE(s)" "DELG(g)" "|" "CANCELED(c)")))
 
 ;; Ensure that a task can’t be marked as done if it contains
 ;; unfinished subtasks or checklist items. This is handy for
@@ -782,7 +824,7 @@ I find tags to be of very limited utility, but it is useful to tag truly unimpor
         ))
 #+end_src
 
-** Agenda
+** Agenda Settings
 
 This defines which files you want included in your agenda/TODO views.
 
@@ -791,32 +833,6 @@ This defines which files you want included in your agenda/TODO views.
       '("~/Documents/org-files/"
 	"~/Documents/writing/kindred/compendium.org"
 	))
-#+end_src
-
-This defines custom agendas.
-
-#+begin_src emacs-lisp
-(setq org-agenda-custom-commands
-      '(
-        ("v" "Today + Tasks: not scheduled, not WAIT"
-         ((agenda "d" ((org-agenda-span 'day)))
-          (tags "/TODO"
-                ((org-agenda-overriding-header "Available Tasks")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-                 ))))
-        ("i" "Important Tasks"
-         ((tags "-emacs-/TODO"
-                ((org-agenda-overriding-header "Important Tasks")
-                (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
-                )))
-        ("c" "Complete - Agenda and ALL todos"
-         ((agenda "")
-          (todo "TODO|WAIT"
-                ((org-agenda-overriding-header "Global list of TODO items of type: ALL (non-scheduled)")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-                 ))
-          ))
-        ))
 #+end_src
 
 Each type of agenda view can be independently customized. The only thing I've changed from the default is that in the todo view I want things sorted first by category, then by priority within that. For more info see the documentation for the variable =org-agenda-sorting-strategy=.

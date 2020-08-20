@@ -137,18 +137,19 @@ When customizing Emacs interactively (ie: not in this document or =init.el=) Ema
 
 ** emacs.d Folder Layout
 
-This tells emacs how I've laid-out by emacs directory.
+Add the =themes= folder to =load-path=.
 
 #+begin_src emacs-lisp
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
-(setq backup-directory-alist `(("." . "~/.emacs.d/saves")))
 #+end_src
 
-Emacs can automatically create backup files. This tells Emacs to put all backups in =~/.emacs.d/backups=. [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html][More info]].
+Use =/tmp= for backups and autosave files. [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html][More info]].
 
 #+begin_src emacs-lisp
-(setq backup-directory-alist `(("." . ,(concat user-emacs-directory
-                                               "backups"))))
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 #+end_src
 
 I have a bunch of misc custom functions that I keep in a separate file to make this document a little cleaner.

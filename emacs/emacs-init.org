@@ -1208,6 +1208,41 @@ Many of these commands are duplicated under [[*Windows Leader][Windows Leader]] 
 	   ("r" . oht/toggle-window-split))
 #+end_src
 
+* EWW Browser
+
+Emacs includes a (basic) browser, so you (mostly) don't have to leave Emacs. Sometimes I think Emacs's goal is to get you to use Emacs more...
+
+The below is pretty much ripped directly from /Prot/'s config.
+
+#+begin_src emacs-lisp
+(use-package eww
+  :config
+  (setq eww-restore-desktop nil)
+  (setq eww-desktop-remove-duplicates t)
+  (setq eww-header-line-format "%u")
+  (setq eww-download-directory "~/Downloads/")
+  (setq eww-bookmarks-directory "~/.emacs.d/eww-bookmarks/")
+  (setq eww-history-limit 150)
+  (setq eww-use-external-browser-for-content-type
+        "\\`\\(video/\\|audio/\\|application/pdf\\)")
+  (setq url-cookie-trusted-urls '()
+	url-cookie-untrusted-urls '(".*"))
+  )
+
+(use-package browse-url
+  :after eww
+  :config
+  (setq browse-url-browser-function 'eww-browse-url))
+#+end_src
+
+* PDF Tools
+
+#+begin_src emacs-lisp
+(use-package pdf-tools
+  :config
+  (pdf-tools-install))
+#+end_src
+
 * Hydras
 
 Hydras should be reserved for mini-modes, /ie/ places where you'll want to call several functions in a row. If all you're doing is grouping similar commands then which-key should suffice.

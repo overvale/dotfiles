@@ -1,0 +1,28 @@
+* Daily Focus, %(org-insert-time-stamp (current-time))
+
+** Process
+
+- [ ] Turn on DND Mode, Mac and Phone
+- [ ] Set 20 minute timer to get the day organized
+- [ ] Log Time (at root level)
+- [ ] Did the President Call? (Email + Slack)
+- [ ] What's on your calendar?
+- [ ] Schedule =TODO= items for today
+- [ ] Define the Schedule in Log Entry (below)
+- [ ] Get Started!
+
+** Log Entry
+
+1. How do you want to spend your day?
+     + Daily focus
+     + Writing
+     + Project 1
+     + Lunch
+     + Project 2
+     + Coffee & Reading
+     + Project 3
+     + Clean up house
+     + Go get Ellie
+2. Use Pomodoro timers, and take breaks.
+3. Don't read the news.
+

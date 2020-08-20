@@ -51,6 +51,7 @@ Anyone learning vim, emacs, zsh, bash, or something similar, spends a lot of tim
 - [[https://gitlab.com/Kaligule/emacs-config/-/blob/master/config.org][Kaligule config.org]]
 - [[https://github.com/andschwa/.emacs.d][Andrew Schwartzmeyer’s Emacs configurations]]
 - [[https://github.com/raxod502/radian][Radian]]
+- [[https://github.com/munen/emacs.d/][Alain M. Lafon's emacs.d]]
 
 For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
 
@@ -674,11 +675,11 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 	      ("s-\\ a" . org-archive-subtree)
 	      ("s-\\ r" . org-refile)
 	      ("s-\\ g" . org-goto)
+	      ("s-\\ c" . org-toggle-checkbox)
 	      ))
 #+end_src
 
 ** Settings
-
 #+begin_src emacs-lisp
 ;; do not indent text below a headline
 (setq org-adapt-indentation nil)
@@ -849,7 +850,10 @@ I find tags to be of very limited utility, but it is useful to tag truly unimpor
 
 #+begin_src emacs-lisp
 (setq org-capture-templates
-      '(("p" "Personal Inbox" entry
+      '(("d" "Daily Focus" entry
+	 (file "~/Documents/org-files/logbook.org")
+	 (file "~/dot/emacs/capture-templates/daily-focus.org"))
+	("p" "Personal Inbox" entry
          (file+headline "~/Documents/org-files/refile.org" "Personal")
          "* %?\n\n")
         ("P" "Personal Log Entry" entry
@@ -862,6 +866,30 @@ I find tags to be of very limited utility, but it is useful to tag truly unimpor
          (file "~/Documents/org-files/ingenuity_logbook.org")
          "* %^{Log type|Meeting: |Call: } %? %t\n\n")
         ))
+#+end_src
+
+*** Ensure Capture Templates End With Newline
+
+If they don’t, then the result will look like:
+
+#+begin_example
+,* Tasks
+,** TODO Foo from capture-template* This should be on the next line
+#+end_example
+
+This obviously breaks the structure of the Org file. Here’s a fix:
+
+#+begin_src emacs-lisp
+(defun add-newline-at-end-if-none ()
+  "Add a newline at the end of the buffer if there isn't any."
+  (save-excursion
+    (save-restriction
+      (goto-char (1- (point-max)))
+      (if (not (looking-at "\n\n"))
+          (progn
+            (goto-char (point-max))
+            (insert "\n"))))))
+(add-hook 'org-capture-before-finalize-hook 'add-newline-at-end-if-none)
 #+end_src
 
 ** Agenda Settings
@@ -984,6 +1012,33 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
      (org-agenda-check-type t 'timeline 'agenda)
      (org-agenda-redo)))
   ("q" (message "Abort") :exit t))
+#+end_src
+
+** org imenu
+
+=imenu= normally indexes only two levels - since I run deeply nested documents, go up to six levels.
+
+#+begin_src emacs-lisp
+(setq org-imenu-depth 6)
+#+end_src
+
+When a document is folded and the user searches and finds with imenu, the body of the folded header is revealed, so that the search result can actually be seen. This differs from how =org-goto= works in 2 ways:
+
+- imenu does not display nested headlines, you have to drill down into each.
+- =org-goto= only jumps to the headline, it doesn't expand it. But it is nested.
+
+#+begin_src emacs-lisp
+(defun ok-imenu-show-entry ()
+  "Reveal content of header."
+  (cond
+   ((and (eq major-mode 'org-mode)
+         (org-at-heading-p))
+    (org-show-entry)
+    (org-reveal t))
+   ((bound-and-true-p outline-minor-mode)
+    (outline-show-entry))))
+
+(add-hook 'imenu-after-jump-hook 'ok-imenu-show-entry)
 #+end_src
 
 * Auto-complete

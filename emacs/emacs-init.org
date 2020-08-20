@@ -50,6 +50,7 @@ Anyone learning vim, emacs, zsh, bash, or something similar, spends a lot of tim
 - [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org][Angry Bacon dotemacs]]
 - [[https://gitlab.com/Kaligule/emacs-config/-/blob/master/config.org][Kaligule config.org]]
 - [[https://github.com/andschwa/.emacs.d][Andrew Schwartzmeyer’s Emacs configurations]]
+- [[https://github.com/raxod502][Radon Rosborough's packages/config]]
 - [[https://github.com/raxod502/radian][Radian]]
 - [[https://github.com/munen/emacs.d/][Alain M. Lafon's emacs.d]]
 
@@ -172,6 +173,17 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 (fset 'yes-or-no-p 'y-or-n-p)         ; Changes all yes/no questions to y/n type
 (setq create-lockfiles nil)           ; No need for ~ files when editing
 ;;(setq confirm-kill-emacs 'yes-or-no-p) ; Ask if you really want to quit
+(setq-default fill-column 80)         ; Set column used for fill-paragraph
+
+; Use Spotlight to search with M-x locate
+(setq locate-command "mdfind")
+
+;; Always Follow Symlinks, no questions asked.
+(setq vc-follow-symlinks t)
+
+;; Echo unfinished commands after this delay
+;; setting to 0 means do not echo commands
+(setq echo-keystrokes 0.1)
 #+end_src
 
 Use the system trash folder to delete files.
@@ -494,7 +506,10 @@ The creator of these packages also created an enhanced version of =isearch= whic
 (use-package hydra
   :chords (("fj" . hydra-modal/body)))
 (use-package which-key
-  :config (which-key-mode t))
+  :config
+  (which-key-mode t)
+  (setq which-key-idle-delay 0.4)
+  )
 (use-package undo-tree
   :config (global-undo-tree-mode 1)
   :custom
@@ -521,6 +536,10 @@ The creator of these packages also created an enhanced version of =isearch= whic
 ;; Winner Mode is built-in Since emacs seems to love spawning new
 ;; windows, and taking over your existing ones, this allows you to undo and redo those arrangements. So you if a command kills a window arrangement you were using you can go back to it with winner-undo and winner-redo.
 (winner-mode 1)
+
+;; Toggle mode-line
+(use-package hide-mode-line
+  :ensure t)
 #+end_src
 
 ** Modes
@@ -1268,6 +1287,8 @@ Many of these commands are duplicated under [[*Windows Leader][Windows Leader]] 
 
 Emacs includes a (basic) browser, so you (mostly) don't have to leave Emacs. Sometimes I think Emacs's goal is to get you to use Emacs more...
 
+** Settings
+
 The below is pretty much ripped directly from /Prot/'s config.
 
 #+begin_src emacs-lisp
@@ -1506,6 +1527,10 @@ From [[https://oremacs.com/2015/01/26/occur-dwim/][oremacs]]. This will offer as
 ** Enhance Emacs
 
 #+begin_src emacs-lisp
+;; Make Emacs indent new lines automatically.
+(define-key global-map (kbd "RET") 'newline-and-indent)
+
+
 (bind-key "s-g" 'keyboard-quit)
 
 (bind-key "C-s" 'ctrlf-forward-fuzzy)

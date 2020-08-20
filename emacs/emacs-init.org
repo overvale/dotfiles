@@ -1279,16 +1279,40 @@ The below is pretty much ripped directly from /Prot/'s config.
   (setq eww-download-directory "~/Downloads/")
   (setq eww-bookmarks-directory "~/.emacs.d/eww-bookmarks/")
   (setq eww-history-limit 150)
+  (setq shr-max-image-proportion 0.7)
   (setq eww-use-external-browser-for-content-type
         "\\`\\(video/\\|audio/\\|application/pdf\\)")
   (setq url-cookie-trusted-urls '()
 	url-cookie-untrusted-urls '(".*"))
-  )
+  :bind (:map eww-mode-map
+	      ("s-\\ h" . hydra-eww/body)
+  ))
 
 (use-package browse-url
   :after eww
   :config
   (setq browse-url-browser-function 'eww-browse-url))
+#+end_src
+
+** Eww Hydra
+
+Since browsing is not text editing, and lots of single-key bindings are already present in =eww-mode=, it might make sense to create a hydra for navigating webpages.
+
+#+begin_src emacs-lisp
+(defhydra hydra-eww (:color pink)
+  "eww browser"
+  ("[" eww-back-url "Go Back")
+  ("]" eww-forward-url "Go Forward")
+  ("s-b" eww-browse-with-external-browser "Open in Browser")
+  ("r" eww-reload "Reload")
+  ("g" eww "URL/Search")
+  ("s-RET" eww-open-in-new-buffer "Open in new buffer")
+  ("Q" oht/kill-this-buffer "Kill eww")
+  ("k" scroll-down-line "scroll line up")
+  ("j" scroll-up-line "scroll line down")
+  ("n" shr-next-link "Next link")
+  ("p" shr-previous-link "Previous link")
+  ("q" exit "Exit" :color blue))
 #+end_src
 
 * PDF Tools

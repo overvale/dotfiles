@@ -161,7 +161,7 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 
 #+begin_src emacs-lisp
 (global-auto-revert-mode t)           ; update buffer when file on disk changes
-;;(desktop-save-mode 1)                 ; sessions
+(desktop-save-mode 1)                 ; sessions
 (save-place-mode 1)                   ; reopens the file to the same spot you left
 (recentf-mode 1)                      ; enables "Open Recent..." in file menu
 (setq tab-width 4)                    ; tabs=4 char
@@ -169,7 +169,7 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 (setq sentence-end-double-space nil)  ; ends sentence after 1 space
 (fset 'yes-or-no-p 'y-or-n-p)         ; Changes all yes/no questions to y/n type
 (setq create-lockfiles nil)           ; No need for ~ files when editing
-(setq confirm-kill-emacs 'yes-or-no-p) ; Ask if you really want to quit
+;;(setq confirm-kill-emacs 'yes-or-no-p) ; Ask if you really want to quit
 #+end_src
 
 Use the system trash folder to delete files.

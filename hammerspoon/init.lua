@@ -13,7 +13,7 @@ Check out:
 
 ]]
 
-hs.window.animationDuration = 0.08
+hs.window.animationDuration = 0
 local hyper = {"ctrl", "alt", "cmd"}
 
 -- Spoons
@@ -110,6 +110,8 @@ local appList = {
    e = 'Emacs',
    b = 'BBEdit',
    o = 'Tot',
+   g = 'Gmail',
+   k = 'Slack',
 }
 
 for key, app in pairs(appList) do

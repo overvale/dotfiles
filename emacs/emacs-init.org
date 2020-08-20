@@ -106,7 +106,6 @@ This tells emacs to startup with a scratch buffer, with custom content, and to d
 (setq x-underline-at-descent-line t)       ; underline at descent, not baseline
 #+end_src
 
-
 ** Encoding
 
 Set encoding to be UTF-8 everywhere. [[https://www.masteringemacs.org/article/working-coding-systems-unicode-emacs][Mastering Emacs has more info]].
@@ -387,7 +386,7 @@ Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201
 ;; Mac follows the UNIX convention of C-h being the same as <DEL>
 (bind-key* "C-h" 'delete-backward-char)
 ;; readline-style shortcuts, because I love them
-(bind-key* "C-w" 'backward-kill-word)
+(bind-key "C-w" 'backward-kill-word)
 (bind-key "C-u" 'oht/kill-line-backward)
 ;; No reason not to use command-u for this
 (bind-key "s-u" 'universal-argument)
@@ -665,7 +664,7 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 ;; This prevents editing inside folded sections
 (setq org-catch-invisible-edits 'show-and-error)
 
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
 
 ;; this sets "refile targets" to any headline, level 1-3, in you agenda files.
@@ -857,7 +856,6 @@ And here we have some custom commands for the agenda view.
 		"S" 'org-agenda-schedule)
 		))
 #+end_src
-
 
 ** Org hydra
 
@@ -1075,7 +1073,7 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
   (blink-cursor-mode 1))
 
 (defhydra hydra-modal (:hint none :pre hydra-modal/pre :post hydra-modal/post :color pink)
-  "/// MODAL HYDRA"
+  ">>>MODAL EDITING"
   ;; move one character
   ("h" backward-char "left")
   ("l" forward-char "right")
@@ -1125,6 +1123,8 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
   ;; exit
   ("s-j" nil "cancel" :color blue)
   ("i" nil "cancel" :color blue))
+
+(bind-key "s-j" 'hydra-modal/body)
 #+end_src
 
 * Window Management
@@ -1318,6 +1318,8 @@ _~_: modified
 ** Enhance Emacs
 
 #+begin_src emacs-lisp
+(bind-key "s-g" 'keyboard-quit)
+
 (bind-key "C-s" 'ctrlf-forward-fuzzy)
 (bind-key "C-r" 'ctrlf-backward-fuzzy)
 (bind-key "M-<up>" 'oht/move-line-up)
@@ -1348,7 +1350,7 @@ This cycles the spacing around point between a single space, no spaces, or the o
 ;; vim has the wonderful . command, and emacs has repeat
 ;; s-y is my keybinding because excel has (a version of) repeat bound to that
 (bind-key "s-y" 'repeat)
-(bind-key "s-j" 'hydra-modal/body)
+(bind-key "s-k" 'org-capture)
 (bind-key "s-|" 'hydra-manipulate/body)
 (bind-key "C-M-t" 'hydra-transpose/body)
 (bind-key "C-S-<mouse-1>" 'mc/add-cursor-on-click)
@@ -1362,7 +1364,6 @@ This cycles the spacing around point between a single space, no spaces, or the o
 #+begin_src emacs-lisp
 (bind-keys :prefix-map oht/global-leader
 	   :prefix "s-'"
-	   ("c" . org-capture)
 	   ("d" . sdcv-search)
 	   ("h" . hl-line-mode)
 	   ("l" . oht/toggle-line-numbers)

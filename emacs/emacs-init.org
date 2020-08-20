@@ -189,6 +189,30 @@ If I ever accidentally kill the scratch buffer, just bury it instead.
       ad-do-it)))
 #+end_src
 
+Emacs was built for 3 button mice. In the Mac Port the 3 buttons are used like so:
+
+| Left Click      | mouse-1 |
+| Fn + Left Click | mouse-2 |
+| Right Click     | mouse-3 |
+
+But you can change this to:
+
+| Click           | mouse-1 |
+| Option + Click  | mouse-2 |
+| Command + Click | mouse-3 |
+
+With this setting:
+
+#+begin_src emacs-lisp
+(setq mac-emulate-three-button-mouse t)
+#+end_src
+
+- =mouse-1= moves point
+- =mouse-2= yanks to click
+- =mouse-3= extends region from point to click, and saves to kill-ring, click again to kill.
+
+And if =mouse-yank-at-point= is set to =t= then =mouse-2= yanks to point instead of click.
+
 * Spelling
 
 Tell ispell where to find the =aspell= executable, and some settings.

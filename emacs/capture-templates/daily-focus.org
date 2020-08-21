@@ -1,4 +1,4 @@
-* Daily Focus, %(org-insert-time-stamp (current-time))
+* Daily Focus %(org-insert-time-stamp (current-time))
 
 ** Process
 

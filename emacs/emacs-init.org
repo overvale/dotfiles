@@ -12,7 +12,6 @@ This document does 2 things simultaneously, it is both the configuration file co
 This file is called =emacs-init.org= and to make it work, you need the following in your =~/.emacs.d/init.el=:
 
 #+begin_example
-(require 'org)
 (org-babel-load-file (expand-file-name "~/dot/emacs/emacs-init.org"))
 #+end_example
 
@@ -74,10 +73,6 @@ First, make sure you're using the correct version. I like [[https://bitbucket.or
 
 [[https://blog.d46.us/advanced-emacs-startup/][More Info]]
 
-- This file :: 6.96 seconds with 32 garbage collections
-- With -q :: 0.4 seconds
-- After defer :: 2.61 with 32 GC
-
 #+begin_src emacs-lisp
 ;; Use a hook so the message doesn't get clobbered by other messages.
 (add-hook 'emacs-startup-hook
@@ -90,10 +85,12 @@ First, make sure you're using the correct version. I like [[https://bitbucket.or
 
 (use-package esup
   :ensure t
-  :commands (esup))
-;; Work around a bug where esup tries to step into the byte-compiled
-;; version of `cl-lib', and fails horribly.
-(setq esup-depth 0)
+  :commands (esup)
+  :config
+  ;; Work around a bug where esup tries to step into the byte-compiled
+  ;; version of `cl-lib', and fails horribly.
+  (setq esup-depth 0)
+)
 #+end_src
 
 *** Garbage Collection
@@ -124,7 +121,7 @@ This tells emacs to startup with a scratch buffer, with custom content, and to d
 
 #+begin_src emacs-lisp
 (menu-bar-mode 1)                          ; ensures full-screen avail on macOS
-;;(tool-bar-mode -1)                         ; hide menu-bar
+(tool-bar-mode -1)                         ; hide menu-bar
 (scroll-bar-mode -1)                       ; hide scroll bars
 (show-paren-mode t)                        ; highlight parens
 (setq show-paren-delay 0)                  ; and show immediately
@@ -713,6 +710,11 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 ** Keybindings
 #+begin_src emacs-lisp
 (use-package org
+  :init
+  (add-to-list 'org-structure-template-alist
+    '(("L" . "src emacs-lisp")
+      ("f" . "src fountain"))
+    )
   :hook (org-mode . oht/org-mode-hook)
   :bind (:map org-mode-map
 	      ("s-\\ ." . oht/org-insert-date-today)
@@ -744,9 +746,6 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 
 ;; This prevents editing inside folded sections
 (setq org-catch-invisible-edits 'show-and-error)
-
-(add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("f" . "src fountain"))
 
 ;; this sets "refile targets" to any headline, level 1-3, in you agenda files.
 (setq org-refile-targets
@@ -1329,7 +1328,7 @@ The below is pretty much ripped directly from /Prot/'s config.
 
 #+begin_src emacs-lisp
 (use-package eww
-  :config
+  :init
   (setq eww-restore-desktop nil)
   (setq eww-desktop-remove-duplicates t)
   (setq eww-header-line-format "%u")
@@ -1341,6 +1340,7 @@ The below is pretty much ripped directly from /Prot/'s config.
         "\\`\\(video/\\|audio/\\|application/pdf\\)")
   (setq url-cookie-trusted-urls '()
 	url-cookie-untrusted-urls '(".*"))
+  :commands eww
   :bind (:map eww-mode-map
 	      ("s-\\ h" . hydra-eww/body)
   ))
@@ -1364,7 +1364,7 @@ Since browsing is not text editing, and lots of single-key bindings are already 
   ("r" eww-reload "Reload")
   ("g" eww "URL/Search")
   ("s-RET" eww-open-in-new-buffer "Open in new buffer")
-  ("Q" oht/kill-this-buffer "Kill eww")
+  ("Q" oht/kill-this-buffer "Kill eww" :color blue)
   ("k" scroll-down-line "scroll line up")
   ("j" scroll-up-line "scroll line down")
   ("n" shr-next-link "Next link")
@@ -1378,7 +1378,8 @@ Since browsing is not text editing, and lots of single-key bindings are already 
 (use-package pdf-tools
   :defer 2
   :config
-  (pdf-tools-install))
+  ;;(pdf-tools-install)
+)
 #+end_src
 
 * Hydras

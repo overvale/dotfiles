@@ -17,8 +17,6 @@
 (eval-when-compile (require 'use-package))
 
 ;; Load org and load your config file
-(require 'org)
 (org-babel-load-file (expand-file-name "~/dot/emacs/emacs-init.org"))
-
 
 ;; init.el ends here

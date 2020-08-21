@@ -70,14 +70,40 @@ First, make sure you're using the correct version. I like [[https://bitbucket.or
 
 ** Emacs Startup
 
+*** Startup Profiling
+
+[[https://blog.d46.us/advanced-emacs-startup/][More Info]]
+
+- This file :: 6.96 seconds with 32 garbage collections
+- With -q :: 0.4 seconds
+- After defer :: 2.61 with 32 GC
+
+#+begin_src emacs-lisp
+;; Use a hook so the message doesn't get clobbered by other messages.
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "Emacs ready in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time)))
+                     gcs-done)))
+
+(use-package esup
+  :ensure t
+  :commands (esup))
+;; Work around a bug where esup tries to step into the byte-compiled
+;; version of `cl-lib', and fails horribly.
+(setq esup-depth 0)
+#+end_src
+
 *** Garbage Collection
 As recommended in Radian...
 
 #+begin_src emacs-lisp
-;; Disable frequency of GC. This helps performance both during init
-;; and after init. Value is in bytes so this is 100MB, as suggested in
-;; <https://github.com/emacs-lsp/lsp-mode#performance>.
-(setq gc-cons-threshold (* 100 1024 1024))
+;; Make startup faster by reducing the frequency of garbage
+;; collection.  The default is 800 kilobytes.  Measured in bytes.
+(setq gc-cons-threshold (* 50 1000 1000))
+;; https://blog.d46.us/advanced-emacs-startup/
 #+end_src
 
 *** Scratch Buffer
@@ -98,7 +124,7 @@ This tells emacs to startup with a scratch buffer, with custom content, and to d
 
 #+begin_src emacs-lisp
 (menu-bar-mode 1)                          ; ensures full-screen avail on macOS
-(tool-bar-mode -1)                         ; hide menu-bar
+;;(tool-bar-mode -1)                         ; hide menu-bar
 (scroll-bar-mode -1)                       ; hide scroll bars
 (show-paren-mode t)                        ; highlight parens
 (setq show-paren-delay 0)                  ; and show immediately
@@ -471,6 +497,7 @@ The creator of these packages also created an enhanced version of =isearch= whic
 
 #+begin_src emacs-lisp
 (use-package ctrlf
+  :defer 1
   :config (ctrlf-mode +1)
   ;; C-s - ctrlf-forward-literal
   ;; C-r - ctrlf-backward-literal
@@ -493,11 +520,17 @@ The creator of these packages also created an enhanced version of =isearch= whic
 ;; make sure everything I declare is installed
 (setq use-package-always-ensure t)
 
-(use-package magit)
+(use-package magit
+  :commands magit-status
+)
 (use-package bind-key)
 (use-package exec-path-from-shell)
-(use-package multiple-cursors)
-(use-package olivetti)
+(use-package multiple-cursors
+  :defer 2
+)
+(use-package olivetti
+  :commands olivetti-mode
+)
 (use-package unfill)
 (use-package use-package-chords
   :config
@@ -511,6 +544,7 @@ The creator of these packages also created an enhanced version of =isearch= whic
   (setq which-key-idle-delay 0.4)
   )
 (use-package undo-tree
+  :defer 2
   :config (global-undo-tree-mode 1)
   :custom
   (undo-tree-visualizer-timestamps t "Show timestamps in the undo-tree.")
@@ -523,6 +557,7 @@ The creator of these packages also created an enhanced version of =isearch= whic
   ("s-E" . er/contract-region)
 )
 (use-package sdcv-mode
+  :defer 2
   :load-path "lisp/emacs-sdcv/")
 
 (use-package buffer-move
@@ -539,6 +574,7 @@ The creator of these packages also created an enhanced version of =isearch= whic
 
 ;; Toggle mode-line
 (use-package hide-mode-line
+  :defer 2
   :ensure t)
 #+end_src
 
@@ -1340,6 +1376,7 @@ Since browsing is not text editing, and lots of single-key bindings are already 
 
 #+begin_src emacs-lisp
 (use-package pdf-tools
+  :defer 2
   :config
   (pdf-tools-install))
 #+end_src
@@ -1589,3 +1626,10 @@ This cycles the spacing around point between a single space, no spaces, or the o
 #+end_src
 
 # end of emacs-init.org
+* Wrap-Up
+
+#+begin_src emacs-lisp
+;; Make gc pauses faster by decreasing the threshold.
+(setq gc-cons-threshold (* 2 1000 1000))
+;; https://blog.d46.us/advanced-emacs-startup/
+#+end_src

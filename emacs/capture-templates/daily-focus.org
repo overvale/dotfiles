@@ -2,9 +2,8 @@
 
 ** Process
 
-- [ ] Turn on DND Mode, Mac and Phone
-- [ ] Set 20 minute timer to get the day organized
 - [ ] Log Time (at root level)
+- [ ] Set 20 minute timer to get the day organized
 - [ ] Did the President Call? (Email + Slack)
 - [ ] What's on your calendar?
 - [ ] Schedule =TODO= items for today

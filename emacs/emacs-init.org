@@ -17,25 +17,25 @@ This file is called =emacs-init.org= and to make it work, you need the following
 
 ** My Emacs Philosophy
 
-1. Using Emacs makes no sense unless you customize it extensively. If you're not interested in, or don't want to bother with, customizing Emacs to the point where it molds around what you expect of it (rather than requiring /you to mold to it/) then save yourself the trouble and use another editor, there are a lot of great ones.
+1. Emacs is not a text-editor in a traditional sense, it is a platform on which /you/ can program an editor that you'll love (and boy will you /have/ to). For people whose hobbies include tweaking dotfiles this is great! But it's not so great for people who just want to edit text.
 
-2. Accept that you will never remember Emacs keybindings, and that even if you do it will injure your pinky, and don't even bother trying. That's not a down-side, it means you don't have to learn anything new (!), just learn to make Emacs work the way you expect it to. That sounds like it might be difficult, but once you get the hang of customizing Emacs it becomes easy.
+2. If you want to dive in, I think the correct starting place is to accept that you will never remember Emacs keybindings, and that even if you do it will injure your pinky---so don't even bother trying. That's not a down-side, it means you don't have to learn anything new (!), just learn to make Emacs work the way you expect it to. That sounds like it might be difficult, but once you get the hang of customizing Emacs it becomes easy.
 
-3. There's a few things you should learn to use in order to learn about Emacs's capabilities. Poke around =C-h ?= for Help. Use =M-x= to explore. Use =which-key= to give you hints for difficult to remember shortcuts.
+3. There's a few things you should know to use in order to learn about Emacs's capabilities. Poke around =C-h ?= for Help. Use =M-x= to explore. Use =which-key= to give you hints for difficult to remember shortcuts. Read the info pages, use =describe-key=, =describe-variable=, and =describe-function= a lot.
 
-4. Use =hydra= to set up what are basically "mini-modes". I don't know how I'd function without the one I have setup for window management. And the vim-ish hydra below is very useful indeed. As the saying goes "the best editor is not vim or emacs, but both".
+4. Use =hydra= to set up what are basically "mini-modes". I don't know how I'd function without the one I have setup for window management. And the Modal Editing hydra below is very useful indeed. As the saying goes "the best editor is not vim or emacs, but both".
 
 ** Keybindings Philosophy
 
-1. Standard mac shortcuts should be supported wherever possible. And since mac inherits a lot of emacs keybindings anyway (and I use them outside emacs) I can leverage a lot of muscle memory. Additionally, I've largely internalized the =readline= keybindings (since I worked in =vim= for a long time) and so =^w=, =^u=, and =^h= are second-nature.
+1. Standard mac shortcuts should be supported wherever possible. And since mac inherits a lot of emacs keybindings anyway (and I use them outside emacs) I can leverage a lot of muscle memory. Additionally, I've largely internalized the =readline= keybindings (since I worked in =vim= for a long time) and so =^w=, =^u=, and =^h= are second-nature, so I'll want to use those as well.
 
-2. Enhance Emacs built-in bindings with improved alternatives. For example, I've replaced =^s= and =^r= with =ctrlf-=. So the binding still does the same thing, just better.
+2. Enhance Emacs built-in bindings with improved alternatives. For example, I've replaced =^s= and =^r= with =ctrlf=. So the binding still does the same thing, just better.
 
 3. Global Leader - I borrow the concept of a "leader key" from vim and use it as a dumping ground for my most important commands, which don't have mac or Emacs equivalents.
 
-4. Mode Leader - All mode-spesific bindings (for example org-time-stamp), which don't make any sense in any other mode go behind a uniform mode-leader key. I've picked =s-\=.
+     1. Mode Leader - All mode-spesific bindings (for example =org-time-stamp=), which don't make any sense in any other mode go behind a uniform mode-leader key. I've picked =s-\=. That way, no matter what mode I'm in, I can hit the same key and see all the relevant functions.
 
-5. Keybindings which I use all the time, get taken out from behind leaders for faster access. For example, the org-agenda command.
+4. Keybindings which I use all the time, get taken out from behind leaders for faster access. For example, the org-agenda command.
 
 ** Inspiration and References
 
@@ -71,7 +71,9 @@ First, make sure you're using the correct version. I like [[https://bitbucket.or
 
 *** Startup Profiling
 
-[[https://blog.d46.us/advanced-emacs-startup/][More Info]]
+When you have a large config file, and a lot of packages, Emacs can be very slow to startup. Fortunately, you can identify the exact things that are making Emacs slow using the tools below, and do something about it using =use-package=.
+
+- [[https://blog.d46.us/advanced-emacs-startup/][More Info]]
 
 #+begin_src emacs-lisp
 ;; Use a hook so the message doesn't get clobbered by other messages.
@@ -94,7 +96,6 @@ First, make sure you're using the correct version. I like [[https://bitbucket.or
 #+end_src
 
 *** Garbage Collection
-As recommended in Radian...
 
 #+begin_src emacs-lisp
 ;; Make startup faster by reducing the frequency of garbage
@@ -200,9 +201,6 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 
 ; Use Spotlight to search with M-x locate
 (setq locate-command "mdfind")
-
-;; Always Follow Symlinks, no questions asked.
-(setq vc-follow-symlinks t)
 
 ;; Echo unfinished commands after this delay
 ;; setting to 0 means do not echo commands
@@ -351,14 +349,13 @@ By default, Emacs doesn't replace the selection (region) with anything you type,
 When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=. This makes Emacs refer to them as =foo/file= and =bar/file=, like a sane program.
 
 #+begin_src emacs-lisp
-;;(require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 #+end_src
 
-By default Emacs window sizes always line-up with the character-grid, meaning the windows resize only by character-widths and line-heights. This setting allows the windows to be unconstrained by the grid, thus resize smoothly.
+By default Emacs window sizes always line-up with the character-grid, meaning the windows resize only by character-widths and line-heights. This setting allows the windows to be unconstrained by the grid, thus resize smoothly. The downside of this approach is that your frame contents need to refresh when you're done resizing the frame. When set to =nil= the frame contents refresh live.
 
 #+begin_src emacs-lisp
-(setq frame-resize-pixelwise t)
+(setq frame-resize-pixelwise nil)
 #+end_src
 
 When no region is active (nothing is selected), and you invoke the =kill-region= (cut) or =kill-ring-save= (copy) commands, Emacs acts on the range of characters between the mark and the point. This is a really good way to accidentally kill half your document. I have done this more times than I'd like to admit.
@@ -385,7 +382,7 @@ The below code changes the =kill-region= and =kill-ring-save= commands so that, 
 
 ** Visual Line Mode
 
-Visual line mode is super helpful, but out-of-the-box movement commands behave inconsistently with the rest of macOS, so the below code brings them back in line.
+When in visual line mode the out-of-the-box movement commands behave inconsistently with the rest of macOS, so the below code brings them back in line.
 
 #+begin_src emacs-lisp
 ;; Turn on word-wrap globally

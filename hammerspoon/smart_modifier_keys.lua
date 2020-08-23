@@ -1,4 +1,7 @@
 -- Stolen/Adapted from: https://github.com/raulchen/dotfiles/blob/master/hammerspoon/smart_modifier_keys.lua
+-- This version adds the `cmd` and `alt` modifiers.
+-- FINALLY! A simple way to modify modifiers-when-pressed-alone.
+-- I've been searching for a good, extensible,mm version of this for a long time.
 
 local module = {}
 
@@ -6,6 +9,7 @@ local module = {}
 module.ctrlPressed = false
 module.shiftPressed = false
 module.cmdPressed = false
+module.altPressed = false
 
 module.prevModifiers = {}
 
@@ -62,6 +66,20 @@ module.modifierKeyListener = hs.eventtap.new({hs.eventtap.event.types.flagsChang
         module.cmdPressed = false
     end
 
+    -- Check `alt` key.
+    if modifiers['alt'] and not module.prevModifiers['alt'] and count == 1 then
+        module.altPressed = true
+    else
+        if count == 0 and module.altPressed then
+            -- Alt was tapped alone, send key.
+            events_to_post = {
+                hs.eventtap.event.newKeyEvent({"alt"}, "forwarddelete", true),
+                hs.eventtap.event.newKeyEvent({"alt"}, "forwarddelete", false),
+            }
+        end
+        module.altPressed = false
+    end
+
     module.prevModifiers = modifiers
     return false, events_to_post
 end):start()
@@ -72,6 +90,7 @@ module.normalKeyListener = hs.eventtap.new({hs.eventtap.event.types.keyDown}, fu
     module.ctrlPressed = false
     module.shiftPressed = false
     module.cmdPressed = false
+    module.altPressed = false
 end):start()
 
 return module

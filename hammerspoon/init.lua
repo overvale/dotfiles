@@ -156,3 +156,30 @@ hs.hotkey.bind({'ctrl'}, 'u', function() hs.eventtap.keyStroke({'cmd'}, 'delete'
 hs.hotkey.bind({'ctrl'}, ';', function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'b') end)
 hs.hotkey.bind({'ctrl'}, "'", function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'f') end)
 hs.hotkey.bind({'alt'}, 'd', function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)
+
+
+
+-- Window Switcher
+-- -----------------------------------------------
+-- https://github.com/manateelazycat/hammerspoon-config/blob/master/init.lua
+
+switcher = hs.window.switcher.new(
+    hs.window.filter.new()
+        :setAppFilter('Emacs', {allowRoles = '*', allowTitles = 1}), -- make emacs window show in switcher list
+    {
+        showTitles = false,               -- don't show window title
+        thumbnailSize = 200,              -- window thumbnail size
+        showSelectedThumbnail = false,    -- don't show bigger thumbnail
+        backgroundColor = {0.3,0.3,0.3,1}, -- background color
+        highlightColor = {0.8,0.8,0.8,1}, -- selected color
+    }
+)
+
+hs.hotkey.bind("alt", "tab", function()
+                   switcher:next()
+                   updateFocusAppInputMethod()
+end)
+hs.hotkey.bind("alt-shift", "tab", function()
+                   switcher:previous()
+                   updateFocusAppInputMethod()
+end)

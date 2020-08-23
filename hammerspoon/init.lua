@@ -7,7 +7,6 @@ See 'hs.keycodes.map' for keycodes.
 
 Check out:
 - ControlEscape.spoon
-- https://github.com/dbalatero/VimMode.spoon (seems staggeringly complete)
 - http://www.hammerspoon.org/Spoons/Seal.html
 - https://medium.com/@robhowlett/hammerspoon-the-best-mac-software-youve-never-heard-of-40c2df6db0f8
 
@@ -30,15 +29,7 @@ anycomplete.registerDefaultBindings()
 -- Draw pretty rounded corners on all screens
 Install:andUse("RoundedCorners", { start = true })
 
-Install:andUse("MiroWindowsManager")
-spoon.MiroWindowsManager:bindHotkeys({
-  up = {hyper, "up"},
-  right = {hyper, "right"},
-  down = {hyper, "down"},
-  left = {hyper, "left"},
-  fullscreen = {hyper, "f"}
-})
-
+-- Vim Mode
 local VimMode = hs.loadSpoon('VimMode')
 local vim = VimMode:new()
 vim:bindHotKeys({ enter = {{'ctrl'}, '['} })
@@ -46,7 +37,8 @@ vim:disableForApp('Terminal')
 vim:disableForApp('Emacs')
 vim:shouldDimScreenInNormalMode(nil)
 
--- Window Snapping
+
+-- Window Control
 -- -----------------------------------------------
 
 function snap_window(dir)
@@ -72,6 +64,22 @@ end
 hs.hotkey.bind(hyper, "[", function() snap_window('left') end)
 hs.hotkey.bind(hyper, "]", function() snap_window('right') end)
 hs.hotkey.bind(hyper, '=', function() hs.window.centerOnScreen(hs.window.focusedWindow()) end)
+
+-- Resize and Move Windows
+-- It seems you have to press the keys a few times to get them to work
+hs.hotkey.bind(hyper, 'left', function() hs.window.focusedWindow():moveToUnit({0, 0, 0.5, 1}) end)
+hs.hotkey.bind(hyper, 'right', function() hs.window.focusedWindow():moveToUnit({0.5, 0, 0.5, 1}) end)
+hs.hotkey.bind(hyper, 'h', function() hs.window.focusedWindow():moveToUnit({0, 0, 0.333, 1}) end)
+hs.hotkey.bind(hyper, 'j', function() hs.window.focusedWindow():moveToUnit({0, 0, 0.666, 1}) end)
+hs.hotkey.bind(hyper, 'k', function() hs.window.focusedWindow():moveToUnit({0.333, 0, 0.666, 1}) end)
+hs.hotkey.bind(hyper, 'l', function() hs.window.focusedWindow():moveToUnit({0.666, 0, 0.333, 1}) end)
+
+-- window hints
+hs.hotkey.bind(hyper, 'h', hs.hints.windowHints)
+
+-- grid gui
+hs.grid.setMargins({w = 0, h = 0})
+hs.hotkey.bind(hyper, 'g', hs.grid.show)
 
 
 -- Reload Config

@@ -86,7 +86,6 @@ When you have a large config file, and a lot of packages, Emacs can be very slow
                      gcs-done)))
 
 (use-package esup
-  :ensure t
   :commands (esup)
   :config
   ;; Work around a bug where esup tries to step into the byte-compiled
@@ -512,7 +511,7 @@ The creator of these packages also created an enhanced version of =isearch= whic
 
 #+begin_src emacs-lisp
 ;; make sure everything I declare is installed
-(setq use-package-always-ensure t)
+;;(setq use-package-always-ensure t)
 
 (use-package magit
   :commands magit-status
@@ -562,22 +561,27 @@ The creator of these packages also created an enhanced version of =isearch= whic
   ("M-s-<down>" . buf-move-down)
 )
 
-;; Winner Mode is built-in Since emacs seems to love spawning new
-;; windows, and taking over your existing ones, this allows you to undo and redo those arrangements. So you if a command kills a window arrangement you were using you can go back to it with winner-undo and winner-redo.
+;; Since emacs seems to love spawning new windows, and taking over your existing
+;; ones, this allows you to undo and redo those arrangements. So you if a
+;; command kills a window arrangement you were using you can go back to it with
+;; winner-undo and winner-redo.
 (winner-mode 1)
 
 ;; Toggle mode-line
 (use-package hide-mode-line
   :defer 2
-  :ensure t)
+)
 #+end_src
 
 ** Modes
 
 #+begin_src emacs-lisp
-(use-package fountain-mode)
-(use-package lua-mode)
+(use-package fountain-mode
+  :commands fountain-mode)
+(use-package lua-mode
+  :commands lua-mode)
 (use-package markdown-mode
+  :commands markdown-mode
   :hook oht/writing-mode)
 #+end_src
 
@@ -708,10 +712,8 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 #+begin_src emacs-lisp
 (use-package org
   :init
-  (add-to-list 'org-structure-template-alist
-    '(("L" . "src emacs-lisp")
-      ("f" . "src fountain"))
-    )
+  (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
   :hook (org-mode . oht/org-mode-hook)
   :bind (:map org-mode-map
 	      ("s-\\ ." . oht/org-insert-date-today)
@@ -1486,7 +1488,10 @@ T - tag prefix
   ("q" nil)
   ("." nil :color blue))
 
-(define-key dired-mode-map "." 'hydra-dired/body)
+(use-package dired
+  :bind (:map dired-mode-map
+	      ("." . hydra-dired/body)
+	      ))
 #+end_src
 
 ** Buffer Menu

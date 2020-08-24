@@ -1,5 +1,6 @@
 #+TITLE: Emacs Settings & Configuration
 #+AUTHOR: Oliver Taylor
+#+OPTIONS: toc
 
 * Hello!
 
@@ -506,6 +507,65 @@ The creator of these packages also created an enhanced version of =isearch= whic
 #+end_src
 
 * Packages
+
+** Use-Package
+
+/NOTE: the loading/installation of use-package is handled in my =init.el= file, which is loaded before this file is loaded./
+
+Let's talk about =use-package=. First of all, I am currently in the process of migrating all my settings to the use-package way of doing things. So this config file a bit all over the map in that respect. I didn't do it at first because I didn't actually understand what =use-package= is. The website says:
+
+#+begin_quote
+The use-package macro allows you to isolate package configuration in your .emacs file in a way that is both performance-oriented and, well, tidy.
+#+end_quote
+
+The key phrase is "isolate package configuration". To me, this is a rather opaque description. I mean, you can isolate package configuration by simply grouping all your settings for each package together in a section. It also says it is *not* a package manager, but that it can interface with them. Right. So, what does =use-package= do again?
+
+I would put it this way: =use-package= is a way to /precisely control the loading of packages/.
+
+For example, if you put =(require magit)= in your config then when Emacs reads that function it will load the =magit= package. At first glance this makes sense. If you want to use =magit= then you need it loaded. The problem is that Emacs does this on startup, regardless of if you need =magit= on startup. As the number of packages you install grows so too will Emacs startup time, and Emacs will be "running heavy" with all those packages loaded and ready to go, regardless of your need for them.
+
+Contrast with this:
+
+#+begin_example
+(use-package magit
+  :commands magit-status)
+#+end_example
+
+This short config snippet tells Emacs to load magit only when you trigger the =magit-status= function.
+
+*** Usage
+
+This example is from the project's =README=:
+
+#+begin_example
+(use-package color-moccur
+  :commands (isearch-moccur isearch-all)
+  :bind (("M-s O" . moccur)
+         :map isearch-mode-map
+         ("M-o" . isearch-moccur)
+         ("M-O" . isearch-moccur-all))
+  :init
+  (setq isearch-lazy-highlight t)
+  :config
+  (use-package moccur-edit))
+#+end_example
+
+- =:commands= :: autoload (load only when triggered) the =isearch-moccur= and   =isearch-all= commands in the =color-moccur= package.
+- =:bind= :: autoload these commands and assign a keybinding to them.
+- =:init= :: code that executes before the package is loaded.
+- =:config= :: code that executes after the package is loaded.
+
+The full list of keywords that control load-time of packages is:
+
+- =:commands=
+- =:bind=
+- =:bind*=
+- =:bind-keymap=
+- =:bind-keymap*=
+- =:mode=
+- =:interpreter=
+- =:hook=
+- =:defer=
 
 ** General
 

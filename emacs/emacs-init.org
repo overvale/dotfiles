@@ -428,8 +428,6 @@ Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201
  ("s-q" . save-buffers-kill-terminal)
  ("s-l" . oht/mark-whole-line)
  ("s-M-l" . mark-paragraph)
- ("s-]" . indent-rigidly-right-to-tab-stop)
- ("s-[" . indent-rigidly-left-to-tab-stop)
  ("S-s-<left>" . oht/expand-to-beginning-of-visual-line)
  ("S-s-<right>" . oht/expand-to-end-of-visual-line)
  ("s-<return>" . oht/open-line-below)
@@ -439,8 +437,10 @@ Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201
 (bind-key "s-<up>" (kbd "M-<"))
 (bind-key "s-<down>" (kbd "M->"))
 ;; Use same shortcuts as tab-movement for buffer movement
-(bind-key "s-}" 'next-buffer)
-(bind-key "s-{" 'previous-buffer)
+(bind-key "s-[" 'previous-buffer)
+(bind-key "s-]" 'next-buffer)
+(bind-key "s-}" 'indent-rigidly-right-to-tab-stop)
+(bind-key "s-{" 'indent-rigidly-left-to-tab-stop)
 ;; Mac follows the UNIX convention of C-h being the same as <DEL>
 (bind-key* "C-h" 'delete-backward-char)
 ;; readline-style shortcuts, because I love them
@@ -1620,6 +1620,7 @@ This cycles the spacing around point between a single space, no spaces, or the o
 	   ("<left>" . winner-undo)
 	   ("<right>" . winner-redo)
 	   ("k" . oht/kill-this-buffer)
+	   ("v" . variable-pitch-mode)
 	   )
 #+end_src
 

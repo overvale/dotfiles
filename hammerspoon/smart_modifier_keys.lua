@@ -2,6 +2,7 @@
 -- This version adds the `cmd` and `alt` modifiers.
 -- FINALLY! A simple way to modify modifiers-when-pressed-alone.
 -- I've been searching for a good, extensible,mm version of this for a long time.
+-- CAUTION: enabling "Secure Keyboard Entry" in Terminal.app breaks this script.
 
 local module = {}
 

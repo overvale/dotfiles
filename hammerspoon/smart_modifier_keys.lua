@@ -40,18 +40,18 @@ module.modifierKeyListener = hs.eventtap.new({hs.eventtap.event.types.flagsChang
     end
 
     -- Check `shift` key.
-    if modifiers['shift'] and not module.prevModifiers['shift'] and count == 1 then
-        module.shiftPressed = true
-    else
-        if count == 0 and module.shiftPressed then
-            -- Shift was tapped alone, send key.
-            events_to_post = {
-                hs.eventtap.event.newKeyEvent(nil, "delete", true),
-                hs.eventtap.event.newKeyEvent(nil, "delete", false),
-            }
-        end
-        module.shiftPressed = false
-    end
+--    if modifiers['shift'] and not module.prevModifiers['shift'] and count == 1 then
+--        module.shiftPressed = true
+--    else
+--        if count == 0 and module.shiftPressed then
+--            -- Shift was tapped alone, send key.
+--            events_to_post = {
+--                hs.eventtap.event.newKeyEvent(nil, "delete", true),
+--                hs.eventtap.event.newKeyEvent(nil, "delete", false),
+--            }
+--        end
+--        module.shiftPressed = false
+--    end
 
     -- Check `command` key.
     if modifiers['cmd'] and not module.prevModifiers['cmd'] and count == 1 then
@@ -74,8 +74,8 @@ module.modifierKeyListener = hs.eventtap.new({hs.eventtap.event.types.flagsChang
         if count == 0 and module.altPressed then
             -- Alt was tapped alone, send key.
             events_to_post = {
-                hs.eventtap.event.newKeyEvent({"alt"}, "forwarddelete", true),
-                hs.eventtap.event.newKeyEvent({"alt"}, "forwarddelete", false),
+                hs.eventtap.event.newKeyEvent(nil, "delete", true),
+                hs.eventtap.event.newKeyEvent(nil, "delete", false),
             }
         end
         module.altPressed = false

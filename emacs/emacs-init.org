@@ -77,7 +77,15 @@ When you have a large config file, and a lot of packages, Emacs can be very slow
 - [[https://blog.d46.us/advanced-emacs-startup/][More Info]]
 
 #+begin_src emacs-lisp
-;; Use a hook so the message doesn't get clobbered by other messages.
+;; this package creates a report each time you startup
+;; it works well with org-babel
+(use-package benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
+;; Print a message saying how long it took to start up
 (add-hook 'emacs-startup-hook
           (lambda ()
             (message "Emacs ready in %s with %d garbage collections."
@@ -85,14 +93,6 @@ When you have a large config file, and a lot of packages, Emacs can be very slow
                              (float-time
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
-
-(use-package esup
-  :commands (esup)
-  :config
-  ;; Work around a bug where esup tries to step into the byte-compiled
-  ;; version of `cl-lib', and fails horribly.
-  (setq esup-depth 0)
-)
 #+end_src
 
 *** Garbage Collection

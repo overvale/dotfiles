@@ -92,7 +92,7 @@ hs.hotkey.bind(hyper, 'i', hs.hints.windowHints)
 -- window grid
 hs.grid.setGrid('6x4', nil, nil)
 hs.grid.setMargins({0, 0})
-hs.hotkey.bind(hyper, 'g', hs.grid.show)
+hs.hotkey.bind(hyper, ';', hs.grid.show)
 
 
 -- Reload Config
@@ -139,29 +139,24 @@ for key, app in pairs(appList) do
    hs.hotkey.bind({'ctrl', 'cmd'}, key, function() hs.application.launchOrFocus(app) end)
 end
 
--- -----------------------------------------------
-
-
-
 
 -- Word Move/Delete
 -- -----------------------------------------------
 
 -- This, remember, is at the system level, so Terminal/Emacs will need to accept
--- things like alt+delete and cmd+delete.
+-- alt+delete, cmd+delete, ctrl+alt+b, ctrl+alt+f, and alt+forwarddelete
 
-
-
--- It seems keyStroke always involves a delay
---hs.hotkey.bind({'ctrl'}, 'w', function() hs.eventtap.keyStroke({'alt'}, 'delete') end)
---hs.hotkey.bind({'ctrl'}, 'u', function() hs.eventtap.keyStroke({'cmd'}, 'delete') end)
---hs.hotkey.bind({'ctrl'}, ';', function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'b') end)
---hs.hotkey.bind({'ctrl'}, "'", function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'f') end)
---hs.hotkey.bind({'alt'}, 'd', function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)
-
-
+-- If I bind the keys in this way:
+-- hs.hotkey.bind({'ctrl'}, 'w', function() hs.eventtap.keyStroke({'alt'}, 'delete') end)
+-- hs.hotkey.bind({'ctrl'}, 'u', function() hs.eventtap.keyStroke({'cmd'}, 'delete') end)
+-- hs.hotkey.bind({'ctrl'}, ';', function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'b') end)
+-- hs.hotkey.bind({'ctrl'}, "'", function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'f') end)
+-- hs.hotkey.bind({'alt'}, 'd', function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)
+-- That seems to introduce a significant delay, the keyStoke is not fired on keyDown
 
 -- Whereas assigning a function to keyDown eliminates that delay
+-- like this:
+
 function deleteWordBack()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
    hs.eventtap.event.newKeyEvent('delete', true):post()

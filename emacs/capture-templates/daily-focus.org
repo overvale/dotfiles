@@ -2,26 +2,13 @@
 
 ** Process
 
-- [ ] Log Time (at root level)
+- [ ] Start org clock
 - [ ] Set 20 minute timer to get the day organized
 - [ ] Did the President Call? (Email + Slack)
 - [ ] What's on your calendar?
 - [ ] Schedule =TODO= items for today
-- [ ] Define the Schedule in Log Entry (below)
+- [ ] Schedule your day
+    + Rule 1: How do you want to spend your day?
+    + Rule 2: Take regular breaks.
+    + Rule 3: Don't read the news, just work.
 - [ ] Get Started!
-
-** Log Entry
-
-1. How do you want to spend your day?
-     + Daily focus
-     + Writing
-     + Project 1
-     + Lunch
-     + Project 2
-     + Coffee & Reading
-     + Project 3
-     + Clean up house
-     + Go get Ellie
-2. Use Pomodoro timers, and take breaks.
-3. Don't read the news.
-

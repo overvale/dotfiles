@@ -698,13 +698,13 @@ Here the fonts are setup in a function so I can change them all in once step by 
 #+begin_src emacs-lisp
 (defun oht/set-font ()
   (interactive)
-  "These settings are placed inside a function so that I can set them all at once by calling the function."
+  "This function sets Iosevka Fixed SS08 to the default and fixed-pitched faces, and IBM Plex Serif to the variable-pitch face."
   (set-face-attribute 'default nil
-		      :family "Iosevka Fixed SS08" :height 140 :weight 'normal)
+		      :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Iosevka Fixed SS08" :height 140 :weight 'normal)
+		      :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "IBM Plex Serif" :height 150 :weight 'normal)
+		      :family "IBM Plex Serif" :height 155 :weight 'normal)
   (set-face-attribute 'bold nil :weight 'semibold)
   )
 
@@ -722,7 +722,10 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
   (modus-vivendi-theme-faint-syntax t)
   (modus-vivendi-theme-slanted-constructs t)
   (modus-vivendi-theme-bold-constructs t)
-  (modus-vivendi-theme-3d-modeline t))
+  (modus-vivendi-theme-3d-modeline t)
+  (modus-vivendi-theme-org-blocks 'rainbow)
+  (modus-vivendi-theme-completions 'moderate)
+)
 
 (use-package modus-operandi-theme
   :custom
@@ -731,7 +734,10 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
   (modus-operandi-theme-bold-constructs t)
   (modus-operandi-theme-org-blocks 'greyscale)
   (modus-operandi-theme-variable-pitch-headings t)
-  (modus-operandi-theme-3d-modeline nil))
+  (modus-operandi-theme-3d-modeline nil)
+  (modus-operandi-theme-completions 'opinionated)
+  (modus-operandi-theme-scale-headings nil)
+)
 
 (defadvice load-theme (before clear-previous-themes activate)
   "Clear existing theme settings instead of layering them"

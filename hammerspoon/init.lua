@@ -150,11 +150,57 @@ end
 -- This, remember, is at the system level, so Terminal/Emacs will need to accept
 -- things like alt+delete and cmd+delete.
 
-hs.hotkey.bind({'ctrl'}, 'w', function() hs.eventtap.keyStroke({'alt'}, 'delete') end)
-hs.hotkey.bind({'ctrl'}, 'u', function() hs.eventtap.keyStroke({'cmd'}, 'delete') end)
-hs.hotkey.bind({'ctrl'}, ';', function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'b') end)
-hs.hotkey.bind({'ctrl'}, "'", function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'f') end)
-hs.hotkey.bind({'alt'}, 'd', function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)
+
+
+-- It seems keyStroke always involves a delay
+--hs.hotkey.bind({'ctrl'}, 'w', function() hs.eventtap.keyStroke({'alt'}, 'delete') end)
+--hs.hotkey.bind({'ctrl'}, 'u', function() hs.eventtap.keyStroke({'cmd'}, 'delete') end)
+--hs.hotkey.bind({'ctrl'}, ';', function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'b') end)
+--hs.hotkey.bind({'ctrl'}, "'", function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'f') end)
+--hs.hotkey.bind({'alt'}, 'd', function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)
+
+
+
+-- Whereas assigning a function to keyDown eliminates that delay
+function deleteWordBack()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
+   hs.eventtap.event.newKeyEvent('delete', true):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
+end
+hs.hotkey.bind({'ctrl'}, 'w', deleteWordBack)
+
+function deleteWordForward()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
+   hs.eventtap.event.newKeyEvent('forwarddelete', true):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
+end
+hs.hotkey.bind({'alt'}, 'd', deleteWordForward)
+
+function deleteLineBack()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.cmd, true):post()
+   hs.eventtap.event.newKeyEvent('delete', true):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.cmd, false):post()
+end
+hs.hotkey.bind({'ctrl'}, 'u', deleteLineBack)
+
+function moveWordBack()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
+   hs.eventtap.event.newKeyEvent('b', true):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
+end
+hs.hotkey.bind({'ctrl'}, ';', moveWordBack)
+
+function moveWordForward()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
+   hs.eventtap.event.newKeyEvent('f', true):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
+end
+hs.hotkey.bind({'ctrl'}, "'", moveWordForward)
+
 
 -- Window Switcher
 -- -----------------------------------------------

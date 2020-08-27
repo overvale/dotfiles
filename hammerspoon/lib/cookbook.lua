@@ -177,3 +177,18 @@ normal:bind({}, 'i', function()
     hs.alert.show('Insert mode')
 end)
 
+-- Arrow Delete
+-- -----------------------------------------------
+
+-- This makes it so fn+mods+left/right acts as a 'delete' modifer.
+-- This way you can zip around with the arrow keys and add the 'fn' key to delete
+-- while your hands are still on the arrows.
+
+hs.hotkey.bind({},      'home', function() hs.eventtap.keyStroke({},      'delete') end)
+hs.hotkey.bind({'alt'}, 'home', function() hs.eventtap.keyStroke({'alt'}, 'delete') end)
+hs.hotkey.bind({'cmd'}, 'home', function() hs.eventtap.keyStroke({'cmd'}, 'delete') end)
+hs.hotkey.bind({},      'end',  function() hs.eventtap.keyStroke({},      'forwarddelete') end)
+hs.hotkey.bind({'alt'}, 'end',  function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)
+hs.hotkey.bind({'cmd'}, 'end',  function() hs.eventtap.keyStroke({'ctrl'}, 'k') end)
+
+

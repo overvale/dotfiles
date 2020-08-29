@@ -3,8 +3,8 @@
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
         ("org" . "https://orgmode.org/elpa/")
-        ;;("melpa" . "https://melpa.org/packages/")
-        ("melpa-stable" . "http://stable.melpa.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")
+        ;;("melpa-stable" . "http://stable.melpa.org/packages/")
         ))
 
 ;; Initialise the packages, avoiding a re-initialisation.

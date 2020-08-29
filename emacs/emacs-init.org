@@ -1,6 +1,5 @@
 #+TITLE: Emacs Settings & Configuration
 #+AUTHOR: Oliver Taylor
-#+OPTIONS: toc
 
 * Hello!
 
@@ -128,7 +127,9 @@ This tells emacs to startup with a scratch buffer, with custom content, and to d
 (setq show-paren-delay 0)                  ; and show immediately
 (setq visible-bell t)                      ; disable beep
 (setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
-(set-default 'cursor-type 'bar)            ; use bar here, box in modes
+(set-default 'cursor-type 'box)            ; use bar here, box in modes
+(set-face-attribute 'cursor nil :background "black")
+(blink-cursor-mode -1)
 (setq x-underline-at-descent-line t)       ; underline at descent, not baseline
 #+end_src
 
@@ -737,6 +738,7 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
   (modus-operandi-theme-3d-modeline nil)
   (modus-operandi-theme-completions 'opinionated)
   (modus-operandi-theme-scale-headings nil)
+  (modus-operandi-theme-diffs 'desaturated)
 )
 
 (defadvice load-theme (before clear-previous-themes activate)
@@ -1204,7 +1206,7 @@ I've tried a few completion packages and they've all left me cold. =hippy-expand
 
 ** Background
 
-In the olden days, many computer programs (like the X-Windows system and WordStar) had something called =secondary-selection=. Robert Sawyer, [[https://arstechnica.com/information-technology/2017/03/wordstar-a-writers-word-processor/][writing in Ars Technica]], described the feature thus (WordStar called them "blocks"):
+In the old days, many computer programs (like the X-Windows system and WordStar) had something called =secondary-selection=. Robert Sawyer, [[https://arstechnica.com/information-technology/2017/03/wordstar-a-writers-word-processor/][writing in Ars Technica]], described the feature thus (WordStar called them "blocks"):
 
 #+begin_quote
 WordStar was rare among word processing programs in that it permitted the user to mark (highlight) a block of text (with ^KB and ^KK commands) and leave it marked in place, and then go to a different position in the document and later (even after considerable work on other things) copy the block (with ^KC) or move it to a new location (with ^KV). Many users found it much easier to manipulate blocks this way than with the Microsoft Word system of highlighting with a mouse and then being forced by Word's select-then-do approach to immediately deal with the marked block, lest any typing replace it.
@@ -1280,16 +1282,20 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
 ;; hydra-modal functions
 (defun hydra-modal/pre ()
   "When activating the hydra-modal, change the cursor to a box"
-  (set-default 'cursor-type 'box)
-  (blink-cursor-mode -1))
+  ;;(set-default 'cursor-type 'box)
+  (set-face-attribute 'cursor nil :background "red")
+  ;;(blink-cursor-mode -1)
+)
 
 (defun hydra-modal/post ()
   "When exiting the hydra-modal, change the cursor to a bar"
-  (set-default 'cursor-type 'bar)
-  (blink-cursor-mode 1))
+  ;;(set-default 'cursor-type 'box)
+  (set-face-attribute 'cursor nil :background "black")
+  ;;(blink-cursor-mode -1)
+)
 
 (defhydra hydra-modal (:hint none :pre hydra-modal/pre :post hydra-modal/post :color pink)
-  ">>>MODAL EDITING"
+  "** MODAL EDITING **"
   ;; move one character
   ("h" backward-char "left")
   ("l" forward-char "right")
@@ -1363,10 +1369,16 @@ Many of these commands are duplicated under [[*Windows Leader][Windows Leader]] 
   ("]" enlarge-window "Bigger VERT")
   ("{" shrink-window-horizontally "Smaler HORZ")
   ("}" enlarge-window-horizontally "Bigger HORZ")
+  ;; move TO other windows
   ("<up>" windmove-up "Move UP")
   ("<down>" windmove-down "Move DOWN")
   ("<left>" windmove-left "Move LEFT")
   ("<right>" windmove-right "Move RIGHT")
+  ;; move WINDOWS in arrangement
+  ("M-s-<left>" buf-move-left "Shift Left")
+  ("M-s-<right>" buf-move-right "Shift Right")
+  ("M-s-<up>" buf-move-up "Shift Up")
+  ("M-s-<down>" buf-move-down "Shift Down")
   ("q" nil "cancel" :color blue))
 #+end_src
 

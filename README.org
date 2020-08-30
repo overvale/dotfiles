@@ -5,3 +5,23 @@ I've learned a lot by reading other people's dot files,
 I hope you can learn something from reading mine.
 
 ~oliver
+
+** The Software I Use
+
+You can find a detailed write-up of the software I use in =bootstrap.org=, but these dotfiles are centered around just a few programs:
+
+- [[http://acme.cat-v.org][Acme]] :: a powerful text editor that takes the UNIX maxim (do one thing and do it well) to its logical extreme. If you haven't heard of Acme before [[https://research.swtch.com/acme][Russ Cox's tour of Acme]] gives a great overview of what it can do.
+- Shell Scripts :: these are a random collection of text-transformation scripts I've collected over the years, a few I wrote myself but most of them are ripped from other people's dotfiles (I hope you do the same!).
+- [[https://www.gnu.org/software/emacs/][Emacs]] :: My configuration file is, I am embarrassed to admit, almost 10,000 words long and contains lots of explanations for why I've configured it the way I have. In it I explain that I wrote it this way not for the 3 people who will ever stumble upon it but for me, to help me remember. It's odd but I loved doing it and that idea, of documenting a rationale, has started to infect everything I do (including this).
+- [[http://www.hammerspoon.org][Hammerspoon]] :: is sort of like a translation layer that allows you to modify parts of your Mac that you can't normally modify. It's truly a wild app. It is /incredibly/ powerful, and I am not a real programmer, so the code therein might be a little... bad. That said, it has a few interesting features:
+    + System-wide vim bindings via the [[https://github.com/dbalatero/VimMode.spoon][VimMode Spoon]].
+    + A tool for making modifier keys (=ctrl=, =alt=, =cmd=, =shift=) do anything when pressed alone.
+    + A simple keybinding-based app launcher.
+    + Extending a more complete set of emacs and readline keybindings system-wide, built in a non-obvious way to get around lag that exists in the standard way of doing this.
+    + A Windows-style switcher.
+    + A library of code snippets (many of which don't work) that do all kinds of crazy things.
+- Vim :: I don't have a remarkable =vimrc= file but it's short and very vim-ish.
+
+** Feedback
+
+I can't imagine many people will ever read this, let alone want to talk to me about it. But if you do please feel free to [[https://github.com/olivertaylor/dotfiles/issues][open an issue]].

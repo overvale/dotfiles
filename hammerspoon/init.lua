@@ -45,7 +45,7 @@ vim:disableForApp('Terminal')
 vim:disableForApp('Emacs')
 vim:shouldDimScreenInNormalMode(nil)
 
-require("smart_modifier_keys")
+--require("smart_modifier_keys")
 -- You could create a modal hotkey that enters an "emacs god mode"
 -- wherein all pressed keys have a ctrl modifier added to them.
 

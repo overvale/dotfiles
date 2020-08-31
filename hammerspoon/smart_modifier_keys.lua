@@ -54,18 +54,18 @@ module.modifierKeyListener = hs.eventtap.new({hs.eventtap.event.types.flagsChang
 --    end
 
     -- Check `command` key.
-    if modifiers['cmd'] and not module.prevModifiers['cmd'] and count == 1 then
-        module.cmdPressed = true
-    else
-        if count == 0 and module.cmdPressed then
-            -- Command was tapped alone, send key.
-            events_to_post = {
-                hs.eventtap.event.newKeyEvent({"alt"}, "delete", true),
-                hs.eventtap.event.newKeyEvent({"alt"}, "delete", false),
-            }
-        end
-        module.cmdPressed = false
-    end
+--    if modifiers['cmd'] and not module.prevModifiers['cmd'] and count == 1 then
+--       module.cmdPressed = true
+--    else
+--        if count == 0 and module.cmdPressed then
+--            -- Command was tapped alone, send key.
+--            events_to_post = {
+--                hs.eventtap.event.newKeyEvent({"alt"}, "delete", true),
+--                hs.eventtap.event.newKeyEvent({"alt"}, "delete", false),
+--            }
+--        end
+--        module.cmdPressed = false
+--    end
 
     -- Check `alt` key.
     if modifiers['alt'] and not module.prevModifiers['alt'] and count == 1 then

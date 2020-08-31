@@ -70,8 +70,6 @@ noEmacsKeys:enter()
 
 hs.hotkey.bind({'cmd', 'ctrl'}, '1', function() hs.alert.show("alert") end)
 
-hs.hotkey.bind({'cmd', 'ctrl'}, '2', function() hs.alert.show("down") end, function() hs.alert.show("up") end)
-
 function oliverDown()
    hs.alert.show("down")
 end

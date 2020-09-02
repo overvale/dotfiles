@@ -1217,6 +1217,65 @@ I've tried a few completion packages and they've all left me cold. =hippy-expand
 (global-set-key (kbd "M-/") 'my-hippie-expand)
 #+end_src
 
+In Emacs, =TAB= is used by a lot of languages for indentation (org particularly). Completion is triggered with =M-TAB=. But the setting =tab-always-indent 'complete= will tell Emacs to first try to indent the line, and if it's already indented trigger =completion-at-point=.
+
+#+begin_src emacs-lisp
+(setq tab-always-indent 'complete)
+#+end_src
+
+The following adds file-path completion to the completion framework. So when your point is on something that looks like a file-path Emacs will offer file-path completions. This technique is taken from [[https://with-emacs.com/posts/tutorials/customize-completion-at-point/][(with-emacs]].
+
+#+begin_quote
+This is especially nice with selectrum which won’t exit file completions after each path level so you can conveniently navigate to the path like you would do with find-file.
+#+end_quote
+
+#+begin_src emacs-lisp
+(autoload 'ffap-file-at-point "ffap")
+(defun complete-path-at-point+ ()
+  "Return completion data for UNIX path at point."
+  (let ((fn (ffap-file-at-point))
+        (fap (thing-at-point 'filename)))
+    (when (and (or fn (equal "/" fap))
+               (save-excursion
+                 (search-backward fap (line-beginning-position) t)))
+      (list (match-beginning 0)
+            (match-end 0)
+            #'completion-file-name-table :exclusive 'no))))
+
+(add-hook 'completion-at-point-functions
+          #'complete-path-at-point+
+          'append)
+#+end_src
+
+I've not enabled the below code because I'm still testing it, but it basically creates a function witch reads and caches a file with a list of words and offers completions from it when you call a custom function. It is taken from [[https://emacs.stackexchange.com/questions/37423/completion-by-fuzzy-search-in-large-dictionary-file-displaying-candidates-inlin/37446#37446][this stackexchange message]].
+
+#+begin_example
+(defun my-dictionary ()
+  "Return hash-table whose keys comprise words.txt."
+  (with-temp-buffer
+    (insert-file-contents "/usr/share/dict/words")
+    (let ((table (make-hash-table :test #'equal :size 466544)))
+      (while (not (eobp))
+        (puthash (buffer-substring (point) (line-end-position)) nil table)
+        (forward-line))
+      table)))
+
+(defvar my-dictionary
+  (lazy-completion-table my-dictionary my-dictionary)
+  "Lazy completion table for function `my-dictionary'.")
+
+;; this is the function to call to execute the completion
+(defun my-complete-word-in-region ()
+  "Complete word preceding point under `my-dictionary'."
+  (interactive)
+  (completion-in-region
+   (save-excursion
+     (skip-syntax-backward "w")
+     (point))
+   (point)
+   my-dictionary))
+#+end_example
+
 * Secondary Selection
 
 ** Background

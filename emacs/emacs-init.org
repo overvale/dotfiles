@@ -789,9 +789,9 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 	      ("s-\\ t" . org-todo)
 	      ("s-\\ n" . org-narrow-to-subtree)
 	      ("s-\\ w" . widen)
-	      ("s-\\ s" . org-search-view)
+	      ;;("s-\\ s" . org-search-view)
 	      ("s-\\ <" . org-insert-structure-template)
-	      ("s-\\ l" . org-store-link)
+	      ("s-\\ s" . org-store-link)
 	      ("s-\\ i" . org-insert-last-stored-link)
 	      ("s-\\ m" . visible-mode)
 	      ("s-\\ I" . org-clock-in)
@@ -1705,6 +1705,7 @@ This cycles the spacing around point between a single space, no spaces, or the o
 	   ("<right>" . winner-redo)
 	   ("k" . oht/kill-this-buffer)
 	   ("v" . variable-pitch-mode)
+	   ("s" . org-store-link)
 	   )
 #+end_src
 

@@ -883,17 +883,32 @@ Possible values for this option are:
 
 ** Custom Agendas
 
-This defines custom agendas.
+This defines custom agendas. There's a very good tutorial on how to set these up at [[https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html][The Chronicle]].
 
 #+begin_src emacs-lisp
 (setq org-agenda-custom-commands
       '(
+	("0" "MASTER: Everything, categorized."
+	 (
+	  (todo "TODAY"
+                ((org-agenda-overriding-header "Today's Tasks: ")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+		 ))
+	  (agenda "w" ((org-agenda-span 'week)))
+	  (todo "TODO"
+		 ((org-agenda-overriding-header "Things You Might Want To Do: ")
+		  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+		  ))
+          (todo "SNOOZED|DELG|LATER"
+                ((org-agenda-overriding-header "It can wait: ")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+		))))
         ("1" "TODAY: Agenda + TODAY Tasks"
          ((agenda "d" ((org-agenda-span 'day)))
           (todo "TODAY"
                 ((org-agenda-overriding-header "Today's Tasks: ")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-                 ))))
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
+                 )))
         ("2" "TODO: Not Today, not delayed."
          ((todo "TODO"
                 ((org-agenda-overriding-header "Things You Might Want To Do: ")

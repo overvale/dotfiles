@@ -485,9 +485,11 @@ I've tried a number of them (including =ivy=, =helm=, and =icomplete=) but I fin
 
 ;; this sublime package makes it so your fuzzy searches can be out of order
 ;; which is extremely useful when searching thousands of candidates (m-x)
-(use-package orderless
-  :custom (completion-styles '(orderless)))
+;;(use-package orderless
+;;  :custom (completion-styles '(orderless)))
 #+end_src
+
+** CTRLF
 
 The creator of these packages also created an enhanced version of =isearch= which I find very useful, and in keeping with the philosophy of minimalism.
 

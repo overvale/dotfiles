@@ -248,6 +248,7 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
          (yank-pop n) (insert-for-yank text)))))
 
 (defun selectrum-switch-buffer+ ()
+  "Switch to open buffer or recent file. Narrow to hidden buffer with { } prefix, to files with {f } prefix and to buffers with {b } prefix."
   (interactive)
   (let* ((selectrum-should-sort-p nil)
          (candidates

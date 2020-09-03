@@ -63,7 +63,9 @@ I used to organize this document by type of customization---keybindings together
 
 * Installation
 
-First, make sure you're using the correct version. I like [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][Mitsuharu Yamamoto's Emacs fork]] because it provides [[https://bitbucket.org/mituharu/emacs-mac/src/f3402395995bf70e50d6e65f841e44d5f9b4603c/README-mac?at=master&fileviewer=file-view-default][a lot of nice stuff]] for people who want their Emacs to be a better macOS citizen.
+Before you do anything else, you'll have to install Emacs (I know, right?). My preferred version, and the one this configuration targets, is [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][Mitsuharu Yamamoto's Emacs fork]] because it provides [[https://bitbucket.org/mituharu/emacs-mac/src/f3402395995bf70e50d6e65f841e44d5f9b4603c/README-mac?at=master&fileviewer=file-view-default][a lot of nice stuff]] for people who want their Emacs to be a better macOS citizen.
+
+Now, on to the fun stuff.
 
 * Settings
 
@@ -103,8 +105,17 @@ When you have a large config file, and a lot of packages, Emacs can be very slow
 ;; https://blog.d46.us/advanced-emacs-startup/
 #+end_src
 
-*** Scratch Buffer
-This tells emacs to startup with a scratch buffer, with custom content, and to do it quietly.
+*** What to Display on Startup
+
+By default Emacs starts up with a "splash screen" containing some useful links, but I don't need that any more, so this turns it off.
+
+#+begin_src emacs-lisp
+(setq inhibit-splash-screen t
+      inhibit-startup-message t
+      inhibit-startup-echo-area-message t)
+#+end_src
+
+Since Emacs always starts up with a scratch buffer, set this as the custom content of that buffer:
 
 #+begin_src emacs-lisp
 (setq initial-scratch-message
@@ -112,25 +123,12 @@ This tells emacs to startup with a scratch buffer, with custom content, and to d
        ";; This buffer is for text that is not saved, and for Lisp evaluation.\n"
        ";; To create a file, visit it with C-x C-f and enter text in its buffer.\n"
        ";; WELCOME TO EMACS\n"))
-(setq inhibit-splash-screen t
-      inhibit-startup-message t
-      inhibit-startup-echo-area-message t)
 #+end_src
 
-*** Display Settings
+However, I don't want the scratch buffer to be the first thing I see on startup, instead I want to show a custom dashboard I've made.
 
 #+begin_src emacs-lisp
-(menu-bar-mode 1)                          ; ensures full-screen avail on macOS
-(tool-bar-mode -1)                         ; hide menu-bar
-(scroll-bar-mode -1)                       ; hide scroll bars
-(show-paren-mode t)                        ; highlight parens
-(setq show-paren-delay 0)                  ; and show immediately
-(setq visible-bell t)                      ; disable beep
-(setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
-(set-default 'cursor-type 'box)            ; use bar here, box in modes
-(set-face-attribute 'cursor nil :background "black")
-(blink-cursor-mode -1)
-(setq x-underline-at-descent-line t)       ; underline at descent, not baseline
+(find-file "~/Documents/org-files/dashboard.org")
 #+end_src
 
 ** Encoding
@@ -152,7 +150,7 @@ Set encoding to be UTF-8 everywhere. [[https://www.masteringemacs.org/article/wo
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 #+end_src
 
-** Customizing
+** Interactive Customization
 
 When customizing Emacs interactively (ie: not in this document or =init.el=) Emacs appends code to your =init.el= file, which can be annoying when editing it by hand. This tells Emacs to place these customizations in a separate file.
 
@@ -170,22 +168,33 @@ Add the =themes= folder to =load-path=.
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 #+end_src
 
-Use =/tmp= for backups and autosave files. [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Backup-Files.html][More info]].
-
-#+begin_src emacs-lisp
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-#+end_src
-
-I have a bunch of misc custom functions that I keep in a separate file to make this document a little cleaner.
+I have a bunch of misc custom functions that I keep in a separate file to make this document a little cleaner. Some of the bindings further down in this document depend on these functions, so I load them here.
 
 #+begin_src emacs-lisp
 (load "~/dot/emacs/functions.el")
 #+end_src
 
-** General
+** Preferences/Settings
+
+*** Display
+
+#+begin_src emacs-lisp
+(menu-bar-mode 1)                          ; ensures full-screen avail on macOS
+(tool-bar-mode -1)                         ; hide menu-bar
+(scroll-bar-mode -1)                       ; hide scroll bars
+(show-paren-mode t)                        ; highlight parens
+(setq show-paren-delay 0)                  ; and show immediately
+(setq visible-bell t)                      ; disable beep
+(setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
+(setq x-underline-at-descent-line t)       ; underline at descent, not baseline
+
+;; cursor settings
+(set-default 'cursor-type 'box)
+(set-face-attribute 'cursor nil :background "black")
+(blink-cursor-mode -1)
+#+end_src
+
+*** General
 
 #+begin_src emacs-lisp
 (global-auto-revert-mode t)           ; update buffer when file on disk changes
@@ -230,13 +239,17 @@ With this setting:
 (setq mac-emulate-three-button-mouse t)
 #+end_src
 
+Keep in mind, however, that a 2-finger click on the track pad still sends =mouse-3= no matter what you set =mac-emulate-three-button-mouse= to.
+
+By default, the mouse-buttons are bound to the following actions:
+
 - =mouse-1= moves point
-- =mouse-2= yanks to click
+- =mouse-2= yanks from kill-ring
 - =mouse-3= extends region from point to click, and saves to kill-ring, click again to kill.
 
 And if =mouse-yank-at-point= is set to =t= then =mouse-2= yanks to point instead of click.
 
-* Spelling
+*** Spelling
 
 Tell ispell where to find the =aspell= executable, and some settings.
 
@@ -248,8 +261,6 @@ Tell ispell where to find the =aspell= executable, and some settings.
   (setq ispell-list-command "list")
 )
 #+end_src
-
-** Flyspell-Correct
 
 =flyspell-correct= allows you to pass spelling suggestions to completion and search frameworks, such as =selectrum=. This setup code is copied directly from the selectrum documentation.
 
@@ -267,9 +278,11 @@ Tell ispell where to find the =aspell= executable, and some settings.
 (bind-key "M-:" 'flyspell-correct-at-point)
 #+end_src
 
-** Spelling Hydra
+To make spell-checking a document a little easier I've made a hydra.
 
 #+begin_src emacs-lisp
+;; When the hydra activates you can automatically switch on flyspell mode, but I
+;; have this disabled because this is a very rare case;
 (defun hydra-flyspell/pre ()
   ;;(flyspell-mode t)
   )
@@ -306,7 +319,7 @@ Tell ispell where to find the =aspell= executable, and some settings.
 
 * macOS Consistency
 
-The below is probably the biggest reason why I managed get over the intimidation of using Emacs in those first few days.
+The below is probably the biggest reason why I managed get over the intimidation of using Emacs in those first few days. They're designed to make all the shortcuts you use in every other Mac app to work the same way in Emacs. Some of these simply remap existing bindings, and some of them call custom functions that emulate macOS behaviour.
 
 ** Modifiers & Emacs Anachronisms
 
@@ -343,7 +356,7 @@ When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Ema
 (setq uniquify-buffer-name-style 'forward)
 #+end_src
 
-By default Emacs window sizes always line-up with the character-grid, meaning the windows resize only by character-widths and line-heights. This setting allows the windows to be unconstrained by the grid, thus resize smoothly. The downside of this approach is that your frame contents need to refresh when you're done resizing the frame. When set to =nil= the frame contents refresh live.
+By default Emacs window sizes always line-up with the character-grid, meaning the windows resize only by character-widths and line-heights. This setting allows the windows to be unconstrained by the grid, thus resize smoothly. The downside of this approach is that your frame contents need to refresh when you're done resizing the frame. When set to =nil= the frame contents refresh live, to the character grid.
 
 #+begin_src emacs-lisp
 (setq frame-resize-pixelwise nil)
@@ -395,9 +408,6 @@ When in visual line mode the out-of-the-box movement commands behave inconsisten
 Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201236][macOS shortcuts]]. macOS actually inherits many Emacs keybindings, but adds to it a few from =readline= and old terminal interfaces. Because these are available system-wide I want Emacs to do the same thing. That way the way I type/move in Mail.app or Safari is the same as Emacs. There are also conventions that, while not officially standard, have become widely accepted, those should be respected too. Some of these require custom functions, but that's usually a simple matter of stringing a couple existing commands together into a function.
 
 #+begin_src emacs-lisp
-;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
-;; and by default option+forward-delete has no mapping
-(bind-key "M-<delete>" 'kill-word)
 ;; C-[ sends ESC so let's make ESC more predictable
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 (bind-keys
@@ -406,7 +416,7 @@ Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201
  ("s-t" . oht/new-tab)
  ("s-m" . iconify-frame)
  ("s-s" . save-buffer)
- ("s-S" . write-file)			;save as
+ ("s-S" . write-file) ;save as
  ("s-a" . mark-whole-buffer)
  ("s-o" . find-file)
  ("s-z" . undo-tree-undo)
@@ -424,10 +434,12 @@ Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201
  ("s-<return>" . oht/open-line-below)
  ("S-s-<return>" . oht/open-line-above)
  )
+
 ;; these don't work with 'bind-keys' (above)
 (bind-key "s-<up>" (kbd "M-<"))
 (bind-key "s-<down>" (kbd "M->"))
-;; Use same shortcuts as tab-movement for buffer movement
+
+;; navigation and indentation
 (bind-key "s-[" 'previous-buffer)
 (bind-key "s-]" 'next-buffer)
 (bind-key "s-}" 'indent-rigidly-right-to-tab-stop)
@@ -437,18 +449,21 @@ Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201
 ;; readline-style shortcuts, because I love them
 (bind-key "C-w" 'backward-kill-word)
 (bind-key "C-u" 'oht/kill-line-backward)
-;; No reason not to use command-u for this
+;; No reason not to use command-u for this instead
 (bind-key "s-u" 'universal-argument)
-;; since ctrl+alt+b/f are system shortcuts for word movement, do that
+;; since ctrl+alt+b/f are system shortcuts for word movement, do that in Emacs
 (bind-key* "C-M-b" 'left-word)
 (bind-key* "C-M-f" 'right-word)
-;; respect alt+forward-delete
+;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
+;; and by default option+forward-delete has no mapping
 (bind-key* "M-<delete>" 'kill-word)
 #+end_src
 
 * Narrowing & Searching
 
 Navigating and using the thousands of things Emacs can do is built around the idea of searching and narrowing a selection down to the thing you're looking for. To make this easier I've installed a few packages that enhance Emacs built-in facilities for doing this.
+
+** Selectrum
 
 I've tried a number of them (including =ivy=, =helm=, and =icomplete=) but I find =selectrum= to be the most Emacs-y (in a good way). It is very simple, very fast, and doesn't try to do more than its basic function.
 
@@ -726,7 +741,7 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
   (mapc #'disable-theme custom-enabled-themes))
 #+end_src
 
-Though I rarely use them, I like these themes too. I find =modus-vivendi= too extreme for my tastes.
+Though I rarely use them, I like these themes too.
 
 #+begin_src emacs-lisp
 (use-package gruvbox-theme
@@ -758,6 +773,7 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
 * Org
 
 ** Keybindings
+
 #+begin_src emacs-lisp
 (use-package org
   :init
@@ -1648,6 +1664,7 @@ T - tag prefix
 (use-package dired
   :bind (:map dired-mode-map
 	      ("." . hydra-dired/body)
+	      ("s-\\ h" . hydra-dired/body)
 	      ))
 #+end_src
 

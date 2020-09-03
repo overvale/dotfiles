@@ -1776,6 +1776,7 @@ This cycles the spacing around point between a single space, no spaces, or the o
 	   ("l" . oht/toggle-line-numbers)
 	   ("w" . oht/toggle-whitespace)
 	   ("m" . magit-status)
+	   ("M" . selectrum-marks)
 	   ("<left>" . winner-undo)
 	   ("<right>" . winner-redo)
 	   ("k" . oht/kill-this-buffer)

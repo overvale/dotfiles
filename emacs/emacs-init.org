@@ -785,6 +785,7 @@ Though I rarely use them, I like these themes too. I find =modus-vivendi= too ex
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
   :hook (org-mode . oht/org-mode-hook)
   :bind (:map org-mode-map
+	      ("s-\\ o" . selectrum-outline)
 	      ("s-\\ ." . oht/org-insert-date-today)
 	      ("s-\\ t" . org-todo)
 	      ("s-\\ n" . org-narrow-to-subtree)
@@ -1780,6 +1781,7 @@ This cycles the spacing around point between a single space, no spaces, or the o
 	   ("k" . oht/kill-this-buffer)
 	   ("v" . variable-pitch-mode)
 	   ("s" . org-store-link)
+	   ("o" . selectrum-outline)
 	   )
 #+end_src
 

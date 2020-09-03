@@ -201,27 +201,16 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 ; Use Spotlight to search with M-x locate
 (setq locate-command "mdfind")
 
+;;Use the system trash folder to delete files.
+(setq delete-by-moving-to-trash t)
+(setq trash-directory "~/.Trash/emacs")
+
 ;; Echo unfinished commands after this delay
 ;; setting to 0 means do not echo commands
 (setq echo-keystrokes 0.1)
 #+end_src
 
-Use the system trash folder to delete files.
-
-#+begin_src emacs-lisp
-(setq delete-by-moving-to-trash t)
-(setq trash-directory "~/.Trash/emacs")
-#+end_src
-
-If I ever accidentally kill the scratch buffer, just bury it instead.
-
-#+begin_src emacs-lisp
-(defadvice kill-buffer (around kill-buffer-around-advice activate)
-  (let ((buffer-to-kill (ad-get-arg 0)))
-    (if (equal buffer-to-kill "*scratch*")
-        (bury-buffer)
-      ad-do-it)))
-#+end_src
+*** Mouse
 
 Emacs was built for 3 button mice. In the Mac Port the 3 buttons are used like so:
 
@@ -482,11 +471,6 @@ I've tried a number of them (including =ivy=, =helm=, and =icomplete=) but I fin
 (use-package selectrum-prescient
   :config (selectrum-prescient-mode +1)
 )
-
-;; this sublime package makes it so your fuzzy searches can be out of order
-;; which is extremely useful when searching thousands of candidates (m-x)
-;;(use-package orderless
-;;  :custom (completion-styles '(orderless)))
 #+end_src
 
 ** CTRLF
@@ -582,13 +566,15 @@ The full list of keywords that control load-time of packages is:
 )
 (use-package bind-key)
 (use-package exec-path-from-shell)
-(use-package multiple-cursors
-  :defer 2
-)
+;;(use-package multiple-cursors
+;;  :defer 4
+;;)
 (use-package olivetti
   :commands olivetti-mode
 )
-(use-package unfill)
+(use-package unfill
+  :commands (unfill-paragraph unfill-toggle unfill-region)
+)
 (use-package use-package-chords
   :config
   (key-chord-mode 1)
@@ -601,7 +587,7 @@ The full list of keywords that control load-time of packages is:
   (setq which-key-idle-delay 0.4)
   )
 (use-package undo-tree
-  :defer 2
+  :defer 1
   :config (global-undo-tree-mode 1)
   :custom
   (undo-tree-visualizer-timestamps t "Show timestamps in the undo-tree.")
@@ -696,22 +682,14 @@ To use flyspell for programming there is flyspell-prog-mode, that only enables s
 
 ** Fonts
 
-Here the fonts are setup in a function so I can change them all in once step by calling =oht/set-font=.
-
 #+begin_src emacs-lisp
-(defun oht/set-font ()
-  (interactive)
-  "This function sets Iosevka Fixed SS08 to the default and fixed-pitched faces, and IBM Plex Serif to the variable-pitch face."
-  (set-face-attribute 'default nil
-		      :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
-  (set-face-attribute 'fixed-pitch nil
-		      :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
-  (set-face-attribute 'variable-pitch nil
-		      :family "IBM Plex Serif" :height 155 :weight 'normal)
-  (set-face-attribute 'bold nil :weight 'semibold)
-  )
-
-(oht/set-font)
+(set-face-attribute 'default nil
+		    :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
+(set-face-attribute 'fixed-pitch nil
+		    :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
+(set-face-attribute 'variable-pitch nil
+		    :family "IBM Plex Serif" :height 155 :weight 'normal)
+(set-face-attribute 'bold nil :weight 'semibold)
 #+end_src
 
 ** Theme
@@ -967,25 +945,6 @@ If you'd like to hide completed tasks from the agenda, even if they're scheduled
 (setq org-log-into-drawer t)
 #+end_src
 
-** Tags
-
-I find tags to be of very limited utility, but it is useful to tag truly unimportant things to that you can match filter them out of your agenda view. You can group those tags so that you only have to match against the group name.
-
-#+begin_src emacs-lisp
-(setq org-tag-alist '(("research" . ?r)
-		      ("buy"      . ?b)
-		      ("mac"      . ?m)
-		      ("emacs"    . ?k)
-		      ("org"      . ?o)
-		      ("errand"   . ?e)
-		      ))
-
-;; Tags start immediately after the headline
-;; I have this set because I'm typically in variable-pitch-mode
-;; when editing org-files, in which the tag column doesn't align correctly
-(setq org-tags-column 0)
-#+end_src
-
 ** Capture Templates
 
 #+begin_src emacs-lisp
@@ -1043,16 +1002,18 @@ This defines which files you want included in your agenda/TODO views.
 	))
 #+end_src
 
-Each type of agenda view can be independently customized. The only thing I've changed from the default is that in the todo view I want things sorted first by category, then by priority within that. For more info see the documentation for the variable =org-agenda-sorting-strategy=.
+Each type of agenda view can be independently customized. For more info see the documentation for the variable =org-agenda-sorting-strategy=.
 
-#+begin_src emacs-lisp
-;; (setq org-agenda-sorting-strategy
-;;       '(
-;; 	((agenda habit-down time-up priority-down category-up)
-;; 	 (todo category-up priority-down)
-;; 	 (tags priority-down category-keep)
-;; 	 (search category-keep))))
-#+end_src
+This is currently disabled because I'm fine with the default behavior. I'm leaving it here as documentation.
+
+#+begin_example
+(setq org-agenda-sorting-strategy
+      '(
+	((agenda habit-down time-up priority-down category-up)
+	 (todo category-up priority-down)
+	 (tags priority-down category-keep)
+	 (search category-keep))))
+#+end_example
 
 And here we have some custom commands for the agenda view.
 
@@ -1476,62 +1437,6 @@ The object navigation/editing bindings are well thought-out, but I had to copy t
 | /     | undo last edit                                                 |
 | g     | exit                                                           |
 
-* Scrolling
-
-Scrolling in Emacs using the default keybindings (not the track-pad or mouse-wheel) is fast but sudden and sometimes disorienting. This disorientation is probably the reason I depend on my track-pad perhaps more than I should. [[https://with-emacs.com/posts/ui-hacks/keep-scrollin-scrollin-scrollin/][(with-emacs]] has an interesting solution to this problem. It works by highlighting either the top or bottom line, performing the scroll, leaving the line highlighted, and then deactivating the highlight. The result is you can see the highlighted line move in the buffer, which gives you just a little bit of context.
-
-#+begin_src emacs-lisp
-(autoload 'View-scroll-half-page-forward "view")
-(autoload 'View-scroll-half-page-backward "view")
-(global-set-key (kbd "C-v") 'View-scroll-half-page-forward)
-(global-set-key (kbd "M-v") 'View-scroll-half-page-backward)
-
-(global-set-key (kbd "C-M-v")
-  'my-View-scroll-half-page-forward-other-window)
-(global-set-key (kbd "C-M-S-v")
-  'my-View-scroll-half-page-backward-other-window)
-
-(defun my-View-scroll-half-page-forward-other-window ()
-  (interactive)
-  (with-selected-window (next-window)
-    (call-interactively 'View-scroll-half-page-forward)))
-
-(defun my-View-scroll-half-page-backward-other-window ()
-  (interactive)
-  (with-selected-window (next-window)
-    (call-interactively 'View-scroll-half-page-backward)))
-
-(setq scroll-preserve-screen-position 'always)
-
-(advice-add #'View-scroll-half-page-forward :around
-            #'my-indicate-scroll-forward)
-
-(advice-add #'View-scroll-half-page-backward :around
-            #'my-indicate-scroll-backward)
-
-(defun my-indicate-scroll-get-line (pos)
-  (save-excursion
-    (goto-char pos)
-    (string-to-number (format-mode-line "%l"))))
-
-(defun my-indicate-scroll (linep f args)
-  (let ((linen (my-indicate-scroll-get-line linep))
-        (pulse-delay 0.1))
-    (set-transient-map
-     `(keymap (?v . ,real-this-command)))
-    (save-excursion
-      (goto-line linen)
-      (pulse-momentary-highlight-one-line (point) 'highlight))
-    (sit-for 0.1)
-    (apply f args)))
-
-(defun my-indicate-scroll-forward (f &rest args)
-  (my-indicate-scroll (1- (window-end)) f args))
-
-(defun my-indicate-scroll-backward (f &rest args)
-  (my-indicate-scroll (window-start) f args))
-#+end_src
-
 * Window Management
 
 ** Hydra
@@ -1631,16 +1536,6 @@ Since browsing is not text editing, and lots of single-key bindings are already 
   ("n" shr-next-link "Next link")
   ("p" shr-previous-link "Previous link")
   ("q" exit "Exit" :color blue))
-#+end_src
-
-* PDF Tools
-
-#+begin_src emacs-lisp
-(use-package pdf-tools
-  :defer 2
-  :config
-  ;;(pdf-tools-install)
-)
 #+end_src
 
 * Hydras

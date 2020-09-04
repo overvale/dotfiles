@@ -1398,56 +1398,6 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
 (bind-key "s-j" 'hydra-modal/body)
 #+end_src
 
-* Objed
-
-This package takes vim's concept of an 'object' (character, word, line, paragraph, etc.) and allows you to navigate and edit those objects. It also takes [[http://kakoune.org][Kakoune's]] concept of showing you those objects before you act on them (objed seems to make use of Emacs's Secondary Selection for this).  It also takes over movement commands (like =C-n=) to activate the selection of these objects. In some ways this is trying to solve the same problem [[https://github.com/emacsorphanage/god-mode][god-mode]] is targeting, or a more Emacs-like =evil-mode=.
-
-Since this package radically redefines your interaction with Emacs, I've not enabled =objecd-mode= by default.
-
-#+begin_src emacs-lisp
-(use-package objed
-  :ensure
-  :commands objed-mode
-  :bind
-  ("s-O" . objed-mode)
-)
-#+end_src
-
-The object navigation/editing bindings are well thought-out, but I had to copy them here to understand them.
-
-| Key   | Action                                                         |
-|-------+----------------------------------------------------------------|
-| M-SPC | Activate with default object                                   |
-| M-#   | Prompt for object to activate with                             |
-| h/l   | forward/back character                                         |
-| H/L   | shift char back/forward                                        |
-| s/r   | next/previous word                                             |
-| S/R   | shift word back/forward                                        |
-| n/p   | next/previous line                                             |
-| N/P   | shift line forward/back                                        |
-| v     | line object, move to start                                     |
-| a     | line object, move to start                                     |
-| e     | line object, move to end                                       |
-| j     | move to other side of object                                   |
-| t     | toggle between inner and whole object                          |
-| []    | previous/next of same object                                   |
-| i     | delete object and insert                                       |
-| k     | kill object, select next                                       |
-| K     | kill object, select previous                                   |
-| d     | delete object, select next                                     |
-| D     | delete object, select previous                                 |
-| w     | copy object                                                    |
-| y     | yank, cycle                                                    |
-| ;     | comment object                                                 |
-| !     | run object as shell command                                    |
-| &     | pipe region through shell command                              |
-| ~     | undo in object region                                          |
-| "     | add "surrounding"                                              |
-| m     | add/remove current object to "marked objects", select next     |
-| M     | add/remove current object to "marked objects", select previous |
-| /     | undo last edit                                                 |
-| g     | exit                                                           |
-
 * Window Management
 
 ** Hydra

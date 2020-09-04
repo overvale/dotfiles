@@ -1327,7 +1327,7 @@ All but one of these functions is built-in, but in their default form they're no
   ("q" nil "cancel"))
 #+end_src
 
-* Modal Editing
+* Modal Editing Hydra
 
 I don't really want to use =evil-mode=. It does too much for my taste. I much prefer this simpler solution.
 
@@ -1689,7 +1689,6 @@ From [[https://oremacs.com/2015/01/26/occur-dwim/][oremacs]]. This will offer as
 ;; Make Emacs indent new lines automatically.
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
-
 (bind-key "s-g" 'keyboard-quit)
 
 (bind-key "C-s" 'ctrlf-forward-fuzzy)
@@ -1701,8 +1700,7 @@ From [[https://oremacs.com/2015/01/26/occur-dwim/][oremacs]]. This will offer as
 (bind-key "s-M-z" 'undo-tree-visualize)
 (bind-key "M-s-s" 'save-some-buffers) ;save others
 
-;; When region is active, make `capitalize-word' and friends act on
-;; it.
+;; When region is active, make `capitalize-word' and friends act on it.
 (bind-key "M-c" #'capitalize-dwim)
 (bind-key "M-l" #'downcase-dwim)
 (bind-key "M-u" #'upcase-dwim)
@@ -1751,7 +1749,6 @@ This cycles the spacing around point between a single space, no spaces, or the o
 	   )
 #+end_src
 
-# end of emacs-init.org
 * Wrap-Up
 
 #+begin_src emacs-lisp
@@ -1759,3 +1756,5 @@ This cycles the spacing around point between a single space, no spaces, or the o
 (setq gc-cons-threshold (* 2 1000 1000))
 ;; https://blog.d46.us/advanced-emacs-startup/
 #+end_src
+
+# end of emacs-init.org

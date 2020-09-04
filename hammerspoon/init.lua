@@ -163,6 +163,7 @@ function deleteWordBack()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
 end
 hs.hotkey.bind({'ctrl'}, 'w', deleteWordBack)
+hs.hotkey.bind({'ctrl'}, ',', deleteWordBack)
 
 function deleteWordForward()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
@@ -170,6 +171,7 @@ function deleteWordForward()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
 end
 hs.hotkey.bind({'alt'}, 'd', deleteWordForward)
+hs.hotkey.bind({'ctrl'}, '.', deleteWordForward)
 
 function deleteLineBack()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.cmd, true):post()
@@ -220,5 +222,5 @@ local function previousWindow()
     switcher:previous()
 end
 
-hs.hotkey.bind('alt', 'tab', nextWindow, nil, nextWindow)
-hs.hotkey.bind('alt-shift', 'tab', previousWindow, nil, previousWindow)
+--hs.hotkey.bind('alt', 'tab', nextWindow, nil, nextWindow)
+--hs.hotkey.bind('alt-shift', 'tab', previousWindow, nil, previousWindow)

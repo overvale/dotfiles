@@ -190,7 +190,6 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 
 ;; cursor settings
 (set-default 'cursor-type 'box)
-(set-face-attribute 'cursor nil :background "black")
 (blink-cursor-mode -1)
 #+end_src
 
@@ -1336,16 +1335,12 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
 ;; hydra-modal functions
 (defun hydra-modal/pre ()
   "When activating the hydra-modal, change the cursor to a box"
-  ;;(set-default 'cursor-type 'box)
   (set-face-attribute 'cursor nil :background "red")
-  ;;(blink-cursor-mode -1)
 )
 
 (defun hydra-modal/post ()
   "When exiting the hydra-modal, change the cursor to a bar"
-  ;;(set-default 'cursor-type 'box)
   (set-face-attribute 'cursor nil :background "black")
-  ;;(blink-cursor-mode -1)
 )
 
 (defhydra hydra-modal (:hint none :pre hydra-modal/pre :post hydra-modal/post :color pink)

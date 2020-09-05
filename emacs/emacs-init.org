@@ -696,13 +696,15 @@ To use flyspell for programming there is flyspell-prog-mode, that only enables s
 
 ** Fonts
 
+As described by /prot/ [[https://protesilaos.com/codelog/2020-09-05-emacs-note-mixed-font-heights/][here]].
+
 #+begin_src emacs-lisp
 (set-face-attribute 'default nil
-		    :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
+		    :family "Iosevka Fixed SS08" :height 145)
 (set-face-attribute 'fixed-pitch nil
-		    :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
+		    :family "Iosevka Fixed SS08" :height 0.95)
 (set-face-attribute 'variable-pitch nil
-		    :family "IBM Plex Serif" :height 155 :weight 'normal)
+		    :family "IBM Plex Serif" :height 1.1)
 (set-face-attribute 'bold nil :weight 'semibold)
 #+end_src
 

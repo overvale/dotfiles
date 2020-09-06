@@ -704,7 +704,7 @@ As described by /prot/ [[https://protesilaos.com/codelog/2020-09-05-emacs-note-m
 (set-face-attribute 'fixed-pitch nil
 		    :family "Iosevka Fixed SS08" :height 0.95)
 (set-face-attribute 'variable-pitch nil
-		    :family "IBM Plex Serif" :height 1.1)
+		    :family "IBM Plex Serif" :height 1.05)
 (set-face-attribute 'bold nil :weight 'semibold)
 #+end_src
 

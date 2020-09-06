@@ -1329,6 +1329,61 @@ All but one of these functions is built-in, but in their default form they're no
   ("q" nil "cancel"))
 #+end_src
 
+* View-Mode
+
+=view-mode= is a built-in mode for viewing, and not editing files, thus if you
+make entering and exiting it easy it is a natural fit for modal editing.
+
+| Key        | Action                        |
+|------------+-------------------------------|
+| e          | exit                          |
+| q          | quit buffer (if edited, bury) |
+| s          | I-search                      |
+| r          | reverse I-search              |
+| .          | set mark                      |
+| x          | exchange point/mark           |
+| m          | mark register                 |
+| '          | go to register                |
+| h, ?       | help                          |
+|------------+-------------------------------|
+| <          | beginning of buffer           |
+| >          | end of buffer                 |
+| SPC        | page-down                     |
+| DEL, S-SPC | page-up                       |
+| d          | half-page-down                |
+| u          | half-page up                  |
+| RET        | scroll-down-line              |
+| y          | scroll-up-line                |
+| g          | go to line                    |
+
+#+begin_src emacs-lisp
+(use-package view
+  :ensure nil
+  :chords (("jk" . view-mode))
+  :init
+  (setq view-read-only t)
+  (setq view-inhibit-help-message t)
+  :bind (:map view-mode-map
+	      ("q" . nil)
+	      ("n" . next-line)
+	      ("p" . previous-line)
+	      ;;("f" . forward-char)
+	      ;;("b" . backward-char)
+	      ("f" . forward-word)
+	      ("b" . backward-word)
+	      ("{" . backward-paragraph)
+	      ("}" . forward-paragraph)
+	      ("(" . backward-sentence)
+	      (")" . forward-sentence)
+	      ("s" . ctrlf-forward-fuzzy)
+	      ("r" . ctrlf-backward-fuzzy)
+	      )
+  )
+
+;; Show "View" in mode-line when in 'view-mode'
+(setq minions-direct '(view-mode))
+#+end_src
+
 * Modal Editing Hydra
 
 I don't really want to use =evil-mode=. It does too much for my taste. I much prefer this simpler solution.

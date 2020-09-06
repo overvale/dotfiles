@@ -1331,8 +1331,9 @@ All but one of these functions is built-in, but in their default form they're no
 
 * View-Mode
 
-=view-mode= is a built-in mode for viewing, and not editing files, thus if you
-make entering and exiting it easy it is a natural fit for modal editing.
+=view-mode= is a built-in mode for viewing, and not editing files, thus if you make entering and exiting it easy it is a natural fit for modal editing.
+
+One thing to note is that when in =view-mode= the buffer is marked as read-only, meaning this is not a good replacement for true modal editing where you can change the document without leaving the mode.
 
 | Key        | Action                        |
 |------------+-------------------------------|
@@ -1359,25 +1360,26 @@ make entering and exiting it easy it is a natural fit for modal editing.
 #+begin_src emacs-lisp
 (use-package view
   :ensure nil
-  :chords (("jk" . view-mode))
   :init
   (setq view-read-only t)
   (setq view-inhibit-help-message t)
-  :bind (:map view-mode-map
-	      ("q" . nil)
-	      ("n" . next-line)
-	      ("p" . previous-line)
-	      ;;("f" . forward-char)
-	      ;;("b" . backward-char)
-	      ("f" . forward-word)
-	      ("b" . backward-word)
-	      ("{" . backward-paragraph)
-	      ("}" . forward-paragraph)
-	      ("(" . backward-sentence)
-	      (")" . forward-sentence)
-	      ("s" . ctrlf-forward-fuzzy)
-	      ("r" . ctrlf-backward-fuzzy)
-	      )
+  :bind
+  ("<f12>" . view-mode)
+  (:map view-mode-map
+	("q" . nil)
+	("n" . next-line)
+	("p" . previous-line)
+	;;("f" . forward-char)
+	;;("b" . backward-char)
+	("f" . forward-word)
+	("b" . backward-word)
+	("{" . backward-paragraph)
+	("}" . forward-paragraph)
+	("(" . backward-sentence)
+	(")" . forward-sentence)
+	("s" . ctrlf-forward-fuzzy)
+	("r" . ctrlf-backward-fuzzy)
+	)
   )
 
 ;; Show "View" in mode-line when in 'view-mode'

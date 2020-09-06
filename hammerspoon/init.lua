@@ -49,6 +49,24 @@ vim:shouldDimScreenInNormalMode(nil)
 -- You could create a modal hotkey that enters an "emacs god mode"
 -- wherein all pressed keys have a ctrl modifier added to them.
 
+-- Misc Bindings
+-- -----------------------------------------------
+
+-- remap ; to f12
+-- remap fn+; to ;
+-- It is important that fn+; comes first
+
+function remapF12()
+   hs.eventtap.event.newKeyEvent({}, ';', true):post()
+end
+hs.hotkey.bind({'fn'}, ';', remapF12)
+
+-- this must come second:
+function sendF12()
+   hs.eventtap.event.newKeyEvent({}, 'f12', true):post()
+end
+hs.hotkey.bind({}, ';', sendF12)
+
 -- Window Control
 -- -----------------------------------------------
 

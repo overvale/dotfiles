@@ -280,11 +280,14 @@ To make spell-checking a document a little easier I've made a hydra.
   ;;(flyspell-mode t)
   )
 
+(use-package hydra
+  :config
 (defhydra hydra-flyspell (:pre hydra-flyspell/pre :color red)
   "Spelling"
   (";" flyspell-goto-next-error "Next")
   (":" flyspell-correct-at-point "Correct")
   ("q" nil "cancel" :color blue))
+)
 
 (bind-key "s-;" 'hydra-flyspell/body)
 #+end_src
@@ -715,7 +718,7 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
   (modus-vivendi-theme-slanted-constructs t)
   (modus-vivendi-theme-bold-constructs t)
   (modus-vivendi-theme-3d-modeline t)
-  (modus-vivendi-theme-org-blocks 'rainbow)
+  (modus-vivendi-theme-org-blocks 'greyscale)
   (modus-vivendi-theme-completions 'moderate)
 )
 
@@ -1660,11 +1663,11 @@ T - tag prefix
   ("q" nil)
   ("." nil :color blue))
 
-(use-package dired
-  :bind (:map dired-mode-map
-	      ("." . hydra-dired/body)
-	      ("s-\\ h" . hydra-dired/body)
-	      ))
+;;(use-package emacs
+;;  :bind (:map dired-mode-map
+;;	      ("." . hydra-dired/body)
+;;	      ("s-\\ h" . hydra-dired/body)
+;;f	      ))
 #+end_src
 
 ** Buffer Menu

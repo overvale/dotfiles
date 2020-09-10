@@ -359,6 +359,11 @@ and the point, not include the isearch word."
   (org-insert-time-stamp (current-time))
   )
 
+(defun oht/switch-to-new-buffer ()
+  (interactive)
+  (switch-to-buffer "Untitled")
+  )
+
 (defvar selectrum-outline-history nil "History of chosen headings for `selectrum-outline'.")
 (defun selectrum-outline ()
   "Jump to a heading.  Regexps are pre-defined.  Obeys narrowing."

@@ -1,0 +1,7 @@
+# !/bin/bash
+
+# Converts org-mode text to HTML on the clipboard, suitable for pasting into gmail
+
+export LC_CTYPE=UTF-8
+hex=`/usr/local/bin/pandoc -f org -t html -s --highlight-style pygments | hexdump -ve '1/1 "%.2x"'`
+osascript -e "set the clipboard to «data HTML${hex}»"

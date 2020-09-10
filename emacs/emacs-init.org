@@ -125,12 +125,6 @@ Since Emacs always starts up with a scratch buffer, set this as the custom conte
        ";; WELCOME TO EMACS\n"))
 #+end_src
 
-However, I don't want the scratch buffer to be the first thing I see on startup, instead I want to show a custom dashboard I've made.
-
-#+begin_src emacs-lisp
-(find-file "~/Documents/org-files/dashboard.org")
-#+end_src
-
 ** Encoding
 
 Set encoding to be UTF-8 everywhere. [[https://www.masteringemacs.org/article/working-coding-systems-unicode-emacs][Mastering Emacs has more info]].
@@ -411,7 +405,8 @@ Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 (bind-keys
  ("s-," . oht/find-settings)
- ("s-n" . make-frame-command)
+ ("s-n" . oht/switch-to-new-buffer)
+ ("s-N" . make-frame-command)
  ("s-t" . oht/new-tab)
  ("s-m" . iconify-frame)
  ("s-s" . save-buffer)
@@ -1809,6 +1804,14 @@ This cycles the spacing around point between a single space, no spaces, or the o
 #+end_src
 
 * Wrap-Up
+
+I don't want the scratch buffer to be the first thing I see on startup, instead I want to show a custom dashboard I've made.
+
+#+begin_src emacs-lisp
+(find-file "~/Documents/org-files/dashboard.org")
+#+end_src
+
+2nd part of the garbage collection thing:
 
 #+begin_src emacs-lisp
 ;; Make gc pauses faster by decreasing the threshold.

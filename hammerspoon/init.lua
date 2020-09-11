@@ -40,7 +40,7 @@ Install:andUse("RoundedCorners", { start = true })
 -- Vim Mode
 local VimMode = hs.loadSpoon('VimMode')
 local vim = VimMode:new()
-vim:bindHotKeys({ enter = {{'ctrl'}, '['} })
+vim:bindHotKeys({ enter = {{''}, 'f12'} })
 vim:disableForApp('Terminal')
 vim:disableForApp('Emacs')
 vim:shouldDimScreenInNormalMode(nil)

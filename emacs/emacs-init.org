@@ -708,7 +708,7 @@ As described by /prot/ [[https://protesilaos.com/codelog/2020-09-05-emacs-note-m
 ;; This is calculated from 'default' when NOT in 'variable-pitch-mode'
 ;; and calculated from 'variable-pitch' when you ARE.
 (set-face-attribute 'fixed-pitch nil
-		    :family "Iosevka Fixed SS08" :height 1.0)
+		    :family "Iosevka Fixed SS08" :height 0.95)
 
 (set-face-attribute 'bold nil :weight 'semibold)
 #+end_src
@@ -1371,7 +1371,6 @@ One thing to note is that when in =view-mode= the buffer is marked as read-only,
   (setq view-read-only t)
   (setq view-inhibit-help-message t)
   :bind
-  ("<f12>" . view-mode)
   (:map view-mode-map
 	("q" . nil)
 	("n" . next-line)
@@ -1458,10 +1457,10 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
   ("C-r" replace-rectangle "replace rectangle")
   ("x" exchange-point-and-mark "swap point/mark")
   ;; exit
-  ("s-j" nil "cancel" :color blue)
+  ("<f12>" nil "cancel" :color blue)
   ("i" nil "cancel" :color blue))
 
-(bind-key "s-j" 'hydra-modal/body)
+(bind-key "<f12>" 'hydra-modal/body)
 #+end_src
 
 * Window Management

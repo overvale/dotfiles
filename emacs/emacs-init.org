@@ -200,6 +200,9 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 (setq create-lockfiles nil)           ; No need for ~ files when editing
 (setq-default fill-column 80)         ; Set column used for fill-paragraph
 
+;; place backup files in a single place
+(setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
+
 ; Use Spotlight to search with M-x locate
 (setq locate-command "mdfind")
 
@@ -699,10 +702,14 @@ As described by /prot/ [[https://protesilaos.com/codelog/2020-09-05-emacs-note-m
 #+begin_src emacs-lisp
 (set-face-attribute 'default nil
 		    :family "Iosevka Fixed SS08" :height 145)
-(set-face-attribute 'fixed-pitch nil
-		    :family "Iosevka Fixed SS08" :height 0.95)
 (set-face-attribute 'variable-pitch nil
 		    :family "IBM Plex Serif" :height 1.05)
+
+;; This is calculated from 'default' when NOT in 'variable-pitch-mode'
+;; and calculated from 'variable-pitch' when you ARE.
+(set-face-attribute 'fixed-pitch nil
+		    :family "Iosevka Fixed SS08" :height 1.0)
+
 (set-face-attribute 'bold nil :weight 'semibold)
 #+end_src
 

@@ -733,6 +733,8 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
   (modus-operandi-theme-completions 'opinionated)
   (modus-operandi-theme-scale-headings nil)
   (modus-operandi-theme-diffs 'desaturated)
+  :config
+  (load-theme 'modus-operandi t)
 )
 
 (defadvice load-theme (before clear-previous-themes activate)

@@ -1640,7 +1640,10 @@ You can filter by =age=, =tag=, and =regex=.
 	("https://nullprogram.com/tags/emacs/feed/" emacs)
 	("https://sachachua.com/blog/category/emacs-news/feed" emacs)
 	("https://protesilaos.com/codelog.xml" emacs)
-	("https://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml" emacs)))
+	("https://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml" emacs)
+	("https://emacsredux.com/atom.xml" emacs)
+	("https://www.reddit.com/r/emacs/top/.rss" emacs)
+	))
   (defadvice elfeed-search-update (before nullprogram activate)
     (let ((feed (elfeed-db-get-feed "https://www.economist.com/latest/rss.xml")))
       (setf (elfeed-feed-title feed) "Economist: Latest"))
@@ -1648,6 +1651,8 @@ You can filter by =age=, =tag=, and =regex=.
       (setf (elfeed-feed-title feed) "emacs-news"))
     (let ((feed (elfeed-db-get-feed "https://craigmod.com/index.xml")))
       (setf (elfeed-feed-title feed) "Craig Mod"))
+    (let ((feed (elfeed-db-get-feed "https://www.reddit.com/r/emacs/top/.rss")))
+      (setf (elfeed-feed-title feed) "r/emacs"))
     )
   ;; Add the ability to "star" entries, this just adds the "star" tag
   (defalias 'elfeed-toggle-star

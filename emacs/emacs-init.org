@@ -213,6 +213,9 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 ;; Echo unfinished commands after this delay
 ;; setting to 0 means do not echo commands
 (setq echo-keystrokes 0.1)
+
+;; When exiting emacs, kill all running processes
+(setq confirm-kill-processes nil)
 #+end_src
 
 *** Mouse
@@ -636,6 +639,17 @@ The full list of keywords that control load-time of packages is:
 (use-package hide-mode-line
   :defer 2
 )
+
+;; Use iMenu across all open buffers
+(use-package imenu-anywhere
+  :ensure
+  :commands (imenu-anywhere)
+)
+
+;; replaces zap-to-char with an avy-like interface
+(use-package zzz-to-char
+  :ensure
+  :bind ("M-z" . zzz-up-to-char))
 #+end_src
 
 ** Modes

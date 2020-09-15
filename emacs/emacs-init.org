@@ -366,26 +366,6 @@ By default Emacs window sizes always line-up with the character-grid, meaning th
 
 When no region is active (nothing is selected), and you invoke the =kill-region= (cut) or =kill-ring-save= (copy) commands, Emacs acts on the range of characters between the mark and the point. This is a really good way to accidentally kill half your document. I have done this more times than I'd like to admit.
 
-The below code changes the =kill-region= and =kill-ring-save= commands so that, without a selection, they act on the current line instead of the range between mark and point. It also, helpfully, prints a message saying what it did.
-
-#+begin_src emacs-lisp
-(defadvice kill-ring-save (before slick-copy activate compile)
-  "When called interactively with no active region, copy a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (message "Copied line")
-     (list (line-beginning-position)
-	   (line-beginning-position 2)))))
-
-(defadvice kill-region (before slick-cut activate compile)
-  "When called interactively with no active region, kill a single line instead."
-  (interactive
-    (if mark-active (list (region-beginning) (region-end))
-      (message "Killed line")
-      (list (line-beginning-position)
-	    (line-beginning-position 2)))))
-#+end_src
-
 ** Visual Line Mode
 
 When in visual line mode the out-of-the-box movement commands behave inconsistently with the rest of macOS, so the below code brings them back in line.
@@ -650,6 +630,11 @@ The full list of keywords that control load-time of packages is:
 (use-package zzz-to-char
   :ensure
   :bind ("M-z" . zzz-up-to-char))
+
+;; Whole Line or Region
+(use-package whole-line-or-region
+  :ensure
+  )
 #+end_src
 
 ** Modes

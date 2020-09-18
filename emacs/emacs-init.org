@@ -696,20 +696,35 @@ To use flyspell for programming there is flyspell-prog-mode, that only enables s
 
 ** Fonts
 
-As described by /prot/ [[https://protesilaos.com/codelog/2020-09-05-emacs-note-mixed-font-heights/][here]].
+Scaling fonts in Emacs can be... difficult. Sure, there are built-in functions like =text-scale-adjust= but when using a theme like Modus that takes full advantage of Emacs's mixed-pitch capabilities it can be difficult to get /just/ right.
+
+Then I realized that I only care about 2 sizes, normal and large. So I've created some functions that set things up the way I like them and bindings for those functions. Done.
 
 #+begin_src emacs-lisp
-(set-face-attribute 'default nil
-		    :family "Iosevka Fixed SS08" :height 145)
-(set-face-attribute 'variable-pitch nil
-		    :family "IBM Plex Serif" :height 1.05)
+(defun oht/set-font-normal ()
+  (interactive)
+  (set-face-attribute 'default nil
+		      :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "IBM Plex Serif" :height 155 :weight 'normal)
+  (set-face-attribute 'fixed-pitch nil
+		      :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
+  (set-face-attribute 'bold nil :weight 'semibold)
+  )
 
-;; This is calculated from 'default' when NOT in 'variable-pitch-mode'
-;; and calculated from 'variable-pitch' when you ARE.
-(set-face-attribute 'fixed-pitch nil
-		    :family "Iosevka Fixed SS08" :height 0.95)
+(defun oht/set-font-large ()
+  (interactive)
+  (set-face-attribute 'default nil
+		      :family "IBM Plex Mono" :height 155 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "IBM Plex Serif" :height 185 :weight 'normal)
+  (set-face-attribute 'fixed-pitch nil
+		      :family "IBM Plex Mono" :height 155 :weight 'normal)
+  (set-face-attribute 'bold nil :weight 'semibold)
+  )
 
-(set-face-attribute 'bold nil :weight 'semibold)
+;; This sets the default fonts
+(oht/set-font-normal)
 #+end_src
 
 ** Theme
@@ -1894,6 +1909,8 @@ This cycles the spacing around point between a single space, no spaces, or the o
 	   ("v" . variable-pitch-mode)
 	   ("s" . org-store-link)
 	   ("o" . selectrum-outline)
+	   ("-" . oht/set-font-normal)
+	   ("=" . oht/set-font-large)
 	   )
 #+end_src
 

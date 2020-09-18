@@ -634,6 +634,8 @@ The full list of keywords that control load-time of packages is:
 ;; Whole Line or Region
 (use-package whole-line-or-region
   :ensure
+  :config
+  (whole-line-or-region-global-mode 1)
   )
 #+end_src
 
@@ -1626,7 +1628,6 @@ You can filter by =age=, =tag=, and =regex=.
 	("http://100r.co/links/rss.xml")
 	("https://www.economist.com/latest/rss.xml" news)
 	("https://www.economist.com/the-economist-explains/rss.xml" news)
-	;;("https://hnrss.org/frontpage?points=50" news)
 	("https://feeds.feedburner.com/marginalrevolution/feed" news)
 	("https://standardebooks.org/rss/new-releases")
 	("https://idlewords.com/index.xml")
@@ -1641,7 +1642,6 @@ You can filter by =age=, =tag=, and =regex=.
 	("https://protesilaos.com/codelog.xml" emacs)
 	("https://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml" emacs)
 	("https://emacsredux.com/atom.xml" emacs)
-	;;("https://www.reddit.com/r/emacs/top/.rss" emacs)
 	))
   (defadvice elfeed-search-update (before nullprogram activate)
     (let ((feed (elfeed-db-get-feed "https://www.economist.com/latest/rss.xml")))

@@ -287,24 +287,29 @@ This function works by setting the new-frame behaviour to use tabs, creating a n
   )
 
 (defun oht/show-tab-bar ()
+  "Show the tab bar, part of the Mac Port"
   (interactive)
   (mac-set-frame-tab-group-property nil :tab-bar-visible-p t)
   )
 (defun oht/hide-tab-bar ()
+  "Hide the tab bar, part of the Mac Port"
   (interactive)
   (mac-set-frame-tab-group-property nil :tab-bar-visible-p nil)
   )
 (defun oht/show-tab-bar-overview ()
+  "Show the tab bar overview, part of the Mac Port"
   (interactive)
   (mac-set-frame-tab-group-property nil :overview-visible-p t)
   )
 
 (defun oht/org-insert-date-today ()
+  "Insert today's date using standard org formatting."
   (interactive)
   (org-insert-time-stamp (current-time))
   )
 
 (defun oht/switch-to-new-buffer ()
+  "Create a new buffer named 'Untitled'."
   (interactive)
   (switch-to-buffer "Untitled")
   )

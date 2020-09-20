@@ -166,6 +166,7 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 
 #+begin_src emacs-lisp
 (load "~/dot/emacs/functions.el")
+(load "~/dot/emacs/selectrum.el")
 #+end_src
 
 ** Preferences/Settings

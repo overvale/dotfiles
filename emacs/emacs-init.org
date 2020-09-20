@@ -643,12 +643,15 @@ The full list of keywords that control load-time of packages is:
 
 #+begin_src emacs-lisp
 (use-package fountain-mode
-  :commands fountain-mode)
+  :commands fountain-mode
+  :custom
+  (fountain-add-continued-dialog nil)
+  (fountain-highlight-elements (quote (section-heading)))
+)
 (use-package lua-mode
   :commands lua-mode)
 (use-package markdown-mode
-  :commands markdown-mode
-  :hook oht/writing-mode)
+  :commands markdown-mode)
 #+end_src
 
 ** Mode Hooks
@@ -670,22 +673,10 @@ To use flyspell for programming there is flyspell-prog-mode, that only enables s
 *** General
 
 #+begin_src emacs-lisp
-(defun oht/org-mode-hook ()
-  (oht/writing-mode)
-  (undo-tree-mode)
-  )
-(defun oht/emacs-lisp-mode ()
-  (undo-tree-mode)
-  (outline-minor-mode t)
-  (rainbow-delimiters-mode t)
-  )
-(add-hook 'emacs-lisp-mode 'oht/emacs-lisp-mode)
-
-(defun oht/fountain-mode-hook ()
-  (fountain-add-continued-dialog nil)
-  (fountain-highlight-elements (quote (section-heading)))
-  )
-(add-hook 'fountain-mode 'oht/fountain-mode-hook)
+(add-hook 'emacs-lisp-mode
+	  (lambda ()
+	    (outline-minor-mode)
+	    ))
 
 (add-hook 'dired-mode-hook
           (lambda ()
@@ -802,7 +793,6 @@ Though I rarely use them, I like these themes too.
   :init
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
-  :hook (org-mode . oht/org-mode-hook)
   :bind (:map org-mode-map
 	      ("s-\\ o" . selectrum-outline)
 	      ("s-\\ ." . oht/org-insert-date-today)

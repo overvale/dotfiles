@@ -909,7 +909,7 @@ This defines custom agendas. There's a very good tutorial on how to set these up
 		 ((org-agenda-overriding-header "Things You Might Want To Do: ")
 		  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
 		  ))
-          (todo "SNOOZED|DELG|LATER"
+          (todo "SNOOZE|DELG|LATER"
                 ((org-agenda-overriding-header "It can wait: ")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
 		))))

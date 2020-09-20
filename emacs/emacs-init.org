@@ -1848,7 +1848,6 @@ From [[https://oremacs.com/2015/01/26/occur-dwim/][oremacs]]. This will offer as
 (bind-key "M-<up>" 'oht/move-line-up)
 (bind-key "M-<down>" 'oht/move-line-down)
 (bind-key "M-o" 'other-window)
-(bind-key "M-z" 'zap-up-to-char) ;the default is 'zap-to-char
 (bind-key "s-M-z" 'undo-tree-visualize)
 (bind-key "M-s-s" 'save-some-buffers) ;save others
 

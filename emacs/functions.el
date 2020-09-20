@@ -12,22 +12,10 @@
   ;;(set-window-buffer nil (current-buffer)) ; Use them now.
   )
 
-(defun oht/fix-variable-org-indent ()
-  "Fix for org-indent not hiding markup in org-indent-mode.
-from: https://maxjmartin.com/Emacs%20Dotfile.html"
-  (interactive)
-  (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
-  )
-
 (defun oht/find-settings ()
   "Quickly open emacs-init.org"
   (interactive)
   (find-file "~/dot/emacs/emacs-init.org"))
-
-(defun oht/counsel-find-org ()
-  "Quickly open ~/Documents/org-files/"
-  (interactive)
-  (counsel-find-file "~/Documents/org-files/"))
 
 (defun oht/kill-this-buffer ()
   "Quickly kill current buffer"
@@ -178,15 +166,6 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
   (join-line -1))
 
-(defun oht/org-hide-emphasis-markers ()
-  "Toggle whether or not the emphasis markers ~, =, *, _ are displayed"
-  (interactive)
-  (if (bound-and-true-p org-hide-emphasis-markers)
-      (setq-local org-hide-emphasis-markers nil)
-    (setq-local org-hide-emphasis-markers t))
-  (font-lock-fontify-buffer)
-  )
-
 (defun oht/shell-command-on-region-replace (start end command)
   "Run shell-command-on-region interactivly replacing the region in place"
   (interactive (let (string)
@@ -319,40 +298,6 @@ This function works by setting the new-frame behaviour to use tabs, creating a n
   (interactive)
   (mac-set-frame-tab-group-property nil :overview-visible-p t)
   )
-
-(defun oht/next-frame ()
-  (interactive)
-  (select-frame-set-input-focus (next-frame)))
-(defun oht/previous-frame ()
-  (interactive)
-  (select-frame-set-input-focus (previous-frame)))
-
-(defun zap-to-isearch (rbeg rend)
-  "Kill the region between the mark and the closest portion of
-the isearch match string. The behaviour is meant to be analogous
-to zap-to-char; let's call it zap-to-isearch. The deleted region
-does not include the isearch word. This is meant to be bound only
-in isearch mode.  The point of this function is that oftentimes
-you want to delete some portion of text, one end of which happens
-to be an active isearch word. The observation to make is that if
-you use isearch a lot to move the cursor around (as you should,
-it is much more efficient than using the arrows), it happens a
-lot that you could just delete the active region between the mark
-and the point, not include the isearch word."
-  (interactive "r")
-  (when (not mark-active)
-    (error "Mark is not active"))
-  (let\* ((isearch-bounds (list isearch-other-end (point)))
-         (ismin (apply 'min isearch-bounds))
-         (ismax (apply 'max isearch-bounds))
-         )
-    (if (< (mark) ismin)
-        (kill-region (mark) ismin)
-      (if (> (mark) ismax)
-          (kill-region ismax (mark))
-        (error "Internal error in isearch kill function.")))
-    (isearch-exit)
-    ))
 
 (defun oht/org-insert-date-today ()
   (interactive)

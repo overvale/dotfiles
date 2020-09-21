@@ -110,20 +110,53 @@ When you have a large config file, and a lot of packages, Emacs can be very slow
 By default Emacs starts up with a "splash screen" containing some useful links, but I don't need that any more, so this turns it off.
 
 #+begin_src emacs-lisp
-(setq inhibit-splash-screen t
-      inhibit-startup-message t
-      inhibit-startup-echo-area-message t)
+;; Reduce *Message* noise at startup. An empty scratch buffer (or the dashboard)
+;; is more than enough.
+(setq inhibit-startup-message t
+      inhibit-startup-echo-area-message user-login-name
+      inhibit-default-init t
+      ;; Shave seconds off startup time by starting the scratch buffer in
+      ;; `fundamental-mode', rather than, say, `org-mode' or `text-mode', which
+      ;; pull in a ton of packages.
+      initial-major-mode 'fundamental-mode
+      initial-scratch-message nil)
 #+end_src
 
-Since Emacs always starts up with a scratch buffer, set this as the custom content of that buffer:
+*** Performance Enhancers
+
+These are all stolen (with comments) from [[https://github.com/hlissner/doom-emacs/blob/develop/core/core.el][Doom Emacs]].
 
 #+begin_src emacs-lisp
-(setq initial-scratch-message
-      (concat
-       ";; This buffer is for text that is not saved, and for Lisp evaluation.\n"
-       ";; To create a file, visit it with C-x C-f and enter text in its buffer.\n"
-       ";; WELCOME TO EMACS\n"))
+
+;; Disable bidirectional text rendering for a modest performance boost. I've set
+;; this to `nil' in the past, but the `bidi-display-reordering's docs say that
+;; is an undefined state and suggest this to be just as good:
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+
+;; Disabling the BPA makes redisplay faster, but might produce incorrect display
+;; reordering of bidirectional text with embedded parentheses and other bracket
+;; characters whose 'paired-bracket' Unicode property is non-nil.
+(setq bidi-inhibit-bpa t)  ; Emacs 27 only
+
+
+;; More performant rapid scrolling over unfontified regions. May cause brief
+;; spells of inaccurate syntax highlighting right after scrolling, which should
+;; quickly self-correct.
+(setq fast-but-imprecise-scrolling t)
+
+
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we halve startup times, particularly when we use
+;; fonts that are larger than the system default (which would resize the frame).
+(setq frame-inhibit-implied-resize t)
+
+;; Remove command line options that aren't relevant to our current OS; means
+;; slightly less to process at startup.
+(setq command-line-x-option-alist nil)
+
 #+end_src
+
 
 ** Encoding
 
@@ -372,8 +405,24 @@ When no region is active (nothing is selected), and you invoke the =kill-region=
 When in visual line mode the out-of-the-box movement commands behave inconsistently with the rest of macOS, so the below code brings them back in line.
 
 #+begin_src emacs-lisp
+
+;; Continue wrapped words at whitespace, rather than in the middle of a word.
+(setq-default word-wrap t)
+;; ...but don't do any wrapping by default. It's expensive. Enable
+;; `visual-line-mode' if you want soft line-wrapping. `auto-fill-mode' for hard
+;; line-wrapping.
+(setq-default truncate-lines t)
+;; If enabled (and `truncate-lines' was disabled), soft wrapping no longer
+;; occurs when that window is less than `truncate-partial-width-windows'
+;; characters wide. We don't need this, and it's extra work for Emacs otherwise,
+;; so off it goes.
+(setq truncate-partial-width-windows nil)
+
+
 ;; Turn on word-wrap globally
-(global-visual-line-mode t)
+;;(global-visual-line-mode t)
+
+
 ;; with visual-line-mode set,
 ;; C-a and C-b go to beginning/end-of-visual-line
 ;; which is inconsistant with standard Mac behaviour
@@ -703,7 +752,6 @@ Then I realized that I only care about 2 sizes, normal and large. So I've create
 		      :family "IBM Plex Serif" :height 155 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
 		      :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
-  (set-face-attribute 'bold nil :weight 'semibold)
   )
 
 (defun oht/set-font-large ()
@@ -714,7 +762,6 @@ Then I realized that I only care about 2 sizes, normal and large. So I've create
 		      :family "IBM Plex Serif" :height 185 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
 		      :family "IBM Plex Mono" :height 155 :weight 'normal)
-  (set-face-attribute 'bold nil :weight 'semibold)
   )
 
 ;; This sets the default fonts
@@ -754,6 +801,9 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
 (defadvice load-theme (before clear-previous-themes activate)
   "Clear existing theme settings instead of layering them"
   (mapc #'disable-theme custom-enabled-themes))
+
+;; This needs to be set after the theme
+(set-face-attribute 'bold nil :weight 'semibold)
 #+end_src
 
 Though I rarely use them, I like these themes too.

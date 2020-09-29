@@ -89,6 +89,7 @@ hs.hotkey.bind(hyper, 'h', function() hs.window.focusedWindow():moveToUnit({0, 0
 hs.hotkey.bind(hyper, 'j', function() hs.window.focusedWindow():moveToUnit({0, 0, 2/3, 1}) end)
 hs.hotkey.bind(hyper, 'k', function() hs.window.focusedWindow():moveToUnit({1/3, 0, 2/3, 1}) end)
 hs.hotkey.bind(hyper, 'l', function() hs.window.focusedWindow():moveToUnit({2/3, 0, 1/3, 1}) end)
+hs.hotkey.bind(hyper, 'f', function() hs.window.focusedWindow():moveToUnit({0, 0, 1, 1}) end)
 
 -- window hints
 hs.hotkey.bind(hyper, 'i', hs.hints.windowHints)
@@ -193,7 +194,24 @@ function moveWordForward()
 end
 hs.hotkey.bind({'ctrl'}, "'", moveWordForward)
 
+function selectLine()
+   -- move to beginning of line
+   hs.eventtap.event.newKeyEvent({"ctrl"}, "a", true):post()
+   hs.eventtap.event.newKeyEvent({"ctrl"}, "a", false):post()
 
+   -- Shift + move to end of line
+   hs.eventtap.event.newKeyEvent({"shift", "cmd"}, "right", true):post()
+   hs.eventtap.event.newKeyEvent({"shift", "cmd"}, "right", false):post()
 end
+hs.hotkey.bind({'ctrl', 'cmd'}, "l", selectLine)
 
+function selectWord()
+   -- move back word
+   hs.eventtap.event.newKeyEvent({"alt"}, "left", true):post()
+   hs.eventtap.event.newKeyEvent({"alt"}, "left", false):post()
 
+   -- Shift + move forward word
+   hs.eventtap.event.newKeyEvent({"shift", "alt"}, "right", true):post()
+   hs.eventtap.event.newKeyEvent({"shift", "alt"}, "right", false):post()
+end
+hs.hotkey.bind({'ctrl', 'cmd'}, "w", selectWord)

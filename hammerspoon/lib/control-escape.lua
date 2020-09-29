@@ -1,3 +1,5 @@
+-- Send 'escape' when 'ctrl' is pressed alone.
+
 -- Credit for this implementation goes to @arbelt and @jasoncodes 🙇⚡️😻
 --
 --   https://gist.github.com/arbelt/b91e1f38a0880afb316dd5b5732759f1

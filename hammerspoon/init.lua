@@ -20,7 +20,6 @@ Inspiration:
 ]] ---------------------------------------------------
 
 hs.window.animationDuration = 0
--- TODO: file bug for this setting not always taking effect
 local hyper = {"ctrl", "alt", "cmd"}
 
 -- Spoons
@@ -37,17 +36,6 @@ anycomplete.registerDefaultBindings()
 -- Draw pretty rounded corners on all screens
 Install:andUse("RoundedCorners", { start = true })
 
--- Vim Mode
-local VimMode = hs.loadSpoon('VimMode')
-local vim = VimMode:new()
-vim:bindHotKeys({ enter = {{''}, 'f12'} })
-vim:disableForApp('Terminal')
-vim:disableForApp('Emacs')
-vim:shouldDimScreenInNormalMode(nil)
-
---require("smart_modifier_keys")
--- You could create a modal hotkey that enters an "emacs god mode"
--- wherein all pressed keys have a ctrl modifier added to them.
 
 -- Misc Bindings
 -- -----------------------------------------------
@@ -92,17 +80,14 @@ end
 -- Move windows around the screen
 hs.hotkey.bind(hyper, "[", function() snap_window('left') end)
 hs.hotkey.bind(hyper, "]", function() snap_window('right') end)
-hs.hotkey.bind(hyper, '=', function() hs.window.centerOnScreen(hs.window.focusedWindow()) end)
 
 -- Resize and Move Windows
--- It seems you have to press the keys a few times to get them to work
 hs.hotkey.bind(hyper, 'left', function() hs.window.focusedWindow():moveToUnit({0, 0, 1/2, 1}) end)
 hs.hotkey.bind(hyper, 'right', function() hs.window.focusedWindow():moveToUnit({1/2, 0, 1/2, 1}) end)
 hs.hotkey.bind(hyper, 'h', function() hs.window.focusedWindow():moveToUnit({0, 0, 1/3, 1}) end)
 hs.hotkey.bind(hyper, 'j', function() hs.window.focusedWindow():moveToUnit({0, 0, 2/3, 1}) end)
 hs.hotkey.bind(hyper, 'k', function() hs.window.focusedWindow():moveToUnit({1/3, 0, 2/3, 1}) end)
 hs.hotkey.bind(hyper, 'l', function() hs.window.focusedWindow():moveToUnit({2/3, 0, 1/3, 1}) end)
--- TODO: file bug for not all of these being applied on first hotkey press
 
 -- window hints
 hs.hotkey.bind(hyper, 'i', hs.hints.windowHints)
@@ -140,7 +125,7 @@ configWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reload
 -- Application Launcher
 -- -----------------------------------------------
 
-local appList = {
+local applicationHotkeys = {
    -- don't use f (full-screen app)
    s = 'Safari',
    t = 'Terminal',
@@ -149,31 +134,21 @@ local appList = {
    e = 'Emacs',
    b = 'BBEdit',
    o = 'Tot',
-   g = 'Gmail',
    k = 'Slack',
 }
 
-for key, app in pairs(appList) do
-   hs.hotkey.bind({'ctrl', 'cmd'}, key, function() hs.application.launchOrFocus(app) end)
+for key, app in pairs(applicationHotkeys) do
+   hs.hotkey.bind({'ctrl', 'cmd'}, key, function()
+	 hs.application.launchOrFocus(app)
+   end)
 end
 
 
 -- Word Move/Delete
 -- -----------------------------------------------
 
--- This, remember, is at the system level, so Terminal/Emacs will need to accept
+-- This, remember, is system-wide, so Terminal/Emacs will need to accept
 -- alt+delete, cmd+delete, ctrl+alt+b, ctrl+alt+f, and alt+forwarddelete
-
--- If I bind the keys in this way:
--- hs.hotkey.bind({'ctrl'}, 'w', function() hs.eventtap.keyStroke({'alt'}, 'delete') end)
--- hs.hotkey.bind({'ctrl'}, 'u', function() hs.eventtap.keyStroke({'cmd'}, 'delete') end)
--- hs.hotkey.bind({'ctrl'}, ';', function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'b') end)
--- hs.hotkey.bind({'ctrl'}, "'", function() hs.eventtap.keyStroke({'ctrl', 'alt'}, 'f') end)
--- hs.hotkey.bind({'alt'}, 'd', function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)
--- That seems to introduce a significant delay, the keyStoke is not fired on keyDown
-
--- Whereas assigning a function to keyDown eliminates that delay
--- like this:
 
 function deleteWordBack()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
@@ -217,28 +192,6 @@ end
 hs.hotkey.bind({'ctrl'}, "'", moveWordForward)
 
 
--- Window Switcher
--- -----------------------------------------------
--- https://github.com/raulchen/dotfiles/tree/master/hammerspoon
-
-local switcher = hs.window.switcher.new(nil, {
-    fontName = ".AppleSystemUIFont",
-    textSize = 16,
-    textColor = { white = 0, alpha = 1 },
-    highlightColor = { white = 0.5, alpha = 0.3 },
-    backgroundColor = { white = 0.95, alpha = 0.9 },
-    titleBackgroundColor = { white = 0.95, alpha = 0 },
-    showThumbnails = false,
-    showSelectedThumbnail = false,
-})
-
-local function nextWindow()
-    switcher:next()
 end
 
-local function previousWindow()
-    switcher:previous()
-end
 
---hs.hotkey.bind('alt', 'tab', nextWindow, nil, nextWindow)
---hs.hotkey.bind('alt-shift', 'tab', previousWindow, nil, previousWindow)

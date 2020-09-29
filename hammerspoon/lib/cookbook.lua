@@ -189,4 +189,31 @@ hs.hotkey.bind({},      'end',  function() hs.eventtap.keyStroke({},      'forwa
 hs.hotkey.bind({'alt'}, 'end',  function() hs.eventtap.keyStroke({'alt'}, 'forwarddelete') end)
 hs.hotkey.bind({'cmd'}, 'end',  function() hs.eventtap.keyStroke({'ctrl'}, 'k') end)
 
+-- Window Switcher
+-- -----------------------------------------------
+-- https://github.com/raulchen/dotfiles/tree/master/hammerspoon
+
+local switcher = hs.window.switcher.new(nil, {
+    fontName = ".AppleSystemUIFont",
+    textSize = 16,
+    textColor = { white = 0, alpha = 1 },
+    highlightColor = { white = 0.5, alpha = 0.3 },
+    backgroundColor = { white = 0.95, alpha = 0.9 },
+    titleBackgroundColor = { white = 0.95, alpha = 0 },
+    showThumbnails = true,
+    showSelectedThumbnail = false,
+})
+
+local function nextWindow()
+    switcher:next()
+end
+
+local function previousWindow()
+    switcher:previous()
+end
+
+hs.hotkey.bind('alt', 'tab', nextWindow, nil, nextWindow)
+hs.hotkey.bind('alt-shift', 'tab', previousWindow, nil, previousWindow)
+
+
 

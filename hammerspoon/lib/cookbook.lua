@@ -216,4 +216,25 @@ hs.hotkey.bind('alt', 'tab', nextWindow, nil, nextWindow)
 hs.hotkey.bind('alt-shift', 'tab', previousWindow, nil, previousWindow)
 
 
+-- Generic Function for newKeyEvent
+-- -----------------------------------------------
+-- https://github.com/Hammerspoon/hammerspoon/issues/1984#issuecomment-455317739
 
+doKeyStroke = function(modifiers, character)
+    if type(modifiers) == 'table' then
+        local event = hs.eventtap.event
+
+        for _, modifier in pairs(modifiers) do
+            event.newKeyEvent(modifier, true):post()
+        end
+
+        event.newKeyEvent(character, true):post()
+        event.newKeyEvent(character, false):post()
+
+        for i = #modifiers, 1, -1 do
+            event.newKeyEvent(modifiers[i], false):post()
+        end
+    end
+end
+
+hs.hotkey.bind({'alt'}, 'h', function() doKeyStroke({}, 'Left') end)

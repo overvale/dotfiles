@@ -238,3 +238,72 @@ doKeyStroke = function(modifiers, character)
 end
 
 hs.hotkey.bind({'alt'}, 'h', function() doKeyStroke({}, 'Left') end)
+
+
+-- Bring all Finder windows to front when finder activated
+-- -----------------------------------------------
+function applicationWatcher(appName, eventType, appObject)
+    if (eventType == hs.application.watcher.activated) then
+        if (appName == "Finder") then
+            -- Bring all Finder windows forward when one gets activated
+            appObject:selectMenuItem({"Window", "Bring All to Front"})
+        end
+    end
+end
+appWatcher = hs.application.watcher.new(applicationWatcher)
+appWatcher:start()
+
+
+-- Remap key per application
+-- -----------------------------------------------
+-- Remap a key one way in one application, and another in all others
+-- LIMITATION: You can't remap a binding to the same binding,
+-- hammerspoon will catch the keypress again and try to remap it again.
+-- Hammerspoon also ALWAYS catches the bound key, so there's no way to
+-- fall back to the same key that you've bound.
+-- So leaving the 'else' statement below blank would result in
+-- 'ctrl n' being a dead key outside Emacs.
+
+hs.hotkey.bind({"ctrl"}, "j", function()
+      local app = hs.application.frontmostApplication()
+      if app:name() == "Emacs" then
+	 hs.eventtap.keyStroke({"ctrl"}, "n")
+      else
+	 hs.eventtap.event.newKeyEvent({}, "down", true):post()
+	 hs.eventtap.event.newKeyEvent({}, "down", false):post()
+      end
+end)
+
+hs.hotkey.bind({"shift", "cmd"}, "/", function()
+      local app = hs.application.frontmostApplication()
+      if app:name() == "Emacs" then
+	 hs.eventtap.event.newKeyEvent({"ctrl"}, "h", true):post()
+	 hs.eventtap.event.newKeyEvent({"ctrl"}, "h", false):post()
+      else
+	 hs.application.frontmostApplication():selectMenuItem({"Help"})
+      end
+end)
+
+-- Turning on/off a binding when app is focused
+-- -----------------------------------------------
+
+-- First, define what you want to happen when the hotkey is enabled
+function sendReturn()
+   hs.eventtap.event.newKeyEvent({}, "delete", true):post()
+   hs.eventtap.event.newKeyEvent({}, "delete", false):post()
+end
+
+-- Then define the binding that you want to toggle
+local returnKeyBinding = hs.hotkey.new({}, "return", sendReturn)
+
+-- Now create, and start, an app watcher that enables/disables the binding
+gameWatcher = hs.application.watcher.new(function(appName, eventType, appObject)
+      if appName == "Emacs" then
+	 if eventType == hs.application.watcher.activated then
+	    returnKeyBinding:enable()
+	 elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
+	    returnKeyBinding:disable()
+	 end
+      end
+end):start()
+ 

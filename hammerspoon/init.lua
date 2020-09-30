@@ -25,6 +25,8 @@ local hyper = {"ctrl", "alt", "cmd"}
 -- Spoons
 -- -----------------------------------------------
 
+-- Spoon Reference: https://github.com/Hammerspoon/hammerspoon/blob/master/SPOONS.md
+
 -- Load SpoonInstall, so we can easily load our other Spoons
 hs.loadSpoon("SpoonInstall")
 spoon.SpoonInstall.use_syncinstall = true
@@ -197,3 +199,17 @@ function selectWord()
    hs.eventtap.event.newKeyEvent({"shift", "alt"}, "right", false):post()
 end
 hs.hotkey.bind({'ctrl', 'cmd'}, "w", selectWord)
+
+
+-- Disable cmd+w in Remote Desktop
+-- -----------------------------------------------
+local msrdDisable = hs.hotkey.new({"cmd"}, "w", function() end)
+msrdWatcher = hs.application.watcher.new(function(appName, eventType, appObject)
+   if appName == "Microsoft Remote Desktop" then
+      if eventType == hs.application.watcher.activated then
+         msrdDisable:enable()
+      elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
+         msrdDisable:disable()
+    end
+   end
+end):start()

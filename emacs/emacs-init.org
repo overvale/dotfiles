@@ -110,8 +110,6 @@ To improve startup time, I follow the [[https://github.com/hlissner/doom-emacs/b
 By default Emacs starts up with a "splash screen" containing some useful links, but I don't need that any more, so this turns it off.
 
 #+begin_src emacs-lisp
-;; Reduce *Message* noise at startup. An empty scratch buffer (or the dashboard)
-;; is more than enough.
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t
@@ -227,12 +225,14 @@ I have a bunch of misc custom functions that I keep in a separate file to make t
 (global-auto-revert-mode t)           ; update buffer when file on disk changes
 (save-place-mode 1)                   ; reopens the file to the same spot you left
 (recentf-mode 1)                      ; enables "Open Recent..." in file menu
+(add-to-list 'recentf-exclude "/elpa") ; don't show package files in recentf
 (setq tab-width 4)                    ; tabs=4 char
 (setq help-window-select t)           ; focus new help windows when opened
 (setq sentence-end-double-space nil)  ; ends sentence after 1 space
 (fset 'yes-or-no-p 'y-or-n-p)         ; Changes all yes/no questions to y/n type
 (setq create-lockfiles nil)           ; No need for ~ files when editing
 (setq-default fill-column 80)         ; Set column used for fill-paragraph
+(setq ring-bell-function 'ignore)     ; Don't beep
 
 ;; place backup files in a single place
 (setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
@@ -420,7 +420,7 @@ When in visual line mode the out-of-the-box movement commands behave inconsisten
 
 
 ;; Turn on word-wrap globally
-;;(global-visual-line-mode t)
+(global-visual-line-mode t)
 
 
 ;; with visual-line-mode set,
@@ -432,7 +432,7 @@ When in visual line mode the out-of-the-box movement commands behave inconsisten
 (bind-key "s-<right>" 'end-of-visual-line)
 ;; C-k only killing the visual line also isn't how macOS works.
 ;; This has to be set to a custom function so minor modes can't hijack it.
-(bind-key* "C-k" 'oht/kill-line)
+(bind-key "C-k" 'oht/kill-line)
 #+end_src
 
 ** Standard Mac Shortcuts
@@ -730,11 +730,11 @@ Then I realized that I only care about 2 sizes, normal and large. So I've create
 (defun oht/set-font-normal ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
+		      :family "IBM Plex Mono" :height 130 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
 		      :family "IBM Plex Serif" :height 155 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Iosevka Fixed SS08" :height 145 :weight 'normal)
+		      :family "IBM Plex Mono" :height 130 :weight 'normal)
   )
 
 (defun oht/set-font-large ()
@@ -773,7 +773,7 @@ I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus 
   (modus-operandi-theme-slanted-constructs t)
   (modus-operandi-theme-bold-constructs t)
   (modus-operandi-theme-org-blocks 'greyscale)
-  (modus-operandi-theme-variable-pitch-headings t)
+  (modus-operandi-theme-variable-pitch-headings nil)
   (modus-operandi-theme-3d-modeline nil)
   (modus-operandi-theme-completions 'opinionated)
   (modus-operandi-theme-diffs 'desaturated)

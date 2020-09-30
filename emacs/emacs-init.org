@@ -1499,7 +1499,7 @@ I don't really want to use =evil-mode=. It does too much for my taste. I much pr
   ("<f12>" nil "cancel" :color blue)
   ("i" nil "cancel" :color blue))
 
-(bind-key "<f12>" 'hydra-modal/body)
+(bind-key "s-j" 'hydra-modal/body)
 #+end_src
 
 * Window Management

@@ -38,24 +38,6 @@ Install:andUse("RoundedCorners", { start = true })
 
 require('side-spesific')
 
--- Misc Bindings
--- -----------------------------------------------
-
--- remap ; to f12
--- remap fn+; to ;
--- It is important that fn+; comes first
-
-function remapF12()
-   hs.eventtap.event.newKeyEvent({}, ';', true):post()
-end
-hs.hotkey.bind({'fn'}, ';', remapF12)
-
--- this must come second:
-function sendF12()
-   hs.eventtap.event.newKeyEvent({}, 'f12', true):post()
-end
-hs.hotkey.bind({}, ';', sendF12)
-
 -- Window Control
 -- -----------------------------------------------
 

@@ -1670,6 +1670,7 @@ You can filter by =age=, =tag=, and =regex=.
 	("https://protesilaos.com/codelog.xml" emacs)
 	("https://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml" emacs)
 	("https://emacsredux.com/atom.xml" emacs)
+	("https://blog.robenkleene.com/feed/atom/")
 	))
   (defadvice elfeed-search-update (before nullprogram activate)
     (let ((feed (elfeed-db-get-feed "https://www.economist.com/latest/rss.xml")))
@@ -1684,8 +1685,20 @@ You can filter by =age=, =tag=, and =regex=.
   ;; Add the ability to "star" entries, this just adds the "star" tag
   (defalias 'elfeed-toggle-star
     (elfeed-expose #'elfeed-search-toggle-all 'star))
-  (eval-after-load 'elfeed-search
-    '(define-key elfeed-search-mode-map (kbd "m") 'elfeed-toggle-star))
+  ;; function for opening entries in default browser
+  (defun ar/elfeed-search-browse-background-url ()
+    "Open current `elfeed' entry (or region entries) in browser without losing focus."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (mapc (lambda (entry)
+              (assert (memq system-type '(darwin)) t "open command is macOS only")
+              (start-process (concat "open " (elfeed-entry-link entry))
+                             nil "open" "--background" (elfeed-entry-link entry))
+              (elfeed-untag entry 'unread)
+              (elfeed-search-update-entry entry))
+            entries)
+      (unless (or elfeed-search-remain-on-entry (use-region-p))
+        (forward-line))))
 )
 #+end_src
 

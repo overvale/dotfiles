@@ -665,6 +665,11 @@ The full list of keywords that control load-time of packages is:
   :config
   (whole-line-or-region-global-mode 1)
   )
+
+;; Bufler - a better buffer list
+(use-package bufler
+  :commands bufler
+  )
 #+end_src
 
 ** Modes
@@ -1899,7 +1904,7 @@ This cycles the spacing around point between a single space, no spaces, or the o
 
 #+begin_src emacs-lisp
 (bind-key "s-p" 'execute-extended-command)
-(bind-key "M-s-b" 'ibuffer)
+(bind-key "M-s-b" 'bufler)
 ;; vim has the wonderful . command, and emacs has repeat
 ;; s-y is my keybinding because excel has (a version of) repeat bound to that
 (bind-key "s-y" 'repeat)

@@ -730,21 +730,21 @@ Then I realized that I only care about 2 sizes, normal and large. So I've create
 (defun oht/set-font-normal ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "IBM Plex Mono" :height 130 :weight 'normal)
+		      :family "SF Mono" :height 120 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "IBM Plex Serif" :height 155 :weight 'normal)
+		      :family "IBM Plex Serif" :height 140 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "IBM Plex Mono" :height 130 :weight 'normal)
+		      :family "SF Mono" :height 120 :weight 'normal)
   )
 
 (defun oht/set-font-large ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "IBM Plex Mono" :height 155 :weight 'normal)
+		      :family "IBM Plex Mono" :height 140 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "IBM Plex Serif" :height 185 :weight 'normal)
+		      :family "IBM Plex Serif" :height 160 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "IBM Plex Mono" :height 155 :weight 'normal)
+		      :family "IBM Plex Mono" :height 140 :weight 'normal)
   )
 
 ;; This sets the default fonts
@@ -797,6 +797,8 @@ Though I rarely use them, I like these themes too.
 (use-package nord-theme
   :defer t)
 (use-package tron-legacy-theme
+  :defer t)
+(use-package zenburn-theme
   :defer t)
 #+end_src
 
@@ -934,11 +936,11 @@ This defines custom agendas. There's a very good tutorial on how to set these up
       '(
 	("0" "MASTER: Everything, categorized."
 	 (
+	  (agenda "w" ((org-agenda-span 'week)))
 	  (todo "TODAY"
                 ((org-agenda-overriding-header "Today's Tasks: ")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
 		 ))
-	  (agenda "w" ((org-agenda-span 'week)))
 	  (todo "TODO"
 		 ((org-agenda-overriding-header "Things You Might Want To Do: ")
 		  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
@@ -1579,7 +1581,8 @@ The below is pretty much ripped directly from /Prot/'s config.
 (use-package browse-url
   :after eww
   :config
-  (setq browse-url-browser-function 'eww-browse-url))
+  ;;(setq browse-url-browser-function 'eww-browse-url)
+  )
 #+end_src
 
 ** Eww Hydra

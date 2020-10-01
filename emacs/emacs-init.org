@@ -740,11 +740,11 @@ Then I realized that I only care about 2 sizes, normal and large. So I've create
 (defun oht/set-font-large ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "IBM Plex Mono" :height 140 :weight 'normal)
+		      :family "SF Mono" :height 140 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
 		      :family "IBM Plex Serif" :height 160 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "IBM Plex Mono" :height 140 :weight 'normal)
+		      :family "SF Mono" :height 140 :weight 'normal)
   )
 
 ;; This sets the default fonts

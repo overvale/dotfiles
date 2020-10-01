@@ -1,0 +1,264 @@
+#+TITLE: Emacs Settings & Configuration
+#+AUTHOR: Oliver Taylor
+
+* Hello!
+
+/Welcome!/ I'm sorry, but I'm not writing this for you, I'm writing this for
+me---well, /future/-me. I don't want to forget how this configuration file works,
+or why I did things this way, so I write it in [[https://en.wikipedia.org/wiki/Literate_programming][this format]] so I can read it
+later and understand what the hell /past/-me was thinking.
+
+** What is This?
+
+This document does 2 things simultaneously, it is both the configuration file
+containing all my settings and preferences that Emacs reads when it starts-up
+/and/ it is a document that's meant to be read by a human which explains what the
+configuration and settings do and why I want them done that way.
+
+This file is called =emacs-init.org= and to make it work, you need the following
+in your =~/.emacs.d/init.el=:
+
+#+begin_example
+(org-babel-load-file (expand-file-name "~/dot/emacs/emacs-init.org"))
+#+end_example
+
+** My Emacs Philosophy
+
+1. Emacs is not a text-editor in a traditional sense, it is a platform on which
+   /you/ can program an editor that you'll love (and boy will you /have/ to). For
+   people whose hobbies include tweaking dotfiles this is great! But it's not so
+   great for people who just want to edit text.
+
+2. If you want to dive in, I think the correct starting place is to accept that
+   you will never remember Emacs keybindings, and that even if you do it will
+   injure your pinky---so don't even bother trying. That's not a down-side, it
+   means you don't have to learn anything new (!), just learn to make Emacs work
+   the way you expect it to. That sounds like it might be difficult, but once
+   you get the hang of customizing Emacs it becomes easy.
+
+3. There's a few things you should know to use in order to learn about Emacs's
+   capabilities. Poke around =C-h ?= for Help. Use =M-x= to explore. Use =which-key=
+   to give you hints for difficult to remember shortcuts. Read the info pages,
+   use =describe-key=, =describe-variable=, and =describe-function= a lot.
+
+4. Use =hydra= to set up what are basically "mini-modes". I don't know how I'd
+   function without the one I have setup for window management. And the Modal
+   Editing hydra below is very useful indeed. As the saying goes "the best
+   editor is not vim or emacs, but both".
+
+** Keybindings Philosophy
+
+1. Standard mac shortcuts should be supported wherever possible. And since mac
+   inherits a lot of emacs keybindings anyway (and I use them outside emacs) I
+   can leverage a lot of muscle memory. Additionally, I've largely internalized
+   the =readline= keybindings (since I worked in =vim= for a long time) and so =^w=,
+   =^u=, and =^h= are second-nature, so I'll want to use those as well.
+
+2. Enhance Emacs built-in bindings with improved alternatives. For example, I've
+   replaced =^s= and =^r= with =ctrlf=. So the binding still does the same thing, just
+   better.
+
+3. Global Leader - I borrow the concept of a "leader key" from vim and use it as
+   a dumping ground for my most important commands, which don't have mac or
+   Emacs equivalents.
+
+4. Mode Leader - All mode-spesific bindings (for example =org-time-stamp=),
+   which don't make any sense in any other mode go behind a uniform
+   mode-leader key. I've picked =s-\=. That way, no matter what mode I'm in,
+   I can hit the same key and see all the relevant functions.
+
+5. Keybindings which I use all the time, get taken out from behind leaders for
+   faster access. For example, the org-agenda command.
+
+** Inspiration and References
+
+Anyone learning vim, emacs, zsh, bash, or something similar, spends a lot of
+time looking at other people's configuration files (much like this one). I've
+learned from some wonderful (and well documented) examples. Here is a list of
+the ones I've learned the most from:
+
+- [[https://protesilaos.com/dotemacs/][Protesilaos Stavrou Dotemacs]]
+- [[https://github.com/oantolin/emacs-config/blob/master/init.el][Oantolin emacs config]]
+- [[https://blog.aaronbieber.com][Aaron Bieber, Blog & Dotfiles]]
+- [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org][Harry R. Schwartz dotfiles]]
+- [[https://yiufung.net/post/org-mode-hidden-gems-pt1/][Org-Mode Hidden Gems]]
+- [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org][Angry Bacon dotemacs]]
+- [[https://gitlab.com/Kaligule/emacs-config/-/blob/master/config.org][Kaligule config.org]]
+- [[https://github.com/andschwa/.emacs.d][Andrew Schwartzmeyer’s Emacs configurations]]
+- [[https://github.com/raxod502][Radon Rosborough's packages/config]]
+- [[https://github.com/raxod502/radian][Radian]]
+- [[https://github.com/munen/emacs.d/][Alain M. Lafon's emacs.d]]
+
+For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
+
+** TODO How This Configuration is Organized
+
+* Installation
+
+Before you do anything else, you'll have to install Emacs (I know, right?). My
+preferred version, and the one this configuration targets, is [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][Mitsuharu
+Yamamoto's Emacs fork]] because it provides [[https://bitbucket.org/mituharu/emacs-mac/src/f3402395995bf70e50d6e65f841e44d5f9b4603c/README-mac?at=master&fileviewer=file-view-default][a lot of nice stuff]] for people who
+want their Emacs to be a better macOS citizen.
+
+Now, on to the fun stuff.
+
+* Use-Package
+
+Let's talk about =use-package=. First of all, I am currently in the process of
+migrating all my settings to the use-package way of doing things. So this config
+file a bit all over the map in that respect. I didn't do it at first because I
+didn't actually understand what =use-package= is. The website says:
+
+#+begin_quote
+The use-package macro allows you to isolate package configuration in your .emacs
+file in a way that is both performance-oriented and, well, tidy.
+#+end_quote
+
+The key phrase is "isolate package configuration". To me, this is a rather
+opaque description. I mean, you can isolate package configuration by simply
+grouping all your settings for each package together in a section. It also says
+it is *not* a package manager, but that it can interface with them. Right. So,
+what does =use-package= do again?
+
+I would put it this way: =use-package= is a way to /precisely control the loading
+of packages/.
+
+For example, if you put =(require magit)= in your config then when Emacs reads
+that function it will load the =magit= package. At first glance this makes sense.
+If you want to use =magit= then you need it loaded. The problem is that Emacs does
+this on startup, regardless of if you need =magit= on startup. As the number of
+packages you install grows so too will Emacs startup time, and Emacs will be
+"running heavy" with all those packages loaded and ready to go, regardless of
+your need for them.
+
+Contrast with this:
+
+#+begin_example
+(use-package magit
+  :commands magit-status)
+#+end_example
+
+This short config snippet tells Emacs to load magit only when you trigger the
+=magit-status= function.
+
+** Usage
+
+This example is from the project's =README=:
+
+#+begin_example
+(use-package color-moccur
+  :commands (isearch-moccur isearch-all)
+  :bind (("M-s O" . moccur)
+         :map isearch-mode-map
+         ("M-o" . isearch-moccur)
+         ("M-O" . isearch-moccur-all))
+  :init
+  (setq isearch-lazy-highlight t)
+  :config
+  (use-package moccur-edit))
+#+end_example
+
+- =:commands= :: autoload (load only when triggered) the =isearch-moccur= and
+  =isearch-all= commands in the =color-moccur= package.
+- =:bind= :: autoload these commands and assign a keybinding to them.
+- =:init= :: code that executes before the package is loaded.
+- =:config= :: code that executes after the package is loaded.
+
+The full list of keywords that control load-time of packages is:
+
+- =:commands=
+- =:bind=
+- =:bind*=
+- =:bind-keymap=
+- =:bind-keymap*=
+- =:mode=
+- =:interpreter=
+- =:hook=
+- =:defer=
+
+* Secondary Selection
+
+** Background
+
+In the old days, many computer programs (like the X-Windows system and WordStar)
+had something called =secondary-selection=. Robert Sawyer, [[https://arstechnica.com/information-technology/2017/03/wordstar-a-writers-word-processor/][writing in Ars
+Technica]], described the feature thus (WordStar called them "blocks"):
+
+#+begin_quote
+WordStar was rare among word processing programs in that it permitted the user
+to mark (highlight) a block of text (with ^KB and ^KK commands) and leave it
+marked in place, and then go to a different position in the document and later
+(even after considerable work on other things) copy the block (with ^KC) or move
+it to a new location (with ^KV). Many users found it much easier to manipulate
+blocks this way than with the Microsoft Word system of highlighting with a mouse
+and then being forced by Word's select-then-do approach to immediately deal with
+the marked block, lest any typing replace it.
+#+end_quote
+
+Emacs, in fact, supports this and calls it "secondary selection" but it is not
+exactly well documented, and the Emacs-literati haven't seemed to have written
+much about it. I did a deep dive and wrapped everything in my own functions and
+then in a hydra for easy access.
+
+- =meta-left-click/drag= to mark a secondary selection.
+- You can also use the hydra to make the current region the secondary selection.
+- Once the secondary selection is active you can go about your typing, including
+  copy/paste actions.
+- Then, when you want to do something with the secondary selection, activate the
+  hydra.
+- Another scenario: when you realize, mid-typing, that you want to paste text
+  from elsewhere, you can leave the insertion point where it is, make a
+  secondary selection, and insert it directly.
+
+** References
+
+- The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Secondary-Selection.html][official documentation]] is somewhat sparse, and assumes you'll only use the
+  mouse for this.
+- [[https://www.emacswiki.org/emacs/SecondarySelection][The Emacs Wiki has some info]], but seems a little out of date given that there
+  are so many built-in functions for this now.
+- Charles Lindsey made [[http://www.cs.man.ac.uk/~lindsec/secondary-selection.html][a video]] that nicely explains the basic idea behind
+  secondary selection.
+
+** Functions
+
+All but one of these functions is built-in, but in their default form they're
+not =interactive= so any keybindings need to include =(lambda () (interactive)
+(function-name))= in order to work, and some of their documentation is a little
+sketchy, so I've wrapped them all in my own functions. Just makes things a
+little easier to work with.
+
+* Modal Editing
+
+I don't really want to use =evil-mode=. It does too much for my taste. I much
+prefer the simpler solution of using a hydra, or =view-mode= (though it has some
+drawbacks).
+
+
+=view-mode= is a built-in mode for viewing, and not editing files, thus if you
+make entering and exiting it easy it is a natural fit for modal editing.
+
+One thing to note is that when in =view-mode= the buffer is marked as read-only,
+meaning this is not a good replacement for true modal editing where you can
+change the document without leaving the mode.
+
+| Key        | Action                        |
+|------------+-------------------------------|
+| e          | exit                          |
+| q          | quit buffer (if edited, bury) |
+| s          | I-search                      |
+| r          | reverse I-search              |
+| .          | set mark                      |
+| x          | exchange point/mark           |
+| m          | mark register                 |
+| '          | go to register                |
+| h, ?       | help                          |
+|------------+-------------------------------|
+| <          | beginning of buffer           |
+| >          | end of buffer                 |
+| SPC        | page-down                     |
+| DEL, S-SPC | page-up                       |
+| d          | half-page-down                |
+| u          | half-page up                  |
+| RET        | scroll-down-line              |
+| y          | scroll-up-line                |
+| g          | go to line                    |

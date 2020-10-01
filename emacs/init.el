@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 (require 'package)
 
 (setq package-archives
@@ -22,9 +24,8 @@
 
 (use-package vc
   :config
-  (setq vc-follow-symlinks t)) ; Because my dotfiles are managed that way
+  (setq vc-follow-symlinks t))
 
-;; Load org and load your config file
-(org-babel-load-file (expand-file-name "~/dot/emacs/emacs-init.org"))
+;; Load your config file
+(load-file "~/dot/emacs/emacs-init.el")
 
-;; ------------------------------------------------------------------

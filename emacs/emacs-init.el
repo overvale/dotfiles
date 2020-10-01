@@ -1,6 +1,4 @@
 ;; -*- lexical-binding: t -*-
-;;
-;; Test
 
 ;; To see the outline of this file, run M-x outline-minor-mode and then press C-c @ C-t.
 ;; You might also want to run M-x occur with the following query: [^;;; ]
@@ -613,7 +611,7 @@
 ;; add columns to the mode-line
 (column-number-mode t)
 (setq display-time-format "%H:%M  %Y-%m-%d")
-;;;; Covered by `display-time-format'
+;; Covered by `display-time-format'
 ;; (setq display-time-24hr-format t)
 ;; (setq display-time-day-and-date t)
 (setq display-time-interval 60)
@@ -784,10 +782,16 @@
     outline-minor-mode outline-minor-mode)
 (global-outline-minor-mode +1)
 
+(defun oht/outline-show-entry-branches ()
+  (interactive)
+  (outline-show-entry)
+  (outline-show-branches)
+  )
+
 (defhydra hydra-outline (:color amaranth)
   "Hydra for navigating outline mode"
   ("M-<tab>" outline-hide-sublevels "Hide to This Sublevel")
-  ("<tab>" outline-show-subtree "Show Subtree")
+  ("<tab>" oht/outline-show-entry-branches "Show Subtree")
   ("S-<tab>" outline-hide-subtree "Hide Subtree")
   ("a" outline-show-all "Show All" :color: blue)
   ("s" selectrum-outline "Selectrum" :color blue)
@@ -795,7 +799,7 @@
   ("p" outline-previous-visible-heading "Previous")
   ("q" nil "Cancel" :color blue)
   )
-(bind-key "s-\\" 'hydra-outline/body)
+(bind-key "s-0" 'hydra-outline/body)
 
 ;;; View-Mode
 

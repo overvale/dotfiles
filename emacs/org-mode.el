@@ -42,6 +42,11 @@
 (setq org-agenda-window-setup 'other-window)
 (setq org-agenda-restore-windows-after-quit t)
 
+;; If you try to insert a heading in the middle of an entry, don't
+;; split it in half, but instead insert the new heading after the
+;; end of the current entry.
+(setq org-insert-heading-respect-content t)
+
 ;;;; Source Code Blocks
 
 (setq org-src-fontify-natively t)

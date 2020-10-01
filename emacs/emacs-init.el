@@ -2,7 +2,7 @@
 
 ;; To see the outline of this file, run M-x outline-minor-mode and then press C-c @ C-t.
 ;; You might also want to run M-x occur with the following query: [^;;; ]
-;; OR... you can use the included hydra for outline navigation s-\
+;; OR... you can use the included hydra for outline navigation: s-0
 
 ;;; Emacs Performance
 
@@ -776,13 +776,15 @@
 
 ;;; Outline
 
-;; Feature `outline' provides major and minor modes for collapsing
+;; `outline' provides major and minor modes for collapsing
 ;; sections of a buffer into an outline-like format.
+;; Let's turn that minor mode into a global minor mode.
 (define-globalized-minor-mode global-outline-minor-mode
     outline-minor-mode outline-minor-mode)
 (global-outline-minor-mode +1)
 
 (defun oht/outline-show-entry-branches ()
+  "This unfolds the 'entry' and shows all the subheadings, similar to how org-mode works."
   (interactive)
   (outline-show-entry)
   (outline-show-branches)
@@ -842,6 +844,38 @@
 	   ("o" . delete-other-windows)
 	   ("b" . balance-windows)
 	   ("r" . oht/toggle-window-split))
+
+
+;;; Smart Occur
+
+;; From [[https://oremacs.com/2015/01/26/occur-dwim/][oremacs]]. This will offer as the default candidate:
+
+;; - the current region, if it's active
+;; - the current symbol, otherwise
+
+(defun occur-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur))
+
+;; and a hydra to go with it
+;; TODO update hydra formatting to defhydra
+(defhydra occur-hydra (:color amaranth)
+  "Create/Navigate occur errors"
+  ("o" occur-dwim "occur")
+  ("f" first-error "first")
+  ("n" next-error "next")
+  ("p" previous-error "prev")
+  ("q" exit "exit" :color blue))
+(bind-key "s-' o" 'occur-hydra/body)
 
 
 ;;; EWW Browser

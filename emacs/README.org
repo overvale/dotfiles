@@ -5,22 +5,26 @@
 
 /Welcome!/ I'm sorry, but I'm not writing this for you, I'm writing this for
 me---well, /future/-me. I don't want to forget how this configuration file works,
-or why I did things this way, so I write it in [[https://en.wikipedia.org/wiki/Literate_programming][this format]] so I can read it
-later and understand what the hell /past/-me was thinking.
+or why I did things this way. This documentation is designed to help me
+understand what the hell /past/-me was thinking.
 
-** What is This?
+There was a time not long ago when I maintained my configuration in a single,
+monolithic, org document (that used =org-babel= to "tangle" it) but I've switched
+to a more traditional approach. When I realized about 25% of my config was pure
+documentation, 50% had virtually no documentation, and the remaining 25% only
+needed very little documentation, I decided to switch to having a =README.org=
+file, and elisp files broken up by intented function. It seems a little easier
+to manage, but, as always, this config is always changing.
 
-This document does 2 things simultaneously, it is both the configuration file
-containing all my settings and preferences that Emacs reads when it starts-up
-/and/ it is a document that's meant to be read by a human which explains what the
-configuration and settings do and why I want them done that way.
+But 3 things in particular pushed me into doing it this way:
 
-This file is called =emacs-init.org= and to make it work, you need the following
-in your =~/.emacs.d/init.el=:
-
-#+begin_example
-(org-babel-load-file (expand-file-name "~/dot/emacs/emacs-init.org"))
-#+end_example
+1. My emacs startup time was less snappy than I would have liked. Moving from a
+   large org document to an elisp one made the startup time go from ~3.5 seconds
+   to ~1.5 seconds, which is nice.
+2. I realized that I was mostly using the org aspects of the config to navigate
+   the document, which can also be done with =outline-minor-mode= and some careful
+   keybindings.
+3. I was running low on things to tinker with. 🤷‍♂️
 
 ** My Emacs Philosophy
 
@@ -90,8 +94,6 @@ the ones I've learned the most from:
 - [[https://github.com/munen/emacs.d/][Alain M. Lafon's emacs.d]]
 
 For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
-
-** TODO How This Configuration is Organized
 
 * Installation
 
@@ -178,11 +180,13 @@ The full list of keywords that control load-time of packages is:
 
 * Secondary Selection
 
+Now, on to the fun stuff. Making emacs do stuff other editors can't.
+
 ** Background
 
 In the old days, many computer programs (like the X-Windows system and WordStar)
-had something called =secondary-selection=. Robert Sawyer, [[https://arstechnica.com/information-technology/2017/03/wordstar-a-writers-word-processor/][writing in Ars
-Technica]], described the feature thus (WordStar called them "blocks"):
+had something called =secondary-selection=. Robert Sawyer, [[https://arstechnica.com/information-technology/2017/03/wordstar-a-writers-word-processor/][writing in ArsTechnica]],
+described the feature thus (WordStar called them "blocks"):
 
 #+begin_quote
 WordStar was rare among word processing programs in that it permitted the user
@@ -230,9 +234,9 @@ little easier to work with.
 * Modal Editing
 
 I don't really want to use =evil-mode=. It does too much for my taste. I much
-prefer the simpler solution of using a hydra, or =view-mode= (though it has some
-drawbacks).
-
+prefer the simpler solution of using a hydra (it's amazing how much of the most
+used features of vim can be replicated in a simple hydra, I think that speaks to
+vim's elegance).
 
 =view-mode= is a built-in mode for viewing, and not editing files, thus if you
 make entering and exiting it easy it is a natural fit for modal editing.

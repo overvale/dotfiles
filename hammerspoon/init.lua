@@ -112,7 +112,6 @@ configWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reload
 -- -----------------------------------------------
 
 local applicationHotkeys = {
-   -- don't use f (full-screen app)
    s = 'Safari',
    t = 'Terminal',
    a = 'Music',
@@ -121,6 +120,7 @@ local applicationHotkeys = {
    b = 'BBEdit',
    o = 'Tot',
    k = 'Slack',
+   g = 'Mimestream',
 }
 
 for key, app in pairs(applicationHotkeys) do
@@ -128,6 +128,12 @@ for key, app in pairs(applicationHotkeys) do
 	 hs.application.launchOrFocus(app)
    end)
 end
+
+
+-- Open dirs
+-- -----------------------------------------------
+
+hs.hotkey.bind({'ctrl', 'cmd'}, "h", function() os.execute( "open ~" ) end)
 
 
 -- Word Move/Delete

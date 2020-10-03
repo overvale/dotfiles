@@ -41,6 +41,15 @@
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 
+;; Profiling Tools
+(bind-keys :prefix-map oht/profiling-keys
+	   :prefix "M-s-p"
+	   ("s" . profiler-start)
+	   ("q" . profiler-stop)
+	   ("r" . profiler-report)
+	   )
+
+
 ;;;; Startup Preferences
 
 ;; By default Emacs starts up with a "splash screen" containing some useful
@@ -223,7 +232,7 @@
 	      (let ((selectrum-should-sort-p nil))
 		(apply func args))))
 
-(bind-key "M-;" 'flyspell-auto-correct-previous-word)
+(bind-key "M-;" 'flyspell-correct-wrapper)
 (bind-key "M-:" 'flyspell-correct-at-point)
 
 ;;; Emacs Help
@@ -434,15 +443,15 @@
 
 (use-package magit
   :commands magit-status
-)
+  )
 (use-package bind-key)
 (use-package exec-path-from-shell)
 (use-package olivetti
   :commands olivetti-mode
-)
+  )
 (use-package unfill
   :commands (unfill-paragraph unfill-toggle unfill-region)
-)
+  )
 (use-package which-key
   :config
   (which-key-mode t)
@@ -452,12 +461,12 @@
   :bind
   ("s-z" . undo-fu-only-undo)
   ("s-Z" . undo-fu-only-redo)
- )
+  )
 (use-package expand-region
   :bind
   ("s-e" . er/expand-region)
   ("s-E" . er/contract-region)
-)
+  )
 (use-package sdcv-mode
   :defer 2
   :load-path "lisp/emacs-sdcv/")
@@ -501,7 +510,7 @@
   :custom
   (fountain-add-continued-dialog nil)
   (fountain-highlight-elements (quote (section-heading)))
-)
+  )
 (use-package lua-mode
   :commands lua-mode)
 (use-package markdown-mode

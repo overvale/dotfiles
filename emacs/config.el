@@ -1,8 +1,8 @@
 ;; -*- lexical-binding: t -*-
 
-;; To see the outline of this file, run M-x outline-minor-mode and then press C-c @ C-t.
-;; You might also want to run M-x occur with the following query: [^;;; ]
-;; OR... you can use the included hydra for outline navigation: s-0
+;; To see the outline of this file, run M-x outline-minor-mode and then press
+;; C-c @ C-t. You might also want to run M-x occur with the following query:
+;; [^;;; ] OR... you can use the included hydra for outline navigation: s-0 o
 
 ;;; Emacs Performance
 
@@ -289,15 +289,21 @@
 ;; kill ring. This way, you can paste it with `yank-pop'.
 (setq save-interprogram-paste-before-kill t)
 
-;; When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=, Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=. This makes Emacs refer to them as =foo/file= and =bar/file=, like a sane program.
+
+;; When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=,
+;; Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=.
+;; This makes Emacs refer to them as =foo/file= and =bar/file=, like a sane
+;; program.
 
 (setq uniquify-buffer-name-style 'forward)
 
-;; By default Emacs window sizes always line-up with the character-grid, meaning the windows resize only by character-widths and line-heights. This setting allows the windows to be unconstrained by the grid, thus resize smoothly. The downside of this approach is that your frame contents need to refresh when you're done resizing the frame. When set to =nil= the frame contents refresh live, to the character grid.
-
+;; By default Emacs window sizes always line-up with the character-grid, meaning
+;; the windows resize only by character-widths and line-heights. This setting
+;; allows the windows to be unconstrained by the grid, thus resize smoothly. The
+;; downside of this approach is that your frame contents need to refresh when
+;; you're done resizing the frame. When set to =nil= the frame contents refresh
+;; live, to the character grid.
 (setq frame-resize-pixelwise nil)
-
-;; When no region is active (nothing is selected), and you invoke the =kill-region= (cut) or =kill-ring-save= (copy) commands, Emacs acts on the range of characters between the mark and the point. This is a really good way to accidentally kill half your document. I have done this more times than I'd like to admit.
 
 ;;;; Visual Line Mode
 
@@ -381,7 +387,6 @@
 ;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
 ;; and by default option+forward-delete has no mapping
 (bind-key* "M-<delete>" 'kill-word)
-
 
 ;;; Narrowing & Searching
 
@@ -494,6 +499,14 @@
   :bind ("M-z" . zzz-up-to-char))
 
 ;; Whole Line or Region
+
+;; When no region is active (nothing is selected), and you invoke the
+;; =kill-region= (cut) or =kill-ring-save= (copy) commands, Emacs acts on the
+;; range of characters between the mark and the point. This is a really good way
+;; to accidentally kill half your document. I have done this more times than I'd
+;; like to admit. This package makes it so that without a region those commands
+;; act on a whole line.
+
 (use-package whole-line-or-region
   :ensure
   :config

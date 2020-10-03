@@ -434,6 +434,34 @@
   ;; see ctrlf-minibuffer-bindings
   )
 
+;;;; Search and Replace
+
+;; Package `visual-regexp' provides an alternate version of
+;; `query-replace' which highlights matches and replacements as you
+;; type.
+(use-package visual-regexp
+  :bind (([remap query-replace] . #'vr/query-replace)))
+
+;; Package `visual-regexp-steroids' allows `visual-regexp' to use
+;; regexp engines other than Emacs'; for example, Python or Perl
+;; regexps.
+(use-package visual-regexp-steroids
+  :demand t
+  :after visual-regexp
+  :bind (([remap query-replace-regexp] . #'radian-query-replace-literal))
+  :config
+
+  ;; Use Emacs-style regular expressions by default, instead of
+  ;; Python-style.
+  (setq vr/engine 'emacs)
+
+  (defun radian-query-replace-literal ()
+    "Do a literal query-replace using `visual-regexp'."
+    (interactive)
+    (let ((vr/engine 'emacs-plain))
+      (call-interactively #'vr/query-replace))))
+
+
 ;;; Packages
 
 ;; make sure everything I declare is installed

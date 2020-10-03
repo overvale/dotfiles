@@ -27,5 +27,5 @@
   (setq vc-follow-symlinks t))
 
 ;; Load your config file
-(load-file "~/dot/emacs/emacs-init.el")
+(load-file "~/dot/emacs/config.el")
 

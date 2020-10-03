@@ -13,9 +13,9 @@
   )
 
 (defun oht/find-settings ()
-  "Quickly open emacs-init.el"
+  "Quickly open config.el"
   (interactive)
-  (find-file "~/dot/emacs/emacs-init.el"))
+  (find-file "~/dot/emacs/config.el"))
 
 (defun oht/kill-this-buffer ()
   "Quickly kill current buffer"

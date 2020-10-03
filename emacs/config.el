@@ -247,6 +247,7 @@
   ("C-h v" . #'helpful-variable)
   ("C-h k" . #'helpful-key)
   ("C-h C" . #'helpful-command)
+  ("C-h p" . #'helpful-at-point)
  )
 
 ;; Normally, C-? is used for undo/redo,
@@ -289,6 +290,10 @@
 ;; kill ring. This way, you can paste it with `yank-pop'.
 (setq save-interprogram-paste-before-kill t)
 
+;; Eliminate duplicates in the kill ring. That is, if you kill the
+;; same thing twice, you won't have to use M-y twice to get past it to
+;; older entries in the kill ring.
+(setq kill-do-not-save-duplicates t)
 
 ;; When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=,
 ;; Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=.
@@ -842,7 +847,7 @@
 
 (defhydra hydra-outline (:color amaranth)
   "Hydra for navigating outline mode"
-  ("M-<tab>" outline-hide-sublevels "Hide to This Sublevel")
+  ("o" outline-hide-sublevels "Hide to This Sublevel")
   ("<tab>" oht/outline-show-entry-branches "Show Subtree")
   ("S-<tab>" outline-hide-subtree "Hide Subtree")
   ("a" outline-show-all "Show All" :color: blue)

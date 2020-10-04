@@ -451,18 +451,33 @@
 ;; The creator of these packages also created an enhanced version of =isearch= which I find very useful, and in keeping with the philosophy of minimalism.
 
 (use-package ctrlf
-  :defer 1
-  :config (ctrlf-mode +1)
+  ;; When you enable ctrlf-mode, you get these DEFAULT BINDINGS:
   ;; C-s - ctrlf-forward-literal
   ;; C-r - ctrlf-backward-literal
   ;; C-M-s - ctrlf-forward-regexp
   ;; C-M-r - ctrlf-backward-regexp
   ;; M-s _ - ctrlf-forward-symbol
   ;; M-s . - ctrlf-forward-symbol-at-point
-  ;; by default is only case-sensitive if search has uppercase letters
+  ;; but these bindings seem to override your explicit bindings. No thanks.
+
   ;; M-n inserts symbol-at-point
-  ;; C-o s - change search style
-  ;; see ctrlf-minibuffer-bindings
+  ;; C-o s - change search style, which includes fuzzy & fuzzy-regex
+
+  ;; When the minibuffer is active with a ctrlf search:
+  ;; M-r - toggle regex
+  ;; M-c - toggle case sensitivity
+  ;; M-p - previous in minibuffer history
+  ;; M-n - next in minibuffer history
+
+  (setq ctrlf-minibuffer-bindings
+        `(("C-n"             . ctrlf-next-match)
+          (,(kbd "C-p")      . ctrlf-previous-match)
+	  (,(kbd "C-M-o")    . ctrlf-occur)
+	  ))
+
+  :bind
+  ("C-s" . ctrlf-forward-fuzzy)
+  ("C-r" . ctrlf-backward-fuzzy)
   )
 
 ;;;; Search and Replace
@@ -1075,8 +1090,6 @@
 
 (bind-key "s-g" 'keyboard-quit)
 
-(bind-key "C-s" 'ctrlf-forward-fuzzy)
-(bind-key "C-r" 'ctrlf-backward-fuzzy)
 (bind-key "M-<up>" 'oht/move-line-up)
 (bind-key "M-<down>" 'oht/move-line-down)
 (bind-key "M-o" 'other-window)

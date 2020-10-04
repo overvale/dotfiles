@@ -458,21 +458,23 @@
   ;; C-M-r - ctrlf-backward-regexp
   ;; M-s _ - ctrlf-forward-symbol
   ;; M-s . - ctrlf-forward-symbol-at-point
-  ;; but these bindings seem to override your explicit bindings. No thanks.
-
-  ;; M-n inserts symbol-at-point
   ;; C-o s - change search style, which includes fuzzy & fuzzy-regex
+  ;; but since this is a minor mode, its bindings will override your explicit
+  ;; bindings in this config. No thank you. I'd rather manually create the same
+  ;; bindings.
 
-  ;; When the minibuffer is active with a ctrlf search:
-  ;; M-r - toggle regex
-  ;; M-c - toggle case sensitivity
+  ;; And these bindings are standard for the minibuffer:
+  ;; M-n - insert symbol-at-point
   ;; M-p - previous in minibuffer history
   ;; M-n - next in minibuffer history
 
   (setq ctrlf-minibuffer-bindings
-        `(("C-n"             . ctrlf-next-match)
-          (,(kbd "C-p")      . ctrlf-previous-match)
-	  (,(kbd "C-M-o")    . ctrlf-occur)
+        `(("C-n"          . ctrlf-next-match)
+          (,(kbd "C-p")   . ctrlf-previous-match)
+	  (,(kbd "M-O")   . ctrlf-occur)
+	  (,(kbd "M-c")   . ctrlf-toggle-case-fold-search)
+	  (,(kbd "M-r")   . ctrlf-toggle-regexp)
+	  (,(kbd "C-o s") . ctrlf-change-search-style)
 	  ))
 
   :bind

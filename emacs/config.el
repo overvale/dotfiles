@@ -63,6 +63,32 @@
       initial-major-mode 'fundamental-mode
       initial-scratch-message nil)
 
+;;;; Remember-Notes
+
+;; By default, Emacs always starts up with a *scratch* buffer that is NOT
+;; intended to be saved; when you kill it or quit emacs the contents of your
+;; *scratch* buffer are gone forever without warning. I don't think I'm alone in
+;; thinking that this is not very useful. Thankfully, emacs 24.4 introduced a
+;; replacement for the *scratch* buffer that is saved when emacs exits, thus
+;; your scratch pad NEVER deletes data. And THAT makes a lot more sense to me.
+;; More info:
+;; https://www.masteringemacs.org/article/whats-new-in-emacs-24-4#remember
+
+;; This sets the name of the buffer to *scratch*, which I suppose I'm just doing
+;; for tradition's sake.
+(setq remember-notes-auto-save-visited-file-name t
+      remember-notes-buffer-name "*scratch*")
+;; If you just tell initial-buffer-choice that you want to use remember-notes as
+;; your initial buffer emacs will still create a *scratch* buffer that you'll
+;; never use. So we set initial-buffer-choice to a function which kills the
+;; scratch buffer and opens the remember-notes file.
+(setq initial-buffer-choice
+      (lambda () (kill-buffer remember-notes-buffer-name)
+                 (remember-notes)))
+
+;; Now set the location of the remember-notes file.
+(setq remember-data-file "/Users/oht/Documents/remember-notes")
+
 ;;;; Performance Enhancers
 
 ;; All of these are all stolen (with comments) from Doom Emacs:

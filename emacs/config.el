@@ -468,6 +468,7 @@
   ;; M-p - previous in minibuffer history
   ;; M-n - next in minibuffer history
 
+  :config
   (setq ctrlf-minibuffer-bindings
         `(("C-n"          . ctrlf-next-match)
           (,(kbd "C-p")   . ctrlf-previous-match)

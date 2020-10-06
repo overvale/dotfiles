@@ -6,10 +6,8 @@
   (variable-pitch-mode t)
   (flyspell-mode t)
   (setq-local line-spacing 0.15)
-  ;; define width of buffer margins
-  (setq-local left-margin-width 1)
-  (setq-local right-margin-width 1)
-  ;;(set-window-buffer nil (current-buffer)) ; Use them now.
+  (olivetti-mode t)
+  (oht/font-large)
   )
 
 (defun oht/find-settings ()

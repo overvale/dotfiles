@@ -560,6 +560,7 @@
 (use-package exec-path-from-shell)
 (use-package olivetti
   :commands olivetti-mode
+  :custom (olivetti-body-width 80)
   )
 (use-package unfill
   :commands (unfill-paragraph unfill-toggle unfill-region)
@@ -706,7 +707,7 @@
   (modus-operandi-theme-org-blocks 'greyscale)
   (modus-operandi-theme-variable-pitch-headings nil)
   (modus-operandi-theme-3d-modeline nil)
-  (modus-operandi-theme-completions 'opinionated)
+  (modus-operandi-theme-completions 'moderate)
   (modus-operandi-theme-diffs 'desaturated)
   :config
   (load-theme 'modus-operandi t)

@@ -16,6 +16,11 @@
 
 (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
       gc-cons-percentage 0.6)
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (setq gc-cons-threshold 16777216 ; 16mb
+          gc-cons-percentage 0.1)
+    (garbage-collect)) t)
 
 ;;;; Startup Profiling
 
@@ -1026,16 +1031,6 @@
 	   ("-" . oht/set-font-normal)
 	   ("=" . oht/set-font-large)
 	   )
-
-;;; Wrap-Up
-
-;; 2nd part of the garbage collection thing:
-
-(add-hook 'emacs-startup-hook
-  (lambda ()
-    (setq gc-cons-threshold 16777216 ; 16mb
-          gc-cons-percentage 0.1)))
-
 
 ;; Local Variables:
 ;; outline-regexp: ";;;+ "

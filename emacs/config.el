@@ -25,9 +25,8 @@
 ;; =use-package=.
 
 ;; this package creates a report each time you startup
-;; it works well with org-babel
+;; You'll need to add ':demand t' and restart emacs to see the report
 (use-package benchmark-init
-  :ensure t
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
@@ -250,6 +249,7 @@
 ;; =flyspell-correct= allows you to pass spelling suggestions to completion and search frameworks, such as =selectrum=. This setup code is copied directly from the selectrum documentation.
 
 (use-package flyspell-correct
+  :demand t
   :custom
   (flyspell-correct-interface 'flyspell-correct-dummy)
   )
@@ -429,6 +429,7 @@
 
 ;; selectrum is the live-search framework
 (use-package selectrum
+  :demand t
   :config (selectrum-mode +1)
   :bind
   ("s-b" . selectrum-switch-buffer+)
@@ -438,11 +439,13 @@
 
 ;; prescient is for sorting search candidates
 (use-package prescient
+  :demand t
   :config (prescient-persist-mode +1)
   )
 
 ;; this combines them
 (use-package selectrum-prescient
+  :demand t
   :config (selectrum-prescient-mode +1)
 )
 
@@ -513,9 +516,6 @@
 
 ;;; Packages
 
-;; make sure everything I declare is installed
-;; (setq use-package-always-ensure t)
-
 ;; Tell `use-package' to always load features lazily unless told
 ;; otherwise. It's nicer to have this kind of thing be deterministic:
 ;; if `:demand' is present, the loading is eager; otherwise, the
@@ -550,7 +550,7 @@
   ("s-E" . er/contract-region)
   )
 (use-package sdcv-mode
-  :defer 2
+  :commands sdcv-search
   :load-path "lisp/emacs-sdcv/")
 
 ;; Since emacs seems to love spawning new windows, and taking over your existing
@@ -561,18 +561,16 @@
 
 ;; Toggle mode-line
 (use-package hide-mode-line
-  :defer 2
+  :commands hide-mode-line-mode
 )
 
 ;; Use iMenu across all open buffers
 (use-package imenu-anywhere
-  :ensure
   :commands (imenu-anywhere)
 )
 
 ;; replaces zap-to-char with an avy-like interface
 (use-package zzz-to-char
-  :ensure
   :bind ("M-z" . zzz-up-to-char))
 
 ;; Whole Line or Region
@@ -585,7 +583,7 @@
 ;; act on a whole line.
 
 (use-package whole-line-or-region
-  :ensure
+  :demand t
   :config
   (whole-line-or-region-global-mode 1)
   )
@@ -660,7 +658,6 @@
 ;; I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus Themes]].
 
 (use-package modus-vivendi-theme
-  :defer t
   :custom
   (modus-vivendi-theme-faint-syntax t)
   (modus-vivendi-theme-slanted-constructs t)
@@ -671,6 +668,7 @@
 )
 
 (use-package modus-operandi-theme
+  :demand t
   :custom
   (modus-operandi-theme-faint-syntax t)
   (modus-operandi-theme-slanted-constructs t)
@@ -693,18 +691,15 @@
 
 ;; Though I rarely use them, I like these themes too.
 
-(use-package gruvbox-theme
-  :defer t)
-(use-package nord-theme
-  :defer t)
-(use-package tron-legacy-theme
-  :defer t)
-(use-package zenburn-theme
-  :defer t)
+(use-package gruvbox-theme)
+(use-package nord-theme)
+(use-package tron-legacy-theme)
+(use-package zenburn-theme)
 
 ;;;; Mode Line
 
 (use-package minions
+  :demand t
   :config (minions-mode t))
 
 ;; add columns to the mode-line
@@ -809,6 +804,7 @@
 ;;; Org
 
 (use-package org
+  :commands org-mode
   :config
   (load-file "~/dot/emacs/org-mode.el")
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))

@@ -178,6 +178,25 @@ The full list of keywords that control load-time of packages is:
 - =:hook=
 - =:defer=
 
+** Proper Use of 'use-package-always-defer'
+
+To anyone starting out with =use-package= I would recommend enabling
+=use-package-always-defer=. This means that unless you explicitly tell emacs to
+load something, it won't. This way you will not accidentally (by adding a
+package) introduce performance hits.
+
+Keep in mind, though, that this means you have to understand, and make explicit,
+your use of each package.
+
+The packages you =:demand= to load are ones that are not explicitly called by
+keybindings, modes, or functions. The best example, in this config, is the use
+of =selectrum= (and associated packages). In this case I have a keybinding for the
+function =execute-extended-command= which is built-in, not installed by =selectrum=,
+therefore triggering that binding will not load selectrum, but I want selectrum
+loaded when that command is called. So I =:demand= selectrum be loaded so
+=execute-extended-command= can use it.
+
+
 * Secondary Selection
 
 Now, on to the fun stuff. Making emacs do stuff other editors can't.

@@ -152,7 +152,7 @@
 (when (file-exists-p custom-file)
   (load custom-file :noerror))
 
-;;; emacs.d Folder Layout
+;;; Emacs Load Paths
 
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 
@@ -283,28 +283,46 @@
 
 ;;; macOS Consistency
 
-;; The below is probably the biggest reason why I managed get over the intimidation of using Emacs in those first few days. They're designed to make all the shortcuts you use in every other Mac app to work the same way in Emacs. Some of these simply remap existing bindings, and some of them call custom functions that emulate macOS behaviour.
+;; The below is probably the biggest reason why I managed get over the
+;; intimidation of using Emacs in those first few days. They're designed to make
+;; all the shortcuts you use in every other Mac app to work the same way in
+;; Emacs. Some of these simply remap existing bindings, and some of them call
+;; custom functions that emulate macOS behaviour.
 
 ;;;; Modifiers & Emacs Anachronisms
 
 ;; The below does 3 things:
 
-;; 1. Makes the command keys act as =super=. =super= keybindings are basically not used by Emacs so they're a safe playground for assigning your own keybindings. I setup =s-q= for quit,  =s-s= for save, =s-z= for undo, =s-o= for open file, basically, all the standard Mac shortcuts. Once I did that Emacs became very usable immediately and that ease-of-use made learning Emacs a lot less painful.
-;; 2. Makes the left option key act =meta= so I can use meta-keybindings.
+;; ONE:
+;; Makes the command keys act as =super=. =super= keybindings are basically not
+;; used by Emacs so they're a safe playground for assigning your own
+;; keybindings. I setup =s-q= for quit, =s-s= for save, =s-z= for undo, =s-o=
+;; for open file, basically, all the standard Mac shortcuts. Once I did that
+;; Emacs became very usable immediately and that ease-of-use made learning Emacs
+;; a lot less painful.
+;;
+;; TWO:
+;; Makes the left option key act =meta= so I can use meta-keybindings.
+;;
+;; THREE:
 ;; 3. Makes the right option key act as =option= to I can insert characters like: £¢∞§¶•≠.
 
 (setq mac-command-modifier 'super)
 (setq mac-option-modifier 'meta)
 (setq mac-right-option-modifier 'nil)
 
-;; Due to historical reasons, Emacs thinks =C-i= is the same as =TAB= and =C-m= is the same as =RETURN=. The below undoes that assumption. This will allow you to re-bind them later.
+;; Due to historical reasons, Emacs thinks =C-i= is the same as =TAB= and =C-m=
+;; is the same as =RETURN=. The below undoes that assumption. This will allow
+;; you to re-bind them later.
 
 (define-key input-decode-map [?\C-i] [C-i])
 (bind-key "<C-i>" nil)
 (define-key input-decode-map [?\C-m] [C-m])
 (bind-key "<C-m>" nil)
 
-;; By default, Emacs doesn't replace the selection (region) with anything you type, it just removes your selection and appends what you type. The below makes what you type /replace/ your selection.
+;; By default, Emacs doesn't replace the selection (region) with anything you
+;; type, it just removes your selection and appends what you type. The below
+;; makes what you type /replace/ your selection.
 
 (delete-selection-mode t)
 
@@ -325,7 +343,6 @@
 ;; Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=.
 ;; This makes Emacs refer to them as =foo/file= and =bar/file=, like a sane
 ;; program.
-
 (setq uniquify-buffer-name-style 'forward)
 
 ;; By default Emacs window sizes always line-up with the character-grid, meaning
@@ -368,7 +385,15 @@
 
 ;;;; Standard Mac Shortcuts
 
-;; Wherever possible I want to use standard [[https://support.apple.com/en-us/HT201236][macOS shortcuts]]. macOS actually inherits many Emacs keybindings, but adds to it a few from =readline= and old terminal interfaces. Because these are available system-wide I want Emacs to do the same thing. That way the way I type/move in Mail.app or Safari is the same as Emacs. There are also conventions that, while not officially standard, have become widely accepted, those should be respected too. Some of these require custom functions, but that's usually a simple matter of stringing a couple existing commands together into a function.
+;; Wherever possible I want to use standard macOS shortcuts[1]. macOS actually
+;; inherits many Emacs keybindings, but adds to it a few from =readline= and old
+;; terminal interfaces. Because these are available system-wide I want Emacs to
+;; do the same thing. That way the way I type/move in Mail.app or Safari is the
+;; same as Emacs. There are also conventions that, while not officially
+;; standard, have become widely accepted, those should be respected too. Some of
+;; these require custom functions, but that's usually a simple matter of
+;; stringing a couple existing commands together into a function.
+;; [1]: https://support.apple.com/en-us/HT201236
 
 ;; C-[ sends ESC so let's make ESC more predictable
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))

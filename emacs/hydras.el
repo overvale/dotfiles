@@ -1,10 +1,8 @@
 ;; -*- lexical-binding: t -*-
 
-;;; Hydras
-
 ;; Hydras should be reserved for mini-modes, /ie/ places where you'll want to call several functions in a row. If all you're doing is grouping similar commands then which-key should suffice.
 
-;;;; Info: Hydra Colors
+;;; Info: Hydra Colors
 
 ;; [[https://github.com/abo-abo/hydra/wiki/Hydra-Colors][Official Documentation]]
 
@@ -16,7 +14,7 @@
 ;; | teal     | Exit                | Reject and Continue |
 ;; | blue     | Exit                | Accept and Exit     |
 
-;;;; Text Manipulation
+;;; Text Manipulation
 
 ;; These commands pretty much require a region.
 
@@ -32,7 +30,8 @@
   ("-" delete-duplicate-lines "Del Dupes")
   ("q" nil "cancel"))
 
-;;;; Transpose
+;;; Transpose
+
 ;; There are so many ways to transpose in Emacs, why not get help?
 
 (defhydra hydra-transpose (:color blue)

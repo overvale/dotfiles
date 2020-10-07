@@ -1,4 +1,6 @@
-;; -*- lexical-binding: t -*-
+;;; config.el  -*- lexical-binding: t -*-
+
+;;; Commentary
 
 ;; To see the outline of this file, run M-x outline-minor-mode and then press
 ;; C-c @ C-t. You might also want to run M-x occur with the following query:
@@ -66,6 +68,9 @@
       ;; pull in a ton of packages.
       initial-major-mode 'fundamental-mode
       initial-scratch-message nil)
+
+(tool-bar-mode -1)                         ; hide menu-bar
+(scroll-bar-mode -1)                       ; hide scroll bars
 
 ;;;; Remember-Notes
 
@@ -172,13 +177,12 @@
 ;;;; Display
 
 (menu-bar-mode 1)                          ; ensures full-screen avail on macOS
-(tool-bar-mode -1)                         ; hide menu-bar
-(scroll-bar-mode -1)                       ; hide scroll bars
 (show-paren-mode t)                        ; highlight parens
 (setq show-paren-delay 0)                  ; and show immediately
 (setq visible-bell t)                      ; disable beep
 (setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
 (setq x-underline-at-descent-line t)       ; underline at descent, not baseline
+(setq-default indicate-empty-lines t)      ; show where the file ends
 
 ;; cursor settings
 (set-default 'cursor-type 'box)
@@ -906,7 +910,7 @@
 ;; sections of a buffer into an outline-like format.
 ;; Let's turn that minor mode into a global minor mode.
 (define-globalized-minor-mode global-outline-minor-mode
-    outline-minor-mode outline-minor-mode)
+  outline-minor-mode outline-minor-mode)
 (global-outline-minor-mode +1)
 
 (defun oht/outline-show-entry-branches ()

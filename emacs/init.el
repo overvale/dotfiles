@@ -64,7 +64,7 @@
 ;; this package creates a report each time you startup
 ;; You'll need to add ':demand t' and restart emacs to see the report
 (use-package benchmark-init
-  :demand t
+  ;;:demand t
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
@@ -728,9 +728,11 @@
   (modus-vivendi-theme-faint-syntax t)
   (modus-vivendi-theme-slanted-constructs t)
   (modus-vivendi-theme-bold-constructs t)
-  (modus-vivendi-theme-3d-modeline t)
+  (modus-vivendi-theme-mode-line '3d)
   (modus-vivendi-theme-org-blocks 'greyscale)
   (modus-vivendi-theme-completions 'moderate)
+  (modus-vivendi-theme-diffs 'desaturated)
+  (set-face-attribute 'bold nil :weight 'semibold)
 )
 
 (use-package modus-operandi-theme
@@ -740,20 +742,27 @@
   (modus-operandi-theme-slanted-constructs t)
   (modus-operandi-theme-bold-constructs t)
   (modus-operandi-theme-org-blocks 'greyscale)
-  (modus-operandi-theme-variable-pitch-headings nil)
-  (modus-operandi-theme-3d-modeline nil)
+  (modus-vivendi-theme-mode-line '3d)
   (modus-operandi-theme-completions 'moderate)
   (modus-operandi-theme-diffs 'desaturated)
   :config
   (load-theme 'modus-operandi t)
+  (set-face-attribute 'bold nil :weight 'semibold)
 )
 
 (defadvice load-theme (before clear-previous-themes activate)
   "Clear existing theme settings instead of layering them"
   (mapc #'disable-theme custom-enabled-themes))
 
-;; This needs to be set after the theme
-(set-face-attribute 'bold nil :weight 'semibold)
+(defun modus-themes-toggle ()
+  "Toggle between `modus-operandi' and `modus-vivendi' themes."
+  (interactive)
+  (if (eq (car custom-enabled-themes) 'modus-operandi)
+      (progn
+        (disable-theme 'modus-operandi)
+        (load-theme 'modus-vivendi t))
+    (disable-theme 'modus-vivendi)
+    (load-theme 'modus-operandi t)))
 
 ;; Though I rarely use them, I like these themes too.
 

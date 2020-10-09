@@ -127,7 +127,7 @@
                  (remember-notes)))
 
 ;; Now set the location of the remember-notes file.
-(setq remember-data-file "/Users/oht/Documents/remember-notes")
+(setq remember-data-file "~/Documents/org-files/remember-notes")
 
 ;;;; Performance Enhancers
 
@@ -587,6 +587,8 @@
 ;; loading is lazy. See
 ;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
 ;; (setq use-package-always-defer t)
+
+(use-package hydra)
 
 (use-package magit
   :commands magit-status

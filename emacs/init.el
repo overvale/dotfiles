@@ -742,12 +742,15 @@
   (modus-operandi-theme-slanted-constructs t)
   (modus-operandi-theme-bold-constructs t)
   (modus-operandi-theme-org-blocks 'greyscale)
-  (modus-vivendi-theme-mode-line '3d)
+  (modus-operandi-theme-mode-line '3d)
   (modus-operandi-theme-completions 'moderate)
   (modus-operandi-theme-diffs 'desaturated)
+  (modus-operandi-theme-variable-pitch-headings nil)
   :config
-  (load-theme 'modus-operandi t)
+  (setq modus-operandi-theme-headings
+        '((t . highlight)))
   (set-face-attribute 'bold nil :weight 'semibold)
+  (load-theme 'modus-operandi t)
 )
 
 (defadvice load-theme (before clear-previous-themes activate)

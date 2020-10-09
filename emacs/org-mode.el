@@ -73,7 +73,7 @@
 
 (setq org-agenda-custom-commands
       '(
-	("0" "MASTER: Everything, categorized."
+	("0" "ALL: Everything, categorized."
 	 (
 	  (agenda "w" ((org-agenda-span 'week)))
 	  (todo "TODAY"
@@ -84,7 +84,7 @@
 		 ((org-agenda-overriding-header "Things You Might Want To Do: ")
 		  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
 		  ))
-          (todo "SNOOZE|DELG|LATER"
+          (todo "LATER"
                 ((org-agenda-overriding-header "It can wait: ")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
 		))))
@@ -99,8 +99,8 @@
                 ((org-agenda-overriding-header "Things You Might Want To Do: ")
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
                 )))
-        ("3" "STALLED: Things you've put off for later: "
-          ((todo "SNOOZED|DELG|LATER"
+        ("3" "LATER: Things you've put off for later: "
+          ((todo "LATER"
                 ((org-agenda-overriding-header "It can wait: ")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
 		)))
@@ -128,8 +128,8 @@
 ;;;; Keywords
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "TODAY(T)" "LATER(l)" "|" "DONE(d)")
-        (sequence "SNOOZE(s)" "DELG(g)" "|" "CANCELED(c)")))
+      '((sequence "TODO(t)" "TODAY(T)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")
+        ))
 
 ;; Ensure that a task can’t be marked as done if it contains
 ;; unfinished subtasks or checklist items. This is handy for

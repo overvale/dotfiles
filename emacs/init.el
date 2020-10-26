@@ -270,7 +270,7 @@
 
 ;; By default, the mouse-buttons are bound to the following actions:
 ;; - mouse-1: moves point
-;; - mouse-2: yanks from kill-ring
+;; - mouse-2: yanks from kill-ring (or spelling correction)
 ;; - mouse-3: extends region from point to click, and saves to kill-ring, click again to kill.
 
 ;; And if =mouse-yank-at-point= is set to =t= then =mouse-2= yanks to point instead of click.
@@ -856,6 +856,9 @@
 (add-hook 'completion-at-point-functions
           #'complete-path-at-point+
           'append)
+
+;; The two blocks of code above are taken from:
+;; https://with-emacs.com/posts/tutorials/customize-completion-at-point/
 
 ;; I've not enabled the below code because I'm still testing it, but it basically creates a function witch reads and caches a file with a list of words and offers completions from it when you call a custom function. It is taken from [[https://emacs.stackexchange.com/questions/37423/completion-by-fuzzy-search-in-large-dictionary-file-displaying-candidates-inlin/37446#37446][this stackexchange message]].
 

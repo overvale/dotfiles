@@ -225,7 +225,6 @@ This function works by setting the new-frame behaviour to use tabs, creating a n
   (interactive)
   (org-insert-time-stamp (current-time))
   )
-
 (defun oht/switch-to-new-buffer ()
   "Create a new buffer named 'Untitled'."
   (interactive)

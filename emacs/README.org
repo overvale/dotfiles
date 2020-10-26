@@ -194,7 +194,9 @@ of =selectrum= (and associated packages). In this case I have a keybinding for t
 function =execute-extended-command= which is built-in, not installed by =selectrum=,
 therefore triggering that binding will not load selectrum, but I want selectrum
 loaded when that command is called. So I =:demand= selectrum be loaded so
-=execute-extended-command= can use it.
+=execute-extended-command= can use it. Now, maybe you could do =:commands
+execute-extended-command= but you'd need to know the name of every function that
+needs =selectrum=, which in this case is impractical.
 
 
 * Secondary Selection

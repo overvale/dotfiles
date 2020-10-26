@@ -275,6 +275,13 @@
 
 ;; And if =mouse-yank-at-point= is set to =t= then =mouse-2= yanks to point instead of click.
 
+;;; Click-To-Scroll
+
+;; This makes it so that when you click/right-click on the mode-line
+;; emacs scrolls the window. Why not? I actually like how Acme does this.
+(global-set-key [mode-line mouse-1] 'scroll-up-command)
+(global-set-key [mode-line mouse-3] 'scroll-down-command)
+
 ;;;; Spelling
 
 ;; Tell ispell where to find the =aspell= executable, and some settings.

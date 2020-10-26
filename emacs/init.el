@@ -64,7 +64,7 @@
 ;; this package creates a report each time you startup
 ;; You'll need to add ':demand t' and restart emacs to see the report
 (use-package benchmark-init
-  ;;:demand t
+  :demand t
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
@@ -280,6 +280,7 @@
 ;; Tell ispell where to find the =aspell= executable, and some settings.
 
 (use-package flyspell
+  :commands (flyspell-mode flyspell-prog-mode)
   :config
   (setq ispell-program-name "/usr/local/bin/aspell")
   (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
@@ -289,17 +290,18 @@
 ;; =flyspell-correct= allows you to pass spelling suggestions to completion and search frameworks, such as =selectrum=. This setup code is copied directly from the selectrum documentation.
 
 (use-package flyspell-correct
-  :demand t
+  :bind
+  ("M-;" . #'flyspell-correct-wrapper)
+  ("M-:" . #'flyspell-correct-at-point)
   :custom
   (flyspell-correct-interface 'flyspell-correct-dummy)
+  :init
+  (advice-add 'flyspell-correct-dummy :around
+	      (defun my--fsc-wrapper (func &rest args)
+		(let ((selectrum-should-sort-p nil))
+		  (apply func args))))
   )
-(advice-add 'flyspell-correct-dummy :around
-	    (defun my--fsc-wrapper (func &rest args)
-	      (let ((selectrum-should-sort-p nil))
-		(apply func args))))
 
-(bind-key "M-;" 'flyspell-correct-wrapper)
-(bind-key "M-:" 'flyspell-correct-at-point)
 
 ;;; Emacs Help
 
@@ -603,6 +605,7 @@
   :commands (unfill-paragraph unfill-toggle unfill-region)
   )
 (use-package which-key
+  :demand t
   :config
   (which-key-mode t)
   (setq which-key-idle-delay 0.4)

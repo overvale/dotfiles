@@ -207,15 +207,55 @@ end
 hs.hotkey.bind({'ctrl', 'cmd'}, "w", selectWord)
 
 
--- Disable cmd+w in Remote Desktop
+
+-- Application-Specific Bindings
 -- -----------------------------------------------
+
+-- Start by defining the keys you'd like to change.
+-- Remote Desktop
 local msrdDisable = hs.hotkey.new({"cmd"}, "w", function() end)
-msrdWatcher = hs.application.watcher.new(function(appName, eventType, appObject)
+-- Excel
+local excelDown = hs.hotkey.new({"ctrl"}, "n", function()
+   hs.eventtap.event.newKeyEvent({}, "down", true):post()
+   hs.eventtap.event.newKeyEvent({}, "down", false):post()
+end)
+local excelUp = hs.hotkey.new({"ctrl"}, "p", function()
+   hs.eventtap.event.newKeyEvent({}, "up", true):post()
+   hs.eventtap.event.newKeyEvent({}, "up", false):post()
+end)
+-- Emacs
+local emacsBackWord = hs.hotkey.new({"ctrl"}, ";", function()
+   hs.eventtap.event.newKeyEvent({"alt"}, "b", true):post()
+   hs.eventtap.event.newKeyEvent({"alt"}, "b", false):post()
+end)
+local emacsForwardWord = hs.hotkey.new({"ctrl"}, "'", function()
+   hs.eventtap.event.newKeyEvent({"alt"}, "f", true):post()
+   hs.eventtap.event.newKeyEvent({"alt"}, "f", false):post()
+end)
+
+-- Then setup an application watcher that enables/disables the above bindings.
+appKeyBinder = hs.application.watcher.new(function(appName, eventType, appObject)
    if appName == "Microsoft Remote Desktop" then
       if eventType == hs.application.watcher.activated then
          msrdDisable:enable()
       elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
          msrdDisable:disable()
-    end
+      end
+   elseif appName == "Microsoft Excel" then
+      if eventType == hs.application.watcher.activated then
+         excelUp:enable()
+         excelDown:enable()
+      elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
+         excelUp:disable()
+         excelDown:disable()
+      end
+   elseif appName == "Emacs" then
+      if eventType == hs.application.watcher.activated then
+         emacsBackWord:enable()
+         emacsForwardWord:enable()
+      elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
+         emacsBackWord:disable()
+         emacsForwardWord:disable()
+      end
    end
 end):start()

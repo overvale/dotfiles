@@ -307,3 +307,14 @@ gameWatcher = hs.application.watcher.new(function(appName, eventType, appObject)
       end
 end):start()
  
+-- Another solution to the same problem...
+
+yourBinding = hs.hotkey.bind(...)
+
+local wf=hs.window.filter
+xcodeWF = wf.new("Xcode")
+xcodeWF:subscribe(wf.windowFocused, function()
+  yourBinding:disable()
+end):subscribe(wf.windowUnfocused, function()
+  yourBinding:enable()
+end)

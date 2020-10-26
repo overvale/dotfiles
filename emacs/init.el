@@ -758,9 +758,8 @@
   (modus-operandi-theme-completions 'moderate)
   (modus-operandi-theme-diffs 'desaturated)
   (modus-operandi-theme-variable-pitch-headings nil)
+  (modus-operandi-theme-links 'faint-neutral-underline)
   :config
-  (setq modus-operandi-theme-headings
-        '((t . highlight)))
   (set-face-attribute 'bold nil :weight 'semibold)
   (load-theme 'modus-operandi t)
 )

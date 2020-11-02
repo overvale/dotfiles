@@ -721,11 +721,11 @@
 (defun oht/set-font-large ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "SF Mono" :height 140 :weight 'normal)
+		      :family "Iosevka SS08" :height 140 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
 		      :family "IBM Plex Serif" :height 160 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "SF Mono" :height 140 :weight 'normal)
+		      :family "Iosevka SS08" :height 140 :weight 'normal)
   )
 
 ;; This sets the default fonts
@@ -741,7 +741,7 @@
   (modus-vivendi-theme-slanted-constructs t)
   (modus-vivendi-theme-bold-constructs t)
   (modus-vivendi-theme-mode-line '3d)
-  (modus-vivendi-theme-org-blocks 'greyscale)
+  (modus-vivendi-theme-org-blocks 'grayscale)
   (modus-vivendi-theme-completions 'moderate)
   (modus-vivendi-theme-diffs 'desaturated)
   (set-face-attribute 'bold nil :weight 'semibold)
@@ -753,7 +753,7 @@
   (modus-operandi-theme-faint-syntax t)
   (modus-operandi-theme-slanted-constructs t)
   (modus-operandi-theme-bold-constructs t)
-  (modus-operandi-theme-org-blocks 'greyscale)
+  (modus-operandi-theme-org-blocks 'grayscale)
   (modus-operandi-theme-mode-line '3d)
   (modus-operandi-theme-completions 'moderate)
   (modus-operandi-theme-diffs 'desaturated)

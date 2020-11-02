@@ -67,15 +67,11 @@ Plug 'axvr/org.vim'
 
 " Colors
 Plug 'lifepillar/vim-gruvbox8'
-"Plug 'morhetz/gruvbox'
-"    let g:gruvbox_contrast_dark = 'medium'
-"    let g:gruvbox_contrast_light = 'hard'
-"    let g:gruvbox_italic = 1
-"    let g:gruvbox_invert_selection = 0
 Plug 'junegunn/seoul256.vim'
     let g:seoul256_light_background = 256
     let g:seoul256_background = 235
 Plug 'yasukotelin/shirotelin'
+Plug 'jsit/toast.vim'
 
 call plug#end()
 

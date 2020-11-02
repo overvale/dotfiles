@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: habit
+# key: habit
+# --
+SCHEDULED: <${1:date} .+1m>
+   :PROPERTIES:
+   :STYLE:    habit
+   :END:
+   :LOGBOOK:
+   :END:
+$0

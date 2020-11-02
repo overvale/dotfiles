@@ -893,6 +893,24 @@
 ;;    (point)
 ;;    my-dictionary))
 
+;;; Snippets
+
+(use-package yasnippet
+  :bind (:map yas-minor-mode-map
+	      ("TAB" . nil)
+	      ([tab] . nil))
+  ("s-y" . yas-expand)
+  :hook
+  (prog-mode . yas-minor-mode)
+  (text-mode . yas-minor-mode)
+  :custom
+  (yas-snippet-dirs '("~/dot/emacs/snippets/" user-emacs-directory))
+  (yas-verbosity 2)
+  :config
+  (yas-reload-all)
+  )
+
+
 ;;; Org
 
 (use-package org
@@ -1064,9 +1082,6 @@
 (bind-key "s-p" 'execute-extended-command)
 (bind-key "s-k" 'oht/kill-this-buffer)
 (bind-key "M-s-b" 'bufler)
-;; vim has the wonderful . command, and emacs has repeat
-;; s-y is my keybinding because excel has (a version of) repeat bound to that
-(bind-key "s-y" 'repeat)
 (bind-key "s-C" 'org-capture)
 (bind-key "s-|" 'hydra-manipulate/body)
 (bind-key "C-M-t" 'hydra-transpose/body)

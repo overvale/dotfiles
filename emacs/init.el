@@ -1103,6 +1103,7 @@
 	   ("<left>" . winner-undo)
 	   ("<right>" . winner-redo)
 	   ("v" . variable-pitch-mode)
+	   ("V" . oht/set-font-large-variable-pitch)
 	   ("s" . org-store-link)
 	   ("o" . selectrum-outline)
 	   ("-" . oht/set-font-normal)

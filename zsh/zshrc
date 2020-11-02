@@ -101,6 +101,14 @@ echo "
     tmk - Kill tmux session
 " }
 
+# System Reports
+# I use these commands to search for background processes I don't want
+alias ,lsdeamons='ls -al /Library/Launch* ~/Library/Launch*'
+alias ,lsrundeamons='launchctl list | grep -v "com.apple." | tail -n+2 | sort -k 3'
+alias ,lsrunsysdeamons='sudo launchctl list | grep -v "com.apple." | tail -n+2 | sort -k 3'
+alias ,lskext='kextstat | grep -v com.apple'
+alias ,lsmyps='ps -ax | grep -v "/System\|/Applications\|/usr\|/sbin\|ttys00[0-9]"'
+
 # }}}
 # {{{ FUNCTIONS
 # ----------------------------------------------------------------------------

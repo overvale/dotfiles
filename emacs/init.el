@@ -616,6 +616,7 @@
   :config
   (which-key-mode t)
   (setq which-key-idle-delay 0.4)
+  (blackout 'which-key-mode)
   )
 (use-package undo-fu
   :bind
@@ -664,6 +665,7 @@
   :demand t
   :config
   (whole-line-or-region-global-mode 1)
+  (blackout 'whole-line-or-region-local-mode)
   )
 
 ;; Bufler - a better buffer list
@@ -787,9 +789,13 @@
 
 ;;;; Mode Line
 
-(use-package minions
-  :demand t
-  :config (minions-mode t))
+(use-package blackout
+  :config
+  (blackout 'eldoc-mode)
+  )
+
+(blackout 'flyspell-mode " Spell")
+(blackout 'emacs-lisp-mode "Elisp")
 
 ;; add columns to the mode-line
 (column-number-mode t)
@@ -908,6 +914,7 @@
   (yas-verbosity 2)
   :config
   (yas-reload-all)
+  (blackout 'yas-minor-mode)
   )
 
 
@@ -987,6 +994,7 @@
 (define-globalized-minor-mode global-outline-minor-mode
   outline-minor-mode outline-minor-mode)
 (global-outline-minor-mode +1)
+(blackout 'outline-minor-mode)
 
 (defun oht/outline-show-entry-branches ()
   "This unfolds the 'entry' and shows all the subheadings, similar to how org-mode works."

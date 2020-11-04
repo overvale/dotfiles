@@ -230,7 +230,7 @@
 (setq sentence-end-double-space nil)   ; ends sentence after 1 space
 (fset 'yes-or-no-p 'y-or-n-p)          ; Changes all yes/no questions to y/n type
 (setq create-lockfiles nil)            ; No need for ~ files when editing
-(setq-default fill-column 80)          ; Set column used for fill-paragraph
+(setq-default fill-column 78)          ; Set column used for fill-paragraph
 (setq ring-bell-function 'ignore)      ; Don't beep
 
 ;; place backup files in a single place
@@ -1102,6 +1102,7 @@
 
 (bind-keys :prefix-map oht/global-leader
 	   :prefix "s-'"
+	   ("a" . auto-fill-mode)
 	   ("d" . sdcv-search)
 	   ("h" . hl-line-mode)
 	   ("l" . oht/toggle-line-numbers)

@@ -1,32 +1,43 @@
 #!/usr/bin/ruby
+# coding: utf-8
 
 ARGF.set_encoding(Encoding::UTF_8)
 input = ARGF.read
 
-# NOTE: brkt does not handle nested markup, or multi-line markup
+span_open  = /(?<!\\){/
+span_close = /(?<!\\)}/
+div_open   = /(?<!\\){\[/
+div_close  = /(?<!\\)\]}/
 
-# COMMENTS
 # {comment foo} => <!-- foo -->
 # {! foo} => <!-- foo -->
-input = input.gsub(/(?<!\\){(comment|!):?[ \t]+(.+?)(?<!\\)}/, '<!-- \2 -->')
+input = input.gsub(/#{span_open}(comment|!):?[ \t]+(.+?)#{span_close}/, '<!-- \2 -->')
 
-# SPECIAL
 # {break} => <div class="break"></div>
-# {code foo} => <code>foo</code>
 input = input.gsub(/^\s*{break}\s*$/, "\n<div class=\"break\"></div>\n")
-input = input.gsub(/(?<!\\){(code):?[ \t]+(.+?)(?<!\\)}/, '<code>\2</code>')
 
-# ARBITRARY
-# {bar foo} => <span class="bar">foo</span>
-input = input.gsub(/(?<!\\){(\w+):?[ \t]+(.+?)(?<!\\)}/, '<span class="\1">\2</span>')
+# {code foo} => <code>foo</code>
+input = input.gsub(/#{span_open}(code):?[ \t]+(.+?)#{span_close}/, '<code>\2</code>')
 
-# Images
+# Lines beginning with ¶
+input = input.gsub(/¶ +/, "\n")
+
 # {img /path/to/img.jpg} => <img src="/path/to/img.jpg" />
-# {/path/to/img.jpg} => <img src="/path/to/img.jpg" />
-input = input.gsub(/(?<!\\){img:?[ \t]+(.+?)(?<!\\)}/, '<img src="\1" />')
-input = input.gsub(/(?<!\\){(\S+?).(jpg|png|gif)(?<!\\)}/, '<img src="\1" />')
+input = input.gsub(/#{span_open}img:?[ \t]+(.+?)#{span_close}/, '<img src="\1" />')
 
-# ESCAPED
+# {/path/to/img.jpg} => <img src="/path/to/img.jpg" />
+input = input.gsub(/#{span_open}(\S+?).(jpg|png|gif)#{span_close}/, '<img src="\1" />')
+
+# {[foo bar]} => <div class="foo">bar</div><!--foo-->
+input = input.gsub(/#{div_open}(\w+):?[ \t\n]+/, '<div class="\1">'+"\n")
+input = input.gsub(/#{div_close}(\w+)?/, '</div><!--\1-->')
+
+# Spans
+# {foo bar} => <span class="foo">bar</span>
+input = input.gsub(/#{span_open}(\w+):?[ \t]+/, '<span class="\1">')
+input = input.gsub(/#{span_close}/, '</span>')
+
+# Escaped
 # \{foo\} => {foo}
 input = input.gsub(/\\([{}])/, '\1')
 

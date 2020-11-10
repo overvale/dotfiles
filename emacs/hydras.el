@@ -51,12 +51,10 @@
 
 ;; hydra-modal functions
 (defun hydra-modal/pre ()
-  "When activating the hydra-modal, change the cursor to a box"
   (set-face-attribute 'cursor nil :background "red")
 )
 
 (defun hydra-modal/post ()
-  "When exiting the hydra-modal, change the cursor to a bar"
   (set-face-attribute 'cursor nil :background "black")
 )
 
@@ -85,7 +83,7 @@
   ("J" oht/join-line-next "join")
   ("y" kill-ring-save "Copy")
   ("P" yank "paste")
-  ("<DEL>" kill-region "kill region")
+  ("<DEL>" oht/kill-region-or-char "kill region")
   ("d" oht/kill-region-or-char "kill region")
   ("D" kill-line "Kill to EOL")
   ("c" oht/kill-region-or-char "change" :color blue)
@@ -109,7 +107,7 @@
   ("C-r" replace-rectangle "replace rectangle")
   ("x" exchange-point-and-mark "swap point/mark")
   ;; exit
-  ("<f12>" nil "cancel" :color blue)
+  ("s-j" nil "cancel" :color blue)
   ("i" nil "cancel" :color blue))
 
 (bind-key "s-j" 'hydra-modal/body)

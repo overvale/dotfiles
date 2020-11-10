@@ -148,8 +148,6 @@ function deleteWordBack()
    hs.eventtap.event.newKeyEvent('delete', false):post()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
 end
-hs.hotkey.bind({'ctrl'}, 'w', deleteWordBack)
-hs.hotkey.bind({'ctrl'}, ',', deleteWordBack)
 
 function deleteWordForward()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
@@ -157,8 +155,6 @@ function deleteWordForward()
    hs.eventtap.event.newKeyEvent('forwarddelete', false):post()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
 end
-hs.hotkey.bind({'alt'}, 'd', deleteWordForward)
-hs.hotkey.bind({'ctrl'}, '.', deleteWordForward)
 
 function deleteLineBack()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.cmd, true):post()
@@ -166,7 +162,6 @@ function deleteLineBack()
    hs.eventtap.event.newKeyEvent('delete', false):post()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.cmd, false):post()
 end
-hs.hotkey.bind({'ctrl'}, 'u', deleteLineBack)
 
 function moveWordBack()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
@@ -174,7 +169,6 @@ function moveWordBack()
    hs.eventtap.event.newKeyEvent('left', false):post()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
 end
-hs.hotkey.bind({'ctrl'}, ';', moveWordBack)
 
 function moveWordForward()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
@@ -182,30 +176,36 @@ function moveWordForward()
    hs.eventtap.event.newKeyEvent('right', false):post()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
 end
-hs.hotkey.bind({'ctrl'}, "'", moveWordForward)
 
 function selectLine()
    -- move to beginning of line
    hs.eventtap.event.newKeyEvent({"ctrl"}, "a", true):post()
    hs.eventtap.event.newKeyEvent({"ctrl"}, "a", false):post()
-
    -- Shift + move to end of line
    hs.eventtap.event.newKeyEvent({"shift", "cmd"}, "right", true):post()
    hs.eventtap.event.newKeyEvent({"shift", "cmd"}, "right", false):post()
 end
-hs.hotkey.bind({'ctrl', 'cmd'}, "l", selectLine)
 
 function selectWord()
    -- move back word
    hs.eventtap.event.newKeyEvent({"alt"}, "left", true):post()
    hs.eventtap.event.newKeyEvent({"alt"}, "left", false):post()
-
    -- Shift + move forward word
    hs.eventtap.event.newKeyEvent({"shift", "alt"}, "right", true):post()
    hs.eventtap.event.newKeyEvent({"shift", "alt"}, "right", false):post()
 end
-hs.hotkey.bind({'ctrl', 'cmd'}, "w", selectWord)
 
+hs.hotkey.bind({'ctrl'}, 'w', deleteWordBack)
+hs.hotkey.bind({'alt'}, 'd', deleteWordForward)
+hs.hotkey.bind({'ctrl'}, 'u', deleteLineBack)
+
+hs.hotkey.bind({'ctrl'}, ';', moveWordBack)
+hs.hotkey.bind({'ctrl', 'alt'}, ';', deleteWordBack)
+hs.hotkey.bind({'ctrl'}, "'", moveWordForward)
+hs.hotkey.bind({'ctrl', 'alt'}, "'", deleteWordForward)
+
+hs.hotkey.bind({'ctrl', 'cmd'}, "l", selectLine)
+hs.hotkey.bind({'ctrl', 'cmd'}, "w", selectWord)
 
 
 -- Application-Specific Bindings

@@ -650,6 +650,7 @@
 )
 
 ;; replaces zap-to-char with an avy-like interface
+;; note that it searches forward and backward
 (use-package zzz-to-char
   :bind ("M-z" . zzz-up-to-char))
 
@@ -724,11 +725,11 @@
 (defun oht/set-font-large ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "Iosevka SS08" :height 140 :weight 'normal)
+		      :family "Triplicate T4" :height 150 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
 		      :family "IBM Plex Serif" :height 160 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Iosevka SS08" :height 140 :weight 'normal)
+		      :family "Triplicate T4" :height 150 :weight 'normal)
   )
 
 ;; This sets the default fonts

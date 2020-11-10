@@ -159,7 +159,10 @@
          "* %?\n\n")
         ("I" "Ingenuity Log Entry" entry
          (file "~/Documents/org-files/ingenuity_logbook.org")
-         "* %^{Log type|Meeting: |Call: } %? %t\n\n")
+         "* %? %t\n\n")
+	("c" "Ingenuity Cold Call" entry
+	 (file "~/Documents/org-files/logbook.org")
+	 (file "~/dot/emacs/capture-templates/cold-call.org"))
         ))
 
 ;; Ensure Capture Templates End With Newline

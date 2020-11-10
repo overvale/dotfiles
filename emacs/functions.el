@@ -230,6 +230,11 @@ This function works by setting the new-frame behaviour to use tabs, creating a n
   (interactive)
   (switch-to-buffer "Untitled")
   )
+(defun oht/find-scratch ()
+  "Switch to the *scratch* buffer"
+  (interactive)
+  (switch-to-buffer "*scratch*")
+  )
 
 (defun oht/set-font-large-variable-pitch ()
   "Combines oht/set-font-large and variable-pitch-mode."

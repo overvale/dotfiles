@@ -79,13 +79,9 @@ call plug#end()
 " {{{ Colors
 " ------------------------------------------------------------------------------
 
-set background=light
-colorscheme shirotelin
+set background=dark
+colorscheme gruvbox8
 syntax enable
-
-" Custom colors for shirotelin
-hi Statusline ctermbg=0
-hi Vertsplit cterm=none ctermbg=245 ctermfg=245
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =

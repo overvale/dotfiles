@@ -73,37 +73,12 @@
 
 (setq org-agenda-custom-commands
       '(
-	("0" "ALL: Everything, categorized."
-	 (
-	  (agenda "w" ((org-agenda-span 'week)))
-	  (todo "TODAY"
-                ((org-agenda-overriding-header "Today's Tasks: ")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-		 ))
-	  (todo "TODO"
-		 ((org-agenda-overriding-header "Things You Might Want To Do: ")
-		  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-		  ))
-          (todo "LATER"
-                ((org-agenda-overriding-header "It can wait: ")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-		))))
-        ("1" "TODAY: Agenda + TODAY Tasks"
+        ("1" "TODAY: Today's Agenda + Tasks"
          ((agenda "d" ((org-agenda-span 'day)))
-          (todo "TODAY"
-                ((org-agenda-overriding-header "Today's Tasks: ")
+          (todo "TODAY|TODO|LATER"
+                ((org-agenda-sorting-strategy '(todo-state-up))
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
                  )))
-        ("2" "TODO: Not Today, not delayed."
-         ((todo "TODO"
-                ((org-agenda-overriding-header "Things You Might Want To Do: ")
-                (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
-                )))
-        ("3" "LATER: Things you've put off for later: "
-          ((todo "LATER"
-                ((org-agenda-overriding-header "It can wait: ")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
-		)))
 	))
 
 ;; The variables
@@ -111,24 +86,23 @@
 ;;    org-agenda-todo-ignore-timestamp,
 ;;    org-agenda-todo-ignore-scheduled,
 ;;    org-agenda-todo-ignore-deadlines
-;; make the global TODO list skip entries that have time stamps of certain
-;; kinds.  If this option (=org-agenda-tags-todo-honor-ignore-options)= is set,
-;; the same options will also apply for the tags-todo search,
-;; which is the general tags/property matcher restricted to
-;; unfinished TODO entries only.
-
+;; make the global TODO list skip certain entries
 (setq org-agenda-todo-ignore-scheduled 'future)
+
+;; If this option is set, the same options will also apply for the tags-todo
+;; search, which is the general tags/property matcher restricted to unfinished
+;; TODO entries only.
 (setq org-agenda-tags-todo-honor-ignore-options t)
 
-;; If you'd like to hide completed tasks from the agenda, even if they're scheduled or have a deadline, here are variables for that. I don't have them enabled because I use custom views to get a clean look at what I need to do, and leave the generic agenda view (which these settings apply to) as a true agenda.
-
-;;(setq org-agenda-skip-scheduled-if-done t)
-;;(setq org-agenda-skip-deadline-if-done t)
+;; If you'd like to hide completed tasks from the agenda, even if they're
+;; scheduled or have a deadline, here are variables for that.
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-skip-deadline-if-done t)
 
 ;;;; Keywords
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "TODAY(T)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")
+      '((sequence "TODAY(T)" "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")
         ))
 
 ;; Ensure that a task can’t be marked as done if it contains

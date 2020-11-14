@@ -1074,6 +1074,9 @@
 
 (bind-key "s-g" 'keyboard-quit)
 
+(bind-key "s-f" #'occur)
+(bind-key "s-F" #'all-occur)
+
 (bind-key "M-<up>" 'oht/move-line-up)
 (bind-key "M-<down>" 'oht/move-line-down)
 (bind-key "M-o" 'other-window)

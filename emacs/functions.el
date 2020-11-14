@@ -242,3 +242,8 @@ This function works by setting the new-frame behaviour to use tabs, creating a n
   (oht/set-font-large)
   (variable-pitch-mode 1)
   )
+
+(defun all-occur (rexp)
+  "Search all buffers for REXP."
+  (interactive "MSearch open buffers for regex: ")
+  (multi-occur (buffer-list) rexp))

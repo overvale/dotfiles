@@ -1027,7 +1027,7 @@
 	   ("s" . oht/split-below)
 	   ("v" . oht/split-beside)
 	   ("h" . hydra-windows/body)
-	   ("k" . delete-window)
+	   ("k" . oht/delete-window)
 	   ("o" . delete-other-windows)
 	   ("b" . balance-windows)
 	   ("r" . oht/toggle-window-split))
@@ -1079,7 +1079,7 @@
 
 (bind-key "M-<up>" 'oht/move-line-up)
 (bind-key "M-<down>" 'oht/move-line-down)
-(bind-key "M-o" 'other-window)
+(bind-key "M-o" 'oht/other-window)
 (bind-key "M-s-s" 'save-some-buffers) ;save others
 
 ;; When region is active, make `capitalize-word' and friends act on it.
@@ -1089,6 +1089,9 @@
 
 ;; This cycles the spacing around point between a single space, no spaces, or the original spacing:
 (bind-key "M-SPC" 'cycle-spacing)
+
+;; This adds pulse-line to this keybinding, but that's it.
+(bind-key "C-l" 'oht/recenter-top-bottom)
 
 ;;;; Primary Bindings
 

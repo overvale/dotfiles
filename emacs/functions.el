@@ -247,3 +247,26 @@ This function works by setting the new-frame behaviour to use tabs, creating a n
   "Search all buffers for REXP."
   (interactive "MSearch open buffers for regex: ")
   (multi-occur (buffer-list) rexp))
+
+(defun pulse-line (&rest _)
+  (interactive)
+  "Pulse the current line."
+  (pulse-momentary-highlight-one-line (point)))
+
+(defun oht/other-window ()
+  (interactive)
+  (other-window 1)
+  (pulse-line)
+  )
+
+(defun oht/delete-window ()
+  (interactive)
+  (delete-window)
+  (pulse-line)
+  )
+
+(defun oht/recenter-top-bottom ()
+  (interactive)
+  (recenter-top-bottom)
+  (pulse-line)
+  )

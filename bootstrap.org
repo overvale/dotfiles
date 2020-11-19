@@ -66,6 +66,7 @@ While anyone could, in theory, adopt the settings above, the utilities and appli
 - Install [[https://www.princexml.com][princeXML]]
 - Install [[https://brew.sh][Homebrew]]
 - Install [[https://github.com/syncthing/syncthing-macos][Syncthing (macos)]]
+- Install [[https://support.apple.com/kb/DL2050?viewlocale=en_US&locale=en_US][Pro Video Formats 2.2]] (work-related)
 
 Install brew packages (you can run =brew leaves= to find out what you have installed right now):
 
@@ -90,15 +91,16 @@ zsh
 
 ** Applications
 
-Install as many app as you can into =~/Applications=, most work just fine from there, and apps in that directory run with the user's permissions, not admin permissions. Some tools, like Excel, require installation to =/Applications= so they can run background processes, some others, like 1 Password, complain every launch but work just fine.
+Install as many app as you can into =~/Applications=, most work just fine from there, and apps in that directory run with the user's permissions, not admin permissions. Some tools, like Excel, require installation to =/Applications= so they can run background processes, others complain every launch but work just fine.
 
-- 1Password7
-- Arq
+- Arq 5
 - BBEdit
 - Emacs (the [[https://github.com/railwaycat/homebrew-emacsmacport][correct version]], [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][more info]])
 - Fantastical (don’t forget to add accounts)
+- Firefox
 - Hammerspoon
 - Kaleidoscope
+- Mimestream
 - Microsoft Excel (installs auto-launching background processes)
 - Monodraw
 - SuperDuper

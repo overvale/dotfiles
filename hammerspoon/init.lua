@@ -36,7 +36,7 @@ local anycomplete = require "anycomplete"
 anycomplete.registerDefaultBindings()
 
 -- Draw pretty rounded corners on all screens
-Install:andUse("RoundedCorners", { start = true })
+-- Install:andUse("RoundedCorners", { start = true })
 
 require('side-spesific')
 

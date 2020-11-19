@@ -725,11 +725,11 @@
 (defun oht/set-font-large ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "Triplicate T4" :height 150 :weight 'normal)
+		      :family "Fira Mono" :height 140 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "IBM Plex Serif" :height 160 :weight 'normal)
+		      :family "Fira Sans" :height 150 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Triplicate T4" :height 150 :weight 'normal)
+		      :family "Fira Mono" :height 140 :weight 'normal)
   )
 
 ;; This sets the default fonts
@@ -748,7 +748,6 @@
   (modus-vivendi-theme-org-blocks 'grayscale)
   (modus-vivendi-theme-completions 'moderate)
   (modus-vivendi-theme-diffs 'desaturated)
-  (set-face-attribute 'bold nil :weight 'semibold)
 )
 
 (use-package modus-operandi-theme
@@ -764,7 +763,6 @@
   (modus-operandi-theme-variable-pitch-headings nil)
   (modus-operandi-theme-links 'faint-neutral-underline)
   :config
-  (set-face-attribute 'bold nil :weight 'semibold)
   (load-theme 'modus-operandi t)
 )
 

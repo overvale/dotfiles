@@ -234,36 +234,6 @@ _~_: modified
         (forward-line))))
 )
 
-
-;;; View-Mode
-
-(use-package view
-  :ensure nil
-  :init
-  (setq view-read-only t)
-  (setq view-inhibit-help-message t)
-  :bind
-  (:map view-mode-map
-	("q" . nil)
-	("n" . next-line)
-	("p" . previous-line)
-	;;("f" . forward-char)
-	;;("b" . backward-char)
-	("f" . forward-word)
-	("b" . backward-word)
-	("{" . backward-paragraph)
-	("}" . forward-paragraph)
-	("(" . backward-sentence)
-	(")" . forward-sentence)
-	("s" . ctrlf-forward-fuzzy)
-	("r" . ctrlf-backward-fuzzy)
-	)
-  )
-
-;; Show "View" in mode-line when in 'view-mode'
-(setq minions-direct '(view-mode))
-
-
 ;;; Smart Escape
 
 ;; Ever try to quit the minibuffer while the point is in another window? This

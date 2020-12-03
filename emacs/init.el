@@ -1016,6 +1016,29 @@
   )
 (bind-key "s-0" 'hydra-outline/body)
 
+;;; View-Mode
+
+(use-package view
+  :ensure nil
+  :init
+  (setq view-read-only t)
+  ;;(setq view-inhibit-help-message t)
+  :bind
+  (:map view-mode-map
+	("q" . nil)
+	("n" . next-line)
+	("p" . previous-line)
+	("f" . forward-word)
+	("b" . backward-word)
+	("{" . backward-paragraph)
+	("}" . forward-paragraph)
+	("(" . backward-sentence)
+	(")" . forward-sentence)
+	("s" . ctrlf-forward-fuzzy)
+	("r" . ctrlf-backward-fuzzy)
+	)
+  )
+
 ;;; Window Control
 
 ;; Many of these bindings are duplicates of those in the windows hydra, which is

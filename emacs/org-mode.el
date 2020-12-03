@@ -1,5 +1,33 @@
 ;; -*- lexical-binding: t -*-
 
+;;;; Agenda Settings
+
+;; This defines which files you want included in your agenda/TODO views.
+(setq org-agenda-files
+      '("~/Documents/org-files/"
+	"~/Documents/writing/kindred/compendium.org"
+	))
+
+;; Each type of agenda view can be independently customized. For more info see the documentation for the variable =org-agenda-sorting-strategy=.
+
+;; Agenda Sorting
+(setq org-agenda-sorting-strategy
+      '(
+	((agenda habit-down time-up priority-down category-up)
+	 (todo category-up priority-down)
+	 (tags priority-down category-keep)
+	 (search category-keep))))
+
+;; And here we have some custom commands for the agenda view.
+
+;; You have to wait until org-agenda loads because org itself
+;; doesn't know what 'org-agenda-mode-map' is.
+(eval-after-load "org-agenda"
+'(progn
+	(define-key org-agenda-mode-map
+		"S" 'org-agenda-schedule)
+		))
+
 ;;;; Settings
 
 ;; do not indent text below a headline
@@ -47,6 +75,9 @@
 ;; end of the current entry.
 (setq org-insert-heading-respect-content t)
 
+;; When creating an agenda, make sure hl-line-mode is active
+(add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
+
 ;;;; Source Code Blocks
 
 (setq org-src-fontify-natively t)
@@ -73,9 +104,15 @@
 
 (setq org-agenda-custom-commands
       '(
-        ("1" "TODAY: Today's Agenda + Tasks"
+        ("1" "TODAY: Today's Agenda + Priority Tasks"
          ((agenda "d" ((org-agenda-span 'day)))
-          (todo "TODAY|TODO|LATER"
+          (todo "TODO"
+                ((org-agenda-sorting-strategy '(todo-state-up))
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
+                )))
+	("0" "COMPLETE: Week Agenda + All Tasks"
+         ((agenda "w" ((org-agenda-span 'week)))
+          (todo "TODO|LATER"
                 ((org-agenda-sorting-strategy '(todo-state-up))
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
                  )))
@@ -87,7 +124,8 @@
 ;;    org-agenda-todo-ignore-scheduled,
 ;;    org-agenda-todo-ignore-deadlines
 ;; make the global TODO list skip certain entries
-(setq org-agenda-todo-ignore-scheduled 'future)
+(setq org-agenda-todo-ignore-scheduled 'all)
+(setq org-agenda-todo-ignore-deadlines 'far)
 
 ;; If this option is set, the same options will also apply for the tags-todo
 ;; search, which is the general tags/property matcher restricted to unfinished
@@ -102,7 +140,7 @@
 ;;;; Keywords
 
 (setq org-todo-keywords
-      '((sequence "TODAY(T)" "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")
+      '((sequence "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")
         ))
 
 ;; Ensure that a task can’t be marked as done if it contains
@@ -151,35 +189,6 @@
             (goto-char (point-max))
             (insert "\n"))))))
 (add-hook 'org-capture-before-finalize-hook 'add-newline-at-end-if-none)
-
-;;;; Agenda Settings
-
-;; This defines which files you want included in your agenda/TODO views.
-(setq org-agenda-files
-      '("~/Documents/org-files/"
-	"~/Documents/writing/kindred/compendium.org"
-	))
-
-;; Each type of agenda view can be independently customized. For more info see the documentation for the variable =org-agenda-sorting-strategy=.
-
-;; This is currently disabled because I'm fine with the default behavior. I'm leaving it here as documentation.
-
-(setq org-agenda-sorting-strategy
-      '(
-	((agenda habit-down time-up priority-down category-up)
-	 (todo category-up priority-down)
-	 (tags priority-down category-keep)
-	 (search category-keep))))
-
-;; And here we have some custom commands for the agenda view.
-
-;; You have to wait until org-agenda loads because org itself
-;; doesn't know what 'org-agenda-mode-map' is.
-(eval-after-load "org-agenda"
-'(progn
-	(define-key org-agenda-mode-map
-		"S" 'org-agenda-schedule)
-		))
 
 ;;;; Org hydra
 

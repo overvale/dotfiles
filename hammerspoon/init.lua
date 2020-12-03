@@ -22,6 +22,9 @@ Inspiration:
 hs.window.animationDuration = 0
 local hyper = {"ctrl", "alt", "cmd"}
 
+-- Capture the hostname, so we can make this config behave differently across my Macs
+hostname = hs.host.localizedName()
+
 -- Spoons
 -- -----------------------------------------------
 
@@ -39,6 +42,8 @@ anycomplete.registerDefaultBindings()
 -- Install:andUse("RoundedCorners", { start = true })
 
 require('side-spesific')
+
+require('bluetooth_sleep')
 
 -- Window Control
 -- -----------------------------------------------

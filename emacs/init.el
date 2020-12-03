@@ -812,10 +812,9 @@
 (use-package blackout
   :config
   (blackout 'eldoc-mode)
+  (blackout 'flyspell-mode " Spell")
+  (blackout 'emacs-lisp-mode "Elisp")
   )
-
-(blackout 'flyspell-mode " Spell")
-(blackout 'emacs-lisp-mode "Elisp")
 
 ;; add columns to the mode-line
 (column-number-mode t)
@@ -1133,6 +1132,9 @@
 
 ;; This adds pulse-line to this keybinding, but that's it.
 (bind-key "C-l" 'oht/recenter-top-bottom)
+
+;; Show location of point with a pulse
+(bind-key "C-=" 'pulse-line)
 
 ;;;; Primary Bindings
 

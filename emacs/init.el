@@ -554,20 +554,21 @@
   :demand t
   :after visual-regexp
   :bind (([remap query-replace-regexp] . #'radian-query-replace-literal))
-  :config
-
+  :init
   ;; Use Emacs-style regular expressions by default, instead of
   ;; Python-style.
   (setq vr/engine 'emacs)
-
   (defun radian-query-replace-literal ()
     "Do a literal query-replace using `visual-regexp'."
     (interactive)
     (let ((vr/engine 'emacs-plain))
-      (call-interactively #'vr/query-replace))))
+      (call-interactively #'vr/query-replace)))
+  )
 
 
 ;;; Packages
+
+;; This section contains misc packages that don't have a good place elsewhere.
 
 ;; Tell `use-package' to always load features lazily unless told
 ;; otherwise. It's nicer to have this kind of thing be deterministic:

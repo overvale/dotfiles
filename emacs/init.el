@@ -686,32 +686,73 @@
 
 ;;;; Fonts
 
-;; Scaling fonts in Emacs can be... difficult. Sure, there are built-in functions like =text-scale-adjust= but when using a theme like Modus that takes full advantage of Emacs's mixed-pitch capabilities it can be difficult to get /just/ right.
+;; It can be quite refreshing to change the font I'm working in. So below are
+;; a bunch of functions that set my preferred fonts, a hydra for picking them,
+;; and finally a function for setting the default.
 
-;; Then I realized that I only care about 2 sizes, normal and large. So I've created some functions that set things up the way I like them and bindings for those functions. Done.
-
-(defun oht/set-font-normal ()
+(defun oht/set-font-SF ()
   (interactive)
   (set-face-attribute 'default nil
 		      :family "SF Mono" :height 120 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "IBM Plex Serif" :height 140 :weight 'normal)
+		      :family "SF Pro Text" :height 130 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
 		      :family "SF Mono" :height 120 :weight 'normal)
   )
 
-(defun oht/set-font-large ()
+(defun oht/set-font-roboto ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "Fira Mono" :height 140 :weight 'normal)
+		      :family "Roboto Mono" :height 120 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "Fira Sans" :height 150 :weight 'normal)
+		      :family "Roboto" :height 140 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Fira Mono" :height 140 :weight 'normal)
+		      :family "Roboto Mono" :height 120 :weight 'normal)
   )
+
+(defun oht/set-font-fira ()
+  (interactive)
+  (set-face-attribute 'default nil
+		      :family "Fira Mono" :height 120 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "Fira Sans" :height 140 :weight 'normal)
+  (set-face-attribute 'fixed-pitch nil
+		      :family "Fira Mono" :height 120 :weight 'normal)
+  )
+
+(defun oht/set-font-go ()
+  (interactive)
+  (set-face-attribute 'default nil
+		      :family "Go Mono" :height 120 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "Go" :height 140 :weight 'normal)
+  (set-face-attribute 'fixed-pitch nil
+		      :family "Go Mono" :height 120 :weight 'normal)
+  )
+
+(defun oht/set-font-triplicate ()
+  (interactive)
+  (set-face-attribute 'default nil
+		      :family "Triplicate T4" :height 140 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "Triplicate T4p" :height 140 :weight 'normal)
+  (set-face-attribute 'fixed-pitch nil
+		      :family "Triplicate T4" :height 140 :weight 'normal)
+  )
+
+(defhydra hydra-fonts (:color amaranth)
+  "Set Font Properties"
+  ("s" oht/set-font-SF "San Francisco")
+  ("r" oht/set-font-roboto "Roboto")
+  ("f" oht/set-font-fira "Fira")
+  ("g" oht/set-font-go "Go")
+  ("t" oht/set-font-triplicate "Triplicate")
+  ("v" variable-pitch-mode "Variable")
+  ("q" nil "cancel"))
 
 ;; This sets the default fonts
-(oht/set-font-normal)
+(oht/set-font-roboto)
+
 
 ;;;; Theme
 
@@ -1118,12 +1159,10 @@
 	   ("M" . selectrum-marks)
 	   ("<left>" . winner-undo)
 	   ("<right>" . winner-redo)
-	   ("v" . variable-pitch-mode)
-	   ("V" . oht/set-font-large-variable-pitch)
 	   ("s" . org-store-link)
 	   ("o" . selectrum-outline)
-	   ("-" . oht/set-font-normal)
-	   ("=" . oht/set-font-large)
+	   ("f" . hydra-fonts/body)
+	   ("!" . font-lock-mode)
 	   )
 
 ;;; Closing

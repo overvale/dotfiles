@@ -6,16 +6,18 @@
 ;; C-c @ C-t. You might also want to run M-x occur with the following query:
 ;; [^;;; ] OR... you can use the included hydra for outline navigation: s-0 o
 
-;;; Emacs Performance
+;;; Preamble
+
+;; In this section I set up the basic building blocks that are required for
+;; making the things that come later work.
+
+;;;; Performance
 
 ;; Let's start by doing everything we can to improve emacs performance.
 ;; INFO: https://blog.d46.us/advanced-emacs-startup
 
-;;;; Bootstrap
-
 ;; To improve startup time, I follow the advice given by Doom Emacs:
 ;; https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
-
 (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
       gc-cons-percentage 0.6)
 (add-hook 'emacs-startup-hook
@@ -24,11 +26,35 @@
           gc-cons-percentage 0.1)
     (garbage-collect)) t)
 
-;; Always follow symlinks. init files are normally stowed/symlinked.
-(setq vc-follow-symlinks t
-      find-file-visit-truename t
-      ;; Avoid stale compiled code shadow newer source code
-      load-prefer-newer t)
+;; All of these are all stolen (with comments) from Doom Emacs:
+;; https://github.com/hlissner/doom-emacs/blob/develop/core/core.el
+
+;; Disable bidirectional text rendering for a modest performance boost. I've set
+;; this to `nil' in the past, but the `bidi-display-reordering's docs say that
+;; is an undefined state and suggest this to be just as good:
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+
+;; Disabling the BPA makes redisplay faster, but might produce incorrect display
+;; reordering of bidirectional text with embedded parentheses and other bracket
+;; characters whose 'paired-bracket' Unicode property is non-nil.
+(setq bidi-inhibit-bpa t)  ; Emacs 27 only
+
+;; More performant rapid scrolling over unfontified regions. May cause brief
+;; spells of inaccurate syntax highlighting right after scrolling, which should
+;; quickly self-correct.
+(setq fast-but-imprecise-scrolling t)
+
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we halve startup times, particularly when we use
+;; fonts that are larger than the system default (which would resize the frame).
+(setq frame-inhibit-implied-resize t)
+
+;; Remove command line options that aren't relevant to our current OS; means
+;; slightly less to process at startup.
+(setq command-line-x-option-alist nil)
+
+;;;; Package Management
 
 (require 'package)
 
@@ -56,10 +82,9 @@
 
 ;;;; Startup Profiling
 
-;; When you have a large config file, and a lot of packages, Emacs can be very
-;; slow to startup. Fortunately, you can identify the exact things that are
-;; making Emacs slow using the tools below, and do something about it using
-;; =use-package=.
+;; Speaking of performance, you'll need some profiling tools to help you tune
+;; Emacs as your configuration expands. These tools will help you identify
+;; bottlenecks.
 
 ;; this package creates a report each time you startup
 ;; You'll need to add ':demand t' and restart emacs to see the report
@@ -86,8 +111,51 @@
 	   ("r" . profiler-report)
 	   )
 
+;;;; General Settings
 
-;;;; Startup Preferences
+;; Always follow symlinks. init files are normally stowed/symlinked.
+(setq vc-follow-symlinks t
+      find-file-visit-truename t
+      ;; Avoid stale compiled code shadow newer source code
+      load-prefer-newer t)
+
+;; Set encoding to be UTF-8 everywhere. I've seen a lot of conflicting
+;; information about what's needed to use UTF-8 everywhere. Mastering Emacs
+;; seems like a trustworthy source.
+;; https://www.masteringemacs.org/article/working-coding-systems-unicode-emacs
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+;; backwards compatibility as default-buffer-file-coding-system
+;; is deprecated in 23.2.
+(if (boundp 'buffer-file-coding-system)
+    (setq-default buffer-file-coding-system 'utf-8)
+  (setq default-buffer-file-coding-system 'utf-8))
+
+;; Treat clipboard input as UTF-8 string first; compound text next, etc.
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+
+;;;; Emacs Load Paths
+
+;; When customizing Emacs interactively (ie: not in this document or =init.el=)
+;; Emacs appends code to your =init.el= file, which can be annoying when editing
+;; it by hand. This tells Emacs to place these customizations in a separate
+;; file.
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file :noerror))
+
+;; I have a bunch of misc custom functions that I keep in a separate file to
+;; make this document a little cleaner. Some of the bindings further down in
+;; this document depend on these functions, so I load them here.
+(load "~/dot/emacs/functions.el")
+(load "~/dot/emacs/selectrum.el")
+(load "~/dot/emacs/hydras.el")
+
+;;; Preferences/Settings
+
+;;;; Display
 
 ;; By default Emacs starts up with a "splash screen" containing some useful
 ;; links, but I don't need that any more, so this turns it off.
@@ -102,111 +170,6 @@
 
 (tool-bar-mode -1)                         ; hide menu-bar
 (scroll-bar-mode -1)                       ; hide scroll bars
-
-;;;; Remember-Notes
-
-;; By default, Emacs always starts up with a *scratch* buffer that is NOT
-;; intended to be saved; when you kill it or quit emacs the contents of your
-;; *scratch* buffer are gone forever without warning. I don't think I'm alone in
-;; thinking that this is not very useful. Thankfully, emacs 24.4 introduced a
-;; replacement for the *scratch* buffer that is saved when emacs exits, thus
-;; your scratch pad NEVER deletes data. And THAT makes a lot more sense to me.
-;; More info:
-;; https://www.masteringemacs.org/article/whats-new-in-emacs-24-4#remember
-
-;; This sets the name of the buffer to *scratch*, which I suppose I'm just doing
-;; for tradition's sake.
-(setq remember-notes-auto-save-visited-file-name t
-      remember-notes-buffer-name "*scratch*")
-;; If you just tell initial-buffer-choice that you want to use remember-notes as
-;; your initial buffer emacs will still create a *scratch* buffer that you'll
-;; never use. So we set initial-buffer-choice to a function which kills the
-;; scratch buffer and opens the remember-notes file.
-(setq initial-buffer-choice
-      (lambda () (kill-buffer remember-notes-buffer-name)
-                 (remember-notes)))
-
-;; Now set the location of the remember-notes file.
-(setq remember-data-file "~/Documents/org-files/remember-notes")
-
-;;;; Performance Enhancers
-
-;; All of these are all stolen (with comments) from Doom Emacs:
-;; https://github.com/hlissner/doom-emacs/blob/develop/core/core.el
-
-;; Disable bidirectional text rendering for a modest performance boost. I've set
-;; this to `nil' in the past, but the `bidi-display-reordering's docs say that
-;; is an undefined state and suggest this to be just as good:
-(setq-default bidi-display-reordering 'left-to-right
-              bidi-paragraph-direction 'left-to-right)
-
-;; Disabling the BPA makes redisplay faster, but might produce incorrect display
-;; reordering of bidirectional text with embedded parentheses and other bracket
-;; characters whose 'paired-bracket' Unicode property is non-nil.
-(setq bidi-inhibit-bpa t)  ; Emacs 27 only
-
-
-;; More performant rapid scrolling over unfontified regions. May cause brief
-;; spells of inaccurate syntax highlighting right after scrolling, which should
-;; quickly self-correct.
-(setq fast-but-imprecise-scrolling t)
-
-
-;; Resizing the Emacs frame can be a terribly expensive part of changing the
-;; font. By inhibiting this, we halve startup times, particularly when we use
-;; fonts that are larger than the system default (which would resize the frame).
-(setq frame-inhibit-implied-resize t)
-
-;; Remove command line options that aren't relevant to our current OS; means
-;; slightly less to process at startup.
-(setq command-line-x-option-alist nil)
-
-
-;;; Encoding
-
-;; Set encoding to be UTF-8 everywhere. I've seen a lot of conflicting
-;; information about what's needed to use UTF-8 everywhere. Mastering Emacs
-;; seems like a trustworthy source.
-;; https://www.masteringemacs.org/article/working-coding-systems-unicode-emacs
-
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-;; backwards compatibility as default-buffer-file-coding-system
-;; is deprecated in 23.2.
-(if (boundp 'buffer-file-coding-system)
-    (setq-default buffer-file-coding-system 'utf-8)
-  (setq default-buffer-file-coding-system 'utf-8))
-
-;; Treat clipboard input as UTF-8 string first; compound text next, etc.
-(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-
-;;; Interactive Customization
-
-;; When customizing Emacs interactively (ie: not in this document or =init.el=)
-;; Emacs appends code to your =init.el= file, which can be annoying when editing
-;; it by hand. This tells Emacs to place these customizations in a separate
-;; file.
-
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(when (file-exists-p custom-file)
-  (load custom-file :noerror))
-
-;;; Emacs Load Paths
-
-(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
-
-;; I have a bunch of misc custom functions that I keep in a separate file to make this document a little cleaner. Some of the bindings further down in this document depend on these functions, so I load them here.
-
-(load "~/dot/emacs/functions.el")
-(load "~/dot/emacs/selectrum.el")
-(load "~/dot/emacs/hydras.el")
-
-;;; Preferences/Settings
-
-;;;; Display
-
 (menu-bar-mode 1)                          ; ensures full-screen avail on macOS
 (show-paren-mode t)                        ; highlight parens
 (setq show-paren-delay 0)                  ; and show immediately
@@ -250,30 +213,43 @@
 ;; When exiting emacs, kill all running processes
 (setq confirm-kill-processes nil)
 
-;;;; Mouse
+;; When visiting read-only buffers, enter view-mode
+(setq view-read-only t)
 
-;; Emacs was built for 3 button mice. In the Mac Port the 3 buttons are used like so:
-;; mouse-1: Left Click
-;; mouse-2: Fn + Left Click
-;; mouse-3: Right Click
-
-;; But you can change this to:
+;; Emulate Mouse Buttons
+(setq mac-emulate-three-button-mouse t)
 ;; mouse-1: Click
 ;; mouse-2: Option + Click
 ;; mouse-3: Command + Click
 
-;; With this setting:
-(setq mac-emulate-three-button-mouse t)
-
 ;; Keep in mind, however, that a 2-finger click on the track pad still sends
 ;; =mouse-3= no matter what you set =mac-emulate-three-button-mouse= to.
 
-;; By default, the mouse-buttons are bound to the following actions:
-;; - mouse-1: moves point
-;; - mouse-2: yanks from kill-ring (or spelling correction)
-;; - mouse-3: extends region from point to click, and saves to kill-ring, click again to kill.
+;;; Remember-Notes
 
-;; And if =mouse-yank-at-point= is set to =t= then =mouse-2= yanks to point instead of click.
+;; By default, Emacs always starts up with a *scratch* buffer that is NOT
+;; intended to be saved; when you kill it or quit emacs the contents of your
+;; *scratch* buffer are gone forever without warning. I don't think I'm alone in
+;; thinking that this is not very useful. Thankfully, emacs 24.4 introduced a
+;; replacement for the *scratch* buffer that is saved when emacs exits, thus
+;; your scratch pad NEVER deletes data. And THAT makes a lot more sense to me.
+;; More info:
+;; https://www.masteringemacs.org/article/whats-new-in-emacs-24-4#remember
+
+;; This sets the name of the buffer to *scratch*, which I suppose I'm just doing
+;; for tradition's sake.
+(setq remember-notes-auto-save-visited-file-name t
+      remember-notes-buffer-name "*scratch*")
+;; If you just tell initial-buffer-choice that you want to use remember-notes as
+;; your initial buffer emacs will still create a *scratch* buffer that you'll
+;; never use. So we set initial-buffer-choice to a function which kills the
+;; scratch buffer and opens the remember-notes file.
+(setq initial-buffer-choice
+      (lambda () (kill-buffer remember-notes-buffer-name)
+                 (remember-notes)))
+
+;; Now set the location of the remember-notes file.
+(setq remember-data-file "~/Documents/org-files/remember-notes")
 
 ;;; Click-To-Scroll
 
@@ -404,7 +380,9 @@
 
 ;;;; Visual Line Mode
 
-;; When in visual line mode the out-of-the-box movement commands behave inconsistently with the rest of macOS, so the below code brings them back in line.
+;; When in visual line mode the out-of-the-box movement commands behave
+;; inconsistently with the rest of macOS, so the below code brings them back
+;; in line.
 
 ;; Continue wrapped words at whitespace, rather than in the middle of a word.
 (setq-default word-wrap t)
@@ -1147,6 +1125,8 @@
 	   ("-" . oht/set-font-normal)
 	   ("=" . oht/set-font-large)
 	   )
+
+;;; Closing
 
 ;; Local Variables:
 ;; outline-regexp: ";;;+ "

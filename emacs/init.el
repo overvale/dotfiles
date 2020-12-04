@@ -348,7 +348,6 @@
 ;; By default, Emacs doesn't replace the selection (region) with anything you
 ;; type, it just removes your selection and appends what you type. The below
 ;; makes what you type /replace/ your selection.
-
 (delete-selection-mode t)
 
 ;; If you have something on the system clipboard, and then kill
@@ -694,11 +693,11 @@
 (defun oht/set-font-SF ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "SF Mono" :height 120 :weight 'normal)
+		      :family "SF Mono" :height 130 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
 		      :family "SF Pro Text" :height 130 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "SF Mono" :height 120 :weight 'normal)
+		      :family "SF Mono" :height 130 :weight 'normal)
   )
 
 (defun oht/set-font-roboto ()
@@ -752,7 +751,7 @@
   ("q" nil "cancel"))
 
 ;; This sets the default fonts
-(oht/set-font-roboto)
+(oht/set-font-SF)
 
 
 ;;;; Theme
@@ -761,7 +760,7 @@
 
 (use-package modus-vivendi-theme
   :custom
-  (modus-vivendi-theme-faint-syntax t)
+  (modus-vivendi-theme-syntax 'faint)
   (modus-vivendi-theme-slanted-constructs t)
   (modus-vivendi-theme-bold-constructs t)
   (modus-vivendi-theme-mode-line '3d)
@@ -772,17 +771,19 @@
 
 (use-package modus-operandi-theme
   :demand t
-  :custom
-  (modus-operandi-theme-faint-syntax t)
-  (modus-operandi-theme-slanted-constructs t)
-  (modus-operandi-theme-bold-constructs t)
-  (modus-operandi-theme-org-blocks 'grayscale)
-  (modus-operandi-theme-mode-line '3d)
-  (modus-operandi-theme-completions 'moderate)
-  (modus-operandi-theme-diffs 'desaturated)
-  (modus-operandi-theme-variable-pitch-headings nil)
-  (modus-operandi-theme-links 'faint-neutral-underline)
-  :config
+  :init
+  (setq
+   modus-operandi-theme-org-blocks 'grayscale
+   modus-operandi-theme-syntax 'alt-syntax
+   modus-operandi-theme-slanted-constructs t
+   modus-operandi-theme-bold-constructs nil
+   modus-operandi-theme-mode-line '3d
+   modus-operandi-theme-diffs 'desaturated
+   modus-operandi-theme-variable-pitch-headings nil
+   modus-operandi-theme-links 'faint-neutral-underline
+   modus-operandi-theme-completions nil
+   modus-operandi-theme-prompts 'subtle
+   )
   (load-theme 'modus-operandi t)
 )
 

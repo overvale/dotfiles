@@ -756,33 +756,21 @@
 
 ;;;; Theme
 
-;; I use, and *love* /prot/'s [[https://gitlab.com/protesilaos/modus-themes][Modus Themes]].
-
-(use-package modus-vivendi-theme
-  :custom
-  (modus-vivendi-theme-syntax 'faint)
-  (modus-vivendi-theme-slanted-constructs t)
-  (modus-vivendi-theme-bold-constructs t)
-  (modus-vivendi-theme-mode-line '3d)
-  (modus-vivendi-theme-org-blocks 'grayscale)
-  (modus-vivendi-theme-completions 'moderate)
-  (modus-vivendi-theme-diffs 'desaturated)
-)
-
-(use-package modus-operandi-theme
+(use-package modus-themes
   :demand t
   :init
   (setq
-   modus-operandi-theme-org-blocks 'grayscale
-   modus-operandi-theme-syntax 'alt-syntax
-   modus-operandi-theme-slanted-constructs t
-   modus-operandi-theme-bold-constructs nil
-   modus-operandi-theme-mode-line '3d
-   modus-operandi-theme-diffs 'desaturated
-   modus-operandi-theme-variable-pitch-headings nil
-   modus-operandi-theme-links 'faint-neutral-underline
-   modus-operandi-theme-completions nil
-   modus-operandi-theme-prompts 'subtle
+   modus-themes-org-blocks 'grayscale
+   modus-themes-syntax 'alt-syntax
+   modus-themes-slanted-constructs t
+   modus-themes-bold-constructs nil
+   modus-themes-mode-line '3d
+   modus-themes-diffs 'desaturated
+   modus-themes-variable-pitch-headings nil
+   modus-themes-links 'faint-neutral-underline
+   modus-themes-completions nil
+   modus-themes-prompts 'subtle
+   modus-themes-region 'bg-only
    )
   (load-theme 'modus-operandi t)
 )

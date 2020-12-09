@@ -1,9 +1,13 @@
 ;;; init.el  -*- lexical-binding: t -*-
 
-;; To see the outline of this file, run M-x outline-minor-mode and then press
-;; C-c @ C-t. You might also want to run M-x occur with the following query:
-;; [^;;; ] OR... you can use the included hydra for outline navigation: s-0 o
-
+;; To see the outline of this file, run M-x outline-minor-mode (which I have
+;; created a global minor mode for, thus it is always on) and then use the
+;; `outline' functions to move around. I have created 3 separate ways of
+;; making this easier.
+;;
+;; 1. The package `outline-magic' provides the command `outline-cycle'.
+;; 2. A hydra called `hydra-outline'.
+;; 3. An `occur' buffer with the query: [^;;; ]
 
 ;;; Preamble
 
@@ -914,6 +918,11 @@
   outline-minor-mode outline-minor-mode)
 (global-outline-minor-mode +1)
 (blackout 'outline-minor-mode)
+
+(use-package outline-magic
+  :bind
+  ("C-<tab>" . 'outline-cycle)
+  )
 
 (defun oht/outline-show-entry-branches ()
   "This unfolds the 'entry' and shows all the subheadings, similar to how org-mode works."

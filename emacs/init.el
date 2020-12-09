@@ -1,23 +1,20 @@
 ;;; init.el  -*- lexical-binding: t -*-
 
-;;; Commentary
-
 ;; To see the outline of this file, run M-x outline-minor-mode and then press
 ;; C-c @ C-t. You might also want to run M-x occur with the following query:
 ;; [^;;; ] OR... you can use the included hydra for outline navigation: s-0 o
 
+
 ;;; Preamble
 
-;; In this section I set up the basic building blocks that are required for
-;; making the things that come later work.
 
 ;;;; Performance
 
 ;; Let's start by doing everything we can to improve emacs performance.
-;; INFO: https://blog.d46.us/advanced-emacs-startup
-
-;; To improve startup time, I follow the advice given by Doom Emacs:
+;; All of the below are stolen (with comments) from Doom Emacs.
 ;; https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
+;; https://github.com/hlissner/doom-emacs/blob/develop/core/core.el
+
 (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
       gc-cons-percentage 0.6)
 (add-hook 'emacs-startup-hook
@@ -25,9 +22,6 @@
     (setq gc-cons-threshold 16777216 ; 16mb
           gc-cons-percentage 0.1)
     (garbage-collect)) t)
-
-;; All of these are all stolen (with comments) from Doom Emacs:
-;; https://github.com/hlissner/doom-emacs/blob/develop/core/core.el
 
 ;; Disable bidirectional text rendering for a modest performance boost. I've set
 ;; this to `nil' in the past, but the `bidi-display-reordering's docs say that
@@ -54,47 +48,8 @@
 ;; slightly less to process at startup.
 (setq command-line-x-option-alist nil)
 
-;;;; Package Management
-
-(require 'package)
-
-(setq package-archives
-      '(("gnu" . "http://elpa.gnu.org/packages/")
-        ("org" . "https://orgmode.org/elpa/")
-        ("melpa" . "https://melpa.org/packages/")
-        ))
-
-;; Initialise the packages, avoiding a re-initialisation.
-(unless (bound-and-true-p package--initialized)
-  (setq package-enable-at-startup nil)
-  (package-initialize))
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-;; Load use-package
-(eval-when-compile
-  (require 'use-package))
-(setq-default use-package-always-ensure t
-	      use-package-always-defer t
-	      )
-
-;;;; Startup Profiling
-
-;; Speaking of performance, you'll need some profiling tools to help you tune
-;; Emacs as your configuration expands. These tools will help you identify
-;; bottlenecks.
-
-;; this package creates a report each time you startup
-;; You'll need to add ':demand t' and restart emacs to see the report
-(use-package benchmark-init
-  :demand t
-  :config
-  ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
-
-;; Print a message saying how long it took to start up
+;; When testing startup performance, it can be useful to print a message
+;; saying how long it took to start up.
 (add-hook 'emacs-startup-hook
           (lambda ()
             (message "Emacs ready in %s with %d garbage collections."
@@ -103,13 +58,43 @@
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 
-;; Profiling Tools
-(bind-keys :prefix-map oht/profiling-keys
-	   :prefix "M-s-p"
-	   ("s" . profiler-start)
-	   ("q" . profiler-stop)
-	   ("r" . profiler-report)
-	   )
+
+;;;; Straight Use Package
+
+;; Required Bootstrap to ensure it is installed
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+
+;; use-package integration
+
+;; Package `use-package' provides a handy macro by the same name which
+;; is essentially a wrapper around `with-eval-after-load' with a lot
+;; of handy syntactic sugar and useful features.
+(straight-use-package 'use-package)
+
+;; When configuring a feature with `use-package', also tell
+;; straight.el to install a package of the same name, unless otherwise
+;; specified using the `:straight' keyword.
+(setq straight-use-package-by-default t)
+
+;; Tell `use-package' to always load features lazily unless told
+;; otherwise. It's nicer to have this kind of thing be deterministic:
+;; if `:demand' is present, the loading is eager; otherwise, the
+;; loading is lazy. See
+;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
+(setq use-package-always-defer t)
+
 
 ;;;; General Settings
 
@@ -136,8 +121,6 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-;;;; Emacs Load Paths
-
 ;; When customizing Emacs interactively (ie: not in this document or =init.el=)
 ;; Emacs appends code to your =init.el= file, which can be annoying when editing
 ;; it by hand. This tells Emacs to place these customizations in a separate
@@ -150,14 +133,11 @@
 ;; make this document a little cleaner. Some of the bindings further down in
 ;; this document depend on these functions, so I load them here.
 (load "~/dot/emacs/functions.el")
-(load "~/dot/emacs/selectrum.el")
-(load "~/dot/emacs/hydras.el")
 
-;;; Preferences/Settings
 
-;;;; Display
+;;;; Startup and Scratch
 
-;; By default Emacs starts up with a "splash screen" containing some useful
+;; By default, Emacs starts up with a "splash screen" containing some useful
 ;; links, but I don't need that any more, so this turns it off.
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
@@ -167,65 +147,6 @@
       ;; pull in a ton of packages.
       initial-major-mode 'fundamental-mode
       initial-scratch-message nil)
-
-(tool-bar-mode -1)                         ; hide menu-bar
-(scroll-bar-mode -1)                       ; hide scroll bars
-(menu-bar-mode 1)                          ; ensures full-screen avail on macOS
-(show-paren-mode t)                        ; highlight parens
-(setq show-paren-delay 0)                  ; and show immediately
-(setq visible-bell t)                      ; disable beep
-(setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
-(setq x-underline-at-descent-line t)       ; underline at descent, not baseline
-(setq-default indicate-empty-lines t)      ; show where the file ends
-
-;; cursor settings
-(set-default 'cursor-type 'box)
-(blink-cursor-mode -1)
-
-;;;; General
-
-(global-auto-revert-mode t)            ; update buffer when file on disk changes
-(save-place-mode 1)                    ; reopens the file to the same spot you left
-(recentf-mode 1)                       ; enables "Open Recent..." in file menu
-(add-to-list 'recentf-exclude "/elpa") ; don't show package files in recentf
-(setq tab-width 4)                     ; tabs=4 char
-(setq help-window-select t)            ; focus new help windows when opened
-(setq sentence-end-double-space nil)   ; ends sentence after 1 space
-(fset 'yes-or-no-p 'y-or-n-p)          ; Changes all yes/no questions to y/n type
-(setq create-lockfiles nil)            ; No need for ~ files when editing
-(setq-default fill-column 78)          ; Set column used for fill-paragraph
-(setq ring-bell-function 'ignore)      ; Don't beep
-
-;; place backup files in a single place
-(setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
-
-; Use Spotlight to search with M-x locate
-(setq locate-command "mdfind")
-
-;;Use the system trash folder to delete files.
-(setq delete-by-moving-to-trash t)
-(setq trash-directory "~/.Trash/emacs")
-
-;; Echo unfinished commands after this delay
-;; setting to 0 means do not echo commands
-(setq echo-keystrokes 0.1)
-
-;; When exiting emacs, kill all running processes
-(setq confirm-kill-processes nil)
-
-;; When visiting read-only buffers, enter view-mode
-(setq view-read-only t)
-
-;; Emulate Mouse Buttons
-(setq mac-emulate-three-button-mouse t)
-;; mouse-1: Click
-;; mouse-2: Option + Click
-;; mouse-3: Command + Click
-
-;; Keep in mind, however, that a 2-finger click on the track pad still sends
-;; =mouse-3= no matter what you set =mac-emulate-three-button-mouse= to.
-
-;;; Remember-Notes
 
 ;; By default, Emacs always starts up with a *scratch* buffer that is NOT
 ;; intended to be saved; when you kill it or quit emacs the contents of your
@@ -251,28 +172,204 @@
 ;; Now set the location of the remember-notes file.
 (setq remember-data-file "~/Documents/org-files/remember-notes")
 
-;;; Click-To-Scroll
+
+
+;;; Settings
+
+;;;; Display
+
+(tool-bar-mode -1)                         ; hide menu-bar
+(scroll-bar-mode -1)                       ; hide scroll bars
+(menu-bar-mode 1)                          ; ensures full-screen avail on macOS
+(show-paren-mode t)                        ; highlight parens
+(setq show-paren-delay 0)                  ; and show immediately
+(setq visible-bell t)                      ; disable beep
+(setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
+(setq x-underline-at-descent-line t)       ; underline at descent, not baseline
+(setq-default indicate-empty-lines t)      ; show where the file ends
+(set-default 'cursor-type 'box)            ; use a box for cursor
+(blink-cursor-mode -1)                     ; no blinking please
+
+;;;; General
+
+(global-auto-revert-mode t)                ; update buffer when file on disk changes
+(save-place-mode 1)                        ; reopens the file to the same spot you left
+(recentf-mode 1)                           ; enables "Open Recent..." in file menu
+(add-to-list 'recentf-exclude "/elpa")     ; don't show package files in recentf
+(setq tab-width 4)                         ; tabs=4 char
+(setq help-window-select t)                ; focus new help windows when opened
+(setq sentence-end-double-space nil)       ; ends sentence after 1 space
+(fset 'yes-or-no-p 'y-or-n-p)              ; Changes all yes/no questions to y/n type
+(setq create-lockfiles nil)                ; No need for ~ files when editing
+(setq-default fill-column 78)              ; Set column used for fill-paragraph
+(setq ring-bell-function 'ignore)          ; Don't beep
+
+;; place backup files in a single place
+(setq backup-directory-alist '(("" . "~/.emacs.d/backups")))
+
+; Use Spotlight to search with M-x locate
+(setq locate-command "mdfind")
+
+;;Use the system trash folder to delete files.
+(setq delete-by-moving-to-trash t)
+(setq trash-directory "~/.Trash/emacs")
+
+;; Echo unfinished commands after this delay
+;; setting to 0 means do not echo commands
+(setq echo-keystrokes 0.1)
+
+;; When exiting emacs, kill all running processes
+(setq confirm-kill-processes nil)
+
+;; When visiting read-only buffers, enter view-mode
+(setq view-read-only t)
+
+;; Emulate Mouse Buttons
+(setq mac-emulate-three-button-mouse t)
+;; mouse-1: Click
+;; mouse-2: Option + Click
+;; mouse-3: Command + Click
+;; Keep in mind, however, that a 2-finger click on the track pad still sends
+;; =mouse-3= no matter what you set =mac-emulate-three-button-mouse= to.
+
+;; Since emacs seems to love spawning new windows, and taking over your existing
+;; ones, this allows you to undo and redo those arrangements. So you if a
+;; command kills a window arrangement you were using you can go back to it with
+;; winner-undo and winner-redo.
+(winner-mode 1)
 
 ;; This makes it so that when you click/right-click on the mode-line
 ;; emacs scrolls the window. Why not? I actually like how Acme does this.
 (global-set-key [mode-line mouse-1] 'scroll-up-command)
 (global-set-key [mode-line mouse-3] 'scroll-down-command)
 
-;;;; Spelling
 
-;; Tell ispell where to find the =aspell= executable, and some settings.
+
+;;; Packages
+
+;;;; Critical Packages
+
+;; These packages are relied upon by lots of things that come after, therefore
+;; they must come first.
+
+(use-package bind-key
+  :demand t
+  )
+
+(use-package hydra
+  :demand t
+  :config
+  (load "~/dot/emacs/hydras.el")
+  )
+
+(use-package blackout
+  :demand t
+  :config
+  (blackout 'eldoc-mode)
+  (blackout 'flyspell-mode " Spell")
+  (blackout 'emacs-lisp-mode "Elisp")
+  )
+
+;;;; Other Packages
+
+(use-package magit
+  :commands magit-status
+  )
+
+(use-package exec-path-from-shell
+  :demand t
+  )
+
+(use-package olivetti
+  :commands olivetti-mode
+  :custom (olivetti-body-width 80)
+  )
+
+(use-package which-key
+  :demand t
+  :config
+  (which-key-mode t)
+  (setq which-key-idle-delay 0.4)
+  (blackout 'which-key-mode)
+  )
+
+(use-package undo-fu
+  :bind
+  ("s-z" . undo-fu-only-undo)
+  ("s-Z" . undo-fu-only-redo)
+  )
+
+(use-package expand-region
+  :bind
+  ("s-e" . er/expand-region)
+  ("s-E" . er/contract-region)
+  )
+
+(use-package zzz-to-char
+  ;; replaces zap-to-char with an avy-like interface
+  ;; note that it searches forward and backward
+  :bind ("M-z" . zzz-up-to-char))
+
+;;(use-package sdcv-mode
+;;  :commands sdcv-search
+;;  :load-path "~/emacs.d/lisp/emacs-sdcv/")
+
+(use-package unfill
+  :commands (unfill-paragraph unfill-toggle unfill-region)
+  )
+
+(use-package bufler
+  ;; Bufler - a better buffer list
+  :commands bufler
+  )
+
+(use-package whole-line-or-region
+  ;; When no region is active (nothing is selected), and you invoke the
+  ;; =kill-region= (cut) or =kill-ring-save= (copy) commands, Emacs acts on the
+  ;; range of characters between the mark and the point. This is a really good way
+  ;; to accidentally kill half your document. I have done this more times than I'd
+  ;; like to admit. This package makes it so that without a region those commands
+  ;; act on a whole line.
+  :demand t
+  :config
+  (whole-line-or-region-global-mode 1)
+  (blackout 'whole-line-or-region-local-mode)
+  )
+
+
+;;;; Languages
+
+(use-package fountain-mode
+  :commands fountain-mode
+  :custom
+  (fountain-add-continued-dialog nil)
+  (fountain-highlight-elements (quote (section-heading)))
+  )
+
+(use-package markdown-mode
+  :commands markdown-mode)
+
+(use-package lua-mode
+  :commands lua-mode)
+
+
+;;;; Spelling
 
 (use-package flyspell
   :commands (flyspell-mode flyspell-prog-mode)
+  :init
+  (add-hook 'text-mode-hook 'turn-on-flyspell)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
   :config
   (setq ispell-program-name "/usr/local/bin/aspell")
   (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
   (setq ispell-list-command "list")
 )
 
-;; =flyspell-correct= allows you to pass spelling suggestions to completion and search frameworks, such as =selectrum=. This setup code is copied directly from the selectrum documentation.
-
 (use-package flyspell-correct
+  ;; =flyspell-correct= allows you to pass spelling suggestions to completion
+  ;; and search frameworks, such as =selectrum=. This setup code is copied
+  ;; directly from the selectrum documentation.
   :bind
   ("M-;" . #'flyspell-correct-wrapper)
   ("M-:" . #'flyspell-correct-at-point)
@@ -286,9 +383,19 @@
   )
 
 
+;;; Dired
+
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (dired-hide-details-mode 1)
+	    (auto-revert-mode)
+	    ))
+
+
 ;;; Emacs Help
 
-;; =helpful= is a really neat package that brings together a lot of useful information when you ask Emacs for help.
+;; =helpful= is a really neat package that brings together a lot of useful
+;; information when you ask Emacs for help.
 
 (use-package helpful
   ;; https://github.com/Wilfred/helpful
@@ -299,16 +406,15 @@
   ("C-h k" . #'helpful-key)
   ("C-h C" . #'helpful-command)
   ("C-h p" . #'helpful-at-point)
+  :bind*
+  ("C-?" . #'help-command)
+  ("s-/" . #'help-command)  
  )
 
-;; Normally, C-? is used for undo/redo,
-;; but I've rebound that elsewhere, so I can use it here
-(bind-key* "C-?" 'help-command)
-(bind-key* "s-/" 'help-command)
 
 ;;; macOS Consistency
 
-;; The below is probably the biggest reason why I managed get over the
+;; The below is probably the biggest reason I managed get over the
 ;; intimidation of using Emacs in those first few days. They're designed to make
 ;; all the shortcuts you use in every other Mac app to work the same way in
 ;; Emacs. Some of these simply remap existing bindings, and some of them call
@@ -377,6 +483,7 @@
 ;; live, to the character grid.
 (setq frame-resize-pixelwise nil)
 
+
 ;;;; Visual Line Mode
 
 ;; When in visual line mode the out-of-the-box movement commands behave
@@ -444,13 +551,11 @@
  ("s-M-l" . mark-paragraph)
  ("S-s-<left>" . oht/expand-to-beginning-of-visual-line)
  ("S-s-<right>" . oht/expand-to-end-of-visual-line)
+ ("s-<up>" . beginning-of-buffer)
+ ("s-<down>" . buffer)
  ("s-<return>" . oht/open-line-below)
  ("S-s-<return>" . oht/open-line-above)
  )
-
-;; these don't work with 'bind-keys' (above)
-(bind-key "s-<up>" (kbd "M-<"))
-(bind-key "s-<down>" (kbd "M->"))
 
 ;; navigation and indentation
 (bind-key "s-[" 'previous-buffer)
@@ -471,58 +576,48 @@
 ;; and by default option+forward-delete has no mapping
 (bind-key* "M-<delete>" 'kill-word)
 
+
 ;;; Narrowing & Searching
 
-;; Navigating and using the thousands of things Emacs can do is built around the idea of searching and narrowing a selection down to the thing you're looking for. To make this easier I've installed a few packages that enhance Emacs built-in facilities for doing this.
+;; Navigating and using the thousands of things Emacs can do is built around
+;; the idea of searching and narrowing a selection down to the thing you're
+;; looking for. To make this easier I've installed a few packages that enhance
+;; Emacs built-in facilities for doing this.
 
-;;;; Selectrum
-
-;; I've tried a number of them (including =ivy=, =helm=, and =icomplete=) but I find =selectrum= to be the most Emacs-y (in a good way). It is very simple, very fast, and doesn't try to do more than its basic function.
-
-;; selectrum is the live-search framework
-(use-package selectrum
-  :demand t
-  :config (selectrum-mode +1)
-  :bind
-  ("s-b" . selectrum-switch-buffer+)
-  ("M-y" . yank-pop+)
-  ("M-s-o" . recentf-open-files+)
-  )
-
-;; prescient is for sorting search candidates
-(use-package prescient
-  :demand t
-  :config (prescient-persist-mode +1)
-  )
-
-;; this combines them
 (use-package selectrum-prescient
-  :demand t
-  :config (selectrum-prescient-mode +1)
-)
+  :init
+  ;; to make sorting and filtering more intelligent
+  (selectrum-prescient-mode +1)
+  )
 
-;;;; CTRLF
+(use-package prescient
+  :init
+  ;; to save your command history on disk, so the sorting gets more
+  ;; intelligent over time
+  (prescient-persist-mode +1)
+  )
 
-;; The creator of these packages also created an enhanced version of =isearch= which I find very useful, and in keeping with the philosophy of minimalism.
+(use-package selectrum
+  :init
+  (selectrum-mode +1)
+  )
+
+(use-package consult
+  :init
+  (consult-preview-mode)
+  :bind
+  ("s-b" . consult-buffer)
+  ("M-y" . consult-yank-pop)
+  ("M-s-o" . consult-recent-file)
+  )
+
+(use-package marginalia
+  :straight (marginalia :type git :host github :repo "minad/marginalia" :branch "main")
+  :init
+  (marginalia-mode)
+  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)))
 
 (use-package ctrlf
-  ;; When you enable ctrlf-mode, you get these DEFAULT BINDINGS:
-  ;; C-s - ctrlf-forward-literal
-  ;; C-r - ctrlf-backward-literal
-  ;; C-M-s - ctrlf-forward-regexp
-  ;; C-M-r - ctrlf-backward-regexp
-  ;; M-s _ - ctrlf-forward-symbol
-  ;; M-s . - ctrlf-forward-symbol-at-point
-  ;; C-o s - change search style, which includes fuzzy & fuzzy-regex
-  ;; but since this is a minor mode, its bindings will override your explicit
-  ;; bindings in this config. No thank you. I'd rather manually create the same
-  ;; bindings.
-
-  ;; And these bindings are standard for the minibuffer:
-  ;; M-n - insert symbol-at-point
-  ;; M-p - previous in minibuffer history
-  ;; M-n - next in minibuffer history
-
   :config
   (setq ctrlf-minibuffer-bindings
         `(("C-n"          . ctrlf-next-match)
@@ -532,25 +627,19 @@
 	  (,(kbd "M-r")   . ctrlf-toggle-regexp)
 	  (,(kbd "C-o s") . ctrlf-change-search-style)
 	  ))
-
   :bind
   ("C-s" . ctrlf-forward-fuzzy)
   ("C-r" . ctrlf-backward-fuzzy)
   )
 
-;;;; Search and Replace
-
-;; Package `visual-regexp' provides an alternate version of
-;; `query-replace' which highlights matches and replacements as you
-;; type.
 (use-package visual-regexp
+  ;; Provides an alternate version of `query-replace' which highlights matches
+  ;; and replacements as you type.
   :bind (([remap query-replace] . #'vr/query-replace)))
 
-;; Package `visual-regexp-steroids' allows `visual-regexp' to use
-;; regexp engines other than Emacs'; for example, Python or Perl
-;; regexps.
 (use-package visual-regexp-steroids
-  :demand t
+  ;; Allows `visual-regexp' to use regexp engines other than Emacs'; for
+  ;; example, Python or Perl regexps.
   :after visual-regexp
   :bind (([remap query-replace-regexp] . #'radian-query-replace-literal))
   :init
@@ -565,169 +654,32 @@
   )
 
 
-;;; Packages
-
-;; This section contains misc packages that don't have a good place elsewhere.
-
-;; Tell `use-package' to always load features lazily unless told
-;; otherwise. It's nicer to have this kind of thing be deterministic:
-;; if `:demand' is present, the loading is eager; otherwise, the
-;; loading is lazy. See
-;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
-;; (setq use-package-always-defer t)
-
-(use-package hydra)
-
-(use-package magit
-  :commands magit-status
-  )
-(use-package bind-key)
-(use-package exec-path-from-shell)
-(use-package olivetti
-  :commands olivetti-mode
-  :custom (olivetti-body-width 80)
-  )
-(use-package unfill
-  :commands (unfill-paragraph unfill-toggle unfill-region)
-  )
-(use-package which-key
-  :demand t
-  :config
-  (which-key-mode t)
-  (setq which-key-idle-delay 0.4)
-  (blackout 'which-key-mode)
-  )
-(use-package undo-fu
-  :bind
-  ("s-z" . undo-fu-only-undo)
-  ("s-Z" . undo-fu-only-redo)
-  )
-(use-package expand-region
-  :bind
-  ("s-e" . er/expand-region)
-  ("s-E" . er/contract-region)
-  )
-(use-package sdcv-mode
-  :commands sdcv-search
-  :load-path "lisp/emacs-sdcv/")
-
-;; Since emacs seems to love spawning new windows, and taking over your existing
-;; ones, this allows you to undo and redo those arrangements. So you if a
-;; command kills a window arrangement you were using you can go back to it with
-;; winner-undo and winner-redo.
-(winner-mode 1)
-
-;; Toggle mode-line
-(use-package hide-mode-line
-  :commands hide-mode-line-mode
-)
-
-;; Use iMenu across all open buffers
-(use-package imenu-anywhere
-  :commands (imenu-anywhere)
-)
-
-;; replaces zap-to-char with an avy-like interface
-;; note that it searches forward and backward
-(use-package zzz-to-char
-  :bind ("M-z" . zzz-up-to-char))
-
-;; Whole Line or Region
-
-;; When no region is active (nothing is selected), and you invoke the
-;; =kill-region= (cut) or =kill-ring-save= (copy) commands, Emacs acts on the
-;; range of characters between the mark and the point. This is a really good way
-;; to accidentally kill half your document. I have done this more times than I'd
-;; like to admit. This package makes it so that without a region those commands
-;; act on a whole line.
-
-(use-package whole-line-or-region
-  :demand t
-  :config
-  (whole-line-or-region-global-mode 1)
-  (blackout 'whole-line-or-region-local-mode)
-  )
-
-;; Bufler - a better buffer list
-(use-package bufler
-  :commands bufler
-  )
-
-(use-package fountain-mode
-  :commands fountain-mode
-  :custom
-  (fountain-add-continued-dialog nil)
-  (fountain-highlight-elements (quote (section-heading)))
-  )
-(use-package lua-mode
-  :commands lua-mode)
-(use-package markdown-mode
-  :commands markdown-mode)
-
-;;;; Spelling
-
-;; Flyspell offers on-the-fly spell checking. We can enable flyspell for all text-modes with this snippet.
-
-(add-hook 'text-mode-hook 'turn-on-flyspell)
-
-;; To use flyspell for programming there is flyspell-prog-mode, that only enables spell checking for comments and strings. We can enable it for all programming modes using the prog-mode-hook.
-
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
-;;;; General
-
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (dired-hide-details-mode 1)
-	    (auto-revert-mode)
-	  ))
-
 ;;; Appearance
 
 ;;;; Fonts
 
 ;; It can be quite refreshing to change the font I'm working in. So below are
-;; a bunch of functions that set my preferred fonts, a hydra for picking them,
-;; and finally a function for setting the default.
+;; a bunch of functions that set my preferred fonts, and a hydra for picking
+;; them.
 
-(defun oht/set-font-SF ()
+(defun oht/set-font-ibm ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "SF Mono" :height 130 :weight 'normal)
+		      :family "IBM Plex Mono" :height 120 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "SF Pro Text" :height 130 :weight 'normal)
+		      :family "IBM Plex Serif" :height 140 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "SF Mono" :height 130 :weight 'normal)
+		      :family "IBM Plex Mono" :height 120 :weight 'normal)
   )
 
-(defun oht/set-font-roboto ()
+(defun oht/set-font-ibm-large ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "Roboto Mono" :height 120 :weight 'normal)
+		      :family "IBM Plex Mono" :height 140 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "Roboto" :height 140 :weight 'normal)
+		      :family "IBM Plex Serif" :height 160 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Roboto Mono" :height 120 :weight 'normal)
-  )
-
-(defun oht/set-font-fira ()
-  (interactive)
-  (set-face-attribute 'default nil
-		      :family "Fira Mono" :height 120 :weight 'normal)
-  (set-face-attribute 'variable-pitch nil
-		      :family "Fira Sans" :height 140 :weight 'normal)
-  (set-face-attribute 'fixed-pitch nil
-		      :family "Fira Mono" :height 120 :weight 'normal)
-  )
-
-(defun oht/set-font-go ()
-  (interactive)
-  (set-face-attribute 'default nil
-		      :family "Go Mono" :height 120 :weight 'normal)
-  (set-face-attribute 'variable-pitch nil
-		      :family "Go" :height 140 :weight 'normal)
-  (set-face-attribute 'fixed-pitch nil
-		      :family "Go Mono" :height 120 :weight 'normal)
+		      :family "IBM Plex Mono" :height 140 :weight 'normal)
   )
 
 (defun oht/set-font-triplicate ()
@@ -742,22 +694,19 @@
 
 (defhydra hydra-fonts (:color amaranth)
   "Set Font Properties"
-  ("s" oht/set-font-SF "San Francisco")
-  ("r" oht/set-font-roboto "Roboto")
-  ("f" oht/set-font-fira "Fira")
-  ("g" oht/set-font-go "Go")
+  ("i" oht/set-font-ibm "IBM Plex")
+  ("I" oht/set-font-ibm-large "IBM Plex Large")
   ("t" oht/set-font-triplicate "Triplicate")
   ("v" variable-pitch-mode "Variable")
   ("q" nil "cancel"))
 
 ;; This sets the default fonts
-(oht/set-font-SF)
+(oht/set-font-ibm)
 
 
 ;;;; Theme
 
 (use-package modus-themes
-  :demand t
   :init
   (setq
    modus-themes-org-blocks 'grayscale
@@ -789,21 +738,8 @@
     (disable-theme 'modus-vivendi)
     (load-theme 'modus-operandi t)))
 
-;; Though I rarely use them, I like these themes too.
-
-(use-package gruvbox-theme)
-(use-package nord-theme)
-(use-package tron-legacy-theme)
-(use-package zenburn-theme)
 
 ;;;; Mode Line
-
-(use-package blackout
-  :config
-  (blackout 'eldoc-mode)
-  (blackout 'flyspell-mode " Spell")
-  (blackout 'emacs-lisp-mode "Elisp")
-  )
 
 ;; add columns to the mode-line
 (column-number-mode t)
@@ -816,126 +752,17 @@
 (setq display-time-default-load-average nil)
 (display-time-mode t)
 
-;;; Auto-complete
 
-;; I've tried a few completion packages and they've all left me cold. =hippy-expand= generally gets me what I want, but I'd like the pop-up list to use the completion framework. Some googling led me to this fucntion, built for ivy, which I've modified for use with =selectum=.
-
-;; https://gist.github.com/JohnLunzer/7c6d72a14c76c0a3057535e4f6148ef8
-(defun my-hippie-expand-completions (&optional hippie-expand-function)
-  "Return list of completions generated by `hippie-expand'."
-  (save-excursion
-    (let ((this-command 'my-hippie-expand-completions)
-          (last-command last-command)
-          (hippie-expand-function (or hippie-expand-function 'hippie-expand)))
-      (while (progn
-               (funcall hippie-expand-function nil)
-               (setq last-command 'my-hippie-expand-completions)
-               (not (equal he-num -1))))
-      ;; Provide the options in the order in which they are normally generated.
-      (delete he-search-string (reverse he-tried-table)))))
-
-(defun my-hippie-expand-with (hippie-expand-function)
-  "Offer completion using the specified hippie-expand function."
-  (let* ((options (my-hippie-expand-completions hippie-expand-function)))
-    (if options
-        (progn
-          (if (> (safe-length options) 1)
-              (setq selection (completing-read "Completions: " options))
-            (setq selection (car options)))
-          (if selection
-              (he-substitute-string selection t)))
-      (message "No expansion found"))))
-
-(defun my-hippie-expand ()
-  "Offer completion for the word at point."
-  (interactive)
-  (my-hippie-expand-with 'hippie-expand))
-
-(global-set-key (kbd "M-/") 'my-hippie-expand)
-
-;; In Emacs, =TAB= is used by a lot of languages for indentation (org particularly). Completion is triggered with =M-TAB=. But the setting =tab-always-indent 'complete= will tell Emacs to first try to indent the line, and if it's already indented trigger =completion-at-point=.
-
-(setq tab-always-indent 'complete)
-
-;; The following adds file-path completion to the completion framework. So when your point is on something that looks like a file-path Emacs will offer file-path completions. This technique is taken from [[https://with-emacs.com/posts/tutorials/customize-completion-at-point/][(with-emacs]].
-
-;; This is especially nice with selectrum which won’t exit file completions after each path level so you can conveniently navigate to the path like you would do with find-file.
-
-(autoload 'ffap-file-at-point "ffap")
-(defun complete-path-at-point+ ()
-  "Return completion data for UNIX path at point."
-  (let ((fn (ffap-file-at-point))
-        (fap (thing-at-point 'filename)))
-    (when (and (or fn (equal "/" fap))
-               (save-excursion
-                 (search-backward fap (line-beginning-position) t)))
-      (list (match-beginning 0)
-            (match-end 0)
-            #'completion-file-name-table :exclusive 'no))))
-
-(add-hook 'completion-at-point-functions
-          #'complete-path-at-point+
-          'append)
-
-;; The two blocks of code above are taken from:
-;; https://with-emacs.com/posts/tutorials/customize-completion-at-point/
-
-;; I've not enabled the below code because I'm still testing it, but it basically creates a function witch reads and caches a file with a list of words and offers completions from it when you call a custom function. It is taken from [[https://emacs.stackexchange.com/questions/37423/completion-by-fuzzy-search-in-large-dictionary-file-displaying-candidates-inlin/37446#37446][this stackexchange message]].
-
-;; (defun my-dictionary ()
-;;   "Return hash-table whose keys comprise words.txt."
-;;   (with-temp-buffer
-;;     (insert-file-contents "/usr/share/dict/words")
-;;     (let ((table (make-hash-table :test #'equal :size 466544)))
-;;       (while (not (eobp))
-;;         (puthash (buffer-substring (point) (line-end-position)) nil table)
-;;         (forward-line))
-;;       table)))
-;; 
-;; (defvar my-dictionary
-;;   (lazy-completion-table my-dictionary my-dictionary)
-;;   "Lazy completion table for function `my-dictionary'.")
-;; 
-;; ;; this is the function to call to execute the completion
-;; (defun my-complete-word-in-region ()
-;;   "Complete word preceding point under `my-dictionary'."
-;;   (interactive)
-;;   (completion-in-region
-;;    (save-excursion
-;;      (skip-syntax-backward "w")
-;;      (point))
-;;    (point)
-;;    my-dictionary))
-
-;;; Snippets
-
-(use-package yasnippet
-  :bind (:map yas-minor-mode-map
-	      ("TAB" . nil)
-	      ([tab] . nil))
-  ("s-y" . yas-expand)
-  :hook
-  (prog-mode . yas-minor-mode)
-  (text-mode . yas-minor-mode)
-  :custom
-  (yas-snippet-dirs '("~/dot/emacs/snippets/" user-emacs-directory))
-  (yas-verbosity 2)
-  :config
-  (yas-reload-all)
-  (blackout 'yas-minor-mode)
-  )
-
-
-;;; Org
+;;; Org Mode
 
 (use-package org
+  :init (load-file "~/dot/emacs/org-mode.el")
   :commands org-mode
   :config
-  (load-file "~/dot/emacs/org-mode.el")
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
   :bind (:map org-mode-map
-	      ("s-\\ o" . selectrum-outline)
+	      ("s-\\ o" . consult-outline)
 	      ("s-\\ ." . oht/org-insert-date-today)
 	      ("s-\\ t" . org-todo)
 	      ("s-\\ n" . org-narrow-to-subtree)
@@ -953,6 +780,89 @@
 	      ("s-\\ g" . org-goto)
 	      ("s-\\ c" . org-toggle-checkbox)
 	      ))
+
+
+;;; Window Control
+
+;; Many of these bindings are duplicates of those in the windows hydra, which is
+;; intentional, there should be some consistency between them.
+(bind-keys :prefix-map oht/windows-leader
+	   :prefix "s-="
+	   ("s" . oht/split-below)
+	   ("v" . oht/split-beside)
+	   ("h" . hydra-windows/body)
+	   ("k" . oht/delete-window)
+	   ("o" . delete-other-windows)
+	   ("b" . balance-windows)
+	   ("r" . oht/toggle-window-split))
+
+
+;;; Keybindings
+
+
+;;;; Enhance Emacs
+
+;; Make Emacs indent new lines automatically.
+(define-key global-map (kbd "RET") 'newline-and-indent)
+
+(bind-key "s-g" 'keyboard-quit)
+
+(bind-key "s-f" #'occur)
+(bind-key "s-F" #'all-occur)
+
+(bind-key "M-<up>" 'oht/move-line-up)
+(bind-key "M-<down>" 'oht/move-line-down)
+(bind-key "M-o" 'oht/other-window)
+(bind-key "M-s-s" 'save-some-buffers) ;save others
+
+;; When region is active, make `capitalize-word' and friends act on it.
+(bind-key "M-c" #'capitalize-dwim)
+(bind-key "M-l" #'downcase-dwim)
+(bind-key "M-u" #'upcase-dwim)
+
+;; This cycles the spacing around point between a single space, no spaces, or the original spacing:
+(bind-key "M-SPC" 'cycle-spacing)
+
+;; This adds pulse-line to this keybinding, but that's it.
+(bind-key "C-l" 'oht/recenter-top-bottom)
+
+;; Show location of point with a pulse
+(bind-key "C-=" 'pulse-line)
+
+
+;;;; Primary Bindings
+
+(bind-key "s-p" 'execute-extended-command)
+(bind-key "s-k" 'oht/kill-this-buffer)
+(bind-key "M-s-b" 'bufler)
+(bind-key "s-C" 'org-capture)
+(bind-key "s-|" 'hydra-manipulate/body)
+(bind-key "C-M-t" 'hydra-transpose/body)
+(bind-key "C-S-<mouse-1>" 'mc/add-cursor-on-click)
+
+(bind-key "s-1" 'org-agenda)
+(bind-key "s-2" 'hydra-secondary-selection/body)
+
+
+;;;; Global Leader Bindings
+
+(bind-keys :prefix-map oht/global-leader
+	   :prefix "s-'"
+	   ("a" . auto-fill-mode)
+	   ("d" . sdcv-search)
+	   ("h" . hl-line-mode)
+	   ("l" . oht/toggle-line-numbers)
+	   ("w" . oht/toggle-whitespace)
+	   ("m" . magit-status)
+	   ("M" . consult-marks)
+	   ("<left>" . winner-undo)
+	   ("<right>" . winner-redo)
+	   ("s" . org-store-link)
+	   ("o" . consult-outline)
+	   ("f" . hydra-fonts/body)
+	   ("!" . font-lock-mode)
+	   )
+
 
 ;;; Secondary Selection
 
@@ -994,6 +904,7 @@
   ("g" (lambda () (interactive)(secondary-selection-to-region)) "Goto 2nd")
   ("q" nil "cancel"))
 
+
 ;;; Outline
 
 ;; `outline' provides major and minor modes for collapsing
@@ -1017,12 +928,13 @@
   ("<tab>" oht/outline-show-entry-branches "Show Subtree")
   ("S-<tab>" outline-hide-subtree "Hide Subtree")
   ("a" outline-show-all "Show All" :color: blue)
-  ("s" selectrum-outline "Selectrum" :color blue)
+  ("c" consult-outline "Consult" :color blue)
   ("n" outline-next-visible-heading "Next")
   ("p" outline-previous-visible-heading "Previous")
   ("q" nil "Cancel" :color blue)
   )
 (bind-key "s-0" 'hydra-outline/body)
+
 
 ;;; View-Mode
 
@@ -1046,20 +958,6 @@
 	("r" . ctrlf-backward-fuzzy)
 	)
   )
-
-;;; Window Control
-
-;; Many of these bindings are duplicates of those in the windows hydra, which is
-;; intentional, there should be some consistency between them.
-(bind-keys :prefix-map oht/windows-leader
-	   :prefix "s-="
-	   ("s" . oht/split-below)
-	   ("v" . oht/split-beside)
-	   ("h" . hydra-windows/body)
-	   ("k" . oht/delete-window)
-	   ("o" . delete-other-windows)
-	   ("b" . balance-windows)
-	   ("r" . oht/toggle-window-split))
 
 
 ;;; Smart Occur
@@ -1091,71 +989,8 @@
   ("n" next-error "next")
   ("p" previous-error "prev")
   ("q" exit "exit" :color blue))
-(bind-key "s-' o" 'occur-hydra/body)
+(bind-key "s-' O" 'occur-hydra/body)
 
-
-;;; Keybindings
-
-;;;; Enhance Emacs
-
-;; Make Emacs indent new lines automatically.
-(define-key global-map (kbd "RET") 'newline-and-indent)
-
-(bind-key "s-g" 'keyboard-quit)
-
-(bind-key "s-f" #'occur)
-(bind-key "s-F" #'all-occur)
-
-(bind-key "M-<up>" 'oht/move-line-up)
-(bind-key "M-<down>" 'oht/move-line-down)
-(bind-key "M-o" 'oht/other-window)
-(bind-key "M-s-s" 'save-some-buffers) ;save others
-
-;; When region is active, make `capitalize-word' and friends act on it.
-(bind-key "M-c" #'capitalize-dwim)
-(bind-key "M-l" #'downcase-dwim)
-(bind-key "M-u" #'upcase-dwim)
-
-;; This cycles the spacing around point between a single space, no spaces, or the original spacing:
-(bind-key "M-SPC" 'cycle-spacing)
-
-;; This adds pulse-line to this keybinding, but that's it.
-(bind-key "C-l" 'oht/recenter-top-bottom)
-
-;; Show location of point with a pulse
-(bind-key "C-=" 'pulse-line)
-
-;;;; Primary Bindings
-
-(bind-key "s-p" 'execute-extended-command)
-(bind-key "s-k" 'oht/kill-this-buffer)
-(bind-key "M-s-b" 'bufler)
-(bind-key "s-C" 'org-capture)
-(bind-key "s-|" 'hydra-manipulate/body)
-(bind-key "C-M-t" 'hydra-transpose/body)
-(bind-key "C-S-<mouse-1>" 'mc/add-cursor-on-click)
-
-(bind-key "s-1" 'org-agenda)
-(bind-key "s-2" 'hydra-secondary-selection/body)
-
-;;;; Global Leader Bindings
-
-(bind-keys :prefix-map oht/global-leader
-	   :prefix "s-'"
-	   ("a" . auto-fill-mode)
-	   ("d" . sdcv-search)
-	   ("h" . hl-line-mode)
-	   ("l" . oht/toggle-line-numbers)
-	   ("w" . oht/toggle-whitespace)
-	   ("m" . magit-status)
-	   ("M" . selectrum-marks)
-	   ("<left>" . winner-undo)
-	   ("<right>" . winner-redo)
-	   ("s" . org-store-link)
-	   ("o" . selectrum-outline)
-	   ("f" . hydra-fonts/body)
-	   ("!" . font-lock-mode)
-	   )
 
 ;;; Closing
 

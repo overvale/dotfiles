@@ -81,6 +81,8 @@ time looking at other people's configuration files (much like this one). I've
 learned from some wonderful (and well documented) examples. Here is a list of
 the ones I've learned the most from:
 
+- [[https://github.com/raxod502][Radon Rosborough's packages/config]]
+- [[https://github.com/raxod502/radian][Radian]]
 - [[https://protesilaos.com/dotemacs/][Protesilaos Stavrou Dotemacs]]
 - [[https://github.com/oantolin/emacs-config/blob/master/init.el][Oantolin emacs config]]
 - [[https://blog.aaronbieber.com][Aaron Bieber, Blog & Dotfiles]]
@@ -89,8 +91,6 @@ the ones I've learned the most from:
 - [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org][Angry Bacon dotemacs]]
 - [[https://gitlab.com/Kaligule/emacs-config/-/blob/master/config.org][Kaligule config.org]]
 - [[https://github.com/andschwa/.emacs.d][Andrew Schwartzmeyer’s Emacs configurations]]
-- [[https://github.com/raxod502][Radon Rosborough's packages/config]]
-- [[https://github.com/raxod502/radian][Radian]]
 - [[https://github.com/munen/emacs.d/][Alain M. Lafon's emacs.d]]
 
 For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
@@ -101,8 +101,6 @@ Before you do anything else, you'll have to install Emacs (I know, right?). My
 preferred version, and the one this configuration targets, is [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][Mitsuharu
 Yamamoto's Emacs fork]] because it provides [[https://bitbucket.org/mituharu/emacs-mac/src/f3402395995bf70e50d6e65f841e44d5f9b4603c/README-mac?at=master&fileviewer=file-view-default][a lot of nice stuff]] for people who
 want their Emacs to be a better macOS citizen.
-
-Now, on to the fun stuff.
 
 * Use-Package
 
@@ -142,6 +140,15 @@ Contrast with this:
 
 This short config snippet tells Emacs to load magit only when you trigger the
 =magit-status= function.
+
+** Straight
+
+I used to rely on the built-in =package.el= to actually install the packages,
+but have recently started using =straight.el= for this purpose. Think of it as
+an add-on to =use-package= which takes care of package installation and
+updating. The key thing for me is that is allows the canonical list of
+packages Emacs loads to reside in your init file (rather than a crazy
+combination of init files, customized alists, etc).
 
 ** Usage
 
@@ -198,10 +205,7 @@ loaded when that command is called. So I =:demand= selectrum be loaded so
 execute-extended-command= but you'd need to know the name of every function that
 needs =selectrum=, which in this case is impractical.
 
-
 * Secondary Selection
-
-Now, on to the fun stuff. Making emacs do stuff other editors can't.
 
 ** Background
 

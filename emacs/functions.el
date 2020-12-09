@@ -1,15 +1,5 @@
 ;; -*- lexical-binding: t; -*-
 
-(defun oht/writing-mode ()
-  "Enable variable-pitch, flyspell, and increased line-spacing and margins."
-  (interactive)
-  (variable-pitch-mode t)
-  (flyspell-mode t)
-  (setq-local line-spacing 0.15)
-  (olivetti-mode t)
-  (oht/font-large)
-  )
-
 (defun oht/find-settings ()
   "Quickly open init.el"
   (interactive)

@@ -125,7 +125,7 @@
 ;;    org-agenda-todo-ignore-deadlines
 ;; make the global TODO list skip certain entries
 (setq org-agenda-todo-ignore-scheduled 'all)
-(setq org-agenda-todo-ignore-deadlines 'far)
+(setq org-agenda-todo-ignore-deadlines 'near)
 
 ;; If this option is set, the same options will also apply for the tags-todo
 ;; search, which is the general tags/property matcher restricted to unfinished
@@ -161,13 +161,13 @@
 	 (file "~/Documents/org-files/logbook.org")
 	 (file "~/dot/emacs/capture-templates/daily-focus.org"))
 	("p" "Personal Inbox" entry
-         (file+headline "~/Documents/org-files/refile.org" "Personal")
+         (file+headline "~/Documents/org-files/inbox.org" "Personal")
          "* %?\n\n")
         ("P" "Personal Log Entry" entry
          (file "~/Documents/org-files/logbook.org")
          "* %?\n%t\n\n")
         ("i" "Ingenuity Inbox" entry
-         (file+headline "~/Documents/org-files/refile.org" "Ingenuity")
+         (file+headline "~/Documents/org-files/inbox.org" "Ingenuity")
          "* %?\n\n")
         ("I" "Ingenuity Log Entry" entry
          (file "~/Documents/org-files/ingenuity_logbook.org")

@@ -262,8 +262,6 @@
 
 (use-package hydra
   :demand t
-  :config
-  (load "~/dot/emacs/hydras.el")
   )
 
 (use-package blackout
@@ -778,7 +776,6 @@
 	      ("s-\\ m" . visible-mode)
 	      ("s-\\ I" . org-clock-in)
 	      ("s-\\ O" . org-clock-out)
-	      ("s-\\ h" . hydra-org/body)
 	      ("s-\\ a" . org-archive-subtree)
 	      ("s-\\ r" . org-refile)
 	      ("s-\\ g" . org-goto)
@@ -788,13 +785,10 @@
 
 ;;; Window Control
 
-;; Many of these bindings are duplicates of those in the windows hydra, which is
-;; intentional, there should be some consistency between them.
 (bind-keys :prefix-map oht/windows-leader
 	   :prefix "s-="
 	   ("s" . oht/split-below)
 	   ("v" . oht/split-beside)
-	   ("h" . hydra-windows/body)
 	   ("k" . oht/delete-window)
 	   ("o" . delete-other-windows)
 	   ("b" . balance-windows)
@@ -840,8 +834,7 @@
 (bind-key "s-k" 'oht/kill-this-buffer)
 (bind-key "M-s-b" 'bufler)
 (bind-key "s-C" 'org-capture)
-(bind-key "s-|" 'hydra-manipulate/body)
-(bind-key "C-M-t" 'hydra-transpose/body)
+(bind-key "s-|" 'oht/pipe-region)
 (bind-key "C-S-<mouse-1>" 'mc/add-cursor-on-click)
 
 (bind-key "s-1" 'org-agenda)

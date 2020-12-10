@@ -9,6 +9,7 @@
 ;; 2. A hydra called `hydra-outline'.
 ;; 3. An `occur' buffer with the query: [^;;; ]
 
+
 ;;; Preamble
 
 
@@ -248,6 +249,14 @@
 (global-set-key [mode-line mouse-3] 'scroll-down-command)
 
 
+;;;; Dired
+
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (dired-hide-details-mode 1)
+	    (auto-revert-mode)
+	    ))
+
 
 ;;; Packages
 
@@ -402,15 +411,6 @@
 		(let ((selectrum-should-sort-p nil))
 		  (apply func args))))
   )
-
-
-;;; Dired
-
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (dired-hide-details-mode 1)
-	    (auto-revert-mode)
-	    ))
 
 
 ;;; macOS Consistency
@@ -782,18 +782,6 @@
 	      ))
 
 
-;;; Window Control
-
-(bind-keys :prefix-map oht/windows-leader
-	   :prefix "s-="
-	   ("s" . oht/split-below)
-	   ("v" . oht/split-beside)
-	   ("k" . oht/delete-window)
-	   ("o" . delete-other-windows)
-	   ("b" . balance-windows)
-	   ("r" . oht/toggle-window-split))
-
-
 ;;; Keybindings
 
 
@@ -858,6 +846,18 @@
 	   ("f" . hydra-fonts/body)
 	   ("!" . font-lock-mode)
 	   )
+
+
+;;; Window Control
+
+(bind-keys :prefix-map oht/windows-leader
+	   :prefix "s-="
+	   ("s" . oht/split-below)
+	   ("v" . oht/split-beside)
+	   ("k" . oht/delete-window)
+	   ("o" . delete-other-windows)
+	   ("b" . balance-windows)
+	   ("r" . oht/toggle-window-split))
 
 
 ;;; Secondary Selection
@@ -932,6 +932,11 @@
 ;;; View-Mode
 
 (use-package view
+  ;; This config is designed as a pinky-saver, which allows you to use
+  ;; standard emacs movement keys without the control modifier. Think of it as
+  ;; a light-weight god-mode. In addition to the specified bindings
+  ;; `view-mode' has its own standard bindings, which you can find in the
+  ;; minor mode's help. (press h when `view-mode' is active.
   :ensure nil
   :init
   (setq view-read-only t)

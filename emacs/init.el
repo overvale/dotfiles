@@ -551,7 +551,7 @@
  ("S-s-<left>" . oht/expand-to-beginning-of-visual-line)
  ("S-s-<right>" . oht/expand-to-end-of-visual-line)
  ("s-<up>" . beginning-of-buffer)
- ("s-<down>" . buffer)
+ ("s-<down>" . end-of-buffer)
  ("s-<return>" . oht/open-line-below)
  ("S-s-<return>" . oht/open-line-above)
  )
@@ -802,7 +802,7 @@
 
 (bind-key "s-g" 'keyboard-quit)
 
-(bind-key "s-f" #'occur)
+(bind-key "s-f" #'occur-dwim)
 (bind-key "s-F" #'all-occur)
 
 (bind-key "M-<up>" 'oht/move-line-up)
@@ -914,18 +914,10 @@
   ("C-<tab>" . 'outline-cycle)
   )
 
-(defun oht/outline-show-entry-branches ()
-  "This unfolds the 'entry' and shows all the subheadings, similar to how org-mode works."
-  (interactive)
-  (outline-show-entry)
-  (outline-show-branches)
-  )
-
 (defhydra hydra-outline (:color amaranth)
   "Hydra for navigating outline mode"
   ("o" outline-hide-sublevels "Hide to This Sublevel")
-  ("<tab>" oht/outline-show-entry-branches "Show Subtree")
-  ("S-<tab>" outline-hide-subtree "Hide Subtree")
+  ("<tab>" outline-cycle "Show Subtree")
   ("a" outline-show-all "Show All" :color: blue)
   ("c" consult-outline "Consult" :color blue)
   ("n" outline-next-visible-heading "Next")
@@ -941,55 +933,39 @@
   :ensure nil
   :init
   (setq view-read-only t)
-  ;;(setq view-inhibit-help-message t)
+  (defun toggle-view-mode ()
+    (interactive)
+    (view-mode 'toggle)
+    )
+  (bind-key "s-j" 'toggle-view-mode)
   :bind
   (:map view-mode-map
 	("q" . nil)
 	("n" . next-line)
 	("p" . previous-line)
-	("f" . forward-word)
-	("b" . backward-word)
+	("f" . forward-char)
+	("b" . backward-char)
+	("F" . forward-word)
+	("B" . backward-word)
+	("a" . beginning-of-visual-line)
+	("e" . end-of-visual-line)
 	("{" . backward-paragraph)
 	("}" . forward-paragraph)
 	("(" . backward-sentence)
 	(")" . forward-sentence)
 	("s" . ctrlf-forward-fuzzy)
 	("r" . ctrlf-backward-fuzzy)
+	("m" . set-mark-command)
+	("l" . recenter-top-bottom)
+	("[" . scroll-down-line)
+	("]" . scroll-up-line)
+	("M" . rectangle-mark-mode)
+	;; this doesn't work
+	("R" . (lambda() (interactive)(view-mode -1)(replace-rectangle)))
+	("x" . exchange-point-and-mark)
+	("<RET>" . toggle-view-mode)
 	)
   )
-
-
-;;; Smart Occur
-
-;; From [[https://oremacs.com/2015/01/26/occur-dwim/][oremacs]]. This will offer as the default candidate:
-
-;; - the current region, if it's active
-;; - the current symbol, otherwise
-
-(defun occur-dwim ()
-  "Call `occur' with a sane default."
-  (interactive)
-  (push (if (region-active-p)
-            (buffer-substring-no-properties
-             (region-beginning)
-             (region-end))
-          (let ((sym (thing-at-point 'symbol)))
-            (when (stringp sym)
-              (regexp-quote sym))))
-        regexp-history)
-  (call-interactively 'occur))
-
-;; and a hydra to go with it
-;; TODO update hydra formatting to defhydra
-(defhydra occur-hydra (:color amaranth)
-  "Create/Navigate occur errors"
-  ("o" occur-dwim "occur")
-  ("f" first-error "first")
-  ("n" next-error "next")
-  ("p" previous-error "prev")
-  ("q" exit "exit" :color blue))
-(bind-key "s-' O" 'occur-hydra/body)
-
 
 ;;; Closing
 

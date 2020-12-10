@@ -170,17 +170,6 @@ _~_: modified
   :commands markdown-mode)
 
 
-
-;;;; General
-
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (dired-hide-details-mode 1)
-	    (auto-revert-mode)
-	  ))
-
-
-
 ;;; Auto-complete
 
 ;; I've tried a few completion packages and they've all left me cold.

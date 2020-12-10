@@ -154,7 +154,7 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
   (join-line -1))
 
-(defun oht/shell-command-on-region-replace (start end command)
+(defun oht/pipe-region (start end command)
   "Run shell-command-on-region interactivly replacing the region in place"
   (interactive (let (string)
                  (unless (mark)
@@ -253,3 +253,18 @@ This function works by setting the new-frame behaviour to use tabs, creating a n
   (recenter-top-bottom)
   (pulse-line)
   )
+
+(defun occur-dwim ()
+  "Call `occur' with a sane default.
+Taken from oremacs.com. This will offer as the default candidate:
+the current region (if it's active), or the current symbol."
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur))

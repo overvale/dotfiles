@@ -125,8 +125,8 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-;; When customizing Emacs interactively (ie: not in this document or =init.el=)
-;; Emacs appends code to your =init.el= file, which can be annoying when editing
+;; When customizing Emacs interactively (ie: not in this document or init.el)
+;; Emacs appends code to your init.el file, which can be annoying when editing
 ;; it by hand. This tells Emacs to place these customizations in a separate
 ;; file.
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -234,7 +234,7 @@
 ;; mouse-2: Option + Click
 ;; mouse-3: Command + Click
 ;; Keep in mind, however, that a 2-finger click on the track pad still sends
-;; =mouse-3= no matter what you set =mac-emulate-three-button-mouse= to.
+;; mouse-3 no matter what you set `mac-emulate-three-button-mouse' to.
 
 ;; Since emacs seems to love spawning new windows, and taking over your existing
 ;; ones, this allows you to undo and redo those arrangements. So you if a
@@ -250,6 +250,7 @@
 
 
 ;;; Packages
+
 
 ;;;; Critical Packages
 
@@ -271,6 +272,7 @@
   (blackout 'flyspell-mode " Spell")
   (blackout 'emacs-lisp-mode "Elisp")
   )
+
 
 ;;;; Other Packages
 
@@ -327,7 +329,7 @@
 
 (use-package whole-line-or-region
   ;; When no region is active (nothing is selected), and you invoke the
-  ;; =kill-region= (cut) or =kill-ring-save= (copy) commands, Emacs acts on the
+  ;; kill-region (cut) or kill-ring-save (copy) commands, Emacs acts on the
   ;; range of characters between the mark and the point. This is a really good way
   ;; to accidentally kill half your document. I have done this more times than I'd
   ;; like to admit. This package makes it so that without a region those commands
@@ -337,6 +339,21 @@
   (whole-line-or-region-global-mode 1)
   (blackout 'whole-line-or-region-local-mode)
   )
+
+(use-package helpful
+  ;; Neat package that brings together a lot of useful information when you
+  ;; ask Emacs for help. https://github.com/Wilfred/helpful
+  :bind
+  ("C-h f" . #'helpful-callable)
+  ("C-h F" . #'helpful-function)
+  ("C-h v" . #'helpful-variable)
+  ("C-h k" . #'helpful-key)
+  ("C-h C" . #'helpful-command)
+  ("C-h p" . #'helpful-at-point)
+  :bind*
+  ("C-?" . #'help-command)
+  ("s-/" . #'help-command)
+ )
 
 
 ;;;; Languages
@@ -369,8 +386,8 @@
 )
 
 (use-package flyspell-correct
-  ;; =flyspell-correct= allows you to pass spelling suggestions to completion
-  ;; and search frameworks, such as =selectrum=. This setup code is copied
+  ;; Allows you to pass spelling suggestions to completion
+  ;; and search frameworks, such as selectrum. This setup code is copied
   ;; directly from the selectrum documentation.
   :bind
   ("M-;" . #'flyspell-correct-wrapper)
@@ -392,26 +409,6 @@
             (dired-hide-details-mode 1)
 	    (auto-revert-mode)
 	    ))
-
-
-;;; Emacs Help
-
-;; =helpful= is a really neat package that brings together a lot of useful
-;; information when you ask Emacs for help.
-
-(use-package helpful
-  ;; https://github.com/Wilfred/helpful
-  :bind
-  ("C-h f" . #'helpful-callable)
-  ("C-h F" . #'helpful-function)
-  ("C-h v" . #'helpful-variable)
-  ("C-h k" . #'helpful-key)
-  ("C-h C" . #'helpful-command)
-  ("C-h p" . #'helpful-at-point)
-  :bind*
-  ("C-?" . #'help-command)
-  ("s-/" . #'help-command)  
- )
 
 
 ;;; macOS Consistency

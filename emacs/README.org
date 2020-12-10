@@ -150,6 +150,8 @@ updating. The key thing for me is that is allows the canonical list of
 packages Emacs loads to reside in your init file (rather than a crazy
 combination of init files, customized alists, etc).
 
+Additionally, doing this improved by startup time from 1.5 seconds to 0.8.
+
 ** Usage
 
 This example is from the project's =README=:

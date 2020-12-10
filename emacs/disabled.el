@@ -1,6 +1,4 @@
-;;; Hydras
-
-;;;; Dired
+;;; Dired
 
 (defhydra hydra-dired (:hint nil :color pink)
   "
@@ -60,7 +58,7 @@ T - tag prefix
 ;;f	      ))
 
 
-;;;; Buffer Menu
+;;; Buffer Menu
 
 (defhydra hydra-buffer-menu (:color pink
                                     :hint nil)
@@ -94,7 +92,7 @@ _~_: modified
 (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
 
 
-;;;; Spelling
+;;; Spelling
 
 ;; To make spell-checking a document a little easier I've made a hydra.
 
@@ -113,7 +111,7 @@ _~_: modified
 (bind-key "s-;" 'hydra-flyspell/body)
 
 
-;;;; EWW
+;;; EWW
 
 (defhydra hydra-eww (:color pink)
   "eww browser"
@@ -131,7 +129,7 @@ _~_: modified
   ("q" exit "Exit" :color blue))
 
 
-;;;; Startup Profiling
+;;; Startup Profiling
 
 ;; this package creates a report each time you startup
 ;; You'll need to add ':demand t' and restart emacs to see the report

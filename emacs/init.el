@@ -269,7 +269,7 @@
   :demand t
   :config
   (blackout 'eldoc-mode)
-  (blackout 'flyspell-mode " Spell")
+  (blackout 'visual-line-mode)
   (blackout 'emacs-lisp-mode "Elisp")
   )
 
@@ -287,6 +287,7 @@
 (use-package olivetti
   :commands olivetti-mode
   :custom (olivetti-body-width 80)
+  :blackout " Olvti"
   )
 
 (use-package which-key
@@ -383,6 +384,7 @@
   (setq ispell-program-name "/usr/local/bin/aspell")
   (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
   (setq ispell-list-command "list")
+  :blackout " Spell"
 )
 
 (use-package flyspell-correct
@@ -965,6 +967,7 @@
 	("x" . exchange-point-and-mark)
 	("<RET>" . toggle-view-mode)
 	)
+  :blackout " VIEW"
   )
 
 ;;; Closing

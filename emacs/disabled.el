@@ -569,3 +569,89 @@ behavior added."
   ("M-s-<down>" buf-move-down "Shift Down")
   ("q" nil "cancel" :color blue))
 
+;;; Org hydra
+
+(defhydra hydra-org (:color pink :hint nil)
+  "
+Org                    Links                 Outline
+ _q_ quit              _i_ insert            _<_ previous
+ _o_ edit              _n_ next              _>_ next
+ ^^                    _p_ previous          _a_ all
+ ^^                    _s_ store             _g_ go
+ ^^                    ^^                    _v_ overview
+"
+  ("q" nil)
+  ("<" org-backward-element)
+  (">" org-forward-element)
+  ("a" outline-show-all)
+  ("g" org-goto :color blue)
+  ("i" org-insert-link :color blue)
+  ("n" org-next-link)
+  ("o" org-edit-special :color blue)
+  ("p" org-previous-link)
+  ("s" org-store-link)
+  ("v" org-overview))
+
+;;; Org-Agenda Hydra
+
+;; This is beautiful. It is taken from [[https://oremacs.com/2016/04/04/hydra-doc-syntax/][abo-abo]] (creator of hydra). It creates view toggles and displays the status of those toggles.
+
+;; You have to wait until org-agenda loads because org itself
+;; doesn't know what 'org-agenda-mode-map' is.
+(eval-after-load "org-agenda"
+'(progn
+	(define-key org-agenda-mode-map
+		"v" 'hydra-org-agenda-view/body)
+		))
+
+(defun org-agenda-cts ()
+  (let ((args (get-text-property
+               (min (1- (point-max)) (point))
+               'org-last-args)))
+    (nth 2 args)))
+(defhydra hydra-org-agenda-view (:hint none)
+  "
+_d_: ?d? day        _g_: time grid=?g? _a_: arch-trees
+_w_: ?w? week       _[_: inactive      _A_: arch-files
+_t_: ?t? fortnight  _f_: follow=?f?    _r_: report=?r?
+_m_: ?m? month      _e_: entry =?e?    _D_: diary=?D?
+_y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
+  ("SPC" org-agenda-reset-view)
+  ("d" org-agenda-day-view
+   (if (eq 'day (org-agenda-cts))
+       "[x]" "[ ]"))
+  ("w" org-agenda-week-view
+   (if (eq 'week (org-agenda-cts))
+           "[x]" "[ ]"))
+  ("t" org-agenda-fortnight-view
+       (if (eq 'fortnight (org-agenda-cts))
+           "[x]" "[ ]"))
+  ("m" org-agenda-month-view
+       (if (eq 'month (org-agenda-cts)) "[x]" "[ ]"))
+  ("y" org-agenda-year-view
+       (if (eq 'year (org-agenda-cts)) "[x]" "[ ]"))
+  ("l" org-agenda-log-mode
+       (format "% -3S" org-agenda-show-log))
+  ("L" (org-agenda-log-mode '(4)))
+  ("c" (org-agenda-log-mode 'clockcheck))
+  ("f" org-agenda-follow-mode
+       (format "% -3S" org-agenda-follow-mode))
+  ("a" org-agenda-archives-mode)
+  ("A" (org-agenda-archives-mode 'files))
+  ("r" org-agenda-clockreport-mode
+       (format "% -3S" org-agenda-clockreport-mode))
+  ("e" org-agenda-entry-text-mode
+       (format "% -3S" org-agenda-entry-text-mode))
+  ("g" org-agenda-toggle-time-grid
+       (format "% -3S" org-agenda-use-time-grid))
+  ("D" org-agenda-toggle-diary
+       (format "% -3S" org-agenda-include-diary))
+  ("!" org-agenda-toggle-deadlines)
+  ("["
+   (let ((org-agenda-include-inactive-timestamps t))
+     (org-agenda-check-type t 'timeline 'agenda)
+     (org-agenda-redo)))
+  ("q" (message "Abort") :exit t))
+
+
+

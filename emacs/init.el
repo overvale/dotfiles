@@ -975,6 +975,36 @@
   :blackout " VIEW"
   )
 
+
+;;; EWW Browser
+
+(use-package eww
+  :init
+  (setq eww-restore-desktop nil)
+  (setq eww-desktop-remove-duplicates t)
+  (setq eww-header-line-format "%u")
+  (setq eww-download-directory "~/Downloads/")
+  (setq eww-bookmarks-directory "~/.emacs.d/eww-bookmarks/")
+  (setq eww-history-limit 150)
+  (setq shr-max-image-proportion 0.7)
+  (setq eww-use-external-browser-for-content-type
+        "\\`\\(video/\\|audio/\\|application/pdf\\)")
+  (setq url-cookie-trusted-urls '()
+	url-cookie-untrusted-urls '(".*"))
+  :commands eww
+  :bind (:map eww-mode-map
+	      ;;("s-\\ h" . hydra-eww/body)
+  ))
+
+(use-package browse-url
+  :after eww
+  :config
+  ;; This makes it so any link you follow in emacs opens in eww, rather than
+  ;; your default browser.
+  ;; (setq browse-url-browser-function 'eww-browse-url)
+  )
+
+
 ;;; Closing
 
 ;; Local Variables:

@@ -293,36 +293,6 @@ _~_: modified
   (blackout 'yas-minor-mode)
   )
 
-;;; EWW Browser
-
-;; Emacs includes a (basic) browser, so you (mostly) don't have to leave Emacs. Sometimes I think Emacs's goal is to get you to use Emacs more...
-
-;; The below is pretty much ripped directly from /Prot/'s config.
-
-(use-package eww
-  :init
-  (setq eww-restore-desktop nil)
-  (setq eww-desktop-remove-duplicates t)
-  (setq eww-header-line-format "%u")
-  (setq eww-download-directory "~/Downloads/")
-  (setq eww-bookmarks-directory "~/.emacs.d/eww-bookmarks/")
-  (setq eww-history-limit 150)
-  (setq shr-max-image-proportion 0.7)
-  (setq eww-use-external-browser-for-content-type
-        "\\`\\(video/\\|audio/\\|application/pdf\\)")
-  (setq url-cookie-trusted-urls '()
-	url-cookie-untrusted-urls '(".*"))
-  :commands eww
-  :bind (:map eww-mode-map
-	      ("s-\\ h" . hydra-eww/body)
-  ))
-
-(use-package browse-url
-  :after eww
-  :config
-  ;;(setq browse-url-browser-function 'eww-browse-url)
-  )
-
 ;;; Elfeed
 
 (use-package elfeed

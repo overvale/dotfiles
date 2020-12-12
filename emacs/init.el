@@ -195,6 +195,17 @@
 (set-default 'cursor-type 'box)            ; use a box for cursor
 (blink-cursor-mode -1)                     ; no blinking please
 
+;; Line spacing (in pixels)
+(setq-default line-spacing 1)
+
+;; Frame default parameters
+(setq default-frame-alist
+   (append (list
+          '(width . 80)                ;; width (in characters)
+          '(height . 50)               ;; height (in characters)
+          '(internal-border-width . 0) ;; border (in pixels)
+	  )))
+
 ;;;; General
 
 (global-auto-revert-mode t)                ; update buffer when file on disk changes
@@ -714,7 +725,7 @@
    modus-themes-syntax 'alt-syntax
    modus-themes-slanted-constructs t
    modus-themes-bold-constructs nil
-   modus-themes-mode-line '3d
+   modus-themes-mode-line nil
    modus-themes-diffs 'desaturated
    modus-themes-variable-pitch-headings nil
    modus-themes-links 'faint-neutral-underline

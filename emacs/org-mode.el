@@ -1,6 +1,6 @@
-;; -*- lexical-binding: t -*-
+;;; -*- lexical-binding: t -*-
 
-;;;; Agenda Settings
+;;; Agenda Settings
 
 ;; This defines which files you want included in your agenda/TODO views.
 (setq org-agenda-files
@@ -28,7 +28,7 @@
 		"S" 'org-agenda-schedule)
 		))
 
-;;;; Settings
+;;; Settings
 
 ;; do not indent text below a headline
 (setq org-adapt-indentation nil)
@@ -53,7 +53,7 @@
       org-goto-max-level 10)
 (setq org-outline-path-complete-in-steps nil)
 
-;;;; Look & Feel
+;;; Look & Feel
 
 ;; by default, hide org-markup
 ;; I have a toggle for this defined in functions
@@ -78,13 +78,13 @@
 ;; When creating an agenda, make sure hl-line-mode is active
 (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
 
-;;;; Source Code Blocks
+;;; Source Code Blocks
 
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
 (setq org-edit-src-content-indentation 0)
 
-;;;; Lists
+;;; Lists
 
 ;; Lists may be labelled with letters.
 (setq org-list-allow-alphabetical t)
@@ -98,9 +98,12 @@
 ;; the default is 2 so the below means 2+2 = 4 (spaces)
 (setq org-list-indent-offset 2)
 
-;;;; Custom Agendas
+;;; Custom Agendas
 
-;; This defines custom agendas. There's a very good tutorial on how to set these up at [[https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html][The Chronicle]].
+;; This defines custom agendas. There's a very good tutorial on how to set
+;; these up at
+;; [[https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html][The
+;; Chronicle]].
 
 (setq org-agenda-custom-commands
       '(
@@ -137,7 +140,7 @@
 (setq org-agenda-skip-scheduled-if-done t)
 (setq org-agenda-skip-deadline-if-done t)
 
-;;;; Keywords
+;;; Keywords
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")
@@ -154,7 +157,7 @@
 ;; And record those in a LOGBOOK drawer
 (setq org-log-into-drawer t)
 
-;;;; Capture Templates
+;;; Capture Templates
 
 (setq org-capture-templates
       '(("d" "Daily Focus" entry
@@ -190,7 +193,7 @@
             (insert "\n"))))))
 (add-hook 'org-capture-before-finalize-hook 'add-newline-at-end-if-none)
 
-;;;; Org hydra
+;;; Org hydra
 
 (defhydra hydra-org (:color pink :hint nil)
   "
@@ -213,7 +216,7 @@ Org                    Links                 Outline
   ("s" org-store-link)
   ("v" org-overview))
 
-;;;; Org-Agenda Hydra
+;;; Org-Agenda Hydra
 
 ;; This is beautiful. It is taken from [[https://oremacs.com/2016/04/04/hydra-doc-syntax/][abo-abo]] (creator of hydra). It creates view toggles and displays the status of those toggles.
 
@@ -274,7 +277,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
      (org-agenda-redo)))
   ("q" (message "Abort") :exit t))
 
-;;;; org imenu
+;;; org imenu
 
 ;; =imenu= normally indexes only two levels - since I run deeply nested documents, go up to six levels.
 

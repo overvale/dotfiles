@@ -825,6 +825,10 @@
 ;; Show location of point with a pulse
 (bind-key "C-=" 'pulse-line)
 
+;; I use `replace-rectangle' a lot, and I never use
+;; `copy-rectangle-to-register', so change this binding.
+(bind-key "C-x r r" 'replace-rectangle)
+
 
 ;;;; Primary Bindings
 
@@ -955,10 +959,23 @@
     (interactive)
     (view-mode 'toggle)
     )
+  (defun oht/exit-view-replace-rectangle ()
+    (interactive)
+    (view-mode 'toggle)
+    (call-interactively 'replace-rectangle)
+    )
   (bind-key "s-j" 'toggle-view-mode)
   :bind
   (:map view-mode-map
 	("q" . nil)
+	;; vim
+	("j" . next-line)
+	("k" . previous-line)
+	("h" . backward-char)
+	("l" . forward-char)
+	("H" . backward-word)
+	("L" . forward-word)
+	;; emacs
 	("n" . next-line)
 	("p" . previous-line)
 	("f" . forward-char)
@@ -974,12 +991,10 @@
 	("s" . ctrlf-forward-fuzzy)
 	("r" . ctrlf-backward-fuzzy)
 	("m" . set-mark-command)
-	("l" . recenter-top-bottom)
 	("[" . scroll-down-line)
 	("]" . scroll-up-line)
 	("M" . rectangle-mark-mode)
-	;; this doesn't work
-	("R" . (lambda() (interactive)(view-mode -1)(replace-rectangle)))
+	("R" . oht/exit-view-replace-rectangle)
 	("x" . exchange-point-and-mark)
 	("<RET>" . toggle-view-mode)
 	)

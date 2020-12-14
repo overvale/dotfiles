@@ -12,14 +12,13 @@ Some of the stuff below might seem a little militant (running as a non-admin use
 * Philosophy
 
 1. Use default apps and services first.
-2. Adding software should speed the system (ie: ad-blockers), not slow it (ie: background app that checks the status of something).
-3. Never use an electron app when a website is available (Slack, Figma).
-     1. If working offline isn't a big concern then there's an argument to be made (which puts aside usability) that you should do as much in the browser as possible. Browsers are basically VMs for running wild-west code, seriously, who the hell knows what javascript code a random blogger is using. Thus, browsers are built as very secure environments, sandboxed from the rest of the system. If you're running code you don't trust the web browser is a good place to do it.
-4. Don't use apps that install background update deamons, if you can
-   help it (Microsoft, Adobe, Chrome).
-5. ~#hottip~: turn Wi-Fi on only when you need it, and to make backups, etc.
-   Makes your computer faster, have less distractions, and greatly
-   improves battery life.
+2. Don't install Chrome. Why? [[https://chromeisbad.com][chromeisbad.com]] lists a few good reasons.
+3. No Electron apps.
+4. New software should never slow the system.
+5. Don't use apps that install background update deamons, if you can help it.
+6. ~#hottip~: turn Wi-Fi on only when you need it, and to make backups, etc.
+   Makes your computer faster, have less distractions, and greatly improves
+   battery life.
 
 * Accounts Setup
 
@@ -93,7 +92,7 @@ zsh
 
 Install as many app as you can into =~/Applications=, most work just fine from there, and apps in that directory run with the user's permissions, not admin permissions. Some tools, like Excel, require installation to =/Applications= so they can run background processes, others complain every launch but work just fine.
 
-- Arq 5
+- Arq 5 (NOT v6)
 - BBEdit
 - Emacs (the [[https://github.com/railwaycat/homebrew-emacsmacport][correct version]], [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][more info]])
 - Fantastical (don’t forget to add accounts)
@@ -101,17 +100,12 @@ Install as many app as you can into =~/Applications=, most work just fine from t
 - Hammerspoon
 - Kaleidoscope
 - Mimestream
-- Microsoft Excel (installs auto-launching background processes)
+- Microsoft Excel
 - Monodraw
 - SuperDuper
 - Tot
 - Transmit
 - ViDL
-
-Only if you must (as they violate philosophy rule 4):
-
-- Adobe Lightroom
-- Google Filestream
 
 * My Stuff
 
@@ -126,11 +120,9 @@ Only if you must (as they violate philosophy rule 4):
 - =~/opt= - basically a place for software installed via a =git clone= or personal projects along those same lines.
 
 ** Symlinks
-    
-1. Link your cloud service provider of choice to =~/cloud=.
-2. Route everything through that link. That way, if you change cloud providers you only have to change one link.
 
 Run from =$HOME=:
+
 #+begin_src bash
 ln -s ~/Library/Mobile\ Documents/com~apple~CloudDocs/oht cloud;
 ln -s ~/dot/vim .vim;

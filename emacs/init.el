@@ -948,20 +948,19 @@
 ;;; View-Mode
 
 (use-package view
-  ;; This config is designed as a pinky-saver, which allows you to use
-  ;; standard emacs movement keys without the control modifier. Think of it as
-  ;; a light-weight god-mode. In addition to the specified bindings
-  ;; `view-mode' has its own standard bindings, which you can find in the
-  ;; minor mode's help. (press h when `view-mode' is active.
+  ;; This config is designed as a pinky-saver, one which allows you to use
+  ;; standard emacs movement keys without the control modifier (plus a few
+  ;; vim-style bindings). In addition to the bindings below `view-mode' has
+  ;; its own standard bindings, which you can find in the minor mode's help.
   :ensure nil
   :init
   (setq view-read-only t)
-  (defun view-mode-enter ()
+  (defun oht/view-mode-enter ()
     (interactive)
     (view-mode t)
     (hl-line-mode t)
     )
-  (defun view-mode-exit ()
+  (defun oht/view-mode-exit ()
     (interactive)
     (view-mode -1)
     (hl-line-mode -1)
@@ -1003,8 +1002,8 @@
 	("M" . rectangle-mark-mode)
 	("R" . oht/exit-view-replace-rectangle)
 	("x" . exchange-point-and-mark)
-	("<RET>" . view-mode-exit)
-	("s-j" . view-mode-exit)
+	("<RET>" . oht/view-mode-exit)
+	("s-j" . oht/view-mode-exit)
 	)
   :blackout " VIEW"
   )

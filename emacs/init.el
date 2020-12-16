@@ -955,16 +955,22 @@
   :ensure nil
   :init
   (setq view-read-only t)
-  (defun toggle-view-mode ()
+  (defun view-mode-enter ()
     (interactive)
-    (view-mode 'toggle)
+    (view-mode t)
+    (hl-line-mode t)
+    )
+  (defun view-mode-exit ()
+    (interactive)
+    (view-mode -1)
+    (hl-line-mode -1)
     )
   (defun oht/exit-view-replace-rectangle ()
     (interactive)
-    (view-mode 'toggle)
+    (view-mode-exit)
     (call-interactively 'replace-rectangle)
     )
-  (bind-key "s-j" 'toggle-view-mode)
+  (bind-key "s-j" 'view-mode-enter)
   :bind
   (:map view-mode-map
 	("q" . nil)
@@ -996,7 +1002,8 @@
 	("M" . rectangle-mark-mode)
 	("R" . oht/exit-view-replace-rectangle)
 	("x" . exchange-point-and-mark)
-	("<RET>" . toggle-view-mode)
+	("<RET>" . view-mode-exit)
+	("s-j" . view-mode-exit)
 	)
   :blackout " VIEW"
   )

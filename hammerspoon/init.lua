@@ -136,10 +136,10 @@ for key, app in pairs(applicationHotkeys) do
 end
 
 
--- Open dirs
+-- Open other stuff
 -- -----------------------------------------------
 
-hs.hotkey.bind({'ctrl', 'cmd'}, "h", function() os.execute( "open ~" ) end)
+hs.hotkey.bind({'ctrl', 'cmd'}, "h", function() os.execute( "open https://news.ycombinator.com" ) end)
 
 
 -- Word Move/Delete

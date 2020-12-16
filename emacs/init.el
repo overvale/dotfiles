@@ -183,6 +183,17 @@
 
 ;;;; Display
 
+;; Line spacing (in pixels)
+(setq-default line-spacing 1)
+
+;; Frame default parameters
+(setq default-frame-alist
+   (append (list
+          '(width . 80)                ;; width (in characters)
+          '(height . 50)               ;; height (in characters)
+          '(internal-border-width . 0) ;; border (in pixels)
+	  )))
+
 (tool-bar-mode -1)                         ; hide menu-bar
 (scroll-bar-mode -1)                       ; hide scroll bars
 (menu-bar-mode 1)                          ; ensures full-screen avail on macOS
@@ -194,17 +205,6 @@
 (setq-default indicate-empty-lines t)      ; show where the file ends
 (set-default 'cursor-type 'box)            ; use a box for cursor
 (blink-cursor-mode -1)                     ; no blinking please
-
-;; Line spacing (in pixels)
-(setq-default line-spacing 1)
-
-;; Frame default parameters
-(setq default-frame-alist
-   (append (list
-          '(width . 80)                ;; width (in characters)
-          '(height . 50)               ;; height (in characters)
-          '(internal-border-width . 0) ;; border (in pixels)
-	  )))
 
 ;;;; General
 
@@ -900,7 +900,7 @@
   (yank))
 
 (defun oht/copy-secondary-selection-paste ()
-  "Paste the secondary selection and paste at point."
+  "Copy the secondary selection and paste at point."
   (interactive)
   (oht/copy-secondary-selection)
   (yank))

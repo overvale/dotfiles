@@ -335,9 +335,10 @@
   ;; note that it searches forward and backward
   :bind ("M-z" . zzz-up-to-char))
 
-;;(use-package sdcv-mode
-;;  :commands sdcv-search
-;;  :load-path "~/emacs.d/lisp/emacs-sdcv/")
+(use-package sdcv-mode
+  :straight (sdcv-mode :type git :host github :repo "gucong/emacs-sdcv" :branch "master")
+  :commands sdcv-search
+  )
 
 (use-package unfill
   :commands (unfill-paragraph unfill-toggle unfill-region)

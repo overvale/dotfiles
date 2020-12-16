@@ -266,6 +266,7 @@
           (lambda ()
             (dired-hide-details-mode 1)
 	    (auto-revert-mode)
+	    (hl-line-mode 1)
 	    ))
 
 
@@ -861,6 +862,7 @@
 	   ("o" . consult-outline)
 	   ("f" . hydra-fonts/body)
 	   ("!" . font-lock-mode)
+	   ("j" . dired-jump)
 	   )
 
 

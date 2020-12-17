@@ -3,24 +3,25 @@
 
 * Hello!
 
-/Welcome!/ I'm sorry, but I'm not writing this for you, I'm writing this for
-me---well, /future/-me. I don't want to forget how this configuration file works,
-or why I did things this way. This documentation is designed to help me
-understand what the hell /past/-me was thinking.
+/Welcome to my emacs config!/ I'm sorry but I'm not writing this for you, I'm
+writing this for me---well, /future/-me. I don't want to forget how this
+configuration file works, or why I did things this way. This documentation is
+designed to help me understand what the hell /past/-me was thinking.
 
 There was a time not long ago when I maintained my configuration in a single,
-monolithic, org document (that used =org-babel= to "tangle" it) but I've switched
-to a more traditional approach. When I realized about 25% of my config was pure
-documentation, 50% had virtually no documentation, and the remaining 25% only
-needed very little documentation, I decided to switch to having a =README.org=
-file, and elisp files broken up by intented function. It seems a little easier
-to manage, but, as always, this config is always changing.
+monolithic, org document (that used =org-babel= to "tangle" it) but I've
+switched to a more traditional approach of pure elisp. When I realized about
+25% of my config was pure documentation, 50% had virtually no documentation,
+and the remaining 25% only needed very little documentation, I decided to
+switch to having a =README.org= file, and elisp files broken up by intended
+function.
 
 But 3 things in particular pushed me into doing it this way:
 
-1. My emacs startup time was less snappy than I would have liked. Moving from a
-   large org document to an elisp one made the startup time go from ~3.5 seconds
-   to ~1.5 seconds, which is nice.
+1. My emacs startup time was less snappy than I would have liked. Moving from
+   a large org document to an elisp one made the startup time go from ~3.5
+   seconds to ~1.5 seconds, which is nice (and I got it down below a second by
+   switching from package.el to straight.el.
 2. I realized that I was mostly using the org aspects of the config to navigate
    the document, which can also be done with =outline-minor-mode= and some careful
    keybindings.
@@ -95,37 +96,87 @@ the ones I've learned the most from:
 
 For more sources see [[https://pinboard.in/u:Oliver/t:emacs][my pinboard bookmarks]].
 
-* Installation
+** Mitsuharu Yamamoto Fork
 
-Before you do anything else, you'll have to install Emacs (I know, right?). My
-preferred version, and the one this configuration targets, is [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][Mitsuharu
-Yamamoto's Emacs fork]] because it provides [[https://bitbucket.org/mituharu/emacs-mac/src/f3402395995bf70e50d6e65f841e44d5f9b4603c/README-mac?at=master&fileviewer=file-view-default][a lot of nice stuff]] for people who
-want their Emacs to be a better macOS citizen.
+My preferred version of Emacs, and the one this configuration targets, is
+[[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][Mitsuharu Yamamoto's Emacs fork]] because it provides [[https://bitbucket.org/mituharu/emacs-mac/src/f3402395995bf70e50d6e65f841e44d5f9b4603c/README-mac?at=master&fileviewer=file-view-default][a lot of nice stuff]] for
+people who want their Emacs to be a better macOS citizen.
 
-* Use-Package
+* Packages
 
-Let's talk about =use-package=. First of all, I am currently in the process of
-migrating all my settings to the use-package way of doing things. So this config
-file a bit all over the map in that respect. I didn't do it at first because I
-didn't actually understand what =use-package= is. The website says:
+It wasn't easy for me to understand how packages work in Emacs. In fact,
+configuration in general is confusing in Emacs because you can both use an
+init (config) file /and/ you can interactively customize (like a "normal" app)
+which saves settings in your init file. For someone like me, who likes to keep
+things tightly organized and understand everything that's contributing to my
+config, this can be confusing.
+
+I came from Vim, where your init file is the only way to configure vim and if
+it isn't in your init file then it doesn't exist. That approach makes a lot of
+sense to me, and I used the delightful [[https://github.com/junegunn/vim-plug][vim-plug]], which assumes 2 key things:
+
+1. Your init file is the canonical description of how you want the app to be
+   configured, and only packages listed therein should be used.
+2. External packages can be loaded from anywhere (local, github, etc).
+
+Initially, I tried to learn the Emacs way (using only =package.el=) but
+eventually came to the conclusion that the 2 above assumptions follow how I
+want to work, and that the package [[https://github.com/raxod502/straight.el][straight.el]] makes Emacs work exactly this way.
+
+** Straight
+
+To use it, place the below in your init file. It simply installs the package
+if you don't have it, and ensures (at startup) that =straight.el= is installed
+and loaded.
+
+#+begin_src emacs-lisp
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+#+end_src
+
+Straight works by finding the package on [[https://melpa.org][MELPA]] and cloning the linked git
+repository to =~/.emacs.d/straight=. You can also load packages from any other
+source with simple tweaks to the =straight-use-package= code. Installing and
+loading a package is as simple as:
+
+#+begin_src emacs-lisp
+(straight-use-package 'el-patch)
+#+end_src
+
+** Use-Package
+
+Coming from vim, with whatever assumptions I brought to Emacs, I didn't (at
+first) actually understand what =use-package= is. The website says:
 
 #+begin_quote
 The use-package macro allows you to isolate package configuration in your .emacs
 file in a way that is both performance-oriented and, well, tidy.
 #+end_quote
 
-The key phrase is "isolate package configuration". To me, this is a rather
-opaque description. I mean, you can isolate package configuration by simply
-grouping all your settings for each package together in a section. It also says
-it is *not* a package manager, but that it can interface with them. Right. So,
-what does =use-package= do again?
+To me, this is a rather opaque description. I mean, you can isolate package
+configuration by simply grouping all your settings for each package together
+in a section. It also says it is *not* a package manager, but that it can
+interface with them. Right. So, what does =use-package= do again?
 
-I would put it this way: =use-package= is a way to /precisely control the loading
-of packages/.
+Here's what I do:
 
-For example, if you put =(require magit)= in your config then when Emacs reads
-that function it will load the =magit= package. At first glance this makes sense.
-If you want to use =magit= then you need it loaded. The problem is that Emacs does
+- Use =straight.el= to install/update packages.
+- Use =use-package= to /precisely control the loading of packages/ and /configure
+  them/.
+
+If you simply put =(require magit)= in your config then when Emacs reads that
+function it will load the =magit= package. At first glance this makes sense. If
+you want to use =magit= then you need it loaded. The problem is that Emacs does
 this on startup, regardless of if you need =magit= on startup. As the number of
 packages you install grows so too will Emacs startup time, and Emacs will be
 "running heavy" with all those packages loaded and ready to go, regardless of
@@ -133,163 +184,36 @@ your need for them.
 
 Contrast with this:
 
-#+begin_example
+#+begin_src emacs-lisp
 (use-package magit
   :commands magit-status)
-#+end_example
+#+end_src
 
 This short config snippet tells Emacs to load magit only when you trigger the
 =magit-status= function.
 
-** Straight
+Finally, a setting I like to have enabled is =use-package-always-defer=. This
+means no package will be loaded unless you explicitly tell Emacs to load it.
+Rather than the simple installation of a package controlling what's loaded
+(and always at startup) I want to /precisely control the loading of packages/.
 
-I used to rely on the built-in =package.el= to actually install the packages,
-but have recently started using =straight.el= for this purpose. Think of it as
-an add-on to =use-package= which takes care of package installation and
-updating. The key thing for me is that is allows the canonical list of
-packages Emacs loads to reside in your init file (rather than a crazy
-combination of init files, customized alists, etc).
+** A Winning Combo
 
-Additionally, doing this improved by startup time from 1.5 seconds to 0.8.
+You can configure =straight.el= to determine what to install based your
+use-package delcatrations with the code:
 
-** Usage
+#+begin_src emacs-lisp
+(setq straight-use-package-by-default t)
+#+end_src
 
-This example is from the project's =README=:
+That way, you can install, load, and configure packages in one step with
+something like:
 
-#+begin_example
-(use-package color-moccur
-  :commands (isearch-moccur isearch-all)
-  :bind (("M-s O" . moccur)
-         :map isearch-mode-map
-         ("M-o" . isearch-moccur)
-         ("M-O" . isearch-moccur-all))
-  :init
-  (setq isearch-lazy-highlight t)
-  :config
-  (use-package moccur-edit))
-#+end_example
+#+begin_src emacs-lisp
+(use-package expand-region
+  :bind
+  ("s-e" . er/expand-region)
+  ("s-E" . er/contract-region)
+  )
+#+end_src
 
-- =:commands= :: autoload (load only when triggered) the =isearch-moccur= and
-  =isearch-all= commands in the =color-moccur= package.
-- =:bind= :: autoload these commands and assign a keybinding to them.
-- =:init= :: code that executes before the package is loaded.
-- =:config= :: code that executes after the package is loaded.
-
-The full list of keywords that control load-time of packages is:
-
-- =:commands=
-- =:bind=
-- =:bind*=
-- =:bind-keymap=
-- =:bind-keymap*=
-- =:mode=
-- =:interpreter=
-- =:hook=
-- =:defer=
-
-** Proper Use of 'use-package-always-defer'
-
-To anyone starting out with =use-package= I would recommend enabling
-=use-package-always-defer=. This means that unless you explicitly tell emacs to
-load something, it won't. This way you will not accidentally (by adding a
-package) introduce performance hits.
-
-Keep in mind, though, that this means you have to understand, and make explicit,
-your use of each package.
-
-The packages you =:demand= to load are ones that are not explicitly called by
-keybindings, modes, or functions. The best example, in this config, is the use
-of =selectrum= (and associated packages). In this case I have a keybinding for the
-function =execute-extended-command= which is built-in, not installed by =selectrum=,
-therefore triggering that binding will not load selectrum, but I want selectrum
-loaded when that command is called. So I =:demand= selectrum be loaded so
-=execute-extended-command= can use it. Now, maybe you could do =:commands
-execute-extended-command= but you'd need to know the name of every function that
-needs =selectrum=, which in this case is impractical.
-
-* Secondary Selection
-
-** Background
-
-In the old days, many computer programs (like the X-Windows system and WordStar)
-had something called =secondary-selection=. Robert Sawyer, [[https://arstechnica.com/information-technology/2017/03/wordstar-a-writers-word-processor/][writing in ArsTechnica]],
-described the feature thus (WordStar called them "blocks"):
-
-#+begin_quote
-WordStar was rare among word processing programs in that it permitted the user
-to mark (highlight) a block of text (with ^KB and ^KK commands) and leave it
-marked in place, and then go to a different position in the document and later
-(even after considerable work on other things) copy the block (with ^KC) or move
-it to a new location (with ^KV). Many users found it much easier to manipulate
-blocks this way than with the Microsoft Word system of highlighting with a mouse
-and then being forced by Word's select-then-do approach to immediately deal with
-the marked block, lest any typing replace it.
-#+end_quote
-
-Emacs, in fact, supports this and calls it "secondary selection" but it is not
-exactly well documented, and the Emacs-literati haven't seemed to have written
-much about it. I did a deep dive and wrapped everything in my own functions and
-then in a hydra for easy access.
-
-- =meta-left-click/drag= to mark a secondary selection.
-- You can also use the hydra to make the current region the secondary selection.
-- Once the secondary selection is active you can go about your typing, including
-  copy/paste actions.
-- Then, when you want to do something with the secondary selection, activate the
-  hydra.
-- Another scenario: when you realize, mid-typing, that you want to paste text
-  from elsewhere, you can leave the insertion point where it is, make a
-  secondary selection, and insert it directly.
-
-** References
-
-- The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Secondary-Selection.html][official documentation]] is somewhat sparse, and assumes you'll only use the
-  mouse for this.
-- [[https://www.emacswiki.org/emacs/SecondarySelection][The Emacs Wiki has some info]], but seems a little out of date given that there
-  are so many built-in functions for this now.
-- Charles Lindsey made [[http://www.cs.man.ac.uk/~lindsec/secondary-selection.html][a video]] that nicely explains the basic idea behind
-  secondary selection.
-
-** Functions
-
-All but one of these functions is built-in, but in their default form they're
-not =interactive= so any keybindings need to include =(lambda () (interactive)
-(function-name))= in order to work, and some of their documentation is a little
-sketchy, so I've wrapped them all in my own functions. Just makes things a
-little easier to work with.
-
-* Modal Editing
-
-I don't really want to use =evil-mode=. It does too much for my taste. I much
-prefer the simpler solution of using a hydra (it's amazing how much of the most
-used features of vim can be replicated in a simple hydra, I think that speaks to
-vim's elegance).
-
-=view-mode= is a built-in mode for viewing, and not editing files, thus if you
-make entering and exiting it easy it is a natural fit for modal editing.
-
-One thing to note is that when in =view-mode= the buffer is marked as read-only,
-meaning this is not a good replacement for true modal editing where you can
-change the document without leaving the mode.
-
-| Key        | Action                        |
-|------------+-------------------------------|
-| e          | exit                          |
-| q          | quit buffer (if edited, bury) |
-| s          | I-search                      |
-| r          | reverse I-search              |
-| .          | set mark                      |
-| x          | exchange point/mark           |
-| m          | mark register                 |
-| '          | go to register                |
-| h, ?       | help                          |
-|------------+-------------------------------|
-| <          | beginning of buffer           |
-| >          | end of buffer                 |
-| SPC        | page-down                     |
-| DEL, S-SPC | page-up                       |
-| d          | half-page-down                |
-| u          | half-page up                  |
-| RET        | scroll-down-line              |
-| y          | scroll-up-line                |
-| g          | go to line                    |

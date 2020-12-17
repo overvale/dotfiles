@@ -1,4 +1,9 @@
-;;; init.el  -*- lexical-binding: t -*-
+;;; init.el --- Oliver Taylor's Config -*- lexical-binding: t -*-
+
+;; Homepage: https://github.com/olivertaylor/dotfiles
+
+
+;;; Commentary:
 
 ;; To see the outline of this file, run M-x outline-minor-mode (which I have
 ;; created a global minor mode for, thus it is always on) and then use the
@@ -950,10 +955,14 @@
 ;;; View-Mode
 
 (use-package view
-  ;; This config is designed as a pinky-saver, one which allows you to use
-  ;; standard emacs movement keys without the control modifier (plus a few
-  ;; vim-style bindings). In addition to the bindings below `view-mode' has
-  ;; its own standard bindings, which you can find in the minor mode's help.
+  ;; Coming from vim, I know the utility of modal editing. However, I have no
+  ;; desire to make Emacs into something it is not with `evil-mode', if I want
+  ;; to use vim I'll just use vim. That said, there are times when modal
+  ;; editing and navigation are very handy and there are, in fact,
+  ;; circumstances in which Emacs uses modal navigation. For example, when in
+  ;; a dired buffer you can use the n and p keys to move the point around. In
+  ;; addition to the bindings below `view-mode' has its own standard bindings,
+  ;; which you can find in the minor mode's help.
   :ensure nil
   :init
   (setq view-read-only t)

@@ -929,10 +929,10 @@
 (global-outline-minor-mode +1)
 (blackout 'outline-minor-mode)
 
-(use-package outline-magic
-  :bind
-  ("C-<tab>" . 'outline-cycle)
-  )
+(use-package bicycle
+  :after outline
+  :bind (:map outline-minor-mode-map
+              ([C-tab] . bicycle-cycle)))
 
 (defhydra hydra-outline (:color amaranth)
   "Hydra for navigating outline mode"

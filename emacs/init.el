@@ -972,7 +972,7 @@
     (view-mode-exit)
     (call-interactively 'replace-rectangle)
     )
-  (bind-key "s-j" 'view-mode-enter)
+  (bind-key "s-j" 'oht/view-mode-enter)
   :bind
   (:map view-mode-map
 	("q" . nil)

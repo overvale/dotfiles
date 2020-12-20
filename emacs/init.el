@@ -106,7 +106,7 @@
 (setq use-package-always-defer t)
 
 
-;;;; General Settings
+;;;; Basics
 
 ;; Always follow symlinks. init files are normally stowed/symlinked.
 (setq vc-follow-symlinks t
@@ -183,33 +183,7 @@
 (setq remember-data-file "~/Documents/org-files/remember-notes")
 
 
-
 ;;; Settings
-
-;;;; Display
-
-;; Line spacing (in pixels)
-(setq-default line-spacing 1)
-
-;; Frame default parameters
-(setq default-frame-alist
-   (append (list
-          '(width . 80)                ;; width (in characters)
-          '(height . 50)               ;; height (in characters)
-          '(internal-border-width . 0) ;; border (in pixels)
-	  )))
-
-(tool-bar-mode -1)                         ; hide menu-bar
-(scroll-bar-mode -1)                       ; hide scroll bars
-(menu-bar-mode 1)                          ; ensures full-screen avail on macOS
-(show-paren-mode t)                        ; highlight parens
-(setq show-paren-delay 0)                  ; and show immediately
-(setq visible-bell t)                      ; disable beep
-(setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
-(setq x-underline-at-descent-line t)       ; underline at descent, not baseline
-(setq-default indicate-empty-lines t)      ; show where the file ends
-(set-default 'cursor-type 'box)            ; use a box for cursor
-(blink-cursor-mode -1)                     ; no blinking please
 
 ;;;; General
 
@@ -245,14 +219,6 @@
 ;; When visiting read-only buffers, enter view-mode
 (setq view-read-only t)
 
-;; Emulate Mouse Buttons
-(setq mac-emulate-three-button-mouse t)
-;; mouse-1: Click
-;; mouse-2: Option + Click
-;; mouse-3: Command + Click
-;; Keep in mind, however, that a 2-finger click on the track pad still sends
-;; mouse-3 no matter what you set `mac-emulate-three-button-mouse' to.
-
 ;; Since emacs seems to love spawning new windows, and taking over your existing
 ;; ones, this allows you to undo and redo those arrangements. So you if a
 ;; command kills a window arrangement you were using you can go back to it with
@@ -265,7 +231,7 @@
 (global-set-key [mode-line mouse-3] 'scroll-down-command)
 
 
-;;;; Dired
+;;;; Mode Hooks
 
 (add-hook 'dired-mode-hook
           (lambda ()
@@ -436,249 +402,114 @@
   )
 
 
-;;; macOS Consistency
+;;; Keybindings
 
-;; The below is probably the biggest reason I managed get over the
-;; intimidation of using Emacs in those first few days. They're designed to make
-;; all the shortcuts you use in every other Mac app to work the same way in
-;; Emacs. Some of these simply remap existing bindings, and some of them call
-;; custom functions that emulate macOS behaviour.
+;; Generally speaking, I want Emacs to behave in the most mac-like fashion possible.
+(load "~/dot/emacs/mac.el")
 
-;;;; Modifiers & Emacs Anachronisms
+;;;; Enhance Emacs
 
-;; The below does 3 things:
+(define-key global-map (kbd "RET") 'newline-and-indent)
 
-;; ONE:
-;; Makes the command keys act as =super=. =super= keybindings are basically not
-;; used by Emacs so they're a safe playground for assigning your own
-;; keybindings. I setup =s-q= for quit, =s-s= for save, =s-z= for undo, =s-o=
-;; for open file, basically, all the standard Mac shortcuts. Once I did that
-;; Emacs became very usable immediately and that ease-of-use made learning Emacs
-;; a lot less painful.
-;;
-;; TWO:
-;; Makes the left option key act =meta= so I can use meta-keybindings.
-;;
-;; THREE:
-;; 3. Makes the right option key act as =option= to I can insert characters like: £¢∞§¶•≠.
-
-(setq mac-command-modifier 'super)
-(setq mac-option-modifier 'meta)
-(setq mac-right-option-modifier 'nil)
-
-;; Due to historical reasons, Emacs thinks =C-i= is the same as =TAB= and =C-m=
-;; is the same as =RETURN=. The below undoes that assumption. This will allow
-;; you to re-bind them later.
-
-(define-key input-decode-map [?\C-i] [C-i])
-(bind-key "<C-i>" nil)
-(define-key input-decode-map [?\C-m] [C-m])
-(bind-key "<C-m>" nil)
-
-;; By default, Emacs doesn't replace the selection (region) with anything you
-;; type, it just removes your selection and appends what you type. The below
-;; makes what you type /replace/ your selection.
-(delete-selection-mode t)
-
-;; If you have something on the system clipboard, and then kill
-;; something in Emacs, then by default whatever you had on the system
-;; clipboard is gone and there is no way to get it back. Setting the
-;; following option makes it so that when you kill something in Emacs,
-;; whatever was previously on the system clipboard is pushed into the
-;; kill ring. This way, you can paste it with `yank-pop'.
-(setq save-interprogram-paste-before-kill t)
-
-;; Eliminate duplicates in the kill ring. That is, if you kill the
-;; same thing twice, you won't have to use M-y twice to get past it to
-;; older entries in the kill ring.
-(setq kill-do-not-save-duplicates t)
-
-;; When editing 2 files with the same name, like =~/foo/file= and =~/bar/file=,
-;; Emacs (amazingly) refers to those files as =file<~/foo>= and =file<~/bar>=.
-;; This makes Emacs refer to them as =foo/file= and =bar/file=, like a sane
-;; program.
-(setq uniquify-buffer-name-style 'forward)
-
-;; By default Emacs window sizes always line-up with the character-grid, meaning
-;; the windows resize only by character-widths and line-heights. This setting
-;; allows the windows to be unconstrained by the grid, thus resize smoothly. The
-;; downside of this approach is that your frame contents need to refresh when
-;; you're done resizing the frame. When set to =nil= the frame contents refresh
-;; live, to the character grid.
-(setq frame-resize-pixelwise nil)
+(bind-keys ("s-g" . keyboard-quit)
+	   ("M-<up>" . oht/move-line-up)
+	   ("M-<down>" . oht/move-line-down)
+	   ("M-o" . oht/other-window)
+	   ("M-s-s" . save-some-buffers)
+	   ("M-c" . capitalize-dwim)
+	   ("M-l" . downcase-dwim)
+	   ("M-u" . upcase-dwim)
+	   ("M-SPC" . cycle-spacing)
+	   ("C-l" . oht/recenter-top-bottom)
+	   ("C-=" . pulse-line)
+	   ("C-x r r" . replace-rectangle)
+	   )
 
 
-;;;; Visual Line Mode
+;;;; Primary Bindings
 
-;; When in visual line mode the out-of-the-box movement commands behave
-;; inconsistently with the rest of macOS, so the below code brings them back
-;; in line.
-
-;; Continue wrapped words at whitespace, rather than in the middle of a word.
-(setq-default word-wrap t)
-;; ...but don't do any wrapping by default. It's expensive. Enable
-;; `visual-line-mode' if you want soft line-wrapping. `auto-fill-mode' for hard
-;; line-wrapping.
-(setq-default truncate-lines t)
-;; If enabled (and `truncate-lines' was disabled), soft wrapping no longer
-;; occurs when that window is less than `truncate-partial-width-windows'
-;; characters wide. We don't need this, and it's extra work for Emacs otherwise,
-;; so off it goes.
-(setq truncate-partial-width-windows nil)
-
-;; Turn on word-wrap globally
-(global-visual-line-mode t)
-
-;; with visual-line-mode set,
-;; C-a and C-b go to beginning/end-of-visual-line
-;; which is inconsistant with standard Mac behaviour
-(bind-key* "C-a" 'beginning-of-line)
-(bind-key* "C-e" 'end-of-line)
-(bind-key "s-<left>" 'beginning-of-visual-line)
-(bind-key "s-<right>" 'end-of-visual-line)
-;; C-k only killing the visual line also isn't how macOS works.
-;; This has to be set to a custom function so minor modes can't hijack it.
-(bind-key "C-k" 'oht/kill-line)
-
-;;;; Standard Mac Shortcuts
-
-;; Wherever possible I want to use standard macOS shortcuts[1]. macOS actually
-;; inherits many Emacs keybindings, but adds to it a few from =readline= and old
-;; terminal interfaces. Because these are available system-wide I want Emacs to
-;; do the same thing. That way the way I type/move in Mail.app or Safari is the
-;; same as Emacs. There are also conventions that, while not officially
-;; standard, have become widely accepted, those should be respected too. Some of
-;; these require custom functions, but that's usually a simple matter of
-;; stringing a couple existing commands together into a function.
-;; [1]: https://support.apple.com/en-us/HT201236
-
-;; C-[ sends ESC so let's make ESC more predictable
-(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-(bind-keys
- ("s-," . oht/find-settings)
- ("s--" . oht/find-scratch)
- ("s-n" . oht/switch-to-new-buffer)
- ("s-N" . make-frame-command)
- ("s-t" . oht/new-tab)
- ("s-m" . iconify-frame)
- ("s-s" . save-buffer)
- ("s-S" . write-file) ;save as
- ("s-a" . mark-whole-buffer)
- ("s-o" . find-file)
- ("s-x" . kill-region)
- ("s-c" . kill-ring-save)
- ("s-v" . yank)
- ("s-<backspace>" . oht/kill-visual-line-backward)
- ("s-w" . delete-frame)
- ("s-q" . save-buffers-kill-terminal)
- ("s-l" . oht/mark-whole-line)
- ("s-M-l" . mark-paragraph)
- ("S-s-<left>" . oht/expand-to-beginning-of-visual-line)
- ("S-s-<right>" . oht/expand-to-end-of-visual-line)
- ("s-<up>" . beginning-of-buffer)
- ("s-<down>" . end-of-buffer)
- ("s-<return>" . oht/open-line-below)
- ("S-s-<return>" . oht/open-line-above)
- )
-
-;; navigation and indentation
-(bind-key "s-[" 'previous-buffer)
-(bind-key "s-]" 'next-buffer)
-(bind-key "s-}" 'indent-rigidly-right-to-tab-stop)
-(bind-key "s-{" 'indent-rigidly-left-to-tab-stop)
-;; Mac follows the UNIX convention of C-h being the same as <DEL>
-(bind-key* "C-h" 'delete-backward-char)
-;; readline-style shortcuts, because I love them
-(bind-key "C-w" 'backward-kill-word)
-(bind-key "C-u" 'oht/kill-line-backward)
-;; No reason not to use command-u for this instead
-(bind-key "s-u" 'universal-argument)
-;; since ctrl+alt+b/f are system shortcuts for word movement, do that in Emacs
-(bind-key* "C-M-b" 'left-word)
-(bind-key* "C-M-f" 'right-word)
-;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
-;; and by default option+forward-delete has no mapping
-(bind-key* "M-<delete>" 'kill-word)
+(bind-keys ("s-p" . execute-extended-command)
+	   ("s-k" . oht/kill-this-buffer)
+	   ("M-s-b" . bufler)
+	   ("s-C" . org-capture)
+	   ("s-|" . oht/pipe-region)
+	   ("C-S-<mouse-1>" . mc/add-cursor-on-click)
+	   ("s-1" . org-agenda)
+	   ("s-2" . hydra-secondary-selection/body)
+	   )
 
 
-;;; Narrowing & Searching
+;;;; Global Leader Bindings
 
-;; Navigating and using the thousands of things Emacs can do is built around
-;; the idea of searching and narrowing a selection down to the thing you're
-;; looking for. To make this easier I've installed a few packages that enhance
-;; Emacs built-in facilities for doing this.
+(bind-keys :prefix-map oht/global-leader
+	   :prefix "s-'"
+	   ("a" . auto-fill-mode)
+	   ("d" . sdcv-search)
+	   ("h" . hl-line-mode)
+	   ("l" . oht/toggle-line-numbers)
+	   ("w" . oht/toggle-whitespace)
+	   ("m" . magit-status)
+	   ("M" . consult-marks)
+	   ("<left>" . winner-undo)
+	   ("<right>" . winner-redo)
+	   ("s" . org-store-link)
+	   ("o" . consult-outline)
+	   ("f" . hydra-fonts/body)
+	   ("!" . font-lock-mode)
+	   ("j" . dired-jump)
+	   )
 
-(use-package selectrum-prescient
-  :init
-  ;; to make sorting and filtering more intelligent
-  (selectrum-prescient-mode +1)
-  )
 
-(use-package prescient
-  :init
-  ;; to save your command history on disk, so the sorting gets more
-  ;; intelligent over time
-  (prescient-persist-mode +1)
-  )
+;;; Window Control
 
-(use-package selectrum
-  :init
-  (selectrum-mode +1)
-  )
+(bind-keys :prefix-map oht/windows-leader
+	   :prefix "s-="
+	   ("s" . oht/split-below)
+	   ("v" . oht/split-beside)
+	   ("k" . oht/delete-window)
+	   ("o" . delete-other-windows)
+	   ("b" . balance-windows)
+	   ("r" . oht/toggle-window-split))
 
-(use-package consult
-  :init
-  (consult-preview-mode)
-  :bind
-  ("s-b" . consult-buffer)
-  ("M-y" . consult-yank-pop)
-  ("M-s-o" . consult-recent-file)
-  )
 
-(use-package marginalia
-  :straight (marginalia :type git :host github :repo "minad/marginalia" :branch "main")
-  :init
-  (marginalia-mode)
-  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)))
-
-(use-package ctrlf
-  :config
-  (setq ctrlf-minibuffer-bindings
-        `(("C-n"          . ctrlf-next-match)
-          (,(kbd "C-p")   . ctrlf-previous-match)
-	  (,(kbd "M-O")   . ctrlf-occur)
-	  (,(kbd "M-c")   . ctrlf-toggle-case-fold-search)
-	  (,(kbd "M-r")   . ctrlf-toggle-regexp)
-	  (,(kbd "C-o s") . ctrlf-change-search-style)
-	  ))
-  :bind
-  ("C-s" . ctrlf-forward-fuzzy)
-  ("C-r" . ctrlf-backward-fuzzy)
-  )
-
-(use-package visual-regexp
-  ;; Provides an alternate version of `query-replace' which highlights matches
-  ;; and replacements as you type.
-  :bind (([remap query-replace] . #'vr/query-replace)))
-
-(use-package visual-regexp-steroids
-  ;; Allows `visual-regexp' to use regexp engines other than Emacs'; for
-  ;; example, Python or Perl regexps.
-  :after visual-regexp
-  :bind (([remap query-replace-regexp] . #'radian-query-replace-literal))
-  :init
-  ;; Use Emacs-style regular expressions by default, instead of
-  ;; Python-style.
-  (setq vr/engine 'emacs)
-  (defun radian-query-replace-literal ()
-    "Do a literal query-replace using `visual-regexp'."
-    (interactive)
-    (let ((vr/engine 'emacs-plain))
-      (call-interactively #'vr/query-replace)))
-  )
 
 
 ;;; Appearance
+
+;;;; Display
+
+;; Line spacing (in pixels)
+(setq-default line-spacing 1)
+
+;; Frame default parameters
+(setq default-frame-alist
+   (append (list
+          '(width . 80)                ;; width (in characters)
+          '(height . 50)               ;; height (in characters)
+          '(internal-border-width . 0) ;; border (in pixels)
+	  )))
+
+(tool-bar-mode -1)                         ; hide menu-bar
+(scroll-bar-mode -1)                       ; hide scroll bars
+(menu-bar-mode 1)                          ; ensures full-screen avail on macOS
+(show-paren-mode t)                        ; highlight parens
+(setq show-paren-delay 0)                  ; and show immediately
+(setq visible-bell t)                      ; disable beep
+(setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
+(setq x-underline-at-descent-line t)       ; underline at descent, not baseline
+(setq-default indicate-empty-lines t)      ; show where the file ends
+(set-default 'cursor-type 'box)            ; use a box for cursor
+(blink-cursor-mode -1)                     ; no blinking please
+
+;;;; Mode Line
+
+(column-number-mode t)
+(setq display-time-format "%H:%M  %Y-%m-%d")
+(setq display-time-interval 60)
+(setq display-time-mail-directory nil)
+(setq display-time-default-load-average nil)
+(display-time-mode t)
+
 
 ;;;; Fonts
 
@@ -746,7 +577,7 @@
    modus-themes-region 'bg-only
    )
   (load-theme 'modus-operandi t)
-)
+  )
 
 (defadvice load-theme (before clear-previous-themes activate)
   "Clear existing theme settings instead of layering them"
@@ -763,19 +594,82 @@
     (load-theme 'modus-operandi t)))
 
 
-;;;; Mode Line
+;;; Narrowing & Searching
 
-;; add columns to the mode-line
-(column-number-mode t)
-(setq display-time-format "%H:%M  %Y-%m-%d")
-;; Covered by `display-time-format'
-;; (setq display-time-24hr-format t)
-;; (setq display-time-day-and-date t)
-(setq display-time-interval 60)
-(setq display-time-mail-directory nil)
-(setq display-time-default-load-average nil)
-(display-time-mode t)
+;; Navigating and using the thousands of things Emacs can do is built around
+;; the idea of searching and narrowing a selection down to the thing you're
+;; looking for. To make this easier I've installed a few packages that enhance
+;; Emacs built-in facilities for doing this.
 
+(use-package selectrum-prescient
+  :init
+  ;; to make sorting and filtering more intelligent
+  (selectrum-prescient-mode +1)
+  )
+
+(use-package prescient
+  :init
+  ;; to save your command history on disk, so the sorting gets more
+  ;; intelligent over time
+  (prescient-persist-mode +1)
+  )
+
+(use-package selectrum
+  :init
+  (selectrum-mode +1)
+  )
+
+(use-package consult
+  :init
+  (consult-preview-mode)
+  :bind
+  ("s-b" . consult-buffer)
+  ("M-y" . consult-yank-pop)
+  ("M-s-o" . consult-recent-file)
+  ("s-f" . consult-line)
+  )
+
+(use-package marginalia
+  :straight (marginalia :type git :host github :repo "minad/marginalia" :branch "main")
+  :init
+  (marginalia-mode)
+  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)))
+
+(use-package ctrlf
+  :config
+  (setq ctrlf-minibuffer-bindings
+        `(("C-n"          . ctrlf-next-match)
+          (,(kbd "C-p")   . ctrlf-previous-match)
+	  (,(kbd "M-O")   . ctrlf-occur)
+	  (,(kbd "M-c")   . ctrlf-toggle-case-fold-search)
+	  (,(kbd "M-r")   . ctrlf-toggle-regexp)
+	  (,(kbd "C-o s") . ctrlf-change-search-style)
+	  ))
+  :bind
+  ("C-s" . ctrlf-forward-fuzzy)
+  ("C-r" . ctrlf-backward-fuzzy)
+  )
+
+(use-package visual-regexp
+  ;; Provides an alternate version of `query-replace' which highlights matches
+  ;; and replacements as you type.
+  :bind (([remap query-replace] . #'vr/query-replace)))
+
+(use-package visual-regexp-steroids
+  ;; Allows `visual-regexp' to use regexp engines other than Emacs'; for
+  ;; example, Python or Perl regexps.
+  :after visual-regexp
+  :bind (([remap query-replace-regexp] . #'radian-query-replace-literal))
+  :init
+  ;; Use Emacs-style regular expressions by default, instead of
+  ;; Python-style.
+  (setq vr/engine 'emacs)
+  (defun radian-query-replace-literal ()
+    "Do a literal query-replace using `visual-regexp'."
+    (interactive)
+    (let ((vr/engine 'emacs-plain))
+      (call-interactively #'vr/query-replace)))
+  )
 
 ;;; Org Mode
 
@@ -803,89 +697,6 @@
 	      ("s-\\ g" . org-goto)
 	      ("s-\\ c" . org-toggle-checkbox)
 	      ))
-
-
-;;; Keybindings
-
-
-;;;; Enhance Emacs
-
-;; Make Emacs indent new lines automatically.
-(define-key global-map (kbd "RET") 'newline-and-indent)
-
-(bind-key "s-g" 'keyboard-quit)
-
-(bind-key "s-f" #'occur-dwim)
-(bind-key "s-F" #'all-occur)
-
-(bind-key "M-<up>" 'oht/move-line-up)
-(bind-key "M-<down>" 'oht/move-line-down)
-(bind-key "M-o" 'oht/other-window)
-(bind-key "M-s-s" 'save-some-buffers) ;save others
-
-;; When region is active, make `capitalize-word' and friends act on it.
-(bind-key "M-c" #'capitalize-dwim)
-(bind-key "M-l" #'downcase-dwim)
-(bind-key "M-u" #'upcase-dwim)
-
-;; This cycles the spacing around point between a single space, no spaces, or the original spacing:
-(bind-key "M-SPC" 'cycle-spacing)
-
-;; This adds pulse-line to this keybinding, but that's it.
-(bind-key "C-l" 'oht/recenter-top-bottom)
-
-;; Show location of point with a pulse
-(bind-key "C-=" 'pulse-line)
-
-;; I use `replace-rectangle' a lot, and I never use
-;; `copy-rectangle-to-register', so change this binding.
-(bind-key "C-x r r" 'replace-rectangle)
-
-
-;;;; Primary Bindings
-
-(bind-key "s-p" 'execute-extended-command)
-(bind-key "s-k" 'oht/kill-this-buffer)
-(bind-key "M-s-b" 'bufler)
-(bind-key "s-C" 'org-capture)
-(bind-key "s-|" 'oht/pipe-region)
-(bind-key "C-S-<mouse-1>" 'mc/add-cursor-on-click)
-
-(bind-key "s-1" 'org-agenda)
-(bind-key "s-2" 'hydra-secondary-selection/body)
-
-
-;;;; Global Leader Bindings
-
-(bind-keys :prefix-map oht/global-leader
-	   :prefix "s-'"
-	   ("a" . auto-fill-mode)
-	   ("d" . sdcv-search)
-	   ("h" . hl-line-mode)
-	   ("l" . oht/toggle-line-numbers)
-	   ("w" . oht/toggle-whitespace)
-	   ("m" . magit-status)
-	   ("M" . consult-marks)
-	   ("<left>" . winner-undo)
-	   ("<right>" . winner-redo)
-	   ("s" . org-store-link)
-	   ("o" . consult-outline)
-	   ("f" . hydra-fonts/body)
-	   ("!" . font-lock-mode)
-	   ("j" . dired-jump)
-	   )
-
-
-;;; Window Control
-
-(bind-keys :prefix-map oht/windows-leader
-	   :prefix "s-="
-	   ("s" . oht/split-below)
-	   ("v" . oht/split-beside)
-	   ("k" . oht/delete-window)
-	   ("o" . delete-other-windows)
-	   ("b" . balance-windows)
-	   ("r" . oht/toggle-window-split))
 
 
 ;;; Secondary Selection

@@ -390,8 +390,8 @@
   ;; and search frameworks, such as selectrum. This setup code is copied
   ;; directly from the selectrum documentation.
   :bind
-  ("M-;" . #'flyspell-correct-wrapper)
-  ("M-:" . #'flyspell-correct-at-point)
+  ("M-;" . #'flyspell-auto-correct-word)
+  ("M-:" . #'flyspell-correct-wrapper)
   :custom
   (flyspell-correct-interface 'flyspell-correct-dummy)
   :init
@@ -799,7 +799,7 @@
     )
   (defun oht/exit-view-replace-rectangle ()
     (interactive)
-    (view-mode-exit)
+    (oht/view-mode-exit)
     (call-interactively 'replace-rectangle)
     )
   (bind-key "s-j" 'oht/view-mode-enter)

@@ -1163,6 +1163,48 @@
   )
 
 
+;;; Dispatch
+
+;; This lets you pass arbitrary functions to `completing-read' and call the
+;; selected candidate.
+
+;; First, these are some functions for things I do on the computer all the time.
+(defun dispatch/hacker-news ()
+  "Open news.ycombinator.com in browser."
+       (interactive)
+       (start-process "open HN" nil "open" "https://news.ycombinator.com"))
+(defun dispatch/mail-personal ()
+  "Open Mail.app"
+       (interactive)
+       (start-process "open mail" nil "open" "-a" "Mail"))
+(defun dispatch/mail-work ()
+  "Open Work Mail."
+       (interactive)
+       (start-process "open work email" nil "open" "-a" "Mimestream"))
+(defun dispatch/slack ()
+  "Open Slack in browser."
+       (interactive)
+       (start-process "open slack" nil "open" "https://ievfx.slack.com"))
+
+;; Next, create a function to pass a list of functions to `completing-read'.
+(defun dispatch ()
+  (interactive)
+  (call-interactively
+   (intern (completing-read "Choose one: "
+			    '(
+			      dispatch/hacker-news
+			      dispatch/mail-personal
+			      dispatch/mail-work
+			      dispatch/slack
+			      elfeed
+			      org-agenda
+			      eww-list-bookmarks
+			      )))))
+
+;; Finally, bind it to something useful.
+(bind-key "s-d" 'dispatch)
+
+
 ;;; Closing
 
 ;; Local Variables:

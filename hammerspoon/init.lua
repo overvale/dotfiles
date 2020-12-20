@@ -206,9 +206,9 @@ hs.hotkey.bind({'alt'}, 'd', deleteWordForward)
 hs.hotkey.bind({'ctrl'}, 'u', deleteLineBack)
 
 hs.hotkey.bind({'ctrl'}, ';', moveWordBack)
-hs.hotkey.bind({'ctrl', 'alt'}, ';', deleteWordBack)
+hs.hotkey.bind({'ctrl'}, ',', deleteWordBack)
 hs.hotkey.bind({'ctrl'}, "'", moveWordForward)
-hs.hotkey.bind({'ctrl', 'alt'}, "'", deleteWordForward)
+hs.hotkey.bind({'ctrl'}, ".", deleteWordForward)
 
 hs.hotkey.bind({'ctrl', 'cmd'}, "l", selectLine)
 hs.hotkey.bind({'ctrl', 'cmd'}, "w", selectWord)

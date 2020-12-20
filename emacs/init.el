@@ -10,7 +10,7 @@
 ;; `outline' functions to move around. I have created 3 separate ways of
 ;; making this easier.
 ;;
-;; 1. The package `outline-magic' provides the command `outline-cycle'.
+;; 1. The package `bicycle' provides the command `bicycle-cycle'.
 ;; 2. A hydra called `hydra-outline'.
 ;; 3. An `occur' buffer with the query: [^;;; ]
 
@@ -942,7 +942,12 @@
 (use-package bicycle
   :after outline
   :bind (:map outline-minor-mode-map
-              ([C-tab] . bicycle-cycle)))
+              ([C-tab] . bicycle-cycle))
+  )
+
+(bind-keys :map emacs-lisp-mode-map
+	   ("<backtab>" . bicycle-cycle-global))
+
 
 (defhydra hydra-outline (:color amaranth)
   "Hydra for navigating outline mode"

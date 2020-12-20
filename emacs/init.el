@@ -383,6 +383,11 @@
   ("s-/" . #'help-command)
  )
 
+(use-package pinboard
+  :commands (pinboard pinboard-add pinboard-add-for-later)
+  :init
+  (setf epa-pinentry-mode 'loopback)
+  )
 
 ;;;; Languages
 
@@ -1089,6 +1094,7 @@
 	("https://www.economist.com/latest/rss.xml" news)
 	("https://www.economist.com/the-economist-explains/rss.xml" news)
 	("https://feeds.feedburner.com/marginalrevolution/feed" news)
+	("https://hnrss.org/best" hackernews)
 	;; emacs
 	("https://oremacs.com/atom.xml" emacs)
 	("https://irreal.org/blog/?feed=rss2" emacs)
@@ -1103,6 +1109,7 @@
 	("https://planet.emacslife.com/atom.xml" emacs)
 	("https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g" emacs)
 	;; https://reddit.com/r/emacs/top/.rss?sort=top&t=day
+	;; REDDIT RSS GUIDE: https://www.reddit.com/r/pathogendavid/comments/tv8m9/pathogendavids_guide_to_rss_and_reddit/
 	))
   (defadvice elfeed-search-update (before nullprogram activate)
     (let ((feed (elfeed-db-get-feed "https://www.economist.com/latest/rss.xml")))
@@ -1133,8 +1140,21 @@
         (forward-line))))
 
   ;; Check out: https://codingquark.com/emacs/2019/05/16/emacs-elfeed-youtube.html
-  ;; Adding pinboard bookmark: https://pinboard.in/add?next=same&url=http://test.com&description=this is a test&title=Test thing
-  ;; REDDIT RSS GUIDE: https://www.reddit.com/r/pathogendavid/comments/tv8m9/pathogendavids_guide_to_rss_and_reddit/
+  (defun hrs/elfeed-current-entry ()
+    (cond ((eq major-mode 'elfeed-show-mode)
+           elfeed-show-entry)
+          ((eq major-mode 'elfeed-search-mode)
+           (elfeed-search-selected t))))
+  (defun hrs/elfeed-pinboard-current-entry ()
+    (interactive)
+    (let ((url (elfeed-entry-link (hrs/elfeed-current-entry)))
+          (title (elfeed-entry-title (hrs/elfeed-current-entry))))
+      (pinboard-auth)
+      (pinboard-not-too-soon :pinboard-save
+	(pinboard-save url title "" "" t nil))))
+
+  (define-key elfeed-show-mode-map "a" 'hrs/elfeed-pinboard-current-entry)
+  (define-key elfeed-search-mode-map "a" 'hrs/elfeed-pinboard-current-entry)
   )
 
 

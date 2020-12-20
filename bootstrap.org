@@ -49,10 +49,30 @@ Some of the stuff below might seem a little militant (running as a non-admin use
 - Verify you're not sending analytics here: =System Preferences > Security & Privacy > Analytics & Improvements=.
 - Add unix welcome message =sudo echo "Welcome to UNIX!" > /etc/motd=.
 - Block Google Analytics =echo '\n0.0.0.0 google-analytics.com\n0.0.0.0 www.google-analytics.com` >> /etc/hosts=
-- Set up ssh keys - use [[(https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh][GitHub instructions]] - don't forget to set a password, and store the password in your keychain.
+- Set up ssh keys - use [[https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh][GitHub instructions]] - don't forget to set a password, and store the password in your keychain.
 - Run =defaults write -g NSWindowShouldDragOnGesture yes= in the terminal, then you can drag windows around with =ctrl+option+cmd= mouse-drag from anywhere in the window.
 - Run =defaults write com.apple.dock autohide-time-modifier -float 0.4;killall Dock= in the terminal to speed up revealing the dock when you move your mouse to the bottom of the screen.
 - Run =defaults write com.apple.TextEdit NSShowAppCentricOpenPanelInsteadOfUntitledFile -bool false= to make TextEdit create Untitled documents when it launches. [[https://mjtsai.com/blog/2020/12/10/making-textedit-create-an-untitled-document-at-launch/][Source]]
+
+* Encryption
+
+I try to use encryption wherever I can.
+
+- Encrypt the hard drive with FileVault.
+- Backups stored in the cloud are encrypted before they leave my computer
+  with Arq.
+- Use encrypted transfers/sync (such as SSH, TLS) such as Syncthing.
+- Protect secrets with additional encryption via disk images and GPG encrypted
+  files.
+
+SSH and GPG work like this:
+
+- You create a pair of public and private keys.
+    + SSH in =~/.ssh/= and GPG in =~/.gnupg/=. Don't forget to back these up!
+- You protect the private key with a password.
+- You place the public keys on the servers/services you want connect to.
+- A file encrypted with my public key can only be decrypted using my private key.
+
 
 * Install
 
@@ -77,6 +97,7 @@ exa \
 fzf \
 fd  \
 git \
+gpg \
 pandoc \
 parallel \
 sdcv \
@@ -94,6 +115,8 @@ zsh
 Install as many app as you can into =~/Applications=, most work just fine from there, and apps in that directory run with the user's permissions, not admin permissions. Some tools, like Excel, require installation to =/Applications= so they can run background processes, others complain every launch but work just fine.
 
 - Arq 5 (NOT v6)
+    + When using a private/public key pair for authentication, don't forget
+      that Arq expects a PEM-encoded one. Created with =ssh-keygen -m pem=.
 - BBEdit
 - Emacs (the [[https://github.com/railwaycat/homebrew-emacsmacport][correct version]], [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][more info]])
 - Fantastical (don’t forget to add accounts)

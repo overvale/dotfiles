@@ -560,6 +560,11 @@
   ("I" oht/set-font-ibm-large "IBM Plex Large")
   ("t" oht/set-font-triplicate "Triplicate")
   ("v" variable-pitch-mode "Variable")
+  ("=" text-scale-increase "Larger")
+  ("+" text-scale-increase "Larger")
+  ("-" text-scale-decrease "Smaller")
+  ("0" text-scale-mode "Reset Size")
+  ("m" modus-themes-toggle "Modus Toggle")
   ("q" nil "cancel"))
 
 ;; This sets the default fonts

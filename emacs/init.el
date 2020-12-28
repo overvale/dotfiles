@@ -185,8 +185,6 @@
 
 ;;; Settings
 
-;;;; General
-
 (global-auto-revert-mode t)                ; update buffer when file on disk changes
 (save-place-mode 1)                        ; reopens the file to the same spot you left
 (recentf-mode 1)                           ; enables "Open Recent..." in file menu
@@ -389,7 +387,7 @@
   )
 
 
-;;;; Dired
+;;; Dired
 
 (use-package dired
   :straight nil
@@ -457,7 +455,7 @@
 	   )
 
 
-;;;; Global Leader Bindings
+;;;; Prefix Bindings
 
 (bind-keys :prefix-map oht/global-leader
 	   :prefix "s-'"
@@ -477,9 +475,6 @@
 	   ("j" . dired-jump)
 	   )
 
-
-;;; Window Control
-
 (bind-keys :prefix-map oht/windows-leader
 	   :prefix "s-="
 	   ("s" . oht/split-below)
@@ -488,8 +483,6 @@
 	   ("o" . delete-other-windows)
 	   ("b" . balance-windows)
 	   ("r" . oht/toggle-window-split))
-
-
 
 
 ;;; Appearance
@@ -530,10 +523,6 @@
 
 
 ;;;; Fonts
-
-;; It can be quite refreshing to change the font I'm working in. So below are
-;; a bunch of functions that set my preferred fonts, and a hydra for picking
-;; them.
 
 (defun oht/set-font-ibm ()
   (interactive)
@@ -612,7 +601,7 @@
     (load-theme 'modus-operandi t)))
 
 
-;;; Narrowing & Searching
+;;; Narrowing & Searching/Replacing
 
 ;; Navigating and using the thousands of things Emacs can do is built around
 ;; the idea of searching and narrowing a selection down to the thing you're
@@ -996,7 +985,8 @@
 ;; This lets you pass arbitrary functions to `completing-read' and call the
 ;; selected candidate.
 
-;; First, these are some functions for things I do on the computer all the time.
+;; First, define some functions for things (not in emacs) that I do on the
+;; computer all the time.
 (defun dispatch/hacker-news ()
   "Open news.ycombinator.com in browser."
        (interactive)

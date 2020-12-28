@@ -5,10 +5,13 @@
   (interactive)
   (find-file "~/dot/emacs/init.el"))
 
-(defun oht/kill-this-buffer ()
-  "Quickly kill current buffer"
+(defun oht/kill-buffer-window ()
+  "Kill current buffer and window, but not the last window."
   (interactive)
-  (kill-buffer (current-buffer)))
+  (kill-buffer (current-buffer))
+  (if (not (one-window-p))
+          (delete-window))
+  )
 
 (defun oht/find-scratch ()
   (interactive)

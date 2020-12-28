@@ -1,0 +1,8 @@
+* .plan %(org-insert-time-stamp (current-time))
+
+Rule 1. How do you want to spend your day?
+Rule 2. Take regular breaks.
+Rule 3. No internet pre-lunch.
+Rule 4. Comms check: 9:30, 11:30, 14:00, 16:00.
+
+- %?

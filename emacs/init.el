@@ -955,7 +955,6 @@
       (unless (or elfeed-search-remain-on-entry (use-region-p))
         (forward-line))))
 
-  ;; Check out: https://codingquark.com/emacs/2019/05/16/emacs-elfeed-youtube.html
   (defun hrs/elfeed-current-entry ()
     (cond ((eq major-mode 'elfeed-show-mode)
            elfeed-show-entry)
@@ -996,6 +995,7 @@
   "Open Slack in browser."
        (interactive)
        (start-process "open slack" nil "open" "https://ievfx.slack.com"))
+
 
 ;; Next, create a function to pass a list of functions to `completing-read'.
 (defun dispatch ()

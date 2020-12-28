@@ -110,6 +110,7 @@
 
 ;; C-[ sends ESC so let's make ESC more predictable
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+
 (bind-keys
  ("s-," . oht/find-settings)
  ("s--" . oht/find-scratch)

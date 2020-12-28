@@ -255,18 +255,21 @@ This function works by setting the new-frame behaviour to use tabs, creating a n
 (advice-add 'yank :around #'ct/yank-pulse-advice)
 
 (defun oht/other-window ()
+  "Wrapper around other-window & pulse line."
   (interactive)
   (other-window 1)
   (pulse-line)
   )
 
 (defun oht/delete-window ()
+  "Wrapper around delete-window & pulse line."
   (interactive)
   (delete-window)
   (pulse-line)
   )
 
 (defun oht/recenter-top-bottom ()
+  "Wrapper around recenter-top-bottom & pulse line."
   (interactive)
   (recenter-top-bottom)
   (pulse-line)

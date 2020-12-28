@@ -304,8 +304,8 @@
 
 (use-package unfill
   :commands (unfill-paragraph unfill-toggle unfill-region)
-  )
-
+  :bind
+  ("M-q" . unfill-toggle)
   )
 
 (use-package whole-line-or-region
@@ -377,7 +377,7 @@
   ;; and search frameworks, such as selectrum. This setup code is copied
   ;; directly from the selectrum documentation.
   :bind
-  ("M-;" . #'flyspell-auto-correct-word)
+  ("M-;" . #'flyspell-auto-correct-previous-word)
   ("M-:" . #'flyspell-correct-wrapper)
   :custom
   (flyspell-correct-interface 'flyspell-correct-dummy)
@@ -431,7 +431,6 @@
 (bind-keys ("s-g" . keyboard-quit)
 	   ("M-<up>" . oht/move-line-up)
 	   ("M-<down>" . oht/move-line-down)
-	   ("M-o" . oht/other-window)
 	   ("M-s-s" . save-some-buffers)
 	   ("M-c" . capitalize-dwim)
 	   ("M-l" . downcase-dwim)
@@ -442,11 +441,13 @@
 	   ("C-x r r" . replace-rectangle)
 	   )
 
+(bind-key* "M-o" 'oht/other-window)
+
 
 ;;;; Primary Bindings
 
 (bind-keys ("s-p" . execute-extended-command)
-	   ("s-k" . oht/kill-this-buffer)
+	   ("s-k" . oht/kill-buffer-window)
 	   ("M-s-b" . ibuffer)
 	   ("s-C" . org-capture)
 	   ("s-|" . oht/pipe-region)
@@ -801,7 +802,7 @@
   ;; a dired buffer you can use the n and p keys to move the point around. In
   ;; addition to the bindings below `view-mode' has its own standard bindings,
   ;; which you can find in the minor mode's help.
-  :ensure nil
+  :straight nil
   :init
   (setq view-read-only t)
   (defun oht/view-mode-enter ()
@@ -1027,6 +1028,7 @@
 			      elfeed
 			      org-agenda
 			      eww-list-bookmarks
+			      pinboard
 			      )))))
 
 ;; Finally, bind it to something useful.

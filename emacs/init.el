@@ -316,9 +316,6 @@
   :commands (unfill-paragraph unfill-toggle unfill-region)
   )
 
-(use-package bufler
-  ;; Bufler - a better buffer list
-  :commands bufler
   )
 
 (use-package whole-line-or-region
@@ -430,7 +427,7 @@
 
 (bind-keys ("s-p" . execute-extended-command)
 	   ("s-k" . oht/kill-this-buffer)
-	   ("M-s-b" . bufler)
+	   ("M-s-b" . ibuffer)
 	   ("s-C" . org-capture)
 	   ("s-|" . oht/pipe-region)
 	   ("C-S-<mouse-1>" . mc/add-cursor-on-click)

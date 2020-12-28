@@ -231,16 +231,6 @@
 (global-set-key [mode-line mouse-3] 'scroll-down-command)
 
 
-;;;; Mode Hooks
-
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (dired-hide-details-mode 1)
-	    (auto-revert-mode)
-	    (hl-line-mode 1)
-	    ))
-
-
 ;;; Packages
 
 
@@ -397,6 +387,36 @@
 		(let ((selectrum-should-sort-p nil))
 		  (apply func args))))
   )
+
+
+;;;; Dired
+
+(use-package dired
+  :straight nil
+  :commands (dired dired-jump dired-jump-other-window)
+  :config
+  (defun dired-open-file ()
+    "In dired, open the file named on this line."
+    (interactive)
+    (let* ((file (dired-get-filename nil t)))
+      (message "Opening %s..." file)
+      (call-process "open" nil 0 nil file)
+      (message "Opening %s done" file)))
+  :bind (:map dired-mode-map
+	      ("O" . dired-open-file)
+	      )
+  :hook ((dired-mode-hook . dired-hide-details-mode)
+	 (dired-mode-hook . auto-revert-mode)
+	 (dired-mode-hook . hl-line-mode))
+  )
+
+(use-package dired-subtree
+  :after dired
+  :config
+  (setq dired-subtree-use-backgrounds nil)
+  :bind (:map dired-mode-map
+              ("<tab>" . dired-subtree-toggle)))
+
 
 
 ;;; Keybindings

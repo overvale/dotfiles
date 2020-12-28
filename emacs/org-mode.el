@@ -176,7 +176,7 @@
         (file "~/Documents/org-files/ingenuity_logbook.org")
         "* %? %t\n\n")
        ("c" "Ingenuity Cold Call" entry
-	(file "~/Documents/org-files/logbook.org")
+	(file "~/Documents/org-files/ingenuity_logbook.org")
 	(file "~/dot/emacs/capture-templates/cold-call.org"))
        ))
 

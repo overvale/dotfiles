@@ -474,6 +474,9 @@
 	   ("f" . hydra-fonts/body)
 	   ("!" . font-lock-mode)
 	   ("j" . dired-jump)
+	   ("b s" . bookmark-set)
+	   ("b l" . list-bookmarks)
+	   ("b j" . consult-bookmark)
 	   )
 
 (bind-keys :prefix-map oht/windows-leader

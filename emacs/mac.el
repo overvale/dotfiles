@@ -58,31 +58,27 @@
 
 ;;;; Visual Line Mode
 
-;; When in visual line mode the out-of-the-box movement commands behave
-;; inconsistently with the rest of macOS, so the below code brings them back
-;; in line.
-
-;; Continue wrapped words at whitespace, rather than in the middle of a word.
-(setq-default word-wrap t)
-;; ...but don't do any wrapping by default. It's expensive. Enable
-;; `visual-line-mode' if you want soft line-wrapping. `auto-fill-mode' for hard
-;; line-wrapping.
+;; If `truncate-lines' is set to non-nil, Emacs will allow long lines to
+;; continue beyond the window boundary. If set to nil, Emacs will wrap long
+;; lines to the next line, and indicate this with arrows in the fringe.
 (setq-default truncate-lines t)
-;; If enabled (and `truncate-lines' was disabled), soft wrapping no longer
-;; occurs when that window is less than `truncate-partial-width-windows'
-;; characters wide. We don't need this, and it's extra work for Emacs otherwise,
-;; so off it goes.
-(setq truncate-partial-width-windows nil)
-;; Turn on word-wrap globally
+
+;; But I want every buffer to start with what mac apps normally call
+;; 'soft-wrapping' of long lines to the window boundaries.
 (global-visual-line-mode t)
-;; with visual-line-mode set, C-a and C-b go to beginning/end-of-visual-line
-;; which is inconsistant with standard Mac behavior. This fixes that.
+
+;; However, turning on `visual-line-mode' also replaces "C-a" with
+;; `beginning-of-visual-line'. This is inconsistent with macOS behavior, which
+;; is that "C-a" always goes to the beginning of the logical line and
+;; "s-<left>" goes to the beginning of the visual line. So these bindings
+;; correct that.
 (bind-keys* ("C-a" . beginning-of-line)
 	    ("C-e" . end-of-line))
 (bind-keys ("s-<left>" . beginning-of-visual-line)
 	   ("s-<right>" . end-of-visual-line)
 	   ;; C-k only killing the visual line also isn't how macOS works.
-	   ;; This has to be set to a custom function so minor modes can't hijack it.
+	   ;; This has to be set to a custom function so minor modes can't
+	   ;; hijack it.
 	   ("C-k" . oht/kill-line))
 
 

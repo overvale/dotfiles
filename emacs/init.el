@@ -400,12 +400,15 @@
       (message "Opening %s..." file)
       (call-process "open" nil 0 nil file)
       (message "Opening %s done" file)))
+  (add-hook 'dired-mode-hook
+	    (lambda ()
+	      (dired-hide-details-mode 1)
+	      (auto-revert-mode)
+	      (hl-line-mode 1)
+	      ))
   :bind (:map dired-mode-map
 	      ("O" . dired-open-file)
 	      )
-  :hook ((dired-mode-hook . dired-hide-details-mode)
-	 (dired-mode-hook . auto-revert-mode)
-	 (dired-mode-hook . hl-line-mode))
   )
 
 (use-package dired-subtree

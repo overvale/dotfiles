@@ -512,7 +512,7 @@
 (setq visible-bell t)                      ; disable beep
 (setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
 (setq x-underline-at-descent-line t)       ; underline at descent, not baseline
-(setq-default indicate-empty-lines t)      ; show where the file ends
+(setq-default indicate-empty-lines nil)    ; show where the file ends
 (set-default 'cursor-type 'box)            ; use a box for cursor
 (blink-cursor-mode -1)                     ; no blinking please
 
@@ -569,6 +569,7 @@
   ("-" text-scale-decrease "Smaller")
   ("0" text-scale-mode "Reset Size")
   ("m" modus-themes-toggle "Modus Toggle")
+  ("o" olivetti-mode "Olivetti")
   ("q" nil "cancel"))
 
 ;; This sets the default fonts

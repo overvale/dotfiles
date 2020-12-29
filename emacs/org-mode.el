@@ -164,13 +164,13 @@
 	(file+headline "~/Documents/org-files/watch_read.org" "Online")
 	"* Read %?\n\n")
        ("p" "Personal Inbox" entry
-        (file+headline "~/Documents/org-files/inbox.org" "Personal")
+        (file+headline "~/Documents/org-files/life.org" "Inbox")
         "* %?\n\n")
        ("P" "Personal Log Entry" entry
         (file "~/Documents/org-files/logbook.org")
         "* %?\n%t\n\n")
        ("i" "Ingenuity Inbox" entry
-        (file+headline "~/Documents/org-files/inbox.org" "Ingenuity")
+        (file+headline "~/Documents/org-files/ingenuity.org" "Inbox")
         "* %?\n\n")
        ("I" "Ingenuity Log Entry" entry
         (file "~/Documents/org-files/ingenuity_logbook.org")
@@ -218,3 +218,6 @@
     (outline-show-entry))))
 
 (add-hook 'imenu-after-jump-hook 'ok-imenu-show-entry)
+
+;; Local Variables:
+;; outline-regexp: ";;;+ "

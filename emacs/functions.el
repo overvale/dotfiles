@@ -19,27 +19,6 @@
       (previous-buffer)
     (switch-to-buffer "*scratch*")))
 
-;; Move Lines
-(defmacro save-column (&rest body)
-  `(let ((column (current-column)))
-     (unwind-protect
-         (progn ,@body)
-       (move-to-column column))))
-(put 'save-column 'lisp-indent-function 0)
-(defun oht/move-line-up ()
-  "Move the current line up by 1 line"
-  (interactive)
-  (save-column
-    (transpose-lines 1)
-    (forward-line -2)))
-(defun oht/move-line-down ()
-  "More the current line down by 1 line"
-  (interactive)
-  (save-column
-    (forward-line 1)
-    (transpose-lines 1)
-    (forward-line -1)))
-
 (defun oht/mark-whole-line ()
   "Mark the entirety of the current line."
   (interactive)

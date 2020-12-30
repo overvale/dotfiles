@@ -340,6 +340,12 @@
   (setf epa-pinentry-mode 'loopback)
   )
 
+(use-package move-text
+  :bind
+  ("M-<up>" . move-text-up)
+  ("M-<down>" . move-text-down)
+  )
+
 ;;;; Languages
 
 (use-package fountain-mode
@@ -430,8 +436,6 @@
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
 (bind-keys ("s-g" . keyboard-quit)
-	   ("M-<up>" . oht/move-line-up)
-	   ("M-<down>" . oht/move-line-down)
 	   ("M-s-s" . save-some-buffers)
 	   ("M-c" . capitalize-dwim)
 	   ("M-l" . downcase-dwim)

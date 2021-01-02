@@ -5,67 +5,6 @@ Not all the code here actually works.
 
 ]]
 
--- [ Remap key only in Emacs ] ----------------------------------------------------
-
--- I don't know how to disable noise global key "Command + Shift +Q" in MacOS.
--- So i redirect "Command + Shift + Q" to "Ctrl + Command + Shift + Q" for Emacs,
--- then i make Emacs response "Ctrl + Command + Shift + Q" to implement key binding "Command + Shift + Q".
-local newKeyEvent = require 'hs.eventtap'.event.newKeyEvent
-local usleep = require 'hs.timer'.usleep
-hs.hotkey.new(
-    {"cmd", "shift"}, "q", nil,
-    function()
-        if window.focusedWindow():application():path() == "/Applications/Emacs.app" then
-            local app = window.focusedWindow():application()
-
-            newKeyEvent({"ctrl", "cmd", "shift"}, "q", true):post(app)
-            usleep(1000)
-            newKeyEvent({"ctrl", "cmd", "shift"}, "q", false):post(app)
-        end
-end):enable()
-
-
--- [ Keyboard Navigation, NOT EMACS ----------------------------------------------------
-
--- This code binds a series of keys when the frontmost application is NOT emacs.
--- It does this by watching the frontmost application and enabling/disabling
--- a series of bindings called noEmacsKeys
--- https://github.com/Hammerspoon/hammerspoon/issues/2081#issuecomment-668283868
-
--- This creates a modal hotkey object that can be turned on/on
--- by the application watcher.
--- Since you won't ever be triggering the model hotkey directly
--- set the hotkey to something that won't cause a conflict.
-noEmacsKeys = hs.hotkey.modal.new({"cmd", "shift", "alt"}, "F19")
--- Now that the modal hotkey is created, you can attach the bindings
--- you'd like to activate in that 'mode'.
-noEmacsKeys:bind({'ctrl'}, ',', keyStrike({'alt'}, 'left'))
-noEmacsKeys:bind({'ctrl'}, '.', keyStrike({'alt'}, 'right'))
-noEmacsKeys:bind({'ctrl'}, "'", keyStrike({'alt'}, 'forwarddelete'))
-noEmacsKeys:bind({'ctrl'}, ';', keyStrike({'alt'}, 'delete'))
-noEmacsKeeys:bind({'ctrl'}, 'u', keyStrike({'cmd'}, 'delete'))
-
--- Create an application watcher that deactivates the noEmacsKeys bindings
--- when an app whose name is Emacs activates.
-function applicationWatcherCallback(appName, eventType, appObject)
-  if (appName == "Emacs") then
-    if (eventType == hs.application.watcher.activated) then
-      -- Emacs just got focus, disable our hotkeys
-      noEmacsKeys:exit()
-    elseif (eventType == hs.application.watcher.deactivated) then
-      -- Emacs just lost focus, enable our hotkeys
-      noEmacsKeys:enter()
-    end
-  end
-end
-
--- Create and start the application event watcher
-watcher = hs.application.watcher.new(applicationWatcherCallback)
-watcher:start()
-
--- Activate the modal state by default
-noEmacsKeys:enter()
-
 -- [ Learning! ]-------------------------------------------------------------
 
 hs.hotkey.bind({'cmd', 'ctrl'}, '1', function() hs.alert.show("alert") end)
@@ -105,23 +44,6 @@ end
 testModal = hs.hotkey.modal.new({'cmd', 'ctrl', 'alt'}, 'F18')
 testModal:bind({''}, 'e', keyStrike({'ctrl'}, 'e'))
 hs.hotkey.bind({'cmd', 'ctrl'}, '2', modeTestStart, modeTestEnd)
-
--- [ Application Watcher ] -------------------------------------------------------------
-
-emacsGroup = hs.hotkey.modal.new({'cmd'}, 'f19')
-emacsGroup:bind({'cmd', 'ctrl'}, '1', hs.alert.show('Emacs is active!'))
-
-function activeAppWatcher(appName, eventType, appObject)
-  if (appName == "Emacs") then
-    if (eventType == hs.application.watcher.activated) then
-      emacsGroup:exit()
-    elseif (eventType == hs.application.watcher.deactivated) then
-      emacsGroup:enter()
-    end
-  end
-end
-
-hs.application.watcher.new(activeAppWatcher):start()
 
 -- Toggle Application
 -- -------------------------------------------
@@ -216,30 +138,6 @@ hs.hotkey.bind('alt', 'tab', nextWindow, nil, nextWindow)
 hs.hotkey.bind('alt-shift', 'tab', previousWindow, nil, previousWindow)
 
 
--- Generic Function for newKeyEvent
--- -----------------------------------------------
--- https://github.com/Hammerspoon/hammerspoon/issues/1984#issuecomment-455317739
-
-doKeyStroke = function(modifiers, character)
-    if type(modifiers) == 'table' then
-        local event = hs.eventtap.event
-
-        for _, modifier in pairs(modifiers) do
-            event.newKeyEvent(modifier, true):post()
-        end
-
-        event.newKeyEvent(character, true):post()
-        event.newKeyEvent(character, false):post()
-
-        for i = #modifiers, 1, -1 do
-            event.newKeyEvent(modifiers[i], false):post()
-        end
-    end
-end
-
-hs.hotkey.bind({'alt'}, 'h', function() doKeyStroke({}, 'Left') end)
-
-
 -- Bring all Finder windows to front when finder activated
 -- -----------------------------------------------
 function applicationWatcher(appName, eventType, appObject)
@@ -284,37 +182,154 @@ hs.hotkey.bind({"shift", "cmd"}, "/", function()
       end
 end)
 
--- Turning on/off a binding when app is focused
--- -----------------------------------------------
 
--- First, define what you want to happen when the hotkey is enabled
-function sendReturn()
-   hs.eventtap.event.newKeyEvent({}, "delete", true):post()
-   hs.eventtap.event.newKeyEvent({}, "delete", false):post()
+-- Name of Wifi in menu bar
+-- ----------------------------------------------
+wifiWatcher = nil
+function ssidChanged()
+   local wifiName = hs.wifi.currentNetwork()
+   if wifiName then
+      wifiMenu:setTitle(wifiName)
+   else 
+      wifiMenu:setTitle("Wifi OFF")
+   end
+end
+wifiMenu = hs.menubar.newWithPriority(2147483645)
+ssidChanged()
+wifiWatcher = hs.wifi.watcher.new(ssidChanged):start()
+
+
+-- RAMEN TIMER
+-- ----------------------------------------------
+
+--Schedule a notification in 3 minutes.
+function startRamenTimer()
+  hs.timer.doAfter(3 * 60, function ()
+    hs.notify.new({
+        title="Ramen time!",
+        informativeText="Your ramen is ready!"
+    }):send()
+  end)
+  hs.alert(" Ramen timer started! ")
 end
 
--- Then define the binding that you want to toggle
-local returnKeyBinding = hs.hotkey.new({}, "return", sendReturn)
+--Bind timer to `hammerspoon://ramentime`:
+hs.urlevent.bind("ramentime", startRamenTimer)
 
--- Now create, and start, an app watcher that enables/disables the binding
-gameWatcher = hs.application.watcher.new(function(appName, eventType, appObject)
-      if appName == "Emacs" then
-	 if eventType == hs.application.watcher.activated then
-	    returnKeyBinding:enable()
-	 elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
-	    returnKeyBinding:disable()
-	 end
-      end
-end):start()
- 
--- Another solution to the same problem...
 
-yourBinding = hs.hotkey.bind(...)
+-- Toggle dark mode from menu bar
+-- ----------------------------------------------
 
-local wf=hs.window.filter
-xcodeWF = wf.new("Xcode")
-xcodeWF:subscribe(wf.windowFocused, function()
-  yourBinding:disable()
-end):subscribe(wf.windowUnfocused, function()
-  yourBinding:enable()
-end)
+local function systemSetDm(state)
+  return hs.osascript.javascript(
+    string.format(
+      "Application('System Events').appearancePreferences.darkMode.set(%s)",
+      state
+    )
+  )
+end
+
+local function dmIsOn()
+  local _, darkModeState = hs.osascript.javascript(
+    'Application("System Events").appearancePreferences.darkMode()'
+  )
+  return darkModeState
+end
+
+function setDm(state)
+	systemSetDm(state)
+    if state then
+        darkmode:setTitle("☾")
+    else
+        darkmode:setTitle("☀")
+    end
+end
+
+function darkmodeClicked()
+    setDm(not dmIsOn())
+end
+
+darkmode = hs.menubar.new()
+if darkmode then
+    darkmode:setClickCallback(darkmodeClicked)
+    setDm(dmIsOn())
+end
+
+
+-- Run functions from the menubar
+-- -----------------------------------------------
+function test_notify()
+   hs.notify.new({title='Hammerspoon', informativeText='Test worked!'}):send()
+end
+local menuTable = {
+    { title = "Test", fn = test_notify },
+    -- { title = "-" },
+}
+local menubar = hs.menubar.new()
+if menubar then
+    menubar:setTitle("⌘")
+    menubar:setMenu(menuTable)
+end
+
+-- Custom clock in menubar
+-- -----------------------------------------------
+local clockMenu = hs.menubar.new()
+function displayClock(clockMenu)
+  clockTime = os.date("%Y-%m-%d, %H:%M")
+  clockMenu:setTitle(clockTime)
+end
+-- Make the menu show up on load
+displayClock(clockMenu)
+-- And refresh it every so often (I don't care about seconds)
+hs.timer.doEvery(60, function() displayClock(clockMenu) end)
+
+
+-- BACKUP MENU
+-- -----------------------------------------------
+
+-- This places icons in your menubar that indicate the status of your backups.
+-- The icons are updated by your backup script.
+-- If the backup is successful the backup script opens 'hammerspoon://backup_success'
+-- which when displays an icon in your menubar.
+
+-- Create the menubar item
+local backupMenu = hs.menubar.new()
+
+-- Define functions for displaying icons, and behavior
+function backup_openLogs()
+   os.execute( "open ~/Library/" )
+end
+function backup_running()
+   backupMenu:setTitle("🚂")
+   hs.timer.doAfter(1, backup_success)
+end
+function backup_success()
+   backupMenu:setTitle("🏆")
+   hs.timer.doAfter(1, backup_next)
+end
+function backup_next()
+   local menuTable = {
+      { title = "Backup Now", fn = backup_running },
+      { title = "Open Logs", fn = backup_openLogs },
+   }
+   backupMenu:setTitle("😎")
+   backupMenu:setMenu(menuTable)
+end
+function backup_fail()
+   local menuTable = {
+      { title = "Retry Backup", fn = backup_running },
+      { title = "Open Logs", fn = backup_openLogs },
+   }
+   backupMenu:setTitle("⚠️")
+   backupMenu:setMenu(menuTable)
+end
+
+-- Run a function to place an item in the menubar
+backup_next()
+
+-- Register URLs and bind them to the above functions
+hs.urlevent.bind("backup_running", backup_running)
+hs.urlevent.bind("backup_success", backup_success)
+hs.urlevent.bind("backup_next", backup_next)
+hs.urlevent.bind("backup_fail", backup_fail)
+

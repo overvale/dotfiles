@@ -112,19 +112,20 @@ end
 configWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
 
 
--- Application Launcher
+-- Launcher
 -- -----------------------------------------------
 
 local applicationHotkeys = {
-   s = 'Safari',
-   t = 'Terminal',
-   a = 'Music',
    m = 'Mail',
-   e = 'Emacs',
-   b = 'BBEdit',
-   o = 'Tot',
-   k = 'Slack',
    g = 'Mimestream',
+   c = 'Calendar',
+   e = 'Emacs',
+   s = 'Safari',
+   a = 'Music',
+   o = 'Tot',
+   b = 'BBEdit',
+   t = 'Terminal',
+   k = 'Slack',
 }
 
 for key, app in pairs(applicationHotkeys) do
@@ -133,11 +134,29 @@ for key, app in pairs(applicationHotkeys) do
    end)
 end
 
+hs.hotkey.bind({'ctrl', 'cmd'}, "h", function() os.execute( "open https://news.ycombinator.com" ) end)
 
--- Open other stuff
+
+
+-- Custom Menu Bar Item
 -- -----------------------------------------------
 
-hs.hotkey.bind({'ctrl', 'cmd'}, "h", function() os.execute( "open https://news.ycombinator.com" ) end)
+-- Create menu bar item
+local quickMenu = hs.menubar.new()
+
+function openHN()
+   os.execute( "open http://news.ycombinator.com" )
+end
+
+function buildQuickMenu()
+   local menuTable = {
+      { title = "Open Hacker News", fn = openHN },
+   }
+   quickMenu:setTitle("HN")
+   quickMenu:setMenu(menuTable)
+end
+
+buildQuickMenu()
 
 
 -- Word Move/Delete
@@ -217,7 +236,9 @@ hs.hotkey.bind({'ctrl', 'cmd'}, "w", selectWord)
 
 -- Start by defining the keys you'd like to change.
 -- Remote Desktop
-local msrdDisable = hs.hotkey.new({"cmd"}, "w", function() end)
+local msrdDisable = hs.hotkey.new({"cmd"}, "w", function()
+      -- nil
+end)
 -- Excel
 local excelDown = hs.hotkey.new({"ctrl"}, "n", function()
    hs.eventtap.event.newKeyEvent({}, "down", true):post()

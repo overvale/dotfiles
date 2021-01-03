@@ -284,6 +284,28 @@ displayClock(clockMenu)
 hs.timer.doEvery(60, function() displayClock(clockMenu) end)
 
 
+-- Custom Menu Bar Item
+-- -----------------------------------------------
+
+-- Create menu bar item
+local quickMenu = hs.menubar.new()
+
+function openHN()
+   os.execute( "open http://news.ycombinator.com" )
+end
+
+function buildQuickMenu()
+   local menuTable = {
+      { title = "Open Hacker News", fn = openHN },
+   }
+   quickMenu:setTitle("HN")
+   quickMenu:setMenu(menuTable)
+end
+
+buildQuickMenu()
+
+
+
 -- BACKUP MENU
 -- -----------------------------------------------
 

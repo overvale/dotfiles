@@ -78,6 +78,7 @@ hs.hotkey.bind(hyper, 'j', function() hs.window.focusedWindow():moveToUnit({0, 0
 hs.hotkey.bind(hyper, 'k', function() hs.window.focusedWindow():moveToUnit({1/3+0.01, 0, 2/3-0.01, 1}) end)
 hs.hotkey.bind(hyper, 'l', function() hs.window.focusedWindow():moveToUnit({2/3-0.01, 0, 1/3+0.01, 1}) end)
 hs.hotkey.bind(hyper, 'f', function() hs.window.focusedWindow():moveToUnit({0, 0, 1, 1}) end)
+hs.hotkey.bind(hyper, 'return', function() hs.window.focusedWindow():moveToUnit({1/24, 1/24, 5/12, 10/12}) end)
 
 -- window hints
 hs.hotkey.bind(hyper, 'i', hs.hints.windowHints)
@@ -144,27 +145,7 @@ else
 	 hs.application.launchOrFocus("Slack")
    end)
 
-
--- Custom Menu Bar Item
--- -----------------------------------------------
-
--- Create menu bar item
-local quickMenu = hs.menubar.new()
-
-function openHN()
-   os.execute( "open http://news.ycombinator.com" )
 end
-
-function buildQuickMenu()
-   local menuTable = {
-      { title = "Open Hacker News", fn = openHN },
-   }
-   quickMenu:setTitle("HN")
-   quickMenu:setMenu(menuTable)
-end
-
-buildQuickMenu()
-
 
 -- Word Move/Delete
 -- -----------------------------------------------
@@ -242,6 +223,7 @@ hs.hotkey.bind({'ctrl', 'cmd'}, "w", selectWord)
 -- -----------------------------------------------
 
 -- Start by defining the keys you'd like to change.
+-- Since these come after the above, they will override them
 -- Remote Desktop
 local msrdDisable = hs.hotkey.new({"cmd"}, "w", function()
       -- nil

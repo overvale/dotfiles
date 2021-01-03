@@ -1037,13 +1037,16 @@
   "Open Slack in browser."
        (interactive)
        (start-process "open slack" nil "open" "https://ievfx.slack.com"))
-
+(defun dispatch/read-later ()
+  "Open my Read Later directory."
+       (interactive)
+       (find-file "~/Documents/read later"))
 
 ;; Next, create a function to pass a list of functions to `completing-read'.
 (defun dispatch ()
   (interactive)
   (call-interactively
-   (intern (completing-read "Choose one: "
+   (intern (completing-read-multiple "Choose one: "
 			    '(
 			      dispatch/hacker-news
 			      dispatch/mail-personal

@@ -3,10 +3,11 @@
 ;;; Agenda Settings
 
 ;; This defines which files you want included in your agenda/TODO views.
-(setq org-agenda-files
-      '("~/Documents/org-files/"
-	"~/Documents/writing/kindred/compendium.org"
-	))
+(setq org-agenda-files '("~/Documents/org-files/"))
+
+;; On my laptop, include this
+(when (string= (system-name) "shadowfax.local")
+  (add-to-list 'org-agenda-files "~/Documents/writing/kindred/compendium.org"))
 
 ;; Each type of agenda view can be independently customized. For more info see the documentation for the variable =org-agenda-sorting-strategy=.
 

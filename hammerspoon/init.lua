@@ -125,7 +125,6 @@ local applicationHotkeys = {
    o = 'Tot',
    b = 'BBEdit',
    t = 'Terminal',
-   k = 'Slack',
 }
 
 for key, app in pairs(applicationHotkeys) do
@@ -136,6 +135,14 @@ end
 
 hs.hotkey.bind({'ctrl', 'cmd'}, "h", function() os.execute( "open https://news.ycombinator.com" ) end)
 
+if (hostname == "shadowfax") then
+   hs.hotkey.bind({'ctrl', 'cmd'}, "k", function()
+	 os.execute( "open https://ievfx.slack.com" )
+   end)
+else
+   hs.hotkey.bind({'ctrl', 'cmd'}, "k", function()
+	 hs.application.launchOrFocus("Slack")
+   end)
 
 
 -- Custom Menu Bar Item

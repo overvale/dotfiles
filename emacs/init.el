@@ -471,6 +471,7 @@
 	   ("h" . hl-line-mode)
 	   ("l" . oht/toggle-line-numbers)
 	   ("w" . visual-line-mode)
+	   ("t" . toggle-truncate-lines)
 	   ("W" . oht/toggle-whitespace)
 	   ("m" . magit-status)
 	   ("M" . consult-marks)

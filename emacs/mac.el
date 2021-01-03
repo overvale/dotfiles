@@ -58,16 +58,31 @@
 
 ;;;; Visual Line Mode
 
-;; If `truncate-lines' is set to non-nil, Emacs will allow long lines to
-;; continue beyond the window boundary. If set to nil, Emacs will wrap long
-;; lines to the next line, and indicate this with arrows in the fringe.
+;; Confusingly, `visual-line-mode', `word-wrap', and `truncate-lines' are all
+;; different things. `visual-line-mode' is a wrapper around a bunch of
+;; things, probably best explained here:
+;; http://ergoemacs.org/emacs/emacs_long_line_wrap.html
+;; `word-wrap' ONLY wraps lines word-wise instead of character-wise.
+;; `truncate-lines' ONLY controls if wrapping happens at all. If set to
+;; non-nil it is supposed to let lines run off the window, but this is a
+;; buffer-local setting that I cannot (no matter what I try) get to be global.
 (setq-default truncate-lines t)
+
+;; So, instead, I take the brute-force approach of adding a hook for text-mode
+;; and prog-mode to call a function which toggles the value on. Take that Emacs.
+(defun oht/truncate-lines()
+  (interactive)
+  (toggle-truncate-lines 1)
+  )
+(add-hook 'text-mode-hook 'oht/truncate-lines)
+(add-hook 'prog-mode-hook 'oht/truncate-lines)
+
 
 ;; But I want every buffer to start with what mac apps normally call
 ;; 'soft-wrapping' of long lines to the window boundaries.
 (global-visual-line-mode t)
 
-;; However, turning on `visual-line-mode' also replaces "C-a" with
+;; However, turning on `visual-line-mode' also binds "C-a" to
 ;; `beginning-of-visual-line'. This is inconsistent with macOS behavior, which
 ;; is that "C-a" always goes to the beginning of the logical line and
 ;; "s-<left>" goes to the beginning of the visual line. So these bindings

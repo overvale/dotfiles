@@ -125,7 +125,7 @@
 (bind-keys
  ("s-," . oht/find-settings)
  ("s--" . oht/find-scratch)
- ("s-n" . oht/switch-to-new-buffer)
+ ("s-n" . make-frame-command)
  ("s-N" . make-frame-command)
  ("s-t" . oht/new-tab)
  ("s-m" . iconify-frame)

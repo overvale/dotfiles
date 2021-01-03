@@ -1,4 +1,4 @@
-;;; init.el --- Oliver Taylor's Config -*- lexical-binding: t -*-
+;;; init.el --- Oliver Taylor's Emacs Config -*- lexical-binding: t -*-
 
 ;; Homepage: https://github.com/olivertaylor/dotfiles
 
@@ -11,6 +11,8 @@
 ;; making this easier.
 ;;
 ;; 1. The package `bicycle' provides the command `bicycle-cycle'.
+;;    a) "S-<tab>" to cycle globally.
+;;    b) "C-<tab>" to cycle at point.
 ;; 2. A hydra called `hydra-outline'.
 ;; 3. An `occur' buffer with the query: [^;;; ]
 
@@ -494,7 +496,9 @@
 	   ("k" . oht/delete-window)
 	   ("o" . delete-other-windows)
 	   ("b" . balance-windows)
-	   ("r" . oht/toggle-window-split))
+	   ("r" . oht/toggle-window-split)
+	   ("t" . tear-off-window)
+	   )
 
 
 ;;; Appearance
@@ -502,7 +506,7 @@
 ;;;; Display
 
 ;; Line spacing (in pixels)
-(setq-default line-spacing 1)
+(setq-default line-spacing nil)
 
 ;; Frame default parameters
 (setq default-frame-alist
@@ -513,7 +517,7 @@
 	  )))
 
 (tool-bar-mode -1)                         ; hide menu-bar
-(scroll-bar-mode -1)                       ; hide scroll bars
+(scroll-bar-mode 1)
 (menu-bar-mode 1)                          ; ensures full-screen avail on macOS
 (show-paren-mode t)                        ; highlight parens
 (setq show-paren-delay 0)                  ; and show immediately
@@ -549,11 +553,21 @@
 (defun oht/set-font-ibm-large ()
   (interactive)
   (set-face-attribute 'default nil
-		      :family "IBM Plex Mono" :height 140 :weight 'normal)
+		      :family "IBM Plex Mono" :height 130 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "IBM Plex Serif" :height 160 :weight 'normal)
+		      :family "IBM Plex Serif" :height 150 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "IBM Plex Mono" :height 140 :weight 'normal)
+		      :family "IBM Plex Mono" :height 130 :weight 'normal)
+  )
+
+(defun oht/set-font-fira ()
+  (interactive)
+  (set-face-attribute 'default nil
+		      :family "Fira Mono" :height 120 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "Fira Sans" :height 120 :weight 'normal)
+  (set-face-attribute 'fixed-pitch nil
+		      :family "Fira Mono" :height 120 :weight 'normal)
   )
 
 (defun oht/set-font-triplicate ()
@@ -570,6 +584,7 @@
   "Set Font Properties"
   ("i" oht/set-font-ibm "IBM Plex")
   ("I" oht/set-font-ibm-large "IBM Plex Large")
+  ("f" oht/set-font-fira "Fira")
   ("t" oht/set-font-triplicate "Triplicate")
   ("v" variable-pitch-mode "Variable")
   ("=" text-scale-increase "Larger")
@@ -581,7 +596,7 @@
   ("q" nil "cancel"))
 
 ;; This sets the default fonts
-(oht/set-font-ibm)
+(oht/set-font-fira)
 
 
 ;;;; Theme
@@ -802,13 +817,13 @@
 
 (use-package view
   ;; Coming from vim, I know the utility of modal editing. However, I have no
-  ;; desire to make Emacs into something it is not with `evil-mode', if I want
-  ;; to use vim I'll just use vim. That said, there are times when modal
-  ;; editing and navigation are very handy and there are, in fact,
-  ;; circumstances in which Emacs uses modal navigation. For example, when in
-  ;; a dired buffer you can use the n and p keys to move the point around. In
-  ;; addition to the bindings below `view-mode' has its own standard bindings,
-  ;; which you can find in the minor mode's help.
+  ;; desire to make Emacs into something it is not with `evil-mode'. That
+  ;; said, there are times when modal editing and navigation are very handy
+  ;; and there are, in fact, circumstances in which Emacs uses modal
+  ;; navigation. For example, when in a dired buffer you can use the n and p
+  ;; keys to move the point around. In addition to the bindings below
+  ;; `view-mode' has its own standard bindings, which you can find in the
+  ;; minor mode's help.
   :straight nil
   :init
   (setq view-read-only t)
@@ -931,6 +946,7 @@
 	("https://www.raptitude.com/feed/")
 	("https://blog.robenkleene.com/feed/atom/")
 	("https://nyxt.atlas.engineer/feed")
+	("https://benjaminreinhardt.com/feed.xml")
 	;; news
 	("https://www.economist.com/latest/rss.xml" news)
 	("https://www.economist.com/the-economist-explains/rss.xml" news)
@@ -1038,6 +1054,7 @@
 			      eww-list-bookmarks
 			      pinboard
 			      )))))
+
 
 ;; Finally, bind it to something useful.
 (bind-key "s-d" 'dispatch)

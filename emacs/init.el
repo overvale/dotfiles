@@ -580,7 +580,7 @@
 		      :family "Triplicate T4" :height 140 :weight 'normal)
   )
 
-(defhydra hydra-fonts (:color amaranth)
+(defhydra hydra-fonts (:exit nil :foreign-keys warn)
   "Set Font Properties"
   ("i" oht/set-font-ibm "IBM Plex")
   ("I" oht/set-font-ibm-large "IBM Plex Large")
@@ -769,7 +769,7 @@
   (oht/copy-secondary-selection)
   (yank))
 
-(defhydra hydra-secondary-selection (:color blue)
+(defhydra hydra-secondary-selection (:exit t)
   "Secondary Selection"
   ("xx" oht/cut-secondary-selection "Cut 2nd")
   ("cc" oht/copy-secondary-selection "Copy 2nd")
@@ -800,15 +800,15 @@
 	   ("<backtab>" . bicycle-cycle-global))
 
 
-(defhydra hydra-outline (:color amaranth)
+(defhydra hydra-outline (:foreign-keys warn)
   "Hydra for navigating outline mode"
   ("o" outline-hide-sublevels "Hide to This Sublevel")
   ("<tab>" outline-cycle "Show Subtree")
-  ("a" outline-show-all "Show All" :color: blue)
-  ("c" consult-outline "Consult" :color blue)
+  ("a" outline-show-all "Show All")
+  ("c" consult-outline "Consult" :exit t)
   ("n" outline-next-visible-heading "Next")
   ("p" outline-previous-visible-heading "Previous")
-  ("q" nil "Cancel" :color blue)
+  ("q" nil "Cancel" :exit t)
   )
 (bind-key "s-0" 'hydra-outline/body)
 

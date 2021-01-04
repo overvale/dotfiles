@@ -73,7 +73,29 @@ hs.hotkey.bind(hyper, ';', hs.grid.show)
 -- -----------------------------------------------
 
 -- Notify when this file is loaded
-hs.notify.new({title='Hammerspoon', informativeText='Ready to rock 🤘'}):send()
+-- Removed in favor of a new menubar item, see below
+--hs.notify.new({title='Hammerspoon', informativeText='Ready to rock 🤘'}):send()
+
+
+
+-- Notify in menubar when hammerspoon reloads
+-- ------------------------------------------
+local HSNotifyMenu = hs.menubar.new()
+
+function buildHSNotifyMenu()
+-- When called, places the message in the menubar
+-- and after a delay, calls a function to remove this item from the menubar
+   HSNotifyMenu:setTitle("🤘 Reloaded!")
+   hs.timer.doAfter(3, killHSNotifyMenu)
+end
+
+function killHSNotifyMenu()
+   HSNotifyMenu:delete()
+end
+
+-- Show when this file is evaluated
+buildHSNotifyMenu()
+
 
 -- Create a binding for reloading the config
 hs.hotkey.bind({'cmd', 'ctrl'}, 'r', function() hs.reload() end)

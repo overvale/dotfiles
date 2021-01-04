@@ -1,23 +1,9 @@
---[[ INFO ----------------------------------------
+-- Oliver Taylor's Hammerspoon Config
+-- homepage: https://github.com/olivertaylor/dotfiles
 
-KeyCodes:
-f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15,
-f16, f17, f18, f19, f20, pad, pad*, pad+, pad/, pad-, pad=,
-pad0, pad1, pad2, pad3, pad4, pad5, pad6, pad7, pad8, pad9,
-padclear, padenter, return, tab, space, delete, escape, help,
-home, pageup, forwarddelete, end, pagedown, left, right, down, up,
-shift, rightshift, cmd, rightcmd, alt, rightalt, ctrl, rightctrl,
-capslock, fn
 
-Inspiration:
-- http://www.hammerspoon.org/Spoons/Seal.html
-- https://medium.com/@robhowlett/hammerspoon-the-best-mac-software-youve-never-heard-of-40c2df6db0f8
-- https://github.com/jasonrudolph/keyboard
-- https://github.com/dbmrq/dotfiles
-- https://github.com/raulchen/dotfiles
-- https://github.com/justintanner/universal-emacs-keybindings
-
-]] ---------------------------------------------------
+-- Config Setup
+-- ----------------------------------------------
 
 hs.window.animationDuration = 0
 local hyper = {"ctrl", "alt", "cmd"}
@@ -25,21 +11,12 @@ local hyper = {"ctrl", "alt", "cmd"}
 -- Capture the hostname, so we can make this config behave differently across my Macs
 hostname = hs.host.localizedName()
 
+
 -- Spoons
 -- -----------------------------------------------
 
--- Spoon Reference: https://github.com/Hammerspoon/hammerspoon/blob/master/SPOONS.md
-
--- Load SpoonInstall, so we can easily load our other Spoons
-hs.loadSpoon("SpoonInstall")
-spoon.SpoonInstall.use_syncinstall = true
-Install=spoon.SpoonInstall
-
 local anycomplete = require "anycomplete"
 anycomplete.registerDefaultBindings()
-
--- Draw pretty rounded corners on all screens
--- Install:andUse("RoundedCorners", { start = true })
 
 require('bluetooth_sleep')
 require('keybinds') -- mostly for remapping keys
@@ -47,6 +24,7 @@ require('keybinds') -- mostly for remapping keys
 
 -- Window Control
 -- -----------------------------------------------
+-- All these shortcuts use the hyper key
 
 function snap_window(dir)
    local thiswindow = hs.window.frontmostWindow()
@@ -147,4 +125,3 @@ else
 	 hs.application.launchOrFocus("Slack")
    end)
 end
-

@@ -106,7 +106,7 @@ end)
 -- -----------------------------------------------
 -- Setup an application watcher that enables/disables the above bindings.
 
-appKeyBinder = hs.application.watcher.new(function(appName, eventType, appObject)
+function applicationWatcher(appName, eventType, appObject)
    if appName == "Microsoft Remote Desktop" then
       if eventType == hs.application.watcher.activated then
          msrdDisable:enable()
@@ -168,4 +168,7 @@ appKeyBinder = hs.application.watcher.new(function(appName, eventType, appObject
 	 bindSelectWord:enable()
       end
    end
-end):start()
+end
+
+appKeyBinder = hs.application.watcher.new(applicationWatcher)
+appKeyBinder:start()

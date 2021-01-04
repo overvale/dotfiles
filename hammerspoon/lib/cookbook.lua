@@ -305,6 +305,24 @@ end
 buildQuickMenu()
 
 
+-- Create menu bar item
+local quickMenu = hs.menubar.new()
+
+function buildQuickMenu()
+   local menuTable = {
+      { title = "Remove this icon", fn = killQuickMenu },
+   }
+   quickMenu:setTitle("😎")
+   quickMenu:setMenu(menuTable)
+end
+
+function killQuickMenu()
+   quickMenu:delete()
+end
+
+buildQuickMenu()
+
+
 
 -- BACKUP MENU
 -- -----------------------------------------------
@@ -355,3 +373,12 @@ hs.urlevent.bind("backup_success", backup_success)
 hs.urlevent.bind("backup_next", backup_next)
 hs.urlevent.bind("backup_fail", backup_fail)
 
+
+-- Click on any menu item
+-- --------------------------------------------
+
+hs.hotkey.bind({"cmd", "alt", "ctrl"}, "E", function()
+  -- emulates a click
+  hs.application.get("Hammerspoon"):selectMenuItem("Console...")
+  hs.application.launchOrFocus("Hammerspoon")
+end)

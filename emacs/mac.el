@@ -67,6 +67,9 @@
 ;; non-nil it is supposed to let lines run off the window, but this is a
 ;; buffer-local setting that I cannot (no matter what I try) get to be global.
 (setq-default truncate-lines t)
+;; When visual-line-mode is off and truncate-lines is toggled off, I still
+;; want wrapping to happen at the word.
+(setq-default word-wrap 1)
 
 ;; So, instead, I take the brute-force approach of adding a hook for text-mode
 ;; and prog-mode to call a function which toggles the value on. Take that Emacs.
@@ -80,7 +83,8 @@
 
 ;; But I want every buffer to start with what mac apps normally call
 ;; 'soft-wrapping' of long lines to the window boundaries.
-(global-visual-line-mode t)
+;; --- Switched off <2021-01-08>
+(global-visual-line-mode -1)
 
 ;; However, turning on `visual-line-mode' also binds "C-a" to
 ;; `beginning-of-visual-line'. This is inconsistent with macOS behavior, which

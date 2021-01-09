@@ -511,9 +511,9 @@
 ;; Frame default parameters
 (setq default-frame-alist
    (append (list
-          '(width . 80)                ;; width (in characters)
-          '(height . 50)               ;; height (in characters)
-          '(internal-border-width . 0) ;; border (in pixels)
+          '(width . 80) ; width (in characters)
+          '(height . 50) ; height (in characters)
+          '(internal-border-width . 0) ; border (in pixels)
 	  )))
 
 (tool-bar-mode -1)                         ; hide menu-bar
@@ -540,6 +540,17 @@
 
 ;;;; Fonts
 
+(defun oht/set-font-sf ()
+  (interactive)
+  (set-face-attribute 'default nil
+		      :family "SF Mono" :height 120 :weight 'normal)
+  (set-face-attribute 'variable-pitch nil
+		      :family "SF Compact Text" :height 140 :weight 'normal)
+  (set-face-attribute 'fixed-pitch nil
+		      :family "SF Mono" :height 120 :weight 'normal)
+  )
+
+
 (defun oht/set-font-ibm ()
   (interactive)
   (set-face-attribute 'default nil
@@ -565,7 +576,7 @@
   (set-face-attribute 'default nil
 		      :family "Fira Mono" :height 120 :weight 'normal)
   (set-face-attribute 'variable-pitch nil
-		      :family "Fira Sans" :height 120 :weight 'normal)
+		      :family "Fira Sans" :height 140 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
 		      :family "Fira Mono" :height 120 :weight 'normal)
   )
@@ -596,7 +607,7 @@
   ("q" nil "cancel"))
 
 ;; This sets the default fonts
-(oht/set-font-fira)
+(oht/set-font-ibm)
 
 
 ;;;; Theme
@@ -612,7 +623,7 @@
    modus-themes-diffs 'desaturated
    modus-themes-variable-pitch-headings nil
    modus-themes-links 'faint-neutral-underline
-   modus-themes-completions nil
+   modus-themes-completions 'opinionated
    modus-themes-prompts 'subtle
    modus-themes-region 'bg-only
    )

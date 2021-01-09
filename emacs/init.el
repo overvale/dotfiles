@@ -647,28 +647,39 @@
 ;; looking for. To make this easier I've installed a few packages that enhance
 ;; Emacs built-in facilities for doing this.
 
-(use-package selectrum-prescient
-  :init
-  ;; to make sorting and filtering more intelligent
-  (selectrum-prescient-mode +1)
-  )
+;; There are MANY approaches to this. I'm following the most popular current
+;; trend (because I agree with how it works) lead by @oantolin, @raxod502,
+;; @minad, and @protesilaos.
+;; 1. Use Selectrum as the main interface for completion narrowing
+;; 2. Use Prescient to sort those completions
+;; 3. Use Marginalia to decorate the completions
+;; 4. Use Embark to add commands to the system
+;; 5. Fall back on Orderless for use in Embark minibuffers
+;; 6. Use Consult and Consult-Selectrum to enable new commands
 
-(use-package prescient
-  :init
-  ;; to save your command history on disk, so the sorting gets more
-  ;; intelligent over time
-  (prescient-persist-mode +1)
-  )
+(use-package orderless
+  :straight (:host github :repo "oantolin/orderless" :branch "master")
+  :custom (completion-styles '(orderless)))
 
 (use-package selectrum
+  :straight (:host github :repo "raxod502/selectrum" :branch "master")
   :init
   (selectrum-mode +1)
   ;; :bind (:map minibuffer-local-map
   ;;             ("M-q" . marginalia-cycle))
   )
 
+(use-package selectrum-prescient
+  :init
+  ;; to make sorting and filtering more intelligent
+  (selectrum-prescient-mode +1)
+  ;; to save your command history on disk, so the sorting gets more
+  ;; intelligent over time
+  (prescient-persist-mode +1)
+  )
+
 (use-package marginalia
-  :straight (marginalia :type git :host github :repo "minad/marginalia" :branch "main")
+  :straight (:type git :host github :repo "minad/marginalia" :branch "main")
   :bind (:map minibuffer-local-map
          ("M-q" . marginalia-cycle))
   :init
@@ -680,16 +691,22 @@
               (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit))))
   )
 
-;; Embark is a little frustrating. I find that not all commands actually work,
-;; or at least they don't work in the manner I expect them to. I should
-;; probably just read the docs.
 (use-package embark
   :straight (:host github :repo "oantolin/embark" :branch "master")
   :bind
   ("s-e" . embark-act)
   :config
+
+  ;; When entering embark collect mode, pause selectrum
+  ;; Found this here: https://github.com/oantolin/embark/issues/53
+  (defun pause-selectrum ()
+    (when (eq embark-collect--kind :live)
+      (with-selected-window (active-minibuffer-window)
+	(shrink-window selectrum-num-candidates-displayed)
+	(setq-local selectrum-num-candidates-displayed 0))))
+  (add-hook 'embark-collect-mode-hook #'pause-selectrum)
+
   ;; Show which-key help by default
-  ;; I find the Selectrum integration strange
   (setq embark-action-indicator
 	(lambda (map)
           (which-key--show-keymap "Embark" map nil nil 'no-paging)
@@ -698,6 +715,7 @@
   )
 
 (use-package consult
+  :straight (:type git :host github :repo "minad/consult" :branch "main")
   :bind
   ("s-b" . consult-buffer)
   ("M-y" . consult-yank-pop)
@@ -711,7 +729,7 @@
 ;; This package should be installed if Selectrum is used.
 (use-package consult-selectrum
   :after selectrum
-  :demand t)
+  )
 
 ;; Optionally add the `consult-flycheck' command.
 (use-package consult-flycheck

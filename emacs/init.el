@@ -224,11 +224,9 @@
 ;; winner-undo and winner-redo.
 (winner-mode 1)
 
-;; This makes it so that when you click/right-click on the mode-line
-;; emacs scrolls the window. Why not? I actually like how Acme does this.
-(global-set-key [mode-line mouse-1] 'scroll-up-command)
-(global-set-key [mode-line mouse-3] 'scroll-down-command)
-
+;; An example: you call `switch-buffer' and search for something in the
+;; minibuffer. You then want to call a command inside that minibuffer.
+(setq enable-recursive-minibuffers 1)
 
 ;;; Packages
 
@@ -287,8 +285,8 @@
 
 (use-package expand-region
   :bind
-  ("s-e" . er/expand-region)
-  ("s-E" . er/contract-region)
+  ("s-r" . er/expand-region)
+  ("s-R" . er/contract-region)
   )
 
 (use-package zzz-to-char
@@ -332,7 +330,6 @@
   ("C-h p" . #'helpful-at-point)
   :bind*
   ("C-?" . #'help-command)
-  ("s-/" . #'help-command)
  )
 
 (use-package pinboard
@@ -436,8 +433,7 @@
 
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
-(bind-keys ("s-g" . keyboard-quit)
-	   ("M-s-s" . save-some-buffers)
+(bind-keys ("M-s-s" . save-some-buffers)
 	   ("M-c" . capitalize-dwim)
 	   ("M-l" . downcase-dwim)
 	   ("M-u" . upcase-dwim)
@@ -894,7 +890,7 @@
   (bind-key "s-j" 'oht/view-mode-enter)
   :bind
   (:map view-mode-map
-	("q" . nil)
+	;;("q" . nil)
 	;; vim
 	("j" . next-line)
 	("k" . previous-line)

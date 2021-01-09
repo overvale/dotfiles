@@ -166,7 +166,7 @@
 ;; These need to 'bubble-up' above major-mode bindings
 (bind-keys*
  ;; Mac follows the UNIX convention of C-h being the same as <DEL>
- ("C-h" . delete-backward-char)
+ ;;("C-h" . delete-backward-char)
  ;; since ctrl+alt+b/f are system shortcuts for word movement, do that in Emacs
  ("C-M-b" . left-word)
  ("C-M-f" . right-word)

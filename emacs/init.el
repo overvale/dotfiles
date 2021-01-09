@@ -11,9 +11,10 @@
 ;; making this easier.
 ;;
 ;; 1. The package `bicycle' provides the command `bicycle-cycle'.
+;;    I've used these bindings:
 ;;    a) "S-<tab>" to cycle globally.
 ;;    b) "C-<tab>" to cycle at point.
-;; 2. A hydra called `hydra-outline'.
+;; 2. A hydra called `hydra-outline' (s-0)
 ;; 3. An `occur' buffer with the query: [^;;; ]
 
 
@@ -149,8 +150,6 @@
 
 ;;;; Startup and Scratch
 
-;; By default, Emacs starts up with a "splash screen" containing some useful
-;; links, but I don't need that any more, so this turns it off.
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t
@@ -747,6 +746,7 @@
     (let ((vr/engine 'emacs-plain))
       (call-interactively #'vr/query-replace)))
   )
+
 
 ;;; Org Mode
 

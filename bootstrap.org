@@ -73,7 +73,6 @@ SSH and GPG work like this:
 - You place the public keys on the servers/services you want connect to.
 - A file encrypted with my public key can only be decrypted using my private key.
 
-
 * Install
 
 While anyone could, in theory, adopt the settings above, the utilities and applications I need are unique to me. So, the below is simply a window into my specific workflow. Lucky you.

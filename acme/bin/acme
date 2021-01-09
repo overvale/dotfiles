@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Launch Acme with this script, rather than directly,
+# the below settings are important to Acme working correctly.
+
 export BROWSER='safari'
 export TERM=dumb
 export SHELL=rc
@@ -27,4 +30,3 @@ else
 	exec acme -a -f $varfont -F $fixfont $* &
 fi
 
-#exec acme -a -f $varfont -F $fixfont $* &

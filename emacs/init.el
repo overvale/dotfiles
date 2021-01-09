@@ -312,8 +312,7 @@
   ;; to accidentally kill half your document. I have done this more times than I'd
   ;; like to admit. This package makes it so that without a region those commands
   ;; act on a whole line.
-  :demand t
-  :config
+  :init
   (whole-line-or-region-global-mode 1)
   (blackout 'whole-line-or-region-local-mode)
   )
@@ -394,7 +393,7 @@
 ;;; Dired
 
 (use-package dired
-  :straight nil
+  :straight (:type built-in)
   :commands (dired dired-jump dired-jump-other-window)
   :config
   (defun dired-open-file ()
@@ -1091,7 +1090,7 @@
 (defun dispatch ()
   (interactive)
   (call-interactively
-   (intern (completing-read-multiple "Choose one: "
+   (intern (completing-read "Choose one: "
 			    '(
 			      dispatch/hacker-news
 			      dispatch/mail-personal

@@ -215,9 +215,6 @@
 ;; When exiting emacs, kill all running processes
 (setq confirm-kill-processes nil)
 
-;; When visiting read-only buffers, enter view-mode
-(setq view-read-only t)
-
 ;; Since emacs seems to love spawning new windows, and taking over your existing
 ;; ones, this allows you to undo and redo those arrangements. So you if a
 ;; command kills a window arrangement you were using you can go back to it with
@@ -449,7 +446,7 @@
 
 (bind-keys ("s-p" . execute-extended-command)
 	   ("s-k" . oht/kill-buffer-window)
-	   ("M-s-b" . ibuffer)
+	   ("s-B" . ibuffer)
 	   ("s-C" . org-capture)
 	   ("s-|" . oht/pipe-region)
 	   ("C-S-<mouse-1>" . mc/add-cursor-on-click)
@@ -512,7 +509,7 @@
 	  )))
 
 (tool-bar-mode -1)                         ; hide menu-bar
-(scroll-bar-mode 1)
+(scroll-bar-mode -1)
 (menu-bar-mode 1)                          ; ensures full-screen avail on macOS
 (show-paren-mode t)                        ; highlight parens
 (setq show-paren-delay 0)                  ; and show immediately
@@ -618,7 +615,7 @@
    modus-themes-diffs 'desaturated
    modus-themes-variable-pitch-headings nil
    modus-themes-links 'faint-neutral-underline
-   modus-themes-completions 'opinionated
+   modus-themes-completions 'moderate
    modus-themes-prompts 'subtle
    modus-themes-region 'bg-only
    )
@@ -888,6 +885,7 @@
   ;; minor mode's help.
   :straight nil
   :init
+  ;; Visit read-only buffers in view-mode
   (setq view-read-only t)
   (defun oht/view-mode-enter ()
     (interactive)
@@ -1013,7 +1011,7 @@
 	("https://www.economist.com/latest/rss.xml" news)
 	("https://www.economist.com/the-economist-explains/rss.xml" news)
 	("https://feeds.feedburner.com/marginalrevolution/feed" news)
-	("https://hnrss.org/best" hackernews)
+	("https://hnrss.org/best" news)
 	;; emacs
 	("https://oremacs.com/atom.xml" emacs)
 	("https://irreal.org/blog/?feed=rss2" emacs)

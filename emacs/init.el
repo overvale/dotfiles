@@ -644,15 +644,16 @@
 ;; looking for. To make this easier I've installed a few packages that enhance
 ;; Emacs built-in facilities for doing this.
 
-;; There are MANY approaches to this. I'm following the most popular current
-;; trend (because I agree with how it works) lead by @oantolin, @raxod502,
-;; @minad, and @protesilaos.
-;; 1. Use Selectrum as the main interface for completion narrowing
-;; 2. Use Prescient to sort those completions
-;; 3. Use Marginalia to decorate the completions
-;; 4. Use Embark to add commands to the system
-;; 5. Fall back on Orderless for use in Embark minibuffers
-;; 6. Use Consult and Consult-Selectrum to enable new commands
+;; There are MANY approaches to this. I'm following the popular current trend
+;; lead by @oantolin, @raxod502, @minad, and @protesilaos. Generally, it works
+;; like this:
+;;
+;; 1. Use Selectrum as the main interface for completion narrowing (by default).
+;; 2. Use Prescient to sort those completions and provide fuzzy matching.
+;; 3. Use Marginalia to decorate the completions.
+;; 4. Use Embark so you can act on the list of completions (among other things).
+;; 5. Fall back on Orderless for use in Embark minibuffers.
+;; 6. Use Consult and Consult-Selectrum to enable new commands.
 
 (use-package orderless
   :straight (:host github :repo "oantolin/orderless" :branch "master")
@@ -662,8 +663,6 @@
   :straight (:host github :repo "raxod502/selectrum" :branch "master")
   :init
   (selectrum-mode +1)
-  ;; :bind (:map minibuffer-local-map
-  ;;             ("M-q" . marginalia-cycle))
   )
 
 (use-package selectrum-prescient
@@ -689,13 +688,38 @@
   )
 
 (use-package embark
+  ;; This setup for Embark is admittedly a little complex at first glance. It
+  ;; is designed to integrate Embark with Selectrum. Additionally, the
+  ;; functions `use-embark-completions' and `use-selectrum-completions'
+  ;; provide everything needed to switch between using Selectrum and Embark
+  ;; for completions.
   :straight (:host github :repo "oantolin/embark" :branch "master")
   :bind
   ("s-e" . embark-act)
+  (:map minibuffer-local-map
+	;; @prot has a complex system for this, but I find a single hotkey
+	;; sufficient.
+        ("C-p" . embark-switch-to-collect-completions))
   :config
+  (setq embark-collect-initial-view-alist
+        '((file . list)
+          (buffer . list)
+          (symbol . list)
+          (line . list)
+          (xref-location . list)
+          (kill-ring . zebra)
+          (t . list)))
+
+  ;; Show which-key help when you call Embark
+  (setq embark-action-indicator
+	(lambda (map)
+          (which-key--show-keymap "Embark" map nil nil 'no-paging)
+          #'which-key--hide-popup-ignore-command)
+	embark-become-indicator embark-action-indicator)
 
   ;; When entering embark collect mode, pause selectrum
   ;; Found this here: https://github.com/oantolin/embark/issues/53
+  ;; When selectrum-mode is not active it's fine to leave this active.
   (defun pause-selectrum ()
     (when (eq embark-collect--kind :live)
       (with-selected-window (active-minibuffer-window)
@@ -703,12 +727,39 @@
 	(setq-local selectrum-num-candidates-displayed 0))))
   (add-hook 'embark-collect-mode-hook #'pause-selectrum)
 
-  ;; Show which-key help by default
-  (setq embark-action-indicator
-	(lambda (map)
-          (which-key--show-keymap "Embark" map nil nil 'no-paging)
-          #'which-key--hide-popup-ignore-command)
-	embark-become-indicator embark-action-indicator)
+  ;; ---- Resize Completions Buffer ----
+  ;; All this taken direct from @prot's config
+  ;; and is useful even when you're not using Embark for completions.
+  ;; Thus it doesn't need to be disabled.
+  (defcustom prot-embark-collect-window-regexp
+    "\\*Embark Collect \\(Live\\|Completions\\).*"
+    "Regexp to match window names with Embark collections."
+    :group 'prot-embark
+    :type 'string)
+  (defun prot-embark--collect-fit-window (&rest _)
+    "Fit Embark's live occur window to its buffer. To be added to `embark-occur-post-revert-hook'."
+    (when (string-match-p prot-embark-collect-window-regexp (buffer-name))
+      (fit-window-to-buffer (get-buffer-window)
+                            (floor (frame-height) 2) 1)))
+  (add-hook 'embark-collect-post-revert-hook 'prot-embark--collect-fit-window)
+  )
+
+(defun use-embark-completions ()
+  "Use Embark for completions"
+  (interactive)
+  (selectrum-mode -1)
+  (add-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
+  (add-hook 'embark-post-action-hook 'embark-collect--update-linked)
+  (add-hook 'embark-collect-mode-hook 'hl-line-mode)
+  )
+
+(defun use-selectrum-completions ()
+  "Use Selectrum for completions"
+  (interactive)
+  (selectrum-mode 1)
+  (remove-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
+  (remove-hook 'embark-post-action-hook 'embark-collect--update-linked)
+  (remove-hook 'embark-collect-mode-hook 'hl-line-mode)
   )
 
 (use-package consult

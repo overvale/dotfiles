@@ -460,6 +460,7 @@
 	   ("C-S-<mouse-1>" . mc/add-cursor-on-click)
 	   ("s-1" . org-agenda)
 	   ("s-2" . hydra-secondary-selection/body)
+	   ("s-/" . comment-or-uncomment-region-or-line)
 	   )
 
 

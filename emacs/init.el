@@ -657,25 +657,65 @@
 (use-package selectrum
   :init
   (selectrum-mode +1)
+  ;; :bind (:map minibuffer-local-map
+  ;;             ("M-q" . marginalia-cycle))
+  )
+
+(use-package marginalia
+  :straight (marginalia :type git :host github :repo "minad/marginalia" :branch "main")
+  :bind (:map minibuffer-local-map
+         ("M-q" . marginalia-cycle))
+  :init
+  (marginalia-mode 1)
+  (setq marginalia-annotators
+	'(marginalia-annotators-heavy marginalia-annotators-light))
+  ;; if using Selectrum
+  (advice-add #'marginalia-cycle :after
+              (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit))))
+  )
+
+;; Embark is a little frustrating. I find that not all commands actually work,
+;; or at least they don't work in the manner I expect them to. I should
+;; probably just read the docs.
+(use-package embark
+  :straight (:host github :repo "oantolin/embark" :branch "master")
+  :bind
+  ("s-e" . embark-act)
+  :config
+  ;; Show which-key help by default
+  ;; I find the Selectrum integration strange
+  (setq embark-action-indicator
+	(lambda (map)
+          (which-key--show-keymap "Embark" map nil nil 'no-paging)
+          #'which-key--hide-popup-ignore-command)
+	embark-become-indicator embark-action-indicator)
   )
 
 (use-package consult
-  :init
-  (consult-preview-mode)
   :bind
   ("s-b" . consult-buffer)
   ("M-y" . consult-yank-pop)
   ("M-s-o" . consult-recent-file)
   ("s-f" . consult-line)
+  ([remap yank-pop] . consult-yank-pop)
+  ([remap goto-line] . consult-goto-line)
   )
 
-(use-package marginalia
-  :straight (marginalia :type git :host github :repo "minad/marginalia" :branch "main")
-  :init
-  (marginalia-mode)
-  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light)))
+;; Enable Consult-Selectrum integration.
+;; This package should be installed if Selectrum is used.
+(use-package consult-selectrum
+  :after selectrum
+  :demand t)
+
+;; Optionally add the `consult-flycheck' command.
+(use-package consult-flycheck
+  :bind (:map flycheck-command-map
+              ("!" . consult-flycheck)))
 
 (use-package ctrlf
+  :bind
+  ("C-s" . ctrlf-forward-fuzzy)
+  ("C-r" . ctrlf-backward-fuzzy)
   :config
   (setq ctrlf-minibuffer-bindings
         `(("C-n"          . ctrlf-next-match)
@@ -685,9 +725,6 @@
 	  (,(kbd "M-r")   . ctrlf-toggle-regexp)
 	  (,(kbd "C-o s") . ctrlf-change-search-style)
 	  ))
-  :bind
-  ("C-s" . ctrlf-forward-fuzzy)
-  ("C-r" . ctrlf-backward-fuzzy)
   )
 
 (use-package visual-regexp

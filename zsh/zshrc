@@ -34,8 +34,6 @@ bindkey "^K" history-beginning-search-backward
 bindkey "^J" history-beginning-search-forward
 
 export EDITOR=vim
-export DOT=~/dot
-export CLOUD=~/cloud
 export BORG_REMOTE_PATH=/usr/local/bin/borg1/borg1
 
 # }}}
@@ -56,10 +54,6 @@ myPrompt='⑆ '
 
 # Build the Prompt
 PROMPT='${ExitStatus}${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
-
-# Simpler prompt
-#PROMPT='${myBackgroundjobs}${myPrompt}'
-#PROMPT='%(?..%F{red}✗ )%F{blue}$([ "${SSH_TTY}" ]&&print "⎋ ")%n%f at %F{green}%m%f in %F{magenta}%~%f] → '
 
 # }}}
 # {{{ ALIASES
@@ -115,7 +109,7 @@ alias ,lsmyps='ps -ax | grep -v "/System\|/Applications\|/usr\|/sbin\|ttys00[0-9
 
 # did file - listing things you've done
 did (){
-    echo "$(ddate): $@" >> ~/cloud/did.txt
+    echo "$(ddate): $@" >> ~/Documents/did.txt
 }
 
 myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }

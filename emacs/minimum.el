@@ -25,7 +25,7 @@
 
 ;;; Straight - package installation
 
-;; Install the Straight package if it isn't installed
+;; Install the `straight' package if it isn't installed
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -45,7 +45,7 @@
 ;; Install and load `use-package'
 (straight-use-package 'use-package)
 
-;; Tell Straight to use `use-package' configs for installation of packages.
+;; Tell Straight to use `use-package' config declarations for installation of packages.
 (setq straight-use-package-by-default t)
 
 ;; Don't load any packages unless explicitly told to do so in the config, see
@@ -56,8 +56,7 @@
 ;;; Packages
 
 (use-package which-key
-  :demand t
-  :config
+  :init
   (which-key-mode t)
   )
 
@@ -66,8 +65,7 @@
   )
 
 (use-package whole-line-or-region
-  :demand t
-  :config
+  :init
   (whole-line-or-region-global-mode 1)
   )
 
@@ -87,6 +85,12 @@
   (marginalia-mode 1)
   (setq marginalia-annotators
 	'(marginalia-annotators-heavy marginalia-annotators-light))
+  )
+
+(use-package modus-themes
+  :init
+  ;; includes a dark variant
+  (load-theme 'modus-operandi t)
   )
 
 

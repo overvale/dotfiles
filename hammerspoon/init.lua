@@ -7,10 +7,15 @@
 
 hs.window.animationDuration = 0
 local hyper = {"ctrl", "alt", "cmd"}
+local omega = {"ctrl", "cmd"}
 
 -- Capture the hostname, so we can make this config behave differently across my Macs
 hostname = hs.host.localizedName()
 
+function genericSuccess()
+   hs.notify.new({title='Hammerspoon', informativeText='Success!'}):send()
+end
+hs.urlevent.bind("success", genericSuccess)
 
 -- Spoons
 -- -----------------------------------------------
@@ -72,31 +77,6 @@ hs.hotkey.bind(hyper, ';', hs.grid.show)
 -- Reload Config
 -- -----------------------------------------------
 
--- Notify when this file is loaded
--- Removed in favor of a new menubar item, see below
---hs.notify.new({title='Hammerspoon', informativeText='Ready to rock 🤘'}):send()
-
-
-
--- Notify in menubar when hammerspoon reloads
--- ------------------------------------------
-local HSNotifyMenu = hs.menubar.new()
-
-function buildHSNotifyMenu()
--- When called, places the message in the menubar
--- and after a delay, calls a function to remove this item from the menubar
-   HSNotifyMenu:setTitle("🤘 Reloaded!")
-   hs.timer.doAfter(3, killHSNotifyMenu)
-end
-
-function killHSNotifyMenu()
-   HSNotifyMenu:delete()
-end
-
--- Show when this file is evaluated
-buildHSNotifyMenu()
-
-
 -- Create a binding for reloading the config
 hs.hotkey.bind({'cmd', 'ctrl'}, 'r', function() hs.reload() end)
 
@@ -147,3 +127,90 @@ else
 	 hs.application.launchOrFocus("Slack")
    end)
 end
+
+
+-- Menubar
+-- -----------------------------------------------
+
+-- QUICKMENU
+-- This is used for misc scripts I want to occasionally run, but don't want to
+-- bother remembering a keybinding for. Somewhat like my personal FastScripts.
+
+-- Create menu bar item
+local quickMenu = hs.menubar.new()
+
+function buildQuickMenu()
+   local HSsubMenu = {
+      { title = "Remove From Menu Bar", fn = killQuickMenu },
+   }
+   local snippetMenu = {
+      { title = "waving hands around", fn = snipWave },
+      { title = " ¯\\_(ツ)_/¯", fn = snipShrug },
+   }
+   local menuTable = {
+      { title = "Hammerspoon QuickMenu", disabled = true},
+      { title = "Open Org Inbox", fn = openOrgInbox, shortcut = "i" },
+      { title = "Safari tabs → Org Inbox", fn = safariTabs2ORG, shortcut = "s"},
+      { title = "Clipboard → Org Inbox", fn = clipboard2ORG, shortcut = "c"},
+      { title = "Copy Mail Message URL", fn = copyMailURL, shortcut = "m"},
+      { title = "New Mail Message", fn = newMailMessage },
+      { title = "-" },
+      { title = "Snippets", menu = snippetMenu },
+      { title = "-" },
+      { title = "Utilities", menu = HSsubMenu },
+   }
+   quickMenu:setTitle("😎")
+   -- local utilIcon = hs.image.imageFromPath("/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/SidebarUtilitiesFolder.icns")
+   -- quickMenu:setIcon(utilIcon:setSize({w=16,h=16}))
+   quickMenu:setMenu(menuTable)
+end
+
+-- FUNCTIONS FOR MENUBAR --
+
+function killQuickMenu() quickMenu:delete() end
+
+function safariTabs2ORG()
+   os.execute( "printf '\n** TODO Safari Tabs\n\n' >> ~/Documents/org-files/inbox.org && ~/dot/bin/safariTabs >> ~/Documents/org-files/inbox.org && open hammerspoon://success" )
+end
+
+function clipboard2ORG()
+   os.execute( "printf '\n** TODO Clipboard Refile\n\n' >> ~/Documents/org-files/inbox.org && pbpaste >> ~/Documents/org-files/inbox.org && open hammerspoon://success" )
+end
+
+function copyMailURL()
+   os.execute( "~/dot/bin/getMailURL | pbcopy | open hammerspoon://success" )
+end
+
+function openOrgInbox() os.execute("open ~/Documents/org-files/inbox.org") end
+function newMailMessage() os.execute("open mailto:") end
+hs.hotkey.bind({"ctrl", "cmd", "shift"}, "m", newMailMessage)
+
+-- SNIPPETS --
+function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end
+function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
+
+
+-- Finally, build the menubar item
+buildQuickMenu()
+
+
+-- RELOAD NOTIFICATION IN MENUBAR
+-- This places a temporary message in the menubar
+
+local HSNotifyMenu = hs.menubar.new()
+
+function buildHSNotifyMenu()
+-- When called, places the message in the menubar
+-- and after a delay, calls a function to remove this item from the menubar
+   HSNotifyMenu:setTitle("🤘 Reloaded!")
+   hs.timer.doAfter(3, killHSNotifyMenu)
+end
+
+function killHSNotifyMenu()
+   HSNotifyMenu:delete()
+end
+
+-- Show when this file is evaluated
+buildHSNotifyMenu()
+
+-- END --

@@ -699,7 +699,9 @@
   (:map minibuffer-local-map
 	;; @prot has a complex system for this, but I find a single hotkey
 	;; sufficient.
-        ("C-p" . embark-switch-to-collect-completions))
+	;; But I can't decide on a keybinding
+        ("C-o" . embark-switch-to-collect-completions)
+	)
   :config
   (setq embark-collect-initial-view-alist
         '((file . list)
@@ -771,18 +773,16 @@
   ("s-f" . consult-line)
   ([remap yank-pop] . consult-yank-pop)
   ([remap goto-line] . consult-goto-line)
+  :config
+  (setq consult-preview-key (kbd "C-<return>"))
   )
 
 ;; Enable Consult-Selectrum integration.
 ;; This package should be installed if Selectrum is used.
 (use-package consult-selectrum
   :after selectrum
+  :demand
   )
-
-;; Optionally add the `consult-flycheck' command.
-(use-package consult-flycheck
-  :bind (:map flycheck-command-map
-              ("!" . consult-flycheck)))
 
 (use-package ctrlf
   :bind

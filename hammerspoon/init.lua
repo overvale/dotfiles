@@ -140,24 +140,24 @@ end
 local quickMenu = hs.menubar.new()
 
 function buildQuickMenu()
-   local HSsubMenu = {
-      { title = "Remove From Menu Bar", fn = killQuickMenu },
-   }
    local snippetMenu = {
       { title = "waving hands around", fn = snipWave },
       { title = " ¯\\_(ツ)_/¯", fn = snipShrug },
    }
    local menuTable = {
-      { title = "Hammerspoon QuickMenu", disabled = true},
-      { title = "Open Org Inbox", fn = openOrgInbox, shortcut = "i" },
-      { title = "Safari tabs → Org Inbox", fn = safariTabs2ORG, shortcut = "s"},
-      { title = "Clipboard → Org Inbox", fn = clipboard2ORG, shortcut = "c"},
+      { title = "Hammerspoon QuickMenu", disabled = true },
+      { title = "-" },
       { title = "Copy Mail Message URL", fn = copyMailURL, shortcut = "m"},
       { title = "New Mail Message", fn = newMailMessage },
       { title = "-" },
+      { title = "Open Org Inbox", fn = openOrgInbox, shortcut = "i" },
+      { title = "Safari tabs → Org Inbox", fn = safariTabs2ORG },
+      { title = "iOS Inbox → Org Inbox", fn = importIOSinbox },
+      { title = "Clipboard → Org Inbox", fn = clipboard2ORG },
+      { title = "-" },
       { title = "Snippets", menu = snippetMenu },
       { title = "-" },
-      { title = "Utilities", menu = HSsubMenu },
+      { title = "Remove From Menu Bar", fn = killQuickMenu },
    }
    quickMenu:setTitle("😎")
    -- local utilIcon = hs.image.imageFromPath("/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/SidebarUtilitiesFolder.icns")
@@ -182,6 +182,8 @@ function copyMailURL()
 end
 
 function openOrgInbox() os.execute("open ~/Documents/org-files/inbox.org") end
+function importIOSinbox() os.execute("~/Desktop/moveiOS2ORG") end
+
 function newMailMessage() os.execute("open mailto:") end
 hs.hotkey.bind({"ctrl", "cmd", "shift"}, "m", newMailMessage)
 
@@ -214,3 +216,4 @@ end
 buildHSNotifyMenu()
 
 -- END --
+

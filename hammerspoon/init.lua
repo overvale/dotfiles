@@ -129,6 +129,39 @@ else
 end
 
 
+-- Google File Stream Chooser
+-- -----------------------------------------------
+-- Hacked together from here: https://github.com/ebai101/dotfiles/blob/master/config/hammerspoon/reason.lua
+
+local fileStreamChooser = hs.chooser.new(function(choice) hs.open(choice['subText']) end)
+
+local function fileStreamPopulate()
+   local options = {}
+   hs.task.new('/usr/bin/find', function(task, out, err)
+		  for path in out:gmatch("[^\r\n]+") do
+		     table.insert(options, {
+				     ['text'] = string.match(path, ".*/(.+)$"),
+				     ['subText'] = path,
+				     ['modified'] = hs.fs.attributes(path).modification
+		     })
+		  end
+
+		  table.sort(options, function(a, b)
+				return a['modified'] > b['modified']
+		  end)
+
+		  fileStreamChooser:choices(options)
+
+   end, { '/Volumes/GoogleDrive/Shared drives', '-type', 'd', '-maxdepth', '1' }):start()
+   -- setting '-maxdepth 2' causes this to fail... why?
+end
+
+fileStreamChooser:showCallback(fileStreamPopulate)
+fileStreamChooser:searchSubText(true)
+
+hs.hotkey.bind( hyper, "o", function() fileStreamChooser:show() end)
+
+
 -- Menubar
 -- -----------------------------------------------
 
@@ -156,6 +189,7 @@ function buildQuickMenu()
       { title = "Clipboard → Org Inbox", fn = clipboard2ORG },
       { title = "-" },
       { title = "Snippets", menu = snippetMenu },
+      { title = "Open Google Drive Folder", fn = function() fileStreamChooser:show() end },
       { title = "-" },
       { title = "Remove From Menu Bar", fn = killQuickMenu },
    }

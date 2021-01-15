@@ -1,6 +1,17 @@
 -- Oliver Taylor's Hammerspoon Config
 -- homepage: https://github.com/olivertaylor/dotfiles
 
+-- Acceptable keycodes are here:
+-- https://www.hammerspoon.org/docs/hs.keycodes.html#map
+
+-- Inspiration:
+-- + https://spinscale.de/posts/2016-11-08-creating-a-productive-osx-environment-hammerspoon.html
+-- + https://medium.com/@robhowlett/hammerspoon-the-best-mac-software-youve-never-heard-of-40c2df6db0f8
+-- + https://github.com/jasonrudolph/keyboard
+-- + https://github.com/dbmrq/dotfiles
+-- + https://github.com/raulchen/dotfiles
+-- + https://github.com/justintanner/universal-emacs-keybindings
+
 
 -- Config Setup
 -- ----------------------------------------------
@@ -176,14 +187,17 @@ function buildQuickMenu()
    local snippetMenu = {
       { title = "waving hands around", fn = snipWave },
       { title = " ¯\\_(ツ)_/¯", fn = snipShrug },
+      { title = "[Org Mode Date]", fn = snipOrgDate },
+      { title = "[YYYY-MM-DD]", fn = snipISODate },
    }
    local menuTable = {
-      { title = "Hammerspoon QuickMenu", disabled = true },
+      { title = "Oliver's QuickMenu", disabled = true },
       { title = "-" },
       { title = "Copy Mail Message URL", fn = copyMailURL, shortcut = "m"},
       { title = "New Mail Message", fn = newMailMessage },
       { title = "-" },
       { title = "Open Org Inbox", fn = openOrgInbox, shortcut = "i" },
+      { title = "-" },
       { title = "Safari tabs → Org Inbox", fn = safariTabs2ORG },
       { title = "iOS Inbox → Org Inbox", fn = importIOSinbox },
       { title = "Clipboard → Org Inbox", fn = clipboard2ORG },
@@ -224,7 +238,8 @@ hs.hotkey.bind({"ctrl", "cmd", "shift"}, "m", newMailMessage)
 -- SNIPPETS --
 function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end
 function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
-
+function snipOrgDate() hs.eventtap.keyStrokes(os.date("<%Y-%m-%d %a>")) end
+function snipISODate() hs.eventtap.keyStrokes(os.date("%Y-%m-%d")) end
 
 -- Finally, build the menubar item
 buildQuickMenu()

@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-# Transforms markdown input to RTF
-pandoc -s --from markdown --to rtf | pbcopy -Prefer rtf

@@ -56,9 +56,10 @@ function selectWord()
 end
 
 
--- Bindings
+-- General Bindings
 -- -----------------------------------------------
 -- Next, bind keys to the functions
+-- These bindings are enabled by default
 
 local bindDeleteWordBack    = hs.hotkey.bind({'ctrl'}, 'w', deleteWordBack)
 local bindDeleteWordForward = hs.hotkey.bind({'alt'},  'd', deleteWordForward)
@@ -71,26 +72,14 @@ local bindSelectLine        = hs.hotkey.bind({'ctrl', 'cmd'}, "l", selectLine)
 local bindSelectWord        = hs.hotkey.bind({'ctrl', 'cmd'}, "w", selectWord)
 
 
--- Enable Bindings
+-- App-Specific Bindings
 -- -----------------------------------------------
--- Next, enable all those above bindings
 
-bindDeleteWordBack:enable()
-bindDeleteWordForward:enable()
-bindDeleteLineBack:enable()
-bindMoveWordBack:enable()
-bindDeleteWordBack:enable()
-bindMoveWordForward:enable()
-bindDeleteWordForward:enable()
-bindSelectLine:enable()
-bindSelectWord:enable()
-
-
--- These bindings are not enabled by default
 -- Remote Desktop
 local msrdDisable = hs.hotkey.new({"cmd"}, "w", function()
       -- nil
 end)
+
 -- Excel
 local excelDown = hs.hotkey.new({"ctrl"}, "n", function()
    hs.eventtap.event.newKeyEvent({}, "down", true):post()
@@ -100,6 +89,10 @@ local excelUp = hs.hotkey.new({"ctrl"}, "p", function()
    hs.eventtap.event.newKeyEvent({}, "up", true):post()
    hs.eventtap.event.newKeyEvent({}, "up", false):post()
 end)
+
+msrdDisable:disable()
+excelDown:disable()
+excelUp:disable()
 
 
 -- Application Watcher
@@ -121,7 +114,7 @@ function applicationWatcher(appName, eventType, appObject)
          excelUp:disable()
          excelDown:disable()
       end
-   elseif appName == "Emacs" then
+   elseif appName == "Emacs" or appName == "Terminal" then
       if eventType == hs.application.watcher.activated then
 	 bindDeleteWordBack:disable()
 	 bindDeleteWordForward:disable()
@@ -132,6 +125,9 @@ function applicationWatcher(appName, eventType, appObject)
 	 bindDeleteWordForward:disable()
 	 bindSelectLine:disable()
 	 bindSelectWord:disable()
+	 bindforwardCapitalize:disable()
+	 bindforwardLowerCase:disable()
+	 bindforwardUpperCase:disable()
       elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
 	 bindDeleteWordBack:enable()
 	 bindDeleteWordForward:enable()
@@ -142,30 +138,9 @@ function applicationWatcher(appName, eventType, appObject)
 	 bindDeleteWordForward:enable()
 	 bindSelectLine:enable()
 	 bindSelectWord:enable()
-      end
-   elseif appName == "Terminal" then
-      if eventType == hs.application.watcher.activated then
-	 -- activated
-	 bindDeleteWordBack:disable()
-	 bindDeleteWordForward:disable()
-	 bindDeleteLineBack:disable()
-	 bindMoveWordBack:disable()
-	 bindDeleteWordBack:disable()
-	 bindMoveWordForward:disable()
-	 bindDeleteWordForward:disable()
-	 bindSelectLine:disable()
-	 bindSelectWord:disable()
-      elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
-	 -- deactivated
-	 bindDeleteWordBack:enable()
-	 bindDeleteWordForward:enable()
-	 bindDeleteLineBack:enable()
-	 bindMoveWordBack:enable()
-	 bindDeleteWordBack:enable()
-	 bindMoveWordForward:enable()
-	 bindDeleteWordForward:enable()
-	 bindSelectLine:enable()
-	 bindSelectWord:enable()
+	 bindforwardCapitalize:enable()
+	 bindforwardLowerCase:enable()
+	 bindforwardUpperCase:enable()
       end
    end
 end

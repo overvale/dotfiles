@@ -37,6 +37,38 @@ function moveWordForward()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
 end
 
+function selectWordForward()
+   hs.eventtap.event.newKeyEvent({"alt", "shift"}, "right", true):post()
+   hs.eventtap.event.newKeyEvent({"alt", "shift"}, "right", false):post()
+end
+
+function forwardUpperCase()
+   -- Make the next word UPPER CASE
+   local currentApp = hs.application.frontmostApplication()
+   selectWordForward()
+   currentApp:selectMenuItem("Make Upper Case")
+   hs.eventtap.event.newKeyEvent({}, "right", true):post()
+   hs.eventtap.event.newKeyEvent({}, "right", false):post()
+end
+
+function forwardLowerCase()
+   -- Make the next word lower case
+   local currentApp = hs.application.frontmostApplication()
+   selectWordForward()
+   currentApp:selectMenuItem("Make Lower Case")
+   hs.eventtap.event.newKeyEvent({}, "right", true):post()
+   hs.eventtap.event.newKeyEvent({}, "right", false):post()
+end
+
+function forwardCapitalize()
+   -- Make the next word Capitalized
+   local currentApp = hs.application.frontmostApplication()
+   selectWordForward()
+   currentApp:selectMenuItem("Capitalize")
+   hs.eventtap.event.newKeyEvent({}, "right", true):post()
+   hs.eventtap.event.newKeyEvent({}, "right", false):post()
+end
+
 function selectLine()
    -- move to beginning of line
    hs.eventtap.event.newKeyEvent({"ctrl"}, "a", true):post()
@@ -64,10 +96,13 @@ end
 local bindDeleteWordBack    = hs.hotkey.bind({'ctrl'}, 'w', deleteWordBack)
 local bindDeleteWordForward = hs.hotkey.bind({'alt'},  'd', deleteWordForward)
 local bindDeleteLineBack    = hs.hotkey.bind({'ctrl'}, 'u', deleteLineBack)
-local bindMoveWordBack      = hs.hotkey.bind({'ctrl'}, ';', moveWordBack)
-local bindDeleteWordBack    = hs.hotkey.bind({'ctrl'}, ',', deleteWordBack)
-local bindMoveWordForward   = hs.hotkey.bind({'ctrl'}, "'", moveWordForward)
-local bindDeleteWordForward = hs.hotkey.bind({'ctrl'}, ".", deleteWordForward)
+
+local bindMoveWordBack      = hs.hotkey.bind({'alt'}, 'b', moveWordBack)
+local bindMoveWordForward   = hs.hotkey.bind({'alt'}, "f", moveWordForward)
+local bindforwardCapitalize = hs.hotkey.bind({'alt'}, 'c', forwardCapitalize)
+local bindforwardLowerCase  = hs.hotkey.bind({'alt'}, "l", forwardLowerCase)
+local bindforwardUpperCase  = hs.hotkey.bind({'alt'}, "u", forwardUpperCase)
+
 local bindSelectLine        = hs.hotkey.bind({'ctrl', 'cmd'}, "l", selectLine)
 local bindSelectWord        = hs.hotkey.bind({'ctrl', 'cmd'}, "w", selectWord)
 

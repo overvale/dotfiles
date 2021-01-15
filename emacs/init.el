@@ -542,7 +542,6 @@
 		      :family "SF Mono" :height 120 :weight 'normal)
   )
 
-
 (defun oht/set-font-ibm ()
   (interactive)
   (set-face-attribute 'default nil
@@ -551,16 +550,6 @@
 		      :family "IBM Plex Serif" :height 140 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
 		      :family "IBM Plex Mono" :height 120 :weight 'normal)
-  )
-
-(defun oht/set-font-ibm-large ()
-  (interactive)
-  (set-face-attribute 'default nil
-		      :family "IBM Plex Mono" :height 130 :weight 'normal)
-  (set-face-attribute 'variable-pitch nil
-		      :family "IBM Plex Serif" :height 150 :weight 'normal)
-  (set-face-attribute 'fixed-pitch nil
-		      :family "IBM Plex Mono" :height 130 :weight 'normal)
   )
 
 (defun oht/set-font-fira ()
@@ -583,10 +572,14 @@
 		      :family "Triplicate T4" :height 140 :weight 'normal)
   )
 
+(defun oht/set-line-spacing (&optional arg)
+  (interactive "P")
+  (setq-local line-spacing arg)
+  )
+
 (defhydra hydra-fonts (:exit nil :foreign-keys warn)
   "Set Font Properties"
   ("i" oht/set-font-ibm "IBM Plex")
-  ("I" oht/set-font-ibm-large "IBM Plex Large")
   ("f" oht/set-font-fira "Fira")
   ("t" oht/set-font-triplicate "Triplicate")
   ("v" variable-pitch-mode "Variable")
@@ -594,6 +587,7 @@
   ("+" text-scale-increase "Larger")
   ("-" text-scale-decrease "Smaller")
   ("0" text-scale-mode "Reset Size")
+  ("s" oht/set-line-spacing "Line Spacing")
   ("m" modus-themes-toggle "Modus Toggle")
   ("o" olivetti-mode "Olivetti")
   ("q" nil "cancel"))
@@ -636,6 +630,7 @@
     (disable-theme 'modus-vivendi)
     (load-theme 'modus-operandi t)))
 
+(use-package tron-legacy-theme)
 
 ;;; Narrowing & Searching/Replacing
 

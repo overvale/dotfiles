@@ -714,16 +714,6 @@
           #'which-key--hide-popup-ignore-command)
 	embark-become-indicator embark-action-indicator)
 
-  ;; When entering embark collect mode, pause selectrum
-  ;; Found this here: https://github.com/oantolin/embark/issues/53
-  ;; When selectrum-mode is not active it's fine to leave this active.
-  (defun pause-selectrum ()
-    (when (eq embark-collect--kind :live)
-      (with-selected-window (active-minibuffer-window)
-	(shrink-window selectrum-num-candidates-displayed)
-	(setq-local selectrum-num-candidates-displayed 0))))
-  (add-hook 'embark-collect-mode-hook #'pause-selectrum)
-
   ;; ---- Resize Completions Buffer ----
   ;; All this taken direct from @prot's config
   ;; and is useful even when you're not using Embark for completions.
@@ -767,16 +757,17 @@
   ("M-s-o" . consult-recent-file)
   ("s-f" . consult-line)
   ([remap yank-pop] . consult-yank-pop)
-  ([remap goto-line] . consult-goto-line)
   :config
   (setq consult-preview-key (kbd "C-<return>"))
   )
 
-;; Enable Consult-Selectrum integration.
-;; This package should be installed if Selectrum is used.
-(use-package consult-selectrum
-  :after selectrum
-  :demand
+(use-package embark-consult
+  :after (embark consult)
+  :demand t ; only necessary if you have the hook below
+  ;; if you want to have consult previews as you move around an
+  ;; auto-updating embark collect buffer
+  :hook
+  (embark-collect-mode . embark-consult-preview-minor-mode)
   )
 
 (use-package ctrlf

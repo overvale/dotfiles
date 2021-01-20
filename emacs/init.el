@@ -579,56 +579,32 @@
 
 ;;;; Fonts
 
-(defun oht/set-font-sf ()
-  (interactive)
-  (set-face-attribute 'default nil
-		      :family "SF Mono" :height 120 :weight 'normal)
-  (set-face-attribute 'variable-pitch nil
-		      :family "SF Compact Text" :height 140 :weight 'normal)
-  (set-face-attribute 'fixed-pitch nil
-		      :family "SF Mono" :height 120 :weight 'normal)
-  )
+;; Line spacing (in pixels)
+(setq-default line-spacing nil)
 
-(defun oht/set-font-ibm ()
-  (interactive)
-  (set-face-attribute 'default nil
-		      :family "IBM Plex Mono" :height 120 :weight 'normal)
-  (set-face-attribute 'variable-pitch nil
-		      :family "IBM Plex Serif" :height 140 :weight 'normal)
-  (set-face-attribute 'fixed-pitch nil
-		      :family "IBM Plex Mono" :height 120 :weight 'normal)
-  )
+;; When using `text-scale-incraese', this sets each 'step' to about one point size.
+(setq text-scale-mode-step 1.08)
 
-(defun oht/set-font-fira ()
+(defun oht-fonts-set ()
+  "Sets default, variable-pitch, and fixed-pitch fonts to my liking"
   (interactive)
   (set-face-attribute 'default nil
-		      :family "Fira Mono" :height 120 :weight 'normal)
+		      :family "Iosevka" :height 120 :weight 'normal :width 'expanded)
   (set-face-attribute 'variable-pitch nil
-		      :family "Fira Sans" :height 140 :weight 'normal)
+		      :family "Iosevka Sparkle" :height 1.0 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Fira Mono" :height 120 :weight 'normal)
-  )
-
-(defun oht/set-font-triplicate ()
-  (interactive)
-  (set-face-attribute 'default nil
-		      :family "Triplicate T4" :height 140 :weight 'normal)
-  (set-face-attribute 'variable-pitch nil
-		      :family "Triplicate T4p" :height 140 :weight 'normal)
-  (set-face-attribute 'fixed-pitch nil
-		      :family "Triplicate T4" :height 140 :weight 'normal)
+		      :family "Iosevka" :height 1.0 :weight 'normal :width 'expanded)
   )
 
 (defun oht/set-line-spacing (&optional arg)
+  "Buffer local, set the line spacing. Takes an argument, 0 by default"
   (interactive "P")
   (setq-local line-spacing arg)
   )
 
 (defhydra hydra-fonts (:exit nil :foreign-keys warn)
   "Set Font Properties"
-  ("i" oht/set-font-ibm "IBM Plex")
-  ("f" oht/set-font-fira "Fira")
-  ("t" oht/set-font-triplicate "Triplicate")
+  ("d" oht-fonts-set "Default Font")
   ("v" variable-pitch-mode "Variable")
   ("=" text-scale-increase "Larger")
   ("+" text-scale-increase "Larger")
@@ -637,10 +613,11 @@
   ("s" oht/set-line-spacing "Line Spacing")
   ("m" modus-themes-toggle "Modus Toggle")
   ("o" olivetti-mode "Olivetti")
+  ("w" visual-line-mode "Wrap")
   ("q" nil "cancel"))
 
 ;; This sets the default fonts
-(oht/set-font-ibm)
+(oht-fonts-set)
 
 
 ;;;; Themes

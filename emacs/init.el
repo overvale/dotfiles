@@ -134,16 +134,6 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-;; When customizing Emacs interactively (ie: not in this document or init.el)
-;; Emacs appends code to your init.el file, which can be annoying when editing
-;; it by hand. This tells Emacs to place these customizations in a separate
-;; file.
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(when (file-exists-p custom-file)
-  (load custom-file :noerror))
-
-;;;; Startup and Scratch
-
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t
@@ -194,6 +184,14 @@
 
 ;; Location of my pseudo-packages. This must be an absolute path.
 (add-to-list 'load-path "/Users/oht/dot/emacs/lisp/")
+
+;; When customizing Emacs interactively (ie: not in this document or init.el)
+;; Emacs appends code to your init.el file, which can be annoying when editing
+;; it by hand. This tells Emacs to place these customizations in a separate
+;; file.
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file :noerror))
 
 ;; place backup files in a single place
 (setq backup-directory-alist '(("" . "~/.emacs.d/backups")))
@@ -499,9 +497,6 @@
 
 (bind-key* "M-o" 'oht/other-window)
 
-
-;;;; Primary Bindings
-
 (bind-keys ("s-p" . execute-extended-command)
 	   ("s-k" . oht/kill-buffer-window)
 	   ("s-B" . ibuffer)
@@ -512,9 +507,6 @@
 	   ("s-2" . hydra-secondary-selection/body)
 	   ("s-/" . comment-or-uncomment-region-or-line)
 	   )
-
-
-;;;; Prefix Bindings
 
 (bind-keys :prefix-map oht/global-leader
 	   :prefix "s-'"
@@ -546,17 +538,14 @@
 	   ("k" . oht/delete-window)
 	   ("o" . delete-other-windows)
 	   ("b" . balance-windows)
-	   ("r" . oht/toggle-window-split)
+	   ("r" . oht/rotate-window-split)
 	   ("t" . tear-off-window)
 	   )
 
 
 ;;; Appearance
 
-;;;; Display
-
-;; Line spacing (in pixels)
-(setq-default line-spacing nil)
+;;;; Display Settings
 
 ;; Frame default parameters
 (setq default-frame-alist
@@ -654,7 +643,7 @@
 (oht/set-font-ibm)
 
 
-;;;; Theme
+;;;; Themes
 
 (use-package modus-themes
   :init
@@ -747,14 +736,15 @@
   ;; provide everything needed to switch between using Selectrum and Embark
   ;; for completions.
   :straight (:host github :repo "oantolin/embark" :branch "master")
+
   :bind
   ("s-e" . embark-act)
   (:map minibuffer-local-map
 	;; @prot has a complex system for this, but I find a single hotkey
 	;; sufficient.
-	;; But I can't decide on a keybinding
         ("C-o" . embark-switch-to-collect-completions)
 	)
+
   :config
   (setq embark-collect-initial-view-alist
         '((file . list)
@@ -790,7 +780,16 @@
   )
 
 (defun use-embark-completions ()
-  "Use Embark for completions"
+  "Use Embark for completions.
+
+These hooks make it so that the embark-live-collect buffer is
+automatically displayed after you type something. Keep in mind that this
+separate from listing all the potential completions when you press TAB.
+
+That means pressing TAB when there are multiple possible
+candidates (or is empty) will result in BOTH the
+embark-live-collect and *completions* buffers being shown. When
+there is only one candidate, however, TAB will complete."
   (interactive)
   (selectrum-mode -1)
   (add-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
@@ -799,7 +798,9 @@
   )
 
 (defun use-selectrum-completions ()
-  "Use Selectrum for completions"
+  "Use Selectrum for completions.
+
+This simply removes the hooked added by the function `use-embark-completions'."
   (interactive)
   (selectrum-mode 1)
   (remove-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
@@ -821,11 +822,11 @@
 
 (use-package embark-consult
   :after (embark consult)
-  :demand t ; only necessary if you have the hook below
-  ;; if you want to have consult previews as you move around an
-  ;; auto-updating embark collect buffer
-  :hook
-  (embark-collect-mode . embark-consult-preview-minor-mode)
+  ;; :demand t ; only necessary if you have the hook below
+  ;; ;; if you want to have consult previews as you move around an
+  ;; ;; auto-updating embark collect buffer
+  ;; :hook
+  ;; (embark-collect-mode . embark-consult-preview-minor-mode)
   )
 
 (use-package ctrlf
@@ -908,9 +909,9 @@
 
 ;;; Outline
 
-;; `outline' provides major and minor modes for collapsing
-;; sections of a buffer into an outline-like format.
-;; Let's turn that minor mode into a global minor mode.
+;; `outline' provides major and minor modes for collapsing sections of a
+;; buffer into an outline-like format. Let's turn that minor mode into a
+;; global minor mode and enable it.
 (define-globalized-minor-mode global-outline-minor-mode
   outline-minor-mode outline-minor-mode)
 (global-outline-minor-mode +1)
@@ -1095,6 +1096,7 @@
 	;; https://reddit.com/r/emacs/top/.rss?sort=top&t=day
 	;; REDDIT RSS GUIDE: https://www.reddit.com/r/pathogendavid/comments/tv8m9/pathogendavids_guide_to_rss_and_reddit/
 	))
+
   (defadvice elfeed-search-update (before nullprogram activate)
     (let ((feed (elfeed-db-get-feed "https://www.economist.com/latest/rss.xml")))
       (setf (elfeed-feed-title feed) "Economist: Latest"))

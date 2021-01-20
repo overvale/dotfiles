@@ -448,6 +448,11 @@
   :demand
   )
 
+(use-package oht-composition
+  :straight nil
+  :commands (composition-mode)
+  )
+
 ;;; Dired
 
 (use-package dired
@@ -529,6 +534,7 @@
 	   ("b s" . bookmark-set)
 	   ("b l" . list-bookmarks)
 	   ("b j" . consult-bookmark)
+	   ("c" . composition-mode)
 	   )
 
 (bind-keys :prefix-map oht/windows-leader

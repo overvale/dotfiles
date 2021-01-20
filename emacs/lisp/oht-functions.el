@@ -26,7 +26,7 @@
   (set-mark-command nil)
   (end-of-line))
 
-(defun oht/toggle-window-split ()
+(defun oht/rotate-window-split ()
   "Toggle between vertical and horizontal split."
   ;; Source: https://www.emacswiki.org/emacs/ToggleWindowSplit.
   ;; Author: Jeff Dwork
@@ -78,7 +78,11 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   )
 
 (defun oht/kill-line ()
-  "Kill to end of line. This custom function is needed because binding c-k to kill-line doesn't work due to kill-line being remapped, so the remapped value is always executed. But calling a custom function obviates this and allows kill-line to be called directly. Nil is required."
+  "Kill to end of line. This custom function is needed because
+binding c-k to kill-line doesn't work due to kill-line being
+remapped, so the remapped value is always executed. But calling a
+custom function obviates this and allows kill-line to be called
+directly. Nil is required."
   (interactive)
   (kill-line nil)
   )
@@ -167,9 +171,16 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (backward-word))
 
 (defun oht/new-tab ()
-  "macOS follows this convention: command-N creates a new window and command-T creates a new tab in the same window. The Mac Port version of Emacs has functions and variables that makes following this convention possible.
+  "Create new Mac-style tab
 
-This function works by setting the new-frame behaviour to use tabs, creating a new frame (thus, tab), then changing the setting back to system default."
+macOS follows this convention: command-N creates a new window
+and command-T creates a new tab in the same window. The Mac Port
+version of Emacs has functions and variables that makes following
+this convention possible.
+
+This function works by setting the new-frame behaviour to use
+tabs, creating a new frame (thus, tab), then changing the setting
+back to system default."
   (interactive)
   (setq mac-frame-tabbing t)
   (make-frame-command)
@@ -277,3 +288,5 @@ the current region (if it's active), or the current symbol."
             (setq beg (region-beginning) end (region-end))
             (setq beg (line-beginning-position) end (line-end-position)))
         (comment-or-uncomment-region beg end)))
+
+(provide 'oht-functions)

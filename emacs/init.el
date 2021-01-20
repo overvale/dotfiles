@@ -142,12 +142,6 @@
 (when (file-exists-p custom-file)
   (load custom-file :noerror))
 
-;; I have a bunch of misc custom functions that I keep in a separate file to
-;; make this document a little cleaner. Some of the bindings further down in
-;; this document depend on these functions, so I load them here.
-(load "~/dot/emacs/functions.el")
-
-
 ;;;; Startup and Scratch
 
 (setq inhibit-startup-message t
@@ -197,6 +191,9 @@
 (setq create-lockfiles nil)                ; No need for ~ files when editing
 (setq-default fill-column 78)              ; Set column used for fill-paragraph
 (setq ring-bell-function 'ignore)          ; Don't beep
+
+;; Location of my pseudo-packages. This must be an absolute path.
+(add-to-list 'load-path "/Users/oht/dot/emacs/lisp/")
 
 ;; place backup files in a single place
 (setq backup-directory-alist '(("" . "~/.emacs.d/backups")))
@@ -249,8 +246,34 @@
   (blackout 'emacs-lisp-mode "Elisp")
   )
 
-
 ;;;; Other Packages
+
+(use-package org
+  :commands org-mode
+  :config
+  (load-file "~/dot/emacs/lisp/oht-org.el")
+  (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
+  :hook
+  (org-mode . variable-pitch-mode)
+  :bind (:map org-mode-map
+	      ("s-\\ o" . consult-outline)
+	      ("s-\\ ." . oht/org-insert-date-today)
+	      ("s-\\ t" . org-todo)
+	      ("s-\\ n" . org-narrow-to-subtree)
+	      ("s-\\ w" . widen)
+	      ;;("s-\\ s" . org-search-view)
+	      ("s-\\ <" . org-insert-structure-template)
+	      ("s-\\ s" . org-store-link)
+	      ("s-\\ i" . org-insert-last-stored-link)
+	      ("s-\\ m" . visible-mode)
+	      ("s-\\ I" . org-clock-in)
+	      ("s-\\ O" . org-clock-out)
+	      ("s-\\ a" . org-archive-subtree)
+	      ("s-\\ r" . org-refile)
+	      ("s-\\ g" . org-goto)
+	      ("s-\\ c" . org-toggle-checkbox)
+	      ))
 
 (use-package magit
   :commands magit-status
@@ -387,10 +410,50 @@
   )
 
 
+;;; My Pseudo-Packages
+
+;; The code in each of the files in ~/.emacs/lisp/ is available to
+;; `use-package' because, at the beginning of this file, I've added the path
+;; to my 'load-path'. To actually use the code in those files you need to do
+;; two things:
+;;
+;; 1. Tell `straight' not to install it.
+;; 2. Make sure `use-package' loads the file when needed. If the code is only
+;;    needed when a command is called, you should name the `:command'. You can
+;;    also `:demand' that the file be loaded.
+
+(use-package oht-dispatch
+  :straight nil
+  :commands (oht-dispatch)
+  :config
+  (setq oht-dispatch-functions
+	'(oht-dispatch-hacker-news
+	  oht-dispatch-mail-personal
+	  oht-dispatch-mail-work
+	  oht-dispatch-slack
+	  elfeed
+	  org-agenda
+	  eww-list-bookmarks
+	  pinboard
+	  ))
+  :bind
+  ("s-d" . #'oht-dispatch)
+  )
+
+(use-package oht-functions
+  :straight nil
+  :demand
+  )
+
+(use-package oht-mac
+  :straight nil
+  :demand
+  )
+
 ;;; Dired
 
 (use-package dired
-  :straight (:type built-in)
+  :straight nil
   :commands (dired dired-jump dired-jump-other-window)
   :config
   (defun dired-open-file ()
@@ -421,11 +484,6 @@
 
 
 ;;; Keybindings
-
-;; Generally speaking, I want Emacs to behave in the most mac-like fashion possible.
-(load "~/dot/emacs/mac.el")
-
-;;;; Enhance Emacs
 
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
@@ -807,34 +865,6 @@
   )
 
 
-;;; Org Mode
-
-(use-package org
-  :init (load-file "~/dot/emacs/org-mode.el")
-  :commands org-mode
-  :config
-  (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
-  (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
-  :bind (:map org-mode-map
-	      ("s-\\ o" . consult-outline)
-	      ("s-\\ ." . oht/org-insert-date-today)
-	      ("s-\\ t" . org-todo)
-	      ("s-\\ n" . org-narrow-to-subtree)
-	      ("s-\\ w" . widen)
-	      ;;("s-\\ s" . org-search-view)
-	      ("s-\\ <" . org-insert-structure-template)
-	      ("s-\\ s" . org-store-link)
-	      ("s-\\ i" . org-insert-last-stored-link)
-	      ("s-\\ m" . visible-mode)
-	      ("s-\\ I" . org-clock-in)
-	      ("s-\\ O" . org-clock-out)
-	      ("s-\\ a" . org-archive-subtree)
-	      ("s-\\ r" . org-refile)
-	      ("s-\\ g" . org-goto)
-	      ("s-\\ c" . org-toggle-checkbox)
-	      ))
-
-
 ;;; Secondary Selection
 
 (defun oht/cut-secondary-selection ()
@@ -1109,55 +1139,6 @@
   (define-key elfeed-show-mode-map "a" 'hrs/elfeed-pinboard-current-entry)
   (define-key elfeed-search-mode-map "a" 'hrs/elfeed-pinboard-current-entry)
   )
-
-
-;;; Dispatch
-
-;; This lets you pass arbitrary functions to `completing-read' and call the
-;; selected candidate.
-
-;; First, define some functions for things (not in emacs) that I do on the
-;; computer all the time.
-(defun dispatch/hacker-news ()
-  "Open news.ycombinator.com in browser."
-       (interactive)
-       (start-process "open HN" nil "open" "https://news.ycombinator.com"))
-(defun dispatch/mail-personal ()
-  "Open Mail.app"
-       (interactive)
-       (start-process "open mail" nil "open" "-a" "Mail"))
-(defun dispatch/mail-work ()
-  "Open Work Mail."
-       (interactive)
-       (start-process "open work email" nil "open" "-a" "Mimestream"))
-(defun dispatch/slack ()
-  "Open Slack in browser."
-       (interactive)
-       (start-process "open slack" nil "open" "https://ievfx.slack.com"))
-(defun dispatch/read-later ()
-  "Open my Read Later directory."
-       (interactive)
-       (find-file "~/Documents/read later"))
-
-;; Next, create a function to pass a list of functions to `completing-read'.
-(defun dispatch ()
-  (interactive)
-  (call-interactively
-   (intern (completing-read "Choose one: "
-			    '(
-			      dispatch/hacker-news
-			      dispatch/mail-personal
-			      dispatch/mail-work
-			      dispatch/slack
-			      elfeed
-			      org-agenda
-			      eww-list-bookmarks
-			      pinboard
-			      )))))
-
-
-;; Finally, bind it to something useful.
-(bind-key "s-d" 'dispatch)
 
 
 ;;; Closing

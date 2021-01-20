@@ -1,4 +1,4 @@
-;;; mac.el -*- lexical-binding: t -*-
+;;; oht-mac.el -*- lexical-binding: t -*-
 
 
 ;;; Commentary
@@ -73,24 +73,17 @@
 
 ;; So, instead, I take the brute-force approach of adding a hook for text-mode
 ;; and prog-mode to call a function which toggles the value on. Take that Emacs.
-(defun oht/truncate-lines()
+(defun oht-mac-truncate-lines()
   (interactive)
   (toggle-truncate-lines 1)
   )
-(add-hook 'text-mode-hook 'oht/truncate-lines)
-(add-hook 'prog-mode-hook 'oht/truncate-lines)
+(add-hook 'text-mode-hook 'oht-mac-truncate-lines)
+(add-hook 'prog-mode-hook 'oht-mac-truncate-lines)
 
-
-;; But I want every buffer to start with what mac apps normally call
-;; 'soft-wrapping' of long lines to the window boundaries.
-;; --- Switched off <2021-01-08>
-(global-visual-line-mode -1)
-
-;; However, turning on `visual-line-mode' also binds "C-a" to
-;; `beginning-of-visual-line'. This is inconsistent with macOS behavior, which
-;; is that "C-a" always goes to the beginning of the logical line and
-;; "s-<left>" goes to the beginning of the visual line. So these bindings
-;; correct that.
+;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
+;; This is inconsistent with macOS behavior, which is that "C-a" always goes
+;; to the beginning of the logical line and "s-<left>" goes to the beginning
+;; of the visual line. So these bindings correct that.
 (bind-keys* ("C-a" . beginning-of-line)
 	    ("C-e" . end-of-line))
 (bind-keys ("s-<left>" . beginning-of-visual-line)
@@ -174,3 +167,5 @@
  ;; and by default option+forward-delete has no mapping
  ("M-<delete>" . kill-word)
  )
+
+(provide 'oht-mac)

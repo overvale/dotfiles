@@ -220,5 +220,5 @@
 
 (add-hook 'imenu-after-jump-hook 'ok-imenu-show-entry)
 
-;; Local Variables:
-;; outline-regexp: ";;;+ "
+
+(provide 'oht-org)

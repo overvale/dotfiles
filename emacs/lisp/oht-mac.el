@@ -80,19 +80,6 @@
 (add-hook 'text-mode-hook 'oht-mac-truncate-lines)
 (add-hook 'prog-mode-hook 'oht-mac-truncate-lines)
 
-;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
-;; This is inconsistent with macOS behavior, which is that "C-a" always goes
-;; to the beginning of the logical line and "s-<left>" goes to the beginning
-;; of the visual line. So these bindings correct that.
-(bind-keys* ("C-a" . beginning-of-line)
-	    ("C-e" . end-of-line))
-(bind-keys ("s-<left>" . beginning-of-visual-line)
-	   ("s-<right>" . end-of-visual-line)
-	   ;; C-k only killing the visual line also isn't how macOS works.
-	   ;; This has to be set to a custom function so minor modes can't
-	   ;; hijack it.
-	   ("C-k" . oht/kill-line))
-
 
 ;;; Emulate Mouse Buttons
 
@@ -102,6 +89,113 @@
 ;; mouse-3: Command + Click
 ;; Keep in mind, however, that a 2-finger click on the track pad still sends
 ;; mouse-3 no matter what you set `mac-emulate-three-button-mouse' to.
+
+
+;;; Functions
+
+(defun oht-mac-kill-line ()
+  "Kill to end of line. This custom function is needed because
+binding c-k to kill-line doesn't work due to kill-line being
+remapped, so the remapped value is always executed. But calling a
+custom function obviates this and allows kill-line to be called
+directly. Nil is required."
+  (interactive)
+  (kill-line nil)
+  )
+
+(defun oht-mac-find-settings ()
+  "Quickly open init.el"
+  (interactive)
+  (find-file "~/dot/emacs/init.el"))
+
+(defun oht-mac-find-scratch ()
+  "Quickly open the scratch buffer"
+  (interactive)
+  (if (string= (buffer-name) "*scratch*")
+      (previous-buffer)
+    (switch-to-buffer "*scratch*")))
+
+(defun oht-mac-new-tab ()
+  "Create new Mac-style tab
+
+macOS follows this convention: command-N creates a new window
+and command-T creates a new tab in the same window. The Mac Port
+version of Emacs has functions and variables that makes following
+this convention possible.
+
+This function works by setting the new-frame behaviour to use
+tabs, creating a new frame (thus, tab), then changing the setting
+back to system default."
+  (interactive)
+  (setq mac-frame-tabbing t)
+  (make-frame-command)
+  (setq mac-frame-tabbing 'automatic)
+  )
+
+(defun oht-mac-show-tab-bar ()
+  "Show the tab bar, part of the Mac Port"
+  (interactive)
+  (mac-set-frame-tab-group-property nil :tab-bar-visible-p t)
+  )
+(defun oht-mac-hide-tab-bar ()
+  "Hide the tab bar, part of the Mac Port"
+  (interactive)
+  (mac-set-frame-tab-group-property nil :tab-bar-visible-p nil)
+  )
+(defun oht-mac-show-tab-bar-overview ()
+  "Show the tab bar overview, part of the Mac Port"
+  (interactive)
+  (mac-set-frame-tab-group-property nil :overview-visible-p t)
+  )
+
+(defun oht-mac-kill-visual-line-backward ()
+  "Kill from the point to beginning of visual line"
+  (interactive)
+  (set-mark-command nil)
+  (beginning-of-visual-line)
+  (kill-region (region-beginning) (region-end))
+  )
+
+(defun oht-mac-mark-whole-line ()
+  "Mark the entirety of the current line."
+  (interactive)
+  (beginning-of-line)
+  (set-mark-command nil)
+  (end-of-line))
+
+(defun oht-mac-expand-to-beginning-of-visual-line ()
+  "Set mark and move to beginning of visual line"
+  (interactive)
+  (set-mark-command nil)
+  (beginning-of-visual-line)
+  )
+(defun oht-mac-expand-to-end-of-visual-line ()
+  "Set mark and move to end of visual line"
+  (interactive)
+  (set-mark-command nil)
+  (end-of-visual-line)
+  )
+
+(defun oht-mac-open-line-below (arg)
+  "Open a new indented line below the current one."
+  (interactive "p")
+  (end-of-line)
+  (open-line arg)
+  (next-line 1)
+  (indent-according-to-mode))
+
+(defun oht-mac-open-line-above (arg)
+  "Open a new indented line above the current one."
+  (interactive "p")
+  (beginning-of-line)
+  (open-line arg)
+  (indent-according-to-mode))
+
+(defun oht-mac-kill-line-backward ()
+  "Kill from the point to beginning of whole line"
+  (interactive)
+  (kill-line 0))
+
 
 
 ;;;; Standard Mac Shortcuts
@@ -120,11 +214,11 @@
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
 (bind-keys
- ("s-," . oht/find-settings)
- ("s--" . oht/find-scratch)
+ ("s-," . oht-mac-find-settings)
+ ("s--" . oht-mac-find-scratch)
  ("s-n" . make-frame-command)
  ("s-N" . make-frame-command)
- ("s-t" . oht/new-tab)
+ ("s-t" . oht-mac-new-tab)
  ("s-m" . iconify-frame)
  ("s-s" . save-buffer)
  ("s-S" . write-file) ;save as
@@ -133,17 +227,16 @@
  ("s-x" . kill-region)
  ("s-c" . kill-ring-save)
  ("s-v" . yank)
- ("s-<backspace>" . oht/kill-visual-line-backward)
+ ("s-<backspace>" . oht-mac-kill-visual-line-backward)
  ("s-w" . delete-frame)
  ("s-q" . save-buffers-kill-terminal)
- ("s-l" . oht/mark-whole-line)
- ("s-M-l" . mark-paragraph)
- ("S-s-<left>" . oht/expand-to-beginning-of-visual-line)
- ("S-s-<right>" . oht/expand-to-end-of-visual-line)
+ ("s-l" . oht-mac-mark-whole-line)
+ ("S-s-<left>" . oht-mac-expand-to-beginning-of-visual-line)
+ ("S-s-<right>" . oht-mac-expand-to-end-of-visual-line)
  ("s-<up>" . beginning-of-buffer)
  ("s-<down>" . end-of-buffer)
- ("s-<return>" . oht/open-line-below)
- ("S-s-<return>" . oht/open-line-above)
+ ("s-<return>" . oht-mac-open-line-below)
+ ("S-s-<return>" . oht-mac-open-line-above)
  ;; navigation and indentation
  ("s-[" . previous-buffer)
  ("s-]" . next-buffer)
@@ -151,7 +244,7 @@
  ("s-{" . indent-rigidly-left-to-tab-stop)
  ;; readline-style shortcuts, because I love them
  ("C-w" . backward-kill-word)
- ("C-u" . oht/kill-line-backward)
+ ("C-u" . oht-mac-kill-line-backward)
  ;; No reason not to use command-u for this instead
  ("s-u" . universal-argument)
  )
@@ -167,5 +260,18 @@
  ;; and by default option+forward-delete has no mapping
  ("M-<delete>" . kill-word)
  )
+
+;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
+;; This is inconsistent with macOS behavior, which is that "C-a" always goes
+;; to the beginning of the logical line and "s-<left>" goes to the beginning
+;; of the visual line. So these bindings correct that.
+(bind-keys* ("C-a" . beginning-of-line)
+	    ("C-e" . end-of-line))
+(bind-keys ("s-<left>" . beginning-of-visual-line)
+	   ("s-<right>" . end-of-visual-line)
+	   ;; C-k only killing the visual line also isn't how macOS works.
+	   ;; This has to be set to a custom function so minor modes can't
+	   ;; hijack it.
+	   ("C-k" . oht-mac-kill-line))
 
 (provide 'oht-mac)

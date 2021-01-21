@@ -28,8 +28,7 @@
 ;; https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
 ;; https://github.com/hlissner/doom-emacs/blob/develop/core/core.el
 
-(setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
-      gc-cons-percentage 0.6)
+;; This is actually the 2nd step, for the first step, see `early-init.el'
 (add-hook 'emacs-startup-hook
   (lambda ()
     (setq gc-cons-threshold 16777216 ; 16mb
@@ -553,16 +552,6 @@
 
 ;;;; Display Settings
 
-;; Frame default parameters
-(setq default-frame-alist
-   (append (list
-          '(width . 80) ; width (in characters)
-          '(height . 50) ; height (in characters)
-          '(internal-border-width . 0) ; border (in pixels)
-	  )))
-
-(tool-bar-mode -1)                         ; hide menu-bar
-(scroll-bar-mode -1)
 (menu-bar-mode 1)                          ; ensures full-screen avail on macOS
 (show-paren-mode t)                        ; highlight parens
 (setq show-paren-delay 0)                  ; and show immediately

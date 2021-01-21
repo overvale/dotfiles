@@ -150,6 +150,7 @@ Run from =$HOME=:
 ln -s ~/Library/Mobile\ Documents/com~apple~CloudDocs/oht cloud;
 ln -s ~/dot/vim .vim;
 ln -s ~/dot/emacs/init.el ~/.emacs.d/init.el
+ln -s ~/dot/emacs/early-init.el ~/.emacs.d/early-init.el
 ln -s ~/dot/git/gitconfig .gitconfig;
 ln -s ~/dot/git/gitignore_global .gitignore_global;
 ln -s ~/dot/zsh/zshrc ~/.zshrc

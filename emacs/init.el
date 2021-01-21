@@ -229,15 +229,15 @@
 ;; they must come first.
 
 (use-package bind-key
-  :demand t
+  :demand
   )
 
 (use-package hydra
-  :demand t
+  :demand
   )
 
 (use-package blackout
-  :demand t
+  :demand
   :config
   (blackout 'eldoc-mode)
   (blackout 'visual-line-mode)
@@ -278,7 +278,7 @@
   )
 
 (use-package exec-path-from-shell
-  :demand t
+  :demand
   )
 
 (use-package olivetti
@@ -288,7 +288,7 @@
   )
 
 (use-package which-key
-  :demand t
+  :demand
   :config
   (which-key-mode t)
   (setq which-key-idle-delay 0.4)
@@ -662,6 +662,7 @@
 
 (use-package tron-legacy-theme)
 
+
 ;;; Narrowing & Searching/Replacing
 
 ;; Navigating and using the thousands of things Emacs can do is built around
@@ -805,7 +806,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 
 (use-package embark-consult
   :after (embark consult)
-  ;; :demand t ; only necessary if you have the hook below
+  ;; :demand ; only necessary if you have the hook below
   ;; ;; if you want to have consult previews as you move around an
   ;; ;; auto-updating embark collect buffer
   ;; :hook

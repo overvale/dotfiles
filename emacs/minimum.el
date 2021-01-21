@@ -9,21 +9,42 @@
 ;; designed to be exceedingly simple. Just copy this one file to
 ;; ~/.emacs/init.el and open Emacs. Everything should get installed and
 ;; configured automatically.
-;;
+
 ;; This is really meant for someone who is comfortable configuring their
 ;; dotfiles and wants to get started with Emacs in a way that is familiar to
 ;; that experience. Simply put: if I could travel back in time to the
 ;; beginning of my Emacs journey, I would give myself this file and say "start
 ;; with this".
-;;
+
+
+;;; Goals and Philosophy
+
+;; 1. Don't bother learning the Emacs shortcuts you don't want to. Once you
+;;    learn how to configure Emacs you can make up whatever shortcuts makes
+;;    sense to you.
+;; 2. I'm a Mac user, so this config targets Mac users and sets some of the
+;;    most common shortcuts, as well as making the modifier keys behave in a
+;;    slightly more predictable way
+;; 3. I use, and recommend, the combination of `straight' and
+;;    `use-package' to manage the installation and configuration of packages.
+;;    Using these 2 tools makes the package declarations in your init file the
+;;    single source of what should be loaded and used by Emacs. Which is a
+;;    better first-run experience than the default (in my opinion).
+;; 4. I highly recommend, for first-time users, the combination of the
+;;    packages `selectrum', `selectrum-prescient', and `marginalia'. These
+;;    tools make Emacs easier to explore and discover capabilities. You may
+;;    eventually decide they're not for you, but I think they're a great place
+;;    to start.
+;; 5. Provides some convenience bindings for my most used Emacs features.
+
+
+;;; Package Management
+
 ;; A note on package installation and use:
 ;;
 ;; - `straight' is used to install/update packages.
 ;; - `use-package' is used to precisely control the loading of packages and
 ;;    configure them.
-
-
-;;; Straight - package installation
 
 ;; Install the `straight' package if it isn't installed
 (defvar bootstrap-version)
@@ -38,9 +59,6 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
-
-;;; Use Package - package loading and configuration
 
 ;; Install and load `use-package'
 (straight-use-package 'use-package)

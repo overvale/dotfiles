@@ -155,8 +155,8 @@ loading a package is as simple as:
 
 ** Use-Package
 
-Coming from vim, with whatever assumptions I brought to Emacs, I didn't (at
-first) actually understand what =use-package= is. The website says:
+It took me a long time to actually understand what =use-package= is. The
+website says:
 
 #+begin_quote
 The use-package macro allows you to isolate package configuration in your .emacs
@@ -175,7 +175,7 @@ Here's what I do:
   them/.
 
 If you simply put =(require magit)= in your config then when Emacs reads that
-function it will load the =magit= package. At first glance this makes sense. If
+function it will "load" the =magit= package. At first glance this makes sense. If
 you want to use =magit= then you need it loaded. The problem is that Emacs does
 this on startup, regardless of if you need =magit= on startup. As the number of
 packages you install grows so too will Emacs startup time, and Emacs will be
@@ -217,3 +217,16 @@ something like:
   )
 #+end_src
 
+* Minimum
+
+I've codified the above into a simple init file called =minimum.el= which provides the following features:
+
+1. Installs =straight= and =use-package=, and integrates them as described above.
+2. Sets use-package to defer loading of all packages.
+3. Installs the packages:
+     1. =which-key=, =bind-key=, =whole-line-or-region=
+     2. =selectrum=, =selectrum-precient=, =marginalia=
+4. Creates a basic set of Mac-like keybindings.
+5. Provides some convenience bindings for my most used Emacs features.
+
+For details read the comments in the file.

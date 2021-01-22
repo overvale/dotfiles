@@ -1016,11 +1016,8 @@ This simply removes the hooked added by the function `use-embark-completions'."
 
 (use-package elfeed
   :commands elfeed
-  :bind (:map elfeed-search-mode-map
-	      ("B" . ar/elfeed-search-browse-background-url)
-	      ("m" . elfeed-toggle-star)
-	      )
-  :config
+  :hook (elfeed-show-mode . composition-mode)
+  :init
   (setq elfeed-use-curl t)
   (setq elfeed-curl-max-connections 10)
   (setq elfeed-db-directory "~/.emacs.d/elfeed/")
@@ -1028,93 +1025,26 @@ This simply removes the hooked added by the function `use-embark-completions'."
   (setq elfeed-search-filter "@4-months-ago +unread")
   (setq elfeed-sort-order 'descending)
   (setq elfeed-search-clipboard-type 'CLIPBOARD)
-  (setq elfeed-search-title-max-width 100)
-  (setq elfeed-search-title-min-width 30)
-  (setq elfeed-search-trailing-width 25)
+  ;; (setq elfeed-search-title-max-width 100)
+  ;; (setq elfeed-search-title-min-width 30)
+  ;; (setq elfeed-search-trailing-width 25)
   (setq elfeed-show-truncate-long-urls t)
-  (setq elfeed-show-unique-buffers t)
-  (setq elfeed-feeds
-      '(("https://writings.stephenwolfram.com/feed/")
-	("https://mjtsai.com/blog/feed/" mac)
-	("https://panic.com/blog/feed/" mac)
-	("https://routley.io/posts/index.xml")
-	("https://xkcd.com/rss.xml")
-	("https://kk.org/cooltools/feed/")
-	("https://craigmod.com/index.xml")
-	("http://100r.co/links/rss.xml")
-	("https://standardebooks.org/rss/new-releases")
-	("https://idlewords.com/index.xml")
-	("https://www.raptitude.com/feed/")
-	("https://blog.robenkleene.com/feed/atom/")
-	("https://nyxt.atlas.engineer/feed")
-	("https://benjaminreinhardt.com/feed.xml")
-	;; news
-	("https://www.economist.com/latest/rss.xml" news)
-	("https://www.economist.com/the-economist-explains/rss.xml" news)
-	("https://feeds.feedburner.com/marginalrevolution/feed" news)
-	("https://hnrss.org/best" news)
-	;; emacs
-	("https://oremacs.com/atom.xml" emacs)
-	("https://irreal.org/blog/?feed=rss2" emacs)
-	("https://endlessparentheses.com/atom.xml" emacs)
-	("https://200ok.ch/atom.xml" emacs)
-	("https://with-emacs.com/rss.xml" emacs)
-	("https://nullprogram.com/tags/emacs/feed/" emacs)
-	("https://sachachua.com/blog/category/emacs-news/feed" emacs)
-	("https://protesilaos.com/codelog.xml" emacs)
-	("https://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml" emacs)
-	("https://emacsredux.com/atom.xml" emacs)
-	("https://planet.emacslife.com/atom.xml" emacs)
-	("https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g" emacs)
-	;; https://reddit.com/r/emacs/top/.rss?sort=top&t=day
-	;; REDDIT RSS GUIDE: https://www.reddit.com/r/pathogendavid/comments/tv8m9/pathogendavids_guide_to_rss_and_reddit/
-	))
-
-  (defadvice elfeed-search-update (before nullprogram activate)
-    (let ((feed (elfeed-db-get-feed "https://www.economist.com/latest/rss.xml")))
-      (setf (elfeed-feed-title feed) "Economist: Latest"))
-    (let ((feed (elfeed-db-get-feed "https://sachachua.com/blog/category/emacs-news/feed")))
-      (setf (elfeed-feed-title feed) "emacs-news"))
-    (let ((feed (elfeed-db-get-feed "https://craigmod.com/index.xml")))
-      (setf (elfeed-feed-title feed) "Craig Mod"))
-    (let ((feed (elfeed-db-get-feed "https://www.reddit.com/r/emacs/top/.rss")))
-      (setf (elfeed-feed-title feed) "r/emacs"))
-    )
-  ;; Add the ability to "star" entries, this just adds the "star" tag
-  (defalias 'elfeed-toggle-star
-    (elfeed-expose #'elfeed-search-toggle-all 'star))
-  ;; function for opening entries in default browser
-  (defun ar/elfeed-search-browse-background-url ()
-    "Open current `elfeed' entry (or region entries) in browser without losing focus."
-    (interactive)
-    (let ((entries (elfeed-search-selected)))
-      (mapc (lambda (entry)
-              (assert (memq system-type '(darwin)) t "open command is macOS only")
-              (start-process (concat "open " (elfeed-entry-link entry))
-                             nil "open" "--background" (elfeed-entry-link entry))
-              (elfeed-untag entry 'unread)
-              (elfeed-search-update-entry entry))
-            entries)
-      (unless (or elfeed-search-remain-on-entry (use-region-p))
-        (forward-line))))
-
-  (defun hrs/elfeed-current-entry ()
-    (cond ((eq major-mode 'elfeed-show-mode)
-           elfeed-show-entry)
-          ((eq major-mode 'elfeed-search-mode)
-           (elfeed-search-selected t))))
-  (defun hrs/elfeed-pinboard-current-entry ()
-    (interactive)
-    (let ((url (elfeed-entry-link (hrs/elfeed-current-entry)))
-          (title (elfeed-entry-title (hrs/elfeed-current-entry))))
-      (pinboard-auth)
-      (pinboard-not-too-soon :pinboard-save
-	(pinboard-save url title "" "" t nil))))
-
-  (define-key elfeed-show-mode-map "a" 'hrs/elfeed-pinboard-current-entry)
-  (define-key elfeed-search-mode-map "a" 'hrs/elfeed-pinboard-current-entry)
+  ;; (setq elfeed-show-unique-buffers t)
   )
 
+(use-package oht-elfeed
+  :straight nil
+  :after elfeed
+  :bind
+  (:map elfeed-show-mode-map
+	("a" . hrs/elfeed-pinboard-current-entry)
+	("m" . elfeed-toggle-star)
+	)
+  (:map elfeed-search-mode-map
+	("m" . elfeed-toggle-star)
+	("a" . hrs/elfeed-pinboard-current-entry)
+	)
+  )
 
 ;;; Closing
 

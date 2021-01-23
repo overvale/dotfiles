@@ -997,19 +997,16 @@ This simply removes the hooked added by the function `use-embark-completions'."
         "\\`\\(video/\\|audio/\\|application/pdf\\)")
   (setq url-cookie-trusted-urls '()
 	url-cookie-untrusted-urls '(".*"))
+  ;; Make eww Emacs's default browser, if you remove this the system default
+  ;; will be used instead.
+  (setq browse-url-browser-function 'eww-browse-url)
   :commands eww
-  :bind (:map eww-mode-map
-	      ;;("s-\\ h" . hydra-eww/body)
-  ))
-
-(use-package browse-url
-  :after eww
-  :config
-  ;; This makes it so any link you follow in emacs opens in eww, rather than
-  ;; your default browser.
-  ;; (setq browse-url-browser-function 'eww-browse-url)
   )
 
+(use-package oht-eww
+  :straight nil
+  :demand
+  )
 
 
 ;;; Elfeed

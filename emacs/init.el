@@ -575,12 +575,17 @@
 
 ;;;; Display Settings
 
+;; This is actually in both early-init.el and here because it being in
+;; early-init prevents the scroll bar from showing up when you start Emacs,
+;; but you need it here to prevent it from showing in new frames. ¯\_(ツ)_/¯
+(scroll-bar-mode -1)
+
 (menu-bar-mode 1)                          ; ensures full-screen avail on macOS
 (show-paren-mode t)                        ; highlight parens
 (setq show-paren-delay 0)                  ; and show immediately
 (setq visible-bell t)                      ; disable beep
 (setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
-(setq x-underline-at-descent-line t)       ; underline at descent, not baseline
+(setq x-underline-at-descent-line nil)       ; underline at descent, not baseline
 (setq-default indicate-empty-lines nil)    ; show where the file ends
 (set-default 'cursor-type 'box)            ; use a box for cursor
 (blink-cursor-mode -1)                     ; no blinking please
@@ -927,7 +932,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 (defhydra hydra-outline (:foreign-keys warn)
   "Hydra for navigating outline mode"
   ("o" outline-hide-sublevels "Hide to This Sublevel")
-  ("<tab>" outline-cycle "Show Subtree")
+  ("<tab>" bicycle-cycle "Show Subtree")
   ("a" outline-show-all "Show All")
   ("c" consult-outline "Consult" :exit t)
   ("n" outline-next-visible-heading "Next")

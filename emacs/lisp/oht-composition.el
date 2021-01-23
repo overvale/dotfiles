@@ -21,7 +21,6 @@
 	(setq-local line-spacing 3)
 	(olivetti-mode t)
 	(text-scale-increase 2)
-	(message "Composition mode enabled! Enjoy your writing")
        )
     (progn
       (visual-line-mode -1)
@@ -30,7 +29,6 @@
       (text-scale-increase 0)
       ;; This shouldn't be needed, but is:
       (toggle-truncate-lines 1)
-     (message "Composition mode disabled! Have a nice day!")
      ))
   )
 

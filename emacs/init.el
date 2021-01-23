@@ -180,6 +180,8 @@
 (setq create-lockfiles nil)                ; No need for ~ files when editing
 (setq-default fill-column 78)              ; Set column used for fill-paragraph
 (setq ring-bell-function 'ignore)          ; Don't beep
+(setq bookmark-save-flag 1)                ; Save bookmarks when creating the mark
+(setq bookmark-default-file "~/Documents/bookmarks")
 
 ;; Location of my pseudo-packages. This must be an absolute path.
 (add-to-list 'load-path "/Users/oht/dot/emacs/lisp/")

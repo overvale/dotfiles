@@ -221,6 +221,18 @@
 ;; minibuffer. You then want to call a command inside that minibuffer.
 (setq enable-recursive-minibuffers 1)
 
+
+(defun sanemacs/backward-kill-word ()
+  (interactive "*")
+  (push-mark)
+  (backward-word)
+  (delete-region (point) (mark)))
+
+(global-set-key [mouse-3] 'mouse-popup-menubar-stuff)          ; Gives right-click a context menu
+(global-set-key (kbd "M-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
+(global-set-key (kbd "C-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
+
+
 ;;; Packages
 
 
@@ -948,15 +960,6 @@ This simply removes the hooked added by the function `use-embark-completions'."
   (bind-key "s-j" 'oht/view-mode-enter)
   :bind
   (:map view-mode-map
-	;;("q" . nil)
-	;; vim
-	("j" . next-line)
-	("k" . previous-line)
-	("h" . backward-char)
-	("l" . forward-char)
-	("H" . backward-word)
-	("L" . forward-word)
-	;; emacs
 	("n" . next-line)
 	("p" . previous-line)
 	("f" . forward-char)
@@ -979,6 +982,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	("x" . exchange-point-and-mark)
 	("<RET>" . oht/view-mode-exit)
 	("s-j" . oht/view-mode-exit)
+	("q" . oht/view-mode-exit)
 	)
   :blackout " VIEW"
   )

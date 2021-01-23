@@ -1037,11 +1037,16 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :bind
   (:map elfeed-show-mode-map
 	("a" . hrs/elfeed-pinboard-current-entry)
-	("m" . elfeed-toggle-star)
+	("&" . bjm/elfeed-show-visit-gui)
+	("r" . elfeed-show-tag--read)
 	)
   (:map elfeed-search-mode-map
-	("m" . elfeed-toggle-star)
 	("a" . hrs/elfeed-pinboard-current-entry)
+	("m" . elfeed-search-toggle--star)
+	("&" . elfeed-search-browse-url)
+	("E" . oht-elfeed-search-emacs)
+        ("N" . oht-elfeed-search-news)
+	("*" . oht-elfeed-search-starred)
 	)
   )
 

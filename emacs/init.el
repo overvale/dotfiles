@@ -259,6 +259,14 @@
 
 ;;;; Other Packages
 
+;; this package creates a report each time you startup
+;; You'll need to add ':demand' and restart emacs to see the report
+(use-package benchmark-init
+  :demand
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
 (use-package org
   :commands org-mode
   :config
@@ -431,7 +439,8 @@
 ;; 1. Tell `straight' not to install it.
 ;; 2. Make sure `use-package' loads the file when needed. If the code is only
 ;;    needed when a command is called, you should name the `:command'. You can
-;;    also `:demand' that the file be loaded.
+;;    also `:demand' that the file be loaded, or say that it should be loaded
+;;    `:after' another package.
 
 (use-package oht-dispatch
   :straight nil
@@ -695,6 +704,7 @@
   )
 
 (use-package selectrum-prescient
+  :after selectrum
   :init
   ;; to make sorting and filtering more intelligent
   (selectrum-prescient-mode +1)

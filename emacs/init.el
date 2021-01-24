@@ -301,7 +301,7 @@
 ;; this package creates a report each time you startup
 ;; You'll need to add ':demand' and restart emacs to see the report
 (use-package benchmark-init
-  :demand
+  ;; :demand
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
@@ -675,17 +675,19 @@
 (use-package modus-themes
   :init
   (setq
-   modus-themes-org-blocks 'grayscale
-   modus-themes-syntax 'alt-syntax
-   modus-themes-slanted-constructs t
    modus-themes-bold-constructs nil
-   modus-themes-mode-line nil
-   modus-themes-diffs 'desaturated
-   modus-themes-variable-pitch-headings nil
+   modus-themes-slanted-constructs t
+   modus-themes-syntax 'alt-syntax
    modus-themes-links 'faint-neutral-underline
-   modus-themes-completions 'moderate
    modus-themes-prompts 'subtle
+   modus-themes-mode-line 'borderless
+   modus-themes-completions 'moderate
    modus-themes-region 'bg-only
+   modus-themes-diffs 'desaturated
+   modus-themes-org-blocks 'grayscale
+   modus-themes-scale-headings t
+   modus-themes-variable-pitch-ui t
+   modus-themes-variable-pitch-headings t
    )
   (load-theme 'modus-operandi t)
   )
@@ -1044,22 +1046,20 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :config
   (load (concat oht-dotfiles "lisp/oht-elfeed-post.el"))
   :bind
-  (:map elfeed-show-mode-map
-	("a" . hrs/elfeed-pinboard-current-entry)
-	("&" . bjm/elfeed-show-visit-gui)
-	;; TODO browse binding
-	;; TODO toggle star binding
-	("r" . elfeed-show-tag--read)
-	("u" . elfeed-show-tag--unread)
-	)
   (:map elfeed-search-mode-map
 	("a" . hrs/elfeed-pinboard-current-entry)
-	;; TODO visit-gui binding
 	("b" . elfeed-search-browse-url)
 	("m" . elfeed-search-toggle--star)
 	("E" . oht-elfeed-search-emacs)
         ("N" . oht-elfeed-search-news)
 	("*" . oht-elfeed-search-starred)
+	)
+  (:map elfeed-show-mode-map
+	("a" . hrs/elfeed-pinboard-current-entry)
+	("&" . bjm/elfeed-show-visit-gui)
+	;; TODO toggle star binding
+	("r" . elfeed-show-tag--read)
+	("u" . elfeed-show-tag--unread)
 	)
   )
 

@@ -1036,6 +1036,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :commands elfeed
   :hook (elfeed-show-mode . composition-mode)
   :init
+  (load "~/dot/emacs/lisp/oht-elfeed-feeds.el")
   (setq elfeed-use-curl t)
   (setq elfeed-curl-max-connections 10)
   (setq elfeed-db-directory "~/.emacs.d/elfeed/")
@@ -1052,7 +1053,6 @@ This simply removes the hooked added by the function `use-embark-completions'."
 
 (use-package oht-elfeed
   :straight nil
-  :after elfeed
   :bind
   (:map elfeed-show-mode-map
 	("a" . hrs/elfeed-pinboard-current-entry)

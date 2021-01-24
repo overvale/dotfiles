@@ -1037,33 +1037,23 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :commands elfeed
   :hook (elfeed-show-mode . composition-mode)
   :init
-  (load (concat oht-dotfiles "lisp/oht-elfeed-feeds.el"))
-  (setq elfeed-use-curl t)
-  (setq elfeed-curl-max-connections 10)
-  (setq elfeed-db-directory "~/.emacs.d/elfeed/")
-  (setq elfeed-enclosure-default-dir "~/Downloads/")
-  (setq elfeed-search-filter "@4-months-ago +unread")
-  (setq elfeed-sort-order 'descending)
-  (setq elfeed-search-clipboard-type 'CLIPBOARD)
-  ;; (setq elfeed-search-title-max-width 100)
-  ;; (setq elfeed-search-title-min-width 30)
-  ;; (setq elfeed-search-trailing-width 25)
-  (setq elfeed-show-truncate-long-urls t)
-  ;; (setq elfeed-show-unique-buffers t)
-  )
-
-(use-package oht-elfeed
-  :straight nil
+  (load (concat oht-dotfiles "lisp/oht-elfeed-pre.el"))
+  :config
+  (load (concat oht-dotfiles "lisp/oht-elfeed-post.el"))
   :bind
   (:map elfeed-show-mode-map
 	("a" . hrs/elfeed-pinboard-current-entry)
 	("&" . bjm/elfeed-show-visit-gui)
+	;; TODO browse binding
+	;; TODO toggle star binding
 	("r" . elfeed-show-tag--read)
+	("u" . elfeed-show-tag--unread)
 	)
   (:map elfeed-search-mode-map
 	("a" . hrs/elfeed-pinboard-current-entry)
+	;; TODO visit-gui binding
+	("b" . elfeed-search-browse-url)
 	("m" . elfeed-search-toggle--star)
-	("&" . elfeed-search-browse-url)
 	("E" . oht-elfeed-search-emacs)
         ("N" . oht-elfeed-search-news)
 	("*" . oht-elfeed-search-starred)

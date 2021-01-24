@@ -1,4 +1,20 @@
-;;; oht-elfeed-feeds.el --- My Elfeed Feeds -*- lexical-binding: t -*-
+;;; oht-elfeed-pre.el --- Loaded before Elfeed -*- lexical-binding: t -*-
+
+
+;;; Settings
+
+(setq elfeed-use-curl t)
+(setq elfeed-curl-max-connections 10)
+(setq elfeed-db-directory "~/.emacs.d/elfeed/")
+(setq elfeed-enclosure-default-dir "~/Downloads/")
+(setq elfeed-search-filter "@4-months-ago +unread")
+(setq elfeed-sort-order 'descending)
+(setq elfeed-search-clipboard-type 'CLIPBOARD)
+;; (setq elfeed-search-title-max-width 100)
+;; (setq elfeed-search-title-min-width 30)
+;; (setq elfeed-search-trailing-width 25)
+(setq elfeed-show-truncate-long-urls t)
+;; (setq elfeed-show-unique-buffers t)
 
 
 ;;; Feeds
@@ -61,5 +77,26 @@
     (setf (elfeed-feed-title feed) "MetaFilter"))
   )
 
+;;; Search Shortcuts
 
-(provide 'oht-elfeed-feeds)
+;; First, search Elfeed for the tags you want displayed. Then bookmark that
+;; search (using Emacs built-in bookmarking). Then use the below functions to
+;; open those bookmarks (which, in turn, opens the Elfeed search.
+
+(defun oht-elfeed-search-emacs ()
+  (interactive)
+  (bookmark-maybe-load-default-file)
+  (bookmark-jump "elfeed-emacs"))
+
+(defun oht-elfeed-search-news ()
+  (interactive)
+  (bookmark-maybe-load-default-file)
+  (bookmark-jump "elfeed-news"))
+
+(defun oht-elfeed-search-starred ()
+  (interactive)
+  (bookmark-maybe-load-default-file)
+  (bookmark-jump "elfeed-starred"))
+
+
+(provide 'oht-elfeed-post)

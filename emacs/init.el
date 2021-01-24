@@ -248,10 +248,6 @@
   :demand
   )
 
-(use-package hydra
-  :demand
-  )
-
 (use-package blackout
   :demand
   :config
@@ -261,6 +257,47 @@
   )
 
 ;;;; Other Packages
+
+(use-package hydra
+  :bind
+  ("s-F" . hydra-fonts/body)
+  ("s-2" . hydra-secondary-selection/body)
+  ("s-0" . hydra-outline/body)
+  :config
+  (defhydra hydra-fonts (:exit nil :foreign-keys warn)
+    "Set Font Properties"
+    ("d" oht-fonts-set "Default Font")
+    ("v" variable-pitch-mode "Variable")
+    ("=" text-scale-increase "Larger")
+    ("+" text-scale-increase "Larger")
+    ("-" text-scale-decrease "Smaller")
+    ("0" text-scale-mode "Reset Size")
+    ("s" oht/set-line-spacing "Line Spacing")
+    ("m" modus-themes-toggle "Modus Toggle")
+    ("o" olivetti-mode "Olivetti")
+    ("w" visual-line-mode "Wrap")
+    ("c" composition-mode "Comp")
+    ("q" nil "cancel"))
+  (defhydra hydra-secondary-selection (:exit t)
+    "Secondary Selection"
+    ("xx" oht/cut-secondary-selection "Cut 2nd")
+    ("cc" oht/copy-secondary-selection "Copy 2nd")
+    ("xv" oht/cut-secondary-selection-paste "Cut 2nd & Paste")
+    ("cv" oht/copy-secondary-selection-paste "Copy 2nd & Paste")
+    ("m" (lambda () (interactive)(secondary-selection-from-region)) "Mark as 2nd")
+    ("g" (lambda () (interactive)(secondary-selection-to-region)) "Goto 2nd")
+    ("q" nil "cancel"))
+  (defhydra hydra-outline (:foreign-keys warn)
+    "Hydra for navigating outline mode"
+    ("o" outline-hide-sublevels "Hide to This Sublevel")
+    ("<tab>" bicycle-cycle "Show Subtree")
+    ("a" outline-show-all "Show All")
+    ("c" consult-outline "Consult" :exit t)
+    ("n" outline-next-visible-heading "Next")
+    ("p" outline-previous-visible-heading "Previous")
+    ("q" nil "Cancel" :exit t)
+    )
+  )
 
 ;; this package creates a report each time you startup
 ;; You'll need to add ':demand' and restart emacs to see the report
@@ -534,7 +571,6 @@
 	   ("s-|" . oht/pipe-region)
 	   ("C-S-<mouse-1>" . mc/add-cursor-on-click)
 	   ("s-1" . org-agenda)
-	   ("s-2" . hydra-secondary-selection/body)
 	   ("s-/" . comment-or-uncomment-region-or-line)
 	   )
 
@@ -553,7 +589,6 @@
 	   ("<right>" . winner-redo)
 	   ("s" . org-store-link)
 	   ("o" . consult-outline)
-	   ("f" . hydra-fonts/body)
 	   ("!" . font-lock-mode)
 	   ("j" . dired-jump)
 	   ("b s" . bookmark-set)
@@ -627,20 +662,6 @@
   (interactive "P")
   (setq-local line-spacing arg)
   )
-
-(defhydra hydra-fonts (:exit nil :foreign-keys warn)
-  "Set Font Properties"
-  ("d" oht-fonts-set "Default Font")
-  ("v" variable-pitch-mode "Variable")
-  ("=" text-scale-increase "Larger")
-  ("+" text-scale-increase "Larger")
-  ("-" text-scale-decrease "Smaller")
-  ("0" text-scale-mode "Reset Size")
-  ("s" oht/set-line-spacing "Line Spacing")
-  ("m" modus-themes-toggle "Modus Toggle")
-  ("o" olivetti-mode "Olivetti")
-  ("w" visual-line-mode "Wrap")
-  ("q" nil "cancel"))
 
 ;; This sets the default fonts
 (oht-fonts-set)
@@ -901,16 +922,6 @@ This simply removes the hooked added by the function `use-embark-completions'."
   (oht/copy-secondary-selection)
   (yank))
 
-(defhydra hydra-secondary-selection (:exit t)
-  "Secondary Selection"
-  ("xx" oht/cut-secondary-selection "Cut 2nd")
-  ("cc" oht/copy-secondary-selection "Copy 2nd")
-  ("xv" oht/cut-secondary-selection-paste "Cut 2nd & Paste")
-  ("cv" oht/copy-secondary-selection-paste "Copy 2nd & Paste")
-  ("m" (lambda () (interactive)(secondary-selection-from-region)) "Mark as 2nd")
-  ("g" (lambda () (interactive)(secondary-selection-to-region)) "Goto 2nd")
-  ("q" nil "cancel"))
-
 
 ;;; Outline
 
@@ -930,19 +941,6 @@ This simply removes the hooked added by the function `use-embark-completions'."
 
 (bind-keys :map emacs-lisp-mode-map
 	   ("<backtab>" . bicycle-cycle-global))
-
-
-(defhydra hydra-outline (:foreign-keys warn)
-  "Hydra for navigating outline mode"
-  ("o" outline-hide-sublevels "Hide to This Sublevel")
-  ("<tab>" bicycle-cycle "Show Subtree")
-  ("a" outline-show-all "Show All")
-  ("c" consult-outline "Consult" :exit t)
-  ("n" outline-next-visible-heading "Next")
-  ("p" outline-previous-visible-heading "Previous")
-  ("q" nil "Cancel" :exit t)
-  )
-(bind-key "s-0" 'hydra-outline/body)
 
 
 ;;; View-Mode

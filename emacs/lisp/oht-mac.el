@@ -67,9 +67,6 @@
 ;; non-nil it is supposed to let lines run off the window, but this is a
 ;; buffer-local setting that I cannot (no matter what I try) get to be global.
 (setq-default truncate-lines t)
-;; When visual-line-mode is off and truncate-lines is toggled off, I still
-;; want wrapping to happen at the word.
-(setq-default word-wrap 1)
 
 ;; So, instead, I take the brute-force approach of adding a hook for text-mode
 ;; and prog-mode to call a function which toggles the value on. Take that Emacs.
@@ -80,15 +77,33 @@
 (add-hook 'text-mode-hook 'oht-mac-truncate-lines)
 (add-hook 'prog-mode-hook 'oht-mac-truncate-lines)
 
+;; When visual-line-mode is off and truncate-lines is toggled off, I still
+;; want wrapping to happen at the word instead of character.
+(setq-default word-wrap 1)
+
+;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
+;; This is inconsistent with macOS behavior, which is that "C-a" always goes
+;; to the beginning of the logical line and "s-<left>" goes to the beginning
+;; of the visual line. So these bindings correct that.
+(bind-keys* ("C-a" . beginning-of-line)
+	    ("C-e" . end-of-line))
+(bind-keys ("s-<left>" . beginning-of-visual-line)
+	   ("s-<right>" . end-of-visual-line)
+	   ;; C-k only killing the visual line also isn't how macOS works.
+	   ;; This has to be set to a custom function so minor modes can't
+	   ;; hijack it.
+	   ("C-k" . oht-mac-kill-line))
+
 
 ;;; Emulate Mouse Buttons
 
 (setq mac-emulate-three-button-mouse t)
 ;; mouse-1: Click
 ;; mouse-2: Option + Click
-;; mouse-3: Command + Click
-;; Keep in mind, however, that a 2-finger click on the track pad still sends
-;; mouse-3 no matter what you set `mac-emulate-three-button-mouse' to.
+;; mouse-3: Command + Click (right-click)
+
+; Makes right-click (mouse-3) give a context menu
+(global-set-key [mouse-3] 'mouse-popup-menubar-stuff)          
 
 
 ;;; Functions
@@ -215,7 +230,6 @@ back to system default."
 
 (bind-keys
  ("s-," . oht-mac-find-settings)
- ("s--" . oht-mac-find-scratch)
  ("s-n" . make-frame-command)
  ("s-N" . make-frame-command)
  ("s-t" . oht-mac-new-tab)
@@ -230,13 +244,10 @@ back to system default."
  ("s-<backspace>" . oht-mac-kill-visual-line-backward)
  ("s-w" . delete-frame)
  ("s-q" . save-buffers-kill-terminal)
- ("s-l" . oht-mac-mark-whole-line)
  ("S-s-<left>" . oht-mac-expand-to-beginning-of-visual-line)
  ("S-s-<right>" . oht-mac-expand-to-end-of-visual-line)
  ("s-<up>" . beginning-of-buffer)
  ("s-<down>" . end-of-buffer)
- ("s-<return>" . oht-mac-open-line-below)
- ("S-s-<return>" . oht-mac-open-line-above)
  ;; navigation and indentation
  ("s-[" . previous-buffer)
  ("s-]" . next-buffer)
@@ -251,27 +262,10 @@ back to system default."
 
 ;; These need to 'bubble-up' above major-mode bindings
 (bind-keys*
- ;; Mac follows the UNIX convention of C-h being the same as <DEL>
- ;;("C-h" . delete-backward-char)
- ;; since ctrl+alt+b/f are system shortcuts for word movement, do that in Emacs
- ("C-M-b" . left-word)
- ("C-M-f" . right-word)
  ;; in emacs <del/backspace> is backward-delete and <delete> is forward-delete
  ;; and by default option+forward-delete has no mapping
  ("M-<delete>" . kill-word)
  )
 
-;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
-;; This is inconsistent with macOS behavior, which is that "C-a" always goes
-;; to the beginning of the logical line and "s-<left>" goes to the beginning
-;; of the visual line. So these bindings correct that.
-(bind-keys* ("C-a" . beginning-of-line)
-	    ("C-e" . end-of-line))
-(bind-keys ("s-<left>" . beginning-of-visual-line)
-	   ("s-<right>" . end-of-visual-line)
-	   ;; C-k only killing the visual line also isn't how macOS works.
-	   ;; This has to be set to a custom function so minor modes can't
-	   ;; hijack it.
-	   ("C-k" . oht-mac-kill-line))
 
 (provide 'oht-mac)

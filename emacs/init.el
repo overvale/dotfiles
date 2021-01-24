@@ -231,7 +231,6 @@
   (backward-word)
   (delete-region (point) (mark)))
 
-(global-set-key [mouse-3] 'mouse-popup-menubar-stuff)          ; Gives right-click a context menu
 (global-set-key (kbd "M-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
 (global-set-key (kbd "C-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
 
@@ -572,6 +571,10 @@
 	   ("C-S-<mouse-1>" . mc/add-cursor-on-click)
 	   ("s-1" . org-agenda)
 	   ("s-/" . comment-or-uncomment-region-or-line)
+	   ("s--" . oht-mac-find-scratch)
+	   ("s-l" . oht-mac-mark-whole-line)
+	   ("s-<return>" . oht-mac-open-line-below)
+	   ("S-s-<return>" . oht-mac-open-line-above)
 	   )
 
 (bind-keys :prefix-map oht/global-leader

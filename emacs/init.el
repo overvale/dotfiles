@@ -183,8 +183,11 @@
 (setq bookmark-save-flag 1)                ; Save bookmarks when creating the mark
 (setq bookmark-default-file "~/Documents/bookmarks")
 
+;; Set a variable for where your emacs dotfiles are located:
+(defvar oht-dotfiles "/Users/oht/dot/emacs/")
+
 ;; Location of my pseudo-packages. This must be an absolute path.
-(add-to-list 'load-path "/Users/oht/dot/emacs/lisp/")
+(add-to-list 'load-path (concat oht-dotfiles "lisp/"))
 
 ;; When customizing Emacs interactively (ie: not in this document or init.el)
 ;; Emacs appends code to your init.el file, which can be annoying when editing
@@ -270,7 +273,7 @@
 (use-package org
   :commands org-mode
   :config
-  (load-file "~/dot/emacs/lisp/oht-org.el")
+  (load (concat oht-dotfiles "lisp/oht-org.el"))
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
   :hook
@@ -1036,7 +1039,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :commands elfeed
   :hook (elfeed-show-mode . composition-mode)
   :init
-  (load "~/dot/emacs/lisp/oht-elfeed-feeds.el")
+  (load (concat oht-dotfiles "lisp/oht-elfeed-feeds.el"))
   (setq elfeed-use-curl t)
   (setq elfeed-curl-max-connections 10)
   (setq elfeed-db-directory "~/.emacs.d/elfeed/")

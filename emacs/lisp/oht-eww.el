@@ -28,6 +28,11 @@
   "Returns the title of the current eww buffer"
   (plist-get eww-data :title))
 
+;; Note that eww's default behavior us to bury the buffer when you press q.
+;; When you do that, then visit a new url, something about the eww-data :title
+;; system doesn't update to the new title. But if you kill the eww buffer
+;; instead, it works. So I've bound k to kill-this-buffer in eww-mode.
+
 ;; This function creates a properly formatted bookmark entry. It defines a
 ;; 'handler' that's used when visiting the bookmark, defined below.
 (defun oht-eww-bookmark-make-record ()

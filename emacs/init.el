@@ -563,7 +563,7 @@
 (bind-key* "M-o" 'oht/other-window)
 
 (bind-keys ("s-p" . execute-extended-command)
-	   ("s-k" . oht/kill-buffer-window)
+	   ("s-k" . kill-this-buffer)
 	   ("s-B" . ibuffer)
 	   ("s-C" . org-capture)
 	   ("s-|" . oht/pipe-region)
@@ -1027,6 +1027,10 @@ This simply removes the hooked added by the function `use-embark-completions'."
   ;; will be used instead.
   (setq browse-url-browser-function 'eww-browse-url)
   :commands eww
+  :bind
+  (:map eww-mode-map
+	("k" . kill-this-buffer)
+	)
   :custom (shr-width 80)
   )
 

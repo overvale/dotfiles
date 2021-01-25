@@ -107,10 +107,10 @@
 
 (use-package modus-themes
   :init
-  ;; includes a dark variant
-  (load-theme 'modus-operandi t)
+  (modus-themes-load-themes)
+  :config
+  (modus-themes-load-operandi)
   )
-
 
 ;;; Keyboard modifiers setup
 

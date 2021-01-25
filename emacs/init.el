@@ -707,20 +707,6 @@
   (modus-themes-load-operandi)
   )
 
-;; (defadvice load-theme (before clear-previous-themes activate)
-;;   "Clear existing theme settings instead of layering them"
-;;   (mapc #'disable-theme custom-enabled-themes))
-
-(defun modus-themes-toggle ()
-  "Toggle between `modus-operandi' and `modus-vivendi' themes."
-  (interactive)
-  (if (eq (car custom-enabled-themes) 'modus-operandi)
-      (progn
-        (disable-theme 'modus-operandi)
-        (load-theme 'modus-vivendi t))
-    (disable-theme 'modus-vivendi)
-    (load-theme 'modus-operandi t)))
-
 (use-package tron-legacy-theme)
 
 

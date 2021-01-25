@@ -648,15 +648,19 @@
 ;; When using `text-scale-incraese', this sets each 'step' to about one point size.
 (setq text-scale-mode-step 1.08)
 
+;; Keep in mind that when in variable-pitch-mode the fixed-pitch size is based
+;; not on the default size but the variable-pitch size.
 (defun oht-fonts-set ()
-  "Sets default, variable-pitch, and fixed-pitch fonts to my liking"
+  "Sets default, variable-pitch, and fixed-pitch fonts to my liking."
   (interactive)
   (set-face-attribute 'default nil
 		      :family "Iosevka" :height 130 :weight 'normal :width 'expanded)
   (set-face-attribute 'variable-pitch nil
-		      :family "Inter" :height 1.1 :weight 'normal)
+		      ;; Basically, 14pt
+		      :family "IBM Plex Sans" :height 1.1 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Iosevka" :height 1.0 :weight 'normal :width 'expanded)
+		      ;; Basically, scales it back down to 13pt
+		      :family "Iosevka" :height 0.91 :weight 'normal :width 'expanded)
   )
 
 (defun oht/set-line-spacing (&optional arg)

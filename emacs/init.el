@@ -702,7 +702,9 @@
    modus-themes-variable-pitch-ui t
    modus-themes-variable-pitch-headings nil
    )
-  (load-theme 'modus-operandi t)
+  (modus-themes-load-themes)
+  :config
+  (modus-themes-load-operandi)
   )
 
 ;; (defadvice load-theme (before clear-previous-themes activate)

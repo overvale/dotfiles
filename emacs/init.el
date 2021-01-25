@@ -332,6 +332,16 @@
 	      ("s-\\ c" . org-toggle-checkbox)
 	      ))
 
+(use-package bookmark
+  :straight nil
+  :commands (list-bookmarks)
+  :init
+  (defun oht-bookmark-fonts ()
+    (hl-line-mode)
+    )
+  :hook (bookmark-bmenu-mode . oht-bookmark-fonts)
+  )
+
 (use-package magit
   :commands magit-status
   )

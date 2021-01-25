@@ -1,6 +1,15 @@
 ;;; oht-elfeed-post.el --- Loaded after Elfeed -*- lexical-binding: t -*-
 
 
+;;; Display
+
+(defun oht-elfeed-show-fonts ()
+  "Apply some customization to fonts in elfeed-show-mode."
+  ;; (text-scale-increase 1)
+  (setq-local line-spacing 2)
+  )
+
+
 ;;; Functions
 
 (defun bjm/elfeed-show-visit-gui ()

@@ -18,15 +18,17 @@
   (if composition-mode-status
       (progn
 	(visual-line-mode t)
-	(setq-local line-spacing 3)
+	(setq-local line-spacing 4)
 	(olivetti-mode t)
-	(text-scale-increase 2)
+	(text-scale-increase 1)
+	(variable-pitch-mode 1)
        )
     (progn
       (visual-line-mode -1)
       (setq-local line-spacing 0)
       (olivetti-mode -1)
       (text-scale-increase 0)
+      (variable-pitch-mode -1)
       ;; This shouldn't be needed, but is:
       (toggle-truncate-lines 1)
      ))

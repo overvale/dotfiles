@@ -312,8 +312,7 @@
   (load (concat oht-dotfiles "lisp/oht-org.el"))
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
-  :hook
-  (org-mode . variable-pitch-mode)
+  ;; :hook (org-mode . variable-pitch-mode)
   :bind (:map org-mode-map
 	      ("s-\\ o" . consult-outline)
 	      ("s-\\ ." . oht/org-insert-date-today)
@@ -653,9 +652,9 @@
   "Sets default, variable-pitch, and fixed-pitch fonts to my liking"
   (interactive)
   (set-face-attribute 'default nil
-		      :family "Iosevka" :height 120 :weight 'normal :width 'expanded)
+		      :family "Iosevka" :height 130 :weight 'normal :width 'expanded)
   (set-face-attribute 'variable-pitch nil
-		      :family "Iosevka Sparkle" :height 1.0 :weight 'normal)
+		      :family "Inter" :height 1.1 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
 		      :family "Iosevka" :height 1.0 :weight 'normal :width 'expanded)
   )
@@ -685,16 +684,16 @@
    modus-themes-region 'bg-only
    modus-themes-diffs 'desaturated
    modus-themes-org-blocks 'grayscale
-   modus-themes-scale-headings t
+   modus-themes-scale-headings nil
    modus-themes-variable-pitch-ui t
-   modus-themes-variable-pitch-headings t
+   modus-themes-variable-pitch-headings nil
    )
   (load-theme 'modus-operandi t)
   )
 
-(defadvice load-theme (before clear-previous-themes activate)
-  "Clear existing theme settings instead of layering them"
-  (mapc #'disable-theme custom-enabled-themes))
+;; (defadvice load-theme (before clear-previous-themes activate)
+;;   "Clear existing theme settings instead of layering them"
+;;   (mapc #'disable-theme custom-enabled-themes))
 
 (defun modus-themes-toggle ()
   "Toggle between `modus-operandi' and `modus-vivendi' themes."
@@ -1028,6 +1027,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   ;; will be used instead.
   (setq browse-url-browser-function 'eww-browse-url)
   :commands eww
+  :custom (shr-width 80)
   )
 
 (use-package oht-eww
@@ -1040,7 +1040,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 
 (use-package elfeed
   :commands elfeed
-  :hook (elfeed-show-mode . composition-mode)
+  :hook (elfeed-show-mode . oht-elfeed-show-fonts)
   :init
   (load (concat oht-dotfiles "lisp/oht-elfeed-pre.el"))
   :config

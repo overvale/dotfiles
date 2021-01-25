@@ -1,5 +1,18 @@
 ;;; oht-eww.el --- Additional config for the eww browser -*- lexical-binding: t -*-
 
+
+;;; Display
+
+(defun oht-eww-fonts ()
+  "Apply some customization to fonts in eww-mode."
+  (text-scale-increase 1)
+  (setq-local line-spacing 2)
+  )
+
+(add-hook 'eww-mode-hook 'oht-eww-fonts)
+
+;;; Bookmarking
+
 ;; The below code allows you to create standard emacs bookmarks in eww-mode.
 ;; It does this by customizing the `bookmark-make-record-function' variable to
 ;; a custom function.

@@ -5,7 +5,7 @@
 
 (defun oht-eww-fonts ()
   "Apply some customization to fonts in eww-mode."
-  (text-scale-increase 2)
+  (text-scale-increase 1)
   (setq-local line-spacing 3)
   )
 

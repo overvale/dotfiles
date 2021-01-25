@@ -251,8 +251,8 @@
   :demand
   :config
   (blackout 'eldoc-mode)
-  (blackout 'visual-line-mode)
   (blackout 'emacs-lisp-mode "Elisp")
+  (blackout 'auto-fill-function " Fill")
   )
 
 ;;;; Other Packages
@@ -361,7 +361,7 @@
   :config
   (which-key-mode t)
   (setq which-key-idle-delay 0.4)
-  (blackout 'which-key-mode)
+  :blackout
   )
 
 (use-package undo-fu
@@ -401,7 +401,7 @@
   ;; act on a whole line.
   :init
   (whole-line-or-region-global-mode 1)
-  (blackout 'whole-line-or-region-local-mode)
+  :blackout whole-line-or-region-local-mode
   )
 
 (use-package helpful

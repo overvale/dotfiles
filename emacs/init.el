@@ -495,14 +495,9 @@
   :commands (oht-dispatch)
   :config
   (setq oht-dispatch-functions
-	'(oht-dispatch-hacker-news
-	  oht-dispatch-mail-personal
-	  oht-dispatch-mail-work
-	  oht-dispatch-slack
-	  elfeed
+	'(elfeed
 	  org-agenda
-	  eww-list-bookmarks
-	  pinboard
+	  list-bookmarks
 	  ))
   :bind
   ("s-d" . #'oht-dispatch)
@@ -528,6 +523,8 @@
 (use-package dired
   :straight nil
   :commands (dired dired-jump dired-jump-other-window)
+  :init
+  (setq dired-use-ls-dired nil) ; no more warning message
   :config
   (defun dired-open-file ()
     "In dired, open the file named on this line."
@@ -565,6 +562,7 @@
 	   ("M-l" . downcase-dwim)
 	   ("M-u" . upcase-dwim)
 	   ("M-SPC" . cycle-spacing)
+	   ("M-/" . hippie-expand)
 	   ("C-l" . oht/recenter-top-bottom)
 	   ("C-=" . pulse-line)
 	   ("C-x r r" . replace-rectangle)

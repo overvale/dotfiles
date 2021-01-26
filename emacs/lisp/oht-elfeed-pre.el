@@ -7,15 +7,10 @@
 (setq elfeed-curl-max-connections 10)
 (setq elfeed-db-directory "~/.emacs.d/elfeed/")
 (setq elfeed-enclosure-default-dir "~/Downloads/")
-(setq elfeed-search-filter "@4-months-ago +unread")
+(setq elfeed-search-filter "@1-week-ago +unread")
 (setq elfeed-sort-order 'descending)
 (setq elfeed-search-clipboard-type 'CLIPBOARD)
-;; (setq elfeed-search-title-max-width 100)
-;; (setq elfeed-search-title-min-width 30)
-;; (setq elfeed-search-trailing-width 25)
 (setq elfeed-show-truncate-long-urls t)
-;; (setq elfeed-show-unique-buffers t)
-
 
 ;;; Feeds
 
@@ -37,14 +32,14 @@
 		     ("https://kieranhealy.org/index.xml")
 		     ("https://rsms.me/atom.xml")
 		     ("https://waxy.org/category/links/feed/")
+		     ("https://feeds.feedburner.com/Metafilter")
 		     ("https://tumblr.mapsbynik.com/rss")
 		     ;; news
 		     ("https://www.economist.com/latest/rss.xml" news)
 		     ("https://www.economist.com/the-economist-explains/rss.xml" news)
 		     ("https://hnrss.org/best" news)
 		     ("https://www.theverge.com/rss/front-page/index.xml" news)
-		     ("https://daringfireball.net/feeds/main" news)
-		     ("https://feeds.feedburner.com/Metafilter" news)
+		     ("https://daringfireball.net/feeds/main" news mac)
 		     ;; emacs
 		     ("https://oremacs.com/atom.xml" emacs)
 		     ("https://irreal.org/blog/?feed=rss2" emacs)
@@ -57,12 +52,26 @@
 		     ("https://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml" emacs)
 		     ("https://emacsredux.com/atom.xml" emacs)
 		     ("https://planet.emacslife.com/atom.xml" emacs)
-		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g" emacs)
 		     ("https://reddit.com/r/emacs/top/.rss?sort=top&t=day" emacs)
+		     ;; youtube
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g" emacs) ; Prot
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCMb0O2CdPBNi-QqPk5T3gsQ") ; James Hoffmann
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCZYycARMM3DaeBwpVQzR5vQ") ; Craig Mod
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCZYycARMM3DaeBwpVQzR5vQ") ; Keep Calm I'm in VFX
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVpankR4HtoAVtYnFDUieYA") ; zefrank1
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCCBJv-2y0qRjM9E2tSGtT7Q") ; Weta Workshop
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCtqxG9IrHFU_ID1khGvx9sA") ; All Gas No Brakes
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAL3JXZSzSm8AlZyD3nQdBA") ; Primitive Technology
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCiDJtJKMICpb9B1qf7qjEOA") ; Adam Savage’s Tested
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UC7FkqjV8SU5I8FCHXQSQe9Q" wood) ; Ishitani Furniture
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVOpX2P5wygh7sB1KXgh_5g" wood) ; Kobeomsuk furniture
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UC_FksrzP3q-IuoWTiG501LQ" wood) ; Peter Millard
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCYwsgA-ZhDGHUCb4YFG00xQ" wood) ; New Brit Workshop
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCc3EpWncNq5QL0QhwUNQb7w" wood) ; Paul Sellers
 		     ))
 
 
-;;; Feed Title Changes
+;;; Feed Title and Tag Changes
 
 (defadvice elfeed-search-update (before nullprogram activate)
   (let ((feed (elfeed-db-get-feed "https://www.economist.com/latest/rss.xml")))

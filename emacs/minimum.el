@@ -79,7 +79,7 @@
   )
 
 (use-package bind-key
-  :demand t
+  :demand
   )
 
 (use-package whole-line-or-region

@@ -77,26 +77,5 @@
     (setf (elfeed-feed-title feed) "MetaFilter"))
   )
 
-;;; Search Shortcuts
-
-;; First, search Elfeed for the tags you want displayed. Then bookmark that
-;; search (using Emacs built-in bookmarking). Then use the below functions to
-;; open those bookmarks (which, in turn, opens the Elfeed search.
-
-(defun oht-elfeed-search-emacs ()
-  (interactive)
-  (bookmark-maybe-load-default-file)
-  (bookmark-jump "elfeed-emacs"))
-
-(defun oht-elfeed-search-news ()
-  (interactive)
-  (bookmark-maybe-load-default-file)
-  (bookmark-jump "elfeed-news"))
-
-(defun oht-elfeed-search-starred ()
-  (interactive)
-  (bookmark-maybe-load-default-file)
-  (bookmark-jump "elfeed-starred"))
-
 
 (provide 'oht-elfeed-post)

@@ -10,6 +10,37 @@
   )
 
 
+;; Shortcuts
+
+;;; Search Shortcuts
+
+(define-key elfeed-search-mode-map "N"
+  (lambda ()
+    (interactive)
+    (elfeed-search-set-filter "+unread +news")))
+
+(define-key elfeed-search-mode-map "E"
+  (lambda ()
+    (interactive)
+    (elfeed-search-set-filter "+unread +emacs")))
+
+(define-key elfeed-search-mode-map "*"
+  (lambda ()
+    (interactive)
+    (elfeed-search-set-filter "+star")))
+
+
+;;; Auto Tagging
+
+(add-hook 'elfeed-new-entry-hook
+          (elfeed-make-tagger :feed-url "youtube\\.com"
+                              :add '(youtube)))
+
+(add-hook 'elfeed-new-entry-hook
+          (elfeed-make-tagger :before "7 days ago"
+			      :remove 'unread))
+
+
 ;;; Functions
 
 (defun bjm/elfeed-show-visit-gui ()

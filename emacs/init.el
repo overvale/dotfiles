@@ -792,21 +792,21 @@
           #'which-key--hide-popup-ignore-command)
 	embark-become-indicator embark-action-indicator)
 
-  ;; ---- Resize Completions Buffer ----
-  ;; All this taken direct from @prot's config
-  ;; and is useful even when you're not using Embark for completions.
-  ;; Thus it doesn't need to be disabled.
-  (defcustom prot-embark-collect-window-regexp
-    "\\*Embark Collect \\(Live\\|Completions\\).*"
-    "Regexp to match window names with Embark collections."
-    :group 'prot-embark
-    :type 'string)
-  (defun prot-embark--collect-fit-window (&rest _)
-    "Fit Embark's live occur window to its buffer. To be added to `embark-occur-post-revert-hook'."
-    (when (string-match-p prot-embark-collect-window-regexp (buffer-name))
-      (fit-window-to-buffer (get-buffer-window)
-                            (floor (frame-height) 2) 1)))
-  (add-hook 'embark-collect-post-revert-hook 'prot-embark--collect-fit-window)
+  ;; Resize Completions Buffer
+  (add-hook 'embark-collect-post-revert-hook
+          (defun resize-embark-collect-window (&rest _)
+            (when (memq embark-collect--kind '(:live :completions))
+              (fit-window-to-buffer (get-buffer-window)
+                                    (floor (frame-height) 2) 1))))
+
+  ;; Pause Selectrum while using embark-collect-live
+  (add-hook 'embark-collect-mode-hook
+	    (defun pause-selectrum ()
+	      (when (eq embark-collect--kind :live)
+		(with-selected-window (active-minibuffer-window)
+		  (shrink-window selectrum-num-candidates-displayed)
+		  (setq-local selectrum-num-candidates-displayed 0)))))
+
   )
 
 (defun use-embark-completions ()

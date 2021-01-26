@@ -768,16 +768,14 @@
   ;; provide everything needed to switch between using Selectrum and Embark
   ;; for completions.
   :straight (:host github :repo "oantolin/embark" :branch "master")
-
   :bind
   ("s-e" . embark-act)
   (:map minibuffer-local-map
-	;; @prot has a complex system for this, but I find a single hotkey
-	;; sufficient.
-        ("C-o" . embark-switch-to-collect-completions)
-	)
-
+        ("C-o" . embark-switch-to-collect-completions))
+  (:map embark-url-map
+	("d" . youtube-dl-URL-at-point))
   :config
+  (add-to-list 'embark-keymap-alist '(straight . embark-straight-map))
   (setq embark-collect-initial-view-alist
         '((file . list)
           (buffer . list)
@@ -1063,8 +1061,26 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	;; TODO toggle star binding
 	("r" . elfeed-show-tag--read)
 	("u" . elfeed-show-tag--unread)
+	("d" . oht-elfeed-show-download-video)
 	)
   )
+
+
+;;; Youtube-dl
+
+;; A few utilities for working with videos
+
+(setq youtube-dl-path "/usr/local/bin/youtube-dl")
+(setq youtube-dl-output-dir "~/Desktop/")
+
+(defun youtube-dl-URL-at-point ()
+  "Send the URL at point to youtube-dl."
+  (interactive)
+  (async-shell-command (format "%s -o \"%s%s\" -f mp4 \"%s\""
+                               youtube-dl-path
+                               youtube-dl-output-dir
+                               "%(title)s.%(ext)s"
+                               (ffap-url-at-point))))
 
 ;;; Closing
 

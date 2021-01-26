@@ -67,9 +67,6 @@
   (elfeed-expose #'elfeed-show-untag 'unread)
   "Mark the current entry read.")
 
-
-;; Pinboard integration
-
 (defun hrs/elfeed-current-entry ()
   "Return the elfeed entry, in both show and search modes."
   (cond ((eq major-mode 'elfeed-show-mode)
@@ -85,6 +82,15 @@
     (pinboard-auth)
     (pinboard-not-too-soon :pinboard-save
 			   (pinboard-save url title "" "" t nil))))
+
+(defun oht-elfeed-show-download-video ()
+  "In elfeed, download a video using youtube-dl."
+  (interactive)
+  (async-shell-command (format "%s -o \"%s%s\" -f mp4 \"%s\""
+                               youtube-dl-path
+                               youtube-dl-output-dir
+                               "%(title)s.%(ext)s"
+                               (elfeed-entry-link elfeed-show-entry))))
 
 
 (provide 'oht-elfeed-post)

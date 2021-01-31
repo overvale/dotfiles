@@ -24,7 +24,7 @@
 (defun oht-dispatch-read-later ()
   "Open my Read Later directory."
        (interactive)
-       (find-file "~/Documents/read later"))
+       (find-file "~/home/files/read later"))
 
 ;; Next, create a function to pass a list of functions to `completing-read'.
 (defun oht-dispatch ()

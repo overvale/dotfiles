@@ -218,18 +218,18 @@ end
 function killQuickMenu() quickMenu:delete() end
 
 function safariTabs2ORG()
-   os.execute( "printf '\n** TODO Safari Tabs\n\n' >> ~/Documents/org-files/inbox.org && ~/dot/bin/safariTabs >> ~/Documents/org-files/inbox.org && open hammerspoon://success" )
+   os.execute( "printf '\n** TODO Safari Tabs\n\n' >> ~/home/org/inbox.org && ~/home/dot/bin/safariTabs >> ~/home/org/inbox.org && open hammerspoon://success" )
 end
 
 function clipboard2ORG()
-   os.execute( "printf '\n** TODO Clipboard Refile\n\n' >> ~/Documents/org-files/inbox.org && pbpaste >> ~/Documents/org-files/inbox.org && open hammerspoon://success" )
+   os.execute( "printf '\n** TODO Clipboard Refile\n\n' >> ~/home/org/inbox.org && pbpaste >> ~/home/org/inbox.org && open hammerspoon://success" )
 end
 
 function copyMailURL()
-   os.execute( "~/dot/bin/getMailURL | pbcopy | open hammerspoon://success" )
+   os.execute( "~/home/dot/bin/getMailURL | pbcopy | open hammerspoon://success" )
 end
 
-function openOrgInbox() os.execute("open ~/Documents/org-files/inbox.org") end
+function openOrgInbox() os.execute("open ~/home/org/inbox.org") end
 function importIOSinbox() os.execute("~/Desktop/moveiOS2ORG") end
 
 function newMailMessage() os.execute("open mailto:") end

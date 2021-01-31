@@ -180,13 +180,11 @@
 (setq create-lockfiles nil)                ; No need for ~ files when editing
 (setq-default fill-column 78)              ; Set column used for fill-paragraph
 (setq ring-bell-function 'ignore)          ; Don't beep
-(setq bookmark-save-flag 1)                ; Save bookmarks when creating the mark
-(setq bookmark-default-file "~/Documents/bookmarks")
 
 ;; Set a variable for where your emacs dotfiles are located:
-(defvar oht-dotfiles "/Users/oht/dot/emacs/")
+(defvar oht-dotfiles "/Users/oht/home/dot/emacs/")
 
-;; Location of my pseudo-packages. This must be an absolute path.
+;; Add lisp files to the load path.
 (add-to-list 'load-path (concat oht-dotfiles "lisp/"))
 
 ;; When customizing Emacs interactively (ie: not in this document or init.el)
@@ -340,6 +338,9 @@
     (hl-line-mode)
     )
   :hook (bookmark-bmenu-mode . oht-bookmark-fonts)
+  :custom
+  (bookmark-save-flag 1)
+  (bookmark-default-file "~/home/bookmarks")
   )
 
 (use-package magit

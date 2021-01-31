@@ -4,7 +4,7 @@
 " This has to come before any mappings with <leader>
 let mapleader = ','
 
-call plug#begin('~/lib/vim/plugged')
+call plug#begin('~/home/lib/vim/plugged')
 
 " Vim
 Plug 'mbbill/undotree'
@@ -124,7 +124,7 @@ set splitbelow splitright
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set notimeout ttimeout
 set timeoutlen=1000 ttimeoutlen=0
-set undofile undodir=~/lib/vim/vimundo
+set undofile undodir=~/home/lib/vim/vimundo
 set wildmenu wildmode=longest:full
 set wrap linebreak breakindent
 set wrapscan

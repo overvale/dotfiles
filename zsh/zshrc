@@ -109,7 +109,7 @@ alias ,lsmyps='ps -ax | grep -v "/System\|/Applications\|/usr\|/sbin\|ttys00[0-9
 
 # did file - listing things you've done
 did (){
-    echo "$(ddate): $@" >> ~/Documents/did.txt
+    echo "$(ddate): $@" >> ~/home/files/did.txt
 }
 
 myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
@@ -159,7 +159,7 @@ function makepdf(){
 # ----------------------------------------------------------------------------
 
 fzf-launcher() {
-    eval "$(~/opt/launcher/launcher | fzf)"
+    eval "$(~/home/opt/launcher/launcher | fzf)"
 }
 alias ll=fzf-launcher
 
@@ -217,6 +217,6 @@ v() {
 
 # This stuff has to be last
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-source ~/opt/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
+source ~/home/opt/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 
 # }}}

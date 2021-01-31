@@ -121,7 +121,7 @@ directly. Nil is required."
 (defun oht-mac-find-settings ()
   "Quickly open init.el"
   (interactive)
-  (find-file "~/dot/emacs/init.el"))
+  (find-file "~/home/dot/emacs/init.el"))
 
 (defun oht-mac-find-scratch ()
   "Quickly open the scratch buffer"

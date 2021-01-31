@@ -365,7 +365,7 @@
 
 (use-package olivetti
   :commands olivetti-mode
-  :custom (olivetti-body-width 80)
+  :custom (olivetti-body-width 84)
   :blackout " Olvti"
   )
 
@@ -1055,8 +1055,10 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :bind
   (:map eww-mode-map
 	("k" . kill-this-buffer)
+	("b" . bookmark-set)
 	)
-  :custom (shr-width 80)
+  :custom
+  (shr-width 80)
   )
 
 (use-package oht-eww

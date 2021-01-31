@@ -462,7 +462,7 @@
 ;;;; Spelling
 
 (use-package flyspell
-  :commands (flyspell-mode flyspell-prog-mode)
+  :commands (flyspell-mode flyspell-prog-mode turn-on-flyspell)
   :init
   (add-hook 'text-mode-hook 'turn-on-flyspell)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
@@ -599,12 +599,12 @@
 (bind-keys ("s-p" . execute-extended-command)
 	   ("s-k" . kill-this-buffer)
 	   ("s-B" . ibuffer)
+	   ("M-s-b" . list-bookmarks)
 	   ("s-C" . org-capture)
 	   ("s-|" . oht/pipe-region)
 	   ("C-S-<mouse-1>" . mc/add-cursor-on-click)
 	   ("s-1" . org-agenda)
 	   ("s-/" . comment-or-uncomment-region-or-line)
-	   ("s--" . oht-mac-find-scratch)
 	   ("s-l" . oht-mac-mark-whole-line)
 	   ("s-<return>" . oht-mac-open-line-below)
 	   ("S-s-<return>" . oht-mac-open-line-above)
@@ -1103,7 +1103,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 (defun youtube-dl-URL-at-point ()
   "Send the URL at point to youtube-dl."
   (interactive)
-  (async-shell-command (format "%s -o \"%s%s\" -f mp4 \"%s\""
+  (async-shell-command (format "%s -o \"%s%s\" -f best \"%s\""
                                youtube-dl-path
                                youtube-dl-output-dir
                                "%(title)s.%(ext)s"

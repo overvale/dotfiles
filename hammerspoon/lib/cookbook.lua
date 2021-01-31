@@ -256,20 +256,6 @@ if darkmode then
 end
 
 
--- Run functions from the menubar
--- -----------------------------------------------
-function test_notify()
-   hs.notify.new({title='Hammerspoon', informativeText='Test worked!'}):send()
-end
-local menuTable = {
-    { title = "Test", fn = test_notify },
-    -- { title = "-" },
-}
-local menubar = hs.menubar.new()
-if menubar then
-    menubar:setTitle("⌘")
-    menubar:setMenu(menuTable)
-end
 
 -- Custom clock in menubar
 -- -----------------------------------------------
@@ -282,45 +268,6 @@ end
 displayClock(clockMenu)
 -- And refresh it every so often (I don't care about seconds)
 hs.timer.doEvery(60, function() displayClock(clockMenu) end)
-
-
--- Custom Menu Bar Item
--- -----------------------------------------------
-
--- Create menu bar item
-local quickMenu = hs.menubar.new()
-
-function openHN()
-   os.execute( "open http://news.ycombinator.com" )
-end
-
-function buildQuickMenu()
-   local menuTable = {
-      { title = "Open Hacker News", fn = openHN },
-   }
-   quickMenu:setTitle("HN")
-   quickMenu:setMenu(menuTable)
-end
-
-buildQuickMenu()
-
-
--- Create menu bar item
-local quickMenu = hs.menubar.new()
-
-function buildQuickMenu()
-   local menuTable = {
-      { title = "Remove this icon", fn = killQuickMenu },
-   }
-   quickMenu:setTitle("😎")
-   quickMenu:setMenu(menuTable)
-end
-
-function killQuickMenu()
-   quickMenu:delete()
-end
-
-buildQuickMenu()
 
 
 

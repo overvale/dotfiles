@@ -164,7 +164,7 @@ local function fileStreamPopulate()
 		  fileStreamChooser:choices(options)
 
    end, { '/Volumes/GoogleDrive/Shared drives', '-type', 'd', '-maxdepth', '1' }):start()
-   -- setting '-maxdepth 2' causes this to fail... why?
+   -- currently limited to a 'maxdepth' of 1 due to: https://github.com/Hammerspoon/hammerspoon/issues/2651
 end
 
 fileStreamChooser:showCallback(fileStreamPopulate)
@@ -172,11 +172,8 @@ fileStreamChooser:searchSubText(true)
 
 hs.hotkey.bind( hyper, "o", function() fileStreamChooser:show() end)
 
-
--- Menubar
+-- QuickMenu
 -- -----------------------------------------------
-
--- QUICKMENU
 -- This is used for misc scripts I want to occasionally run, but don't want to
 -- bother remembering a keybinding for. Somewhat like my personal FastScripts.
 
@@ -191,7 +188,7 @@ function buildQuickMenu()
       { title = "[YYYY-MM-DD]", fn = snipISODate },
    }
    local menuTable = {
-      { title = "Oliver's QuickMenu", disabled = true },
+      { title = "QuickMenu", disabled = true },
       { title = "-" },
       { title = "Copy Mail Message URL", fn = copyMailURL, shortcut = "m"},
       { title = "New Mail Message", fn = newMailMessage },
@@ -207,11 +204,11 @@ function buildQuickMenu()
       { title = "-" },
       { title = "Remove From Menu Bar", fn = killQuickMenu },
    }
-   quickMenu:setTitle("😎")
-   -- local utilIcon = hs.image.imageFromPath("/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/SidebarUtilitiesFolder.icns")
-   -- quickMenu:setIcon(utilIcon:setSize({w=16,h=16}))
+   local utilIcon = hs.image.imageFromPath("assets/hare.pdf")
+   quickMenu:setIcon(utilIcon:setSize({w=20,h=20}))
    quickMenu:setMenu(menuTable)
 end
+
 
 -- FUNCTIONS FOR MENUBAR --
 
@@ -245,8 +242,61 @@ function snipISODate() hs.eventtap.keyStrokes(os.date("%Y-%m-%d")) end
 buildQuickMenu()
 
 
--- RELOAD NOTIFICATION IN MENUBAR
--- This places a temporary message in the menubar
+-- Backup Menu
+-- -----------------------------------------------
+-- A menu item for monitoring/controlling restic backups run by launchd.
+-- The actual backup script interacts with this.
+
+-- Create the menubar item
+local backupMenu = hs.menubar.new()
+-- Set the default icon, this will be replaced when the backup job succeeds/fails
+local cloud_idle = hs.image.imageFromPath("assets/cloud_idle.pdf")
+backupMenu:setIcon(cloud_idle:setSize({w=20,h=20}))
+
+-- functions called by the menubar item
+function backupNow () os.execute("launchctl start local.restic.test") end
+function backupOpenLogs () os.execute("open ~/home/opt/restic/logs") end
+function backupRunning()
+   local cloud_run = hs.image.imageFromPath("assets/cloud_run.pdf")
+   backupMenu:setIcon(cloud_run:setSize({w=20,h=20}))
+end
+function backupSuccess()
+   local cloud_ok = hs.image.imageFromPath("assets/cloud_ok.pdf")
+   backupMenu:setIcon(cloud_ok:setSize({w=20,h=20}))
+end
+function backupFail()
+   local cloud_fail = hs.image.imageFromPath("assets/cloud_fail.pdf")
+   backupMenu:setIcon(cloud_fail:setSize({w=20,h=20}))
+end
+
+-- Register URLs and bind them to the above functions so that the backup
+-- script can update the menu item.
+hs.urlevent.bind("backup_running", backupRunning)
+hs.urlevent.bind("backup_success", backupSuccess)
+hs.urlevent.bind("backup_fail", backupFail)
+
+-- Build the menu item
+function backupMenuItem()
+   -- First, get the LAST log file, we will use this in the menuTable
+   local lastBackup = hs.execute("ls ~/home/opt/restic/logs | tail -1")
+   -- Generate the menu items you want in the list
+   local menuTable = {
+      { title = "Last Backup:", disabled = true },
+      { title = lastBackup, fn = backupOpenLogs },
+      { title = "-" },
+      { title = "Backup Now", fn = backupNow },
+   }
+   backupMenu:setMenu(menuTable)
+end
+
+-- Run the function to place an item in the menubar
+backupMenuItem()
+
+
+-- Reload Notification in Menubar
+-- -----------------------------------------------
+-- This places a temporary message in the menubar. Because it comes and goes,
+-- it should probably be last in your config.
 
 local HSNotifyMenu = hs.menubar.new()
 
@@ -263,6 +313,8 @@ end
 
 -- Show when this file is evaluated
 buildHSNotifyMenu()
+
+
 
 -- END --
 

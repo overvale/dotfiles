@@ -136,36 +136,49 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t
-      ;; Shave seconds off startup time by starting the scratch buffer in
-      ;; `fundamental-mode', rather than, say, `org-mode' or `text-mode', which
-      ;; pull in a ton of packages.
+      ;; Starting the scratch buffer in `fundamental-mode', rather than, say,
+      ;; `org-mode' or `text-mode', which pull in a ton of packages.
       initial-major-mode 'fundamental-mode
       initial-scratch-message nil)
 
-;; By default, Emacs always starts up with a *scratch* buffer that is NOT
-;; intended to be saved; when you kill it or quit emacs the contents of your
-;; *scratch* buffer are gone forever without warning. I don't think I'm alone in
-;; thinking that this is not very useful. Thankfully, emacs 24.4 introduced a
-;; replacement for the *scratch* buffer that is saved when emacs exits, thus
-;; your scratch pad NEVER deletes data. And THAT makes a lot more sense to me.
-;; More info:
-;; https://www.masteringemacs.org/article/whats-new-in-emacs-24-4#remember
+;;;; Remember
 
-;; This sets the name of the buffer to *scratch*, which I suppose I'm just doing
-;; for tradition's sake.
+;; The below replaces Emacs's regular *scratch* buffer with the remember-notes
+;; file/buffer, and sets some functions/bindings for quickly adding
+;; information to it. Think of it like a super lightweight org-mode capture
+;; whose inbox you see every time Emacs starts up.
+
+;; + remember-notes -- visits remember file
+;; + remember -- capture
+;; + C-u remember -- capture region, with prompt
+;; + remember-region -- capture region, without prompt
+;; + remember-clipboard -- capture clipboard, with prompt
+
+;; Set the location of the remember-notes file.
+(setq remember-data-file "~/home/org/remember-notes")
+
+;; Auto-save the remember-notes file, and name the buffer *scratch*
 (setq remember-notes-auto-save-visited-file-name t
       remember-notes-buffer-name "*scratch*")
-;; If you just tell initial-buffer-choice that you want to use remember-notes as
-;; your initial buffer emacs will still create a *scratch* buffer that you'll
-;; never use. So we set initial-buffer-choice to a function which kills the
-;; scratch buffer and opens the remember-notes file.
+
+;; Set initial-buffer-choice to a function which kills the *scratch* buffer
+;; and opens the remember-notes buffer.
 (setq initial-buffer-choice
       (lambda () (kill-buffer remember-notes-buffer-name)
                  (remember-notes)))
 
-;; Now set the location of the remember-notes file.
-(setq remember-data-file "~/Documents/org-files/remember-notes")
+(defun oht-remember-dwim ()
+  "If the region is active, capture with region, otherwise just capture."
+  (interactive)
+  (if (use-region-p)
+      (let ((current-prefix-arg 4)) (call-interactively 'remember))
+    (remember))
+  )
 
+(bind-keys
+ ("s-_" . oht-remember-dwim)
+ ("s--" . remember-notes)
+ )
 
 ;;; Settings
 
@@ -495,7 +508,8 @@
   :commands (oht-dispatch)
   :config
   (setq oht-dispatch-functions
-	'(elfeed
+	'(remember-notes
+	  elfeed
 	  org-agenda
 	  list-bookmarks
 	  ))

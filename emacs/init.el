@@ -172,7 +172,6 @@
 (global-auto-revert-mode t)                ; update buffer when file on disk changes
 (save-place-mode 1)                        ; reopens the file to the same spot you left
 (recentf-mode 1)                           ; enables "Open Recent..." in file menu
-(add-to-list 'recentf-exclude "/elpa")     ; don't show package files in recentf
 (setq tab-width 4)                         ; tabs=4 char
 (setq help-window-select t)                ; focus new help windows when opened
 (setq sentence-end-double-space nil)       ; ends sentence after 1 space
@@ -896,6 +895,9 @@ This simply removes the hooked added by the function `use-embark-completions'."
 
 
 ;;; Secondary Selection
+
+;; A few functions for working with the Secondary Selection. The primary way I
+;; interact with these is through a hydra.
 
 (defun oht/cut-secondary-selection ()
   "Cut the secondary selection."

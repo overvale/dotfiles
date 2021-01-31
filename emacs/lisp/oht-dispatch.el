@@ -31,6 +31,6 @@
   "Pass function names to completing-read for calling interactively."
   (interactive)
   (call-interactively
-   (intern (completing-read "Choose one: " oht-dispatch-functions))))
+   (intern (completing-read "Call Function: " oht-dispatch-functions))))
 
 (provide 'oht-dispatch)

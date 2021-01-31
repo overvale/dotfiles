@@ -37,9 +37,10 @@
 ;; This function creates a properly formatted bookmark entry. It defines a
 ;; 'handler' that's used when visiting the bookmark, defined below.
 (defun oht-eww-bookmark-make-record ()
-  "Return a bookmark record for the current eww buffer."
+  "Return a bookmark record for the current eww buffer. And add
+'read: ' to the beginning."
   (interactive)
-  `(,(oht-eww-current-title)
+  `(,(concat "read: " (oht-eww-current-title))
     (location . ,(eww-current-url))
     (handler . oht-eww-bookmark-handler)))
 

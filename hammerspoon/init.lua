@@ -37,6 +37,12 @@ anycomplete.registerDefaultBindings()
 require('bluetooth_sleep')
 require('keybinds') -- mostly for remapping keys
 
+if (hostname == "shadowfax") then
+   require('backup_menu')
+end
+
+require('quick_menu')
+
 
 -- Window Control
 -- -----------------------------------------------
@@ -171,126 +177,6 @@ fileStreamChooser:showCallback(fileStreamPopulate)
 fileStreamChooser:searchSubText(true)
 
 hs.hotkey.bind( hyper, "o", function() fileStreamChooser:show() end)
-
--- QuickMenu
--- -----------------------------------------------
--- This is used for misc scripts I want to occasionally run, but don't want to
--- bother remembering a keybinding for. Somewhat like my personal FastScripts.
-
--- Create menu bar item
-local quickMenu = hs.menubar.new()
-
-function buildQuickMenu()
-   local snippetMenu = {
-      { title = "waving hands around", fn = snipWave },
-      { title = " ¯\\_(ツ)_/¯", fn = snipShrug },
-      { title = "[Org Mode Date]", fn = snipOrgDate },
-      { title = "[YYYY-MM-DD]", fn = snipISODate },
-   }
-   local menuTable = {
-      { title = "QuickMenu", disabled = true },
-      { title = "-" },
-      { title = "Copy Mail Message URL", fn = copyMailURL, shortcut = "m"},
-      { title = "New Mail Message", fn = newMailMessage },
-      { title = "-" },
-      { title = "Open Org Inbox", fn = openOrgInbox, shortcut = "i" },
-      { title = "-" },
-      { title = "Safari tabs → Org Inbox", fn = safariTabs2ORG },
-      { title = "iOS Inbox → Org Inbox", fn = importIOSinbox },
-      { title = "Clipboard → Org Inbox", fn = clipboard2ORG },
-      { title = "-" },
-      { title = "Snippets", menu = snippetMenu },
-      { title = "Open Google Drive Folder", fn = function() fileStreamChooser:show() end },
-      { title = "-" },
-      { title = "Remove From Menu Bar", fn = killQuickMenu },
-   }
-   local utilIcon = hs.image.imageFromPath("assets/hare.pdf")
-   quickMenu:setIcon(utilIcon:setSize({w=20,h=20}))
-   quickMenu:setMenu(menuTable)
-end
-
-
--- FUNCTIONS FOR MENUBAR --
-
-function killQuickMenu() quickMenu:delete() end
-
-function safariTabs2ORG()
-   os.execute( "printf '\n** TODO Safari Tabs\n\n' >> ~/home/org/inbox.org && ~/home/dot/bin/safariTabs >> ~/home/org/inbox.org && open hammerspoon://success" )
-end
-
-function clipboard2ORG()
-   os.execute( "printf '\n** TODO Clipboard Refile\n\n' >> ~/home/org/inbox.org && pbpaste >> ~/home/org/inbox.org && open hammerspoon://success" )
-end
-
-function copyMailURL()
-   os.execute( "~/home/dot/bin/getMailURL | pbcopy | open hammerspoon://success" )
-end
-
-function openOrgInbox() os.execute("open ~/home/org/inbox.org") end
-function importIOSinbox() os.execute("~/Desktop/moveiOS2ORG") end
-
-function newMailMessage() os.execute("open mailto:") end
-hs.hotkey.bind({"ctrl", "cmd", "shift"}, "m", newMailMessage)
-
--- SNIPPETS --
-function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end
-function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
-function snipOrgDate() hs.eventtap.keyStrokes(os.date("<%Y-%m-%d %a>")) end
-function snipISODate() hs.eventtap.keyStrokes(os.date("%Y-%m-%d")) end
-
--- Finally, build the menubar item
-buildQuickMenu()
-
-
--- Backup Menu
--- -----------------------------------------------
--- A menu item for monitoring/controlling restic backups run by launchd.
--- The actual backup script interacts with this.
-
--- Create the menubar item
-local backupMenu = hs.menubar.new()
--- Set the default icon, this will be replaced when the backup job succeeds/fails
-local cloud_idle = hs.image.imageFromPath("assets/cloud_idle.pdf")
-backupMenu:setIcon(cloud_idle:setSize({w=20,h=20}))
-
--- functions called by the menubar item
-function backupNow () os.execute("launchctl start local.restic.test") end
-function backupOpenLogs () os.execute("open ~/home/opt/restic/logs") end
-function backupRunning()
-   local cloud_run = hs.image.imageFromPath("assets/cloud_run.pdf")
-   backupMenu:setIcon(cloud_run:setSize({w=20,h=20}))
-end
-function backupSuccess()
-   local cloud_ok = hs.image.imageFromPath("assets/cloud_ok.pdf")
-   backupMenu:setIcon(cloud_ok:setSize({w=20,h=20}))
-end
-function backupFail()
-   local cloud_fail = hs.image.imageFromPath("assets/cloud_fail.pdf")
-   backupMenu:setIcon(cloud_fail:setSize({w=20,h=20}))
-end
-
--- Register URLs and bind them to the above functions so that the backup
--- script can update the menu item.
-hs.urlevent.bind("backup_running", backupRunning)
-hs.urlevent.bind("backup_success", backupSuccess)
-hs.urlevent.bind("backup_fail", backupFail)
-
--- Build the menu item
-function backupMenuItem()
-   -- First, get the LAST log file, we will use this in the menuTable
-   local lastBackup = hs.execute("ls ~/home/opt/restic/logs | tail -1")
-   -- Generate the menu items you want in the list
-   local menuTable = {
-      { title = "Last Backup:", disabled = true },
-      { title = lastBackup, fn = backupOpenLogs },
-      { title = "-" },
-      { title = "Backup Now", fn = backupNow },
-   }
-   backupMenu:setMenu(menuTable)
-end
-
--- Run the function to place an item in the menubar
-backupMenuItem()
 
 
 -- Reload Notification in Menubar

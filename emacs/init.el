@@ -659,7 +659,7 @@
 (setq show-paren-delay 0)                  ; and show immediately
 (setq visible-bell t)                      ; disable beep
 (setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
-(setq x-underline-at-descent-line nil)       ; underline at descent, not baseline
+(setq x-underline-at-descent-line nil)     ; underline at descent, not baseline
 (setq-default indicate-empty-lines nil)    ; show where the file ends
 (set-default 'cursor-type 'box)            ; use a box for cursor
 (blink-cursor-mode -1)                     ; no blinking please
@@ -690,11 +690,9 @@
   (set-face-attribute 'default nil
 		      :family "Iosevka" :height 130 :weight 'normal :width 'expanded)
   (set-face-attribute 'variable-pitch nil
-		      ;; Basically, 14pt
-		      :family "IBM Plex Sans" :height 1.1 :weight 'normal)
+		      :family "Iosevka Sparkle" :height 1.0 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      ;; Basically, scales it back down to 13pt
-		      :family "Iosevka" :height 0.91 :weight 'normal :width 'expanded)
+		      :family "Iosevka" :height 1.0 :weight 'normal :width 'expanded)
   )
 
 (defun oht/set-line-spacing (&optional arg)
@@ -1041,7 +1039,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :init
   (setq eww-restore-desktop nil)
   (setq eww-desktop-remove-duplicates t)
-  (setq eww-header-line-format "%u")
+  (setq eww-header-line-format "%t %u")
   (setq eww-download-directory "~/Downloads/")
   (setq eww-bookmarks-directory "~/.emacs.d/eww-bookmarks/")
   (setq eww-history-limit 150)

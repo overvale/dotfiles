@@ -566,6 +566,18 @@
               ("<tab>" . dired-subtree-toggle)))
 
 
+;;; IBuffer
+
+(use-package ibuffer
+  :straight nil
+  :commands ibuffer
+  :config
+  (defun oht-ibuffer-hook ()
+    (hl-line-mode 1)
+    )
+  :hook (ibuffer-mode . oht-ibuffer-hook)
+  )
+
 
 ;;; Keybindings
 

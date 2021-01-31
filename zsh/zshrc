@@ -36,6 +36,10 @@ bindkey "^J" history-beginning-search-forward
 export EDITOR=vim
 export BORG_REMOTE_PATH=/usr/local/bin/borg1/borg1
 
+# Automatically quote URLs
+autoload -Uz url-quote-magic
+zle -N self-insert url-quote-magic
+
 # }}}
 # {{{ PROMPT
 # ----------------------------------------------------------------------------

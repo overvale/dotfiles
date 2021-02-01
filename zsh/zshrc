@@ -163,7 +163,7 @@ function makepdf(){
 # ----------------------------------------------------------------------------
 
 fzf-launcher() {
-    eval "$(~/home/opt/launcher/launcher | fzf)"
+    eval "$(~/home/src/launcher/launcher | fzf)"
 }
 alias ll=fzf-launcher
 

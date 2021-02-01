@@ -11,7 +11,7 @@ backupMenu:setIcon(cloud_idle:setSize({w=20,h=20}))
 
 -- functions called by the menubar item
 function backupNow () os.execute("launchctl start local.restic.test") end
-function backupOpenLogs () os.execute("open ~/home/opt/restic/logs") end
+function backupOpenLogs () os.execute("open ~/home/src/restic/logs") end
 function backupRunning()
    local cloud_run = hs.image.imageFromPath("assets/cloud_run.pdf")
    backupMenu:setIcon(cloud_run:setSize({w=20,h=20}))
@@ -34,7 +34,7 @@ hs.urlevent.bind("backup_fail", backupFail)
 -- Build the menu item
 function backupMenuItem()
    -- First, get the LAST log file, we will use this in the menuTable
-   local lastBackup = hs.execute("ls ~/home/opt/restic/logs | tail -1")
+   local lastBackup = hs.execute("ls ~/home/src/restic/logs | tail -1")
    -- Generate the menu items you want in the list
    local menuTable = {
       { title = "Last Backup:", disabled = true },

@@ -134,31 +134,48 @@ Install as many app as you can into =~/Applications=, most work just fine from t
 
 - Copy files from old machine / backup (thunderbolt bridge is nice if you have the cable).
 - Copy fonts from backup.
-- Install [[http://git.io/textplay][textplay]] with =cd ~/opt/textplay && make install=.
+- Install [[http://git.io/textplay][textplay]] with =cd ~/home/src/textplay && make install=.
 
 ** Home Dir Layout
 
-- =~/dot= - my dotfiles
-- =~/lib= - stuff that programs and scripts will need access to
-- =~/opt= - basically a place for software installed via a =git clone= or personal projects along those same lines.
+The Mac home folder is a kind of dumping ground. There are a bunch of folders
+you can't delete, even if you don't use them, a few have very strict security
+requirements (Documents, Desktop, Downloads; which is what prompted this), and
+seemingly every command-line app [[https://0x46.net/thoughts/2019/02/01/dotfile-madness/][wants to install a dotfile there]] without so
+much as asking. It very much feels like a place that's for your computer's
+use, and you can join-in so long as you don't break the rules. Which is fine,
+I get why it is that way, but there's something to be said for a true home
+that you can do anything with.
+
+So I pretty much organize everything under =~/home/=.
+
+- =~/home/=
+    + =dot= - My dotfiles.
+    + =files= - Anything that doesn't fit elsewhere.
+    + =src= - Source code, and source code related things.
+    + =opt= - Basically a place for software installed via a =git clone=. I don't back this folder up.
+    + =org= - My org-files.
+    + =work=
+    + =project_a=
+    + =project_b=
 
 ** Symlinks
 
 Run from =$HOME=:
 
 #+begin_src bash
-ln -s ~/Library/Mobile\ Documents/com~apple~CloudDocs/oht cloud;
-ln -s ~/dot/vim .vim;
-ln -s ~/dot/emacs/init.el ~/.emacs.d/init.el
-ln -s ~/dot/emacs/early-init.el ~/.emacs.d/early-init.el
-ln -s ~/dot/git/gitconfig .gitconfig;
-ln -s ~/dot/git/gitignore_global .gitignore_global;
-ln -s ~/dot/zsh/zshrc ~/.zshrc
-ln -s ~/dot/zsh/zshenv ~/.zshenv
-ln -s ~/dot/hammerspoon ~/.hammerspoon
+ln -s ~/home/dot/vim .vim;
+ln -s ~/home/dot/emacs/init.el ~/.emacs.d/init.el
+ln -s ~/home/dot/emacs/early-init.el ~/.emacs.d/early-init.el
+ln -s ~/home/dot/git/gitconfig .gitconfig;
+ln -s ~/home/dot/git/gitignore_global .gitignore_global;
+ln -s ~/home/dot/zsh/zshrc ~/.zshrc
+ln -s ~/home/dot/zsh/zshenv ~/.zshenv
+ln -s ~/home/dot/hammerspoon ~/.hammerspoon
 #+end_src
 
-- Rewrite all paths pointing to repos in =~/lib/git/=
+- Rewrite all paths pointing to repos in =~/home/src/git/= --- this can be done
+  with the command =fd "\.git$" -H -t f | xargs bbedit=
 - Open vim, emacs, zsh, etc. and verify everything is functioning correctly (plugins and whatnot).
 
 ** Dictionaries

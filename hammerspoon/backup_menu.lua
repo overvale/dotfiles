@@ -16,15 +16,21 @@ local cloud_fail = hs.image.imageFromPath("assets/cloud_fail.pdf")
 function backupNow () os.execute("launchctl start local.restic.test") end
 function backupOpenLogs () os.execute("open ~/home/src/restic/logs") end
 function backupRunning()
+   local frontWindow = hs.window.frontmostWindow()
    backupMenu:setIcon(cloud_run:setSize({w=20,h=20}))
+   frontWindow:focus()
 end
 function backupSuccess()
+   local frontWindow = hs.window.frontmostWindow()
    backupMenu:setIcon(cloud_ok:setSize({w=20,h=20}))
    backupMenuItem()
+   frontWindow:focus()
 end
 function backupFail()
+   local frontWindow = hs.window.frontmostWindow()
    backupMenu:setIcon(cloud_fail:setSize({w=20,h=20}))
    backupMenuItem()
+   frontWindow:focus()
 end
 
 -- Register URLs and bind them to the above functions so that the backup

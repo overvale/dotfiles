@@ -5,24 +5,26 @@
 
 -- Create the menubar item
 local backupMenu = hs.menubar.new()
--- Set the default icon, this will be replaced when the backup job succeeds/fails
+
+-- Set the icons for the menu bar item
 local cloud_idle = hs.image.imageFromPath("assets/cloud_idle.pdf")
-backupMenu:setIcon(cloud_idle:setSize({w=20,h=20}))
+local cloud_run  = hs.image.imageFromPath("assets/cloud_run.pdf")
+local cloud_ok   = hs.image.imageFromPath("assets/cloud_ok.pdf")
+local cloud_fail = hs.image.imageFromPath("assets/cloud_fail.pdf")
 
 -- functions called by the menubar item
 function backupNow () os.execute("launchctl start local.restic.test") end
 function backupOpenLogs () os.execute("open ~/home/src/restic/logs") end
 function backupRunning()
-   local cloud_run = hs.image.imageFromPath("assets/cloud_run.pdf")
    backupMenu:setIcon(cloud_run:setSize({w=20,h=20}))
 end
 function backupSuccess()
-   local cloud_ok = hs.image.imageFromPath("assets/cloud_ok.pdf")
    backupMenu:setIcon(cloud_ok:setSize({w=20,h=20}))
+   backupMenuItem()
 end
 function backupFail()
-   local cloud_fail = hs.image.imageFromPath("assets/cloud_fail.pdf")
    backupMenu:setIcon(cloud_fail:setSize({w=20,h=20}))
+   backupMenuItem()
 end
 
 -- Register URLs and bind them to the above functions so that the backup
@@ -47,4 +49,5 @@ end
 
 -- Run the function to place an item in the menubar
 backupMenuItem()
+backupMenu:setIcon(cloud_idle:setSize({w=20,h=20}))
 

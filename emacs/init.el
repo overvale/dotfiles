@@ -193,8 +193,8 @@
 (setq-default fill-column 78)              ; Set column used for fill-paragraph
 (setq ring-bell-function 'ignore)          ; Don't beep
 
-;; Set a variable for where your emacs dotfiles are located:
-(defvar oht-dotfiles "/Users/oht/home/dot/emacs/")
+;; Set a variable for where your emacs dotfiles are located.
+(defvar oht-dotfiles "~/home/dot/emacs/")
 
 ;; Add lisp files to the load path.
 (add-to-list 'load-path (concat oht-dotfiles "lisp/"))
@@ -708,6 +708,7 @@
 ;;;; Themes
 
 (use-package modus-themes
+  :demand
   :init
   (setq
    modus-themes-bold-constructs nil
@@ -873,6 +874,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   )
 
 (use-package embark-consult
+  :straight nil
   :after (embark consult)
   ;; :demand ; only necessary if you have the hook below
   ;; ;; if you want to have consult previews as you move around an

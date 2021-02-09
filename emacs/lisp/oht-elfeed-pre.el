@@ -41,6 +41,12 @@
 		     ("https://www.theverge.com/rss/front-page/index.xml" news)
 		     ("https://daringfireball.net/feeds/main" news mac)
 		     ;; emacs
+		     ("https://github.com/railwaycat/homebrew-emacsmacport/releases.atom" emacs)
+		     ("https://github.com/raxod502/selectrum/releases.atom" emacs)
+		     ("https://github.com/minad/consult/releases.atom" emacs)
+		     ("https://github.com/oantolin/embark/releases.atom" emacs)
+		     ("https://github.com/minad/marginalia/releases.atom" emacs)
+		     ("https://gitlab.com/protesilaos/modus-themes/-/tags?format=atom" emacs)
 		     ("https://oremacs.com/atom.xml" emacs)
 		     ("https://irreal.org/blog/?feed=rss2" emacs)
 		     ("https://endlessparentheses.com/atom.xml" emacs)

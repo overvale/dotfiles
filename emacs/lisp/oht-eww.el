@@ -22,27 +22,14 @@
 ;; 1. https://www.emacswiki.org/emacs/bookmark%2B-1.el
 ;; 2. https://github.com/TotalView/dotemacs/blob/master/.emacs.d/elpa/w3m-20140330.1933/bookmark-w3m.el
 
-
-;; First, make sure you can get the Title of the page, this will be the name
-;; of our bookmark.
-(defun oht-eww-current-title ()
-  "Returns the title of the current eww buffer"
-  (plist-get eww-data :title))
-
-;; Note that eww's default behavior us to bury the buffer when you press q.
-;; When you do that, then visit a new url, something about the eww-data :title
-;; system doesn't update to the new title. But if you kill the eww buffer
-;; instead, it works. So I've bound k to kill-this-buffer in eww-mode.
-
-;; This function creates a properly formatted bookmark entry. It defines a
+;; This function creates a properly formatted bookmark entry. It names a
 ;; 'handler' that's used when visiting the bookmark, defined below.
 (defun oht-eww-bookmark-make-record ()
-  "Return a bookmark record for the current eww buffer. And add
-'read: ' to the beginning."
-  (interactive)
-  `(,(concat "read: " (oht-eww-current-title))
-    (location . ,(eww-current-url))
-    (handler . oht-eww-bookmark-handler)))
+  "Make a bookmark record for the current eww buffer"
+  `(,(plist-get eww-data :title)
+    ((location . ,(eww-current-url))
+     (handler . oht-eww-bookmark-handler)
+     (defaults . (,(plist-get eww-data :title))))))
 
 ;; This function simply tells Emacs to use the custom function when using the
 ;; bookmarking system.

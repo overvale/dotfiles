@@ -30,7 +30,7 @@ function buildQuickMenu()
       { title = "-" },
       { title = "Remove From Menu Bar", fn = killQuickMenu },
    }
-   local utilIcon = hs.image.imageFromPath("assets/hare.pdf")
+   local utilIcon = hs.image.imageFromPath("assets/q.pdf")
    quickMenu:setIcon(utilIcon:setSize({w=20,h=20}))
    quickMenu:setMenu(menuTable)
 end

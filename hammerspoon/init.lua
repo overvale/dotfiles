@@ -37,11 +37,11 @@ anycomplete.registerDefaultBindings()
 require('bluetooth_sleep')
 require('keybinds') -- mostly for remapping keys
 
+require('quick_menu')
+
 if (hostname == "shadowfax") then
    require('backup_menu')
 end
-
-require('quick_menu')
 
 
 -- Window Control

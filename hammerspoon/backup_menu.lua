@@ -48,6 +48,7 @@ function backupMenuItem()
       { title = "Last Backup:", disabled = true },
       { title = lastBackup, fn = backupOpenLogs },
       { title = "-" },
+      { title = "Open Logs", fn = backupOpenLogs },
       { title = "Backup Now", fn = backupNow },
    }
    backupMenu:setMenu(menuTable)

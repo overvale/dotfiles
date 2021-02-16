@@ -280,8 +280,9 @@
     ("cc" oht/copy-secondary-selection "Copy 2nd")
     ("xv" oht/cut-secondary-selection-paste "Cut 2nd & Paste")
     ("cv" oht/copy-secondary-selection-paste "Copy 2nd & Paste")
-    ("m" (lambda () (interactive)(secondary-selection-from-region)) "Mark as 2nd")
-    ("g" (lambda () (interactive)(secondary-selection-to-region)) "Goto 2nd")
+    ("m" (lambda () (interactive)(secondary-selection-from-region)) "Mark Region as 2nd")
+    ("g" (lambda () (interactive)(secondary-selection-to-region)) "Make 2nd the Region")
+    ("d" (lambda () (interactive)(delete-overlay mouse-secondary-overlay)) "Delete 2nd")
     ("q" nil "cancel"))
   (defhydra hydra-outline (:foreign-keys warn)
     "Hydra for navigating outline mode"
@@ -309,6 +310,7 @@
   (load (concat oht-dotfiles "lisp/oht-org.el"))
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
+  (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
   ;; :hook (org-mode . variable-pitch-mode)
   :bind (:map org-mode-map
 	      ("s-\\ o" . consult-outline)
@@ -316,7 +318,6 @@
 	      ("s-\\ t" . org-todo)
 	      ("s-\\ n" . org-narrow-to-subtree)
 	      ("s-\\ w" . widen)
-	      ;;("s-\\ s" . org-search-view)
 	      ("s-\\ <" . org-insert-structure-template)
 	      ("s-\\ s" . org-store-link)
 	      ("s-\\ i" . org-insert-last-stored-link)
@@ -1105,7 +1106,6 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :commands eww
   :bind
   (:map eww-mode-map
-	("k" . kill-this-buffer)
 	("b" . bookmark-set)
 	)
   :custom

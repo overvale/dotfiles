@@ -662,7 +662,7 @@
 	   )
 
 (bind-keys :prefix-map oht/windows-leader
-	   :prefix "s-="
+	   :prefix "s-w"
 	   ("s" . oht/split-below)
 	   ("v" . oht/split-beside)
 	   ("k" . oht/delete-window)

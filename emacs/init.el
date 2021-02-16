@@ -116,22 +116,8 @@
       ;; Avoid stale compiled code shadow newer source code
       load-prefer-newer t)
 
-;; Set encoding to be UTF-8 everywhere. I've seen a lot of conflicting
-;; information about what's needed to use UTF-8 everywhere. Mastering Emacs
-;; seems like a trustworthy source.
-;; https://www.masteringemacs.org/article/working-coding-systems-unicode-emacs
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-;; backwards compatibility as default-buffer-file-coding-system
-;; is deprecated in 23.2.
-(if (boundp 'buffer-file-coding-system)
-    (setq-default buffer-file-coding-system 'utf-8)
-  (setq default-buffer-file-coding-system 'utf-8))
-
-;; Treat clipboard input as UTF-8 string first; compound text next, etc.
-(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+;; Set default encoding to UTF-8
+(set-language-environment "UTF-8")
 
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name

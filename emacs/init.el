@@ -297,11 +297,11 @@
 
 ;; this package creates a report each time you startup
 ;; You'll need to add ':demand' and restart emacs to see the report
-(use-package benchmark-init
-  ;; :demand
-  :config
-  ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+;; (use-package benchmark-init
+;;   :demand
+;;   :config
+;;   ;; To disable collection of benchmark data after init is done.
+;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 (use-package org
   :commands org-mode

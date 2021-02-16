@@ -609,6 +609,18 @@
 
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
+;; Normally, when `eval-last-sexp' is called with an argument the result is
+;; inserted at point, this advises the function to REPLACE the last sexp.
+(defadvice eval-last-sexp (around replace-sexp (arg) activate)
+  "Evaluate and replace when called with a prefix argument."
+  (if arg
+      (let ((pos (point)))
+        ad-do-it
+        (goto-char pos)
+        (backward-kill-sexp)
+        (forward-sexp))
+    ad-do-it))
+
 (bind-keys ("M-s-s" . save-some-buffers)
 	   ("M-c" . capitalize-dwim)
 	   ("M-l" . downcase-dwim)
@@ -616,42 +628,47 @@
 	   ("M-SPC" . cycle-spacing)
 	   ("M-/" . hippie-expand)
 	   ("C-l" . oht/recenter-top-bottom)
-	   ("C-=" . pulse-line)
 	   ("C-x r r" . replace-rectangle)
+	   ("C-h C-f" . find-function)
+	   ("C-h C-v" . find-variable)
 	   )
 
 (bind-key* "M-o" 'oht/other-window)
 
-(bind-keys ("s-p" . execute-extended-command)
-	   ("s-k" . kill-this-buffer)
+(bind-keys ("s-k" . kill-this-buffer)
 	   ("s-B" . ibuffer)
 	   ("M-s-b" . list-bookmarks)
 	   ("s-C" . org-capture)
 	   ("s-|" . oht/pipe-region)
-	   ("C-S-<mouse-1>" . mc/add-cursor-on-click)
-	   ("s-1" . org-agenda)
+	   ("s-a" . org-agenda)
 	   ("s-/" . comment-or-uncomment-region-or-line)
 	   ("s-l" . oht-mac-mark-whole-line)
-	   ("s-<return>" . oht-mac-open-line-below)
-	   ("S-s-<return>" . oht-mac-open-line-above)
 	   )
 
+;;;; Return Bindings
+
+(bind-key* "C-<return>" 'execute-extended-command)
+
 (bind-keys :prefix-map oht/global-leader
-	   :prefix "s-'"
+	   :prefix "s-<return>"
+	   ("t t" . tab-bar-mode)
+	   ("t n" . tab-bar-new-tab)
+	   ("t k" . tab-bar-close-tab)
+	   ("t z" . tab-bar-undo-close-tab)
+	   ("t ]" . tab-bar-switch-to-next-tab)
+	   ("t [" . tab-bar-switch-to-prev-tab)
 	   ("a" . auto-fill-mode)
 	   ("d" . sdcv-search)
 	   ("h" . hl-line-mode)
 	   ("l" . oht/toggle-line-numbers)
 	   ("w" . visual-line-mode)
-	   ("t" . toggle-truncate-lines)
+	   ("T" . toggle-truncate-lines)
 	   ("W" . oht/toggle-whitespace)
 	   ("m" . magit-status)
-	   ("M" . consult-marks)
 	   ("<left>" . winner-undo)
 	   ("<right>" . winner-redo)
 	   ("s" . org-store-link)
 	   ("o" . consult-outline)
-	   ("!" . font-lock-mode)
 	   ("j" . dired-jump)
 	   ("b s" . bookmark-set)
 	   ("b l" . list-bookmarks)

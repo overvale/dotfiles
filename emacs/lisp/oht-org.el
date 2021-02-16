@@ -122,6 +122,12 @@
                  )))
 	))
 
+(defun oht-org-agenda-today ()
+  "Call custom agenda command"
+  (interactive)
+  (org-agenda nil "1")
+  )
+
 ;; The variables
 ;;    org-agenda-todo-ignore-with-date,
 ;;    org-agenda-todo-ignore-timestamp,

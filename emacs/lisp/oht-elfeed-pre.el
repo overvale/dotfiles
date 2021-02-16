@@ -7,7 +7,7 @@
 (setq elfeed-curl-max-connections 10)
 (setq elfeed-db-directory "~/.emacs.d/elfeed/")
 (setq elfeed-enclosure-default-dir "~/Downloads/")
-(setq elfeed-search-filter "@1-week-ago +unread")
+(setq elfeed-search-filter "@4-week-ago +unread")
 (setq elfeed-sort-order 'descending)
 (setq elfeed-search-clipboard-type 'CLIPBOARD)
 (setq elfeed-show-truncate-long-urls t)
@@ -34,6 +34,8 @@
 		     ("https://waxy.org/category/links/feed/")
 		     ("https://feeds.feedburner.com/Metafilter")
 		     ("https://tumblr.mapsbynik.com/rss")
+		     ("https://github.com/Hammerspoon/hammerspoon/releases.atom")
+		     ("https://github.com/syncthing/syncthing-macos/releases.atom")
 		     ;; news
 		     ("https://www.economist.com/latest/rss.xml" news)
 		     ("https://www.economist.com/the-economist-explains/rss.xml" news)

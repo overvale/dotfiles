@@ -328,7 +328,8 @@
 	      ("s-\\ r" . org-refile)
 	      ("s-\\ g" . org-goto)
 	      ("s-\\ c" . org-toggle-checkbox)
-	      ))
+	      )
+  )
 
 (use-package bookmark
   :straight nil
@@ -698,7 +699,7 @@
 ;; but you need it here to prevent it from showing in new frames. ¯\_(ツ)_/¯
 (scroll-bar-mode -1)
 
-(menu-bar-mode 1)                          ; ensures full-screen avail on macOS
+(menu-bar-mode 1)                          ; make green zoom button fullscreen
 (show-paren-mode t)                        ; highlight parens
 (setq show-paren-delay 0)                  ; and show immediately
 (setq visible-bell t)                      ; disable beep
@@ -921,6 +922,10 @@ This simply removes the hooked added by the function `use-embark-completions'."
   (setq consult-config `((consult-mark :preview-key any)))
   (setq consult-project-root-function #'vc-root-dir)
   )
+
+(use-package bookmark-view
+  :straight (:type git :host github :repo "minad/bookmark-view" :branch "master")
+  :commands (bookmark-view)
   )
 
 (use-package embark-consult
@@ -934,10 +939,24 @@ This simply removes the hooked added by the function `use-embark-completions'."
   )
 
 (use-package ctrlf
+  :init
+  (defun oht-ctrlf-push-region ()
+    "Push the region to ctrlf's `last-input' variable."
+    (interactive)
+    (if (use-region-p)
+	(setq ctrlf--last-input (buffer-substring (region-beginning) (region-end)))
+      (error "No active region")))
+  (defun oht-ctrlf-forward-fuzzy ()
+    "Call `ctrlf-forward-fuzzy' with last-input."
+    (interactive)
+    (ctrlf-forward 'fuzzy nil ctrlf--last-input)
+    )
   :bind
+  ;; ("C-M-s" . oht-ctrlf-push-region)
   ("C-s" . ctrlf-forward-fuzzy)
   ("C-r" . ctrlf-backward-fuzzy)
   :config
+  (setq ctrlf-go-to-end-of-match nil)
   (setq ctrlf-minibuffer-bindings
         `(("C-n"          . ctrlf-next-match)
           (,(kbd "C-p")   . ctrlf-previous-match)

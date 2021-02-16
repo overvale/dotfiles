@@ -11,6 +11,7 @@ local cloud_idle = hs.image.imageFromPath("assets/cloud_idle.pdf")
 local cloud_run  = hs.image.imageFromPath("assets/cloud_run.pdf")
 local cloud_ok   = hs.image.imageFromPath("assets/cloud_ok.pdf")
 local cloud_fail = hs.image.imageFromPath("assets/cloud_fail.pdf")
+local cloud_offline = hs.image.imageFromPath("assets/cloud_offline.pdf")
 
 -- functions called by the menubar item
 function backupNow () os.execute("launchctl start local.restic.test") end
@@ -32,12 +33,19 @@ function backupFail()
    backupMenuItem()
    frontWindow:focus()
 end
+function backupOffline()
+   local frontWindow = hs.window.frontmostWindow()
+   backupMenu:setIcon(cloud_offline:setSize({w=20,h=20}))
+   backupMenuItem()
+   frontWindow:focus()
+end
 
 -- Register URLs and bind them to the above functions so that the backup
 -- script can update the menu item.
 hs.urlevent.bind("backup_running", backupRunning)
 hs.urlevent.bind("backup_success", backupSuccess)
 hs.urlevent.bind("backup_fail", backupFail)
+hs.urlevent.bind("backup_offline", backupOffline)
 
 -- Build the menu item
 function backupMenuItem()

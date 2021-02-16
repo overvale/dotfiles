@@ -18,7 +18,7 @@
   (if composition-mode-status
       (progn
 	(visual-line-mode t)
-	(setq-local line-spacing 4)
+	(setq-local line-spacing 2)
 	(olivetti-mode t)
 	(text-scale-increase 1)
 	(variable-pitch-mode 1)

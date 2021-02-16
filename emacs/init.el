@@ -353,6 +353,7 @@
   :custom
   (bookmark-save-flag 1)
   (bookmark-default-file "~/home/bookmarks")
+  (bookmark-bmenu-file-column 45)
   )
 
 (use-package magit
@@ -710,28 +711,31 @@
 ;; When using `text-scale-incraese', this sets each 'step' to about one point size.
 (setq text-scale-mode-step 1.08)
 
-;; Keep in mind that when in variable-pitch-mode the fixed-pitch size is based
-;; not on the default size but the variable-pitch size.
+;; You can set a font for an individual frame with `set-frame-font'
+;; You can experiment, in the Mac Port, with `mac-font-panel-mode'
+
 (defun oht-fonts-set ()
-  "Sets default, variable-pitch, and fixed-pitch fonts to my liking."
+  "Sets default, variable-pitch, and fixed-pitch fonts to my liking.
+
+Keep in mind that when in variable-pitch-mode the fixed-pitch
+size is based not on the default size but the variable-pitch
+size. For this reason I want the height of both the
+variable-pitch and fixed-pitch fonts to always be 1.0."
   (interactive)
   (set-face-attribute 'default nil
 		      :family "Iosevka" :height 130 :weight 'normal :width 'expanded)
   (set-face-attribute 'variable-pitch nil
 		      :family "Iosevka Sparkle" :height 1.0 :weight 'normal)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Iosevka" :height 1.0 :weight 'normal :width 'expanded)
+		      :family "Iosevka Fixed" :height 1.0 :weight 'normal :width 'expanded)
   )
+(oht-fonts-set)
 
 (defun oht/set-line-spacing (&optional arg)
   "Buffer local, set the line spacing. Takes an argument, 0 by default"
   (interactive "P")
   (setq-local line-spacing arg)
   )
-
-;; This sets the default fonts
-(oht-fonts-set)
-
 
 ;;;; Themes
 
@@ -751,7 +755,7 @@
    modus-themes-org-blocks 'grayscale
    modus-themes-scale-headings nil
    modus-themes-variable-pitch-ui t
-   modus-themes-variable-pitch-headings nil
+   modus-themes-variable-pitch-headings t
    )
   (modus-themes-load-themes)
   :config

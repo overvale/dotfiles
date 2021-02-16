@@ -222,13 +222,14 @@
 
 
 (defun sanemacs/backward-kill-word ()
+  "Kill word backward, without copying to clipboard."
   (interactive "*")
   (push-mark)
   (backward-word)
   (delete-region (point) (mark)))
 
-(global-set-key (kbd "M-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
-(global-set-key (kbd "C-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
+(global-set-key (kbd "M-DEL") 'sanemacs/backward-kill-word)
+(global-set-key (kbd "C-DEL") 'sanemacs/backward-kill-word)
 
 
 ;;; Packages
@@ -248,7 +249,7 @@
   :config
   (blackout 'eldoc-mode)
   (blackout 'emacs-lisp-mode "Elisp")
-  (blackout 'auto-fill-function " Fill")
+  (blackout 'auto-fill-function " -A-")
   )
 
 ;;;; Other Packages
@@ -489,6 +490,10 @@
 ;;    needed when a command is called, you should name the `:command'. You can
 ;;    also `:demand' that the file be loaded, or say that it should be loaded
 ;;    `:after' another package.
+;;
+;; Keep in mind that a file must exist for each of these use-package
+;; declarations. If you don't want to separate the code into a separate file
+;; you can "use" the Emacs package.
 
 (use-package oht-dispatch
   :straight nil
@@ -758,15 +763,15 @@ variable-pitch and fixed-pitch fonts to always be 1.0."
 ;; looking for. To make this easier I've installed a few packages that enhance
 ;; Emacs built-in facilities for doing this.
 
-;; There are MANY approaches to this. I'm following the popular current trend
-;; lead by @oantolin, @raxod502, @minad, and @protesilaos. Generally, it works
-;; like this:
+;; There are MANY approaches to this. I'm following the popular trend lead by
+;; @oantolin, @raxod502, @minad, and @protesilaos. Generally, it works like
+;; this:
 ;;
 ;; 1. Use Selectrum as the main interface for completion narrowing (by default).
 ;; 2. Use Prescient to sort those completions and provide fuzzy matching.
 ;; 3. Use Marginalia to decorate the completions.
 ;; 4. Use Embark so you can act on the list of completions (among other things).
-;; 5. Fall back on Orderless for use in Embark minibuffers.
+;; 5. When Selectrum is disabled (and thus also prescient) fall back on Orderless.
 ;; 6. Use Consult and Consult-Selectrum to enable new commands.
 
 (use-package orderless

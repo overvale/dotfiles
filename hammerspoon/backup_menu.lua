@@ -64,5 +64,17 @@ end
 
 -- Run the function to place an item in the menubar
 backupMenuItem()
-backupMenu:setIcon(cloud_idle:setSize({w=20,h=20}))
 
+-- Determine the status of the last backup
+lastBackupStatus = hs.execute("ls ~/home/src/restic/logs | tail -1 | cut -d ' ' -f2 | tr -d '\n'")
+
+-- Set icon according to last backup status
+if lastBackupStatus == "OFFLINE" then
+   backupMenu:setIcon(cloud_offline:setSize({w=20,h=20}))
+elseif lastBackupStatus == "SUCCESS" then
+   backupMenu:setIcon(cloud_ok:setSize({w=20,h=20}))
+elseif lastBackupStatus == "FAIL" then
+   backupMenu:setIcon(cloud_fail:setSize({w=20,h=20}))
+else
+   backupMenu:setIcon(cloud_idle:setSize({w=20,h=20}))
+end

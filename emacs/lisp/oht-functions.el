@@ -54,6 +54,13 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
       (kill-region (region-beginning) (region-end))
     (delete-forward-char 1 nil)))
 
+(defun sanemacs/backward-kill-word ()
+  "Kill word backward, without copying to clipboard."
+  (interactive "*")
+  (push-mark)
+  (backward-word)
+  (delete-region (point) (mark)))
+
 (defun oht/toggle-line-numbers ()
   "Toggles display of line numbers. Applies to all buffers."
   (interactive)

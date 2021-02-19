@@ -183,17 +183,6 @@
 (setq enable-recursive-minibuffers 1)
 
 
-(defun sanemacs/backward-kill-word ()
-  "Kill word backward, without copying to clipboard."
-  (interactive "*")
-  (push-mark)
-  (backward-word)
-  (delete-region (point) (mark)))
-
-(global-set-key (kbd "M-DEL") 'sanemacs/backward-kill-word)
-(global-set-key (kbd "C-DEL") 'sanemacs/backward-kill-word)
-
-
 ;;; Packages
 
 
@@ -215,6 +204,14 @@
   )
 
 ;;;; Other Packages
+
+;; (use-package benchmark-init
+;;   ;; This package creates a report each time you startup
+;;   ;; You'll need to add ':demand' and restart emacs to see the report
+;;   :demand
+;;   :config
+;;   ;; To disable collection of benchmark data after init is done.
+;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 (use-package remember
   ;; The below replaces Emacs's regular *scratch* buffer with the remember-notes
@@ -251,7 +248,6 @@
   :config
   (defhydra hydra-fonts (:exit nil :foreign-keys warn)
     "Set Font Properties"
-    ("d" oht-fonts-set "Default Font")
     ("v" variable-pitch-mode "Variable")
     ("=" text-scale-increase "Larger")
     ("+" text-scale-increase "Larger")
@@ -284,14 +280,6 @@
     ("q" nil "Cancel" :exit t)
     )
   )
-
-;; this package creates a report each time you startup
-;; You'll need to add ':demand' and restart emacs to see the report
-;; (use-package benchmark-init
-;;   :demand
-;;   :config
-;;   ;; To disable collection of benchmark data after init is done.
-;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 (use-package org
   :commands org-mode
@@ -630,6 +618,8 @@
 	   ("C-x r r" . replace-rectangle)
 	   ("C-h C-f" . find-function)
 	   ("C-h C-v" . find-variable)
+	   ("M-DEL" . sanemacs/backward-kill-word)
+	   ("C-DEL" . sanemacs/backward-kill-word)
 	   )
 
 (bind-key* "M-o" 'oht/other-window)
@@ -1140,8 +1130,8 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :commands elfeed
   :hook (elfeed-show-mode . oht-elfeed-show-fonts)
   :init
-  (load (concat oht-dotfiles "lisp/oht-elfeed-pre.el"))
   :config
+  (load (concat oht-dotfiles "lisp/oht-elfeed-pre.el"))
   (load (concat oht-dotfiles "lisp/oht-elfeed-post.el"))
   :bind
   (:map elfeed-search-mode-map

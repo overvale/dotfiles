@@ -127,44 +127,6 @@
       initial-major-mode 'fundamental-mode
       initial-scratch-message nil)
 
-;;;; Remember
-
-;; The below replaces Emacs's regular *scratch* buffer with the remember-notes
-;; file/buffer, and sets some functions/bindings for quickly adding
-;; information to it. Think of it like a super lightweight org-mode capture
-;; whose inbox you see every time Emacs starts up.
-
-;; + remember-notes -- visits remember file
-;; + remember -- capture
-;; + C-u remember -- capture region, with prompt
-;; + remember-region -- capture region, without prompt
-;; + remember-clipboard -- capture clipboard, with prompt
-
-;; Set the location of the remember-notes file.
-(setq remember-data-file "~/home/org/remember-notes")
-
-;; Auto-save the remember-notes file, and name the buffer *scratch*
-(setq remember-notes-auto-save-visited-file-name t
-      remember-notes-buffer-name "*scratch*")
-
-;; Set initial-buffer-choice to a function which kills the *scratch* buffer
-;; and opens the remember-notes buffer.
-(setq initial-buffer-choice
-      (lambda () (kill-buffer remember-notes-buffer-name)
-                 (remember-notes)))
-
-(defun oht-remember-dwim ()
-  "If the region is active, capture with region, otherwise just capture."
-  (interactive)
-  (if (use-region-p)
-      (let ((current-prefix-arg 4)) (call-interactively 'remember))
-    (remember))
-  )
-
-(bind-keys
- ("s-_" . oht-remember-dwim)
- ("s--" . remember-notes)
- )
 
 ;;; Settings
 
@@ -253,6 +215,33 @@
   )
 
 ;;;; Other Packages
+
+(use-package remember
+  ;; The below replaces Emacs's regular *scratch* buffer with the remember-notes
+  ;; file/buffer, and sets some functions/bindings for quickly adding
+  ;; information to it. Think of it like a super lightweight org-mode capture
+  ;; whose inbox you see every time Emacs starts up.
+  :straight nil
+  :init
+  (setq remember-data-file "~/home/org/remember-notes")
+  (setq remember-notes-buffer-name "*scratch*")
+  (setq remember-notes-auto-save-visited-file-name t)
+  ;; Set initial-buffer-choice to a function which kills the *scratch* buffer
+  ;; and opens the remember-notes buffer. This loads `remember'.
+  (setq initial-buffer-choice
+	(lambda () (kill-buffer remember-notes-buffer-name)
+          (remember-notes)))
+  (defun oht-remember-dwim ()
+    "If the region is active, capture with region, otherwise just capture."
+    (interactive)
+    (if (use-region-p)
+	(let ((current-prefix-arg 4)) (call-interactively 'remember))
+      (remember))
+    )
+  :bind
+  ("s-_" . oht-remember-dwim)
+  ("s--" . remember-notes)
+ )
 
 (use-package hydra
   :bind

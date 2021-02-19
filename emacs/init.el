@@ -299,8 +299,7 @@
   (load (concat oht-dotfiles "lisp/oht-org.el"))
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
-  (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
-  ;; :hook (org-mode . variable-pitch-mode)
+  :hook (org-mode . variable-pitch-mode)
   :bind (:map org-mode-map
 	      ("s-\\ o" . consult-outline)
 	      ("s-\\ ." . oht/org-insert-date-today)
@@ -318,6 +317,15 @@
 	      ("s-\\ g" . org-goto)
 	      ("s-\\ c" . org-toggle-checkbox)
 	      )
+  )
+
+(use-package org-agenda
+  :straight nil
+  :commands org-agenda
+  :bind
+  (:map org-agenda-mode-map
+	("s-z" . org-agenda-undo)
+	)
   )
 
 (use-package bookmark

@@ -18,7 +18,7 @@
 ;; 3. An `occur' buffer with the query: [^;;; ]
 
 
-;;; Preamble
+;;; Settings
 
 
 ;;;; Performance
@@ -70,65 +70,10 @@
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 
+;;;; Preferences
 
-;;;; Straight Use Package
-
-;; Required Bootstrap to ensure it is installed
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-
-
-;; use-package integration
-
-;; Package `use-package' provides a handy macro by the same name which
-;; is essentially a wrapper around `with-eval-after-load' with a lot
-;; of handy syntactic sugar and useful features.
-(straight-use-package 'use-package)
-
-;; When configuring a feature with `use-package', also tell
-;; straight.el to install a package of the same name, unless otherwise
-;; specified using the `:straight' keyword.
-(setq straight-use-package-by-default t)
-
-;; Tell `use-package' to always load features lazily unless told
-;; otherwise. It's nicer to have this kind of thing be deterministic:
-;; if `:demand' is present, the loading is eager; otherwise, the
-;; loading is lazy. See
-;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
-(setq use-package-always-defer t)
-
-
-;;;; Basics
-
-;; Always follow symlinks. init files are normally stowed/symlinked.
-(setq vc-follow-symlinks t
-      find-file-visit-truename t
-      ;; Avoid stale compiled code shadow newer source code
-      load-prefer-newer t)
-
-;; Set default encoding to UTF-8
-(set-language-environment "UTF-8")
-
-(setq inhibit-startup-message t
-      inhibit-startup-echo-area-message user-login-name
-      inhibit-default-init t
-      ;; Starting the scratch buffer in `fundamental-mode', rather than, say,
-      ;; `org-mode' or `text-mode', which pull in a ton of packages.
-      initial-major-mode 'fundamental-mode
-      initial-scratch-message nil)
-
-
-;;; Settings
+;; Next, let's set a bunch of basic preferences for how we want Emacs to
+;; behave.
 
 (global-auto-revert-mode t)                ; update buffer when file on disk changes
 (save-place-mode 1)                        ; reopens the file to the same spot you left
@@ -182,504 +127,25 @@
 ;; minibuffer. You then want to call a command inside that minibuffer.
 (setq enable-recursive-minibuffers 1)
 
-
-;;; Packages
-
-
-;;;; Critical Packages
-
-;; These packages are relied upon by lots of things that come after, therefore
-;; they must come first.
-
-(use-package bind-key
-  :demand
-  )
-
-(use-package blackout
-  :demand
-  :config
-  (blackout 'eldoc-mode)
-  (blackout 'emacs-lisp-mode "Elisp")
-  (blackout 'auto-fill-function " -A-")
-  )
-
-;;;; Other Packages
-
-;; (use-package benchmark-init
-;;   ;; This package creates a report each time you startup
-;;   ;; You'll need to add ':demand' and restart emacs to see the report
-;;   :demand
-;;   :config
-;;   ;; To disable collection of benchmark data after init is done.
-;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
-
-(use-package remember
-  ;; The below replaces Emacs's regular *scratch* buffer with the remember-notes
-  ;; file/buffer, and sets some functions/bindings for quickly adding
-  ;; information to it. Think of it like a super lightweight org-mode capture
-  ;; whose inbox you see every time Emacs starts up.
-  :straight nil
-  :init
-  (setq remember-data-file "~/home/org/remember-notes")
-  (setq remember-notes-buffer-name "*scratch*")
-  (setq remember-notes-auto-save-visited-file-name t)
-  ;; Set initial-buffer-choice to a function which kills the *scratch* buffer
-  ;; and opens the remember-notes buffer. This loads `remember'.
-  (setq initial-buffer-choice
-	(lambda () (kill-buffer remember-notes-buffer-name)
-          (remember-notes)))
-  (defun oht-remember-dwim ()
-    "If the region is active, capture with region, otherwise just capture."
-    (interactive)
-    (if (use-region-p)
-	(let ((current-prefix-arg 4)) (call-interactively 'remember))
-      (remember))
-    )
-  :bind
-  ("s-_" . oht-remember-dwim)
-  ("s--" . remember-notes)
- )
-
-(use-package hydra
-  :bind
-  ("s-F" . hydra-fonts/body)
-  ("s-2" . hydra-secondary-selection/body)
-  ("s-0" . hydra-outline/body)
-  :config
-  (defhydra hydra-fonts (:exit nil :foreign-keys warn)
-    "Set Font Properties"
-    ("v" variable-pitch-mode "Variable")
-    ("=" text-scale-increase "Larger")
-    ("+" text-scale-increase "Larger")
-    ("-" text-scale-decrease "Smaller")
-    ("0" text-scale-mode "Reset Size")
-    ("s" oht/set-line-spacing "Line Spacing")
-    ("m" modus-themes-toggle "Modus Toggle")
-    ("o" olivetti-mode "Olivetti")
-    ("w" visual-line-mode "Wrap")
-    ("c" composition-mode "Comp")
-    ("q" nil "cancel"))
-  (defhydra hydra-secondary-selection (:exit t)
-    "Secondary Selection"
-    ("xx" oht/cut-secondary-selection "Cut 2nd")
-    ("cc" oht/copy-secondary-selection "Copy 2nd")
-    ("xv" oht/cut-secondary-selection-paste "Cut 2nd & Paste")
-    ("cv" oht/copy-secondary-selection-paste "Copy 2nd & Paste")
-    ("m" (lambda () (interactive)(secondary-selection-from-region)) "Mark Region as 2nd")
-    ("g" (lambda () (interactive)(secondary-selection-to-region)) "Make 2nd the Region")
-    ("d" (lambda () (interactive)(delete-overlay mouse-secondary-overlay)) "Delete 2nd")
-    ("q" nil "cancel"))
-  (defhydra hydra-outline (:foreign-keys warn)
-    "Hydra for navigating outline mode"
-    ("o" outline-hide-sublevels "Hide to This Sublevel")
-    ("<tab>" bicycle-cycle "Show Subtree")
-    ("a" outline-show-all "Show All")
-    ("c" consult-outline "Consult" :exit t)
-    ("n" outline-next-visible-heading "Next")
-    ("p" outline-previous-visible-heading "Previous")
-    ("q" nil "Cancel" :exit t)
-    )
-  )
-
-(use-package org
-  :commands org-mode
-  :config
-  (load (concat oht-dotfiles "lisp/oht-org.el"))
-  (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
-  (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
-  :hook (org-mode . variable-pitch-mode)
-  :bind (:map org-mode-map
-	      ("s-\\ o" . consult-outline)
-	      ("s-\\ ." . oht/org-insert-date-today)
-	      ("s-\\ t" . org-todo)
-	      ("s-\\ n" . org-narrow-to-subtree)
-	      ("s-\\ w" . widen)
-	      ("s-\\ <" . org-insert-structure-template)
-	      ("s-\\ s" . org-store-link)
-	      ("s-\\ i" . org-insert-last-stored-link)
-	      ("s-\\ m" . visible-mode)
-	      ("s-\\ I" . org-clock-in)
-	      ("s-\\ O" . org-clock-out)
-	      ("s-\\ a" . org-archive-subtree)
-	      ("s-\\ r" . org-refile)
-	      ("s-\\ g" . org-goto)
-	      ("s-\\ c" . org-toggle-checkbox)
-	      )
-  )
-
-(use-package org-agenda
-  :straight nil
-  :commands org-agenda
-  :bind
-  (:map org-agenda-mode-map
-	("s-z" . org-agenda-undo)
-	)
-  )
-
-(use-package bookmark
-  :straight nil
-  :commands (list-bookmarks)
-  :init
-  (defun oht-bookmark-fonts ()
-    (hl-line-mode)
-    )
-  :hook (bookmark-bmenu-mode . oht-bookmark-fonts)
-  :custom
-  (bookmark-save-flag 1)
-  (bookmark-default-file "~/home/bookmarks")
-  (bookmark-bmenu-file-column 45)
-  )
-
-(use-package magit
-  :commands magit-status
-  )
-
-(use-package exec-path-from-shell
-  :demand
-  )
-
-(use-package olivetti
-  :commands olivetti-mode
-  :custom (olivetti-body-width 84)
-  :blackout " Olvti"
-  )
-
-(use-package which-key
-  :demand
-  :config
-  (which-key-mode t)
-  (setq which-key-idle-delay 0.4)
-  :blackout
-  )
-
-(use-package undo-fu
-  :bind
-  ("s-z" . undo-fu-only-undo)
-  ("s-Z" . undo-fu-only-redo)
-  )
-
-(use-package expand-region
-  :bind
-  ("s-r" . er/expand-region)
-  ("s-R" . er/contract-region)
-  )
-
-(use-package zzz-to-char
-  ;; replaces zap-to-char with an avy-like interface
-  ;; note that it searches forward and backward
-  :bind ("M-z" . zzz-up-to-char))
-
-(use-package sdcv-mode
-  :straight (sdcv-mode :type git :host github :repo "gucong/emacs-sdcv" :branch "master")
-  :commands sdcv-search
-  )
-
-(use-package unfill
-  :commands (unfill-paragraph unfill-toggle unfill-region)
-  :bind
-  ("M-q" . unfill-toggle)
-  )
-
-(use-package whole-line-or-region
-  ;; When no region is active (nothing is selected), and you invoke the
-  ;; kill-region (cut) or kill-ring-save (copy) commands, Emacs acts on the
-  ;; range of characters between the mark and the point. This is a really good way
-  ;; to accidentally kill half your document. I have done this more times than I'd
-  ;; like to admit. This package makes it so that without a region those commands
-  ;; act on a whole line.
-  :init
-  (whole-line-or-region-global-mode 1)
-  :blackout whole-line-or-region-local-mode
-  )
-
-(use-package helpful
-  ;; Neat package that brings together a lot of useful information when you
-  ;; ask Emacs for help. https://github.com/Wilfred/helpful
-  :bind
-  ("C-h f" . #'helpful-callable)
-  ("C-h F" . #'helpful-function)
-  ("C-h v" . #'helpful-variable)
-  ("C-h k" . #'helpful-key)
-  ("C-h C" . #'helpful-command)
-  ("C-h p" . #'helpful-at-point)
-  :bind*
-  ("C-?" . #'help-command)
- )
-
-(use-package pinboard
-  :commands (pinboard pinboard-add pinboard-add-for-later)
-  :init
-  (setf epa-pinentry-mode 'loopback)
-  )
-
-(use-package move-text
-  :bind
-  ("M-<up>" . move-text-up)
-  ("M-<down>" . move-text-down)
-  )
-
-;;;; Languages
-
-(use-package fountain-mode
-  :commands fountain-mode
-  :custom
-  (fountain-add-continued-dialog nil)
-  (fountain-highlight-elements (quote (section-heading)))
-  )
-
-(use-package markdown-mode
-  :commands markdown-mode)
-
-(use-package lua-mode
-  :commands lua-mode)
-
-
-;;;; Spelling
-
-(use-package flyspell
-  :commands (flyspell-mode flyspell-prog-mode turn-on-flyspell)
-  :init
-  (add-hook 'text-mode-hook 'turn-on-flyspell)
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-  :config
-  (setq ispell-program-name "/usr/local/bin/aspell")
-  (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
-  (setq ispell-list-command "list")
-  :blackout " Spell"
-)
-
-(use-package flyspell-correct
-  ;; Allows you to pass spelling suggestions to completion
-  ;; and search frameworks, such as selectrum. This setup code is copied
-  ;; directly from the selectrum documentation.
-  :bind
-  ("M-;" . #'flyspell-auto-correct-previous-word)
-  ("M-:" . #'flyspell-correct-wrapper)
-  :custom
-  (flyspell-correct-interface 'flyspell-correct-dummy)
-  :init
-  (advice-add 'flyspell-correct-dummy :around
-	      (defun my--fsc-wrapper (func &rest args)
-		(let ((selectrum-should-sort-p nil))
-		  (apply func args))))
-  )
-
-
-;;; My Pseudo-Packages
-
-;; The code in each of the files in ~/.emacs/lisp/ is available to
-;; `use-package' because, at the beginning of this file, I've added the path
-;; to my 'load-path'. To actually use the code in those files you need to do
-;; two things:
-;;
-;; 1. Tell `straight' not to install it.
-;; 2. Make sure `use-package' loads the file when needed. If the code is only
-;;    needed when a command is called, you should name the `:command'. You can
-;;    also `:demand' that the file be loaded, or say that it should be loaded
-;;    `:after' another package.
-;;
-;; Keep in mind that a file must exist for each of these use-package
-;; declarations. If you don't want to separate the code into a separate file
-;; you can "use" the Emacs package.
-
-(use-package oht-dispatch
-  :straight nil
-  :commands (oht-dispatch)
-  :config
-  (setq oht-dispatch-functions
-	'(remember-notes
-	  elfeed
-	  org-agenda
-	  list-bookmarks
-	  ))
-  :bind
-  ("s-d" . #'oht-dispatch)
-  )
-
-(use-package oht-functions
-  :straight nil
-  :demand
-  )
-
-(use-package oht-mac
-  :straight nil
-  :demand
-  )
-
-(use-package oht-composition
-  :straight nil
-  :commands (composition-mode)
-  )
-
-;;; Dired
-
-(use-package dired
-  :straight nil
-  :commands (dired dired-jump dired-jump-other-window)
-  :init
-  (setq dired-use-ls-dired nil) ; no more warning message
-  :config
-  (defun dired-open-file ()
-    "In dired, open the file named on this line."
-    (interactive)
-    (let* ((file (dired-get-filename nil t)))
-      (message "Opening %s..." file)
-      (call-process "open" nil 0 nil file)
-      (message "Opening %s done" file)))
-  (add-hook 'dired-mode-hook
-	    (lambda ()
-	      (dired-hide-details-mode 1)
-	      (auto-revert-mode)
-	      (hl-line-mode 1)
-	      ))
-  :bind (:map dired-mode-map
-	      ("O" . dired-open-file)
-	      )
-  )
-
-(use-package dired-subtree
-  :after dired
-  :config
-  (setq dired-subtree-use-backgrounds nil)
-  :bind (:map dired-mode-map
-              ("<tab>" . dired-subtree-toggle)))
-
-
-;;; IBuffer
-
-(use-package ibuffer
-  :straight nil
-  :commands ibuffer
-  :config
-  (defun oht-ibuffer-hook ()
-    (hl-line-mode 1)
-    )
-  :hook (ibuffer-mode . oht-ibuffer-hook)
-  )
-
-;;; Transient Mark
-;; https://www.masteringemacs.org/article/fixing-mark-commands-transient-mark-mode
-
-(defun exchange-point-and-mark-no-activate ()
-  "Swap the point and mark without activating the region"
-  (interactive)
-  (exchange-point-and-mark)
-  (deactivate-mark nil))
-
-(defun oht-activate-or-swap-mark ()
-  "If no region is active, activate it. If a region is active swap the point and mark."
-  (interactive)
-  (if (use-region-p)
-      (exchange-point-and-mark)
-    (activate-mark)))
-
-(defun push-mark-no-activate ()
-  "Pushes `point' to `mark-ring' and does not activate the region
-   Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled"
-  (interactive)
-  (push-mark (point) t nil)
-  (message "Pushed mark to ring"))
-
-(defun jump-to-mark ()
-  "Jumps to the local mark, respecting the `mark-ring' order.
-  This is the same as using \\[set-mark-command] with the prefix argument."
-  (interactive)
-  (set-mark-command 1))
-
-(bind-keys ("C-x C-x" . exchange-point-and-mark-no-activate)
-	   ;; ("C-x C-x" . oht-activate-or-swap-mark)
-	   ("C-`" . push-mark-no-activate)
-	   ("M-`" . consult-mark)
-	   )
-
-;;; Keybindings
-
-(define-key global-map (kbd "RET") 'newline-and-indent)
-
-;; Normally, when `eval-last-sexp' is called with an argument the result is
-;; inserted at point, this advises the function to REPLACE the last sexp.
-(defadvice eval-last-sexp (around replace-sexp (arg) activate)
-  "Evaluate and replace when called with a prefix argument."
-  (if arg
-      (let ((pos (point)))
-        ad-do-it
-        (goto-char pos)
-        (backward-kill-sexp)
-        (forward-sexp))
-    ad-do-it))
-
-(bind-keys ("M-s-s" . save-some-buffers)
-	   ("M-c" . capitalize-dwim)
-	   ("M-l" . downcase-dwim)
-	   ("M-u" . upcase-dwim)
-	   ("M-SPC" . cycle-spacing)
-	   ("M-/" . hippie-expand)
-	   ("C-l" . oht/recenter-top-bottom)
-	   ("C-x r r" . replace-rectangle)
-	   ("C-h C-f" . find-function)
-	   ("C-h C-v" . find-variable)
-	   ("M-DEL" . sanemacs/backward-kill-word)
-	   ("C-DEL" . sanemacs/backward-kill-word)
-	   )
-
-(bind-key* "M-o" 'oht/other-window)
-
-(bind-keys ("s-k" . kill-this-buffer)
-	   ("s-B" . ibuffer)
-	   ("M-s-b" . list-bookmarks)
-	   ("s-C" . org-capture)
-	   ("s-|" . oht/pipe-region)
-	   ("s-a" . org-agenda)
-	   ("s-/" . comment-or-uncomment-region-or-line)
-	   ("s-l" . oht-mac-mark-whole-line)
-	   )
-
-;;;; Return Bindings
-
-(bind-key* "C-<return>" 'execute-extended-command)
-
-(bind-keys :prefix-map oht/global-leader
-	   :prefix "s-<return>"
-	   ("t t" . tab-bar-mode)
-	   ("t n" . tab-bar-new-tab)
-	   ("t k" . tab-bar-close-tab)
-	   ("t z" . tab-bar-undo-close-tab)
-	   ("t ]" . tab-bar-switch-to-next-tab)
-	   ("t [" . tab-bar-switch-to-prev-tab)
-	   ("a" . auto-fill-mode)
-	   ("d" . sdcv-search)
-	   ("h" . hl-line-mode)
-	   ("l" . oht/toggle-line-numbers)
-	   ("w" . visual-line-mode)
-	   ("T" . toggle-truncate-lines)
-	   ("W" . oht/toggle-whitespace)
-	   ("m" . magit-status)
-	   ("<left>" . winner-undo)
-	   ("<right>" . winner-redo)
-	   ("s" . org-store-link)
-	   ("o" . consult-outline)
-	   ("j" . dired-jump)
-	   ("b s" . bookmark-set)
-	   ("b l" . list-bookmarks)
-	   ("b j" . consult-bookmark)
-	   ("c" . composition-mode)
-	   )
-
-(bind-keys :prefix-map oht/windows-leader
-	   :prefix "s-w"
-	   ("s" . oht/split-below)
-	   ("v" . oht/split-beside)
-	   ("k" . oht/delete-window)
-	   ("o" . delete-other-windows)
-	   ("b" . balance-windows)
-	   ("r" . oht/rotate-window-split)
-	   ("t" . tear-off-window)
-	   )
-
-
-;;; Appearance
-
-;;;; Display Settings
+;; Always follow symlinks. init files are normally stowed/symlinked.
+(setq vc-follow-symlinks t
+      find-file-visit-truename t
+      ;; Avoid stale compiled code shadow newer source code
+      load-prefer-newer t)
+
+;; Set default encoding to UTF-8
+(set-language-environment "UTF-8")
+
+(setq inhibit-startup-message t
+      inhibit-startup-echo-area-message user-login-name
+      inhibit-default-init t
+      ;; Starting the scratch buffer in `fundamental-mode', rather than, say,
+      ;; `org-mode' or `text-mode', which pull in a ton of packages.
+      initial-major-mode 'fundamental-mode
+      initial-scratch-message nil)
+
+
+;;;; Appearance
 
 ;; This is actually in both early-init.el and here because it being in
 ;; early-init prevents the scroll bar from showing up when you start Emacs,
@@ -696,15 +162,13 @@
 (set-default 'cursor-type 'box)            ; use a box for cursor
 (blink-cursor-mode -1)                     ; no blinking please
 
-;;;; Mode Line
-
+;; Mode Line
 (column-number-mode t)
 (setq display-time-format "%H:%M  %Y-%m-%d")
 (setq display-time-interval 60)
 (setq display-time-mail-directory nil)
 (setq display-time-default-load-average nil)
 (display-time-mode t)
-
 
 ;;;; Fonts
 
@@ -740,35 +204,65 @@ variable-pitch and fixed-pitch fonts to always be 1.0."
   (setq-local line-spacing arg)
   )
 
-;;;; Themes
 
-(use-package modus-themes
+;;; Packages
+
+
+;;;; Straight Use Package
+
+;; Required Bootstrap to ensure it is installed
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+;; use-package integration
+
+;; Package `use-package' provides a handy macro by the same name which
+;; is essentially a wrapper around `with-eval-after-load' with a lot
+;; of handy syntactic sugar and useful features.
+(straight-use-package 'use-package)
+
+;; When configuring a feature with `use-package', also tell
+;; straight.el to install a package of the same name, unless otherwise
+;; specified using the `:straight' keyword.
+(setq straight-use-package-by-default t)
+
+;; Tell `use-package' to always load features lazily unless told
+;; otherwise. It's nicer to have this kind of thing be deterministic:
+;; if `:demand' is present, the loading is eager; otherwise, the
+;; loading is lazy. See
+;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
+(setq use-package-always-defer t)
+
+
+;;;; Critical Packages
+
+;; These packages are relied upon by lots of things that come after, therefore
+;; they must come first.
+
+(use-package bind-key
   :demand
-  :init
-  (setq
-   modus-themes-bold-constructs nil
-   modus-themes-slanted-constructs t
-   modus-themes-syntax 'alt-syntax
-   modus-themes-links 'faint-neutral-underline
-   modus-themes-prompts 'subtle
-   modus-themes-mode-line 'borderless
-   modus-themes-completions 'moderate
-   modus-themes-region 'bg-only
-   modus-themes-diffs 'desaturated
-   modus-themes-org-blocks 'grayscale
-   modus-themes-scale-headings nil
-   modus-themes-variable-pitch-ui t
-   modus-themes-variable-pitch-headings t
-   )
-  (modus-themes-load-themes)
-  :config
-  (modus-themes-load-operandi)
   )
 
-(use-package tron-legacy-theme)
+(use-package blackout
+  :demand
+  :config
+  (blackout 'eldoc-mode)
+  (blackout 'emacs-lisp-mode "Elisp")
+  (blackout 'auto-fill-function " -A-")
+  )
 
 
-;;; Narrowing & Searching/Replacing
+;;;; Narrowing & Searching/Replacing
 
 ;; Navigating and using the thousands of things Emacs can do is built around
 ;; the idea of searching and narrowing a selection down to the thing you're
@@ -905,14 +399,9 @@ This simply removes the hooked added by the function `use-embark-completions'."
   ("s-f" . consult-line)
   ([remap yank-pop] . consult-yank-pop)
   :config
-  (setq consult-preview-key nil)
+  (setq consult-preview-key (kbd "C-="))
   (setq consult-config `((consult-mark :preview-key any)))
   (setq consult-project-root-function #'vc-root-dir)
-  )
-
-(use-package bookmark-view
-  :straight (:type git :host github :repo "minad/bookmark-view" :branch "master")
-  :commands (bookmark-view)
   )
 
 (use-package embark-consult
@@ -933,7 +422,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
     (ctrlf-forward 'fuzzy nil (car ctrlf-search-history))
     )
   :bind
-  ("C-s" . oht-ctrlf-forward-fuzzy)
+  ("C-s" . ctrlf-forward-fuzzy)
   ("C-r" . ctrlf-backward-fuzzy)
   :config
   (setq ctrlf-go-to-end-of-match nil)
@@ -946,6 +435,309 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	  (,(kbd "C-o s") . ctrlf-change-search-style)
 	  ))
   )
+
+;;;; Miscellaneous Packages
+
+;; (use-package benchmark-init
+;;   ;; This package creates a report each time you startup
+;;   ;; You'll need to add ':demand' and restart emacs to see the report
+;;   :demand
+;;   :config
+;;   ;; To disable collection of benchmark data after init is done.
+;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
+(use-package remember
+  ;; The below replaces Emacs's regular *scratch* buffer with the remember-notes
+  ;; file/buffer, and sets some functions/bindings for quickly adding
+  ;; information to it. Think of it like a super lightweight org-mode capture
+  ;; whose inbox you see every time Emacs starts up.
+  :straight nil
+  :init
+  (setq remember-data-file "~/home/org/remember-notes")
+  (setq remember-notes-buffer-name "*scratch*")
+  (setq remember-notes-auto-save-visited-file-name t)
+  ;; Set initial-buffer-choice to a function which kills the *scratch* buffer
+  ;; and opens the remember-notes buffer. This loads `remember'.
+  (setq initial-buffer-choice
+	(lambda () (kill-buffer remember-notes-buffer-name)
+          (remember-notes)))
+  (defun oht-remember-dwim ()
+    "If the region is active, capture with region, otherwise just capture."
+    (interactive)
+    (if (use-region-p)
+	(let ((current-prefix-arg 4)) (call-interactively 'remember))
+      (remember))
+    )
+  :bind
+  ("s-_" . oht-remember-dwim)
+  ("s--" . remember-notes)
+ )
+
+(use-package bookmark
+  :straight nil
+  :commands (list-bookmarks)
+  :init
+  (defun oht-bookmark-fonts ()
+    (hl-line-mode)
+    )
+  :hook (bookmark-bmenu-mode . oht-bookmark-fonts)
+  :custom
+  (bookmark-save-flag 1)
+  (bookmark-default-file "~/home/bookmarks")
+  (bookmark-bmenu-file-column 45)
+  )
+
+(use-package ibuffer
+  :straight nil
+  :commands ibuffer
+  :config
+  (defun oht-ibuffer-hook ()
+    (hl-line-mode 1)
+    )
+  :hook (ibuffer-mode . oht-ibuffer-hook)
+  )
+
+(use-package magit
+  :commands magit-status
+  )
+
+(use-package exec-path-from-shell
+  :demand
+  )
+
+(use-package olivetti
+  :commands olivetti-mode
+  :custom (olivetti-body-width 84)
+  :blackout " Olvti"
+  )
+
+(use-package which-key
+  :demand
+  :config
+  (which-key-mode t)
+  (setq which-key-idle-delay 0.4)
+  :blackout
+  )
+
+(use-package undo-fu
+  :bind
+  ("s-z" . undo-fu-only-undo)
+  ("s-Z" . undo-fu-only-redo)
+  )
+
+(use-package expand-region
+  :bind
+  ("s-r" . er/expand-region)
+  ("s-R" . er/contract-region)
+  )
+
+(use-package zzz-to-char
+  ;; replaces zap-to-char with an avy-like interface
+  ;; note that it searches forward and backward
+  :bind ("M-z" . zzz-up-to-char))
+
+(use-package sdcv-mode
+  :straight (sdcv-mode :type git :host github :repo "gucong/emacs-sdcv" :branch "master")
+  :commands sdcv-search
+  )
+
+(use-package unfill
+  :commands (unfill-paragraph unfill-toggle unfill-region)
+  :bind
+  ("M-q" . unfill-toggle)
+  )
+
+(use-package whole-line-or-region
+  ;; When no region is active (nothing is selected), and you invoke the
+  ;; kill-region (cut) or kill-ring-save (copy) commands, Emacs acts on the
+  ;; range of characters between the mark and the point. This is a really good way
+  ;; to accidentally kill half your document. I have done this more times than I'd
+  ;; like to admit. This package makes it so that without a region those commands
+  ;; act on a whole line.
+  :init
+  (whole-line-or-region-global-mode 1)
+  :blackout whole-line-or-region-local-mode
+  )
+
+(use-package helpful
+  ;; Neat package that brings together a lot of useful information when you
+  ;; ask Emacs for help. https://github.com/Wilfred/helpful
+  :bind
+  ("C-h f" . #'helpful-callable)
+  ("C-h F" . #'helpful-function)
+  ("C-h v" . #'helpful-variable)
+  ("C-h k" . #'helpful-key)
+  ("C-h C" . #'helpful-command)
+  ("C-h p" . #'helpful-at-point)
+  :bind*
+  ("C-?" . #'help-command)
+ )
+
+(use-package pinboard
+  :commands (pinboard pinboard-add pinboard-add-for-later)
+  :init
+  (setf epa-pinentry-mode 'loopback)
+  )
+
+(use-package move-text
+  :bind
+  ("M-<up>" . move-text-up)
+  ("M-<down>" . move-text-down)
+  )
+
+(use-package hydra
+  :bind
+  ("s-F" . hydra-fonts/body)
+  ("s-2" . hydra-secondary-selection/body)
+  ("s-0" . hydra-outline/body)
+  :config
+  (defhydra hydra-fonts (:exit nil :foreign-keys warn)
+    "Set Font Properties"
+    ("v" variable-pitch-mode "Variable")
+    ("=" text-scale-increase "Larger")
+    ("+" text-scale-increase "Larger")
+    ("-" text-scale-decrease "Smaller")
+    ("0" text-scale-mode "Reset Size")
+    ("s" oht/set-line-spacing "Line Spacing")
+    ("m" modus-themes-toggle "Modus Toggle")
+    ("o" olivetti-mode "Olivetti")
+    ("w" visual-line-mode "Wrap")
+    ("c" composition-mode "Comp")
+    ("q" nil "cancel"))
+  (defhydra hydra-secondary-selection (:exit t)
+    "Secondary Selection"
+    ("xx" oht/cut-secondary-selection "Cut 2nd")
+    ("cc" oht/copy-secondary-selection "Copy 2nd")
+    ("xv" oht/cut-secondary-selection-paste "Cut 2nd & Paste")
+    ("cv" oht/copy-secondary-selection-paste "Copy 2nd & Paste")
+    ("m" (lambda () (interactive)(secondary-selection-from-region)) "Mark Region as 2nd")
+    ("g" (lambda () (interactive)(secondary-selection-to-region)) "Make 2nd the Region")
+    ("d" (lambda () (interactive)(delete-overlay mouse-secondary-overlay)) "Delete 2nd")
+    ("q" nil "cancel"))
+  (defhydra hydra-outline (:foreign-keys warn)
+    "Hydra for navigating outline mode"
+    ("o" outline-hide-sublevels "Hide to This Sublevel")
+    ("<tab>" bicycle-cycle "Show Subtree")
+    ("a" outline-show-all "Show All")
+    ("c" consult-outline "Consult" :exit t)
+    ("n" outline-next-visible-heading "Next")
+    ("p" outline-previous-visible-heading "Previous")
+    ("q" nil "Cancel" :exit t)
+    )
+  )
+
+;;;; Themes
+
+(use-package modus-themes
+  :demand
+  :init
+  (setq
+   modus-themes-bold-constructs nil
+   modus-themes-slanted-constructs t
+   modus-themes-syntax 'alt-syntax
+   modus-themes-links 'faint-neutral-underline
+   modus-themes-prompts 'subtle
+   modus-themes-mode-line 'borderless
+   modus-themes-completions 'moderate
+   modus-themes-region 'bg-only
+   modus-themes-diffs 'desaturated
+   modus-themes-org-blocks 'grayscale
+   modus-themes-scale-headings nil
+   modus-themes-variable-pitch-ui t
+   modus-themes-variable-pitch-headings t
+   )
+  (modus-themes-load-themes)
+  :config
+  (modus-themes-load-operandi)
+  )
+
+(use-package tron-legacy-theme)
+
+
+;;;; Languages
+
+(use-package fountain-mode
+  :commands fountain-mode
+  :custom
+  (fountain-add-continued-dialog nil)
+  (fountain-highlight-elements (quote (section-heading)))
+  )
+
+(use-package markdown-mode
+  :commands markdown-mode)
+
+(use-package lua-mode
+  :commands lua-mode)
+
+(use-package bookmark-view
+  :straight (:type git :host github :repo "minad/bookmark-view" :branch "master")
+  :commands (bookmark-view)
+  )
+
+;;;; Spelling
+
+(use-package flyspell
+  :commands (flyspell-mode flyspell-prog-mode turn-on-flyspell)
+  :init
+  (add-hook 'text-mode-hook 'turn-on-flyspell)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  :config
+  (setq ispell-program-name "/usr/local/bin/aspell")
+  (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
+  (setq ispell-list-command "list")
+  :blackout " Spell"
+)
+
+(use-package flyspell-correct
+  ;; Allows you to pass spelling suggestions to completion
+  ;; and search frameworks, such as selectrum. This setup code is copied
+  ;; directly from the selectrum documentation.
+  :bind
+  ("M-;" . #'flyspell-auto-correct-previous-word)
+  ("M-:" . #'flyspell-correct-wrapper)
+  :custom
+  (flyspell-correct-interface 'flyspell-correct-dummy)
+  :init
+  (advice-add 'flyspell-correct-dummy :around
+	      (defun my--fsc-wrapper (func &rest args)
+		(let ((selectrum-should-sort-p nil))
+		  (apply func args))))
+  )
+
+;;;; Dired
+
+(use-package dired
+  :straight nil
+  :commands (dired dired-jump dired-jump-other-window)
+  :init
+  (setq dired-use-ls-dired nil) ; no more warning message
+  :config
+  (defun dired-open-file ()
+    "In dired, open the file named on this line."
+    (interactive)
+    (let* ((file (dired-get-filename nil t)))
+      (message "Opening %s..." file)
+      (call-process "open" nil 0 nil file)
+      (message "Opening %s done" file)))
+  (add-hook 'dired-mode-hook
+	    (lambda ()
+	      (dired-hide-details-mode 1)
+	      (auto-revert-mode)
+	      (hl-line-mode 1)
+	      ))
+  :bind (:map dired-mode-map
+	      ("O" . dired-open-file)
+	      )
+  )
+
+(use-package dired-subtree
+  :after dired
+  :config
+  (setq dired-subtree-use-backgrounds nil)
+  :bind (:map dired-mode-map
+              ("<tab>" . dired-subtree-toggle)))
+
+;;;; Visual Regexp
 
 (use-package visual-regexp
   ;; Provides an alternate version of `query-replace' which highlights matches
@@ -969,7 +761,45 @@ This simply removes the hooked added by the function `use-embark-completions'."
   )
 
 
-;;; Secondary Selection
+;;;; Org
+
+(use-package org
+  :commands org-mode
+  :config
+  (load (concat oht-dotfiles "lisp/oht-org.el"))
+  (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
+  :hook (org-mode . variable-pitch-mode)
+  :bind (:map org-mode-map
+	      ("s-\\ o" . consult-outline)
+	      ("s-\\ ." . oht/org-insert-date-today)
+	      ("s-\\ t" . org-todo)
+	      ("s-\\ n" . org-narrow-to-subtree)
+	      ("s-\\ w" . widen)
+	      ("s-\\ <" . org-insert-structure-template)
+	      ("s-\\ s" . org-store-link)
+	      ("s-\\ i" . org-insert-last-stored-link)
+	      ("s-\\ m" . visible-mode)
+	      ("s-\\ I" . org-clock-in)
+	      ("s-\\ O" . org-clock-out)
+	      ("s-\\ a" . org-archive-subtree)
+	      ("s-\\ r" . org-refile)
+	      ("s-\\ g" . org-goto)
+	      ("s-\\ c" . org-toggle-checkbox)
+	      )
+  )
+
+(use-package org-agenda
+  :straight nil
+  :commands org-agenda
+  :bind
+  (:map org-agenda-mode-map
+	("s-z" . org-agenda-undo)
+	)
+  )
+
+
+;;;; Secondary Selection
 
 ;; A few functions for working with the Secondary Selection. The primary way I
 ;; interact with these is through a hydra.
@@ -1003,7 +833,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   (yank))
 
 
-;;; Outline
+;;;; Outline
 
 ;; `outline' provides major and minor modes for collapsing sections of a
 ;; buffer into an outline-like format. Let's turn that minor mode into a
@@ -1023,7 +853,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	   ("<backtab>" . bicycle-cycle-global))
 
 
-;;; View-Mode
+;;;; View-Mode
 
 (use-package view
   ;; Coming from vim, I know the utility of modal editing. However, I have no
@@ -1084,7 +914,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   )
 
 
-;;; EWW Browser
+;;;; EWW Browser
 
 (use-package eww
   :init
@@ -1102,6 +932,8 @@ This simply removes the hooked added by the function `use-embark-completions'."
   ;; Make eww Emacs's default browser, if you remove this the system default
   ;; will be used instead.
   (setq browse-url-browser-function 'eww-browse-url)
+  :config
+  (load (concat oht-dotfiles "lisp/oht-eww.el"))
   :commands eww
   :bind
   (:map eww-mode-map
@@ -1111,21 +943,14 @@ This simply removes the hooked added by the function `use-embark-completions'."
   (shr-width 80)
   )
 
-(use-package oht-eww
-  :straight nil
-  :demand
-  )
 
-
-;;; Elfeed
+;;;; Elfeed
 
 (use-package elfeed
   :commands elfeed
   :hook (elfeed-show-mode . oht-elfeed-show-fonts)
-  :init
   :config
-  (load (concat oht-dotfiles "lisp/oht-elfeed-pre.el"))
-  (load (concat oht-dotfiles "lisp/oht-elfeed-post.el"))
+  (load (concat oht-dotfiles "lisp/oht-elfeed.el"))
   :bind
   (:map elfeed-search-mode-map
 	("a" . hrs/elfeed-pinboard-current-entry)
@@ -1142,8 +967,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	)
   )
 
-
-;;; Youtube-dl
+;;;; Youtube-dl
 
 ;; A few utilities for working with videos
 
@@ -1158,6 +982,147 @@ This simply removes the hooked added by the function `use-embark-completions'."
                                youtube-dl-output-dir
                                "%(title)s.%(ext)s"
                                (ffap-url-at-point))))
+
+
+;;;; Pseudo-Packages, or my lisp files
+
+;; The code in each of the files in ~/.emacs/lisp/ is available to
+;; `use-package' because, at the beginning of this file, I've added the path
+;; to my 'load-path'. To actually use the code in those files you need to do
+;; two things:
+;;
+;; 1. Tell `straight' not to install it.
+;; 2. Make sure `use-package' loads the file when needed. If the code is only
+;;    needed when a command is called, you should name the `:command'. You can
+;;    also `:demand' that the file be loaded, or say that it should be loaded
+;;    `:after' another package.
+;;
+;; Keep in mind that a file must exist for each of these use-package
+;; declarations. If you don't want to separate the code into a separate file
+;; you can "use" the Emacs package.
+
+(use-package oht-dispatch
+  :straight nil
+  :commands (oht-dispatch)
+  :config
+  (setq oht-dispatch-functions
+	'(remember-notes
+	  elfeed
+	  org-agenda
+	  list-bookmarks
+	  ))
+  :bind
+  ("s-d" . #'oht-dispatch)
+  )
+
+(use-package oht-functions
+  :straight nil
+  :demand
+  )
+
+(use-package oht-mac
+  :straight nil
+  :demand
+  )
+
+(use-package oht-composition
+  :straight nil
+  :commands (composition-mode)
+  )
+
+(use-package oht-transient-mark
+  :straight nil
+  :bind
+  ("C-x C-x" . exchange-point-and-mark-no-activate)
+  ;; ("C-x C-x" . oht-activate-or-swap-mark)
+  ("C-`" . push-mark-no-activate)
+  ("M-`" . consult-mark)
+  )
+
+
+;;; Keybindings
+
+(define-key global-map (kbd "RET") 'newline-and-indent)
+
+;; Normally, when `eval-last-sexp' is called with an argument the result is
+;; inserted at point, this advises the function to REPLACE the last sexp.
+(defadvice eval-last-sexp (around replace-sexp (arg) activate)
+  "Evaluate and replace when called with a prefix argument."
+  (if arg
+      (let ((pos (point)))
+        ad-do-it
+        (goto-char pos)
+        (backward-kill-sexp)
+        (forward-sexp))
+    ad-do-it))
+
+(bind-keys ("M-s-s" . save-some-buffers)
+	   ("M-c" . capitalize-dwim)
+	   ("M-l" . downcase-dwim)
+	   ("M-u" . upcase-dwim)
+	   ("M-SPC" . cycle-spacing)
+	   ("M-/" . hippie-expand)
+	   ("C-l" . oht/recenter-top-bottom)
+	   ("C-x r r" . replace-rectangle)
+	   ("C-h C-f" . find-function)
+	   ("C-h C-v" . find-variable)
+	   ("M-DEL" . sanemacs/backward-kill-word)
+	   ("C-DEL" . sanemacs/backward-kill-word)
+	   )
+
+(bind-key* "M-o" 'oht/other-window)
+
+(bind-keys ("s-k" . kill-this-buffer)
+	   ("s-B" . ibuffer)
+	   ("M-s-b" . list-bookmarks)
+	   ("s-C" . org-capture)
+	   ("s-|" . oht/pipe-region)
+	   ("s-a" . org-agenda)
+	   ("s-/" . comment-or-uncomment-region-or-line)
+	   ("s-l" . oht-mac-mark-whole-line)
+	   )
+
+
+(bind-key* "C-<return>" 'execute-extended-command)
+
+(bind-keys :prefix-map oht/global-leader
+	   :prefix "s-<return>"
+	   ("t t" . tab-bar-mode)
+	   ("t n" . tab-bar-new-tab)
+	   ("t k" . tab-bar-close-tab)
+	   ("t z" . tab-bar-undo-close-tab)
+	   ("t ]" . tab-bar-switch-to-next-tab)
+	   ("t [" . tab-bar-switch-to-prev-tab)
+	   ("a" . auto-fill-mode)
+	   ("d" . sdcv-search)
+	   ("h" . hl-line-mode)
+	   ("l" . oht/toggle-line-numbers)
+	   ("w" . visual-line-mode)
+	   ("T" . toggle-truncate-lines)
+	   ("W" . oht/toggle-whitespace)
+	   ("m" . magit-status)
+	   ("<left>" . winner-undo)
+	   ("<right>" . winner-redo)
+	   ("s" . org-store-link)
+	   ("o" . consult-outline)
+	   ("j" . dired-jump)
+	   ("b s" . bookmark-set)
+	   ("b l" . list-bookmarks)
+	   ("b j" . consult-bookmark)
+	   ("c" . composition-mode)
+	   )
+
+(bind-keys :prefix-map oht/windows-leader
+	   :prefix "s-w"
+	   ("s" . oht/split-below)
+	   ("v" . oht/split-beside)
+	   ("k" . oht/delete-window)
+	   ("o" . delete-other-windows)
+	   ("b" . balance-windows)
+	   ("r" . oht/rotate-window-split)
+	   ("t" . tear-off-window)
+	   )
+
 
 ;;; Closing
 

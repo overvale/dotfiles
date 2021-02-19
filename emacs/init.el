@@ -927,20 +927,13 @@ This simply removes the hooked added by the function `use-embark-completions'."
 
 (use-package ctrlf
   :init
-  (defun oht-ctrlf-push-region ()
-    "Push the region to ctrlf's `last-input' variable."
-    (interactive)
-    (if (use-region-p)
-	(setq ctrlf--last-input (buffer-substring (region-beginning) (region-end)))
-      (error "No active region")))
   (defun oht-ctrlf-forward-fuzzy ()
     "Call `ctrlf-forward-fuzzy' with last-input."
     (interactive)
-    (ctrlf-forward 'fuzzy nil ctrlf--last-input)
+    (ctrlf-forward 'fuzzy nil (car ctrlf-search-history))
     )
   :bind
-  ;; ("C-M-s" . oht-ctrlf-push-region)
-  ("C-s" . ctrlf-forward-fuzzy)
+  ("C-s" . oht-ctrlf-forward-fuzzy)
   ("C-r" . ctrlf-backward-fuzzy)
   :config
   (setq ctrlf-go-to-end-of-match nil)

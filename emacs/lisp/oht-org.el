@@ -167,28 +167,30 @@
 ;;; Capture Templates
 
 (setq org-capture-templates
-     '(("o" "Online" entry
-	(file+headline "~/home/org/watch_read.org" "Online")
-	"* Read %?\n\n")
-       ("p" "Personal Inbox" entry
-        (file+headline "~/home/org/life.org" "Inbox")
-        "* %?\n\n")
-       ("P" "Personal Log Entry" entry
-        (file "~/home/org/logbook.org")
-        "* %?\n%t\n\n")
-       ("i" "Ingenuity Inbox" entry
-        (file+headline "~/home/org/ingenuity.org" "Inbox")
-        "* %?\n\n")
-       ("I" "Ingenuity Log Entry" entry
-        (file "~/home/org/ingenuity_logbook.org")
-        "* %? %t\n\n")
-       ("c" "Ingenuity Cold Call" entry
-	(file "~/home/org/ingenuity_logbook.org")
-	(file "~/home/dot/emacs/capture-templates/cold-call.org"))
-       ("@" ".plan" entry
-	(file "~/home/org/logbook.org")
-	(file "~/home/dot/emacs/capture-templates/plan.org"))
-       ))
+      '(
+	("i" "Inbox")
+	("ip" "Personal Inbox" entry
+         (file+headline "~/home/org/life.org" "Inbox")
+         "* %?\n\n")
+	("ii" "Ingenuity Inbox" entry
+         (file+headline "~/home/org/ingenuity.org" "Inbox")
+         "* %?\n\n")
+
+	("l" "Log Entry")
+	("lp" "Personal Log Entry" entry
+         (file "~/home/org/logbook.org")
+         "* %?\n%t\n\n")
+	("lP" ".plan" entry
+	 (file "~/home/org/logbook.org")
+	 (file "~/home/dot/emacs/capture-templates/plan.org"))
+	("li" "Ingenuity Log Entry" entry
+         (file "~/home/org/ingenuity_logbook.org")
+         "* %? %t\n\n")
+	("lc" "Ingenuity Cold Call" entry
+	 (file "~/home/org/ingenuity_logbook.org")
+	 (file "~/home/dot/emacs/capture-templates/cold-call.org"))
+
+	))
 
 ;; Ensure Capture Templates End With Newline
 

@@ -32,10 +32,15 @@
 		     ("https://kieranhealy.org/index.xml")
 		     ("https://rsms.me/atom.xml")
 		     ("https://waxy.org/category/links/feed/")
-		     ("https://feeds.feedburner.com/Metafilter")
 		     ("https://tumblr.mapsbynik.com/rss")
+		     ("https://www.julian.digital/feed")
 		     ("https://github.com/Hammerspoon/hammerspoon/releases.atom")
 		     ("https://github.com/syncthing/syncthing-macos/releases.atom")
+		     ;; vfx
+		     ("https://keepcalmiminvfx.net/feed/" vfx)
+		     ("https://beforesandafters.com/feed/" vfx)
+		     ("https://www.artofvfx.com/feed/" vfx)
+		     ("https://www.vfxvoice.com/feed/" vfx)
 		     ;; news
 		     ("https://www.economist.com/latest/rss.xml" news)
 		     ("https://www.economist.com/the-economist-explains/rss.xml" news)
@@ -65,9 +70,9 @@
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g" emacs) ; Prot
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCMb0O2CdPBNi-QqPk5T3gsQ") ; James Hoffmann
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCZYycARMM3DaeBwpVQzR5vQ") ; Craig Mod
-		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCZYycARMM3DaeBwpVQzR5vQ") ; Keep Calm I'm in VFX
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCZYycARMM3DaeBwpVQzR5vQ" vfx) ; Keep Calm I'm in VFX
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVpankR4HtoAVtYnFDUieYA") ; zefrank1
-		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCCBJv-2y0qRjM9E2tSGtT7Q") ; Weta Workshop
+		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCCBJv-2y0qRjM9E2tSGtT7Q" vfx) ; Weta Workshop
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCtqxG9IrHFU_ID1khGvx9sA") ; All Gas No Brakes
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAL3JXZSzSm8AlZyD3nQdBA") ; Primitive Technology
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCiDJtJKMICpb9B1qf7qjEOA") ; Adam Savage’s Tested
@@ -95,4 +100,4 @@
   )
 
 
-(provide 'oht-elfeed-post)
+(provide 'oht-elfeed-pre)

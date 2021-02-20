@@ -75,6 +75,7 @@
 ;; Next, let's set a bunch of basic preferences for how we want Emacs to
 ;; behave.
 
+(delete-selection-mode t)                  ; replace region when you type
 (global-auto-revert-mode t)                ; update buffer when file on disk changes
 (save-place-mode 1)                        ; reopens the file to the same spot you left
 (recentf-mode 1)                           ; enables "Open Recent..." in file menu
@@ -85,6 +86,7 @@
 (setq create-lockfiles nil)                ; No need for ~ files when editing
 (setq-default fill-column 78)              ; Set column used for fill-paragraph
 (setq ring-bell-function 'ignore)          ; Don't beep
+(setq kill-do-not-save-duplicates t)       ; Don't save dups in kill ring
 
 ;; Set a variable for where your emacs dotfiles are located.
 (defvar oht-dotfiles "~/home/dot/emacs/")
@@ -127,6 +129,25 @@
 ;; minibuffer. You then want to call a command inside that minibuffer.
 (setq enable-recursive-minibuffers 1)
 
+;; If you have something on the system clipboard, and then kill
+;; something in Emacs, then by default whatever you had on the system
+;; clipboard is gone and there is no way to get it back. Setting the
+;; following option makes it so that when you kill something in Emacs,
+;; whatever was previously on the system clipboard is pushed into the
+;; kill ring. This way, you can paste it with `yank-pop'.
+(setq save-interprogram-paste-before-kill t)
+
+;; When editing 2 files with the same name, like ~/foo/file and ~/bar/file,
+;; Emacs (amazingly) refers to those files as file<~/foo> and file<~/bar>.
+;; This makes Emacs refer to them as foo/file and bar/file, like a sane
+;; program.
+(setq uniquify-buffer-name-style 'forward)
+
+(setq mac-emulate-three-button-mouse t)
+;; mouse-1: Click
+;; mouse-2: Option + Click
+;; mouse-3: Command + Click (right-click)
+
 ;; Always follow symlinks. init files are normally stowed/symlinked.
 (setq vc-follow-symlinks t
       find-file-visit-truename t
@@ -143,6 +164,30 @@
       ;; `org-mode' or `text-mode', which pull in a ton of packages.
       initial-major-mode 'fundamental-mode
       initial-scratch-message nil)
+
+
+;;;; Visual Line Mode
+
+;; Confusingly, `visual-line-mode', `word-wrap', and `truncate-lines' are all
+;; different things. `visual-line-mode' is a wrapper around a bunch of
+;; things, probably best explained here:
+;; http://ergoemacs.org/emacs/emacs_long_line_wrap.html
+;; `word-wrap' ONLY wraps lines word-wise instead of character-wise.
+;; `truncate-lines' ONLY controls if wrapping happens at all. If set to
+;; non-nil it is supposed to let lines run off the window, but this is a
+;; buffer-local setting that I cannot (no matter what I try) get to be global.
+(setq-default truncate-lines t)
+
+;; So, instead, I take the brute-force approach of adding a hook for text-mode
+;; and prog-mode to call a function which toggles the value on. Take that Emacs.
+(defun oht-mac-truncate-lines()
+  (toggle-truncate-lines 1))
+(add-hook 'text-mode-hook 'oht-mac-truncate-lines)
+(add-hook 'prog-mode-hook 'oht-mac-truncate-lines)
+
+;; When visual-line-mode is off and truncate-lines is toggled off, I still
+;; want wrapping to happen at the word instead of character.
+(setq-default word-wrap 1)
 
 
 ;;;; Appearance
@@ -246,7 +291,7 @@ variable-pitch and fixed-pitch fonts to always be 1.0."
 
 ;;;; Critical Packages
 
-;; These packages are relied upon by lots of things that come after, therefore
+;; These packages are relied upon by my use-package declarations, therefore
 ;; they must come first.
 
 (use-package bind-key
@@ -268,7 +313,7 @@ variable-pitch and fixed-pitch fonts to always be 1.0."
 ;; the idea of searching and narrowing a selection down to the thing you're
 ;; looking for. To make this easier I've installed a few packages that enhance
 ;; Emacs built-in facilities for doing this.
-
+;;
 ;; There are MANY approaches to this. I'm following the popular trend lead by
 ;; @oantolin, @raxod502, @minad, and @protesilaos. Generally, it works like
 ;; this:
@@ -980,6 +1025,9 @@ variable-pitch and fixed-pitch fonts to always be 1.0."
 
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
+;; C-[ sends ESC so let's make ESC more predictable
+(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+
 ;; Normally, when `eval-last-sexp' is called with an argument the result is
 ;; inserted at point, this advises the function to REPLACE the last sexp.
 (defadvice eval-last-sexp (around replace-sexp (arg) activate)
@@ -1058,6 +1106,63 @@ variable-pitch and fixed-pitch fonts to always be 1.0."
 	   ("r" . oht/rotate-window-split)
 	   ("t" . tear-off-window)
 	   )
+
+;;; Mac Shortcuts
+
+;; Most of the time I want to use standard macOS shortcuts[1]. macOS actually
+;; inherits many Emacs keybindings, but adds to it a few from =readline= and
+;; old terminal interfaces. Because these are available system-wide I want
+;; Emacs to do the same thing. That way the way I type/move in Mail.app or
+;; Safari is the same as Emacs. Some of these require custom functions, but
+;; that's usually a simple matter of stringing a couple existing commands
+;; together into a function.
+;;
+;; 1: https://support.apple.com/en-us/HT201236
+
+;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
+;; This is inconsistent with macOS behavior, which is that "C-a" always goes
+;; to the beginning of the logical line and "s-<left>" goes to the beginning
+;; of the visual line. So these bindings correct that.
+(bind-keys* ("C-a" . beginning-of-line)
+	    ("C-e" . end-of-line))
+(bind-keys ("s-<left>" . beginning-of-visual-line)
+	   ("s-<right>" . end-of-visual-line)
+	   ;; C-k only killing the visual line also isn't how macOS works.
+	   ;; This has to be set to a custom function so minor modes can't
+	   ;; hijack it.
+	   ("C-k" . oht-mac-kill-line))
+
+(bind-keys
+ ("s-," . oht-mac-find-settings)
+ ("s-n" . make-frame-command)
+ ("s-N" . make-frame-command)
+ ("s-t" . oht-mac-new-tab)
+ ("s-m" . iconify-frame)
+ ("s-s" . save-buffer)
+ ("s-S" . write-file) ;save as
+ ;; ("s-a" . mark-whole-buffer)
+ ("s-o" . find-file)
+ ("s-x" . kill-region)
+ ("s-c" . kill-ring-save)
+ ("s-v" . yank)
+ ("s-<backspace>" . oht-mac-kill-visual-line-backward)
+ ;; ("s-w" . delete-frame)
+ ("s-q" . save-buffers-kill-terminal)
+ ("S-s-<left>" . oht-mac-expand-to-beginning-of-visual-line)
+ ("S-s-<right>" . oht-mac-expand-to-end-of-visual-line)
+ ("s-<up>" . beginning-of-buffer)
+ ("s-<down>" . end-of-buffer)
+ ;; navigation and indentation
+ ("s-[" . previous-buffer)
+ ("s-]" . next-buffer)
+ ("s-}" . indent-rigidly-right-to-tab-stop)
+ ("s-{" . indent-rigidly-left-to-tab-stop)
+ ;; readline-style shortcuts, because I love them
+ ("C-w" . backward-kill-word)
+ ("C-u" . oht-mac-kill-line-backward)
+ ;; No reason not to use command-u for this instead
+ ("s-u" . universal-argument)
+ )
 
 
 ;;; Closing

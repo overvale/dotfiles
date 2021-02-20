@@ -190,11 +190,11 @@ size. For this reason I want the height of both the
 variable-pitch and fixed-pitch fonts to always be 1.0."
   (interactive)
   (set-face-attribute 'default nil
-		      :family "Iosevka" :height 130 :weight 'normal :width 'expanded)
+		      :family "Iosevka Curly" :height 140)
   (set-face-attribute 'variable-pitch nil
-		      :family "Iosevka Sparkle" :height 1.0 :weight 'normal)
+		      :family "Iosevka Etoile" :height 1.0)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Iosevka Fixed" :height 1.0 :weight 'normal :width 'expanded)
+		      :family "Iosevka Fixed Curly" :height 1.0)
   )
 (oht-fonts-set)
 
@@ -320,7 +320,8 @@ variable-pitch and fixed-pitch fonts to always be 1.0."
   (:map minibuffer-local-map
         ("C-o" . embark-switch-to-collect-completions))
   (:map embark-url-map
-	("d" . youtube-dl-URL-at-point))
+	("d" . youtube-dl-URL-at-point)
+	("&" . browse-url-default-macosx-browser))
   :config
   (load (concat oht-dotfiles "lisp/oht-embark.el"))
   )

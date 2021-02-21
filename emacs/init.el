@@ -966,14 +966,16 @@ This simply removes the hooked added by the function `use-embark-completions'."
   (:map elfeed-search-mode-map
 	("a" . hrs/elfeed-pinboard-current-entry)
 	("b" . elfeed-search-browse-url)
-	("m" . elfeed-search-toggle--star)
+	("*" . elfeed-search-tag--star)
+	("8" . elfeed-search-untag--star)
 	)
   (:map elfeed-show-mode-map
 	("a" . hrs/elfeed-pinboard-current-entry)
 	("&" . bjm/elfeed-show-visit-gui)
-	;; TODO toggle star binding
 	("r" . elfeed-show-tag--read)
 	("u" . elfeed-show-tag--unread)
+	("*" . elfeed-show-tag--star)
+	("8" . elfeed-show-tag--unstar)
 	("d" . oht-elfeed-show-download-video)
 	)
   )

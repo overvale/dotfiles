@@ -121,7 +121,7 @@
     (interactive)
     (elfeed-search-set-filter "+unread +emacs")))
 
-(define-key elfeed-search-mode-map "*"
+(define-key elfeed-search-mode-map "S"
   (lambda ()
     (interactive)
     (elfeed-search-set-filter "+star")))
@@ -146,12 +146,22 @@
     (elfeed-show-visit t)))
 
 ;; Elfeed doesn't have a built-in way of flagging or marking items for later,
-;; but it does have tags, which you can use for this. The below is a simple
-;; alias for adding and removing the 'star' tag. Keep in mind that his only
-;; works in the search-mode
-(defalias 'elfeed-search-toggle--star
-  (elfeed-expose #'elfeed-search-toggle-all 'star)
+;; but it does have tags, which you can use for this. The below is some simple
+;; aliases for adding and removing the 'star' tag.
+(defalias 'elfeed-search-tag--star
+  (elfeed-expose #'elfeed-search-tag-all 'star)
+  "Add the 'star' tag to all selected entries")
+(defalias 'elfeed-search-untag--star
+  (elfeed-expose #'elfeed-search-untag-all 'star)
+  "Remove the 'star' tag to all selected entries")
+
+;; And for show mode...
+(defalias 'elfeed-show-tag--star
+  (elfeed-expose #'elfeed-show-tag 'star)
   "Add the 'star' tag to current entry")
+(defalias 'elfeed-show-tag--unstar
+  (elfeed-expose #'elfeed-show-untag 'star)
+  "Remove the 'star' tag to current entry")
 
 ;; Even though there are bindings for marking items as 'read' and 'unread' in
 ;; the search-mode, there are no such built-in bindings for show-mode. So we

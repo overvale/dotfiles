@@ -199,6 +199,20 @@
                                (elfeed-entry-link elfeed-show-entry))))
 
 
+;; Creates a toggle for showing images
+(make-variable-buffer-local
+ (defvar elfeed-inhibit-images-status nil
+   "Elfeed Inhibit Images Status"))
 
+(defun elfeed-inhibit-images-toggle ()
+  (interactive)
+  (setq elfeed-inhibit-images-status (not elfeed-inhibit-images-status))
+  (if elfeed-inhibit-images-status
+      (progn
+	(setq-local shr-inhibit-images t)
+	(elfeed-show-refresh))
+    (progn
+	(setq-local shr-inhibit-images nil)
+	(elfeed-show-refresh))))
 
 (provide 'oht-elfeed-pre)

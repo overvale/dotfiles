@@ -952,6 +952,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :bind
   (:map eww-mode-map
 	("b" . bookmark-set)
+	("i" . eww-inhibit-images-toggle)
 	)
   :custom
   (shr-width 80)
@@ -980,6 +981,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	("*" . elfeed-show-tag--star)
 	("8" . elfeed-show-tag--unstar)
 	("d" . oht-elfeed-show-download-video)
+	("i" . elfeed-inhibit-images-toggle)
 	)
   )
 

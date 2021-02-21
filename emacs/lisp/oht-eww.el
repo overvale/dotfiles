@@ -12,6 +12,23 @@
 (add-hook 'eww-mode-hook 'oht-eww-fonts)
 
 
+;; Creates a toggle for showing images
+(make-variable-buffer-local
+ (defvar eww-inhibit-images-status nil
+   "EWW Inhibit Images Status"))
+
+(defun eww-inhibit-images-toggle ()
+  (interactive)
+  (setq eww-inhibit-images-status (not eww-inhibit-images-status))
+  (if eww-inhibit-images-status
+      (progn
+	(setq-local shr-inhibit-images t)
+	(eww-reload t))
+    (progn
+	(setq-local shr-inhibit-images nil)
+	(eww-reload t))))
+
+
 ;;; Bookmarking
 
 ;; The below code allows you to create standard emacs bookmarks in eww-mode.

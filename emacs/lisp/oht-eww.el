@@ -39,11 +39,6 @@
   (set (make-local-variable 'bookmark-make-record-function)
        #'oht-eww-bookmark-make-record))
 
-;; This is the handler for when you visit a bookmark.
-(defun oht-eww-bookmark-handler (record)
-  "Jump to an eww bookmarked location."
-  (eww (bookmark-prop-get record 'location)))
-
 ;; Finally, add a hook to set the make-record-function
 (add-hook 'eww-mode-hook 'oht-eww-set-bookmark-handler)
 

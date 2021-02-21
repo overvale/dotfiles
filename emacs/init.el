@@ -943,6 +943,9 @@ This simply removes the hooked added by the function `use-embark-completions'."
   ;; Make eww Emacs's default browser, if you remove this the system default
   ;; will be used instead.
   (setq browse-url-browser-function 'eww-browse-url)
+  (defun oht-eww-bookmark-handler (record)
+    "Jump to an eww bookmarked location using EWW."
+    (eww (bookmark-prop-get record 'location)))
   :config
   (load (concat oht-dotfiles "lisp/oht-eww.el"))
   :commands eww

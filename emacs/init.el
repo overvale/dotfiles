@@ -235,11 +235,11 @@ size. For this reason I want the height of both the
 variable-pitch and fixed-pitch fonts to always be 1.0."
   (interactive)
   (set-face-attribute 'default nil
-		      :family "Iosevka Curly" :height 140)
+		      :family "Iosevka Comfy" :height 140)
   (set-face-attribute 'variable-pitch nil
-		      :family "Iosevka Etoile" :height 1.0)
+		      :family "Lucida Grande" :height 1.0)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Iosevka Fixed Curly" :height 1.0)
+		      :family "Iosevka Comfy" :height 1.0)
   )
 (oht-fonts-set)
 

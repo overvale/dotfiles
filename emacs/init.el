@@ -347,8 +347,6 @@ variable-pitch and fixed-pitch fonts to always be 1.0."
 
 (use-package marginalia
   :straight (:type git :host github :repo "minad/marginalia" :branch "main")
-  :bind (:map minibuffer-local-map
-         ("M-q" . marginalia-cycle))
   :init
   (marginalia-mode 1)
   (setq marginalia-annotators
@@ -506,6 +504,34 @@ This simply removes the hooked added by the function `use-embark-completions'."
     (hl-line-mode 1)
     )
   :hook (ibuffer-mode . oht-ibuffer-hook)
+  )
+
+(use-package pulse
+  :straight nil
+  :init
+  (defun pulse-line (&rest _)
+    "Interactive function to pulse the current line."
+    (interactive)
+    (pulse-momentary-highlight-one-line (point)))
+
+  (defadvice other-window (after other-window-pulse activate) (pulse-line))
+  (defadvice delete-window (after delete-window-pulse activate) (pulse-line))
+  (defadvice recenter-top-bottom (after recenter-top-bottom-pulse activate) (pulse-line))
+
+  (defun ct/yank-pulse-advice (orig-fn &rest args)
+    "Pulse line when yanking"
+    ;; From https://christiantietze.de/posts/2020/12/emacs-pulse-highlight-yanked-text/
+    ;; Define the variables first
+    (let (begin end)
+      ;; Initialize `begin` to the current point before pasting
+      (setq begin (point))
+      ;; Forward to the decorated function (i.e. `yank`)
+      (apply orig-fn args)
+      ;; Initialize `end` to the current point after pasting
+      (setq end (point))
+      ;; Pulse to highlight!
+      (pulse-momentary-highlight-region begin end)))
+  (advice-add 'yank :around #'ct/yank-pulse-advice)
   )
 
 (use-package magit
@@ -1065,25 +1091,12 @@ This simply removes the hooked added by the function `use-embark-completions'."
 ;; C-[ sends ESC so let's make ESC more predictable
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
-;; Normally, when `eval-last-sexp' is called with an argument the result is
-;; inserted at point, this advises the function to REPLACE the last sexp.
-(defadvice eval-last-sexp (around replace-sexp (arg) activate)
-  "Evaluate and replace when called with a prefix argument."
-  (if arg
-      (let ((pos (point)))
-        ad-do-it
-        (goto-char pos)
-        (backward-kill-sexp)
-        (forward-sexp))
-    ad-do-it))
-
 (bind-keys ("M-s-s" . save-some-buffers)
 	   ("M-c" . capitalize-dwim)
 	   ("M-l" . downcase-dwim)
 	   ("M-u" . upcase-dwim)
 	   ("M-SPC" . cycle-spacing)
 	   ("M-/" . hippie-expand)
-	   ("C-l" . oht/recenter-top-bottom)
 	   ("C-x r r" . replace-rectangle)
 	   ("C-h C-f" . find-function)
 	   ("C-h C-v" . find-variable)
@@ -1091,18 +1104,15 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	   ("C-DEL" . sanemacs/backward-kill-word)
 	   )
 
-(bind-key* "M-o" 'oht/other-window)
-
 (bind-keys ("s-k" . kill-this-buffer)
 	   ("s-B" . ibuffer)
 	   ("M-s-b" . list-bookmarks)
 	   ("s-C" . org-capture)
 	   ("s-|" . oht/pipe-region)
 	   ("s-a" . org-agenda)
-	   ("s-/" . comment-or-uncomment-region-or-line)
+	   ("s-/" . oht-toggle-comment-region-or-line)
 	   ("s-l" . oht-mac-mark-whole-line)
-	   )
-
+	   ("s-o" . other-window))
 
 (bind-key* "C-<return>" 'execute-extended-command)
 
@@ -1116,6 +1126,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	   ("t [" . tab-bar-switch-to-prev-tab)
 	   ("a" . auto-fill-mode)
 	   ("d" . sdcv-search)
+	   ("f" . find-file)
 	   ("h" . hl-line-mode)
 	   ("l" . oht/toggle-line-numbers)
 	   ("w" . visual-line-mode)
@@ -1135,13 +1146,15 @@ This simply removes the hooked added by the function `use-embark-completions'."
 
 (bind-keys :prefix-map oht/windows-leader
 	   :prefix "s-w"
-	   ("s" . oht/split-below)
-	   ("v" . oht/split-beside)
-	   ("k" . oht/delete-window)
+	   ("s" . split-window-below)
+	   ("v" . split-window-right)
+	   ("k" . delete-window)
+	   ("K" . kill-buffer-and-window)
 	   ("o" . delete-other-windows)
 	   ("b" . balance-windows)
 	   ("r" . oht/rotate-window-split)
 	   ("t" . tear-off-window)
+	   ("w" . delete-frame)
 	   )
 
 ;;; Mac Shortcuts
@@ -1178,7 +1191,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
  ("s-s" . save-buffer)
  ("s-S" . write-file) ;save as
  ;; ("s-a" . mark-whole-buffer)
- ("s-o" . find-file)
+ ;; ("s-o" . find-file)
  ("s-x" . kill-region)
  ("s-c" . kill-ring-save)
  ("s-v" . yank)

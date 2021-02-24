@@ -1,13 +1,5 @@
 ;; -*- lexical-binding: t; -*-
 
-(defun oht/kill-buffer-window ()
-  "Kill current buffer and window, but not the last window."
-  (interactive)
-  (kill-buffer (current-buffer))
-  (if (not (one-window-p))
-          (delete-window))
-  )
-
 (defun oht/rotate-window-split ()
   "Toggle between vertical and horizontal split."
   ;; Source: https://www.emacswiki.org/emacs/ToggleWindowSplit.
@@ -46,14 +38,6 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
     (string-equal system-type "darwin")
     (shell-command (format "open -a BBEdit \"%s\"" $path))))
 
-
-(defun oht/kill-region-or-char ()
-  "If there's a region, kill it, if not, kill the next character."
-  (interactive)
-  (if (use-region-p)
-      (kill-region (region-beginning) (region-end))
-    (delete-forward-char 1 nil)))
-
 (defun sanemacs/backward-kill-word ()
   "Kill word backward, without copying to clipboard."
   (interactive "*")
@@ -75,11 +59,6 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
       (whitespace-mode -1)
     (whitespace-mode)))
 
-
-(defun oht/join-line-next ()
-  (interactive)
-  (join-line -1))
-
 (defun oht/pipe-region (start end command)
   "Run shell-command-on-region interactivly replacing the region in place"
   (interactive (let (string)
@@ -92,35 +71,12 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
                        string)))
   (shell-command-on-region start end command t t))
 
-(defun oht/split-below ()
-"Split horizontally and switch to that new window."
-  (interactive)
-  (split-window-below)
-  (windmove-down))
-
-(defun oht/split-beside ()
-"Split vertically and switch to that new window."
-  (interactive)
-  (split-window-right)
-  (windmove-right))
-
-(defun oht/forward-word-beginning ()
-  "Go to the end of the next word."
-  (interactive)
-  (forward-word 2)
-  (backward-word))
-
-
 (defun oht/org-insert-date-today ()
   "Insert today's date using standard org formatting."
   (interactive)
   (org-insert-time-stamp (current-time))
   )
-(defun oht/switch-to-new-buffer ()
-  "Create a new buffer named 'Untitled'."
-  (interactive)
-  (switch-to-buffer "Untitled")
-  )
+
 (defun oht/find-scratch ()
   "Switch to the *scratch* buffer"
   (interactive)
@@ -131,47 +87,6 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   "Search all buffers for REXP."
   (interactive "MSearch open buffers for regex: ")
   (multi-occur (buffer-list) rexp))
-
-(defun pulse-line (&rest _)
-  (interactive)
-  "Pulse the current line."
-  (pulse-momentary-highlight-one-line (point)))
-
-;; From https://christiantietze.de/posts/2020/12/emacs-pulse-highlight-yanked-text/
-(defun ct/yank-pulse-advice (orig-fn &rest args)
-  "Pulse line when yanking"
-  ;; Define the variables first
-  (let (begin end)
-    ;; Initialize `begin` to the current point before pasting
-    (setq begin (point))
-    ;; Forward to the decorated function (i.e. `yank`)
-    (apply orig-fn args)
-    ;; Initialize `end` to the current point after pasting
-    (setq end (point))
-    ;; Pulse to highlight!
-    (pulse-momentary-highlight-region begin end)))
-(advice-add 'yank :around #'ct/yank-pulse-advice)
-
-(defun oht/other-window ()
-  "Wrapper around other-window & pulse line."
-  (interactive)
-  (other-window 1)
-  (pulse-line)
-  )
-
-(defun oht/delete-window ()
-  "Wrapper around delete-window & pulse line."
-  (interactive)
-  (delete-window)
-  (pulse-line)
-  )
-
-(defun oht/recenter-top-bottom ()
-  "Wrapper around recenter-top-bottom & pulse line."
-  (interactive)
-  (recenter-top-bottom)
-  (pulse-line)
-  )
 
 (defun occur-dwim ()
   "Call `occur' with a sane default.
@@ -188,7 +103,7 @@ the current region (if it's active), or the current symbol."
         regexp-history)
   (call-interactively 'occur))
 
-(defun comment-or-uncomment-region-or-line ()
+(defun oht-toggle-comment-region-or-line ()
     "Comments or uncomments the region or the current line if there's no active region."
     (interactive)
     (let (beg end)
@@ -196,5 +111,17 @@ the current region (if it's active), or the current symbol."
             (setq beg (region-beginning) end (region-end))
             (setq beg (line-beginning-position) end (line-end-position)))
         (comment-or-uncomment-region beg end)))
+
+;; Normally, when `eval-last-sexp' is called with an argument the result is
+;; inserted at point, this advises the function to REPLACE the last sexp.
+(defadvice eval-last-sexp (around replace-sexp (arg) activate)
+  "Evaluate and replace when called with a prefix argument."
+  (if arg
+      (let ((pos (point)))
+        ad-do-it
+        (goto-char pos)
+        (backward-kill-sexp)
+        (forward-sexp))
+    ad-do-it))
 
 (provide 'oht-functions)

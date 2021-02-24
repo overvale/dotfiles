@@ -192,12 +192,6 @@
 
 ;;;; Appearance
 
-;; This is actually in both early-init.el and here because it being in
-;; early-init prevents the scroll bar from showing up when you start Emacs,
-;; but you need it here to prevent it from showing in new frames. ¯\_(ツ)_/¯
-(scroll-bar-mode -1)
-
-(menu-bar-mode 1)                          ; make green zoom button fullscreen
 (show-paren-mode t)                        ; highlight parens
 (setq show-paren-delay 0)                  ; and show immediately
 (setq visible-bell t)                      ; disable beep
@@ -237,7 +231,7 @@ variable-pitch and fixed-pitch fonts to always be 1.0."
   (set-face-attribute 'default nil
 		      :family "Iosevka Comfy" :height 140)
   (set-face-attribute 'variable-pitch nil
-		      :family "Lucida Grande" :height 1.0)
+		      :family "Inter" :height 1.0)
   (set-face-attribute 'fixed-pitch nil
 		      :family "Iosevka Comfy" :height 1.0)
   )

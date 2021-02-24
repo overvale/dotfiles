@@ -20,9 +20,9 @@
 ;; This file is loaded before the GUI is initialized (see docs). If these
 ;; settings are applied AFTER the GUI is initialized then you might actually
 ;; see all these settings happen (window moving around / flashing).
-
 (tool-bar-mode -1)
-(scroll-bar-mode -1)
+(scroll-bar-mode 1)
+(menu-bar-mode 1)
 
 ;; Frame default parameters
 (setq default-frame-alist

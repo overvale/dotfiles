@@ -961,7 +961,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   (setq eww-download-directory "~/Downloads/")
   (setq eww-bookmarks-directory "~/.emacs.d/eww-bookmarks/")
   (setq eww-history-limit 150)
-  (setq shr-max-image-proportion 0.7)
+  (setq shr-max-image-proportion 0.5)
   (setq eww-use-external-browser-for-content-type
         "\\`\\(video/\\|audio/\\|application/pdf\\)")
   (setq url-cookie-trusted-urls '()
@@ -993,6 +993,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :config
   (load (concat oht-dotfiles "lisp/oht-elfeed.el"))
   :bind
+  ("M-s-e" . elfeed)
   (:map elfeed-search-mode-map
 	("a" . hrs/elfeed-pinboard-current-entry)
 	("b" . elfeed-search-browse-url)

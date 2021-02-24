@@ -795,30 +795,32 @@ This simply removes the hooked added by the function `use-embark-completions'."
 ;;;; Org
 
 (use-package org
-  :commands org-mode
+  :commands (org-mode oht-org-agenda-today)
   :config
   (load (concat oht-dotfiles "lisp/oht-org.el"))
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
-  :hook (org-mode . variable-pitch-mode)
-  :bind (:map org-mode-map
-	      ("s-\\ o" . consult-outline)
-	      ("s-\\ ." . oht/org-insert-date-today)
-	      ("s-\\ t" . org-todo)
-	      ("s-\\ n" . org-narrow-to-subtree)
-	      ("s-\\ w" . widen)
-	      ("s-\\ <" . org-insert-structure-template)
-	      ("s-\\ s" . org-store-link)
-	      ("s-\\ i" . org-insert-last-stored-link)
-	      ("s-\\ m" . visible-mode)
-	      ("s-\\ I" . org-clock-in)
-	      ("s-\\ O" . org-clock-out)
-	      ("s-\\ a" . org-archive-subtree)
-	      ("s-\\ r" . org-refile)
-	      ("s-\\ g" . org-goto)
-	      ("s-\\ c" . org-toggle-checkbox)
-	      )
-  )
+  ;; :hook (org-mode . variable-pitch-mode)
+  :bind
+  ("M-s-a" . oht-org-agenda-today)
+  (:map org-mode-map
+	("s-\\ o" . consult-outline)
+	("s-\\ ." . oht/org-insert-date-today)
+	("s-\\ t" . org-todo)
+	("s-\\ n" . org-narrow-to-subtree)
+	("s-\\ w" . widen)
+	("s-\\ <" . org-insert-structure-template)
+	("s-\\ s" . org-store-link)
+	("s-\\ i" . org-insert-last-stored-link)
+	("s-\\ m" . visible-mode)
+	("s-\\ I" . org-clock-in)
+	("s-\\ O" . org-clock-out)
+	("s-\\ a" . org-archive-subtree)
+	("s-\\ r" . org-refile)
+	("s-\\ g" . org-goto)
+	("s-\\ c" . org-toggle-checkbox)
+	)
+)
 
 (use-package org-agenda
   :straight nil

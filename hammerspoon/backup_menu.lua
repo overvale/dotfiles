@@ -16,6 +16,7 @@ local cloud_offline = hs.image.imageFromPath("assets/cloud_offline.pdf")
 -- functions called by the menubar item
 function backupNow () os.execute("launchctl start local.restic.test") end
 function backupOpenLogs () os.execute("open ~/home/src/restic/logs") end
+function openLastBackupLog () os.execute("open \"$(find ~/home/src/restic/logs | tail -1)\"") end
 function backupRunning()
    local frontWindow = hs.window.frontmostWindow()
    backupMenu:setIcon(cloud_run:setSize({w=20,h=20}))
@@ -54,7 +55,7 @@ function backupMenuItem()
    -- Generate the menu items you want in the list
    local menuTable = {
       { title = "Last Backup:", disabled = true },
-      { title = lastBackup, fn = backupOpenLogs },
+      { title = lastBackup, fn = openLastBackupLog },
       { title = "-" },
       { title = "Open Logs", fn = backupOpenLogs },
       { title = "Backup Now", fn = backupNow },

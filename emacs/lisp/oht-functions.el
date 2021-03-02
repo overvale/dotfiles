@@ -30,8 +30,7 @@
 
 (defun oht/open-in-bbedit ()
   "Open current file or dir in BBEdit.
-Adapted from:
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
+Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (interactive)
   (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ) )))
     (message "path is %s" $path)
@@ -44,20 +43,6 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
   (push-mark)
   (backward-word)
   (delete-region (point) (mark)))
-
-(defun oht/toggle-line-numbers ()
-  "Toggles display of line numbers. Applies to all buffers."
-  (interactive)
-  (if (bound-and-true-p display-line-numbers-mode)
-      (global-display-line-numbers-mode -1)
-    (global-display-line-numbers-mode)))
-
-(defun oht/toggle-whitespace ()
-  "Toggles display of indentation and space characters."
-  (interactive)
-  (if (bound-and-true-p whitespace-mode)
-      (whitespace-mode -1)
-    (whitespace-mode)))
 
 (defun oht/pipe-region (start end command)
   "Run shell-command-on-region interactivly replacing the region in place"
@@ -123,5 +108,14 @@ the current region (if it's active), or the current symbol."
         (backward-kill-sexp)
         (forward-sexp))
     ad-do-it))
+
+(defun my/smart-beginning-of-line ()
+  "Move point to first non-whitespace character or beginning-of-line."
+  (interactive)
+  (let ((oldpos (point)))
+    (back-to-indentation)
+    (and (<= oldpos (point))
+	 (/= (line-beginning-position) oldpos)
+	 (beginning-of-line))))
 
 (provide 'oht-functions)

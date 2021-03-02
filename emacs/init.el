@@ -51,11 +51,6 @@
 ;; quickly self-correct.
 (setq fast-but-imprecise-scrolling t)
 
-;; Resizing the Emacs frame can be a terribly expensive part of changing the
-;; font. By inhibiting this, we halve startup times, particularly when we use
-;; fonts that are larger than the system default (which would resize the frame).
-(setq frame-inhibit-implied-resize t)
-
 ;; Remove command line options that aren't relevant to our current OS; means
 ;; slightly less to process at startup.
 (setq command-line-x-option-alist nil)
@@ -80,7 +75,7 @@
 (save-place-mode 1)                        ; reopens the file to the same spot you left
 (recentf-mode 1)                           ; enables "Open Recent..." in file menu
 (setq tab-width 4)                         ; tabs=4 char
-(setq help-window-select t)                ; focus new help windows when opened
+(setq help-window-select nil)                ; focus new help windows when opened
 (setq sentence-end-double-space nil)       ; ends sentence after 1 space
 (fset 'yes-or-no-p 'y-or-n-p)              ; Changes all yes/no questions to y/n type
 (setq create-lockfiles nil)                ; No need for ~ files when editing
@@ -128,6 +123,9 @@
 ;; An example: you call `switch-buffer' and search for something in the
 ;; minibuffer. You then want to call a command inside that minibuffer.
 (setq enable-recursive-minibuffers 1)
+
+;; And show an indicator when you do that.
+(minibuffer-depth-indicate-mode 1)
 
 ;; If you have something on the system clipboard, and then kill
 ;; something in Emacs, then by default whatever you had on the system
@@ -201,6 +199,7 @@
 (set-default 'cursor-type 'box)            ; use a box for cursor
 (blink-cursor-mode -1)                     ; no blinking please
 
+
 ;; Mode Line
 (column-number-mode t)
 (setq display-time-format "%H:%M  %Y-%m-%d")
@@ -233,7 +232,7 @@ variable-pitch and fixed-pitch fonts to always be 1.0."
   (set-face-attribute 'variable-pitch nil
 		      :family "Inter" :height 1.0)
   (set-face-attribute 'fixed-pitch nil
-		      :family "Iosevka Comfy" :height 1.0)
+		      :family "Iosevka Fixed" :height 1.0)
   )
 (oht-fonts-set)
 
@@ -481,7 +480,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :commands (list-bookmarks)
   :init
   (defun oht-bookmark-fonts ()
-    (hl-line-mode)
+    (hl-line-mode 1)
     )
   :hook (bookmark-bmenu-mode . oht-bookmark-fonts)
   :custom
@@ -674,7 +673,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
    modus-themes-diffs 'desaturated
    modus-themes-org-blocks 'grayscale
    modus-themes-scale-headings nil
-   modus-themes-variable-pitch-ui t
+   modus-themes-variable-pitch-ui nil
    modus-themes-variable-pitch-headings t
    )
   (modus-themes-load-themes)
@@ -901,11 +900,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :init
   ;; Visit read-only buffers in view-mode
   (setq view-read-only t)
-  (defun oht/view-mode-enter ()
-    (interactive)
-    (view-mode t)
-    (hl-line-mode t)
-    )
+  (add-hook 'view-mode-hook 'hl-line-mode)
   (defun oht/view-mode-exit ()
     (interactive)
     (view-mode -1)
@@ -916,7 +911,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
     (oht/view-mode-exit)
     (call-interactively 'replace-rectangle)
     )
-  (bind-key "s-j" 'oht/view-mode-enter)
+  (bind-key "s-j" 'view-mode)
   :bind
   (:map view-mode-map
 	("n" . next-line)
@@ -941,7 +936,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	("x" . exchange-point-and-mark)
 	("<RET>" . oht/view-mode-exit)
 	("s-j" . oht/view-mode-exit)
-	("q" . oht/view-mode-exit)
+	("q" . quit-window)
 	)
   :blackout " VIEW"
   )
@@ -1083,10 +1078,10 @@ This simply removes the hooked added by the function `use-embark-completions'."
 
 ;;; Keybindings
 
+;; Make it so every time you type RET you also indent the next line.
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
-;; C-[ sends ESC so let's make ESC more predictable
-(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+(bind-key* "C-<return>" 'execute-extended-command)
 
 (bind-keys ("M-s-s" . save-some-buffers)
 	   ("M-c" . capitalize-dwim)
@@ -1111,8 +1106,6 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	   ("s-l" . oht-mac-mark-whole-line)
 	   ("s-o" . other-window))
 
-(bind-key* "C-<return>" 'execute-extended-command)
-
 (bind-keys :prefix-map oht/global-leader
 	   :prefix "s-<return>"
 	   ("t t" . tab-bar-mode)
@@ -1125,10 +1118,11 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	   ("d" . sdcv-search)
 	   ("f" . find-file)
 	   ("h" . hl-line-mode)
-	   ("l" . oht/toggle-line-numbers)
+	   ("l" . global-display-line-numbers-mode)
+	   ("g" . global-display-fill-column-indicator-mode)
 	   ("w" . visual-line-mode)
 	   ("T" . toggle-truncate-lines)
-	   ("W" . oht/toggle-whitespace)
+	   ("W" . whitespace-mode)
 	   ("m" . magit-status)
 	   ("<left>" . winner-undo)
 	   ("<right>" . winner-redo)
@@ -1152,6 +1146,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	   ("r" . oht/rotate-window-split)
 	   ("t" . tear-off-window)
 	   ("w" . delete-frame)
+	   ("i" . clone-indirect-buffer)
 	   )
 
 ;;; Mac Shortcuts
@@ -1178,6 +1173,9 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	   ;; This has to be set to a custom function so minor modes can't
 	   ;; hijack it.
 	   ("C-k" . oht-mac-kill-line))
+
+;; And now remap `beginning-of-line' to a custom fuction
+(global-set-key [remap beginning-of-line] #'my/smart-beginning-of-line)
 
 (bind-keys
  ("s-," . oht-mac-find-settings)

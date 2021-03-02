@@ -20,6 +20,11 @@
 (define-key input-decode-map [?\C-m] [C-m])
 (bind-key "<C-m>" nil)
 
+;; In the old days ESC was used as a prefix key, but I want ESC to act like it
+;; does everywhere else on my system and, you know, escape from things. So
+;; I've remapped ESC to `keyboard-quit'.
+(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+
 
 ;;; Functions
 

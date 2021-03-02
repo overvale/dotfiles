@@ -92,7 +92,7 @@
     (setf (elfeed-feed-title feed) "emacs-news"))
   (let ((feed (elfeed-db-get-feed "https://craigmod.com/index.xml")))
     (setf (elfeed-feed-title feed) "Craig Mod"))
-  (let ((feed (elfeed-db-get-feed "https://www.reddit.com/r/emacs/top/.rss")))
+  (let ((feed (elfeed-db-get-feed "https://reddit.com/r/emacs/top/.rss?sort=top&t=day")))
     (setf (elfeed-feed-title feed) "r/emacs"))
   (let ((feed (elfeed-db-get-feed "http://feeds.feedburner.com/Metafilter")))
     (setf (elfeed-feed-title feed) "MetaFilter"))

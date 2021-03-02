@@ -1,10 +1,5 @@
 ;;; oht-embark.el --- Customization for the Embark Package -*- lexical-binding: t -*-
 
-;; This setup for Embark is admittedly a little complex at first glance. It is
-;; designed to integrate Embark with Selectrum. Additionally, the functions
-;; `use-embark-completions' and `use-selectrum-completions' provide everything
-;; needed to switch between using Selectrum and Embark for completions.
-
 ;; Show which-key help when you call Embark
 (setq embark-action-indicator
       (lambda (map)

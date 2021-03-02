@@ -12,10 +12,13 @@
 ;; loaded, but after `early-init-file'. Doom handles package initialization, so
 ;; we must prevent Emacs from doing it early!
 (setq package-enable-at-startup nil)
+(setq package-quickstart nil)
 (fset #'package--ensure-init-file #'ignore)  ; DEPRECATED Removed in 28
 
-;; I'm not using Doom, but I'm using `straight' for packages, so I can do the
-;; same.
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we halve startup times, particularly when we use
+;; fonts that are larger than the system default (which would resize the frame).
+(setq frame-inhibit-implied-resize t)
 
 ;; This file is loaded before the GUI is initialized (see docs). If these
 ;; settings are applied AFTER the GUI is initialized then you might actually

@@ -3,18 +3,31 @@
 
 * Introduction
 
-This document describes, and includes some code for, how I like to set up my Mac. You might ask "How often do you buy a new computer? What's the point in documenting all this if you only have to do it once?" The answer is that I find that writing clarifies my thinking and writing everything down helps me remember why I did what I did (which is occasionally important). Additionally, I'd hate to lose the knowledge accumulated here simply from disuse or by losing my laptop.
+This document describes, and includes some code for, how I like to set up my
+Mac. You might ask "How often do you buy a new computer? What's the point in
+documenting all this if you only have to do it once?" The answer is that I
+find that writing clarifies my thinking and writing everything down helps me
+remember why I did what I did (which is occasionally important). Additionally,
+I'd hate to lose the knowledge accumulated here simply from disuse or by
+losing my laptop.
 
-I bought a new laptop in the summer of 2020 and as I set it up I documented pretty much everything I did. I'm doing my best to remember to keep this document up to date.
+I bought a new laptop in the summer of 2020 and as I set it up I documented
+pretty much everything I did. I'm doing my best to remember to keep this
+document up to date.
 
-Some of the stuff below might seem a little militant (running as a non-admin user, installing as little as possible into =/Applications=, turning off analytics, using an ad-blocker, and digging through the nitty-gritty of background processes in the terminal) but I can tell you that since I started doing this I've seen a dramatic improvement in battery life on my laptop. Plus, it's more secure and private. So there.
+Some of the stuff below might seem a little militant (running as a non-admin
+user, installing as little as possible into =/Applications=, turning off
+analytics, using an ad-blocker, and digging through the nitty-gritty of
+background processes in the terminal) but I can tell you that since I started
+doing this I've seen a dramatic improvement in battery life on my laptop.
+Plus, it's more secure and private. So there.
 
 * Philosophy
 
 1. Use default apps and services first.
-2. Don't install Chrome. Why? [[https://chromeisbad.com][chromeisbad.com]] lists a few good reasons.
+2. Don't install Chrome.
 3. No Electron apps.
-4. New software should never slow the system.
+4. New software should never slow the system, ideally only make it faster.
 5. Don't use apps that install background update deamons, if you can help it.
 6. ~#hottip~: turn Wi-Fi on only when you need it, and to make backups, etc.
    Makes your computer faster, have less distractions, and greatly improves
@@ -24,7 +37,8 @@ Some of the stuff below might seem a little militant (running as a non-admin use
 
 - The first account you create will be an admin account, only use this when you must.
 - The second account will be the account you use day-to-day.
-    + Doing this will make a few things more of a pain for you, but it will put the applications you install and use in a smaller box. Basically, I don't trust the software I install, this simple step limits the potential damage.
+    + Doing this will make a few things more of a pain for you, but it will
+      put the applications you install and use in a smaller, more secure box.
 
 * Settings
 
@@ -49,19 +63,24 @@ Some of the stuff below might seem a little militant (running as a non-admin use
 - Verify you're not sending analytics here: =System Preferences > Security & Privacy > Analytics & Improvements=.
 - Add unix welcome message =sudo echo "Welcome to UNIX!" > /etc/motd=.
 - Block Google Analytics =echo '\n0.0.0.0 google-analytics.com\n0.0.0.0 www.google-analytics.com` >> /etc/hosts=
-- Set up ssh keys - use [[https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh][GitHub instructions]] - don't forget to set a password, and store the password in your keychain.
-- Run =defaults write -g NSWindowShouldDragOnGesture yes= in the terminal, then you can drag windows around with =ctrl+option+cmd= mouse-drag from anywhere in the window.
-- Run =defaults write com.apple.dock autohide-time-modifier -float 0.4;killall Dock= in the terminal to speed up revealing the dock when you move your mouse to the bottom of the screen.
-- Run =defaults write com.apple.TextEdit NSShowAppCentricOpenPanelInsteadOfUntitledFile -bool false= to make TextEdit create Untitled documents when it launches. [[https://mjtsai.com/blog/2020/12/10/making-textedit-create-an-untitled-document-at-launch/][Source]]
+- Set up ssh keys - use [[https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh][GitHub instructions]] - don't forget to set a password,
+  and store the password in your keychain.
+- Run =defaults write -g NSWindowShouldDragOnGesture yes= in the terminal, then
+  you can drag windows around with =ctrl+option+cmd= mouse-drag from anywhere in
+  the window.
+- Run =defaults write com.apple.dock autohide-time-modifier -float 0.4;killall Dock=
+  in the terminal to speed up revealing the dock when you move your mouse to the
+  bottom of the screen.
+- Run =defaults write com.apple.TextEdit NSShowAppCentricOpenPanelInsteadOfUntitledFile -bool false=
+  to make TextEdit create Untitled documents when it launches. [[https://mjtsai.com/blog/2020/12/10/making-textedit-create-an-untitled-document-at-launch/][Source]]
 
 * Encryption
 
 I try to use encryption wherever I can.
 
 - Encrypt the hard drive with FileVault.
-- Backups stored in the cloud are encrypted before they leave my computer
-  with Arq.
-- Use encrypted transfers/sync (such as SSH, TLS) such as Syncthing.
+- Backups stored in the cloud are encrypted before they leave my computer.
+- Use encrypted methods for transfers/sync.
 - Protect secrets with additional encryption via disk images and GPG encrypted
   files.
 
@@ -73,15 +92,20 @@ SSH and GPG work like this:
 - You place the public keys on the servers/services you want connect to.
 - A file encrypted with my public key can only be decrypted using my private key.
 
+You can copy your key to a remote server with =ssh-copy-id user@server=.
+
 * Install
 
-While anyone could, in theory, adopt the settings above, the utilities and applications I need are unique to me. So, the below is simply a window into my specific workflow. Lucky you.
+While anyone could, in theory, adopt the settings above, the utilities and
+applications I need are unique to me. So, the below is simply a window into my
+specific workflow. Lucky you.
 
 ** Utilities
 
 - Install command-line dev tools with =xcode-select --install=.
 - Install [[https://1blocker.com][1Blocker]]
 - Install [[https://underpassapp.com/StopTheMadness/][StopTheMadness]]
+- Install [[https://oblador.github.io/hush/][Hush]]
 - Install [[https://www.princexml.com][princeXML]]
 - Install [[https://brew.sh][Homebrew]]
 - Install [[https://github.com/syncthing/syncthing-macos][Syncthing (macos)]]
@@ -99,11 +123,13 @@ git \
 gpg \
 pandoc \
 parallel \
+restic \
 sdcv \
 the_silver_searcher \
 tldr \
 tree \
 vim \
+youtube-dl \
 zsh
 #+end_src
 
@@ -111,21 +137,19 @@ zsh
 
 ** Applications
 
-Install as many app as you can into =~/Applications=, most work just fine from there, and apps in that directory run with the user's permissions, not admin permissions. Some tools, like Excel, require installation to =/Applications= so they can run background processes, others complain every launch but work just fine.
+Install as many app as you can into =~/Applications=, most work just fine from
+there, and apps in that directory run with the user's permissions, not admin
+permissions. Some tools, like Excel, require installation to =/Applications= so
+they can run background processes, others complain every launch but work just
+fine.
 
-- Arq 5 (NOT v6)
-    + When using a private/public key pair for authentication, don't forget
-      that Arq expects a PEM-encoded one. Created with =ssh-keygen -m pem=.
 - BBEdit
 - Emacs (the [[https://github.com/railwaycat/homebrew-emacsmacport][correct version]], [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][more info]])
-- Fantastical (don’t forget to add accounts)
 - Firefox
 - Hammerspoon
-- Kaleidoscope
 - Mimestream
 - Microsoft Excel
 - Monodraw
-- SuperDuper
 - Tot
 - Transmit
 - ViDL
@@ -138,22 +162,22 @@ Install as many app as you can into =~/Applications=, most work just fine from t
 
 ** Home Dir Layout
 
-The Mac home folder is a kind of dumping ground. There are a bunch of folders
-you can't delete, even if you don't use them, a few have very strict security
-requirements (Documents, Desktop, Downloads; which is what prompted this), and
-seemingly every command-line app [[https://0x46.net/thoughts/2019/02/01/dotfile-madness/][wants to install a dotfile there]] without so
-much as asking. It very much feels like a place that's for your computer's
-use, and you can join-in so long as you don't break the rules. Which is fine,
-I get why it is that way, but there's something to be said for a true home
-that you can do anything with.
+Unfortunately, The Mac home folder is kind of a dumping ground. There are a
+bunch of folders you can't delete, even if you don't use them, a few have very
+strict security permissions (Documents, Desktop, Downloads), and seemingly
+every command-line app [[https://0x46.net/thoughts/2019/02/01/dotfile-madness/][wants to install a dotfile there]] without so much as
+asking. It very much feels like a place that's /for your computer's use/, not
+yours. Which is fine, I get why it is that way, but there's something to be
+said for a true home that you can do anything with. And backup (almost) the
+entirety of without worrying that you're backing-up a bunch of garbage.
 
-So I pretty much organize everything under =~/home/=.
+I pretty much organize everything under =~/home/=.
 
 - =~/home/=
     + =dot= - My dotfiles.
     + =files= - Anything that doesn't fit elsewhere.
     + =src= - Source code, and source code related things.
-    + =opt= - Basically a place for software installed via a =git clone=. I don't back this folder up.
+    + =opt= - Basically a place for software installed via a =git clone=.
     + =org= - My org-files.
     + =work=
     + =project_a=
@@ -164,11 +188,11 @@ So I pretty much organize everything under =~/home/=.
 Run from =$HOME=:
 
 #+begin_src bash
-ln -s ~/home/dot/vim .vim;
+ln -s ~/home/dot/vim .vim
 ln -s ~/home/dot/emacs/init.el ~/.emacs.d/init.el
 ln -s ~/home/dot/emacs/early-init.el ~/.emacs.d/early-init.el
-ln -s ~/home/dot/git/gitconfig .gitconfig;
-ln -s ~/home/dot/git/gitignore_global .gitignore_global;
+ln -s ~/home/dot/git/gitconfig .gitconfig
+ln -s ~/home/dot/git/gitignore_global .gitignore_global
 ln -s ~/home/dot/zsh/zshrc ~/.zshrc
 ln -s ~/home/dot/zsh/zshenv ~/.zshenv
 ln -s ~/home/dot/hammerspoon ~/.hammerspoon
@@ -193,7 +217,9 @@ To get it working in emacs [[http://mbork.pl/2017-01-14_I'm_now_using_the_right_
 
 * More Info about Background Processes
 
-First check =System Preferences > Users & Groups > Login Items= and =System Preferences > Extensions > All= for anything listed there. Removing entries from this list often disables the corresponding background processes.
+First check =System Preferences > Users & Groups > Login Items= and =System
+Preferences > Extensions > All= for anything listed there. Removing entries
+from this list often disables the corresponding background processes.
 
 - Check for Launch Deamons and Agents with =ls -al /Library/Launch* ~/Library/Launch*=
     + If there's anything you don't want, just move them into a =disabled= folder.
@@ -210,3 +236,95 @@ ps -Ax | grep -i asperaconnect | sed /grep/d | awk '{ print $1 }' | xargs kill -
 #+end_src
 
 For details on killing Adobe processes: https://www.ravbug.com/tutorials/stop-adobe-daemons/
+
+* Backups
+
+1. Don't trust the hardware you're using. Which means multiple backups, local
+   and off-site.
+2. Don't trust the cloud services you pay for. Which means encrypting data
+   before you upload it.
+
+My setup is basically:
+
+1. Laptop -- for anything I'm working on, or want quick access to.
+2. Local NAS (with RAID backup) -- for large media and inactive archives.
+3. Cloud (encrypted pre-upload) -- for versioned backups of laptop data.
+
+I've settled on using =restic= with a custom backup script, run by =launchd= and a
+custom front-end I wrote in Hammerspoon. It's too complex to write-up here,
+but I'm pretty happen with it so far.
+
+#+begin_src
+         ┌───────────┐   ┌───────────┐             
+         │  Server   │   │ Local NAS │             
+         └───────────┘   └───────────┘             
+               ▲               ▲                   
+               │               │                   
+               │               │                   
+               └───────┬───────┘                   
+                       │                           
+                       │                           
+                       │                           
+┌───────────┐    ┌───────────┐        ┌───────────┐
+│  iPhone   │    │  MacBook  │◀──────▶│ Work iMac │
+└───────────┘    └───────────┘        └───────────┘
+      │                ▲                           
+      │                │                           
+      │                │                           
+      │          ┌───────────┐                     
+      └─────────▶│  iCloud   │                     
+                 └───────────┘                     
+#+end_src
+
++ iPhone to iCloud :: Standard iCloud backup. I use iCloud Photos so every
+  photo I take is uploaded there.
+
++ iCloud to MacBook :: I have the Photos app on my MacBook set to download all
+  the originals, that way I have a local copy of everything.
+
++ MacBook 2-way sync with Work iMac :: I use Syncthing to keep a few key
+  folders in sync directly between these computers. Because everything syncs
+  to my MacBook, and because I rarely use my Work iMac for things I want
+  backed-up, I don't worry about backing anything up directly from the iMac.
+
++ MacBook & Work iMac to Local NAS ::
+
+  - I haven't settled on a solution to this one yet.
+  - rclone / rsync / rsyncOSX
+
++ MacBook to Cloud :: I use =restic= for this, with some custom scripts. I use
+  rsync.et, which I really like.
+
+* Synology Setup
+
+I have a Synology NAS that I use for backups. Mostly I connect through the
+Finder via SMB, or through Transmit via SFTP, but I occasionally use tools
+like rsync, restic, scp, etc. that need ssh access.
+
+There are a few pain-in-the-ass details I've picks up along the way.
+
+** Keypair Authentication
+
+I really wish this was officially documented somewhere, so I don't have to
+rely on blog posts, but the below seems pretty simple. That said, a good set
+of instructions are [[https://silica.io/using-ssh-key-authentification-on-a-synology-nas-for-remote-rsync-backups/][here]].
+
+- Enable 'User Homes' in =User > Advanced > User Home=.
+- =sudo vim /etc/ssh/sshd_config= and uncomment =PubkeyAuthentication yes=.
+- Restart ssh service (turn it off/on).
+- Copy your rsa keys to the NAS with =ssh-copy-id user@nas-ip=.
+- Change some folder permissions. This is required because the default
+  permissions are wide-open and ssh doesn't allow that (apparently).
+    + =chmod 0711 ~=
+    + =chmod 0711 ~/.ssh=
+    + =chmod 0600 ~/.ssh/authorized_keys=
+- You can now push files using a command like: =scp -r ~/home/dot/zsh user@server:/volume1/share/folder=
+- You can also use rsync if you enable it on the NAS in =File Services > rsync=.
+
+** SSH vs SFTP Paths
+
+Something else to keep in mind with a Synology is that where you land when you
+log in via SSH is not the same place you land when you connect via SFTP. Don't
+assume the paths will be the same.
+
+I learned this on the [[https://restic.readthedocs.io/en/stable/faq.html#creating-new-repo-on-a-synology-nas-via-sftp-fails][restic FAQs]].

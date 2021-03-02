@@ -417,25 +417,11 @@ This simply removes the hooked added by the function `use-embark-completions'."
   )
 
 (use-package ctrlf
-  :init
-  (defun oht-ctrlf-forward-fuzzy ()
-    "Call `ctrlf-forward-fuzzy' with last-input."
-    (interactive)
-    (ctrlf-forward 'fuzzy nil (car ctrlf-search-history))
-    )
   :bind
   ("C-s" . ctrlf-forward-fuzzy)
   ("C-r" . ctrlf-backward-fuzzy)
   :config
   (setq ctrlf-go-to-end-of-match nil)
-  (setq ctrlf-minibuffer-bindings
-        `(("C-n"          . ctrlf-next-match)
-          (,(kbd "C-p")   . ctrlf-previous-match)
-	  (,(kbd "M-O")   . ctrlf-occur)
-	  (,(kbd "M-c")   . ctrlf-toggle-case-fold-search)
-	  (,(kbd "M-r")   . ctrlf-toggle-regexp)
-	  (,(kbd "C-o s") . ctrlf-change-search-style)
-	  ))
   )
 
 ;;;; Miscellaneous Packages

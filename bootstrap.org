@@ -206,7 +206,7 @@ ln -s ~/home/dot/hammerspoon ~/.hammerspoon
 
 This installs Webster's 1913 dictionary. Which is awesome.
 
-1. Download the newest release [[https://github.com/ponychicken/WebsterParser][here]].
+1. Download the newest release [[https://github.com/cmod/websters-1913][here]].
 2. Move it to =~/Library/Dictionaries=.
 
 To get it working in emacs [[http://mbork.pl/2017-01-14_I'm_now_using_the_right_dictionary][more info here]]:

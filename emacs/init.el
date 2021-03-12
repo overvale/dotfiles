@@ -141,11 +141,6 @@
 ;; program.
 (setq uniquify-buffer-name-style 'forward)
 
-(setq mac-emulate-three-button-mouse t)
-;; mouse-1: Click
-;; mouse-2: Option + Click
-;; mouse-3: Command + Click (right-click)
-
 ;; Always follow symlinks. init files are normally stowed/symlinked.
 (setq vc-follow-symlinks t
       find-file-visit-truename t
@@ -177,7 +172,8 @@
 (setq-default truncate-lines t)
 
 ;; So, instead, I take the brute-force approach of adding a hook for text-mode
-;; and prog-mode to call a function which toggles the value on. Take that Emacs.
+;; and prog-mode to call a function which toggles the value on. It's not
+;; perfect, but it works 99% of the time. Take that Emacs.
 (defun oht-mac-truncate-lines()
   (toggle-truncate-lines 1))
 (add-hook 'text-mode-hook 'oht-mac-truncate-lines)
@@ -198,7 +194,6 @@
 (setq-default indicate-empty-lines nil)    ; show where the file ends
 (set-default 'cursor-type 'box)            ; use a box for cursor
 (blink-cursor-mode -1)                     ; no blinking please
-
 
 ;; Mode Line
 (column-number-mode t)
@@ -296,7 +291,7 @@ variable-pitch and fixed-pitch fonts to always be 1.0."
   :config
   (blackout 'eldoc-mode)
   (blackout 'emacs-lisp-mode "Elisp")
-  (blackout 'auto-fill-function " -A-")
+  (blackout 'auto-fill-function " Fill")
   )
 
 
@@ -397,7 +392,6 @@ This simply removes the hooked added by the function `use-embark-completions'."
   :bind
   ("s-b" . consult-buffer)
   ("M-y" . consult-yank-pop)
-  ("M-s-o" . consult-recent-file)
   ("s-f" . consult-line)
   ([remap yank-pop] . consult-yank-pop)
   :config
@@ -409,11 +403,6 @@ This simply removes the hooked added by the function `use-embark-completions'."
 (use-package embark-consult
   :straight nil
   :after (embark consult)
-  ;; :demand ; only necessary if you have the hook below
-  ;; ;; if you want to have consult previews as you move around an
-  ;; ;; auto-updating embark collect buffer
-  ;; :hook
-  ;; (embark-collect-mode . embark-consult-preview-minor-mode)
   )
 
 (use-package ctrlf
@@ -424,15 +413,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   (setq ctrlf-go-to-end-of-match nil)
   )
 
-;;;; Miscellaneous Packages
-
-;; (use-package benchmark-init
-;;   ;; This package creates a report each time you startup
-;;   ;; You'll need to add ':demand' and restart emacs to see the report
-;;   :demand
-;;   :config
-;;   ;; To disable collection of benchmark data after init is done.
-;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
+;;;; Built-In Packages
 
 (use-package remember
   ;; The below replaces Emacs's regular *scratch* buffer with the remember-notes
@@ -512,6 +493,16 @@ This simply removes the hooked added by the function `use-embark-completions'."
       (pulse-momentary-highlight-region begin end)))
   (advice-add 'yank :around #'ct/yank-pulse-advice)
   )
+
+;;;; Miscellaneous Packages
+
+(use-package benchmark-init
+  ;; This package creates a report each time you startup
+  ;; You'll need to add ':demand' and restart emacs to see the report
+  :demand
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 (use-package magit
   :commands magit-status
@@ -660,7 +651,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
    modus-themes-org-blocks 'grayscale
    modus-themes-scale-headings nil
    modus-themes-variable-pitch-ui nil
-   modus-themes-variable-pitch-headings t
+   modus-themes-variable-pitch-headings nil
    )
   (modus-themes-load-themes)
   :config
@@ -787,7 +778,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
   ;; :hook (org-mode . variable-pitch-mode)
   :bind
-  ("M-s-a" . oht-org-agenda-today)
+  ("s-1" . org-agenda)
   (:map org-mode-map
 	("s-\\ o" . consult-outline)
 	("s-\\ ." . oht/org-insert-date-today)
@@ -1030,7 +1021,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 ;;; Keybindings
 
 ;; Make it so every time you type RET you also indent the next line.
-(define-key global-map (kbd "RET") 'newline-and-indent)
+;; (define-key global-map (kbd "RET") 'newline-and-indent)
 
 (bind-key* "C-<return>" 'execute-extended-command)
 
@@ -1052,7 +1043,6 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	   ("M-s-b" . list-bookmarks)
 	   ("s-C" . org-capture)
 	   ("s-|" . oht/pipe-region)
-	   ("s-a" . org-agenda)
 	   ("s-/" . oht-toggle-comment-region-or-line)
 	   ("s-l" . oht-mac-mark-whole-line)
 	   ("s-o" . other-window))
@@ -1098,6 +1088,9 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	   ("t" . tear-off-window)
 	   ("w" . delete-frame)
 	   ("i" . clone-indirect-buffer)
+	   ("m" . maximize-window)
+	   ("<left>" . winner-undo)
+	   ("<right>" . winner-redo)
 	   )
 
 ;;; Mac Shortcuts
@@ -1136,7 +1129,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
  ("s-m" . iconify-frame)
  ("s-s" . save-buffer)
  ("s-S" . write-file) ;save as
- ;; ("s-a" . mark-whole-buffer)
+ ("s-a" . mark-whole-buffer)
  ;; ("s-o" . find-file)
  ("s-x" . kill-region)
  ("s-c" . kill-ring-save)

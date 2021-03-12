@@ -1,1 +1,5 @@
+PLAN9=/Users/olivertaylor/home/opt/plan9
+export PLAN9
+PATH=$PATH:$PLAN9/bin
+export PATH
 export PATH=$PATH:~/home/dot/bin

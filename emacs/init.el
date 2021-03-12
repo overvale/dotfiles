@@ -626,10 +626,10 @@ This simply removes the hooked added by the function `use-embark-completions'."
     ("cc" oht/copy-secondary-selection "Copy 2nd")
     ("xv" oht/cut-secondary-selection-paste "Cut 2nd & Paste")
     ("cv" oht/copy-secondary-selection-paste "Copy 2nd & Paste")
-    ("m" (lambda () (interactive)(secondary-selection-from-region)) "Mark Region as 2nd")
-    ("g" (lambda () (interactive)(secondary-selection-to-region)) "Make 2nd the Region")
-    ("d" (lambda () (interactive)(delete-overlay mouse-secondary-overlay)) "Delete 2nd")
-    ("q" nil "cancel"))
+    ("m"  oht/mark-region-as-secondary-selection "Mark Region as 2nd")
+    ("g"  oht/mark-secondary-selection "Make 2nd the Region")
+    ("d"  oht/delete-secondary-selection "Delete 2nd")
+    ("q"  nil "cancel"))
   (defhydra hydra-outline (:foreign-keys warn)
     "Hydra for navigating outline mode"
     ("o" outline-hide-sublevels "Hide to This Sublevel")
@@ -815,41 +815,6 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	("s-z" . org-agenda-undo)
 	)
   )
-
-
-;;;; Secondary Selection
-
-;; A few functions for working with the Secondary Selection. The primary way I
-;; interact with these is through a hydra.
-
-(defun oht/cut-secondary-selection ()
-  "Cut the secondary selection."
-  (interactive)
-  (mouse-kill-secondary))
-
-(defun oht/copy-secondary-selection ()
-  "Copy the secondary selection."
-  (interactive)
-  ;; there isn't a keybinding-addressable function to kill-ring-save
-  ;; the 2nd selection so here I've made my own. This is extracted
-  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
-  (kill-new 
-   (buffer-substring (overlay-start mouse-secondary-overlay)
-		     (overlay-end mouse-secondary-overlay))
-   t))
-
-(defun oht/cut-secondary-selection-paste ()
-  "Cut the secondary selection and paste at point."
-  (interactive)
-  (mouse-kill-secondary)
-  (yank))
-
-(defun oht/copy-secondary-selection-paste ()
-  "Copy the secondary selection and paste at point."
-  (interactive)
-  (oht/copy-secondary-selection)
-  (yank))
-
 
 ;;;; Outline
 

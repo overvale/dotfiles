@@ -118,4 +118,58 @@ the current region (if it's active), or the current symbol."
 	 (/= (line-beginning-position) oldpos)
 	 (beginning-of-line))))
 
+
+;;; Secondary Selection
+
+;; Emacs's Secondary Selection assumes you only want to interact with it via
+;; the mouse, however it is perfectly possible to do it via the keyboard, all
+;; you need is some wrapper functions to make things keybinding-addressable.
+
+;; A few functions for working with the Secondary Selection. The primary way I
+;; interact with these is through a hydra.
+
+(defun oht/cut-secondary-selection ()
+  "Cut the secondary selection."
+  (interactive)
+  (mouse-kill-secondary))
+
+(defun oht/copy-secondary-selection ()
+  "Copy the secondary selection."
+  (interactive)
+  ;; there isn't a keybinding-addressable function to kill-ring-save
+  ;; the 2nd selection so here I've made my own. This is extracted
+  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
+  (kill-new
+   (buffer-substring (overlay-start mouse-secondary-overlay)
+		     (overlay-end mouse-secondary-overlay))
+   t))
+
+(defun oht/cut-secondary-selection-paste ()
+  "Cut the secondary selection and paste at point."
+  (interactive)
+  (mouse-kill-secondary)
+  (yank))
+
+(defun oht/copy-secondary-selection-paste ()
+  "Copy the secondary selection and paste at point."
+  (interactive)
+  (oht/copy-secondary-selection)
+  (yank))
+
+(defun oht/mark-region-as-secondary-selection ()
+  "Make the region the secondary selection."
+  (interactive)
+  (secondary-selection-from-region))
+
+(defun oht/mark-secondary-selection ()
+  "Mark the Secondary Selection as the region."
+  (interactive)
+  (secondary-selection-to-region))
+
+(defun oht/delete-secondary-selection ()
+  "Delete the Secondary Selection."
+  (interactive)
+  (delete-overlay mouse-secondary-overlay))
+
+
 (provide 'oht-functions)

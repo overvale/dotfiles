@@ -1018,6 +1018,49 @@ This simply removes the hooked added by the function `use-embark-completions'."
   )
 
 
+;;; Mouse
+
+;; Gasp! An Emacs user that actually uses the mouse?! Scandalous.
+;; Consider the possibility that using the mouse for some things is AWESOME.
+;; Also, it pays to read the source code!
+
+;; Start by making shift-click extend the selection (region)
+(global-set-key [S-down-mouse-1] 'ignore)
+(global-set-key [S-mouse-1] 'mouse-save-then-kill)
+
+;; Using the mouse for horizontal/vertical splits is great because
+;; the windows split exactly where you click the mouse.
+;; See 'Rebinding Mouse Buttons' for more info.
+;;
+;; 1. Use s-click to create splits
+;; 2. Use M-s-click to delete windows
+
+;; To add a vertical split to a window, just s-click on the mode-line
+(global-set-key [mode-line s-mouse-1] 'mouse-split-window-horizontally)
+;; and make this work everywhere else
+(global-set-key [s-mouse-1] 'mouse-split-window-horizontally)
+;; Use shift to add a horizontal split to the window
+(global-set-key [S-s-mouse-1] 'mouse-split-window-vertically)
+
+;; Delete a window with right-click on its mode-line
+(global-set-key [mode-line M-s-mouse-1] 'mouse-delete-window)
+;; And make this work everywhere
+(global-set-key [M-s-mouse-1] 'mouse-delete-window)
+
+;; The below bindings are taken directly from the source of `mouse.el'
+;; but I've swapped the modifier keys. This makes more sense to me.
+
+;; Use M-drag-mouse-1 to create rectangle regions
+(global-set-key [M-down-mouse-1] #'mouse-drag-region-rectangle)
+(global-set-key [M-drag-mouse-1] #'ignore)
+(global-set-key [M-mouse-1]      #'mouse-set-point)
+
+;; Use C-M-drag-mouse-1 to create secondary selections
+(global-set-key [C-M-mouse-1]      'mouse-start-secondary)
+(global-set-key [C-M-drag-mouse-1] 'mouse-set-secondary)
+(global-set-key [C-M-down-mouse-1] 'mouse-drag-secondary)
+
+
 ;;; Keybindings
 
 ;; Make it so every time you type RET you also indent the next line.

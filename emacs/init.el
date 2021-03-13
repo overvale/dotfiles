@@ -120,6 +120,10 @@
 ;; winner-undo and winner-redo.
 (winner-mode 1)
 
+;; This attempts to keep the text on the screen as close as possible to what
+;; it was before the split.
+(setq split-window-keep-point nil)
+
 ;; An example: you call `switch-buffer' and search for something in the
 ;; minibuffer. You then want to call a command inside that minibuffer.
 (setq enable-recursive-minibuffers 1)

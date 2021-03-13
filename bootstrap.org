@@ -287,10 +287,11 @@ but I'm pretty happen with it so far.
   to my MacBook, and because I rarely use my Work iMac for things I want
   backed-up, I don't worry about backing anything up directly from the iMac.
 
-+ MacBook & Work iMac to Local NAS ::
++ MacBook to Local NAS ::
 
-  - I haven't settled on a solution to this one yet.
-  - rclone / rsync / rsyncOSX
+    - For these backups I use Syncthing, which I've found very reliable, with
+      an installation both on my MacBook and on my Synology NAS.
+    - Mostly I backup the originals from iCloud photos, and iCloud's Mail folder.
 
 + MacBook to Cloud :: I use =restic= for this, with some custom scripts. I use
   rsync.et, which I really like.

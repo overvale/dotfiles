@@ -945,6 +945,66 @@ This simply removes the hooked added by the function `use-embark-completions'."
 	)
   )
 
+
+;;;; Mail
+
+(setq mail-user-agent 'mu4e-user-agent)
+
+(use-package message
+  :straight nil
+  :config
+  (setq message-send-mail-function 'smtpmail-send-it
+	message-cite-style 'message-cite-style-thunderbird
+	message-cite-function 'message-cite-original
+	message-kill-buffer-on-exit t
+	message-citation-line-format "On %d %b %Y at %R, %f wrote:\n"
+	message-citation-line-function 'message-insert-formatted-citation-line))
+
+(use-package mu4e
+  :load-path "/usr/local/Cellar/mu/1.4.15/share/emacs/site-lisp/mu/mu4e"
+  :commands mu4e
+  :bind (:map mu4e-headers-mode-map
+	      ("G" . mu4e-update-mail-and-index))
+  :config
+  (load "~/home/ingenuity/mu4e.el")
+  (setq mu4e-attachments-dir "~/Downloads"
+	mu4e-update-interval (* 5 60)
+	mu4e-change-filenames-when-moving t
+	mu4e-completing-read-function 'completing-read
+	mu4e-compose-dont-reply-to-self t
+	mu4e-compose-format-flowed nil
+	mu4e-confirm-quit nil
+	mu4e-headers-date-format "%Y-%m-%d"
+	mu4e-headers-include-related nil
+	mu4e-headers-skip-duplicates t
+	mu4e-headers-time-format "%H:%M"
+	mu4e-headers-visible-lines 20
+	mu4e-use-fancy-chars nil
+	mu4e-view-show-addresses t
+	mu4e-view-show-images t
+	mu4e-sent-messages-behavior 'delete)
+  ;; Hooks and settings
+  (defun jcs-view-in-eww (msg)
+    (eww-browse-url (concat "file://" (mu4e~write-body-to-html msg))))
+  (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+  (add-to-list 'mu4e-view-actions '("Eww view" . jcs-view-in-eww) t)
+  (add-hook 'mu4e-compose-mode-hook
+	    (defun oht-mu4e-compose-settings ()
+	      "My settings for message composition."
+	      (auto-fill-mode -1)
+	      (visual-line-mode t)))
+  )
+
+(use-package smtpmail
+  :straight nil
+  :init
+  (setq auth-sources '("~/home/ingenuity/authinfo"))
+  (setq	smtpmail-stream-type 'starttls
+	smtpmail-default-smtp-server "smtp.gmail.com"
+	smtpmail-smtp-server "smtp.gmail.com"
+	smtpmail-smtp-service 587))
+
+
 ;;;; Youtube-dl
 
 ;; A few utilities for working with videos

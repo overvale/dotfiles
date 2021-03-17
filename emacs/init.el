@@ -1038,6 +1038,53 @@ This simply removes the hooks added by the function `use-embark-completions'."
                                "%(title)s.%(ext)s"
                                (ffap-url-at-point))))
 
+;;;; PDFs
+
+;; To get started, use homebrew to install a couple things:
+;; $ brew install poppler automake
+;; INITIALIZATION --- un-comment this on first-run
+;; (setenv "PKG_CONFIG_PATH" "/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig")
+
+(use-package pdf-tools
+  ;; To get Emacs to open PDFs in pdf-view-mode you need to add the extension
+  ;; to the `auto-mode-alist', which pdf-tools suggests you do by calling the
+  ;; function `pdf-tools-install'. But doing it this way loads the entire
+  ;; pdf-tools package simply to make that alist association. Much easier to
+  ;; set it manually (this code is taken directly from the pdf-tools source).
+  :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
+  :magic ("%PDF" . pdf-view-mode)
+  :config
+  ;; pdf-tools uses the `pdf-tools-install' function to set up hooks and
+  ;; various things to ensure everything works as it should. PDFs will open
+  ;; just fine without this, but not all features will be available.
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-page)
+  (setq pdf-annot-activate-created-annotations nil)
+  ;; Required for retina scaling to work
+  (setq pdf-view-use-scaling t
+        pdf-view-use-imagemagick nil)
+  (defun oht-pdf-view-fonts ()
+    (hl-line-mode 1)
+    (pdf-annot-list-follow-minor-mode))
+  :hook (pdf-annot-list-mode-hook . oht-pdf-view-fonts)
+  :bind (:map pdf-view-mode-map
+	      ("C-s" . isearch-forward)
+	      ("C-r" . isearch-backward)
+	      ("A" .   pdf-annot-add-highlight-markup-annotation)
+	      ("L" .   pdf-annot-list-annotations)
+	      ("O" .   pdf-occur)
+	      ("G" .   pdf-view-goto-page)
+	      ("<" .   pdf-view-first-page)
+	      (">" .   pdf-view-last-page))
+	      )
+
+(use-package pdf-tools-org
+  :straight (:host github :repo "machc/pdf-tools-org" :branch "master")
+  :commands pdf-tools-org-export-to-org
+  ;; This package seems pretty out of date, modifying the code as suggested here:
+  ;; https://github.com/machc/pdf-tools-org/issues/7
+  ;; seems to fix export
+  )
 
 ;;;; Pseudo-Packages, or my lisp files
 

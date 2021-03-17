@@ -190,6 +190,9 @@
 	 (file "~/home/org/ingenuity_logbook.org")
 	 (file "~/home/dot/emacs/capture-templates/cold-call.org"))
 
+	("f" "Mail Follow Up" entry
+	 (file+headline "~/home/org/ingenuity.org" "Mail")
+         "* TODO %a\n\n  %i")
 	))
 
 ;; Ensure Capture Templates End With Newline

@@ -109,7 +109,7 @@
 
 ;; Echo unfinished commands after this delay
 ;; setting to 0 means do not echo commands
-(setq echo-keystrokes 0.1)
+(setq echo-keystrokes 0.01)
 
 ;; When exiting emacs, kill all running processes
 (setq confirm-kill-processes nil)
@@ -227,9 +227,9 @@ size. For this reason I want the height of both the
 variable-pitch and fixed-pitch fonts to always be 1.0."
   (interactive)
   (set-face-attribute 'default nil
-		      :family "Iosevka Comfy" :height 140)
+		      :family "Iosevka" :height 130 :width 'expanded)
   (set-face-attribute 'variable-pitch nil
-		      :family "Inter" :height 1.0)
+		      :family "Iosevka Etoile" :height 1.0)
   (set-face-attribute 'fixed-pitch nil
 		      :family "Iosevka Fixed" :height 1.0)
   )
@@ -382,7 +382,7 @@ there is only one candidate, however, TAB will complete."
 (defun use-selectrum-completions ()
   "Use Selectrum for completions.
 
-This simply removes the hooked added by the function `use-embark-completions'."
+This simply removes the hooks added by the function `use-embark-completions'."
   (interactive)
   (selectrum-mode 1)
   (remove-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
@@ -400,7 +400,9 @@ This simply removes the hooked added by the function `use-embark-completions'."
   ([remap yank-pop] . consult-yank-pop)
   :config
   (setq consult-preview-key (kbd "C-="))
-  (setq consult-config `((consult-mark :preview-key any)))
+  (setq consult-config
+	`((consult-mark :preview-key any)
+	  (consult-buffer :preview-key any)))
   (setq consult-project-root-function #'vc-root-dir)
   )
 
@@ -675,6 +677,8 @@ This simply removes the hooked added by the function `use-embark-completions'."
   )
 
 (use-package markdown-mode
+  :mode ("\\.text" . markdown-mode)
+  :magic ("%text" . markdown-mode)
   :commands markdown-mode)
 
 (use-package lua-mode
@@ -1114,7 +1118,7 @@ This simply removes the hooked added by the function `use-embark-completions'."
 ;; Use shift to add a horizontal split to the window
 (global-set-key [S-s-mouse-1] 'mouse-split-window-vertically)
 
-;; Delete a window with right-click on its mode-line
+;; Delete a window with M-s--click on its mode-line
 (global-set-key [mode-line M-s-mouse-1] 'mouse-delete-window)
 ;; And make this work everywhere
 (global-set-key [M-s-mouse-1] 'mouse-delete-window)
@@ -1193,8 +1197,8 @@ This simply removes the hooked added by the function `use-embark-completions'."
 
 (bind-keys :prefix-map oht/windows-leader
 	   :prefix "s-w"
-	   ("s" . split-window-below)
-	   ("v" . split-window-right)
+	   ("s" . (lambda () (interactive)(split-window-below) (other-window 1)))
+	   ("v" . (lambda () (interactive)(split-window-right) (other-window 1)))
 	   ("k" . delete-window)
 	   ("K" . kill-buffer-and-window)
 	   ("o" . delete-other-windows)

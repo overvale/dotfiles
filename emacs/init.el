@@ -526,6 +526,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
 
 (use-package which-key
   :demand
+  :defer 2
   :config
   (which-key-mode t)
   (setq which-key-idle-delay 0.4)
@@ -642,7 +643,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
 ;;;; Themes
 
 (use-package modus-themes
-  :demand
   :init
   (setq
    modus-themes-bold-constructs nil
@@ -659,9 +659,10 @@ This simply removes the hooks added by the function `use-embark-completions'."
    modus-themes-variable-pitch-ui nil
    modus-themes-variable-pitch-headings nil
    )
-  (modus-themes-load-themes)
-  :config
+  ;; (modus-themes-load-themes)
   (modus-themes-load-operandi)
+  :config
+  ;; (modus-themes-load-operandi)
   )
 
 (use-package tron-legacy-theme)

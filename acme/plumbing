@@ -14,7 +14,6 @@ arg isfile	$0
 plumb to image
 plumb start open $file
 
-# TODO this doesn't work
 # Office files go to open
 type is text
 data matches '[a-zA-Z¡-￿0-9_\-./]+'

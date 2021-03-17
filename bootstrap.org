@@ -143,6 +143,7 @@ permissions. Some tools, like Excel, require installation to =/Applications= so
 they can run background processes, others complain every launch but work just
 fine.
 
+- Acme ([[https://9fans.github.io/plan9port/][Plan9Port]]) -- install to =~/home/opt=
 - BBEdit
 - Emacs (the [[https://github.com/railwaycat/homebrew-emacsmacport][correct version]], [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][more info]])
 - Firefox
@@ -156,6 +157,7 @@ fine.
 
 * My Stuff
 
+- Create a "dump" file for acme by running acme from =~/home/dot/acme/bin/acme=.
 - Copy files from old machine / backup (thunderbolt bridge is nice if you have the cable).
 - Copy fonts from backup.
 - Install [[http://git.io/textplay][textplay]] with =cd ~/home/src/textplay && make install=.

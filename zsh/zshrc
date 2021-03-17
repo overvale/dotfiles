@@ -68,6 +68,8 @@ alias evrc="vim $DOT/vim/vimrc"
 alias ezrc="vim $DOT/zsh/zshrc && source $DOT/zsh/zshrc"
 alias szrc="source $DOT/zsh/zshrc"
 
+alias acme="~/home/dot/acme/bin/acme"
+
 alias ,gs="git status -sb"
 alias ,gl="git log --all --graph --pretty=format:'%C(blue)%cd%C(reset) %C(yellow)%h%C(reset) %s%C(red)%d%C(reset)' --abbrev-commit --date=short --branches --tags --remotes"
 alias ,gd="git diff -b"

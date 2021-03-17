@@ -1,5 +1,2 @@
-PLAN9=/Users/olivertaylor/home/opt/plan9
-export PLAN9
-PATH=$PATH:$PLAN9/bin
-export PATH
-export PATH=$PATH:~/home/dot/bin
+export PLAN9=~/home/opt/plan9port
+export PATH=~/home/dot/bin:$PLAN9/bin:~/home/dot/acme/bin:$PATH

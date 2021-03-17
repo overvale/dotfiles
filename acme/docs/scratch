@@ -1,16 +1,12 @@
-/Users/otc/src/dot/
-/Users/otc/src/textplay/textplay
-/Users/otc/src/print_css/print.css
-/Users/otc/writing/
+/Users/oht/home/dot
+/Users/oht/home/src/textplay/textplay
+/Users/oht/home/src/print_css/print.css
+/Users/oht/home/writing
 
-|cbreak • |joinlines • >aspell -a • |wrap • |dent+ • |dent- • make series_doc
-
-Font /mnt/font/PragmataPro-Regular/13a/font
-Font /mnt/font/GoRegular/14a/font
-Font /mnt/font/SFProText-Regular/13a/font
+Font • |cbreak • |joinlines • >aspell -a • |wrap • |dent+ • |dent- • make series_doc
 
 # For more info on google command language see:
-# /Users/otc/src/dot/acme/notes/sam
+# /Users/oht/home/dot/acme/docs/sam
 date							execute date, results go to +Errors
 |date							pipe selection to date and replace selection
 >date						use selection as input for date

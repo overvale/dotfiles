@@ -1,32 +1,29 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Launch Acme with this script, rather than directly,
 # the below settings are important to Acme working correctly.
 
-export BROWSER='safari'
+export BROWSER=safari
 export TERM=dumb
 export SHELL=rc
 export PAGER=nobs
-export LANG=en_US.UTF-8
 
-fixfont='/mnt/font/GoMono/14a/font'
-varfont='/mnt/font/GoRegular/14a/font'
+export varfont="/mnt/font/GoRegular/14a/font"
+export fixfont="/mnt/font/GoMono/14a/font"
 
 # Start plumber
 if [ "$(pgrep plumber)" ]; then
-	echo plumber is running
+    echo plumber is running
 else
 	echo starting plumber
 	plumber
 	# order matters, the first matched rule wins
-	# see /usr/local/plan9port/plumb/basic 
-	cat $DOT/acme/lib/plumbing $PLAN9/plumb/basic | 9p write plumb/rules
+	# see /usr/local/plan9port/plumb/basic
+	cat $DOT/acme/plumbing $PLAN9/plumb/basic | 9p write plumb/rules
 fi
 
-# If the argument list is empty, load dump file
-if test -z $1; then
-	exec acme -l $HOME/acme.dump &
-else
-	exec acme -a -f $varfont -F $fixfont $* &
-fi
+# Use this to set up dump file
+# exec acme -f $varfont -F $fixfont $1 &
 
+# And this once you have a dump file
+exec acme -a -l $HOME/home/acme.dump &

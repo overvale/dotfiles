@@ -1,17 +1,5 @@
 ;;; oht-elfeed-pre.el --- Loaded before Elfeed -*- lexical-binding: t -*-
 
-
-;;; Settings
-
-(setq elfeed-use-curl t)
-(setq elfeed-curl-max-connections 10)
-(setq elfeed-db-directory "~/.emacs.d/elfeed/")
-(setq elfeed-enclosure-default-dir "~/Downloads/")
-(setq elfeed-search-filter "@4-week-ago +unread")
-(setq elfeed-sort-order 'descending)
-(setq elfeed-search-clipboard-type 'CLIPBOARD)
-(setq elfeed-show-truncate-long-urls t)
-
 ;;; Feeds
 
 (setq elfeed-feeds '(
@@ -34,18 +22,15 @@
 		     ("https://www.julian.digital/feed")
 		     ("https://github.com/Hammerspoon/hammerspoon/releases.atom")
 		     ("https://github.com/syncthing/syncthing-macos/releases.atom")
-		     ("http://www.aaronsw.com/2002/feeds/pgessays.rss")
 		     ;; vfx
 		     ("https://keepcalmiminvfx.net/feed/" vfx)
 		     ("https://beforesandafters.com/feed/" vfx)
 		     ("https://www.artofvfx.com/feed/" vfx)
 		     ("https://www.vfxvoice.com/feed/" vfx)
 		     ;; news
-		     ("https://www.economist.com/latest/rss.xml" news)
 		     ("https://www.economist.com/the-economist-explains/rss.xml" news)
 		     ("https://hnrss.org/best" news)
 		     ("https://www.theverge.com/rss/front-page/index.xml" news)
-		     ("https://daringfireball.net/feeds/main" news mac)
 		     ;; emacs
 		     ("https://github.com/railwaycat/homebrew-emacsmacport/releases.atom" emacs)
 		     ("https://github.com/raxod502/selectrum/releases.atom" emacs)
@@ -61,17 +46,14 @@
 		     ("https://nullprogram.com/tags/emacs/feed/" emacs)
 		     ("https://sachachua.com/blog/category/emacs-news/feed" emacs)
 		     ("https://protesilaos.com/codelog.xml" emacs)
-		     ("https://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml" emacs)
 		     ("https://emacsredux.com/atom.xml" emacs)
 		     ("https://planet.emacslife.com/atom.xml" emacs)
 		     ("https://reddit.com/r/emacs/top/.rss?sort=top&t=day" emacs)
 		     ;; youtube
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g" emacs) ; Prot
-		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCMb0O2CdPBNi-QqPk5T3gsQ") ; James Hoffmann
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCZYycARMM3DaeBwpVQzR5vQ") ; Craig Mod
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCZYycARMM3DaeBwpVQzR5vQ" vfx) ; Keep Calm I'm in VFX
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCVpankR4HtoAVtYnFDUieYA") ; zefrank1
-		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCCBJv-2y0qRjM9E2tSGtT7Q" vfx) ; Weta Workshop
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCtqxG9IrHFU_ID1khGvx9sA") ; All Gas No Brakes
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCAL3JXZSzSm8AlZyD3nQdBA") ; Primitive Technology
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCiDJtJKMICpb9B1qf7qjEOA") ; Adam Savage’s Tested

@@ -1141,6 +1141,13 @@ This simply removes the hooks added by the function `use-embark-completions'."
   ("M-`" . consult-mark)
   )
 
+(use-package oht-find-file-directories
+  ;; Beautiful set of functions from Radian for creating directories when
+  ;; finding files.
+  :straight nil
+  :demand
+  )
+
 
 ;;; Mouse
 

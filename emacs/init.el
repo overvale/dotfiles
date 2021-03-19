@@ -1135,8 +1135,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
 (use-package oht-transient-mark
   :straight nil
   :bind
-  ("C-x C-x" . exchange-point-and-mark-no-activate)
-  ;; ("C-x C-x" . oht-activate-or-swap-mark)
+  ("C-x C-x" . exchange-point-and-mark-dwim)
   ("C-`" . push-mark-no-activate)
   ("M-`" . consult-mark)
   )

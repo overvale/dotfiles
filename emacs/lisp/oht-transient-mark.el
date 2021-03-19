@@ -8,12 +8,14 @@
   (exchange-point-and-mark)
   (deactivate-mark nil))
 
-(defun oht-activate-or-swap-mark ()
-  "If no region is active, activate it. If a region is active swap the point and mark."
+(defun exchange-point-and-mark-dwim ()
+  "If a region is active, then leave it activated and swap point and mark.
+If no region is active, then stay active and swap."
   (interactive)
   (if (use-region-p)
       (exchange-point-and-mark)
-    (activate-mark)))
+    (exchange-point-and-mark)
+    (deactivate-mark nil)))
 
 (defun push-mark-no-activate ()
   "Pushes `point' to `mark-ring' and does not activate the region

@@ -5,8 +5,9 @@
 
 (defun oht-eww-fonts ()
   "Apply some customization to fonts in eww-mode."
+  (larger-variable-fonts-mode)
   (text-scale-increase 1)
-  (setq-local line-spacing 2)
+  (setq-local line-spacing 1)
   )
 
 (add-hook 'eww-mode-hook 'oht-eww-fonts)

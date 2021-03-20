@@ -207,40 +207,6 @@
 (setq display-time-default-load-average nil)
 (display-time-mode t)
 
-;;;; Fonts
-
-;; Line spacing (in pixels)
-(setq-default line-spacing nil)
-
-;; When using `text-scale-incraese', this sets each 'step' to about one point size.
-(setq text-scale-mode-step 1.08)
-
-;; You can set a font for an individual frame with `set-frame-font'
-;; You can experiment, in the Mac Port, with `mac-font-panel-mode'
-
-(defun oht-fonts-set ()
-  "Sets default, variable-pitch, and fixed-pitch fonts to my liking.
-
-Keep in mind that when in variable-pitch-mode the fixed-pitch
-size is based not on the default size but the variable-pitch
-size. For this reason I want the height of both the
-variable-pitch and fixed-pitch fonts to always be 1.0."
-  (interactive)
-  (set-face-attribute 'default nil
-		      :family "Iosevka" :height 130 :width 'expanded)
-  (set-face-attribute 'variable-pitch nil
-		      :family "Iosevka Etoile" :height 1.0)
-  (set-face-attribute 'fixed-pitch nil
-		      :family "Iosevka Fixed" :height 1.0)
-  )
-(oht-fonts-set)
-
-(defun oht/set-line-spacing (&optional arg)
-  "Buffer local, set the line spacing. Takes an argument, 0 by default"
-  (interactive "P")
-  (setq-local line-spacing arg)
-  )
-
 
 ;;; Packages
 
@@ -1109,6 +1075,11 @@ This simply removes the hooks added by the function `use-embark-completions'."
 ;; Keep in mind that a file must exist for each of these use-package
 ;; declarations. If you don't want to separate the code into a separate file
 ;; you can "use" the Emacs package.
+
+(use-package oht-fonts
+  :straight nil
+  :demand
+  )
 
 (use-package oht-dispatch
   :straight nil

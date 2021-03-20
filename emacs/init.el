@@ -539,6 +539,13 @@ This simply removes the hooks added by the function `use-embark-completions'."
   ("s-Z" . undo-fu-only-redo)
   )
 
+(use-package vundo
+  :straight (:type git :host github :repo "casouri/vundo" :branch "master")
+  :commands vundo
+  ;; The below is back-ported from Emacs 28, once you upgrade you can safely remove this:
+  :config (load (concat oht-dotfiles "lisp/oht-undo-backport.el"))
+  )
+
 (use-package expand-region
   :bind
   ("s-r" . er/expand-region)

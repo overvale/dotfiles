@@ -1,94 +1,90 @@
 ;;; oht-fonts.el -*- lexical-binding: t -*-
 
-;; My Font Settings
 
-;; When using `text-scale-incraese', this sets each 'step' to about one point size.
-(setq text-scale-mode-step 1.08)
+;;; Functions
 
-(defun oht/set-line-spacing (&optional arg)
+(defun oht-fonts-line-spacing (&optional arg)
   "Buffer local, set the line spacing. Takes an argument, 0 by default"
   (interactive "P")
-  (setq-local line-spacing arg)
-  )
+  (setq-local line-spacing arg))
 
-;; Keep in mind that when in variable-pitch-mode the fixed-pitch
-;; size is based not on the default size but the variable-pitch
-;; size. For this reason I want the height of both the
-;; variable-pitch and fixed-pitch fonts to always be 1.0.
 
-;; you can find more faces to customize with M-x list-faces-display
+;;; Variables
 
-;; default and fixed are usually set to the same thing
+(defvar oht-fonts-monospace "Monaco"
+  "Monospace font to be used for the default and fixed-pitch faces.")
+
+(defvar oht-fonts-variable "Georgia"
+  "Variable font to to used for the variable-pitch face.")
+
+(defvar oht-fonts-monospace-size 12
+  "Font size, as an integer, to be used for the default and fixed-pitch sizes.
+
+This value will be multiplied by 10, so 12 will become 120. This is to comply
+with Emacs' set-face-attribute requirements.")
+
+(defvar oht-fonts-variable-size 14
+  "Font size, as an integer, to be used for the variable-pitch size.
+
+This value will be used to determine a relative (float) size based on the default
+size. So if your default size is 12 and your variable size is 14 the derived
+size will be 1.16.")
+
+
+;;; Set fonts and their sizes
+
 (set-face-attribute 'default nil
-		    :family "IBM Plex Mono" :height 120)
+		    :family oht-fonts-monospace
+		    :height (* oht-fonts-monospace-size 10))
 (set-face-attribute 'fixed-pitch nil
-		    :family "IBM Plex Mono" :height 1.0)
-
+		    :family oht-fonts-monospace
+		    :height 1.0 )
 (set-face-attribute 'variable-pitch nil
-		    :family "IBM Plex Sans" :height 1.0)
-
-;; Enlarge mode-line font
-(set-face-attribute 'mode-line nil :height 1.1)
-(set-face-attribute 'mode-line-inactive nil :height 1.1)
-
-(setq-default line-spacing nil)
+		    :family oht-fonts-variable :height 1.0)
 
 
+;;; Larger Variable Pitch Mode
 
-;; RESEARCH AREA
-;; ----------------------------------------------
-
-;; I'm experimenting with setting buffer-local fonts.
-;; The below code works most of the time but is very fragile,
-;; chalk it up to me not knowing how the code actually works.
-
-;; The limitation I'm trying to get around is this:
-;; Most variable-width fonts are optically smaller than monospaced ones.
-;; So you want to scale the variable-width font, but doing that screws up the
-;; fixed-pitch font when you're not in variable-width-mode.
-
-;; To get around this I'm toying with setting buffer-local fonts on mode-hooks
-;; or functions so I can control it.
-
-;; 1. Set the default, variable- and fixed-width fonts.
-;; 2. Create a variable-pitch-mode hook which sets a new fixed-width size.
-;; 3. Create an exit hook to reset it correctly.
+;; A minor mode to scale the variable-pitch face up to the height defined in
+;; ‘oht-fonts-variable-size’ and the fixed-pitch face down to the height
+;; defined in ‘oht-fonts-monospace-size’. This mode needs to be enabled
+;; wherever you want to adjust face sizes, perhaps with a hook.
 
 (make-variable-buffer-local
- (defvar oht-enlarge-variable-status nil
-   "Enlarge Variable Status"))
+ (defvar larger-variable-pitch-mode-status nil
+   "Status of the larger-variable-pitch-mode"))
 
-(defun oht-fonts-enlarge-variable-toggle ()
-  "Toggles increase size of variable-width fonts, buffer locally."
-  (interactive)
-  (setq oht-enlarge-variable-status (not oht-enlarge-variable-status))
-  (if oht-enlarge-variable-status
+(make-variable-buffer-local
+ (defvar variable-pitch-remapping nil
+   "variable-pitch remapping cookie for larger-variable-pitch-mode."))
+
+(make-variable-buffer-local
+ (defvar fixed-pitch-remapping nil
+   "fixed-pitch remapping cookie for larger-variable-pitch-mode"))
+
+(defun larger-variable-pitch-mode-toggle ()
+  (setq larger-variable-pitch-mode-status (not larger-variable-pitch-mode-status))
+  (if larger-variable-pitch-mode-status
       (progn
-	(make-local-variable 'oht-font-variable-cookie)
-	(make-local-variable 'oht-font-fixed-cookie)
-	(setq-local oht-font-variable-cookie
-		    (face-remap-add-relative
-		     'variable-pitch :height 1.1))
-	(setq-local oht-font-fixed-cookie
-		    (face-remap-add-relative
-		     'fixed-pitch :height 0.92))
-	)
+	(setq variable-pitch-remapping
+	      (face-remap-add-relative 'variable-pitch
+				       :height (/ (float oht-fonts-variable-size)
+						  (float oht-fonts-monospace-size))))
+	(setq fixed-pitch-remapping 
+	      (face-remap-add-relative 'fixed-pitch
+				       :height (/ (float oht-fonts-monospace-size)
+						  (float oht-fonts-variable-size))))
+	(force-window-update (current-buffer)))
     (progn
-      (face-remap-remove-relative oht-font-variable-cookie)
-      (face-remap-remove-relative oht-font-fixed-cookie))))
+      (face-remap-remove-relative variable-pitch-remapping)
+      (face-remap-remove-relative fixed-pitch-remapping))))
 
-(define-minor-mode larger-variable-fonts-mode
-  "A tiny minor-mode to enlarge variable-pitch fonts."
- :init-value nil
- :lighter " ƒ"
- (oht-fonts-enlarge-variable-toggle)
- (make-local-variable 'oht-enlarge-variable-status)
- )
+(define-minor-mode larger-variable-pitch-mode
+  "Minor mode to scale the variable- and fixed-pitch faces up and down."
+  :init-value nil
+  :lighter " V+"
+  (larger-variable-pitch-mode-toggle))
 
-
-;; You can set a font for an individual frame with `set-frame-font'
-;; You can experiment, in the Mac Port, with `mac-font-panel-mode'
-;; There's also (buffer-face-set :family "Fira Mono" :height 130)
 
 
 (provide 'oht-fonts)

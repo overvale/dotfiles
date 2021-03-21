@@ -585,7 +585,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
     ("+" text-scale-increase "Larger")
     ("-" text-scale-decrease "Smaller")
     ("0" text-scale-mode "Reset Size")
-    ("s" oht/set-line-spacing "Line Spacing")
+    ("s" oht-fonts-line-spacing "Line Spacing")
     ("m" modus-themes-toggle "Modus Toggle")
     ("o" olivetti-mode "Olivetti")
     ("w" visual-line-mode "Wrap")
@@ -1079,6 +1079,15 @@ This simply removes the hooks added by the function `use-embark-completions'."
 (use-package oht-fonts
   :straight nil
   :demand
+  :init
+  (setq-default line-spacing nil)
+  (setq text-scale-mode-step 1.09)
+  (setq oht-fonts-monospace "IBM Plex Mono")
+  (setq oht-fonts-variable  "IBM Plex Serif")
+  (setq oht-fonts-monospace-size 12)
+  (setq oht-fonts-variable-size  14)
+  (set-face-attribute 'mode-line nil          :family "IBM Plex Sans" :height 140)
+  (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 140)
   )
 
 (use-package oht-dispatch

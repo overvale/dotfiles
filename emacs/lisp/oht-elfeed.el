@@ -85,7 +85,7 @@
 
 (defun oht-elfeed-show-fonts ()
   "Apply some customization to fonts in elfeed-show-mode."
-  (larger-variable-fonts-mode)
+  (larger-variable-pitch-mode)
   ;; (text-scale-increase 1)
   )
 

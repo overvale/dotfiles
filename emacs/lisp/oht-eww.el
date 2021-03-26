@@ -71,4 +71,90 @@
 (add-hook 'eww-mode-hook 'oht-eww-set-bookmark-handler)
 
 
+;;; Prot Extensions
+
+;; The following are taken from https://protesilaos.com/dotemacs
+
+;;;###autoload
+(defun prot-eww-browse-dwim (url &optional arg)
+  "Visit a URL, maybe from `eww-prompt-history', with completion.
+
+With optional prefix ARG (\\[universal-argument]) open URL in a
+new eww buffer.
+
+If URL does not look like a valid link, run a web query using
+`eww-search-prefix'.
+
+When called from an eww buffer, provide the current link as
+initial input."
+  (interactive
+   (list
+    (completing-read "Run EWW on: " eww-prompt-history
+                     nil nil (plist-get eww-data :url) 'eww-prompt-history)
+    current-prefix-arg))
+  (eww url (if arg 4 nil)))
+
+;;;###autoload
+(defun prot-eww-visit-bookmark (&optional arg)
+  "Visit bookmarked URL.
+
+With optional prefix ARG (\\[universal-argument]) open URL in a
+new EWW buffer."
+  (interactive "P")
+  (eww-read-bookmarks t)
+  (let ((list (gensym)))
+    (dolist (bookmark eww-bookmarks)
+      (push (plist-get bookmark :url) list))
+    (eww (completing-read "Visit EWW bookmark: " list)
+         (if arg 4 nil))))
+
+(autoload 'View-quit "view")
+
+;;;###autoload
+(defun prot-eww-find-feed ()
+  "Produce Occur buffer with RSS/Atom links from XML source."
+  (interactive)
+  (eww-view-source)
+  (occur "\\(rss\\|atom\\)\\+xml.*href=[\"']\\(.*?\\)[\"']" "\\2")
+  (View-quit))
+
+(defvar prot-eww--wikipedia-hist '()
+  "Input history for `prot-eww-search-wikipedia'.")
+
+;;;###autoload
+(defun prot-eww-search-wikipedia (string &optional arg)
+  "Search Wikipedia page matching STRING.
+
+With optional prefix ARG (\\[universal-argument]) open URL in a
+new EWW buffer."
+  (interactive
+   (list (read-string "Search Wikipedia: " nil 'prot-eww--wikipedia-hist)
+         current-prefix-arg))
+  (eww
+   (format "https://en.m.wikipedia.org/w/index.php?search=%s" string)
+   (if arg 4 nil))
+  (add-to-history 'prot-eww--wikipedia-hist string))
+
+;;;###autoload
+(defun prot-eww-bookmark-page (title)
+  "Add eww bookmark named with TITLE."
+  (interactive
+   (list
+    (read-string "Set bookmark title: " (plist-get eww-data :title))))
+  (plist-put eww-data :title title)
+  (eww-add-bookmark))
+
+(defun prot-eww--rename-buffer ()
+  "Rename EWW buffer using page title or URL.
+To be used by `eww-after-render-hook'."
+  (let ((name (if (eq "" (plist-get eww-data :title))
+                  (plist-get eww-data :url)
+                (plist-get eww-data :title))))
+    (rename-buffer (format "*%s # eww*" name) t)))
+
+(add-hook 'eww-after-render-hook #'prot-eww--rename-buffer)
+(advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
+(advice-add 'eww-forward-url :after #'prot-eww--rename-buffer)
+
+
 (provide 'oht-eww)

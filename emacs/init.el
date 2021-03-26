@@ -866,6 +866,18 @@ This simply removes the hooks added by the function `use-embark-completions'."
   :blackout " VIEW"
   )
 
+;;;; Browser Related
+
+(setq shr-max-image-proportion 0.5)
+(setq shr-use-fonts t)
+(setq shr-width 80)
+
+;; Set default browser in Emacs
+(setq browse-url-browser-function 'eww-browse-url)
+
+;; Prefixing with universal argument uses browse-url-default-browser
+;; which, for me, is `browse-url-default-macosx-browser'
+
 
 ;;;; EWW Browser
 
@@ -877,14 +889,10 @@ This simply removes the hooks added by the function `use-embark-completions'."
   (setq eww-download-directory "~/Downloads/")
   (setq eww-bookmarks-directory "~/.emacs.d/eww-bookmarks/")
   (setq eww-history-limit 150)
-  (setq shr-max-image-proportion 0.5)
   (setq eww-use-external-browser-for-content-type
         "\\`\\(video/\\|audio/\\|application/pdf\\)")
   (setq url-cookie-trusted-urls '()
 	url-cookie-untrusted-urls '(".*"))
-  ;; Make eww Emacs's default browser, if you remove this the system default
-  ;; will be used instead.
-  (setq browse-url-browser-function 'eww-browse-url)
   (defun oht-eww-bookmark-handler (record)
     "Jump to an eww bookmarked location using EWW."
     (eww (bookmark-prop-get record 'location)))
@@ -897,8 +905,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	("M-<return>" . oht-eww-open-in-new-buffer-bury)
 	("i" . eww-inhibit-images-toggle)
 	)
-  :custom
-  (shr-width 80)
   )
 
 

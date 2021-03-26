@@ -247,7 +247,7 @@
 (setq use-package-always-defer t)
 
 
-;;;; Critical Packages
+;;;; bind-key, backout
 
 ;; These packages are relied upon by my use-package declarations, therefore
 ;; they must come first.
@@ -434,6 +434,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
   :config
   (defun oht-ibuffer-hook ()
     (hl-line-mode 1)
+    (ibuffer-auto-mode 1)
     )
   :hook (ibuffer-mode . oht-ibuffer-hook)
   )
@@ -983,6 +984,11 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	mu4e-view-show-addresses t
 	mu4e-view-show-images t
 	mu4e-sent-messages-behavior 'delete)
+  (setq mu4e-headers-fields
+	'((:human-date . 12)
+	  (:flags . 6)
+	  (:from . 22)
+	  (:thread-subject)))
   ;; Hooks and settings
   (defun jcs-view-in-eww (msg)
     (eww-browse-url (concat "file://" (mu4e~write-body-to-html msg))))
@@ -993,6 +999,11 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	      "My settings for message composition."
 	      (auto-fill-mode -1)
 	      (visual-line-mode t)))
+  (add-hook 'mu4e-view-mode-hook
+	    (defun oht-mu4e-view-settings ()
+	      "My settings for message composition."
+	      (larger-variable-pitch-mode 1)
+	      ))
   )
 
 (use-package smtpmail
@@ -1193,7 +1204,10 @@ This simply removes the hooks added by the function `use-embark-completions'."
 ;; Make it so every time you type RET you also indent the next line.
 ;; (define-key global-map (kbd "RET") 'newline-and-indent)
 
-(bind-key* "C-<return>" 'execute-extended-command)
+(bind-keys* ("C-<return>" . execute-extended-command)
+	    ("C-;" . backward-word)
+	    ("C-'" . forward-word))
+
 
 (bind-keys ("M-s-s" . save-some-buffers)
 	   ("M-c" . capitalize-dwim)

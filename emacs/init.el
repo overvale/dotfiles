@@ -893,6 +893,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
   :bind
   (:map eww-mode-map
 	("b" . bookmark-set)
+	("M-<return>" . oht-eww-open-in-new-buffer-bury)
 	("i" . eww-inhibit-images-toggle)
 	)
   :custom
@@ -920,6 +921,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
   (:map elfeed-search-mode-map
 	("a" . hrs/elfeed-pinboard-current-entry)
 	("b" . elfeed-search-browse-url)
+	("B" . oht-elfeed-search-browse-and-bury)
 	("*" . elfeed-search-tag--star)
 	("8" . elfeed-search-untag--star)
 	)
@@ -932,6 +934,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	("8" . elfeed-show-tag--unstar)
 	("d" . oht-elfeed-show-download-video)
 	("i" . elfeed-inhibit-images-toggle)
+	("B" . oht-elfeed-show-browse-and-bury)
 	)
   )
 

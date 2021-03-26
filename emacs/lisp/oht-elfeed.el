@@ -196,4 +196,22 @@
 	(setq-local shr-inhibit-images nil)
 	(elfeed-show-refresh))))
 
+
+;; Open url in background
+
+(defun oht-elfeed-search-browse-and-bury ()
+  "Browse elfeed entry and bury buffer."
+  (interactive)
+  (elfeed-search-browse-url)
+  (bury-buffer)
+  (message "Browsing in buried buffer"))
+
+(defun oht-elfeed-show-browse-and-bury ()
+  "Browse elfeed entry and bury buffer."
+  (interactive)
+  (elfeed-show-visit)
+  (bury-buffer)
+  (message "Browsing in buried buffer"))
+
+
 (provide 'oht-elfeed-pre)

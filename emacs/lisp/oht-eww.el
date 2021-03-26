@@ -30,6 +30,16 @@
 	(eww-reload t))))
 
 
+;;; Open URL in background buffer
+
+(defun oht-eww-open-in-new-buffer-bury ()
+  "Open URL in a new buried buffer"
+  (interactive)
+  (eww-open-in-new-buffer)
+  (quit-window)
+  (message "Browsing in buried buffer"))
+
+
 ;;; Bookmarking
 
 ;; The below code allows you to create standard emacs bookmarks in eww-mode.

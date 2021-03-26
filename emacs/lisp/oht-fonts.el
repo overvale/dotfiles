@@ -3,6 +3,7 @@
 
 ;;; Functions
 
+;;;###autoload
 (defun oht-fonts-line-spacing (&optional arg)
   "Buffer local, set the line spacing. Takes an argument, 0 by default"
   (interactive "P")
@@ -62,6 +63,7 @@ size will be 1.16.")
  (defvar fixed-pitch-remapping nil
    "fixed-pitch remapping cookie for larger-variable-pitch-mode"))
 
+;;;###autoload
 (defun larger-variable-pitch-mode-toggle ()
   (setq larger-variable-pitch-mode-status (not larger-variable-pitch-mode-status))
   (if larger-variable-pitch-mode-status

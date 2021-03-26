@@ -75,21 +75,26 @@ hs.hotkey.bind(hyper, "]", function() snap_window('right') end)
 hs.hotkey.bind(hyper, "=", function() hs.window.focusedWindow():centerOnScreen() end)
 
 -- Move windows between monitors
-hs.hotkey.bind(super, "[",  function() hs.window.focusedWindow():moveOneScreenWest(ensureInScreenBounds) end)
-hs.hotkey.bind(super, "]",  function() hs.window.focusedWindow():moveOneScreenEast(ensureInScreenBounds)  end)
+hs.hotkey.bind(super, "[",  function() hs.window.focusedWindow():moveOneScreenWest(noResize, ensureInScreenBounds) end)
+hs.hotkey.bind(super, "]",  function() hs.window.focusedWindow():moveOneScreenEast(noResize, ensureInScreenBounds)  end)
 
 -- Resize and Move Windows
+-- ------------------------------------------------
+-- LEFT, TOP, RIGHT, BOTTOM
+-- Halves
 hs.hotkey.bind(hyper, 'left',   function() hs.window.focusedWindow():moveToUnit({0, 0, 1/2, 1}) end)
 hs.hotkey.bind(hyper, 'right',  function() hs.window.focusedWindow():moveToUnit({1/2, 0, 1/2, 1}) end)
-hs.hotkey.bind(hyper, 'up',     function() hs.window.focusedWindow():moveToUnit({0, 0, 1, 1/2}) end)
-hs.hotkey.bind(hyper, 'down',   function() hs.window.focusedWindow():moveToUnit({0, 1/2, 1, 1/2}) end)
-hs.hotkey.bind(hyper, 'return', function() hs.window.focusedWindow():moveToUnit({1/24, 1/24, 5/12, 10/12}) end)
-
-hs.hotkey.bind(hyper, 'h', function() hs.window.focusedWindow():moveToUnit({0, 0, 1/3+0.01, 1}) end)
-hs.hotkey.bind(hyper, 'j', function() hs.window.focusedWindow():moveToUnit({0, 0, 2/3-0.01, 1}) end)
-hs.hotkey.bind(hyper, 'k', function() hs.window.focusedWindow():moveToUnit({1/3+0.01, 0, 2/3-0.01, 1}) end)
-hs.hotkey.bind(hyper, 'l', function() hs.window.focusedWindow():moveToUnit({2/3-0.01, 0, 1/3+0.01, 1}) end)
+-- Thirds
+hs.hotkey.bind(hyper, 'h', function() hs.window.focusedWindow():moveToUnit({0, 0, 1/3, 1}) end)
+hs.hotkey.bind(hyper, 'j', function() hs.window.focusedWindow():moveToUnit({0, 0, 2/3, 1}) end)
+hs.hotkey.bind(hyper, 'k', function() hs.window.focusedWindow():moveToUnit({1/3, 0, 2/3, 1}) end)
+hs.hotkey.bind(hyper, 'l', function() hs.window.focusedWindow():moveToUnit({2/3, 0, 1/3, 1}) end)
 hs.hotkey.bind(hyper, 'f', function() hs.window.focusedWindow():moveToUnit({0, 0, 1, 1}) end)
+-- Quarters
+hs.hotkey.bind(hyper, '1', function() hs.window.focusedWindow():moveToUnit({0, 0, .5, .5}) end)
+hs.hotkey.bind(hyper, '2', function() hs.window.focusedWindow():moveToUnit({.5, 0, 1, .5}) end)
+hs.hotkey.bind(hyper, '3', function() hs.window.focusedWindow():moveToUnit({0, .5, .5, 1}) end)
+hs.hotkey.bind(hyper, '4', function() hs.window.focusedWindow():moveToUnit({.5, .5, 1, 1}) end)
 
 -- window hints
 hs.hotkey.bind(hyper, 'i', hs.hints.windowHints)

@@ -7,7 +7,7 @@
   "Apply some customization to fonts in eww-mode."
   (larger-variable-pitch-mode)
   (text-scale-increase 1)
-  (setq-local line-spacing 1)
+  (setq-local line-spacing 2)
   )
 
 (add-hook 'eww-mode-hook 'oht-eww-fonts)

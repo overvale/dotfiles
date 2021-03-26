@@ -581,6 +581,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
   (defhydra hydra-fonts (:exit nil :foreign-keys warn)
     "Set Font Properties"
     ("v" variable-pitch-mode "Variable")
+    ("V" larger-variable-pitch-mode "V+ mode")
     ("=" text-scale-increase "Larger")
     ("+" text-scale-increase "Larger")
     ("-" text-scale-decrease "Smaller")

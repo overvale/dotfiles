@@ -916,13 +916,13 @@ This simply removes the hooks added by the function `use-embark-completions'."
   :config
   (load (concat oht-dotfiles "lisp/oht-elfeed.el"))
   (setq elfeed-use-curl t
-      elfeed-curl-max-connections 10
-      elfeed-db-directory "~/.emacs.d/elfeed/"
-      elfeed-enclosure-default-dir "~/Downloads/"
-      elfeed-search-filter "@4-week-ago +unread"
-      elfeed-sort-order 'descending
-      elfeed-search-clipboard-type 'CLIPBOARD
-      elfeed-show-truncate-long-urls t)
+	elfeed-curl-max-connections 10
+	elfeed-db-directory "~/.emacs.d/elfeed/"
+	elfeed-enclosure-default-dir "~/Downloads/"
+	elfeed-search-filter "@4-week-ago +unread"
+	elfeed-sort-order 'descending
+	elfeed-search-clipboard-type 'CLIPBOARD
+	elfeed-show-truncate-long-urls t)
   :bind
   ("M-s-e" . elfeed)
   (:map elfeed-search-mode-map

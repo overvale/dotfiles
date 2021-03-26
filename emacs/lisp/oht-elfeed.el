@@ -22,6 +22,7 @@
 		     ("https://www.julian.digital/feed")
 		     ("https://github.com/Hammerspoon/hammerspoon/releases.atom")
 		     ("https://github.com/syncthing/syncthing-macos/releases.atom")
+		     ("https://console.dev/qa/rss.xml")
 		     ;; vfx
 		     ("https://keepcalmiminvfx.net/feed/" vfx)
 		     ("https://beforesandafters.com/feed/" vfx)
@@ -49,6 +50,7 @@
 		     ("https://emacsredux.com/atom.xml" emacs)
 		     ("https://planet.emacslife.com/atom.xml" emacs)
 		     ("https://reddit.com/r/emacs/top/.rss?sort=top&t=day" emacs)
+		     ("https://archive.casouri.cat/note/rss.xml" emacs)
 		     ;; youtube
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g" emacs) ; Prot
 		     ("https://www.youtube.com/feeds/videos.xml?channel_id=UCZYycARMM3DaeBwpVQzR5vQ") ; Craig Mod

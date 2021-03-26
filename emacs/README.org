@@ -83,9 +83,7 @@ learned from some wonderful (and well documented) examples. Here is a list of
 the ones I've learned the most from:
 
 - [[https://github.com/raxod502][Radon Rosborough's packages/config]]
-- [[https://github.com/raxod502/radian][Radian]]
 - [[https://protesilaos.com/dotemacs/][Protesilaos Stavrou Dotemacs]]
-- [[https://github.com/oantolin/emacs-config/blob/master/init.el][Oantolin emacs config]]
 - [[https://blog.aaronbieber.com][Aaron Bieber, Blog & Dotfiles]]
 - [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org][Harry R. Schwartz dotfiles]]
 - [[https://yiufung.net/post/org-mode-hidden-gems-pt1/][Org-Mode Hidden Gems]]

@@ -432,9 +432,20 @@ This simply removes the hooks added by the function `use-embark-completions'."
   :straight nil
   :commands ibuffer
   :config
+  (setq ibuffer-show-empty-filter-groups nil
+	ibuffer-saved-filter-groups
+	'(("default"
+	   ("Eww"   (mode . eww-mode))
+	   ("Dired" (mode . dired-mode))
+	   ("Org"   (mode . org-mode))
+	   ("ELisp" (mode . emacs-lisp-mode))
+	   ("Help" (or (name . "\*Help\*")
+                       (name . "\*Apropos\*")
+                       (name . "\*Info\*"))))))
   (defun oht-ibuffer-hook ()
     (hl-line-mode 1)
     (ibuffer-auto-mode 1)
+    (ibuffer-switch-to-saved-filter-groups "default")
     )
   :hook (ibuffer-mode . oht-ibuffer-hook)
   )

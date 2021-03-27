@@ -902,6 +902,16 @@ This simply removes the hooks added by the function `use-embark-completions'."
   )
 
 
+;;;; Hacker News
+
+(use-package hackernews
+  :commands hackernews
+  :custom
+  (hackernews-items-per-page 30)
+  (hackernews-default-feed 'best)
+  )
+
+
 ;;;; Mail
 
 (setq mail-user-agent 'mu4e-user-agent)

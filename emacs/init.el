@@ -834,7 +834,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
     (eww (bookmark-prop-get record 'location)))
   :config
   (load (concat oht-dotfiles "lisp/oht-eww.el"))
-  :commands eww
+  :commands (eww prot-eww-browse-dwim)
   :bind
   (:map eww-mode-map
 	("b" . bookmark-set)

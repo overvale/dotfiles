@@ -3,21 +3,6 @@
 ;; Homepage: https://github.com/olivertaylor/dotfiles
 
 
-;;; Commentary:
-
-;; To see the outline of this file, run M-x outline-minor-mode (which I have
-;; created a global minor mode for, thus it is always on) and then use the
-;; `outline' functions to move around. I have created 3 separate ways of
-;; making this easier.
-;;
-;; 1. The package `bicycle' provides the command `bicycle-cycle'.
-;;    I've used these bindings:
-;;    a) "S-<tab>" to cycle globally.
-;;    b) "C-<tab>" to cycle at point.
-;; 2. A hydra called `hydra-outline' (s-0)
-;; 3. An `occur' buffer with the query: [^;;; ]
-
-
 ;;; Settings
 
 
@@ -568,8 +553,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
   ("C-h k" . #'helpful-key)
   ("C-h C" . #'helpful-command)
   ("C-h p" . #'helpful-at-point)
-  :bind*
-  ("C-?" . #'help-command)
  )
 
 (use-package pinboard
@@ -603,10 +586,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
    modus-themes-variable-pitch-ui nil
    modus-themes-variable-pitch-headings nil
    )
-  ;; (modus-themes-load-themes)
   (modus-themes-load-operandi)
-  :config
-  ;; (modus-themes-load-operandi)
   )
 
 (use-package tron-legacy-theme)
@@ -1265,10 +1245,3 @@ This simply removes the hooks added by the function `use-embark-completions'."
  ;; No reason not to use command-u for this instead
  ("s-u" . universal-argument)
  )
-
-
-;;; Closing
-
-;; Local Variables:
-;; outline-regexp: ";;;+ "
-;; End:

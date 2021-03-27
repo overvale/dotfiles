@@ -1038,6 +1038,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
   ("s-F" . oht-transient-fonts)
   ("s-2" . oht-transient-2nd)
   ("s-0" . oht-transient-outline)
+  ("s-d" . oht-transient-dispatch)
   )
 
 
@@ -1074,10 +1075,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
 
 (use-package oht-dispatch
   :straight nil
-  :commands (oht-transient-dispatch)
-  :config
-  :bind
-  ("s-d" . #'oht-transient-dispatch)
+  :demand
   )
 
 (use-package oht-functions

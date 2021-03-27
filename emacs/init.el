@@ -573,48 +573,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
   ("M-<down>" . move-text-down)
   )
 
-(use-package hydra
-  :bind
-  ("s-F" . hydra-fonts/body)
-  ("s-2" . hydra-secondary-selection/body)
-  ("s-0" . hydra-outline/body)
-  :config
-  (defhydra hydra-fonts (:exit nil :foreign-keys warn)
-    "Set Font Properties"
-    ("v" variable-pitch-mode "Variable")
-    ("V" larger-variable-pitch-mode "V+ mode")
-    ("=" text-scale-increase "Larger")
-    ("+" text-scale-increase "Larger")
-    ("-" text-scale-decrease "Smaller")
-    ("0" text-scale-mode "Reset Size")
-    ("s" oht-fonts-line-spacing "Line Spacing")
-    ("m" modus-themes-toggle "Modus Toggle")
-    ("o" olivetti-mode "Olivetti")
-    ("w" visual-line-mode "Wrap")
-    ("c" composition-mode "Comp")
-    ("q" nil "cancel"))
-  (defhydra hydra-secondary-selection (:exit t)
-    "Secondary Selection"
-    ("xx" oht/cut-secondary-selection "Cut 2nd")
-    ("cc" oht/copy-secondary-selection "Copy 2nd")
-    ("xv" oht/cut-secondary-selection-paste "Cut 2nd & Paste")
-    ("cv" oht/copy-secondary-selection-paste "Copy 2nd & Paste")
-    ("m"  oht/mark-region-as-secondary-selection "Mark Region as 2nd")
-    ("g"  oht/mark-secondary-selection "Make 2nd the Region")
-    ("d"  oht/delete-secondary-selection "Delete 2nd")
-    ("q"  nil "cancel"))
-  (defhydra hydra-outline (:foreign-keys warn)
-    "Hydra for navigating outline mode"
-    ("o" outline-hide-sublevels "Hide to This Sublevel")
-    ("<tab>" bicycle-cycle "Show Subtree")
-    ("a" outline-show-all "Show All")
-    ("c" consult-outline "Consult" :exit t)
-    ("n" outline-next-visible-heading "Next")
-    ("p" outline-previous-visible-heading "Previous")
-    ("q" nil "Cancel" :exit t)
-    )
-  )
-
 ;;;; Themes
 
 (use-package modus-themes
@@ -717,7 +675,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	      (hl-line-mode 1)
 	      ))
   :bind (:map dired-mode-map
-	      ("O" . dired-open-file)
+	      ("s-\\" . oht-transient-dired)
 	      )
   )
 
@@ -764,23 +722,9 @@ This simply removes the hooks added by the function `use-embark-completions'."
   :bind
   ("s-1" . org-agenda)
   (:map org-mode-map
-	("s-\\ o" . consult-outline)
-	("s-\\ ." . oht/org-insert-date-today)
-	("s-\\ t" . org-todo)
-	("s-\\ n" . org-narrow-to-subtree)
-	("s-\\ w" . widen)
-	("s-\\ <" . org-insert-structure-template)
-	("s-\\ s" . org-store-link)
-	("s-\\ i" . org-insert-last-stored-link)
-	("s-\\ m" . visible-mode)
-	("s-\\ I" . org-clock-in)
-	("s-\\ O" . org-clock-out)
-	("s-\\ a" . org-archive-subtree)
-	("s-\\ r" . org-refile)
-	("s-\\ g" . org-goto)
-	("s-\\ c" . org-toggle-checkbox)
+	("s-\\" . oht-transient-org)
 	)
-)
+  )
 
 (use-package org-agenda
   :straight nil
@@ -1080,6 +1024,22 @@ This simply removes the hooks added by the function `use-embark-completions'."
   ;; seems to fix export
   )
 
+;;;; Transient
+
+(use-package transient
+  :straight nil
+  :config
+  (load (concat oht-dotfiles "lisp/oht-transient.el"))
+  :bind
+  ("s-H" . oht-transient-help)
+  ("s-<return>" . oht-transient-general)
+  ("s-w" . oht-transient-window)
+  ("s-F" . oht-transient-fonts)
+  ("s-2" . oht-transient-2nd)
+  ("s-0" . oht-transient-outline)
+  )
+
+
 ;;;; Pseudo-Packages, or my lisp files
 
 ;; The code in each of the files in ~/.emacs/lisp/ is available to
@@ -1113,16 +1073,10 @@ This simply removes the hooks added by the function `use-embark-completions'."
 
 (use-package oht-dispatch
   :straight nil
-  :commands (oht-dispatch)
+  :commands (oht-transient-dispatch)
   :config
-  (setq oht-dispatch-functions
-	'(remember-notes
-	  elfeed
-	  org-agenda
-	  list-bookmarks
-	  ))
   :bind
-  ("s-d" . #'oht-dispatch)
+  ("s-d" . #'oht-transient-dispatch)
   )
 
 (use-package oht-functions
@@ -1230,52 +1184,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	   ("s-/" . oht-toggle-comment-region-or-line)
 	   ("s-l" . oht-mac-mark-whole-line)
 	   ("s-o" . other-window))
-
-(bind-keys :prefix-map oht/global-leader
-	   :prefix "s-<return>"
-	   ("t t" . tab-bar-mode)
-	   ("t n" . tab-bar-new-tab)
-	   ("t k" . tab-bar-close-tab)
-	   ("t z" . tab-bar-undo-close-tab)
-	   ("t ]" . tab-bar-switch-to-next-tab)
-	   ("t [" . tab-bar-switch-to-prev-tab)
-	   ("a" . auto-fill-mode)
-	   ("d" . sdcv-search)
-	   ("f" . find-file)
-	   ("h" . hl-line-mode)
-	   ("l" . global-display-line-numbers-mode)
-	   ("g" . global-display-fill-column-indicator-mode)
-	   ("w" . visual-line-mode)
-	   ("T" . toggle-truncate-lines)
-	   ("W" . whitespace-mode)
-	   ("m" . magit-status)
-	   ("<left>" . winner-undo)
-	   ("<right>" . winner-redo)
-	   ("s" . org-store-link)
-	   ("o" . consult-outline)
-	   ("j" . dired-jump)
-	   ("b s" . bookmark-set)
-	   ("b l" . list-bookmarks)
-	   ("b j" . consult-bookmark)
-	   ("c" . composition-mode)
-	   )
-
-(bind-keys :prefix-map oht/windows-leader
-	   :prefix "s-w"
-	   ("s" . (lambda () (interactive)(split-window-below) (other-window 1)))
-	   ("v" . (lambda () (interactive)(split-window-right) (other-window 1)))
-	   ("k" . delete-window)
-	   ("K" . kill-buffer-and-window)
-	   ("o" . delete-other-windows)
-	   ("b" . balance-windows)
-	   ("r" . oht/rotate-window-split)
-	   ("t" . tear-off-window)
-	   ("w" . delete-frame)
-	   ("i" . clone-indirect-buffer)
-	   ("m" . maximize-window)
-	   ("<left>" . winner-undo)
-	   ("<right>" . winner-redo)
-	   )
 
 ;;; Mac Shortcuts
 

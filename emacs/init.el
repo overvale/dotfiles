@@ -676,6 +676,36 @@ This simply removes the hooks added by the function `use-embark-completions'."
 		  (apply func args))))
   )
 
+(use-package selected
+  :commands selected-minor-mode
+  :init
+  (selected-global-mode 1)
+  :bind (:map selected-keymap
+			  ("q" . selected-off)
+			  ("u" . upcase-dwim)
+			  ("d" . downcase-dwim)
+			  ("w" . kill-ring-save)
+			  ("n" . next-line)
+			  ("p" . previous-line)
+			  ("f" . forward-char)
+			  ("b" . backward-char)
+			  ("F" . forward-word)
+			  ("B" . backward-word)
+			  ("a" . beginning-of-visual-line)
+			  ("e" . end-of-visual-line)
+			  ("{" . backward-paragraph)
+			  ("}" . forward-paragraph)
+			  ("(" . backward-sentence)
+			  (")" . forward-sentence)
+			  ("s" . ctrlf-forward-fuzzy)
+			  ("r" . ctrlf-backward-fuzzy)
+			  ("[" . scroll-down-line)
+			  ("]" . scroll-up-line)
+			  ("M" . rectangle-mark-mode)
+			  ("R" . replace-rectangle)
+			  ("x" . exchange-point-and-mark)
+			  ))
+
 
 ;;;; Themes
 

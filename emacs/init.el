@@ -2,7 +2,6 @@
 
 ;; Homepage: https://github.com/olivertaylor/dotfiles
 
-
 ;;; Settings
 
 
@@ -13,6 +12,7 @@
 ;; https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
 ;; https://github.com/hlissner/doom-emacs/blob/develop/core/core.el
 
+;; Garbage Collection!
 ;; This is actually the 2nd step, for the first step, see `early-init.el'
 (add-hook 'emacs-startup-hook
   (lambda ()
@@ -50,23 +50,84 @@
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 
+;; Inhibit most of the default stuff on startup, and ensure nothing
+;; extra is loaded.
+(setq inhibit-startup-message t
+      inhibit-startup-echo-area-message user-login-name
+      inhibit-default-init t
+      initial-major-mode 'fundamental-mode
+      initial-scratch-message nil)
+
 ;;;; Preferences
 
-;; Next, let's set a bunch of basic preferences for how we want Emacs to
-;; behave.
+;; Activate modes to set settings -- sure Emacs!
+(delete-selection-mode 1)
+(global-auto-revert-mode 1)
+(save-place-mode 1)
+(recentf-mode 1)
+(winner-mode 1)
+(show-paren-mode t)
+(blink-cursor-mode -1)
+(set-language-environment "UTF-8")
 
-(delete-selection-mode t)                  ; replace region when you type
-(global-auto-revert-mode t)                ; update buffer when file on disk changes
-(save-place-mode 1)                        ; reopens the file to the same spot you left
-(recentf-mode 1)                           ; enables "Open Recent..." in file menu
-(setq tab-width 4)                         ; tabs=4 char
-(setq help-window-select nil)                ; focus new help windows when opened
-(setq sentence-end-double-space nil)       ; ends sentence after 1 space
-(fset 'yes-or-no-p 'y-or-n-p)              ; Changes all yes/no questions to y/n type
-(setq create-lockfiles nil)                ; No need for ~ files when editing
-(setq-default fill-column 78)              ; Set column used for fill-paragraph
-(setq ring-bell-function 'ignore)          ; Don't beep
-(setq kill-do-not-save-duplicates t)       ; Don't save dups in kill ring
+;; There are two kinds of variables, global ones, and buffer local ones.
+;;
+;; `setq' simply sets the value of a variable, so if the variable global it
+;; sets its value globally, and if the variable is buffer local it sets the
+;; value locally (and new buffers will inherit the default value).
+;;
+;; `setq-local' takes a global variable and makes a buffer local "copy" that
+;; doesn't effect the global value.
+;;
+;; `setq-default' takes a local variable and sets a new default value for all
+;; new buffers, but doesn't change it in existing buffers.
+
+;; Visual/Interface Stuff
+(setq-default cursor-type 'box)
+(setq visible-bell t)
+(setq-default indicate-empty-lines nil)
+(setq frame-title-format '("%b"))
+(setq uniquify-buffer-name-style 'forward)
+(defalias 'yes-or-no-p 'y-or-n-p)
+(setq split-window-keep-point nil)
+
+;; Settings
+(setq vc-follow-symlinks t
+      find-file-visit-truename t)
+(setq create-lockfiles nil
+      make-backup-files nil)
+(setq sentence-end-double-space nil)
+(setq locate-command "mdfind")
+(setq delete-by-moving-to-trash t)
+(setq trash-directory "~/.Trash/emacs")
+(setq confirm-kill-processes nil)
+
+
+;;;; Minibuffer
+
+;; An example: you call `switch-buffer' and search for something in the
+;; minibuffer. You then want to call a command inside that minibuffer.
+(setq enable-recursive-minibuffers 1)
+
+;; And show an indicator when you do that.
+(minibuffer-depth-indicate-mode 1)
+
+
+;;;; Kill Ring
+
+;; If you have something on the system clipboard, and then kill
+;; something in Emacs, then by default whatever you had on the system
+;; clipboard is gone and there is no way to get it back. Setting the
+;; following option makes it so that when you kill something in Emacs,
+;; whatever was previously on the system clipboard is pushed into the
+;; kill ring. This way, you can paste it with `yank-pop'.
+(setq save-interprogram-paste-before-kill t)
+
+;; And remove duplicates from the kill-ring
+(setq kill-do-not-save-duplicates t)
+
+
+;;;; Emacs Directory
 
 ;; Set a variable for where your emacs dotfiles are located.
 (defvar oht-dotfiles "~/home/dot/emacs/")
@@ -82,73 +143,11 @@
 (when (file-exists-p custom-file)
   (load custom-file :noerror))
 
-;; place backup files in a single place
-(setq backup-directory-alist '(("" . "~/.emacs.d/backups")))
 
-; Use Spotlight to search with M-x locate
-(setq locate-command "mdfind")
+;;;; Tab/Fill Settings, Visual Line Mode
 
-;;Use the system trash folder to delete files.
-(setq delete-by-moving-to-trash t)
-(setq trash-directory "~/.Trash/emacs")
-
-;; Echo unfinished commands after this delay
-;; setting to 0 means do not echo commands
-(setq echo-keystrokes 0.01)
-
-;; When exiting emacs, kill all running processes
-(setq confirm-kill-processes nil)
-
-;; Since emacs seems to love spawning new windows, and taking over your existing
-;; ones, this allows you to undo and redo those arrangements. So you if a
-;; command kills a window arrangement you were using you can go back to it with
-;; winner-undo and winner-redo.
-(winner-mode 1)
-
-;; This attempts to keep the text on the screen as close as possible to what
-;; it was before the split.
-(setq split-window-keep-point nil)
-
-;; An example: you call `switch-buffer' and search for something in the
-;; minibuffer. You then want to call a command inside that minibuffer.
-(setq enable-recursive-minibuffers 1)
-
-;; And show an indicator when you do that.
-(minibuffer-depth-indicate-mode 1)
-
-;; If you have something on the system clipboard, and then kill
-;; something in Emacs, then by default whatever you had on the system
-;; clipboard is gone and there is no way to get it back. Setting the
-;; following option makes it so that when you kill something in Emacs,
-;; whatever was previously on the system clipboard is pushed into the
-;; kill ring. This way, you can paste it with `yank-pop'.
-(setq save-interprogram-paste-before-kill t)
-
-;; When editing 2 files with the same name, like ~/foo/file and ~/bar/file,
-;; Emacs (amazingly) refers to those files as file<~/foo> and file<~/bar>.
-;; This makes Emacs refer to them as foo/file and bar/file, like a sane
-;; program.
-(setq uniquify-buffer-name-style 'forward)
-
-;; Always follow symlinks. init files are normally stowed/symlinked.
-(setq vc-follow-symlinks t
-      find-file-visit-truename t
-      ;; Avoid stale compiled code shadow newer source code
-      load-prefer-newer t)
-
-;; Set default encoding to UTF-8
-(set-language-environment "UTF-8")
-
-(setq inhibit-startup-message t
-      inhibit-startup-echo-area-message user-login-name
-      inhibit-default-init t
-      ;; Starting the scratch buffer in `fundamental-mode', rather than, say,
-      ;; `org-mode' or `text-mode', which pull in a ton of packages.
-      initial-major-mode 'fundamental-mode
-      initial-scratch-message nil)
-
-
-;;;; Visual Line Mode
+(setq-default tab-width 4
+			  fill-column 78)
 
 ;; Confusingly, `visual-line-mode', `word-wrap', and `truncate-lines' are all
 ;; different things. `visual-line-mode' is a wrapper around a bunch of
@@ -173,24 +172,14 @@
 (setq-default word-wrap 1)
 
 
-;;;; Appearance
+;;;; Mode Line
 
-(show-paren-mode t)                        ; highlight parens
-(setq show-paren-delay 0)                  ; and show immediately
-(setq visible-bell t)                      ; disable beep
-(setq-default frame-title-format '("%b"))  ; show buffer name in titlebar
-(setq x-underline-at-descent-line nil)     ; underline at descent, not baseline
-(setq-default indicate-empty-lines nil)    ; show where the file ends
-(set-default 'cursor-type 'box)            ; use a box for cursor
-(blink-cursor-mode -1)                     ; no blinking please
-
-;; Mode Line
 (column-number-mode t)
+(display-time-mode t)
 (setq display-time-format "%H:%M  %Y-%m-%d")
 (setq display-time-interval 60)
 (setq display-time-mail-directory nil)
 (setq display-time-default-load-average nil)
-(display-time-mode t)
 
 
 ;;; Packages

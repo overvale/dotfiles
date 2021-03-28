@@ -1045,14 +1045,15 @@ This simply removes the hooks added by the function `use-embark-completions'."
   :straight nil
   :config
   (load (concat oht-dotfiles "lisp/oht-transient.el"))
-  :bind
-  ("s-H" . oht-transient-help)
+  :bind*
   ("s-<return>" . oht-transient-general)
+  ("s-H" . oht-transient-help)
   ("s-w" . oht-transient-window)
   ("s-F" . oht-transient-fonts)
   ("s-2" . oht-transient-2nd)
   ("s-0" . oht-transient-outline)
   ("s-d" . oht-transient-dispatch)
+  ("C-," . oht-transient-spelling)
   )
 
 

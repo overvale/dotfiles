@@ -1,5 +1,6 @@
 ;; oht-transient.el --- -*- lexical-binding: t -*-
 
+;; https://github.com/jojojames/matcha
 
 (define-transient-command oht-transient-general ()
   "General shortcuts I use often"
@@ -41,43 +42,6 @@
    ]
   )
 
-(define-transient-command oht-transient-help ()
-    "Help commands that I use. A subset of C-h with others thrown in."
-    ["Help Commands"
-     ["Mode & Bindings"
-      ("m" "Mode" describe-mode)
-      ("b" "Major Bindings" which-key-show-full-major-mode)
-      ("B" "Minor Bindings" which-key-show-full-minor-mode-keymap)
-      ("t" "Top Bindings  " which-key-show-top-level)
-      ]
-     ["Describe"
-      ("C" "Command" helpful-command)
-      ("f" "Function" helpful-callable)
-      ("v" "Variable" helpful-variable)
-      ("k" "Key" helpful-key)
-      ("c" "Key Briefly" describe-key-briefly)
-      ]
-     ["Goto Source"
-      ("L" "Library" find-library-other-frame)
-      ("F" "Function" find-function-other-frame)
-      ("V" "Variable" find-variable-other-frame)
-      ("K" "Key" find-function-on-key-other-frame)
-      ]
-     ] ;; end help
-    [
-     ["Describe"
-      ("s" "Symbol" helpful-symbol)
-      ("." "At Point   " helpful-at-point)
-      ("w" "Where Is" where-is)
-      ("=" "Position" what-cursor-position)
-      ]
-     ["Info Manuals"
-      ("C-i" "Info" info)
-      ("C-4" "Other Window " info-other-window)
-      ]
-     ]
-    )
-
 (define-transient-command oht-transient-window ()
   [
    ["Splits"
@@ -101,8 +65,8 @@
     ("<down>"  "↓" windmove-down  :transient t)
     ]
    ["Undo/Redo"
-    ("s-z" "Undo" winner-undo :transient t)
-    ("s-Z" "Redo" winner-redo :transient t)
+    ("s-z" "Winner Undo" winner-undo :transient t)
+    ("s-Z" "Winner Redo" winner-redo :transient t)
     ]
    ]
   )
@@ -231,18 +195,23 @@
 
 (define-transient-command oht-transient-dired
   "Dired"
-  [["Marks"
-    ("m" "Marks..." oht-transient-dired-marks)]
-   ["Command"
+  [["Action"
     ("RET" "Open file"            dired-find-file)
     ("o" "  Open in other window" dired-find-file-other-window)
     ("C-o" "Open in other window (No select)" dired-display-file)
     ("v" "  Open file (View mode)"dired-view-file)
     ("=" "  Diff"                 dired-diff)
-    ("j" "  Goto file"            dired-goto-file)
     ("w" "  Copy filename"        dired-copy-filename-as-kill)
     ("W" "  Open in browser"      browse-url-of-dired-file)
-    ("y" "  Show file type"       dired-show-file-type)
+    ("y" "  Show file type"       dired-show-file-type)]
+   ["Attribute"
+    ("R"   "Rename"               dired-do-rename)
+    ("G"   "Group"                dired-do-chgrp)
+    ("M"   "Mode"                 dired-do-chmod)
+    ("O"   "Owner"                dired-do-chown)
+    ("T"   "Timestamp"            dired-do-touch)]
+   ["Navigation"
+	("j" "  Goto file"            dired-goto-file)
     ("+" "  Create directory"     dired-create-directory)
     ("<" "  Jump prev directory"  dired-prev-dirline)
     (">" "  Jump next directory"  dired-next-dirline)
@@ -252,41 +221,39 @@
     ("l" "  Refresh file"         dired-do-redisplay)
     ("k" "  Remove line"          dired-do-kill-lines)
     ("s" "  Sort"                 dired-sort-toggle-or-edit)
-    ("(" "  Toggle detail info"     dired-hide-details-mode)
+    ("(" "  Toggle detail info"   dired-hide-details-mode)
     ("i" "  Insert subdir"        dired-maybe-insert-subdir)
     ("$" "  Hide subdir"          dired-hide-subdir)
     ("M-$" "Hide subdir all"      dired-hide-subdir)]
-   ["Attribute"
-    ("R"   "Rename"               dired-do-rename)
-    ("G"   "Group"                dired-do-chgrp)
-    ("M"   "Mode"                 dired-do-chmod)
-    ("O"   "Owner"                dired-do-chown)
-    ("T"   "Timestamp"            dired-do-touch)]
    ["Extension"
     ("e"   "wdired"               wdired-change-to-wdired-mode)
     ("/"   "dired-filter"         ignore)
     ("n"   "dired-narrow"         ignore)]]
+  [["Marks"
+    ("m" "Marks..." oht-transient-dired-marks)]]
   )
 
 (define-transient-command oht-transient-dired-marks
   "Marks"
-  [["Mark"
+  [["Toggles"
     ("mm"  "Mark"                 dired-mark)
     ("mM"  "Mark all"             dired-mark-subdir-files)
     ("mu"  "Unmark"               dired-unmark)
     ("mU"  "Unmark all"           dired-unmark-all-marks)
+    ("mc"  "Change mark"          dired-change-marks)
+    ("mt"  "Toggle mark"          dired-toggle-marks)]
+   ["Type"
     ("m*"  "Executables"          dired-mark-executables)
     ("m/"  "Directories"          dired-mark-directories)
     ("m@"  "Symlinks"             dired-mark-symlinks)
     ("m&"  "Garbage files"        dired-flag-garbage-files)
     ("m#"  "Auto save files"      dired-flag-auto-save-files)
     ("m~"  "backup files"         dired-flag-backup-files)
-    ("m."  "Numerical backups"    dired-clean-directory)
+    ("m."  "Numerical backups"    dired-clean-directory)]
+   ["Search"
     ("m%"  "Regexp"               dired-mark-files-regexp)
-    ("mg"  "Regexp file contents" dired-mark-files-containing-regexp)
-    ("mc"  "Change mark"          dired-change-marks)
-    ("mt"  "Toggle mark"          dired-toggle-marks)]
-   ["Command for marked files"
+    ("mg"  "Regexp file contents" dired-mark-files-containing-regexp)]]
+   [["Act on Marked"
     ("x"   "Do action"            dired-do-flagged-delete)
     ("C"   "Copy"                 dired-do-copy)
     ("D"   "Delete"               dired-do-delete)
@@ -301,15 +268,40 @@
     ("Z"   "Compress"             dired-do-compress)
     ("z"   "Compress to"          dired-do-compress-to)
     ("!"   "Shell command"        dired-do-shell-command)
-    ("&"   "Async shell command"  dired-do-async-shell-command)]
-   ])
+    ("&"   "Async shell command"  dired-do-async-shell-command)]])
 
 ;; -------------------------------------------------------------
 
-;; IDEAS
+;; IDEAS FOR FURTHER DEVELOPMENT
 
 ;; org-agenda commands
-;; ibuffer
+;; ibuffer commands
+;; query-replace
+;; occur?
+
+;; -------------------------------------------------------------
+
+;; https://gist.github.com/abrochard/dd610fc4673593b7cbce7a0176d897de
+
+(defun transient-test-function (&optional args)
+  (interactive
+   (list (transient-args 'test-transient)))
+  (message "args %s" args))
+
+(define-infix-argument test-transient:--message ()
+  :description "Message"
+  :class 'transient-option
+  :shortarg "-m"
+  :argument "--message=")
+
+(define-transient-command test-transient ()
+       "Test Transient Title"
+       ["Arguments"
+        ("-s" "Switch" "--switch")
+        ("-a" "Another switch" "--another")
+        ("-m" "Message" "--message=")] ;; simpler
+       ["Actions"
+        ("d" "Action d" test-function)])
 
 
 (provide 'oht-transient)

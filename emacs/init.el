@@ -1058,6 +1058,10 @@ This simply removes the hooks added by the function `use-embark-completions'."
   ("C-," . oht-transient-spelling)
   )
 
+;; When splitting the window, go to it
+(defadvice split-window-below (after split-window-below activate) (other-window 1))
+(defadvice split-window-right (after split-window-right activate) (other-window 1))
+
 
 ;;;; Pseudo-Packages, or my lisp files
 

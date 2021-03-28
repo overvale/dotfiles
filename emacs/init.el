@@ -239,7 +239,7 @@
   )
 
 
-;;;; Narrowing & Searching/Replacing
+;;;; Narrowing & Searching
 
 ;; Navigating and using the thousands of things Emacs can do is built around
 ;; the idea of searching and narrowing a selection down to the thing you're
@@ -402,6 +402,30 @@ This simply removes the hooks added by the function `use-embark-completions'."
   (bookmark-bmenu-file-column 45)
   )
 
+(use-package dired
+  :straight nil
+  :commands (dired dired-jump dired-jump-other-window)
+  :init
+  (setq dired-use-ls-dired nil) ; no more warning message
+  :config
+  (defun dired-open-file ()
+    "In dired, open the file named on this line."
+    (interactive)
+    (let* ((file (dired-get-filename nil t)))
+      (message "Opening %s..." file)
+      (call-process "open" nil 0 nil file)
+      (message "Opening %s done" file)))
+  (add-hook 'dired-mode-hook
+	    (lambda ()
+	      (dired-hide-details-mode 1)
+	      (auto-revert-mode)
+	      (hl-line-mode 1)
+	      ))
+  :bind (:map dired-mode-map
+	      ("s-\\" . oht-transient-dired)
+	      )
+  )
+
 (use-package ibuffer
   :straight nil
   :commands ibuffer
@@ -422,6 +446,19 @@ This simply removes the hooks added by the function `use-embark-completions'."
     (ibuffer-switch-to-saved-filter-groups "default")
     )
   :hook (ibuffer-mode . oht-ibuffer-hook)
+  )
+
+(use-package flyspell
+  :straight nil
+  :commands (flyspell-mode flyspell-prog-mode turn-on-flyspell)
+  :init
+  (add-hook 'text-mode-hook 'turn-on-flyspell)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  :config
+  (setq ispell-program-name "/usr/local/bin/aspell")
+  (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
+  (setq ispell-list-command "list")
+  :blackout " Spell"
   )
 
 (use-package pulse
@@ -452,6 +489,61 @@ This simply removes the hooks added by the function `use-embark-completions'."
   (advice-add 'yank :around #'ct/yank-pulse-advice)
   )
 
+(use-package view
+  ;; Coming from vim, I know the utility of modal editing. However, I have no
+  ;; desire to make Emacs into something it is not with `evil-mode'. That
+  ;; said, there are times when modal editing and navigation are very handy
+  ;; and there are, in fact, circumstances in which Emacs uses modal
+  ;; navigation. For example, when in a dired buffer you can use the n and p
+  ;; keys to move the point around. In addition to the bindings below
+  ;; `view-mode' has its own standard bindings, which you can find in the
+  ;; minor mode's help.
+  :straight nil
+  :init
+  ;; Visit read-only buffers in view-mode
+  (setq view-read-only t)
+  (add-hook 'view-mode-hook 'hl-line-mode)
+  (defun oht/view-mode-exit ()
+    (interactive)
+    (view-mode -1)
+    (hl-line-mode -1)
+    )
+  (defun oht/exit-view-replace-rectangle ()
+    (interactive)
+    (oht/view-mode-exit)
+    (call-interactively 'replace-rectangle)
+    )
+  (bind-key "s-j" 'view-mode)
+  :bind
+  (:map view-mode-map
+	("n" . next-line)
+	("p" . previous-line)
+	("f" . forward-char)
+	("b" . backward-char)
+	("F" . forward-word)
+	("B" . backward-word)
+	("a" . beginning-of-visual-line)
+	("e" . end-of-visual-line)
+	("{" . backward-paragraph)
+	("}" . forward-paragraph)
+	("(" . backward-sentence)
+	(")" . forward-sentence)
+	("s" . ctrlf-forward-fuzzy)
+	("r" . ctrlf-backward-fuzzy)
+	("m" . set-mark-command)
+	("[" . scroll-down-line)
+	("]" . scroll-up-line)
+	("M" . rectangle-mark-mode)
+	("R" . oht/exit-view-replace-rectangle)
+	("x" . exchange-point-and-mark)
+	("<RET>" . oht/view-mode-exit)
+	("s-j" . oht/view-mode-exit)
+	("q" . quit-window)
+	)
+  :blackout " VIEW"
+  )
+
+
 ;;;; Miscellaneous Packages
 
 (use-package benchmark-init
@@ -479,9 +571,13 @@ This simply removes the hooks added by the function `use-embark-completions'."
 (use-package which-key
   :demand
   :defer 2
+  :init
+  ;; Echo unfinished commands after this delay.
+  ;; Setting to 0 means do not echo commands.
+  (setq echo-keystrokes 0.01)
   :config
   (which-key-mode t)
-  (setq which-key-idle-delay 0.4)
+  (setq which-key-idle-delay 1.0)
   :blackout
   )
 
@@ -556,6 +652,31 @@ This simply removes the hooks added by the function `use-embark-completions'."
   ("M-<down>" . move-text-down)
   )
 
+(use-package dired-subtree
+  :after dired
+  :config
+  (setq dired-subtree-use-backgrounds nil)
+  :bind (:map dired-mode-map
+              ("<tab>" . dired-subtree-toggle)))
+
+
+(use-package flyspell-correct
+  ;; Allows you to pass spelling suggestions to completion
+  ;; and search frameworks, such as selectrum. This setup code is copied
+  ;; directly from the selectrum documentation.
+  :bind
+  ("M-;" . #'flyspell-auto-correct-previous-word)
+  ("M-:" . #'flyspell-correct-wrapper)
+  :custom
+  (flyspell-correct-interface 'flyspell-correct-dummy)
+  :init
+  (advice-add 'flyspell-correct-dummy :around
+	      (defun my--fsc-wrapper (func &rest args)
+		(let ((selectrum-should-sort-p nil))
+		  (apply func args))))
+  )
+
+
 ;;;; Themes
 
 (use-package modus-themes
@@ -602,69 +723,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
   :straight (:type git :host github :repo "minad/bookmark-view" :branch "master")
   :commands (bookmark-view)
   )
-
-;;;; Spelling
-
-(use-package flyspell
-  :commands (flyspell-mode flyspell-prog-mode turn-on-flyspell)
-  :init
-  (add-hook 'text-mode-hook 'turn-on-flyspell)
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-  :config
-  (setq ispell-program-name "/usr/local/bin/aspell")
-  (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
-  (setq ispell-list-command "list")
-  :blackout " Spell"
-)
-
-(use-package flyspell-correct
-  ;; Allows you to pass spelling suggestions to completion
-  ;; and search frameworks, such as selectrum. This setup code is copied
-  ;; directly from the selectrum documentation.
-  :bind
-  ("M-;" . #'flyspell-auto-correct-previous-word)
-  ("M-:" . #'flyspell-correct-wrapper)
-  :custom
-  (flyspell-correct-interface 'flyspell-correct-dummy)
-  :init
-  (advice-add 'flyspell-correct-dummy :around
-	      (defun my--fsc-wrapper (func &rest args)
-		(let ((selectrum-should-sort-p nil))
-		  (apply func args))))
-  )
-
-;;;; Dired
-
-(use-package dired
-  :straight nil
-  :commands (dired dired-jump dired-jump-other-window)
-  :init
-  (setq dired-use-ls-dired nil) ; no more warning message
-  :config
-  (defun dired-open-file ()
-    "In dired, open the file named on this line."
-    (interactive)
-    (let* ((file (dired-get-filename nil t)))
-      (message "Opening %s..." file)
-      (call-process "open" nil 0 nil file)
-      (message "Opening %s done" file)))
-  (add-hook 'dired-mode-hook
-	    (lambda ()
-	      (dired-hide-details-mode 1)
-	      (auto-revert-mode)
-	      (hl-line-mode 1)
-	      ))
-  :bind (:map dired-mode-map
-	      ("s-\\" . oht-transient-dired)
-	      )
-  )
-
-(use-package dired-subtree
-  :after dired
-  :config
-  (setq dired-subtree-use-backgrounds nil)
-  :bind (:map dired-mode-map
-              ("<tab>" . dired-subtree-toggle)))
 
 ;;;; Visual Regexp
 
@@ -735,63 +793,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	   ("<backtab>" . bicycle-cycle-global))
 
 
-;;;; View-Mode
-
-(use-package view
-  ;; Coming from vim, I know the utility of modal editing. However, I have no
-  ;; desire to make Emacs into something it is not with `evil-mode'. That
-  ;; said, there are times when modal editing and navigation are very handy
-  ;; and there are, in fact, circumstances in which Emacs uses modal
-  ;; navigation. For example, when in a dired buffer you can use the n and p
-  ;; keys to move the point around. In addition to the bindings below
-  ;; `view-mode' has its own standard bindings, which you can find in the
-  ;; minor mode's help.
-  :straight nil
-  :init
-  ;; Visit read-only buffers in view-mode
-  (setq view-read-only t)
-  (add-hook 'view-mode-hook 'hl-line-mode)
-  (defun oht/view-mode-exit ()
-    (interactive)
-    (view-mode -1)
-    (hl-line-mode -1)
-    )
-  (defun oht/exit-view-replace-rectangle ()
-    (interactive)
-    (oht/view-mode-exit)
-    (call-interactively 'replace-rectangle)
-    )
-  (bind-key "s-j" 'view-mode)
-  :bind
-  (:map view-mode-map
-	("n" . next-line)
-	("p" . previous-line)
-	("f" . forward-char)
-	("b" . backward-char)
-	("F" . forward-word)
-	("B" . backward-word)
-	("a" . beginning-of-visual-line)
-	("e" . end-of-visual-line)
-	("{" . backward-paragraph)
-	("}" . forward-paragraph)
-	("(" . backward-sentence)
-	(")" . forward-sentence)
-	("s" . ctrlf-forward-fuzzy)
-	("r" . ctrlf-backward-fuzzy)
-	("m" . set-mark-command)
-	("[" . scroll-down-line)
-	("]" . scroll-up-line)
-	("M" . rectangle-mark-mode)
-	("R" . oht/exit-view-replace-rectangle)
-	("x" . exchange-point-and-mark)
-	("<RET>" . oht/view-mode-exit)
-	("s-j" . oht/view-mode-exit)
-	("q" . quit-window)
-	)
-  :blackout " VIEW"
-  )
-
-;;;; Browser Related
+;;;; Browser & News
 
 (setq shr-max-image-proportion 0.5)
 (setq shr-use-fonts t)
@@ -803,10 +805,8 @@ This simply removes the hooks added by the function `use-embark-completions'."
 ;; Prefixing with universal argument uses browse-url-default-browser
 ;; which, for me, is `browse-url-default-macosx-browser'
 
-
-;;;; EWW Browser
-
 (use-package eww
+  :straight nil
   :init
   (setq eww-restore-desktop nil)
   (setq eww-desktop-remove-duplicates t)
@@ -831,9 +831,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	("i" . eww-inhibit-images-toggle)
 	)
   )
-
-
-;;;; Elfeed
 
 (use-package elfeed
   :commands elfeed
@@ -870,14 +867,11 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	)
   )
 
-
-;;;; Hacker News
-
 (use-package hackernews
   :commands hackernews
   :custom
   (hackernews-items-per-page 30)
-  (hackernews-default-feed 'best)
+  (hackernews-default-feed 'top)
   )
 
 
@@ -1017,6 +1011,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
 ;;;; Transient
 
 (use-package transient
+  ;; comes installed with Magit, no need to install
   :straight nil
   :config
   (load (concat oht-dotfiles "lisp/oht-transient.el"))

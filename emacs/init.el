@@ -518,30 +518,32 @@ This simply removes the hooks added by the function `use-embark-completions'."
   (bind-key "s-j" 'view-mode)
   :bind
   (:map view-mode-map
-	("n" . next-line)
-	("p" . previous-line)
-	("f" . forward-char)
-	("b" . backward-char)
-	("F" . forward-word)
-	("B" . backward-word)
-	("a" . beginning-of-visual-line)
-	("e" . end-of-visual-line)
-	("{" . backward-paragraph)
-	("}" . forward-paragraph)
-	("(" . backward-sentence)
-	(")" . forward-sentence)
-	("s" . ctrlf-forward-fuzzy)
-	("r" . ctrlf-backward-fuzzy)
-	("m" . set-mark-command)
-	("[" . scroll-down-line)
-	("]" . scroll-up-line)
-	("M" . rectangle-mark-mode)
-	("R" . oht/exit-view-replace-rectangle)
-	("x" . exchange-point-and-mark)
-	("<RET>" . oht/view-mode-exit)
-	("s-j" . oht/view-mode-exit)
-	("q" . quit-window)
-	)
+		;; common to selected-minor-mode
+		("n" . next-line)
+		("p" . previous-line)
+		("f" . forward-char)
+		("b" . backward-char)
+		("F" . forward-word)
+		("B" . backward-word)
+		("a" . beginning-of-visual-line)
+		("e" . end-of-visual-line)
+		("{" . backward-paragraph)
+		("}" . forward-paragraph)
+		("(" . backward-sentence)
+		(")" . forward-sentence)
+		("s" . ctrlf-forward-fuzzy)
+		("r" . ctrlf-backward-fuzzy)
+		("[" . scroll-down-line)
+		("]" . scroll-up-line)
+		("x" . exchange-point-and-mark)
+		("M" . rectangle-mark-mode)
+		;; unique to view-mode
+		("R" . oht/exit-view-replace-rectangle)
+		("m" . set-mark-command)
+		("<RET>" . oht/view-mode-exit)
+		("s-j" . oht/view-mode-exit)
+		("q" . quit-window)
+		)
   :blackout " VIEW"
   )
 
@@ -682,11 +684,9 @@ This simply removes the hooks added by the function `use-embark-completions'."
   :commands selected-minor-mode
   :init
   (selected-global-mode 1)
+  :blackout selected-minor-mode
   :bind (:map selected-keymap
-			  ("q" . selected-off)
-			  ("u" . upcase-dwim)
-			  ("d" . downcase-dwim)
-			  ("w" . kill-ring-save)
+			  ;; common with view-mode
 			  ("n" . next-line)
 			  ("p" . previous-line)
 			  ("f" . forward-char)
@@ -703,9 +703,14 @@ This simply removes the hooks added by the function `use-embark-completions'."
 			  ("r" . ctrlf-backward-fuzzy)
 			  ("[" . scroll-down-line)
 			  ("]" . scroll-up-line)
+			  ("x" . exchange-point-and-mark)
+			  ;; unique
+			  ("q" . selected-off)
+			  ("u" . upcase-dwim)
+			  ("d" . downcase-dwim)
+			  ("w" . kill-ring-save)
 			  ("M" . rectangle-mark-mode)
 			  ("R" . replace-rectangle)
-			  ("x" . exchange-point-and-mark)
 			  ))
 
 

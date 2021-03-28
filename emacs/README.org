@@ -100,14 +100,75 @@ My preferred version of Emacs, and the one this configuration targets, is
 [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][Mitsuharu Yamamoto's Emacs fork]] because it provides [[https://bitbucket.org/mituharu/emacs-mac/src/f3402395995bf70e50d6e65f841e44d5f9b4603c/README-mac?at=master&fileviewer=file-view-default][a lot of nice stuff]] for
 people who want their Emacs to be a better macOS citizen.
 
-* Packages
+* Key Binding Notes
 
-It wasn't easy for me to understand how packages work in Emacs. In fact,
-configuration in general is confusing in Emacs because you can both use an
-init (config) file /and/ you can interactively customize (like a "normal" app)
-which saves settings in your init file. For someone like me, who likes to keep
-things tightly organized and understand everything that's contributing to my
-config, this can be confusing.
+<Control>-modified key bindings are case-insensitive. So =C-A= is identical to
+=C-a=. You can bind shifted <Control> keystrokes with =C-S-a=. All other
+modifiers are case-sensitive.
+
+To decide what to do, Emacs looks at keymaps in this order: (1) Minor Mode,
+(2) Major Mode, (3) Global.
+
+How to define a key in the global keymap:
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-z") 'shell)
+
+(bind-key "C-z" 'shell)
+(bind-keys ("C-z" . shell)
+		   ("C-x" . ignore))
+#+end_src
+
+A given mode's keymaps are not constructed until the mode has been loaded. You
+you must delay defining a new major/minor mode key until the mode has been
+loaded. Do this with a mode hook like so:
+
+	#+begin_src emacs-lisp
+(add-hook 'texinfo-mode-hook
+		  (lambda ()
+		  (define-key textifo-mode-map (kbd "C-p") 'backward-paragraph)))
+
+(bind-key "C-p" 'backward-paragraph textinfo-mode-map)
+(bind-keys :map textinfo-mode-map
+		   ("C-p" . backward-paragraph)
+		   ("C-n" . forward-paragraph))
+	#+end_src
+
+To disable a global binding:
+
+#+begin_src emacs-lisp
+(global-unset-key (kbd "C-z"))
+#+end_src
+
+To disable a local binding:
+
+	#+begin_src emacs-lisp
+(add-hook 'org-mode-hook
+	  (lambda ()
+		(local-unset-key (kbd "C-c C-b"))))
+	#+end_src
+
+It's not key binding, but you can remap one command to another with:
+
+#+begin_src emacs-lisp
+(global-set-key [remap beginning-of-line] #'my/smart-beginning-of-line)
+#+end_src
+
+* Setting Variables
+
+There are two kinds of variables, global ones, and buffer local ones.
+
+=setq= simply sets the value of a variable, so if the variable global it sets
+its value globally, and if the variable is buffer local it sets the value
+locally (and new buffers will inherit the default value).
+
+=setq-local= takes a global variable and makes a buffer local "copy" that
+doesn't effect the global value.
+
+=setq-default= takes a local variable and sets a new default value for all new
+buffers, but doesn't change it in existing buffers.
+
+* Packages
 
 I came from Vim, where your init file is the only way to configure vim and if
 it isn't in your init file then it doesn't exist. That approach makes a lot of

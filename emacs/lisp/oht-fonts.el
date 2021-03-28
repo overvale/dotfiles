@@ -87,6 +87,7 @@ size will be 1.16.")
   :lighter " V+"
   (larger-variable-pitch-mode-toggle))
 
+;;;###autoload
 (defun oht-fonts-buffer-face-hook ()
   "Activate and deactivate larger-variable-pitch-mode minor mode."
   (if buffer-face-mode

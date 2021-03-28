@@ -227,6 +227,8 @@
 ;; they must come first.
 
 (use-package bind-key
+  ;; Bind-key comes with use-package, but if you're using bind-key outside of
+  ;; use-package declarations, you'll need to demand this.
   :demand
   )
 
@@ -302,7 +304,7 @@
   )
 
 (defun use-embark-completions ()
-  "Use Embark for completions.
+  "Use Embark for completions. Assumes Selectrum Mode is active.
 
 These hooks make it so that the embark-live-collect buffer is
 automatically displayed after you type something. Keep in mind that this
@@ -329,7 +331,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
   (remove-hook 'embark-post-action-hook 'embark-collect--update-linked)
   (remove-hook 'embark-collect-mode-hook 'hl-line-mode)
   )
-
 
 (use-package consult
   :straight (:type git :host github :repo "minad/consult" :branch "main")
@@ -358,6 +359,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
   :config
   (setq ctrlf-go-to-end-of-match nil)
   )
+
 
 ;;;; Built-In Packages
 
@@ -1015,10 +1017,10 @@ This simply removes the hooks added by the function `use-embark-completions'."
   ;; Required for retina scaling to work
   (setq pdf-view-use-scaling t
         pdf-view-use-imagemagick nil)
-  (defun oht-pdf-view-fonts ()
+  (defun oht-pdf-annot-fonts ()
     (hl-line-mode 1)
     (pdf-annot-list-follow-minor-mode))
-  :hook (pdf-annot-list-mode-hook . oht-pdf-view-fonts)
+  :hook (pdf-annot-list-mode-hook . oht-pdf-annot-fonts)
   :bind (:map pdf-view-mode-map
 	      ("C-s" . isearch-forward)
 	      ("C-r" . isearch-backward)
@@ -1096,6 +1098,8 @@ This simply removes the hooks added by the function `use-embark-completions'."
 (use-package oht-functions
   :straight nil
   :demand
+  :config
+  (global-set-key [remap beginning-of-line] #'my/smart-beginning-of-line)
   )
 
 (use-package oht-mac
@@ -1176,7 +1180,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	    ("C-;" . backward-word)
 	    ("C-'" . forward-word))
 
-
 (bind-keys ("M-s-s" . save-some-buffers)
 	   ("M-c" . capitalize-dwim)
 	   ("M-l" . downcase-dwim)
@@ -1198,6 +1201,7 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	   ("s-/" . oht-toggle-comment-region-or-line)
 	   ("s-l" . oht-mac-mark-whole-line)
 	   ("s-o" . other-window))
+
 
 ;;; Mac Shortcuts
 
@@ -1224,37 +1228,28 @@ This simply removes the hooks added by the function `use-embark-completions'."
 	   ;; hijack it.
 	   ("C-k" . oht-mac-kill-line))
 
-;; And now remap `beginning-of-line' to a custom fuction
-(global-set-key [remap beginning-of-line] #'my/smart-beginning-of-line)
-
 (bind-keys
  ("s-," . oht-mac-find-settings)
  ("s-n" . make-frame-command)
- ("s-N" . make-frame-command)
  ("s-t" . oht-mac-new-tab)
  ("s-m" . iconify-frame)
  ("s-s" . save-buffer)
  ("s-S" . write-file) ;save as
  ("s-a" . mark-whole-buffer)
- ;; ("s-o" . find-file)
  ("s-x" . kill-region)
  ("s-c" . kill-ring-save)
  ("s-v" . yank)
  ("s-<backspace>" . oht-mac-kill-visual-line-backward)
- ;; ("s-w" . delete-frame)
  ("s-q" . save-buffers-kill-terminal)
  ("S-s-<left>" . oht-mac-expand-to-beginning-of-visual-line)
  ("S-s-<right>" . oht-mac-expand-to-end-of-visual-line)
  ("s-<up>" . beginning-of-buffer)
  ("s-<down>" . end-of-buffer)
- ;; navigation and indentation
  ("s-[" . previous-buffer)
  ("s-]" . next-buffer)
  ("s-}" . indent-rigidly-right-to-tab-stop)
  ("s-{" . indent-rigidly-left-to-tab-stop)
- ;; readline-style shortcuts, because I love them
  ("C-w" . backward-kill-word)
  ("C-u" . oht-mac-kill-line-backward)
- ;; No reason not to use command-u for this instead
  ("s-u" . universal-argument)
  )

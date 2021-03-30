@@ -2,12 +2,6 @@
 
 ;; https://www.masteringemacs.org/article/fixing-mark-commands-transient-mark-mode
 
-(defun exchange-point-and-mark-no-activate ()
-  "Swap the point and mark without activating the region"
-  (interactive)
-  (exchange-point-and-mark)
-  (deactivate-mark nil))
-
 (defun exchange-point-and-mark-dwim ()
   "If a region is active, then leave it activated and swap point and mark.
 If no region is active, then stay active and swap."

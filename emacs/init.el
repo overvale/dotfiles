@@ -804,6 +804,9 @@ This simply removes the hooks added by the function `use-embark-completions'."
   (load (concat oht-dotfiles "lisp/oht-org.el"))
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
+  (add-hook 'org-mode-hook
+			(lambda ()
+			  (define-key org-mode-map (kbd "s-\\") 'oht-transient-org)))
   ;; :hook (org-mode . variable-pitch-mode)
   )
 
@@ -1062,9 +1065,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
   (autoload 'org-store-link "org")
   :config
   (load (concat oht-dotfiles "lisp/oht-transient.el"))
-  (add-hook 'org-mode-hook
-			  (lambda ()
-			  (define-key org-mode-map (kbd "s-\\") 'oht-transient-org)))
   :bind*
   ("s-<return>" . oht-transient-general)
   ("s-H" . oht-transient-help)

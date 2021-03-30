@@ -805,10 +805,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
   ;; :hook (org-mode . variable-pitch-mode)
-  :bind
-  (:map org-mode-map
-	("s-\\" . oht-transient-org)
-	)
   )
 
 (use-package org-agenda
@@ -1060,8 +1056,15 @@ This simply removes the hooks added by the function `use-embark-completions'."
 (use-package transient
   ;; comes installed with Magit, no need to install
   :straight nil
+  ;; Anything not in a binding below needs to be called-out as a command
+  :commands oht-transient-org
+  :init
+  (autoload 'org-store-link "org")
   :config
   (load (concat oht-dotfiles "lisp/oht-transient.el"))
+  (add-hook 'org-mode-hook
+			  (lambda ()
+			  (define-key org-mode-map (kbd "s-\\") 'oht-transient-org)))
   :bind*
   ("s-<return>" . oht-transient-general)
   ("s-H" . oht-transient-help)

@@ -101,7 +101,7 @@
 (setq delete-by-moving-to-trash t)
 (setq trash-directory "~/.Trash/emacs")
 (setq confirm-kill-processes nil)
-
+(setq load-prefer-newer t)
 
 ;;;; Minibuffer
 
@@ -174,12 +174,13 @@
 
 ;;;; Mode Line
 
-(column-number-mode t)
-(display-time-mode t)
 (setq display-time-format "%H:%M  %Y-%m-%d")
 (setq display-time-interval 60)
 (setq display-time-mail-directory nil)
 (setq display-time-default-load-average nil)
+
+(column-number-mode t)
+(display-time-mode t)
 
 
 ;;; Packages

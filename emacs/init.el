@@ -268,6 +268,12 @@
   :straight (:host github :repo "raxod502/selectrum" :branch "master")
   :init
   (selectrum-mode +1)
+  :config
+  (setq selectrum-display-action '(display-buffer-in-side-window
+								   (side . bottom)
+								   (slot . -1)
+								   ;; (window-parameters (mode-line-format . none))
+								   ))
   )
 
 (use-package selectrum-prescient
@@ -302,6 +308,10 @@
 	("&" . browse-url-default-macosx-browser))
   :config
   (load (concat oht-dotfiles "lisp/oht-embark.el"))
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none))))
   )
 
 (defun use-embark-completions ()

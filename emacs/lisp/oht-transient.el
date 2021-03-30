@@ -6,32 +6,36 @@
   "General shortcuts I use often"
   [
    [ "Misc"
-     ("d" "Dictionary" sdcv-search)
      ("f" "Find File" find-file)
      ("m" "Magit Status" magit-status)
-     ("s" "Store Org Link" org-store-link)
      ("o" "Outline" consult-outline)
      ("j" "Dired Jump" dired-jump)
-     ("c" "Composition Mode" composition-mode)
-     ("H" "Help..." oht-transient-help)
-     ("S" "Spelling..." oht-transient-spelling)
+     ("s" "Store Org Link" org-store-link)
+	 ("S" "Spelling..." oht-transient-spelling)
+	 ("F" "Fonts..." oht-transient-fonts)
      ]
-   [ "Display"
-     ("h" "Highlight Line" hl-line-mode)
-     ("l" "Line Numbers" global-display-line-numbers-mode)
-     ("g" "Fill Column" global-display-fill-column-indicator-mode)
-     ("w" "Wrap" visual-line-mode)
-     ("a" "AutoFill" auto-fill-mode)
-     ("T" "Truncate" toggle-truncate-lines)
-     ("W" "Whitespace" whitespace-mode)
-     ("F" "Fonts..." oht-transient-fonts)
-     ]
+   ["Commands"
+	("c d" "Dictionary" sdcv-search)
+    ("c c" "Composition Mode" composition-mode)
+    ("c h" "Help..." oht-transient-help)
+	("c m" "Toggle Minor Modes" consult-minor-mode-menu)
+	("c M" "Run Mode Command" consult-mode-command)
+	]
    [ "Bookmarks"
      ("b s" "Set" bookmark-set)
      ("b l" "List" list-bookmarks)
      ("b j" "Jump" consult-bookmark)
      ]
-   ["Tab Bar Mode"
+   [ "Display"
+     ("d h" "Highlight Line" hl-line-mode)
+     ("d l" "Line Numbers" global-display-line-numbers-mode)
+     ("d g" "Fill Column" global-display-fill-column-indicator-mode)
+     ("d w" "Wrap" visual-line-mode)
+     ("d a" "AutoFill" auto-fill-mode)
+     ("d t" "Truncate" toggle-truncate-lines)
+     ("d W" "Whitespace" whitespace-mode)
+     ]
+   ["Tab Bar"
     ("t t" "Tab Bar Mode" tab-bar-mode)
     ("t n" "New" tab-bar-new-tab)
     ("t k" "Kill" tab-bar-close-tab)
@@ -176,17 +180,21 @@
 
 
 (define-transient-command oht-transient-dispatch ()
-  [["Work"
-    ("a" "Agenda" org-agenda)
-    ("t" "Today's Agenda" oht-org-agenda-today)
-    ("m" "Mail" mu4e)]
-   ["Browsing"
-    ("e" "Elfeed" elfeed)
-    ("h" "Hacker News" hackernews)
-    ("E" "EWW" prot-eww-browse-dwim)
+  ["Work"
+   [("t" "Today + Priority" oht-org-agenda-today)
+	("0" "Week + TODOs" oht-org-agenda-complete)
+	("a" "Agenda" oht-org-agenda-agenda)
+	("T" "TODOs" oht-org-agenda-todos)
+    ("A" "Org Agenda Command..." org-agenda)]
+   [("m" "Mail" mu4e)]]
+  ["Browsing"
+   [("e" "Elfeed" elfeed)
+    ("h" "Hacker News" hackernews)]
+   [("E" "EWW" prot-eww-browse-dwim)
     ("n" "NPR News" oht-dispatch-NPR-news)
     ("c" "CNN News" oht-dispatch-CNN-news)
-    ("r" "Read Later..." oht-dispatch-read-later)]])
+	("g" "Google News" oht-dispatch-google-news)]
+   [("r" "Read Later..." oht-dispatch-read-later)]])
 
 
 ;; -------------------------------------------------------------

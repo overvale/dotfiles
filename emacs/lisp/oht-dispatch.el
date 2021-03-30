@@ -32,6 +32,11 @@
   (interactive)
   (browse-url "https://lite.cnn.com/en"))
 
+(defun oht-dispatch-google-news ()
+  "Open 68k.news"
+  (interactive)
+  (browse-url "http://68k.news/"))
+
 (defun oht-dispatch ()
   "Pass function names to completing-read for calling interactively."
   (interactive)

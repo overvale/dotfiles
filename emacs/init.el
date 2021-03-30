@@ -795,7 +795,6 @@ This simply removes the hooks added by the function `use-embark-completions'."
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
   ;; :hook (org-mode . variable-pitch-mode)
   :bind
-  ("s-1" . org-agenda)
   (:map org-mode-map
 	("s-\\" . oht-transient-org)
 	)

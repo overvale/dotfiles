@@ -13,21 +13,17 @@
 
 ;; Agenda Sorting
 (setq org-agenda-sorting-strategy
-      '(
-	((agenda habit-down time-up priority-down category-up)
-	 (todo category-up priority-down)
-	 (tags priority-down category-keep)
-	 (search category-keep))))
+      '(((agenda habit-down time-up priority-down category-up)
+		 (todo category-up priority-down)
+		 (tags priority-down category-keep)
+		 (search category-keep))))
 
 ;; And here we have some custom commands for the agenda view.
 
 ;; You have to wait until org-agenda loads because org itself
 ;; doesn't know what 'org-agenda-mode-map' is.
 (eval-after-load "org-agenda"
-'(progn
-	(define-key org-agenda-mode-map
-		"S" 'org-agenda-schedule)
-		))
+  '(progn (define-key org-agenda-mode-map "S" 'org-agenda-schedule)))
 
 ;;; Settings
 
@@ -107,20 +103,17 @@
 ;; Chronicle]].
 
 (setq org-agenda-custom-commands
-      '(
-        ("1" "TODAY: Today's Agenda + Priority Tasks"
+      '(("1" "TODAY: Today's Agenda + Priority Tasks"
          ((agenda "d" ((org-agenda-span 'day)))
           (todo "TODO"
                 ((org-agenda-sorting-strategy '(todo-state-up))
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
-                )))
-	("0" "COMPLETE: Week Agenda + All Tasks"
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
+		("0" "COMPLETE: Week Agenda + All Tasks"
          ((agenda "w" ((org-agenda-span 'week)))
           (todo "TODO|LATER"
                 ((org-agenda-sorting-strategy '(todo-state-up))
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
-                 )))
-	))
+                )))))
 
 (defun oht-org-agenda-today ()
   "Call custom agenda command"
@@ -164,8 +157,7 @@
 ;;; Keywords
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")
-        ))
+      '((sequence "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")))
 
 ;; Ensure that a task can’t be marked as done if it contains
 ;; unfinished subtasks or checklist items. This is handy for
@@ -181,33 +173,31 @@
 ;;; Capture Templates
 
 (setq org-capture-templates
-      '(
-	("i" "Inbox")
-	("ip" "Personal Inbox" entry
+      '(("i" "Inbox")
+		("ip" "Personal Inbox" entry
          (file+headline "~/home/org/life.org" "Inbox")
          "* %?\n\n")
-	("ii" "Ingenuity Inbox" entry
+		("ii" "Ingenuity Inbox" entry
          (file+headline "~/home/org/ingenuity.org" "Inbox")
          "* %?\n\n")
 
-	("l" "Log Entry")
-	("lp" "Personal Log Entry" entry
+		("l" "Log Entry")
+		("lp" "Personal Log Entry" entry
          (file "~/home/org/logbook.org")
          "* %?\n%t\n\n")
-	("lP" ".plan" entry
-	 (file "~/home/org/logbook.org")
-	 (file "~/home/dot/emacs/capture-templates/plan.org"))
-	("li" "Ingenuity Log Entry" entry
+		("lP" ".plan" entry
+		 (file "~/home/org/logbook.org")
+		 (file "~/home/dot/emacs/capture-templates/plan.org"))
+		("li" "Ingenuity Log Entry" entry
          (file "~/home/org/ingenuity_logbook.org")
          "* %? %t\n\n")
-	("lc" "Ingenuity Cold Call" entry
-	 (file "~/home/org/ingenuity_logbook.org")
-	 (file "~/home/dot/emacs/capture-templates/cold-call.org"))
+		("lc" "Ingenuity Cold Call" entry
+		 (file "~/home/org/ingenuity_logbook.org")
+		 (file "~/home/dot/emacs/capture-templates/cold-call.org"))
 
-	("f" "Mail Follow Up" entry
-	 (file+headline "~/home/org/ingenuity.org" "Mail")
-         "* TODO %a\n\n  %i")
-	))
+		("f" "Mail Follow Up" entry
+		 (file+headline "~/home/org/ingenuity.org" "Mail")
+         "* TODO %a\n\n  %i")))
 
 ;; Ensure Capture Templates End With Newline
 
@@ -221,6 +211,7 @@
             (goto-char (point-max))
             (insert "\n"))))))
 (add-hook 'org-capture-before-finalize-hook 'add-newline-at-end-if-none)
+
 
 ;;; org imenu
 

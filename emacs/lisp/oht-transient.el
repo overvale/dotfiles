@@ -4,103 +4,102 @@
 
 (define-transient-command oht-transient-general ()
   "General shortcuts I use often"
-  [
-   [ "Misc"
+  [[ "Misc"
      ("f" "Find File" find-file)
      ("m" "Magit Status" magit-status)
      ("o" "Outline" consult-outline)
+	 ("a" "AutoFill" auto-fill-mode)
      ("j" "Dired Jump" dired-jump)
      ("s" "Store Org Link" org-store-link)
 	 ("S" "Spelling..." oht-transient-spelling)
-	 ("F" "Fonts..." oht-transient-fonts)
-     ]
+	 ("F" "Fonts..." oht-transient-fonts)]
    ["Commands"
 	("c d" "Dictionary" sdcv-search)
     ("c c" "Composition Mode" composition-mode)
     ("c h" "Help..." oht-transient-help)
 	("c m" "Toggle Minor Modes" consult-minor-mode-menu)
-	("c M" "Run Mode Command" consult-mode-command)
-	]
+	("c M" "Run Mode Command" consult-mode-command)]
    [ "Bookmarks"
      ("b s" "Set" bookmark-set)
      ("b l" "List" list-bookmarks)
-     ("b j" "Jump" consult-bookmark)
-     ]
+     ("b j" "Jump" consult-bookmark)]
    [ "Display"
      ("d h" "Highlight Line" hl-line-mode)
      ("d l" "Line Numbers" global-display-line-numbers-mode)
      ("d g" "Fill Column" global-display-fill-column-indicator-mode)
      ("d w" "Wrap" visual-line-mode)
-     ("d a" "AutoFill" auto-fill-mode)
      ("d t" "Truncate" toggle-truncate-lines)
-     ("d W" "Whitespace" whitespace-mode)
-     ]
+     ("d W" "Whitespace" whitespace-mode)]
    ["Tab Bar"
     ("t t" "Tab Bar Mode" tab-bar-mode)
     ("t n" "New" tab-bar-new-tab)
     ("t k" "Kill" tab-bar-close-tab)
     ("t z" "Undo Kill" tab-bar-undo-close-tab)
     ("t ]" "Next" tab-bar-switch-to-next-tab)
-    ("t [" "Previous" tab-bar-switch-to-prev-tab)
-    ]
-   ]
-  )
+    ("t [" "Previous" tab-bar-switch-to-prev-tab)]])
+
 
 (define-transient-command oht-transient-window ()
-  [
-   ["Splits"
+  [["Splits"
     ("s" "Horizontal" split-window-below)
     ("v" "Vertical"   split-window-right)
     ("b" "Balance"    balance-windows)
-    ("r" "Rotate"     oht/rotate-window-split)
-    ]
+    ("r" "Rotate"     oht/rotate-window-split)]
    ["Window"
     ("c" "Clone Indirect" clone-indirect-buffer)
     ("t" "Tear Off" tear-off-window)
     ("k" "Kill" delete-window)
     ("K" "Kill Buffer+Win"  kill-buffer-and-window)
     ("o" "Kill Others"  delete-other-windows)
-    ("m" "Maximize" maximize-window)
-    ]
+    ("m" "Maximize" maximize-window)]
    ["Move"
     ("<left>"  "←" windmove-left  :transient t)
     ("<right>" "→" windmove-right :transient t)
     ("<up>"    "↑" windmove-up    :transient t)
-    ("<down>"  "↓" windmove-down  :transient t)
-    ]
+    ("<down>"  "↓" windmove-down  :transient t)]
    ["Undo/Redo"
     ("s-z" "Winner Undo" winner-undo :transient t)
-    ("s-Z" "Winner Redo" winner-redo :transient t)
-    ]
-   ]
-  )
+    ("s-Z" "Winner Redo" winner-redo :transient t)]])
+
+
+(define-transient-command oht-transient-helpful ()
+  "Helpful Transient"
+  [[("p" "At Point" helpful-at-point)]
+   [("c" "Callable" helpful-callable)
+	("f" "Function" helpful-function)
+	("C" "Command" helpful-command)
+	("v" "Variable" helpful-variable)
+	("s" "Symbol" helpful-symbol)
+	("M" "Macro" helpful-macro)
+	("k" "Key" helpful-key)
+	("m" "Mode" helpful-mode)]
+   [("u" "Update" helpful-update)
+	("V" "Visit Reference" helpful-visit-reference)
+	("K" "Kill Helpful Buffers" helpful-kill-buffers)]])
+
 
 (define-transient-command oht-transient-org ()
   "Transient for Org Mode"
-  [
-   ["Navigation"
+  [["Navigation"
     ("o" "Outline" consult-outline)
     ("n" "Narrow" org-narrow-to-subtree)
     ("w" "Widen" widen)
     ("g" "Go To" org-goto)
-    ("m" "Visible Markup" visible-mode)
-    ]
+    ("m" "Visible Markup" visible-mode)]
    ["Item"
     ("t" "TODO" org-todo)
     ("I" "Clock In" org-clock-in)
     ("O" "Clock Out" org-clock-out)
     ("a" "Archive Subtree" org-archive-subtree)
     ("r" "Refile" org-refile)
-    ("c" "Checkbox" org-toggle-checkbox)
-    ]
+    ("c" "Checkbox" org-toggle-checkbox)]
    ["Insert"
     ("." "Insert Date" oht/org-insert-date-today)
-    ("<" "Structure Template" org-insert-structure-template)
-    ]
+    ("<" "Structure Template" org-insert-structure-template)]
    ["Links"
     ("s" "Store Link" org-store-link)
-    ("i" "Insert Link" org-insert-last-stored-link)
-    ]])
+    ("i" "Insert Link" org-insert-last-stored-link)]])
+
 
 (define-transient-command oht-transient-fonts ()
   "Set Font Properties"
@@ -159,6 +158,7 @@
     ("s-z" "Undo" undo-fu-only-undo)
     ("s-Z" "Redo" undo-fu-only-redo)
     ("c" "Consult" consult-outline :transient nil)]])
+
 
 (define-transient-command oht-transient-spelling ()
   "Spelling Interface"
@@ -238,8 +238,8 @@
     ("/"   "dired-filter"         ignore)
     ("n"   "dired-narrow"         ignore)]]
   [["Marks"
-    ("m" "Marks..." oht-transient-dired-marks)]]
-  )
+    ("m" "Marks..." oht-transient-dired-marks)]])
+
 
 (define-transient-command oht-transient-dired-marks
   "Marks"

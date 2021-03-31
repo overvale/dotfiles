@@ -64,15 +64,13 @@ Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.
 (defun oht/org-insert-date-today ()
   "Insert today's date using standard org formatting."
   (interactive)
-  (org-insert-time-stamp (current-time))
-  )
+  (org-insert-time-stamp (current-time)))
 
 ;;;###autoload
 (defun oht/find-scratch ()
   "Switch to the *scratch* buffer"
   (interactive)
-  (switch-to-buffer "*scratch*")
-  )
+  (switch-to-buffer "*scratch*"))
 
 ;;;###autoload
 (defun all-occur (rexp)
@@ -188,5 +186,22 @@ the current region (if it's active), or the current symbol."
   (interactive)
   (delete-overlay mouse-secondary-overlay))
 
+
+;;;; Youtube-dl
+
+;; A few utilities for working with videos
+
+(setq youtube-dl-path "/usr/local/bin/youtube-dl")
+(setq youtube-dl-output-dir "~/Desktop/")
+
+;;;###autoload
+(defun youtube-dl-URL-at-point ()
+  "Send the URL at point to youtube-dl."
+  (interactive)
+  (async-shell-command (format "%s -o \"%s%s\" -f best \"%s\""
+                               youtube-dl-path
+                               youtube-dl-output-dir
+                               "%(title)s.%(ext)s"
+                               (ffap-url-at-point))))
 
 (provide 'oht-functions)

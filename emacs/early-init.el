@@ -24,7 +24,7 @@
 ;; settings are applied AFTER the GUI is initialized then you might actually
 ;; see all these settings happen (window moving around / flashing).
 (tool-bar-mode -1)
-(scroll-bar-mode 1)
+(scroll-bar-mode -1)
 (menu-bar-mode 1)
 
 ;; Frame default parameters
@@ -34,4 +34,3 @@
           '(height . 50) ; height (in characters)
           '(internal-border-width . 0) ; border (in pixels)
 	  )))
-

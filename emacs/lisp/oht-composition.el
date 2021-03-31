@@ -21,8 +21,7 @@
 	(setq-local line-spacing 2)
 	(olivetti-mode t)
 	(text-scale-increase 1)
-	(variable-pitch-mode 1)
-       )
+	(variable-pitch-mode 1))
     (progn
       (visual-line-mode -1)
       (setq-local line-spacing 0)
@@ -30,9 +29,7 @@
       (text-scale-increase 0)
       (variable-pitch-mode -1)
       ;; This shouldn't be needed, but is:
-      (toggle-truncate-lines 1)
-     ))
-  )
+      (toggle-truncate-lines 1))))
 
 ;;;###autoload
 (define-minor-mode composition-mode
@@ -40,7 +37,6 @@
  :init-value nil
  :lighter " Comp"
  (composition-mode-toggle)
- (make-local-variable 'composition-mode-status)
- )
+ (make-local-variable 'composition-mode-status))
 
 (provide 'oht-composition)

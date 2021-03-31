@@ -2,10 +2,15 @@
 
 ;; Homepage: https://github.com/olivertaylor/dotfiles
 
+;;; Settings
 
-;;; Set Up
 
-;;;; Startup
+;;;; Performance
+
+;; Let's start by doing everything we can to improve emacs performance.
+;; All of the below are stolen (with comments) from Doom Emacs.
+;; https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
+;; https://github.com/hlissner/doom-emacs/blob/develop/core/core.el
 
 ;; Garbage Collection!
 ;; This is actually the 2nd step, for the first step, see `early-init.el'
@@ -14,6 +19,26 @@
     (setq gc-cons-threshold 16777216 ; 16mb
           gc-cons-percentage 0.1)
     (garbage-collect)) t)
+
+;; Disable bidirectional text rendering for a modest performance boost. I've set
+;; this to `nil' in the past, but the `bidi-display-reordering's docs say that
+;; is an undefined state and suggest this to be just as good:
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+
+;; Disabling the BPA makes redisplay faster, but might produce incorrect display
+;; reordering of bidirectional text with embedded parentheses and other bracket
+;; characters whose 'paired-bracket' Unicode property is non-nil.
+(setq bidi-inhibit-bpa t)  ; Emacs 27 only
+
+;; More performant rapid scrolling over unfontified regions. May cause brief
+;; spells of inaccurate syntax highlighting right after scrolling, which should
+;; quickly self-correct.
+(setq fast-but-imprecise-scrolling t)
+
+;; Remove command line options that aren't relevant to our current OS; means
+;; slightly less to process at startup.
+(setq command-line-x-option-alist nil)
 
 ;; When testing startup performance, it can be useful to print a message
 ;; saying how long it took to start up.
@@ -33,11 +58,10 @@
       initial-major-mode 'fundamental-mode
       initial-scratch-message nil)
 
-
 ;;;; Preferences
 
 ;; Activate modes to set settings -- sure Emacs!
-(delete-selection-mode -1)
+(delete-selection-mode 1)
 (global-auto-revert-mode 1)
 (save-place-mode 1)
 (recentf-mode 1)
@@ -45,9 +69,6 @@
 (show-paren-mode t)
 (blink-cursor-mode -1)
 (set-language-environment "UTF-8")
-
-;; Needs to be set in BOTH early-init AND init ¯\_(ツ)_/¯
-(scroll-bar-mode -1)
 
 ;; There are two kinds of variables, global ones, and buffer local ones.
 ;;
@@ -81,11 +102,6 @@
 (setq trash-directory "~/.Trash/emacs")
 (setq confirm-kill-processes nil)
 (setq load-prefer-newer t)
-
-;; When splitting the window, go to it
-(defadvice split-window-below (after split-window-below activate) (other-window 1))
-(defadvice split-window-right (after split-window-right activate) (other-window 1))
-
 
 ;;;; Minibuffer
 
@@ -125,6 +141,10 @@
 ;; file.
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
+;; now load that file...
+;; (when (file-exists-p custom-file)
+;;   (load custom-file :noerror))
+
 
 ;;;; Tab/Fill Settings, Visual Line Mode
 
@@ -141,21 +161,17 @@
 ;; buffer-local setting that I cannot (no matter what I try) get to be global.
 (setq-default truncate-lines t)
 
+;; So, instead, I take the brute-force approach of adding a hook for text-mode
+;; and prog-mode to call a function which toggles the value on. It's not
+;; perfect, but it works 99% of the time. Take that Emacs.
+(defun oht-mac-truncate-lines()
+  (toggle-truncate-lines 1))
+(add-hook 'text-mode-hook 'oht-mac-truncate-lines)
+(add-hook 'prog-mode-hook 'oht-mac-truncate-lines)
+
 ;; When visual-line-mode is off and truncate-lines is toggled off, I still
 ;; want wrapping to happen at the word instead of character.
 (setq-default word-wrap 1)
-
-
-;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
-;; This is inconsistent with macOS behavior, which is that "C-a" always goes
-;; to the beginning of the logical line and "s-<left>" goes to the beginning
-;; of the visual line. Also note the bindings in `oht-keys-mode'.
-(global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
-(global-set-key (kbd "s-<right>") 'end-of-visual-line)
-
-;; and while we're at it...
-(global-set-key (kbd "s-<up>") 'beginning-of-buffer)
-(global-set-key (kbd "s-<down>") 'end-of-buffer)
 
 
 ;;;; Mode Line
@@ -169,126 +185,10 @@
 (display-time-mode t)
 
 
-;;;; Modifiers & Emacs Anachronisms
-
-;; Make the command keys 'super'. Super is basically not used by Emacs so
-;; they're a safe playground for assigning your own bindings.
-(setq mac-command-modifier 'super)
-;; Meta is used a lot in Emacs, and I only ever use the left option key, so
-;; this works well for shortcuts.
-(setq mac-option-modifier 'meta)
-;; But sometimes you want to insert special characters like £¢∞§¶•≠
-(setq mac-right-option-modifier 'nil)
-
-;; In the old days ESC was used as a prefix key, but I want ESC to act like it
-;; does everywhere else on my system and, you know, escape from things. So
-;; I've remapped ESC to `keyboard-quit'.
-(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+;;; Packages
 
 
-;;;; Basic Keybindings
-
-;; This is done first so that if later parts of the config fail I still have
-;; these familiar bindings to work with. They are all built-in functions.
-
-;; Mac-like
-(global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
-(global-set-key (kbd "s-m") 'iconify-frame)
-(global-set-key (kbd "s-s") 'save-buffer)
-(global-set-key (kbd "s-S") 'write-file) ;save as
-(global-set-key (kbd "s-a") 'mark-whole-buffer)
-(global-set-key (kbd "s-z") 'undo)
-(global-set-key (kbd "s-x") 'kill-region)
-(global-set-key (kbd "s-c") 'kill-ring-save)
-(global-set-key (kbd "s-v") 'yank)
-(global-set-key (kbd "s-n") 'make-frame-command)
-(global-set-key (kbd "s-[") 'previous-buffer)
-(global-set-key (kbd "s-]") 'next-buffer)
-(global-set-key (kbd "s-<backspace>") (lambda () (interactive) (kill-line 0)))
-
-;; Emacs SUPER!
-(global-set-key (kbd "s-k")   'kill-this-buffer)
-(global-set-key (kbd "s-b")   'switch-to-buffer)
-(global-set-key (kbd "s-B")   'ibuffer)
-(global-set-key (kbd "s-M-b") 'list-bookmarks)
-(global-set-key (kbd "s-o")   'other-window)
-(global-set-key (kbd "s-O")   'find-file)
-(global-set-key (kbd "s-u")   'universal-argument)
-
-;; Emacs Misc
-(global-set-key (kbd "M-s-s")   'save-some-buffers)
-(global-set-key (kbd "M-c")     'capitalize-dwim)
-(global-set-key (kbd "M-l")     'downcase-dwim)
-(global-set-key (kbd "M-u")     'upcase-dwim)
-(global-set-key (kbd "M-SPC")   'cycle-spacing)
-(global-set-key (kbd "M-/")     'hippie-expand)
-(global-set-key (kbd "C-x r r") 'replace-rectangle)
-(global-set-key (kbd "C-h C-f") 'find-function)
-(global-set-key (kbd "C-h C-v") 'find-variable)
-
-
-;;;; Minor Mode for Personal Keybindings
-
-;; Put anything here that you don't want a minor mode to override.
-
-;; Define the keymap, mode, and switch it on
-(defvar oht-keys-mode-keymap (make-keymap) "Keymap for oht-keys-mode")
-(define-minor-mode oht-keys-mode
-  "Minor mode for my personal keybindings."
-  :global t
-  :keymap oht-keys-mode-keymap)
-(oht-keys-mode 1)
-
-;; My bindings
-(define-key oht-keys-mode-keymap (kbd "<C-return>") 'execute-extended-command)
-(define-key oht-keys-mode-keymap (kbd "C-;") 'backward-word)
-(define-key oht-keys-mode-keymap (kbd "C-'") 'foreward-word)
-(define-key oht-keys-mode-keymap (kbd "C-a") 'beginning-of-line)
-(define-key oht-keys-mode-keymap (kbd "C-e") 'end-of-line)
-
-
-;;;; Mouse
-
-;; Gasp! An Emacs user that actually uses the mouse?! Scandalous.
-
-;; Start by making shift-click extend the selection (region)
-(global-set-key [S-down-mouse-1] 'ignore)
-(global-set-key [S-mouse-1] 'mouse-save-then-kill)
-
-;; Using the mouse for horizontal/vertical splits is great because
-;; the windows split exactly where you click the mouse.
-;; See 'Rebinding Mouse Buttons' for more info.
-;;
-;; 1. Use s-click to create splits
-;; 2. Use M-s-click to delete windows
-
-;; To add a vertical split to a window, just s-click on the mode-line
-(global-set-key [mode-line s-mouse-1] 'mouse-split-window-horizontally)
-;; and make this work everywhere else
-(global-set-key [s-mouse-1] 'mouse-split-window-horizontally)
-;; Use shift to add a horizontal split to the window
-(global-set-key [S-s-mouse-1] 'mouse-split-window-vertically)
-
-;; Delete a window with M-s--click on its mode-line
-(global-set-key [mode-line M-s-mouse-1] 'mouse-delete-window)
-;; And make this work everywhere
-(global-set-key [M-s-mouse-1] 'mouse-delete-window)
-
-;; The below bindings are taken directly from the source of `mouse.el'
-;; but I've swapped the modifier keys. This makes more sense to me.
-
-;; Use M-drag-mouse-1 to create rectangle regions
-(global-set-key [M-down-mouse-1] #'mouse-drag-region-rectangle)
-(global-set-key [M-drag-mouse-1] #'ignore)
-(global-set-key [M-mouse-1]      #'mouse-set-point)
-
-;; Use C-M-drag-mouse-1 to create secondary selections
-(global-set-key [C-M-mouse-1]      'mouse-start-secondary)
-(global-set-key [C-M-drag-mouse-1] 'mouse-set-secondary)
-(global-set-key [C-M-down-mouse-1] 'mouse-drag-secondary)
-
-
-;;;; Straight / Use Package
+;;;; Straight Use Package
 
 ;; Required Bootstrap to ensure it is installed
 (defvar bootstrap-version)
@@ -303,6 +203,8 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
+;; use-package integration
 
 ;; Package `use-package' provides a handy macro by the same name which
 ;; is essentially a wrapper around `with-eval-after-load' with a lot
@@ -322,30 +224,24 @@
 (setq use-package-always-defer t)
 
 
-;;; Packages
+;;;; bind-key, backout
+
+;; These packages are relied upon by my use-package declarations, therefore
+;; they must come first.
+
+(use-package bind-key
+  ;; Bind-key comes with use-package, but if you're using bind-key outside of
+  ;; use-package declarations, you'll need to demand this.
+  :demand
+  )
 
 (use-package blackout
   :demand
   :config
   (blackout 'eldoc-mode)
   (blackout 'emacs-lisp-mode "Elisp")
-  (blackout 'auto-fill-function " Fill"))
-
-(use-package modus-themes
-  :init (setq modus-themes-bold-constructs nil
-              modus-themes-slanted-constructs t
-              modus-themes-syntax 'alt-syntax
-              modus-themes-links 'faint-neutral-underline
-              modus-themes-prompts 'subtle
-              modus-themes-mode-line 'borderless
-              modus-themes-completions 'moderate
-              modus-themes-region 'bg-only
-              modus-themes-diffs 'desaturated
-              modus-themes-org-blocks 'grayscale
-              modus-themes-scale-headings nil
-              modus-themes-variable-pitch-ui nil
-              modus-themes-variable-pitch-headings nil)
-  (modus-themes-load-operandi))
+  (blackout 'auto-fill-function " Fill")
+  )
 
 
 ;;;; Narrowing & Searching
@@ -372,13 +268,14 @@
 
 (use-package selectrum
   :straight (:host github :repo "raxod502/selectrum" :branch "master")
-  :init (selectrum-mode +1)
+  :init
+  (selectrum-mode +1)
   :config
-  ;; (setq selectrum-display-action '(display-buffer-in-side-window
-  ;; 								   (side . bottom)
-  ;; 								   (slot . -1)
-  ;; 								   (window-parameters (mode-line-format . none))
-  ;; 								   ))
+  (setq selectrum-display-action '(display-buffer-in-side-window
+								   (side . bottom)
+								   (slot . -1)
+								   (window-parameters (mode-line-format . none))
+								   ))
   )
 
 (use-package selectrum-prescient
@@ -388,7 +285,8 @@
   (selectrum-prescient-mode +1)
   ;; to save your command history on disk, so the sorting gets more
   ;; intelligent over time
-  (prescient-persist-mode +1))
+  (prescient-persist-mode +1)
+  )
 
 (use-package marginalia
   :straight (:type git :host github :repo "minad/marginalia" :branch "main")
@@ -398,16 +296,23 @@
 	'(marginalia-annotators-heavy marginalia-annotators-light))
   ;; if using Selectrum
   (advice-add #'marginalia-cycle :after
-              (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit)))))
+              (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit))))
+  )
 
 (use-package embark
   :straight (:host github :repo "oantolin/embark" :branch "master")
   :commands use-embark-completions
   :bind
   ("s-e" . embark-act)
+  (:map minibuffer-local-map
+        ("C-o" . embark-switch-to-collect-completions))
   (:map embark-url-map
 		("d" . youtube-dl-URL-at-point)
-		("&" . browse-url-default-macosx-browser)))
+		("&" . browse-url-default-macosx-browser))
+  :config
+  ;; (setq embark-prompter 'embark-completing-read-prompter)
+  (load (concat oht-dotfiles "lisp/oht-embark.el"))
+  )
 
 (use-package consult
   :straight (:type git :host github :repo "minad/consult" :branch "main")
@@ -419,18 +324,23 @@
   :config
   (setq consult-preview-key (kbd "C-="))
   (setq consult-config
-	`((consult-mark :preview-key any))))
+	`((consult-mark :preview-key any)
+	  (consult-buffer :preview-key any)))
+  (setq consult-project-root-function #'vc-root-dir)
+  )
 
 (use-package embark-consult
   :straight nil
-  :after (embark consult))
+  :after (embark consult)
+  )
 
 (use-package ctrlf
   :bind
   ("C-s" . ctrlf-forward-fuzzy)
   ("C-r" . ctrlf-backward-fuzzy)
   :config
-  (setq ctrlf-go-to-end-of-match nil))
+  (setq ctrlf-go-to-end-of-match nil)
+  )
 
 
 ;;;; Built-In Packages
@@ -455,21 +365,50 @@
     (interactive)
     (if (use-region-p)
 	(let ((current-prefix-arg 4)) (call-interactively 'remember))
-      (remember)))
+      (remember))
+    )
   :bind
   ("s-_" . oht-remember-dwim)
-  ("s--" . remember-notes))
+  ("s--" . remember-notes)
+ )
 
 (use-package bookmark
   :straight nil
   :commands (list-bookmarks)
   :init
-  (add-hook 'bookmark-bmenu-mode (lambda ()
-                                  (hl-line-mode 1)))
-  (setq bookmark-save-flag 1)
-  (setq bookmark-default-file "~/home/bookmarks")
-  (setq bookmark-bmenu-file-column 45)
-  :bind ("M-s-b" . list-bookmarks))
+  (defun oht-bookmark-fonts ()
+    (hl-line-mode 1)
+    )
+  :hook (bookmark-bmenu-mode . oht-bookmark-fonts)
+  :custom
+  (bookmark-save-flag 1)
+  (bookmark-default-file "~/home/bookmarks")
+  (bookmark-bmenu-file-column 45)
+  )
+
+(use-package dired
+  :straight nil
+  :commands (dired dired-jump dired-jump-other-window)
+  :init
+  (setq dired-use-ls-dired nil) ; no more warning message
+  :config
+  (defun dired-open-file ()
+    "In dired, open the file named on this line."
+    (interactive)
+    (let* ((file (dired-get-filename nil t)))
+      (message "Opening %s..." file)
+      (call-process "open" nil 0 nil file)
+      (message "Opening %s done" file)))
+  (add-hook 'dired-mode-hook
+	    (lambda ()
+	      (dired-hide-details-mode 1)
+	      (auto-revert-mode)
+	      (hl-line-mode 1)
+	      ))
+  :bind (:map dired-mode-map
+	      ("s-\\" . oht-transient-dired)
+	      )
+  )
 
 (use-package ibuffer
   :straight nil
@@ -488,8 +427,23 @@
   (defun oht-ibuffer-hook ()
     (hl-line-mode 1)
     (ibuffer-auto-mode 1)
-    (ibuffer-switch-to-saved-filter-groups "default"))
-  :hook (ibuffer-mode . oht-ibuffer-hook))
+    (ibuffer-switch-to-saved-filter-groups "default")
+    )
+  :hook (ibuffer-mode . oht-ibuffer-hook)
+  )
+
+(use-package flyspell
+  :straight nil
+  :commands (flyspell-mode flyspell-prog-mode turn-on-flyspell)
+  :init
+  (add-hook 'text-mode-hook 'turn-on-flyspell)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  :config
+  (setq ispell-program-name "/usr/local/bin/aspell")
+  (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
+  (setq ispell-list-command "list")
+  :blackout " Spell"
+  )
 
 (use-package pulse
   :straight nil
@@ -516,11 +470,21 @@
       (setq end (point))
       ;; Pulse to highlight!
       (pulse-momentary-highlight-region begin end)))
-  (advice-add 'yank :around #'ct/yank-pulse-advice))
+  (advice-add 'yank :around #'ct/yank-pulse-advice)
+  )
 
 (use-package view
+  ;; Coming from vim, I know the utility of modal editing. However, I have no
+  ;; desire to make Emacs into something it is not with `evil-mode'. That
+  ;; said, there are times when modal editing and navigation are very handy
+  ;; and there are, in fact, circumstances in which Emacs uses modal
+  ;; navigation. For example, when in a dired buffer you can use the n and p
+  ;; keys to move the point around. In addition to the bindings below
+  ;; `view-mode' has its own standard bindings, which you can find in the
+  ;; minor mode's help.
   :straight nil
   :init
+  ;; Visit read-only buffers in view-mode
   (setq view-read-only t)
   (add-hook 'view-mode-hook 'hl-line-mode)
   (defun oht/view-mode-exit ()
@@ -562,31 +526,114 @@
 		("s-j" . oht/view-mode-exit)
 		("q" . quit-window)
 		)
-  :blackout " VIEW")
+  :blackout " VIEW"
+  )
 
 
-;;;; Dired
+;;;; Miscellaneous Packages
 
-(use-package dired
-  :straight nil
-  :commands (dired dired-jump dired-jump-other-window)
-  :init
-  (setq dired-use-ls-dired nil) ; no more warning message
-  :bind (:map dired-mode-map
-		 ("s-\\" . oht-transient-dired))
+(use-package benchmark-init
+  ;; This package creates a report each time you startup
+  ;; You'll need to add ':demand' and restart emacs to see the report
+  :demand
   :config
-  (defun dired-open-file ()
-    "In dired, open the file named on this line."
-    (interactive)
-    (let* ((file (dired-get-filename nil t)))
-      (message "Opening %s..." file)
-      (call-process "open" nil 0 nil file)
-      (message "Opening %s done" file)))
-  (add-hook 'dired-mode-hook
-	    (lambda ()
-	      (dired-hide-details-mode 1)
-	      (auto-revert-mode)
-	      (hl-line-mode 1))))
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
+(use-package magit
+  :commands magit-status
+  )
+
+(use-package exec-path-from-shell
+  :demand
+  )
+
+(use-package olivetti
+  :commands olivetti-mode
+  :custom (olivetti-body-width 84)
+  :blackout " Olvti"
+  )
+
+(use-package which-key
+  :init
+  ;; Echo unfinished commands after this delay.
+  ;; Setting to 0 means do not echo commands.
+  (setq echo-keystrokes 0.01)
+  :config
+  ;; (which-key-mode t)
+  (setq which-key-idle-delay 1.0)
+  :blackout
+  )
+
+(use-package undo-fu
+  :bind
+  ("s-z" . undo-fu-only-undo)
+  ("s-Z" . undo-fu-only-redo)
+  )
+
+(use-package vundo
+  :straight (:type git :host github :repo "casouri/vundo" :branch "master")
+  :commands vundo
+  ;; The below is back-ported from Emacs 28, once you upgrade you can safely remove this:
+  :config (load (concat oht-dotfiles "lisp/oht-undo-backport.el"))
+  )
+
+(use-package expand-region
+  :bind
+  ("s-r" . er/expand-region)
+  ("s-R" . er/contract-region)
+  )
+
+(use-package zzz-to-char
+  ;; replaces zap-to-char with an avy-like interface
+  ;; note that it searches forward and backward
+  :bind ("M-z" . zzz-up-to-char))
+
+(use-package sdcv-mode
+  :straight (sdcv-mode :type git :host github :repo "gucong/emacs-sdcv" :branch "master")
+  :commands sdcv-search
+  )
+
+(use-package unfill
+  :commands (unfill-paragraph unfill-toggle unfill-region)
+  :bind
+  ("M-q" . unfill-toggle)
+  )
+
+(use-package whole-line-or-region
+  ;; When no region is active (nothing is selected), and you invoke the
+  ;; kill-region (cut) or kill-ring-save (copy) commands, Emacs acts on the
+  ;; range of characters between the mark and the point. This is a really good way
+  ;; to accidentally kill half your document. I have done this more times than I'd
+  ;; like to admit. This package makes it so that without a region those commands
+  ;; act on a whole line.
+  :init
+  (whole-line-or-region-global-mode 1)
+  :blackout whole-line-or-region-local-mode
+  )
+
+(use-package helpful
+  ;; Neat package that brings together a lot of useful information when you
+  ;; ask Emacs for help. https://github.com/Wilfred/helpful
+  :bind
+  ("C-h f" . #'helpful-callable)
+  ("C-h F" . #'helpful-function)
+  ("C-h v" . #'helpful-variable)
+  ("C-h k" . #'helpful-key)
+  ("C-h p" . #'helpful-at-point)
+ )
+
+(use-package pinboard
+  :commands (pinboard pinboard-add pinboard-add-for-later)
+  :init
+  (setf epa-pinentry-mode 'loopback)
+  )
+
+(use-package move-text
+  :bind
+  ("M-<up>" . move-text-up)
+  ("M-<down>" . move-text-down)
+  )
 
 (use-package dired-subtree
   :after dired
@@ -596,21 +643,10 @@
               ("<tab>" . dired-subtree-toggle)))
 
 
-;;;; Flyspell
-
-(use-package flyspell
-  :straight nil
-  :commands (flyspell-mode flyspell-prog-mode turn-on-flyspell)
-  :init
-  (add-hook 'text-mode-hook 'turn-on-flyspell)
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-  :config
-  (setq ispell-program-name "/usr/local/bin/aspell")
-  (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
-  (setq ispell-list-command "list")
-  :blackout " Spell")
-
 (use-package flyspell-correct
+  ;; Allows you to pass spelling suggestions to completion
+  ;; and search frameworks, such as selectrum. This setup code is copied
+  ;; directly from the selectrum documentation.
   :bind
   ("M-;" . #'flyspell-auto-correct-previous-word)
   :custom
@@ -619,88 +655,13 @@
   (advice-add 'flyspell-correct-dummy :around
 	      (defun my--fsc-wrapper (func &rest args)
 		(let ((selectrum-should-sort-p nil))
-		  (apply func args)))))
-
-
-;;;; Misc Packages
-
-(use-package magit
-  :commands magit-status)
-
-(use-package exec-path-from-shell
-  :demand)
-
-(use-package olivetti
-  :commands olivetti-mode
-  :custom (olivetti-body-width 84)
-  :blackout " Olvti")
-
-(use-package which-key
-  :disabled
-  :init
-  ;; Echo unfinished commands after this delay.
-  ;; Setting to 0 means do not echo commands.
-  (setq echo-keystrokes 0.01)
-  :config
-  ;; (which-key-mode t)
-  (setq which-key-idle-delay 1.0)
-  :blackout)
-
-(use-package undo-fu
-  :bind
-  ("s-z" . undo-fu-only-undo)
-  ("s-Z" . undo-fu-only-redo))
-
-(use-package vundo
-  :straight (:type git :host github :repo "casouri/vundo" :branch "master")
-  :commands vundo
-  ;; The below is back-ported from Emacs 28, once you upgrade you can safely remove this:
-  :config (load (concat oht-dotfiles "lisp/oht-undo-backport.el")))
-
-(use-package expand-region
-  :bind
-  ("s-r" . er/expand-region)
-  ("s-R" . er/contract-region))
-
-(use-package zzz-to-char
-  ;; replaces zap-to-char with an avy-like interface
-  ;; note that it searches forward and backward
-  :bind ("M-z" . zzz-up-to-char))
-
-(use-package sdcv-mode
-  :straight (sdcv-mode :type git :host github :repo "gucong/emacs-sdcv" :branch "master")
-  :commands sdcv-search)
-
-(use-package unfill
-  :commands (unfill-paragraph unfill-toggle unfill-region)
-  :bind
-  ("M-q" . unfill-toggle))
-
-(use-package whole-line-or-region
-  :init
-  (whole-line-or-region-global-mode 1)
-  :blackout whole-line-or-region-local-mode)
-
-(use-package helpful
-  :bind
-  ("C-h f" . #'helpful-function)
-  ("C-h v" . #'helpful-variable)
-  ("C-h k" . #'helpful-key)
-  ("C-h p" . #'helpful-at-point))
-
-(use-package pinboard
-  :commands (pinboard pinboard-add pinboard-add-for-later)
-  :init
-  (setf epa-pinentry-mode 'loopback))
-
-(use-package move-text
-  :bind
-  ("M-<up>" . move-text-up)
-  ("M-<down>" . move-text-down))
-
+		  (apply func args))))
+  )
+  
 (use-package bookmark-view
   :straight (:type git :host github :repo "minad/bookmark-view" :branch "master")
-  :commands (bookmark-view))
+  :commands (bookmark-view)
+  )
 
 (use-package selected
   :commands selected-minor-mode
@@ -736,6 +697,52 @@
 			  ("E" . eval-region)
 			  ))
 
+
+;;;; Themes
+
+(use-package modus-themes
+  :init
+  (setq
+   modus-themes-bold-constructs nil
+   modus-themes-slanted-constructs t
+   modus-themes-syntax 'alt-syntax
+   modus-themes-links 'faint-neutral-underline
+   modus-themes-prompts 'subtle
+   modus-themes-mode-line 'borderless
+   modus-themes-completions 'moderate
+   modus-themes-region 'bg-only
+   modus-themes-diffs 'desaturated
+   modus-themes-org-blocks 'grayscale
+   modus-themes-scale-headings nil
+   modus-themes-variable-pitch-ui nil
+   modus-themes-variable-pitch-headings nil
+   )
+  (modus-themes-load-operandi)
+  )
+
+(use-package tron-legacy-theme)
+
+
+;;;; Languages
+
+(use-package fountain-mode
+  :commands fountain-mode
+  :custom
+  (fountain-add-continued-dialog nil)
+  (fountain-highlight-elements (quote (section-heading)))
+  )
+
+(use-package markdown-mode
+  :mode ("\\.text" . markdown-mode)
+  :magic ("%text" . markdown-mode)
+  :commands markdown-mode)
+
+(use-package lua-mode
+  :commands lua-mode)
+
+
+;;;; Visual Regexp
+
 (use-package visual-regexp
   ;; Provides an alternate version of `query-replace' which highlights matches
   ;; and replacements as you type.
@@ -747,44 +754,32 @@
   :after visual-regexp
   :bind (([remap query-replace-regexp] . #'vr/query-replace))
   :init
-  (setq vr/engine 'python))
-
-;;;; Languages
-
-(use-package fountain-mode
-  :commands fountain-mode
-  :custom
-  (fountain-add-continued-dialog nil)
-  (fountain-highlight-elements (quote (section-heading))))
-
-(use-package markdown-mode
-  :mode ("\\.text" . markdown-mode)
-  :magic ("%text" . markdown-mode)
-  :commands markdown-mode)
-
-(use-package lua-mode
-  :commands lua-mode)
+  (setq vr/engine 'python)
+  )
 
 
 ;;;; Org
 
 (use-package org
   :commands (org-mode oht-org-agenda-today)
-  :bind ("s-C" . org-capture)
   :config
   (load (concat oht-dotfiles "lisp/oht-org.el"))
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
   (add-hook 'org-mode-hook
 			(lambda ()
-			  (define-key org-mode-map (kbd "s-\\") 'oht-transient-org))))
+			  (define-key org-mode-map (kbd "s-\\") 'oht-transient-org)))
+  ;; :hook (org-mode . variable-pitch-mode)
+  )
 
 (use-package org-agenda
   :straight nil
   :commands org-agenda
   :bind
   (:map org-agenda-mode-map
-	("s-z" . org-agenda-undo)))
+	("s-z" . org-agenda-undo)
+	)
+  )
 
 ;;;; Outline
 
@@ -802,7 +797,9 @@
   (:map outline-minor-mode-map
         ([C-tab] . bicycle-cycle))
   (:map emacs-lisp-mode-map
-	   ("<backtab>" . bicycle-cycle-global)))
+	   ("<backtab>" . bicycle-cycle-global))
+  )
+
 
 ;;;; Browser & News
 
@@ -839,7 +836,9 @@
   (:map eww-mode-map
 	("b" . bookmark-set)
 	("M-<return>" . oht-eww-open-in-new-buffer-bury)
-	("i" . eww-inhibit-images-toggle)))
+	("i" . eww-inhibit-images-toggle)
+	)
+  )
 
 (use-package elfeed
   :commands elfeed
@@ -871,13 +870,17 @@
 	("8" . elfeed-show-tag--unstar)
 	("d" . oht-elfeed-show-download-video)
 	("i" . elfeed-inhibit-images-toggle)
-	("B" . oht-elfeed-show-browse-and-bury)))
+	("B" . oht-elfeed-show-browse-and-bury)
+	)
+  )
 
 (use-package hackernews
   :commands hackernews
   :custom
   (hackernews-items-per-page 30)
-  (hackernews-default-feed 'top))
+  (hackernews-default-feed 'top)
+  )
+
 
 ;;;; Mail
 
@@ -935,7 +938,8 @@
 	    (defun oht-mu4e-view-settings ()
 	      "My settings for message composition."
 	      (larger-variable-pitch-mode 1)
-	      )))
+	      ))
+  )
 
 (use-package smtpmail
   :straight nil
@@ -983,14 +987,16 @@
 	      ("O" .   pdf-occur)
 	      ("G" .   pdf-view-goto-page)
 	      ("<" .   pdf-view-first-page)
-	      (">" .   pdf-view-last-page)))
+	      (">" .   pdf-view-last-page))
+	      )
 
 (use-package pdf-tools-org
+  :straight (:host github :repo "machc/pdf-tools-org" :branch "master")
+  :commands pdf-tools-org-export-to-org
   ;; This package seems pretty out of date, modifying the code as suggested here:
   ;; https://github.com/machc/pdf-tools-org/issues/7
   ;; seems to fix export
-  :straight (:host github :repo "machc/pdf-tools-org" :branch "master")
-  :commands pdf-tools-org-export-to-org)
+  )
 
 ;;;; Transient
 
@@ -998,7 +1004,7 @@
   ;; comes installed with Magit, no need to install
   :straight nil
   ;; Anything not in a binding below needs to be called-out as a command
-  :commands (oht-transient-org oht-transient-dispatch)
+  :commands oht-transient-org
   :init
   (autoload 'org-store-link "org")
   :config
@@ -1011,7 +1017,13 @@
   ("s-2" . oht-transient-2nd)
   ("s-0" . oht-transient-outline)
   ("s-d" . oht-transient-dispatch)
-  ("C-," . oht-transient-spelling))
+  ("C-," . oht-transient-spelling)
+  )
+
+;; When splitting the window, go to it
+(defadvice split-window-below (after split-window-below activate) (other-window 1))
+(defadvice split-window-right (after split-window-right activate) (other-window 1))
+
 
 ;;;; Pseudo-Packages, or my lisp files
 
@@ -1041,50 +1053,170 @@
   (setq oht-fonts-monospace-size 12)
   (setq oht-fonts-variable-size  14)
   (set-face-attribute 'mode-line nil          :family "IBM Plex Sans" :height 130)
-  (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130))
+  (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130)
+  )
 
 (use-package oht-dispatch
   :straight nil
-  :demand)
+  :demand
+  )
 
 (use-package oht-functions
   :straight nil
   :demand
   :config
   (global-set-key [remap beginning-of-line] #'my/smart-beginning-of-line)
-  :bind
-  ("M-DEL" . sanemacs/backward-kill-word)
-  ("C-DEL" . sanemacs/backward-kill-word)
-  ("s-/" . oht-toggle-comment-region-or-line)
-  ("s-|" . oht/pipe-region))
+  )
 
 (use-package oht-mac
   :straight nil
   :demand
-  :bind
-  ("s-," . oht-mac-find-settings)
-  ("s-l" . oht-mac-mark-whole-line)
-  ;; C-k only killing the visual line also isn't how macOS works.
-  ;; This has to be set to a custom function so minor modes can't
-  ;; hijack it.
-  ("C-k" . oht-mac-kill-line))
+  )
 
 (use-package oht-composition
   :straight nil
-  :commands (composition-mode))
+  :commands (composition-mode)
+  )
 
 (use-package oht-transient-mark
   :straight nil
   :bind
   ("C-x C-x" . exchange-point-and-mark-dwim)
   ("C-`" . push-mark-no-activate)
-  ("M-`" . consult-mark))
+  ("M-`" . consult-mark)
+  )
 
 (use-package oht-find-file-directories
   ;; Beautiful set of functions from Radian for creating directories when
   ;; finding files.
   :straight nil
-  :demand)
+  :demand
+  )
 
 
-;;; End of init.el
+;;; Mouse
+
+;; Gasp! An Emacs user that actually uses the mouse?! Scandalous.
+;; Consider the possibility that using the mouse for some things is AWESOME.
+;; Also, it pays to read the source code!
+
+;; Start by making shift-click extend the selection (region)
+(global-set-key [S-down-mouse-1] 'ignore)
+(global-set-key [S-mouse-1] 'mouse-save-then-kill)
+
+;; Using the mouse for horizontal/vertical splits is great because
+;; the windows split exactly where you click the mouse.
+;; See 'Rebinding Mouse Buttons' for more info.
+;;
+;; 1. Use s-click to create splits
+;; 2. Use M-s-click to delete windows
+
+;; To add a vertical split to a window, just s-click on the mode-line
+(global-set-key [mode-line s-mouse-1] 'mouse-split-window-horizontally)
+;; and make this work everywhere else
+(global-set-key [s-mouse-1] 'mouse-split-window-horizontally)
+;; Use shift to add a horizontal split to the window
+(global-set-key [S-s-mouse-1] 'mouse-split-window-vertically)
+
+;; Delete a window with M-s--click on its mode-line
+(global-set-key [mode-line M-s-mouse-1] 'mouse-delete-window)
+;; And make this work everywhere
+(global-set-key [M-s-mouse-1] 'mouse-delete-window)
+
+;; The below bindings are taken directly from the source of `mouse.el'
+;; but I've swapped the modifier keys. This makes more sense to me.
+
+;; Use M-drag-mouse-1 to create rectangle regions
+(global-set-key [M-down-mouse-1] #'mouse-drag-region-rectangle)
+(global-set-key [M-drag-mouse-1] #'ignore)
+(global-set-key [M-mouse-1]      #'mouse-set-point)
+
+;; Use C-M-drag-mouse-1 to create secondary selections
+(global-set-key [C-M-mouse-1]      'mouse-start-secondary)
+(global-set-key [C-M-drag-mouse-1] 'mouse-set-secondary)
+(global-set-key [C-M-down-mouse-1] 'mouse-drag-secondary)
+
+
+;;; Keybindings
+
+;; Make it so every time you type RET you also indent the next line.
+;; (define-key global-map (kbd "RET") 'newline-and-indent)
+
+(bind-keys* ("C-<return>" . execute-extended-command)
+	    ("C-;" . backward-word)
+	    ("C-'" . forward-word))
+
+(bind-keys ("M-s-s" . save-some-buffers)
+	   ("M-c" . capitalize-dwim)
+	   ("M-l" . downcase-dwim)
+	   ("M-u" . upcase-dwim)
+	   ("M-SPC" . cycle-spacing)
+	   ("M-/" . hippie-expand)
+	   ("C-x r r" . replace-rectangle)
+	   ("C-h C-f" . find-function)
+	   ("C-h C-v" . find-variable)
+	   ("M-DEL" . sanemacs/backward-kill-word)
+	   ("C-DEL" . sanemacs/backward-kill-word)
+	   )
+
+(bind-keys ("s-k" . kill-this-buffer)
+	   ("s-B" . ibuffer)
+	   ("M-s-b" . list-bookmarks)
+	   ("s-C" . org-capture)
+	   ("s-|" . oht/pipe-region)
+	   ("s-/" . oht-toggle-comment-region-or-line)
+	   ("s-l" . oht-mac-mark-whole-line)
+	   ("s-o" . other-window))
+
+
+;;; Mac Shortcuts
+
+;; Most of the time I want to use standard macOS shortcuts[1]. macOS actually
+;; inherits many Emacs keybindings, but adds to it a few from =readline= and
+;; old terminal interfaces. Because these are available system-wide I want
+;; Emacs to do the same thing. That way the way I type/move in Mail.app or
+;; Safari is the same as Emacs. Some of these require custom functions, but
+;; that's usually a simple matter of stringing a couple existing commands
+;; together into a function.
+;;
+;; 1: https://support.apple.com/en-us/HT201236
+
+;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
+;; This is inconsistent with macOS behavior, which is that "C-a" always goes
+;; to the beginning of the logical line and "s-<left>" goes to the beginning
+;; of the visual line. So these bindings correct that.
+(bind-keys* ("C-a" . beginning-of-line)
+	    ("C-e" . end-of-line))
+(bind-keys ("s-<left>" . beginning-of-visual-line)
+	   ("s-<right>" . end-of-visual-line)
+	   ;; C-k only killing the visual line also isn't how macOS works.
+	   ;; This has to be set to a custom function so minor modes can't
+	   ;; hijack it.
+	   ("C-k" . oht-mac-kill-line))
+
+(bind-keys
+ ("s-," . oht-mac-find-settings)
+ ("s-n" . make-frame-command)
+ ("s-t" . oht-mac-new-tab)
+ ("s-m" . iconify-frame)
+ ("s-s" . save-buffer)
+ ("s-S" . write-file) ;save as
+ ("s-a" . mark-whole-buffer)
+ ("s-x" . kill-region)
+ ("s-c" . kill-ring-save)
+ ("s-v" . yank)
+ ("s-<backspace>" . oht-mac-kill-visual-line-backward)
+ ("s-q" . save-buffers-kill-terminal)
+ ("S-s-<left>" . oht-mac-expand-to-beginning-of-visual-line)
+ ("S-s-<right>" . oht-mac-expand-to-end-of-visual-line)
+ ("s-<up>" . beginning-of-buffer)
+ ("s-<down>" . end-of-buffer)
+ ("s-[" . previous-buffer)
+ ("s-]" . next-buffer)
+ ("s-}" . indent-rigidly-right-to-tab-stop)
+ ("s-{" . indent-rigidly-left-to-tab-stop)
+ ("C-w" . backward-kill-word)
+ ("C-u" . oht-mac-kill-line-backward)
+ ("s-u" . universal-argument)
+ )
+

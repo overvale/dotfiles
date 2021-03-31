@@ -1,31 +1,6 @@
 ;;; oht-mac.el -*- lexical-binding: t -*-
 
 
-;;;; Modifiers & Emacs Anachronisms
-
-;; Make the command keys 'super'. Super is basically not used by Emacs so
-;; they're a safe playground for assigning your own bindings.
-(setq mac-command-modifier 'super)
-;; Meta is used a lot in Emacs, and I only ever use the left option key, so
-;; this works well for shortcuts.
-(setq mac-option-modifier 'meta)
-;; But sometimes you want to insert special characters like £¢∞§¶•≠
-(setq mac-right-option-modifier 'nil)
-
-;; Due to historical reasons, Emacs thinks C-i is the same as TAB and C-m
-;; is the same as RETURN. The below undoes that assumption. This will allow
-;; you to re-bind them later.
-(define-key input-decode-map [?\C-i] [C-i])
-(bind-key "<C-i>" nil)
-(define-key input-decode-map [?\C-m] [C-m])
-(bind-key "<C-m>" nil)
-
-;; In the old days ESC was used as a prefix key, but I want ESC to act like it
-;; does everywhere else on my system and, you know, escape from things. So
-;; I've remapped ESC to `keyboard-quit'.
-(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-
-
 ;;; Functions
 
 (defun oht-mac-kill-line ()

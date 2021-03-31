@@ -7,13 +7,13 @@
   "Apply some customization to fonts in eww-mode."
   (larger-variable-pitch-mode)
   (text-scale-increase 1)
-  (setq-local line-spacing 2)
-  )
+  (setq-local line-spacing 2))
 
 (add-hook 'eww-mode-hook 'oht-eww-fonts)
 
 
-;; Creates a toggle for showing images
+;;; Image Toggle
+
 (make-variable-buffer-local
  (defvar eww-inhibit-images-status nil
    "EWW Inhibit Images Status"))

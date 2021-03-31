@@ -47,8 +47,8 @@ function forwardUpperCase()
    local currentApp = hs.application.frontmostApplication()
    selectWordForward()
    currentApp:selectMenuItem("Make Upper Case")
-   hs.eventtap.event.newKeyEvent({}, "right", true):post()
-   hs.eventtap.event.newKeyEvent({}, "right", false):post()
+   -- hs.eventtap.event.newKeyEvent({}, "right", true):post()
+   -- hs.eventtap.event.newKeyEvent({}, "right", false):post()
 end
 
 function forwardLowerCase()
@@ -56,8 +56,8 @@ function forwardLowerCase()
    local currentApp = hs.application.frontmostApplication()
    selectWordForward()
    currentApp:selectMenuItem("Make Lower Case")
-   hs.eventtap.event.newKeyEvent({}, "right", true):post()
-   hs.eventtap.event.newKeyEvent({}, "right", false):post()
+   -- hs.eventtap.event.newKeyEvent({}, "right", true):post()
+   -- hs.eventtap.event.newKeyEvent({}, "right", false):post()
 end
 
 function forwardCapitalize()
@@ -65,8 +65,8 @@ function forwardCapitalize()
    local currentApp = hs.application.frontmostApplication()
    selectWordForward()
    currentApp:selectMenuItem("Capitalize")
-   hs.eventtap.event.newKeyEvent({}, "right", true):post()
-   hs.eventtap.event.newKeyEvent({}, "right", false):post()
+   -- hs.eventtap.event.newKeyEvent({}, "right", true):post()
+   -- hs.eventtap.event.newKeyEvent({}, "right", false):post()
 end
 
 function selectLine()

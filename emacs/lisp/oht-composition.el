@@ -17,11 +17,11 @@
   (setq composition-mode-status (not composition-mode-status))
   (if composition-mode-status
       (progn
-	(visual-line-mode t)
-	(setq-local line-spacing 2)
-	(olivetti-mode t)
-	(text-scale-increase 1)
-	(variable-pitch-mode 1))
+		(visual-line-mode t)
+		(setq-local line-spacing 2)
+		(olivetti-mode t)
+		(text-scale-increase 1)
+		(variable-pitch-mode 1))
     (progn
       (visual-line-mode -1)
       (setq-local line-spacing 0)
@@ -34,9 +34,9 @@
 ;;;###autoload
 (define-minor-mode composition-mode
   "A tiny minor-mode to toggle some settings I like when writing."
- :init-value nil
- :lighter " Comp"
- (composition-mode-toggle)
- (make-local-variable 'composition-mode-status))
+  :init-value nil
+  :lighter " Comp"
+  (composition-mode-toggle)
+  (make-local-variable 'composition-mode-status))
 
 (provide 'oht-composition)

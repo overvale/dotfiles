@@ -567,8 +567,7 @@
 		("m" . set-mark-command)
 		("<RET>" . oht/view-mode-exit)
 		("s-j" . oht/view-mode-exit)
-		("q" . quit-window)
-		)
+		("q" . quit-window))
   :blackout " VIEW")
 
 
@@ -734,14 +733,13 @@
 			  ("]" . scroll-up-line)
 			  ("x" . exchange-point-and-mark)
 			  ;; unique
-			  ("q" . selected-off)
 			  ("u" . upcase-dwim)
 			  ("d" . downcase-dwim)
 			  ("w" . kill-ring-save)
 			  ("M" . rectangle-mark-mode)
 			  ("R" . replace-rectangle)
 			  ("E" . eval-region)
-			  ))
+			  ("q" . selected-off)))
 
 (use-package visual-regexp
   ;; Provides an alternate version of `query-replace' which highlights matches
@@ -755,6 +753,7 @@
   :bind (([remap query-replace-regexp] . #'vr/query-replace))
   :init
   (setq vr/engine 'python))
+
 
 ;;;; Languages
 
@@ -793,6 +792,7 @@
   (:map org-agenda-mode-map
 	("s-z" . org-agenda-undo)))
 
+
 ;;;; Outline
 
 ;; `outline' provides major and minor modes for collapsing sections of a
@@ -810,6 +810,7 @@
         ([C-tab] . bicycle-cycle))
   (:map emacs-lisp-mode-map
 	   ("<backtab>" . bicycle-cycle-global)))
+
 
 ;;;; Browser & News
 
@@ -886,6 +887,7 @@
   (hackernews-items-per-page 30)
   (hackernews-default-feed 'top))
 
+
 ;;;; Mail
 
 (setq mail-user-agent 'mu4e-user-agent)
@@ -953,6 +955,7 @@
 	smtpmail-smtp-server "smtp.gmail.com"
 	smtpmail-smtp-service 587))
 
+
 ;;;; PDFs
 
 ;; To get started, use homebrew to install a couple things:
@@ -999,6 +1002,7 @@
   :straight (:host github :repo "machc/pdf-tools-org" :branch "master")
   :commands pdf-tools-org-export-to-org)
 
+
 ;;;; Transient
 
 (use-package transient
@@ -1019,6 +1023,7 @@
   ("s-0" . oht-transient-outline)
   ("s-d" . oht-transient-dispatch)
   ("C-," . oht-transient-spelling))
+
 
 ;;;; Pseudo-Packages, or my lisp files
 

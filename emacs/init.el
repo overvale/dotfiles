@@ -125,6 +125,12 @@
 ;; file.
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
+;; Quickly edit your emacs config by binding this
+(defun oht-find-emacs-dotfiles ()
+  "Finds lisp files in dotfiles directory and passes to completing-read."
+  (interactive)
+  (find-file (completing-read "Find Elisp Dotfile: " (directory-files-recursively oht-dotfiles "\.el$"))))
+
 
 ;;;; Tab/Fill Settings, Visual Line Mode
 
@@ -205,6 +211,7 @@
 (global-set-key (kbd "s-[") 'previous-buffer)
 (global-set-key (kbd "s-]") 'next-buffer)
 (global-set-key (kbd "s-<backspace>") (lambda () (interactive) (kill-line 0)))
+(global-set-key (kbd "s-,") 'oht-find-emacs-dotfiles)
 
 ;; Emacs SUPER!
 (global-set-key (kbd "s-k")   'kill-this-buffer)
@@ -1062,7 +1069,6 @@
   :straight nil
   :demand
   :bind
-  ("s-," . oht-mac-find-settings)
   ("s-l" . oht-mac-mark-whole-line)
   ;; C-k only killing the visual line also isn't how macOS works.
   ;; This has to be set to a custom function so minor modes can't

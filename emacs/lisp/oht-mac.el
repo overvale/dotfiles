@@ -13,11 +13,6 @@ directly. Nil is required."
   (kill-line nil)
   )
 
-(defun oht-mac-find-settings ()
-  "Quickly open init.el"
-  (interactive)
-  (find-file "~/home/dot/emacs/init.el"))
-
 (defun oht-mac-find-scratch ()
   "Quickly open the scratch buffer"
   (interactive)

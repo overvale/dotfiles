@@ -33,14 +33,17 @@ size will be 1.16.")
 
 ;;; Set fonts and their sizes
 
-(set-face-attribute 'default nil
-		    :family oht-fonts-monospace
-		    :height (* oht-fonts-monospace-size 10))
-(set-face-attribute 'fixed-pitch nil
-		    :family oht-fonts-monospace
-		    :height 1.0 )
-(set-face-attribute 'variable-pitch nil
-		    :family oht-fonts-variable :height 1.0)
+(defun oht-fonts-set ()
+  "Function for setting fonts."
+  (interactive)
+  (set-face-attribute 'default nil
+					  :family oht-fonts-monospace
+					  :height (* oht-fonts-monospace-size 10))
+  (set-face-attribute 'fixed-pitch nil
+					  :family oht-fonts-monospace
+					  :height 1.0 )
+  (set-face-attribute 'variable-pitch nil
+					  :family oht-fonts-variable :height 1.0))
 
 
 ;;; Larger Variable Pitch Mode

@@ -1053,7 +1053,9 @@
   (setq oht-fonts-monospace-size 12)
   (setq oht-fonts-variable-size  14)
   (set-face-attribute 'mode-line nil          :family "IBM Plex Sans" :height 130)
-  (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130))
+  (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130)
+  :config (oht-fonts-set))
+
 
 (use-package oht-dispatch
   :straight nil

@@ -92,7 +92,7 @@ initial input."
     (completing-read "Run EWW on: " eww-prompt-history
                      nil nil (plist-get eww-data :url) 'eww-prompt-history)
     current-prefix-arg))
-  (eww url (if arg 4 nil)))
+  (eww url (if arg 4)))
 
 ;;;###autoload
 (defun prot-eww-visit-bookmark (&optional arg)

@@ -531,6 +531,9 @@
       (pulse-momentary-highlight-region begin end)))
   (advice-add 'yank :around #'ct/yank-pulse-advice))
 
+
+;;;; View / Selected
+
 (use-package view
   :straight nil
   :init
@@ -547,34 +550,69 @@
     (call-interactively 'replace-rectangle)
     )
   (bind-key "s-j" 'view-mode)
-  :bind
-  (:map view-mode-map
-		;; common to selected-minor-mode
-		("n" . next-line)
-		("p" . previous-line)
-		("f" . forward-char)
-		("b" . backward-char)
-		("F" . forward-word)
-		("B" . backward-word)
-		("a" . beginning-of-visual-line)
-		("e" . end-of-visual-line)
-		("{" . backward-paragraph)
-		("}" . forward-paragraph)
-		("(" . backward-sentence)
-		(")" . forward-sentence)
-		("s" . ctrlf-forward-fuzzy)
-		("r" . ctrlf-backward-fuzzy)
-		("[" . scroll-down-line)
-		("]" . scroll-up-line)
-		("x" . exchange-point-and-mark)
-		("M" . rectangle-mark-mode)
-		;; unique to view-mode
-		("R" . oht/exit-view-replace-rectangle)
-		("m" . set-mark-command)
-		("<RET>" . oht/view-mode-exit)
-		("s-j" . oht/view-mode-exit)
-		("q" . quit-window))
+  :bind (:map view-mode-map
+			  ;; common
+			  ("n" . next-line)
+			  ("p" . previous-line)
+			  ("f" . forward-char)
+			  ("b" . backward-char)
+			  ("F" . forward-word)
+			  ("B" . backward-word)
+			  ("a" . beginning-of-visual-line)
+			  ("e" . end-of-visual-line)
+			  ("{" . backward-paragraph)
+			  ("}" . forward-paragraph)
+			  ("(" . backward-sentence)
+			  (")" . forward-sentence)
+			  ("s" . ctrlf-forward-fuzzy)
+			  ("r" . ctrlf-backward-fuzzy)
+			  ("[" . scroll-down-line)
+			  ("]" . scroll-up-line)
+			  ("x" . exchange-point-and-mark)
+			  ("M" . rectangle-mark-mode)
+			  ;; unique
+			  ("R" . oht/exit-view-replace-rectangle)
+			  ("m" . set-mark-command)
+			  ("<RET>" . oht/view-mode-exit)
+			  ("s-j" . oht/view-mode-exit)
+			  ("q" . quit-window))
   :blackout " VIEW")
+
+(use-package selected
+  :commands selected-minor-mode
+  :init
+  (selected-global-mode 1)
+  :blackout selected-minor-mode
+  :bind (:map selected-keymap
+			  ;; common
+			  ("n" . next-line)
+			  ("p" . previous-line)
+			  ("f" . forward-char)
+			  ("b" . backward-char)
+			  ("F" . forward-word)
+			  ("B" . backward-word)
+			  ("a" . beginning-of-visual-line)
+			  ("e" . end-of-visual-line)
+			  ("{" . backward-paragraph)
+			  ("}" . forward-paragraph)
+			  ("(" . backward-sentence)
+			  (")" . forward-sentence)
+			  ("s" . ctrlf-forward-fuzzy)
+			  ("r" . ctrlf-backward-fuzzy)
+			  ("[" . scroll-down-line)
+			  ("]" . scroll-up-line)
+			  ("x" . exchange-point-and-mark)
+			  ("M" . rectangle-mark-mode)
+			  ;; unique
+			  ("u" . upcase-dwim)
+			  ("d" . downcase-dwim)
+			  ("w" . kill-ring-save)
+			  ("R" . replace-rectangle)
+			  ("E" . eval-region)
+			  ("q" . selected-off))
+  :config
+  (add-hook 'elfeed-show-mode (lambda ()
+								(selected-minor-mode -1))))
 
 
 ;;;; Dired
@@ -719,42 +757,6 @@
 (use-package bookmark-view
   :straight (:type git :host github :repo "minad/bookmark-view" :branch "master")
   :commands (bookmark-view))
-
-(use-package selected
-  :commands selected-minor-mode
-  :init
-  (selected-global-mode 1)
-  :blackout selected-minor-mode
-  :bind (:map selected-keymap
-			  ;; common with view-mode
-			  ("n" . next-line)
-			  ("p" . previous-line)
-			  ("f" . forward-char)
-			  ("b" . backward-char)
-			  ("F" . forward-word)
-			  ("B" . backward-word)
-			  ("a" . beginning-of-visual-line)
-			  ("e" . end-of-visual-line)
-			  ("{" . backward-paragraph)
-			  ("}" . forward-paragraph)
-			  ("(" . backward-sentence)
-			  (")" . forward-sentence)
-			  ("s" . ctrlf-forward-fuzzy)
-			  ("r" . ctrlf-backward-fuzzy)
-			  ("[" . scroll-down-line)
-			  ("]" . scroll-up-line)
-			  ("x" . exchange-point-and-mark)
-			  ;; unique
-			  ("u" . upcase-dwim)
-			  ("d" . downcase-dwim)
-			  ("w" . kill-ring-save)
-			  ("M" . rectangle-mark-mode)
-			  ("R" . replace-rectangle)
-			  ("E" . eval-region)
-			  ("q" . selected-off))
-  :config
-  (add-hook 'elfeed-show-mode (lambda ()
-								(selected-minor-mode -1))))
 
 (use-package visual-regexp
   ;; Provides an alternate version of `query-replace' which highlights matches

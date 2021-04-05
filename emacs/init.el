@@ -354,6 +354,7 @@
               modus-themes-variable-pitch-headings nil)
   (modus-themes-load-operandi))
 
+(add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle)
 
 ;;;; Narrowing & Searching
 

@@ -743,7 +743,10 @@
 			  ("M" . rectangle-mark-mode)
 			  ("R" . replace-rectangle)
 			  ("E" . eval-region)
-			  ("q" . selected-off)))
+			  ("q" . selected-off))
+  :config
+  (add-hook 'elfeed-show-mode (lambda ()
+								(selected-minor-mode -1))))
 
 (use-package visual-regexp
   ;; Provides an alternate version of `query-replace' which highlights matches

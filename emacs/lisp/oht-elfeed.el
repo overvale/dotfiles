@@ -23,6 +23,7 @@
 		("https://github.com/Hammerspoon/hammerspoon/releases.atom")
 		("https://github.com/syncthing/syncthing-macos/releases.atom")
 		("https://console.dev/qa/rss.xml")
+		("https://lux.camera/feed/")
 		;; vfx
 		("https://keepcalmiminvfx.net/feed/" vfx)
 		("https://beforesandafters.com/feed/" vfx)

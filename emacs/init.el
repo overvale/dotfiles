@@ -30,8 +30,7 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t
-      initial-major-mode 'fundamental-mode
-      initial-scratch-message nil)
+	  initial-buffer-choice (lambda () (remember-notes)))
 
 
 ;;;; Preferences
@@ -450,13 +449,8 @@
   :straight nil
   :init
   (setq remember-data-file "~/home/org/remember-notes")
-  (setq remember-notes-buffer-name "*scratch*")
+  (setq remember-notes-initial-major-mode 'fundamental-mode)
   (setq remember-notes-auto-save-visited-file-name t)
-  ;; Set initial-buffer-choice to a function which kills the *scratch* buffer
-  ;; and opens the remember-notes buffer. This loads `remember'.
-  (setq initial-buffer-choice
-	(lambda () (kill-buffer remember-notes-buffer-name)
-          (remember-notes)))
   (defun oht-remember-dwim ()
     "If the region is active, capture with region, otherwise just capture."
     (interactive)

@@ -150,7 +150,7 @@ To be used by `eww-after-render-hook'."
   (let ((name (if (eq "" (plist-get eww-data :title))
                   (plist-get eww-data :url)
                 (plist-get eww-data :title))))
-    (rename-buffer (format "*%s # eww*" name) t)))
+    (rename-buffer (format "*eww # %s*" name) t)))
 
 (add-hook 'eww-after-render-hook #'prot-eww--rename-buffer)
 (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)

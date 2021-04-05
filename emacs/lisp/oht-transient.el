@@ -286,6 +286,8 @@
 ;; ibuffer commands
 ;; query-replace
 ;; occur?
+;; Help
+;;   - info-apropos
 
 ;; -------------------------------------------------------------
 

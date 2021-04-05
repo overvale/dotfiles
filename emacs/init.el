@@ -235,7 +235,8 @@
 
 ;;;; Minor Mode for Personal Keybindings
 
-;; Put anything here that you don't want a minor mode to override.
+;; Minor modes can override global bindings (see README), so any bindings you
+;; don't want overridden should be placed in their own minor mode.
 
 ;; Define the keymap, mode, and switch it on
 (defvar oht-keys-mode-keymap (make-keymap) "Keymap for oht-keys-mode")
@@ -1085,8 +1086,6 @@
   :bind
   ("s-l" . oht-mac-mark-whole-line)
   ;; C-k only killing the visual line also isn't how macOS works.
-  ;; This has to be set to a custom function so minor modes can't
-  ;; hijack it.
   ("C-k" . oht-mac-kill-line))
 
 (use-package oht-composition

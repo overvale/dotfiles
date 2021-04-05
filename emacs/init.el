@@ -479,13 +479,23 @@
   (setq ibuffer-show-empty-filter-groups nil
 	ibuffer-saved-filter-groups
 	'(("default"
-	   ("Eww"   (mode . eww-mode))
-	   ("Dired" (mode . dired-mode))
+	   ("Read"  (or (mode . eww-mode)
+					(mode . elfeed-search-mode)
+					(mode . elfeed-show-mode)))
 	   ("Org"   (mode . org-mode))
+	   ("Mail"  (or
+                 (mode . mu4e-view-mode)
+                 (mode . mu4e-main-mode)
+                 (mode . mu4e-headers-mode)
+                 (mode . mu4e-view-raw-mode)
+                 (mode . mu4e-compose-mode)
+                 (mode . message-mode)
+                 (mode . mail-mode)))
+	   ("Dired" (mode . dired-mode))
 	   ("ELisp" (mode . emacs-lisp-mode))
-	   ("Help" (or (name . "\*Help\*")
-                       (name . "\*Apropos\*")
-                       (name . "\*Info\*"))))))
+	   ("Help"  (or (name . "\*Help\*")
+					(name . "\*Apropos\*")
+					(name . "\*Info\*"))))))
   (defun oht-ibuffer-hook ()
     (hl-line-mode 1)
     (ibuffer-auto-mode 1)

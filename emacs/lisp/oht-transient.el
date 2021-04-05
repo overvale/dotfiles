@@ -1,24 +1,40 @@
 ;; oht-transient.el --- -*- lexical-binding: t -*-
 
-;; https://github.com/jojojames/matcha
+
+;;; Commentary
+
+;; I LOVE transient commands. Basically, I don't want to learn a lot of
+;; keybindings, I want a simple set of bindings that reveal the vast power
+;; at your fingertips. So any time I find myself using a mode/package that I
+;; can't remember the bindings/commands for I take the time to comb through
+;; the source code, find anything I think I might use, and pop it in a
+;; transient.
+
+
+;;; General Purpose Transients
+
 
 (define-transient-command oht-transient-general ()
-  "General shortcuts I use often"
+  "General-purpose transient.
+
+I use this transient command as a jumping-off point. Many of the
+more following specific transients are included here. The idea is
+that, when lost, one can simply call this one transient and get
+wherever you need to go."
   [[ "Misc"
      ("f" "Find File" find-file)
      ("m" "Magit Status" magit-status)
      ("o" "Outline" consult-outline)
 	 ("a" "AutoFill" auto-fill-mode)
      ("j" "Dired Jump" dired-jump)
-     ("s" "Store Org Link" org-store-link)
-	 ("S" "Spelling..." oht-transient-spelling)
-	 ("F" "Fonts..." oht-transient-fonts)]
+     ("s" "Store Org Link" org-store-link)]
    ["Commands"
+	("c s" "Spelling..." oht-transient-spelling)
 	("c d" "Dictionary" sdcv-search)
+	("c f" "Fonts..." oht-transient-fonts)
     ("c c" "Composition Mode" composition-mode)
-    ("c h" "Help..." oht-transient-help)
 	("c m" "Toggle Minor Modes" consult-minor-mode-menu)
-	("c M" "Run Mode Command" consult-mode-command)]
+    ("c h" "Help..." oht-transient-help)]
    [ "Bookmarks"
      ("b s" "Set" bookmark-set)
      ("b l" "List" list-bookmarks)
@@ -39,7 +55,27 @@
     ("t [" "Previous" tab-bar-switch-to-prev-tab)]])
 
 
+(define-transient-command oht-transient-dispatch ()
+  "Jump directly to your most-used stuff."
+  ["Work"
+   [("t" "Today + Priority" oht-org-agenda-today)
+	("0" "Week + TODOs" oht-org-agenda-complete)
+	("a" "Agenda" oht-org-agenda-agenda)
+	("T" "TODOs" oht-org-agenda-todos)
+    ("A" "Org Agenda Command..." org-agenda)]
+   [("m" "Mail" mu4e)]]
+  ["Browsing"
+   [("e" "Elfeed" elfeed)
+    ("h" "Hacker News" hackernews)]
+   [("E" "EWW" prot-eww-browse-dwim)
+    ("n" "NPR News" oht-dispatch-NPR-news)
+    ("c" "CNN News" oht-dispatch-CNN-news)
+	("g" "Google News" oht-dispatch-google-news)]
+   [("r" "Read Later..." oht-dispatch-read-later)]])
+
+
 (define-transient-command oht-transient-window ()
+  "Most commonly used window commands"
   [["Splits"
     ("s" "Horizontal" split-window-below)
     ("v" "Vertical"   split-window-right)
@@ -52,18 +88,23 @@
     ("K" "Kill Buffer+Win"  kill-buffer-and-window)
     ("o" "Kill Others"  delete-other-windows)
     ("m" "Maximize" maximize-window)]
-   ["Move"
+   ["Navigate"
     ("<left>"  "←" windmove-left  :transient t)
     ("<right>" "→" windmove-right :transient t)
     ("<up>"    "↑" windmove-up    :transient t)
     ("<down>"  "↓" windmove-down  :transient t)]
+   ["Move"
+    ("S-<left>"  "S-←" buf-move-left  :transient t)
+    ("S-<right>" "S-→" buf-move-right :transient t)
+    ("S-<up>"    "S-↑" buf-move-up    :transient t)
+    ("S-<down>"  "S-↓" buf-move-down  :transient t)]
    ["Undo/Redo"
     ("s-z" "Winner Undo" winner-undo :transient t)
     ("s-Z" "Winner Redo" winner-redo :transient t)]])
 
 
-(define-transient-command oht-transient-helpful ()
-  "Helpful Transient"
+(define-transient-command oht-transient-help ()
+  "Transient for Helpful commands"
   [[("p" "At Point" helpful-at-point)]
    [("c" "Callable" helpful-callable)
 	("f" "Function" helpful-function)
@@ -76,29 +117,6 @@
    [("u" "Update" helpful-update)
 	("V" "Visit Reference" helpful-visit-reference)
 	("K" "Kill Helpful Buffers" helpful-kill-buffers)]])
-
-
-(define-transient-command oht-transient-org ()
-  "Transient for Org Mode"
-  [["Navigation"
-    ("o" "Outline" consult-outline)
-    ("n" "Narrow" org-narrow-to-subtree)
-    ("w" "Widen" widen)
-    ("g" "Go To" org-goto)
-    ("m" "Visible Markup" visible-mode)]
-   ["Item"
-    ("t" "TODO" org-todo)
-    ("I" "Clock In" org-clock-in)
-    ("O" "Clock Out" org-clock-out)
-    ("a" "Archive Subtree" org-archive-subtree)
-    ("r" "Refile" org-refile)
-    ("c" "Checkbox" org-toggle-checkbox)]
-   ["Insert"
-    ("." "Insert Date" oht/org-insert-date-today)
-    ("<" "Structure Template" org-insert-structure-template)]
-   ["Links"
-    ("s" "Store Link" org-store-link)
-    ("i" "Insert Link" org-insert-last-stored-link)]])
 
 
 (define-transient-command oht-transient-fonts ()
@@ -179,30 +197,46 @@
     ("s-Z" "Redo" undo-fu-only-redo)]])
 
 
-(define-transient-command oht-transient-dispatch ()
-  ["Work"
-   [("t" "Today + Priority" oht-org-agenda-today)
-	("0" "Week + TODOs" oht-org-agenda-complete)
-	("a" "Agenda" oht-org-agenda-agenda)
-	("T" "TODOs" oht-org-agenda-todos)
-    ("A" "Org Agenda Command..." org-agenda)]
-   [("m" "Mail" mu4e)]]
-  ["Browsing"
-   [("e" "Elfeed" elfeed)
-    ("h" "Hacker News" hackernews)]
-   [("E" "EWW" prot-eww-browse-dwim)
-    ("n" "NPR News" oht-dispatch-NPR-news)
-    ("c" "CNN News" oht-dispatch-CNN-news)
-	("g" "Google News" oht-dispatch-google-news)]
-   [("r" "Read Later..." oht-dispatch-read-later)]])
+;;; Mode-Specific Transients
+
+(define-transient-command oht-transient-org ()
+  "Transient for Org Mode"
+  [["Navigation"
+    ("o" "Outline" consult-outline)
+    ("n" "Narrow" org-narrow-to-subtree)
+    ("w" "Widen" widen)
+    ("g" "Go To" org-goto)
+    ("m" "Visible Markup" visible-mode)]
+   ["Item"
+    ("t" "TODO" org-todo)
+    ("I" "Clock In" org-clock-in)
+    ("O" "Clock Out" org-clock-out)
+    ("a" "Archive Subtree" org-archive-subtree)
+    ("r" "Refile" org-refile)
+    ("c" "Checkbox" org-toggle-checkbox)]
+   ["Insert"
+    ("." "Insert Date" oht/org-insert-date-today)
+    ("<" "Structure Template" org-insert-structure-template)]
+   ["Links"
+    ("s" "Store Link" org-store-link)
+    ("i" "Insert Link" org-insert-last-stored-link)]])
 
 
-;; -------------------------------------------------------------
+(define-transient-command oht-transient-org-agenda ()
+  "A transient for setting org-agenda todo status.
 
-;; https://github.com/conao3/transient-dwim.el/
+I've created this because I don't like how org-todo messes with
+windows. There is likely a much better way to automatically map
+org-todo-keywords to a transient command."
+  ["Change Status To..."
+   [("t" "TODO"     org-agenda-todo-set-todo)
+	("l" "LATER"    org-agenda-todo-set-later)]
+   [("d" "DONE"     org-agenda-todo-set-done)
+	("c" "CANCELED" org-agenda-todo-set-canceled)]])
 
-(define-transient-command oht-transient-dired
-  "Dired"
+
+(define-transient-command oht-transient-dired ()
+  "Dired commands."
   [["Action"
     ("RET" "Open file"            dired-find-file)
     ("o" "  Open in other window" dired-find-file-other-window)
@@ -241,8 +275,8 @@
     ("m" "Marks..." oht-transient-dired-marks)]])
 
 
-(define-transient-command oht-transient-dired-marks
-  "Marks"
+(define-transient-command oht-transient-dired-marks ()
+  "Sub-transient for dired."
   [["Toggles"
     ("mm"  "Mark"                 dired-mark)
     ("mM"  "Mark all"             dired-mark-subdir-files)
@@ -278,9 +312,37 @@
     ("!"   "Shell command"        dired-do-shell-command)
     ("&"   "Async shell command"  dired-do-async-shell-command)]])
 
-;; -------------------------------------------------------------
 
-;; IDEAS FOR FURTHER DEVELOPMENT
+(define-transient-command oht-transient-eww ()
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  [["Actions"
+	("G" "Browse" prot-eww-browse-dwim)
+	("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
+	("&" "Browse With External Browser" eww-browse-with-external-browser)
+	("w" "Copy URL" eww-copy-page-url)]
+   ["Display"
+	("i" "Toggle Images" eww-inhibit-images-toggle)
+	("F" "Toggle Fonts" eww-toggle-fonts)
+	("R" "Readable" eww-readable)
+	("M-C" "Colors" eww-toggle-colors)]
+   ["History"
+	("H" "History" eww-list-histories)
+	("l" "Back" eww-back-url)
+	("r" "Forward" eww-forward-url)]
+   ["Bookmarks"
+	("a" "Add Eww Bookmark" eww-add-bookmark)
+	("b" "Bookmark" bookmark-set)
+	("B" "List Bookmarks" eww-list-bookmarks)
+	("M-n" "Next Bookmark" eww-next-bookmark)
+	("M-p" "Previous Bookmark" eww-previous-bookmark)]
+	])
+
+
+;;; Ideas for Further Development
+
+;; https://github.com/jojojames/matcha
+;; https://github.com/conao3/transient-dwim.el
 
 ;; org-agenda commands
 ;; ibuffer commands
@@ -288,30 +350,6 @@
 ;; occur?
 ;; Help
 ;;   - info-apropos
-
-;; -------------------------------------------------------------
-
-;; https://gist.github.com/abrochard/dd610fc4673593b7cbce7a0176d897de
-
-(defun transient-test-function (&optional args)
-  (interactive
-   (list (transient-args 'test-transient)))
-  (message "args %s" args))
-
-(define-infix-argument test-transient:--message ()
-  :description "Message"
-  :class 'transient-option
-  :shortarg "-m"
-  :argument "--message=")
-
-(define-transient-command test-transient ()
-       "Test Transient Title"
-       ["Arguments"
-        ("-s" "Switch" "--switch")
-        ("-a" "Another switch" "--another")
-        ("-m" "Message" "--message=")] ;; simpler
-       ["Actions"
-        ("d" "Action d" test-function)])
 
 
 (provide 'oht-transient)

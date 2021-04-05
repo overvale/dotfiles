@@ -710,6 +710,12 @@
   ("M-<up>" . move-text-up)
   ("M-<down>" . move-text-down))
 
+(use-package buffer-move
+  :commands (buf-move-up
+			 buf-move-down
+			 buf-move-left
+			 buf-move-right))
+
 (use-package bookmark-view
   :straight (:type git :host github :repo "minad/bookmark-view" :branch "master")
   :commands (bookmark-view))
@@ -799,7 +805,8 @@
   :commands org-agenda
   :bind
   (:map org-agenda-mode-map
-	("s-z" . org-agenda-undo)))
+		("t" . oht-transient-org-agenda)
+		("s-z" . org-agenda-undo)))
 
 
 ;;;; Outline
@@ -854,9 +861,7 @@
   :commands (eww prot-eww-browse-dwim)
   :bind
   (:map eww-mode-map
-	("b" . bookmark-set)
-	("M-<return>" . oht-eww-open-in-new-buffer-bury)
-	("i" . eww-inhibit-images-toggle)))
+		("s-\\" . oht-transient-eww)))
 
 (use-package elfeed
   :commands elfeed
@@ -1018,7 +1023,10 @@
   ;; comes installed with Magit, no need to install
   :straight nil
   ;; Anything not in a binding below needs to be called-out as a command
-  :commands (oht-transient-org oht-transient-dispatch)
+  :commands (oht-transient-org
+			 oht-transient-dispatch
+			 oht-transient-org-agenda
+			 oht-transient-eww)
   :init
   (autoload 'org-store-link "org")
   :config

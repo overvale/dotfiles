@@ -759,7 +759,7 @@
   :after visual-regexp
   :bind (([remap query-replace-regexp] . #'vr/query-replace))
   :init
-  (setq vr/engine 'python))
+  (setq vr/engine 'pcre2el))
 
 
 ;;;; Languages

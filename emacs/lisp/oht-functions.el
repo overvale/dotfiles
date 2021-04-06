@@ -1,6 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
-;;;###autoload
+;;; Misc Functions
+
 (defun oht/rotate-window-split ()
   "Toggle between vertical and horizontal split."
   ;; Source: https://www.emacswiki.org/emacs/ToggleWindowSplit.
@@ -29,7 +30,6 @@
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 
-;;;###autoload
 (defun oht/open-in-bbedit ()
   "Open current file or dir in BBEdit.
 Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
@@ -39,7 +39,6 @@ Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.
     (string-equal system-type "darwin")
     (shell-command (format "open -a BBEdit \"%s\"" $path))))
 
-;;;###autoload
 (defun sanemacs/backward-kill-word ()
   "Kill word backward, without copying to clipboard."
   (interactive "*")
@@ -47,7 +46,7 @@ Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.
   (backward-word)
   (delete-region (point) (mark)))
 
-;;;###autoload
+
 (defun oht/pipe-region (start end command)
   "Run shell-command-on-region interactivly replacing the region in place"
   (interactive (let (string)
@@ -60,7 +59,6 @@ Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.
                        string)))
   (shell-command-on-region start end command t t))
 
-;;;###autoload
 (defun oht/org-insert-date-today ()
   "Insert today's date using standard org formatting."
   (interactive)
@@ -81,13 +79,11 @@ Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.
   (interactive)
   (switch-to-buffer "*scratch*"))
 
-;;;###autoload
 (defun all-occur (rexp)
   "Search all buffers for REXP."
   (interactive "MSearch open buffers for regex: ")
   (multi-occur (buffer-list) rexp))
 
-;;;###autoload
 (defun occur-dwim ()
   "Call `occur' with a sane default.
 Taken from oremacs.com. This will offer as the default candidate:
@@ -103,7 +99,6 @@ the current region (if it's active), or the current symbol."
         regexp-history)
   (call-interactively 'occur))
 
-;;;###autoload
 (defun oht-toggle-comment-region-or-line ()
     "Comments or uncomments the region or the current line if there's no active region."
     (interactive)
@@ -125,7 +120,6 @@ the current region (if it's active), or the current symbol."
         (forward-sexp))
     ad-do-it))
 
-;;;###autoload
 (defun my/smart-beginning-of-line ()
   "Move point to first non-whitespace character or beginning-of-line."
   (interactive)
@@ -145,13 +139,11 @@ the current region (if it's active), or the current symbol."
 ;; A few functions for working with the Secondary Selection. The primary way I
 ;; interact with these is through a hydra.
 
-;;;###autoload
 (defun oht/cut-secondary-selection ()
   "Cut the secondary selection."
   (interactive)
   (mouse-kill-secondary))
 
-;;;###autoload
 (defun oht/copy-secondary-selection ()
   "Copy the secondary selection."
   (interactive)
@@ -163,33 +155,28 @@ the current region (if it's active), or the current symbol."
 		     (overlay-end mouse-secondary-overlay))
    t))
 
-;;;###autoload
 (defun oht/cut-secondary-selection-paste ()
   "Cut the secondary selection and paste at point."
   (interactive)
   (mouse-kill-secondary)
   (yank))
 
-;;;###autoload
 (defun oht/copy-secondary-selection-paste ()
   "Copy the secondary selection and paste at point."
   (interactive)
   (oht/copy-secondary-selection)
   (yank))
 
-;;;###autoload
 (defun oht/mark-region-as-secondary-selection ()
   "Make the region the secondary selection."
   (interactive)
   (secondary-selection-from-region))
 
-;;;###autoload
 (defun oht/mark-secondary-selection ()
   "Mark the Secondary Selection as the region."
   (interactive)
   (secondary-selection-to-region))
 
-;;;###autoload
 (defun oht/delete-secondary-selection ()
   "Delete the Secondary Selection."
   (interactive)
@@ -203,7 +190,6 @@ the current region (if it's active), or the current symbol."
 (setq youtube-dl-path "/usr/local/bin/youtube-dl")
 (setq youtube-dl-output-dir "~/Desktop/")
 
-;;;###autoload
 (defun youtube-dl-URL-at-point ()
   "Send the URL at point to youtube-dl."
   (interactive)
@@ -212,5 +198,6 @@ the current region (if it's active), or the current symbol."
                                youtube-dl-output-dir
                                "%(title)s.%(ext)s"
                                (ffap-url-at-point))))
+
 
 (provide 'oht-functions)

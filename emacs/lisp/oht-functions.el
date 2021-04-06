@@ -66,7 +66,11 @@ Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.
   (interactive)
   (org-insert-time-stamp (current-time)))
 
-;;;###autoload
+(defun oht/org-insert-date-today-inactive ()
+  "Inserts today's date in org inactive format."
+  (interactive)
+  (insert (format-time-string "\[%Y-%m-%d\]")))
+
 (defun oht/find-scratch ()
   "Switch to the *scratch* buffer"
   (interactive)

@@ -215,7 +215,8 @@ wherever you need to go."
     ("r" "Refile" org-refile)
     ("c" "Checkbox" org-toggle-checkbox)]
    ["Insert"
-    ("." "Insert Date" oht/org-insert-date-today)
+    ("." "Insert Date, Active" oht/org-insert-date-today)
+	(">" "Insert Date, Inactive" oht/org-insert-date-today-inactive)
     ("<" "Structure Template" org-insert-structure-template)]
    ["Links"
     ("s" "Store Link" org-store-link)

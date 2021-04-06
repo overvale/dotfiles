@@ -329,6 +329,13 @@
 ;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
 (setq use-package-always-defer t)
 
+;; By default, use-package adds the suffix "-hook" to all your hook
+;; declarations, which I think is a reasonable default. I tend to forget that
+;; use-package does this and then forget that Emacs requires the suffix, then
+;; spend 15 minutes banging my head against a wall trying to figure out why
+;; the non-use-package hooks I'm writing don't work. So to avoid that I make
+;; it consistent, use-package or not the hooks are named the same.
+(setq use-package-hook-name-suffix nil)
 
 ;;; Packages
 
@@ -517,7 +524,7 @@
     (hl-line-mode 1)
     (ibuffer-auto-mode 1)
     (ibuffer-switch-to-saved-filter-groups "default"))
-  :hook (ibuffer-mode . oht-ibuffer-hook))
+  :hook (ibuffer-mode-hook . oht-ibuffer-hook))
 
 (use-package pulse
   :straight nil
@@ -882,7 +889,7 @@
 
 (use-package elfeed
   :commands elfeed
-  :hook (elfeed-show-mode . oht-elfeed-show-fonts)
+  :hook (elfeed-show-mode-hook . oht-elfeed-show-fonts)
   :config
   (load (concat oht-dotfiles "lisp/oht-elfeed.el"))
   (setq elfeed-use-curl t

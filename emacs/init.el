@@ -30,7 +30,7 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t
-	  initial-buffer-choice (lambda () (remember-notes)))
+	  initial-buffer-choice 'remember-notes)
 
 
 ;;;; Preferences
@@ -128,7 +128,8 @@
 (defun oht-find-emacs-dotfiles ()
   "Finds lisp files in dotfiles directory and passes to completing-read."
   (interactive)
-  (find-file (completing-read "Find Elisp Dotfile: " (directory-files-recursively oht-dotfiles "\.el$"))))
+  (find-file (completing-read "Find Elisp Dotfile: "
+							  (directory-files-recursively oht-dotfiles "\.el$"))))
 
 
 ;;;; Tab/Fill Settings, Visual Line Mode
@@ -249,7 +250,7 @@
 ;; My bindings
 (define-key oht-keys-mode-keymap (kbd "<C-return>") 'execute-extended-command)
 (define-key oht-keys-mode-keymap (kbd "C-;") 'backward-word)
-(define-key oht-keys-mode-keymap (kbd "C-'") 'foreward-word)
+(define-key oht-keys-mode-keymap (kbd "C-'") 'forward-word)
 (define-key oht-keys-mode-keymap (kbd "C-a") 'beginning-of-line)
 (define-key oht-keys-mode-keymap (kbd "C-e") 'end-of-line)
 
@@ -330,6 +331,12 @@
 
 
 ;;; Packages
+
+(use-package benchmark-init
+  :demand
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 (use-package blackout
   :demand
@@ -456,10 +463,6 @@
 ;;;; Built-In Packages
 
 (use-package remember
-  ;; The below replaces Emacs's regular *scratch* buffer with the remember-notes
-  ;; file/buffer, and sets some functions/bindings for quickly adding
-  ;; information to it. Think of it like a super lightweight org-mode capture
-  ;; whose inbox you see every time Emacs starts up.
   :straight nil
   :init
   (setq remember-data-file "~/home/org/remember-notes")
@@ -911,6 +914,9 @@
 
 (use-package hackernews
   :commands hackernews
+  :bind
+  (:map hackernews-mode-map
+		("o" . delete-other-windows))
   :custom
   (hackernews-items-per-page 30)
   (hackernews-default-feed 'top))

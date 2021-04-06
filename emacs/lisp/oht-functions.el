@@ -71,6 +71,11 @@ Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.
   (interactive)
   (insert (format-time-string "\[%Y-%m-%d\]")))
 
+(defun find-file-recursively ()
+  "Find Files Recursively using completing read."
+  (find-file (completing-read "Find File Recursively: "
+							  (directory-files-recursively default-directory ".+"))))
+
 (defun oht/find-scratch ()
   "Switch to the *scratch* buffer"
   (interactive)

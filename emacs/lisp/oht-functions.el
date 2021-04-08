@@ -188,7 +188,7 @@ the current region (if it's active), or the current symbol."
 ;; A few utilities for working with videos
 
 (setq youtube-dl-path "/usr/local/bin/youtube-dl")
-(setq youtube-dl-output-dir "~/Desktop/")
+(setq youtube-dl-output-dir "~/Downloads/")
 
 (defun youtube-dl-URL-at-point ()
   "Send the URL at point to youtube-dl."

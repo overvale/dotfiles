@@ -5,10 +5,10 @@
 ;; selected candidate.
 
 
-(defun oht-dispatch-read-later ()
-  "Open my Read Later directory."
+(defun oht-dispatch-downloads ()
+  "Open my Downloads directory."
   (interactive)
-  (find-file "~/home/files/read later"))
+  (find-file "~/Downloads"))
 
 (defun oht-dispatch-NPR-news ()
   "Open text.npr.org"
@@ -39,7 +39,7 @@ For example you might want to do something like:
 		list-bookmarks
 		mu4e
 		eww
-		oht-dispatch-read-later
+		oht-dispatch-downloads
 		oht-dispatch-NPR-news
 		oht-dispatch-CNN-news
         oht-dispatch-google-news))"

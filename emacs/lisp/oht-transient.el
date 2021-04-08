@@ -71,7 +71,7 @@ wherever you need to go."
     ("n" "NPR News" oht-dispatch-NPR-news)
     ("c" "CNN News" oht-dispatch-CNN-news)
 	("g" "Google News" oht-dispatch-google-news)]
-   [("r" "Read Later..." oht-dispatch-read-later)]])
+   [("d" "Downloads" oht-dispatch-downloads)]])
 
 
 (define-transient-command oht-transient-window ()

@@ -213,7 +213,10 @@
 
 		("f" "Mail Follow Up" entry
 		 (file+headline "~/home/org/ingenuity.org" "Mail")
-         "* TODO %a\n\n  %i")))
+         "* TODO %a\n\n  %i")
+		("e" "Emacs Config" entry
+		 (file+headline "~/home/org/emacs.org" "Emacs Config")
+         "* TODO %?")))
 
 ;; Ensure Capture Templates End With Newline
 

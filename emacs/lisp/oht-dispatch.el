@@ -6,9 +6,19 @@
 
 
 (defun oht-dispatch-downloads ()
-  "Open my Downloads directory."
+  "Open ~/downloads"
   (interactive)
   (find-file "~/Downloads"))
+
+(defun oht-dispatch-reading ()
+  "Open ~/downloads/reading"
+  (interactive)
+  (find-file "~/Downloads/reading"))
+
+(defun oht-dispatch-watch ()
+  "Open ~/downloads/watch"
+  (interactive)
+  (find-file "~/Downloads/watch"))
 
 (defun oht-dispatch-NPR-news ()
   "Open text.npr.org"

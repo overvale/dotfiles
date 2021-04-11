@@ -65,13 +65,15 @@ wherever you need to go."
     ("A" "Org Agenda Command..." org-agenda)]
    [("m" "Mail" mu4e)]]
   ["Browsing"
-   [("e" "Elfeed" elfeed)
+   [("e" "Elfeed"      elfeed)
     ("h" "Hacker News" hackernews)]
-   [("E" "EWW" prot-eww-browse-dwim)
-    ("n" "NPR News" oht-dispatch-NPR-news)
-    ("c" "CNN News" oht-dispatch-CNN-news)
+   [("E" "EWW"         prot-eww-browse-dwim)
+    ("n" "NPR News"    oht-dispatch-NPR-news)
+    ("c" "CNN News"    oht-dispatch-CNN-news)
 	("g" "Google News" oht-dispatch-google-news)]
-   [("d" "Downloads" oht-dispatch-downloads)]])
+   [("d" "Downloads"   oht-dispatch-downloads)
+	("r" "Reading"     oht-dispatch-reading)
+	("w" "Watch"       oht-dispatch-watch)]])
 
 
 (define-transient-command oht-transient-window ()

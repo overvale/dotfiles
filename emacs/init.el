@@ -10,10 +10,10 @@
 ;; Garbage Collection!
 ;; This is actually the 2nd step, for the first step, see `early-init.el'
 (add-hook 'emacs-startup-hook
-  (lambda ()
-    (setq gc-cons-threshold 16777216 ; 16mb
-          gc-cons-percentage 0.1)
-    (garbage-collect)) t)
+		  (lambda ()
+			(setq gc-cons-threshold 16777216 ; 16mb
+				  gc-cons-percentage 0.1)
+			(garbage-collect)) t)
 
 ;; When testing startup performance, it can be useful to print a message
 ;; saying how long it took to start up.
@@ -421,7 +421,7 @@
   :init
   (marginalia-mode 1)
   (setq marginalia-annotators
-	'(marginalia-annotators-heavy marginalia-annotators-light))
+		'(marginalia-annotators-heavy marginalia-annotators-light))
   ;; if using Selectrum
   (advice-add #'marginalia-cycle :after
               (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit)))))
@@ -445,7 +445,7 @@
   :config
   (setq consult-preview-key (kbd "C-="))
   (setq consult-config
-	`((consult-mark :preview-key any))))
+		`((consult-mark :preview-key any))))
 
 (use-package embark-consult
   :straight nil
@@ -471,7 +471,7 @@
     "If the region is active, capture with region, otherwise just capture."
     (interactive)
     (if (use-region-p)
-	(let ((current-prefix-arg 4)) (call-interactively 'remember))
+		(let ((current-prefix-arg 4)) (call-interactively 'remember))
       (remember)))
   :bind
   ("s-_" . oht-remember-dwim)
@@ -482,7 +482,7 @@
   :commands (list-bookmarks)
   :init
   (add-hook 'bookmark-bmenu-mode (lambda ()
-                                  (hl-line-mode 1)))
+                                   (hl-line-mode 1)))
   (setq bookmark-save-flag 1)
   (setq bookmark-default-file "~/home/bookmarks")
   (setq bookmark-bmenu-file-column 45)
@@ -493,25 +493,25 @@
   :commands ibuffer
   :config
   (setq ibuffer-show-empty-filter-groups nil
-	ibuffer-saved-filter-groups
-	'(("default"
-	   ("Read"  (or (mode . eww-mode)
-					(mode . elfeed-search-mode)
-					(mode . elfeed-show-mode)))
-	   ("Org"   (mode . org-mode))
-	   ("Mail"  (or
-                 (mode . mu4e-view-mode)
-                 (mode . mu4e-main-mode)
-                 (mode . mu4e-headers-mode)
-                 (mode . mu4e-view-raw-mode)
-                 (mode . mu4e-compose-mode)
-                 (mode . message-mode)
-                 (mode . mail-mode)))
-	   ("Dired" (mode . dired-mode))
-	   ("ELisp" (mode . emacs-lisp-mode))
-	   ("Help"  (or (name . "\*Help\*")
-					(name . "\*Apropos\*")
-					(name . "\*Info\*"))))))
+		ibuffer-saved-filter-groups
+		'(("default"
+		   ("Read"  (or (mode . eww-mode)
+						(mode . elfeed-search-mode)
+						(mode . elfeed-show-mode)))
+		   ("Org"   (mode . org-mode))
+		   ("Mail"  (or
+					 (mode . mu4e-view-mode)
+					 (mode . mu4e-main-mode)
+					 (mode . mu4e-headers-mode)
+					 (mode . mu4e-view-raw-mode)
+					 (mode . mu4e-compose-mode)
+					 (mode . message-mode)
+					 (mode . mail-mode)))
+		   ("Dired" (mode . dired-mode))
+		   ("ELisp" (mode . emacs-lisp-mode))
+		   ("Help"  (or (name . "\*Help\*")
+						(name . "\*Apropos\*")
+						(name . "\*Info\*"))))))
   (defun oht-ibuffer-hook ()
     (hl-line-mode 1)
     (ibuffer-auto-mode 1)
@@ -649,10 +649,10 @@
       (call-process "open" nil 0 nil file)
       (message "Opening %s done" file)))
   (add-hook 'dired-mode-hook
-	    (lambda ()
-	      (dired-hide-details-mode 1)
-	      (auto-revert-mode)
-	      (hl-line-mode 1))))
+			(lambda ()
+			  (dired-hide-details-mode 1)
+			  (auto-revert-mode)
+			  (hl-line-mode 1))))
 
 (use-package dired-subtree
   :after dired
@@ -683,9 +683,9 @@
   (flyspell-correct-interface 'flyspell-correct-dummy)
   :init
   (advice-add 'flyspell-correct-dummy :around
-	      (defun my--fsc-wrapper (func &rest args)
-		(let ((selectrum-should-sort-p nil))
-		  (apply func args)))))
+			  (defun my--fsc-wrapper (func &rest args)
+				(let ((selectrum-should-sort-p nil))
+				  (apply func args)))))
 
 
 ;;;; Misc Packages
@@ -843,7 +843,7 @@
   (:map outline-minor-mode-map
         ([C-tab] . bicycle-cycle))
   (:map emacs-lisp-mode-map
-	   ("<backtab>" . bicycle-cycle-global)))
+		("<backtab>" . bicycle-cycle-global)))
 
 
 ;;;; Browser & News
@@ -870,7 +870,7 @@
   (setq eww-use-external-browser-for-content-type
         "\\`\\(video/\\|audio/\\|application/pdf\\)")
   (setq url-cookie-trusted-urls '()
-	url-cookie-untrusted-urls '(".*"))
+		url-cookie-untrusted-urls '(".*"))
   (defun oht-eww-bookmark-handler (record)
     "Jump to an eww bookmarked location using EWW."
     (eww (bookmark-prop-get record 'location)))
@@ -887,31 +887,31 @@
   :config
   (load (concat oht-dotfiles "lisp/oht-elfeed.el"))
   (setq elfeed-use-curl t
-	elfeed-curl-max-connections 10
-	elfeed-db-directory "~/.emacs.d/elfeed/"
-	elfeed-enclosure-default-dir "~/Downloads/"
-	elfeed-search-filter "@4-week-ago +unread"
-	elfeed-sort-order 'descending
-	elfeed-search-clipboard-type 'CLIPBOARD
-	elfeed-show-truncate-long-urls t)
+		elfeed-curl-max-connections 10
+		elfeed-db-directory "~/.emacs.d/elfeed/"
+		elfeed-enclosure-default-dir "~/Downloads/"
+		elfeed-search-filter "@4-week-ago +unread"
+		elfeed-sort-order 'descending
+		elfeed-search-clipboard-type 'CLIPBOARD
+		elfeed-show-truncate-long-urls t)
   :bind
   (:map elfeed-search-mode-map
-	("a" . hrs/elfeed-pinboard-current-entry)
-	("b" . elfeed-search-browse-url)
-	("B" . oht-elfeed-search-browse-and-bury)
-	("*" . elfeed-search-tag--star)
-	("8" . elfeed-search-untag--star)
-	)
+		("a" . hrs/elfeed-pinboard-current-entry)
+		("b" . elfeed-search-browse-url)
+		("B" . oht-elfeed-search-browse-and-bury)
+		("*" . elfeed-search-tag--star)
+		("8" . elfeed-search-untag--star)
+		)
   (:map elfeed-show-mode-map
-	("a" . hrs/elfeed-pinboard-current-entry)
-	("&" . bjm/elfeed-show-visit-gui)
-	("r" . elfeed-show-tag--read)
-	("u" . elfeed-show-tag--unread)
-	("*" . elfeed-show-tag--star)
-	("8" . elfeed-show-tag--unstar)
-	("d" . oht-elfeed-show-download-video)
-	("i" . elfeed-inhibit-images-toggle)
-	("B" . oht-elfeed-show-browse-and-bury)))
+		("a" . hrs/elfeed-pinboard-current-entry)
+		("&" . bjm/elfeed-show-visit-gui)
+		("r" . elfeed-show-tag--read)
+		("u" . elfeed-show-tag--unread)
+		("*" . elfeed-show-tag--star)
+		("8" . elfeed-show-tag--unstar)
+		("d" . oht-elfeed-show-download-video)
+		("i" . elfeed-inhibit-images-toggle)
+		("B" . oht-elfeed-show-browse-and-bury)))
 
 (use-package hackernews
   :commands hackernews
@@ -931,64 +931,64 @@
   :straight nil
   :config
   (setq message-send-mail-function 'smtpmail-send-it
-	message-cite-style 'message-cite-style-thunderbird
-	message-cite-function 'message-cite-original
-	message-kill-buffer-on-exit t
-	message-citation-line-format "On %d %b %Y at %R, %f wrote:\n"
-	message-citation-line-function 'message-insert-formatted-citation-line))
+		message-cite-style 'message-cite-style-thunderbird
+		message-cite-function 'message-cite-original
+		message-kill-buffer-on-exit t
+		message-citation-line-format "On %d %b %Y at %R, %f wrote:\n"
+		message-citation-line-function 'message-insert-formatted-citation-line))
 
 (use-package mu4e
   :load-path "/usr/local/Cellar/mu/1.4.15/share/emacs/site-lisp/mu/mu4e"
   :commands mu4e
   :bind (:map mu4e-headers-mode-map
-	      ("G" . mu4e-update-mail-and-index))
+			  ("G" . mu4e-update-mail-and-index))
   :config
   (load "~/home/ingenuity/mu4e.el")
   (setq mu4e-attachments-dir "~/Downloads"
-	mu4e-update-interval (* 5 60)
-	mu4e-change-filenames-when-moving t
-	mu4e-completing-read-function 'completing-read
-	mu4e-compose-dont-reply-to-self t
-	mu4e-compose-format-flowed nil
-	mu4e-confirm-quit nil
-	mu4e-headers-date-format "%Y-%m-%d"
-	mu4e-headers-include-related nil
-	mu4e-headers-skip-duplicates t
-	mu4e-headers-time-format "%H:%M"
-	mu4e-headers-visible-lines 20
-	mu4e-use-fancy-chars nil
-	mu4e-view-show-addresses t
-	mu4e-view-show-images t
-	mu4e-sent-messages-behavior 'delete)
+		mu4e-update-interval (* 5 60)
+		mu4e-change-filenames-when-moving t
+		mu4e-completing-read-function 'completing-read
+		mu4e-compose-dont-reply-to-self t
+		mu4e-compose-format-flowed nil
+		mu4e-confirm-quit nil
+		mu4e-headers-date-format "%Y-%m-%d"
+		mu4e-headers-include-related nil
+		mu4e-headers-skip-duplicates t
+		mu4e-headers-time-format "%H:%M"
+		mu4e-headers-visible-lines 20
+		mu4e-use-fancy-chars nil
+		mu4e-view-show-addresses t
+		mu4e-view-show-images t
+		mu4e-sent-messages-behavior 'delete)
   (setq mu4e-headers-fields
-	'((:human-date . 12)
-	  (:flags . 6)
-	  (:from . 22)
-	  (:thread-subject)))
+		'((:human-date . 12)
+		  (:flags . 6)
+		  (:from . 22)
+		  (:thread-subject)))
   ;; Hooks and settings
   (defun jcs-view-in-eww (msg)
     (eww-browse-url (concat "file://" (mu4e~write-body-to-html msg))))
   (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
   (add-to-list 'mu4e-view-actions '("Eww view" . jcs-view-in-eww) t)
   (add-hook 'mu4e-compose-mode-hook
-	    (defun oht-mu4e-compose-settings ()
-	      "My settings for message composition."
-	      (auto-fill-mode -1)
-	      (visual-line-mode t)))
+			(defun oht-mu4e-compose-settings ()
+			  "My settings for message composition."
+			  (auto-fill-mode -1)
+			  (visual-line-mode t)))
   (add-hook 'mu4e-view-mode-hook
-	    (defun oht-mu4e-view-settings ()
-	      "My settings for message composition."
-	      (larger-variable-pitch-mode 1)
-	      )))
+			(defun oht-mu4e-view-settings ()
+			  "My settings for message composition."
+			  (larger-variable-pitch-mode 1)
+			  )))
 
 (use-package smtpmail
   :straight nil
   :init
   (setq auth-sources '("~/home/ingenuity/authinfo"))
   (setq	smtpmail-stream-type 'starttls
-	smtpmail-default-smtp-server "smtp.gmail.com"
-	smtpmail-smtp-server "smtp.gmail.com"
-	smtpmail-smtp-service 587))
+		smtpmail-default-smtp-server "smtp.gmail.com"
+		smtpmail-smtp-server "smtp.gmail.com"
+		smtpmail-smtp-service 587))
 
 
 ;;;; PDFs
@@ -1021,14 +1021,14 @@
     (pdf-annot-list-follow-minor-mode))
   :hook (pdf-annot-list-mode-hook . oht-pdf-annot-fonts)
   :bind (:map pdf-view-mode-map
-	      ("C-s" . isearch-forward)
-	      ("C-r" . isearch-backward)
-	      ("A" .   pdf-annot-add-highlight-markup-annotation)
-	      ("L" .   pdf-annot-list-annotations)
-	      ("O" .   pdf-occur)
-	      ("G" .   pdf-view-goto-page)
-	      ("<" .   pdf-view-first-page)
-	      (">" .   pdf-view-last-page)))
+			  ("C-s" . isearch-forward)
+			  ("C-r" . isearch-backward)
+			  ("A" .   pdf-annot-add-highlight-markup-annotation)
+			  ("L" .   pdf-annot-list-annotations)
+			  ("O" .   pdf-occur)
+			  ("G" .   pdf-view-goto-page)
+			  ("<" .   pdf-view-first-page)
+			  (">" .   pdf-view-last-page)))
 
 (use-package pdf-tools-org
   ;; This package seems pretty out of date, modifying the code as suggested here:

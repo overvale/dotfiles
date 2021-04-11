@@ -96,5 +96,44 @@ see the elisp info manual under 'Face Remapping'."
 (add-hook 'buffer-face-mode-hook 'oht-fonts-buffer-face-setup)
 
 
+;; Custom Buffer Fonts Mode
+
+(define-minor-mode oht-fonts-buffer-font-mode
+  "Minor mode for setting custom fonts per buffer."
+  :init-value nil
+  :lighter " BufFont"
+  (if oht-fonts-buffer-font-mode
+	  (progn
+		(setq-local oht-fonts-default-remapping
+					(face-remap-add-relative 'default
+											 :family oht-fonts-monospace
+											 :weight oht-fonts-monospace-weight
+											 :height (/ (float oht-fonts-monospace-size)
+														(float oht-fonts-variable-size))))
+		(setq-local oht-fonts-fixed-pitch-remapping
+					(face-remap-add-relative 'fixed-pitch
+											 :family oht-fonts-monospace
+											 :weight oht-fonts-monospace-weight
+											 :height (/ (float oht-fonts-monospace-size)
+														(float oht-fonts-variable-size))))
+		(setq-local oht-fonts-variable-pitch-remapping
+					(face-remap-add-relative 'variable-pitch
+											 :family oht-fonts-variable
+											 :weight oht-fonts-variable-weight
+											 :height (/ (float oht-fonts-variable-size)
+														(float oht-fonts-monospace-size))))
+		(force-window-update (current-buffer)))
+  (progn
+    (face-remap-remove-relative oht-fonts-default-remapping)
+    (face-remap-remove-relative oht-fonts-variable-pitch-remapping)
+    (face-remap-remove-relative oht-fonts-fixed-pitch-remapping)
+	(force-window-update (current-buffer)))))
+
+(defun oht-fonts-programming ()
+  (interactive)
+  (setq-local oht-fonts-monospace "Iosevka")
+  (setq-local oht-fonts-variable  "IBM Plex Sans")
+  (oht-fonts-buffer-font-mode 'toggle))
+
 
 (provide 'oht-fonts)

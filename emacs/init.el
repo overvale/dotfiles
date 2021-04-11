@@ -395,34 +395,24 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 
-;; Experimenting with a simpler alternative to selectrum
-(use-package vertico
-  :straight (:host github :repo "minad/vertico" :branch "main")
+(use-package selectrum
+  :straight (:host github :repo "raxod502/selectrum" :branch "master")
+  :init (selectrum-mode +1)
+  :config
+  ;; (setq selectrum-display-action '(display-buffer-in-side-window
+  ;; 								   (side . bottom)
+  ;; 								   (slot . -1)
+  ;; 								   ))
+  )
+
+(use-package selectrum-prescient
+  :after selectrum
   :init
-  (vertico-mode))
-;; Add prompt indicator to `completing-read-multiple'.
-(defun crm-indicator (args)
-  (cons (concat "[CRM] " (car args)) (cdr args)))
-(advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-;; (use-package selectrum
-;;   :straight (:host github :repo "raxod502/selectrum" :branch "master")
-;;   :init (selectrum-mode +1)
-;;   :config
-;;   ;; (setq selectrum-display-action '(display-buffer-in-side-window
-;;   ;; 								   (side . bottom)
-;;   ;; 								   (slot . -1)
-;;   ;; 								   ))
-;;   )
-
-;; (use-package selectrum-prescient
-;;   :after selectrum
-;;   :init
-;;   ;; to make sorting and filtering more intelligent
-;;   (selectrum-prescient-mode +1)
-;;   ;; to save your command history on disk, so the sorting gets more
-;;   ;; intelligent over time
-;;   (prescient-persist-mode +1))
+  ;; to make sorting and filtering more intelligent
+  (selectrum-prescient-mode +1)
+  ;; to save your command history on disk, so the sorting gets more
+  ;; intelligent over time
+  (prescient-persist-mode +1))
 
 (use-package marginalia
   :straight (:type git :host github :repo "minad/marginalia" :branch "main")

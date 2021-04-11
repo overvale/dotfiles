@@ -82,6 +82,7 @@ wherever you need to go."
     ("s" "Horizontal" split-window-below)
     ("v" "Vertical"   split-window-right)
     ("b" "Balance"    balance-windows)
+	("f" "Fit"        fit-window-to-buffer)
     ("r" "Rotate"     oht/rotate-window-split)]
    ["Window"
     ("c" "Clone Indirect" clone-indirect-buffer)

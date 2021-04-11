@@ -32,7 +32,6 @@
 		;; news
 		("https://www.economist.com/the-economist-explains/rss.xml" news)
 		("https://hnrss.org/best" news)
-		("https://www.theverge.com/rss/front-page/index.xml" news)
 		;; emacs
 		("https://github.com/railwaycat/homebrew-emacsmacport/releases.atom" emacs)
 		("https://github.com/raxod502/selectrum/releases.atom" emacs)
@@ -52,6 +51,7 @@
 		("https://planet.emacslife.com/atom.xml" emacs)
 		("https://reddit.com/r/emacs/top/.rss?sort=top&t=day" emacs)
 		("https://archive.casouri.cat/note/rss.xml" emacs)
+		("https://www.rousette.org.uk/index.xml" emacs)
 		;; youtube
 		("https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g" emacs) ; Prot
 		("https://www.youtube.com/feeds/videos.xml?channel_id=UCe5excZqMeG1CIW-YhMTCEQ" emacs) ; Emacs Elements
@@ -114,7 +114,7 @@
 (defun oht-elfeed-show-fonts ()
   "Apply some customization to fonts in elfeed-show-mode."
   (larger-variable-pitch-mode)
-  (setq-local line-spacing 2))
+  (setq-local line-spacing 3))
 
 (defun bjm/elfeed-show-visit-gui ()
   "Wrapper for elfeed-show-visit to use gui browser instead of eww"

@@ -95,6 +95,8 @@
 ;; And show an indicator when you do that.
 (minibuffer-depth-indicate-mode 1)
 
+;; Resize minibuffer and echo area
+(setq resize-mini-windows t)
 
 ;;;; Kill Ring
 
@@ -354,7 +356,7 @@
 
 (use-package modus-themes
   :init (setq modus-themes-bold-constructs nil
-              modus-themes-slanted-constructs t
+              modus-themes-slanted-constructs nil
               modus-themes-syntax 'alt-syntax
               modus-themes-links 'faint-neutral-underline
               modus-themes-prompts 'subtle
@@ -1084,10 +1086,11 @@
   :init
   (setq-default line-spacing nil)
   (setq text-scale-mode-step 1.09)
-  (setq oht-fonts-monospace "IBM Plex Mono")
-  (setq oht-fonts-variable  "IBM Plex Sans")
-  (setq oht-fonts-monospace-size 12)
-  (setq oht-fonts-variable-size  14)
+  (setq oht-fonts-monospace "Triplicate T4c"
+        oht-fonts-variable  "IBM Plex Serif"
+		oht-fonts-variable-weight 'normal
+        oht-fonts-monospace-size 13
+        oht-fonts-variable-size  14)
   (set-face-attribute 'mode-line nil          :family "IBM Plex Sans" :height 130)
   (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130)
   :config (oht-fonts-set))

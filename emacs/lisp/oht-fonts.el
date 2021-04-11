@@ -30,6 +30,11 @@ This value will be used to determine a relative (float) size based on the defaul
 size. So if your default size is 12 and your variable size is 14 the derived
 size will be 1.16.")
 
+(defvar oht-fonts-monospace-weight 'normal
+  "Weight of both the default and fixed-pitch faces.")
+
+(defvar oht-fonts-variable-weight 'normal
+  "Weight of the variable-pitch face.")
 
 ;;; Set fonts and their sizes
 
@@ -38,12 +43,16 @@ size will be 1.16.")
   (interactive)
   (set-face-attribute 'default nil
 					  :family oht-fonts-monospace
+					  :weight oht-fonts-monospace-weight
 					  :height (* oht-fonts-monospace-size 10))
   (set-face-attribute 'fixed-pitch nil
 					  :family oht-fonts-monospace
-					  :height 1.0 )
+					  :weight oht-fonts-monospace-weight
+					  :height 1.0)
   (set-face-attribute 'variable-pitch nil
-					  :family oht-fonts-variable :height 1.0))
+					  :family oht-fonts-variable
+					  :weight oht-fonts-variable-weight
+					  :height 1.0))
 
 
 ;;; Larger Variable Pitch Mode

@@ -635,7 +635,9 @@
   :init
   (setq dired-use-ls-dired nil) ; no more warning message
   :bind (:map dired-mode-map
-		 ("s-\\" . oht-transient-dired))
+			  ("s-\\" . oht-transient-dired)
+			  ("O" . dired-open-file)
+			  ("s-z" . dired-undo))
   :config
   (defun dired-open-file ()
     "In dired, open the file named on this line."

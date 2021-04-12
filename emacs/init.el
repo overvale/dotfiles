@@ -1080,20 +1080,26 @@
 ;; declarations. If you don't want to separate the code into a separate file
 ;; you can "use" the Emacs package.
 
-(use-package oht-fonts
+(use-package facedancer
   :straight nil
   :demand
   :init
   (setq-default line-spacing nil)
   (setq text-scale-mode-step 1.09)
-  (setq oht-fonts-monospace "Triplicate T4c"
-        oht-fonts-variable  "IBM Plex Serif"
-		oht-fonts-variable-weight 'normal
-        oht-fonts-monospace-size 13
-        oht-fonts-variable-size  14)
+  (setq facedancer-monospace "Triplicate T4c"
+        facedancer-variable  "IBM Plex Serif"
+		facedancer-variable-weight 'normal
+        facedancer-monospace-size 13
+        facedancer-variable-size  14)
   (set-face-attribute 'mode-line nil          :family "IBM Plex Sans" :height 130)
   (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130)
-  :config (oht-fonts-set))
+  (defun facedancer-oht-programming ()
+	(interactive)
+	(setq-local facedancer-monospace "Iosevka")
+	(setq-local facedancer-variable  "IBM Plex Sans")
+	(facedancer-mode 'toggle))
+  :config
+  (facedancer-font-set))
 
 
 (use-package oht-dispatch

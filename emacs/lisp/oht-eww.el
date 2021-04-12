@@ -5,7 +5,7 @@
 
 (defun oht-eww-fonts ()
   "Apply some customization to fonts in eww-mode."
-  (larger-variable-pitch-mode)
+  (facedancer-vadjust-mode)
   (text-scale-increase 1)
   (setq-local line-spacing 2))
 

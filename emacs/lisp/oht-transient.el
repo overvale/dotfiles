@@ -128,7 +128,7 @@ wherever you need to go."
   :transient-non-suffix 'transient--do-warn
   [["Modes"
     ("v" "Var Mode" variable-pitch-mode)
-    ("V" "V+ Mode" larger-variable-pitch-mode)
+    ("V" "V+ Mode" facedancer-vadjust-mode)
     ("o" "Olivetti" olivetti-mode)
     ("w" "Wrap" visual-line-mode)
     ("c" "Comp" composition-mode)
@@ -140,7 +140,7 @@ wherever you need to go."
     ("-" "Smaller" text-scale-decrease)
     ]
    ["Other"
-    ("s" "Line Spacing" oht-fonts-line-spacing)
+    ("s" "Line Spacing" facedancer-line-spacing)
     ("m" "Modus Toggle" modus-themes-toggle)]])
 
 

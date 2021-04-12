@@ -113,7 +113,7 @@
 
 (defun oht-elfeed-show-fonts ()
   "Apply some customization to fonts in elfeed-show-mode."
-  (larger-variable-pitch-mode)
+  (facedancer-vadjust-mode)
   (setq-local line-spacing 3))
 
 (defun bjm/elfeed-show-visit-gui ()

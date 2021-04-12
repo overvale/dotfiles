@@ -211,7 +211,7 @@ wherever you need to go."
     ("g" "Go To" org-goto)
     ("m" "Visible Markup" visible-mode)]
    ["Item"
-    ("t" "TODO" org-todo)
+    ("t" "TODO" oht-transient-org-todo)
     ("I" "Clock In" org-clock-in)
     ("O" "Clock Out" org-clock-out)
     ("a" "Archive Subtree" org-archive-subtree)
@@ -237,6 +237,19 @@ org-todo-keywords to a transient command."
 	("l" "LATER"    org-agenda-todo-set-later)]
    [("d" "DONE"     org-agenda-todo-set-done)
 	("c" "CANCELED" org-agenda-todo-set-canceled)]])
+
+
+(define-transient-command oht-transient-org-todo ()
+  "A transient for setting org todo status.
+
+I've created this because I don't like how org-todo messes with
+windows. There is likely a much better way to automatically map
+org-todo-keywords to a transient command."
+  ["Change Status To..."
+   [("t" "TODO"     org-todo-set-todo)
+	("l" "LATER"    org-todo-set-later)]
+   [("d" "DONE"     org-todo-set-done)
+	("c" "CANCELED" org-todo-set-canceled)]])
 
 
 (define-transient-command oht-transient-dired ()

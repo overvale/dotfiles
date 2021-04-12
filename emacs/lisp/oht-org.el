@@ -159,21 +159,35 @@
 (setq org-todo-keywords
       '((sequence "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")))
 
+
+;; Functions for directly setting todo status. I'm doing this here because the
+;; pop-ups provided `org-agenda-todo' and `org-todo' are horrifically broken,
+;; and I prefer to use a transient commands instead.
 (defun org-agenda-todo-set-todo ()
   (interactive)
   (org-agenda-todo "TODO"))
-
 (defun org-agenda-todo-set-later ()
   (interactive)
   (org-agenda-todo "LATER"))
-
 (defun org-agenda-todo-set-done ()
   (interactive)
   (org-agenda-todo "DONE"))
-
 (defun org-agenda-todo-set-canceled ()
   (interactive)
   (org-agenda-todo "CANCELED"))
+(defun org-todo-set-todo ()
+  (interactive)
+  (org-todo "TODO"))
+(defun org-todo-set-later ()
+  (interactive)
+  (org-todo "LATER"))
+(defun org-todo-set-done ()
+  (interactive)
+  (org-todo "DONE"))
+(defun org-todo-set-canceled ()
+  (interactive)
+  (org-todo "CANCELED"))
+
 
 ;; Ensure that a task can’t be marked as done if it contains
 ;; unfinished subtasks or checklist items. This is handy for

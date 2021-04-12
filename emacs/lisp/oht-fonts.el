@@ -84,7 +84,8 @@ see the elisp info manual under 'Face Remapping'."
 		(force-window-update (current-buffer)))
     (progn
       (face-remap-remove-relative variable-pitch-remapping)
-      (face-remap-remove-relative fixed-pitch-remapping))))
+      (face-remap-remove-relative fixed-pitch-remapping)
+	  (force-window-update (current-buffer)))))
 
 (defun oht-fonts-buffer-face-setup ()
   "If buffer-face-mode is active, activate larger-variable-pitch-mode, otherwise disable it."

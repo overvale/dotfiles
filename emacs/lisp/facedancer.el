@@ -148,11 +148,11 @@ then call that function with a hook, like so:
 											 :height (/ (float facedancer-variable-size)
 														(float facedancer-monospace-size))))
 		(force-window-update (current-buffer)))
-  (progn
-    (face-remap-remove-relative facedancer-default-remapping)
-    (face-remap-remove-relative facedancer-fixed-pitch-remapping)
-    (face-remap-remove-relative facedancer-variable-pitch-remapping)
-	(force-window-update (current-buffer)))))
+	(progn
+      (face-remap-remove-relative facedancer-default-remapping)
+      (face-remap-remove-relative facedancer-fixed-pitch-remapping)
+      (face-remap-remove-relative facedancer-variable-pitch-remapping)
+	  (force-window-update (current-buffer)))))
 
 
 ;;; Facedancer Variable Adjust Mode
@@ -177,7 +177,7 @@ the fixed-pitch face down to the height defined by
 											 :height (/ (float facedancer-monospace-size)
 														(float facedancer-variable-size))))
 		(force-window-update (current-buffer)))
-    (progn
+	(progn
       (face-remap-remove-relative variable-pitch-remapping)
       (face-remap-remove-relative fixed-pitch-remapping)
 	  (force-window-update (current-buffer)))))

@@ -374,57 +374,34 @@
 
 ;;;; Narrowing & Searching
 
-;; Navigating and using the thousands of things Emacs can do is built around
-;; the idea of searching and narrowing a selection down to the thing you're
-;; looking for. To make this easier I've installed a few packages that enhance
-;; Emacs built-in facilities for doing this.
-;;
-;; There are MANY approaches to this. I'm following the popular trend lead by
-;; @oantolin, @raxod502, @minad, and @protesilaos. Generally, it works like
-;; this:
-;;
-;; 1. Use Selectrum as the main interface for completion narrowing.
-;; 2. Use Prescient to sort those completions and provide fuzzy matching.
-;; 3. Use Marginalia to decorate the completions, and provide into to Embark.
-;; 4. Use Embark for lots of stuff.
-;; 5. When Selectrum is disabled (and thus also prescient) fall back on Orderless.
-;; 6. Use Consult and Consult-Selectrum to enable new commands.
-
 (use-package orderless
   :straight (:host github :repo "oantolin/orderless" :branch "master")
+  :demand
   :init
   (setq completion-styles '(orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 
-(use-package selectrum
-  :straight (:host github :repo "raxod502/selectrum" :branch "master")
-  :init (selectrum-mode +1)
-  :config
-  ;; (setq selectrum-display-action '(display-buffer-in-side-window
-  ;; 								   (side . bottom)
-  ;; 								   (slot . -1)
-  ;; 								   ))
-  )
-
-(use-package selectrum-prescient
-  :after selectrum
+(use-package vertico
+  :straight (:host github :repo "minad/vertico" :branch "main")
   :init
-  ;; to make sorting and filtering more intelligent
-  (selectrum-prescient-mode +1)
-  ;; to save your command history on disk, so the sorting gets more
-  ;; intelligent over time
-  (prescient-persist-mode +1))
+  (vertico-mode)
+
+  (defun crm-indicator (args)
+    (cons (concat "[CRM] " (car args)) (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  (setq minibuffer-prompt-properties
+		'(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+  )
 
 (use-package marginalia
   :straight (:type git :host github :repo "minad/marginalia" :branch "main")
   :init
   (marginalia-mode 1)
   (setq marginalia-annotators
-		'(marginalia-annotators-heavy marginalia-annotators-light))
-  ;; if using Selectrum
-  (advice-add #'marginalia-cycle :after
-              (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit)))))
+		'(marginalia-annotators-heavy marginalia-annotators-light)))
 
 (use-package embark
   :straight (:host github :repo "oantolin/embark" :branch "master")

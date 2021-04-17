@@ -190,15 +190,9 @@ the fixed-pitch face down to the height defined by
       (face-remap-remove-relative fixed-pitch-remapping)
 	  (force-window-update (current-buffer)))))
 
-(defun facedancer-buffer-face-setup ()
-  "If buffer-face-mode is active, activate facedancer-vadjust-mode, otherwise disable it."
-  (if buffer-face-mode
-      (facedancer-vadjust-mode 1)
-    (facedancer-vadjust-mode -1)))
-
 ;; Add a hook which enables facedancer-vadjust-mode when buffer-face-mode
 ;; activates.
-(add-hook 'buffer-face-mode-hook 'facedancer-buffer-face-setup)
+(add-hook 'buffer-face-mode-hook (lambda () (facedancer-vadjust-mode 'toggle)))
 
 
 (provide 'facedancer)

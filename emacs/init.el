@@ -96,7 +96,7 @@
 (minibuffer-depth-indicate-mode 1)
 
 ;; Resize minibuffer and echo area
-(setq resize-mini-windows t)
+(setq resize-mini-windows nil)
 
 ;;;; Kill Ring
 
@@ -357,11 +357,11 @@
 (use-package modus-themes
   :init (setq modus-themes-bold-constructs nil
               modus-themes-slanted-constructs nil
-              modus-themes-syntax 'alt-syntax
+              modus-themes-syntax 'nil
               modus-themes-links 'faint-neutral-underline
-              modus-themes-prompts 'subtle
-              modus-themes-mode-line 'borderless
-              modus-themes-completions 'moderate
+              modus-themes-prompts 'nil
+              modus-themes-mode-line 'accented
+              modus-themes-completions 'nil
               modus-themes-region 'bg-only
               modus-themes-diffs 'desaturated
               modus-themes-org-blocks 'grayscale
@@ -956,7 +956,7 @@
   (add-hook 'mu4e-view-mode-hook
 			(defun oht-mu4e-view-settings ()
 			  "My settings for message composition."
-			  (larger-variable-pitch-mode 1)
+			  (facedancer-vadjust-mode 1)
 			  )))
 
 (use-package smtpmail
@@ -1064,17 +1064,19 @@
   :init
   (setq-default line-spacing nil)
   (setq text-scale-mode-step 1.09)
-  (setq facedancer-monospace "Triplicate T4c"
+  (setq facedancer-monospace "IBM Plex Mono"
         facedancer-variable  "IBM Plex Serif"
 		facedancer-variable-weight 'normal
-        facedancer-monospace-size 13
+        facedancer-monospace-size 12
         facedancer-variable-size  14)
   (set-face-attribute 'mode-line nil          :family "IBM Plex Sans" :height 130)
   (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130)
-  (defun facedancer-oht-programming ()
+  (defun facedancer-prot-fonts ()
 	(interactive)
-	(setq-local facedancer-monospace "Iosevka")
-	(setq-local facedancer-variable  "IBM Plex Sans")
+	(setq-local facedancer-monospace "Iosevka Comfy"
+				facedancer-variable  "Inter"
+				facedancer-monospace-size 14
+				facedancer-variable-size  13)
 	(facedancer-mode 'toggle))
   :config
   (facedancer-font-set))

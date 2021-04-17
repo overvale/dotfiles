@@ -885,6 +885,7 @@
   :commands elfeed
   :hook (elfeed-show-mode-hook . oht-elfeed-show-fonts)
   :config
+  (load "~/home/src/rss-feeds.el")
   (load (concat oht-dotfiles "lisp/oht-elfeed.el"))
   (setq elfeed-use-curl t
 		elfeed-curl-max-connections 10

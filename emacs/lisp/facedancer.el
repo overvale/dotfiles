@@ -3,7 +3,7 @@
 ;; Copyright (C) 2021 Oliver Taylor
 
 ;; Author: Oliver Taylor
-;; URL: 
+;; URL: olivertaylor.net
 ;; Version: 0.1.0
 ;; Package-Requires: ((emacs "27.1"))
 
@@ -22,9 +22,11 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+
 ;;; Commentary:
 
 ;; This package's goal is to make customizing Emacs' fonts easy.
+;; facedancer-font-set allows you to set the global fonts.
 ;; facedancer-mode allows you to set per-buffer fonts.
 ;; facedancer-vadjust-mode allows optical adjustment of the variable-pitch height.
 
@@ -71,7 +73,7 @@ is 14 the derived size will be 1.16.")
   (setq-local line-spacing arg))
 
 (defun facedancer-font-set ()
-  "Function for setting the default, variable-, and fixed-pitch faces.
+  "Function for globally setting the default, variable-, and fixed-pitch faces.
 
 All three faces will be set to exactly the same size, with the variable-
 and fixed-pitch faces as relative (float) sizes. This allows
@@ -94,12 +96,19 @@ text-scale-adjust to work correctly."
 					  :height 1.0))
 
 
-;; Facedancer Mode
+;;; Facedancer Mode
+
+;; There are a number of built-in functions for dealing with setting
+;; per-buffer fonts, but all of them are built on buffer-face-mode, which
+;; works by remapping ONLY the default face to a new value. If you'd like to
+;; target specific faces (for example the variable-pitch face)
+;; buffer-face-mode won't cut it. The below approach applies the exact same
+;; approach as buffer-face-mode but allows you to target individual faces.
 
 (define-minor-mode facedancer-mode
-  "Minor mode for setting custom fonts per buffer.
+  "Local minor mode for setting custom fonts per buffer.
 
-Accepts any of the following variables, all are optional.
+Reads the following variables, all are optional.
 
 VARIABLE                      DEFAULT VALUE
 ---------------------------   -------------
@@ -112,16 +121,15 @@ facedancer-variable-weight    normal
 facedancer-monospace-width    normal
 facedancer-variable-width     normal
 
-To use them, create a function which sets the variables locally,
-then call that function with a hook, like so:
+To use, create a function which sets the variables locally, then
+call that function with a hook, like so:
 
     (defun my/custom-elfeed-fonts ()
-      (setq-local facedancer-monospace \"Iosevka\")
-      (setq-local facedancer-variable  \"IBM Plex Sans\")
+      (setq-local facedancer-monospace \"Iosevka\"
+                  facedancer-variable  \"Inter\")
       (facedancer-mode 'toggle))
     
-    (add-hook 'elfeed-show-mode 'my/custom-elfeed-fonts)
-"
+    (add-hook 'elfeed-show-mode 'my/custom-elfeed-fonts)"
   :init-value nil
   :lighter " FaceD"
   (if facedancer-mode

@@ -355,6 +355,25 @@ org-todo-keywords to a transient command."
 	("M-p" "Previous Bookmark" eww-previous-bookmark)]
 	])
 
+(define-transient-command oht-transient-info ()
+  [[("d" "Info Directory" Info-directory)
+	("m" "Menu" Info-menu)]
+   [("s" "Search regex Info File" Info-search)
+	("i" "Index" Info-index)
+	("I" "Index, Virtual" Info-virtual-index)]]
+  ["Navigation"
+   [("l" "Left, History" Info-history-back)
+	("r" "Right, History" Info-history-forward)
+	("L" "List, History" Info-history)]
+   [("T" "Table of Contents" Info-toc)
+	("n" "Next Node" Info-next)
+	("p" "Previous Node" Info-prev)
+	("u" "Up" Info-up)]
+   [("<" "Top Node" Info-top-node)
+	(">" "Final Node" Info-final-node)
+	("[" "Forward Node" Info-backward-node)
+	("]" "Backward Node" Info-forward-node)]])
+
 
 ;;; Ideas for Further Development
 

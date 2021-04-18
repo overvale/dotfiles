@@ -438,6 +438,11 @@
 
 ;;;; Built-In Packages
 
+(use-package info
+  :straight nil
+  :bind (:map Info-mode-map
+			  ("s-\\" . oht-transient-info)))
+
 (use-package remember
   :straight nil
   :init
@@ -1025,7 +1030,8 @@
   :commands (oht-transient-org
 			 oht-transient-dispatch
 			 oht-transient-org-agenda
-			 oht-transient-eww)
+			 oht-transient-eww
+			 oht-transient-info)
   :init
   (autoload 'org-store-link "org")
   :config

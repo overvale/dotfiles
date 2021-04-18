@@ -207,16 +207,16 @@
   :init
   (whole-line-or-region-global-mode 1))
 
-(use-package selectrum
-  ;; Select things from a nice list.
+(use-package orderless
+  :demand
   :init
-  (selectrum-mode 1))
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles . (partial-completion))))))
 
-(use-package selectrum-prescient
-  ;; Present selection candidates in a useful order.
+(use-package vertico
   :init
-  (selectrum-prescient-mode 1)
-  (prescient-persist-mode 1))
+  (vertico-mode))
 
 (use-package marginalia
   ;; Display useful information about the selection candidates.

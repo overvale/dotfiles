@@ -14,9 +14,9 @@
 ;; Agenda Sorting
 (setq org-agenda-sorting-strategy
       '(((agenda habit-down time-up priority-down category-up)
-		 (todo category-up priority-down)
-		 (tags priority-down category-keep)
-		 (search category-keep))))
+         (todo category-up priority-down)
+         (tags priority-down category-keep)
+         (search category-keep))))
 
 ;; And here we have some custom commands for the agenda view.
 
@@ -108,7 +108,7 @@
           (todo "TODO"
                 ((org-agenda-sorting-strategy '(todo-state-up))
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
-		("0" "COMPLETE: Week Agenda + All Tasks"
+        ("0" "COMPLETE: Week Agenda + All Tasks"
          ((agenda "w" ((org-agenda-span 'week)))
           (todo "TODO|LATER"
                 ((org-agenda-sorting-strategy '(todo-state-up))
@@ -204,32 +204,32 @@
 
 (setq org-capture-templates
       '(("i" "Inbox")
-		("ip" "Personal Inbox" entry
+        ("ip" "Personal Inbox" entry
          (file+headline "~/home/org/life.org" "Inbox")
          "* %?\n\n")
-		("ii" "Ingenuity Inbox" entry
+        ("ii" "Ingenuity Inbox" entry
          (file+headline "~/home/org/ingenuity.org" "Inbox")
          "* %?\n\n")
 
-		("l" "Log Entry")
-		("lp" "Personal Log Entry" entry
+        ("l" "Log Entry")
+        ("lp" "Personal Log Entry" entry
          (file "~/home/org/logbook.org")
          "* %?\n%t\n\n")
-		("lP" ".plan" entry
-		 (file "~/home/org/logbook.org")
-		 (file "~/home/dot/emacs/capture-templates/plan.org"))
-		("li" "Ingenuity Log Entry" entry
+        ("lP" ".plan" entry
+         (file "~/home/org/logbook.org")
+         (file "~/home/dot/emacs/capture-templates/plan.org"))
+        ("li" "Ingenuity Log Entry" entry
          (file "~/home/org/ingenuity_logbook.org")
          "* %? %t\n\n")
-		("lc" "Ingenuity Cold Call" entry
-		 (file "~/home/org/ingenuity_logbook.org")
-		 (file "~/home/dot/emacs/capture-templates/cold-call.org"))
+        ("lc" "Ingenuity Cold Call" entry
+         (file "~/home/org/ingenuity_logbook.org")
+         (file "~/home/dot/emacs/capture-templates/cold-call.org"))
 
-		("f" "Mail Follow Up" entry
-		 (file+headline "~/home/org/ingenuity.org" "Mail")
+        ("f" "Mail Follow Up" entry
+         (file+headline "~/home/org/ingenuity.org" "Mail")
          "* TODO %a\n\n  %i")
-		("e" "Emacs Config" entry
-		 (file+headline "~/home/org/emacs.org" "Emacs Config")
+        ("e" "Emacs Config" entry
+         (file+headline "~/home/org/emacs.org" "Emacs Config")
          "* TODO %?")))
 
 ;; Ensure Capture Templates End With Newline

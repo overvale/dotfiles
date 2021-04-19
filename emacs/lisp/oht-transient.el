@@ -25,15 +25,15 @@ wherever you need to go."
      ("f" "Find File" find-file)
      ("m" "Magit Status" magit-status)
      ("o" "Outline" consult-outline)
-	 ("a" "AutoFill" auto-fill-mode)
+     ("a" "AutoFill" auto-fill-mode)
      ("j" "Dired Jump" dired-jump)
      ("s" "Store Org Link" org-store-link)]
    ["Commands"
-	("c s" "Spelling..." oht-transient-spelling)
-	("c d" "Dictionary" sdcv-search)
-	("c f" "Fonts..." oht-transient-fonts)
+    ("c s" "Spelling..." oht-transient-spelling)
+    ("c d" "Dictionary" sdcv-search)
+    ("c f" "Fonts..." oht-transient-fonts)
     ("c c" "Composition Mode" composition-mode)
-	("c m" "Toggle Minor Modes" consult-minor-mode-menu)
+    ("c m" "Toggle Minor Modes" consult-minor-mode-menu)
     ("c h" "Help..." oht-transient-help)]
    [ "Bookmarks"
      ("b s" "Set" bookmark-set)
@@ -59,9 +59,9 @@ wherever you need to go."
   "Jump directly to your most-used stuff."
   ["Work"
    [("t" "Today + Priority" oht-org-agenda-today)
-	("0" "Week + TODOs" oht-org-agenda-complete)
-	("a" "Agenda" oht-org-agenda-agenda)
-	("T" "TODOs" oht-org-agenda-todos)
+    ("0" "Week + TODOs" oht-org-agenda-complete)
+    ("a" "Agenda" oht-org-agenda-agenda)
+    ("T" "TODOs" oht-org-agenda-todos)
     ("A" "Org Agenda Command..." org-agenda)]
    [("m" "Mail" mu4e)]]
   ["Browsing"
@@ -70,10 +70,10 @@ wherever you need to go."
    [("E" "EWW"         prot-eww-browse-dwim)
     ("n" "NPR News"    oht-dispatch-NPR-news)
     ("c" "CNN News"    oht-dispatch-CNN-news)
-	("g" "Google News" oht-dispatch-google-news)]
+    ("g" "Google News" oht-dispatch-google-news)]
    [("d" "Downloads"   oht-dispatch-downloads)
-	("r" "Reading"     oht-dispatch-reading)
-	("w" "Watch"       oht-dispatch-watch)]])
+    ("r" "Reading"     oht-dispatch-reading)
+    ("w" "Watch"       oht-dispatch-watch)]])
 
 
 (define-transient-command oht-transient-window ()
@@ -82,7 +82,7 @@ wherever you need to go."
     ("s" "Horizontal" split-window-below)
     ("v" "Vertical"   split-window-right)
     ("b" "Balance"    balance-windows)
-	("f" "Fit"        fit-window-to-buffer)
+    ("f" "Fit"        fit-window-to-buffer)
     ("r" "Rotate"     oht/rotate-window-split)]
    ["Window"
     ("c" "Clone Indirect" clone-indirect-buffer)
@@ -110,16 +110,16 @@ wherever you need to go."
   "Transient for Helpful commands"
   [[("p" "At Point" helpful-at-point)]
    [("c" "Callable" helpful-callable)
-	("f" "Function" helpful-function)
-	("C" "Command" helpful-command)
-	("v" "Variable" helpful-variable)
-	("s" "Symbol" helpful-symbol)
-	("M" "Macro" helpful-macro)
-	("k" "Key" helpful-key)
-	("m" "Mode" helpful-mode)]
+    ("f" "Function" helpful-function)
+    ("C" "Command" helpful-command)
+    ("v" "Variable" helpful-variable)
+    ("s" "Symbol" helpful-symbol)
+    ("M" "Macro" helpful-macro)
+    ("k" "Key" helpful-key)
+    ("m" "Mode" helpful-mode)]
    [("u" "Update" helpful-update)
-	("V" "Visit Reference" helpful-visit-reference)
-	("K" "Kill Helpful Buffers" helpful-kill-buffers)]])
+    ("V" "Visit Reference" helpful-visit-reference)
+    ("K" "Kill Helpful Buffers" helpful-kill-buffers)]])
 
 
 (define-transient-command oht-transient-fonts ()
@@ -219,7 +219,7 @@ wherever you need to go."
     ("c" "Checkbox" org-toggle-checkbox)]
    ["Insert"
     ("." "Insert Date, Active" oht/org-insert-date-today)
-	(">" "Insert Date, Inactive" oht/org-insert-date-today-inactive)
+    (">" "Insert Date, Inactive" oht/org-insert-date-today-inactive)
     ("<" "Structure Template" org-insert-structure-template)]
    ["Links"
     ("s" "Store Link" org-store-link)
@@ -234,9 +234,9 @@ windows. There is likely a much better way to automatically map
 org-todo-keywords to a transient command."
   ["Change Status To..."
    [("t" "TODO"     org-agenda-todo-set-todo)
-	("l" "LATER"    org-agenda-todo-set-later)]
+    ("l" "LATER"    org-agenda-todo-set-later)]
    [("d" "DONE"     org-agenda-todo-set-done)
-	("c" "CANCELED" org-agenda-todo-set-canceled)]])
+    ("c" "CANCELED" org-agenda-todo-set-canceled)]])
 
 
 (define-transient-command oht-transient-org-todo ()
@@ -247,9 +247,9 @@ windows. There is likely a much better way to automatically map
 org-todo-keywords to a transient command."
   ["Change Status To..."
    [("t" "TODO"     org-todo-set-todo)
-	("l" "LATER"    org-todo-set-later)]
+    ("l" "LATER"    org-todo-set-later)]
    [("d" "DONE"     org-todo-set-done)
-	("c" "CANCELED" org-todo-set-canceled)]])
+    ("c" "CANCELED" org-todo-set-canceled)]])
 
 
 (define-transient-command oht-transient-dired ()
@@ -270,12 +270,12 @@ org-todo-keywords to a transient command."
     ("O"   "Owner"                dired-do-chown)
     ("T"   "Timestamp"            dired-do-touch)]
    ["Navigation"
-	("j" "  Goto file"            dired-goto-file)
+    ("j" "  Goto file"            dired-goto-file)
     ("+" "  Create directory"     dired-create-directory)
     ("<" "  Jump prev directory"  dired-prev-dirline)
     (">" "  Jump next directory"  dired-next-dirline)
     ("^" "  Move up directory"    dired-up-directory)]
-  ["Display"
+   ["Display"
     ("g" "  Refresh buffer"       revert-buffer)
     ("l" "  Refresh file"         dired-do-redisplay)
     ("k" "  Remove line"          dired-do-kill-lines)
@@ -312,7 +312,7 @@ org-todo-keywords to a transient command."
    ["Search"
     ("m%"  "Regexp"               dired-mark-files-regexp)
     ("mg"  "Regexp file contents" dired-mark-files-containing-regexp)]]
-   [["Act on Marked"
+  [["Act on Marked"
     ("x"   "Do action"            dired-do-flagged-delete)
     ("C"   "Copy"                 dired-do-copy)
     ("D"   "Delete"               dired-do-delete)
@@ -334,45 +334,45 @@ org-todo-keywords to a transient command."
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
   [["Actions"
-	("G" "Browse" prot-eww-browse-dwim)
-	("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
-	("&" "Browse With External Browser" eww-browse-with-external-browser)
-	("w" "Copy URL" eww-copy-page-url)]
+    ("G" "Browse" prot-eww-browse-dwim)
+    ("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
+    ("&" "Browse With External Browser" eww-browse-with-external-browser)
+    ("w" "Copy URL" eww-copy-page-url)]
    ["Display"
-	("i" "Toggle Images" eww-inhibit-images-toggle)
-	("F" "Toggle Fonts" eww-toggle-fonts)
-	("R" "Readable" eww-readable)
-	("M-C" "Colors" eww-toggle-colors)]
+    ("i" "Toggle Images" eww-inhibit-images-toggle)
+    ("F" "Toggle Fonts" eww-toggle-fonts)
+    ("R" "Readable" eww-readable)
+    ("M-C" "Colors" eww-toggle-colors)]
    ["History"
-	("H" "History" eww-list-histories)
-	("l" "Back" eww-back-url)
-	("r" "Forward" eww-forward-url)]
+    ("H" "History" eww-list-histories)
+    ("l" "Back" eww-back-url)
+    ("r" "Forward" eww-forward-url)]
    ["Bookmarks"
-	("a" "Add Eww Bookmark" eww-add-bookmark)
-	("b" "Bookmark" bookmark-set)
-	("B" "List Bookmarks" eww-list-bookmarks)
-	("M-n" "Next Bookmark" eww-next-bookmark)
-	("M-p" "Previous Bookmark" eww-previous-bookmark)]
-	])
+    ("a" "Add Eww Bookmark" eww-add-bookmark)
+    ("b" "Bookmark" bookmark-set)
+    ("B" "List Bookmarks" eww-list-bookmarks)
+    ("M-n" "Next Bookmark" eww-next-bookmark)
+    ("M-p" "Previous Bookmark" eww-previous-bookmark)]
+   ])
 
 (define-transient-command oht-transient-info ()
   [[("d" "Info Directory" Info-directory)
-	("m" "Menu" Info-menu)]
+    ("m" "Menu" Info-menu)]
    [("s" "Search regex Info File" Info-search)
-	("i" "Index" Info-index)
-	("I" "Index, Virtual" Info-virtual-index)]]
+    ("i" "Index" Info-index)
+    ("I" "Index, Virtual" Info-virtual-index)]]
   ["Navigation"
    [("l" "Left, History" Info-history-back)
-	("r" "Right, History" Info-history-forward)
-	("L" "List, History" Info-history)]
+    ("r" "Right, History" Info-history-forward)
+    ("L" "List, History" Info-history)]
    [("T" "Table of Contents" Info-toc)
-	("n" "Next Node" Info-next)
-	("p" "Previous Node" Info-prev)
-	("u" "Up" Info-up)]
+    ("n" "Next Node" Info-next)
+    ("p" "Previous Node" Info-prev)
+    ("u" "Up" Info-up)]
    [("<" "Top Node" Info-top-node)
-	(">" "Final Node" Info-final-node)
-	("[" "Forward Node" Info-backward-node)
-	("]" "Backward Node" Info-forward-node)]])
+    (">" "Final Node" Info-final-node)
+    ("[" "Forward Node" Info-backward-node)
+    ("]" "Backward Node" Info-forward-node)]])
 
 
 ;;; Ideas for Further Development

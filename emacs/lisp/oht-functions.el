@@ -72,7 +72,7 @@ Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.
 (defun find-file-recursively ()
   "Find Files Recursively using completing read."
   (find-file (completing-read "Find File Recursively: "
-							  (directory-files-recursively default-directory ".+"))))
+                              (directory-files-recursively default-directory ".+"))))
 
 (defun oht/find-scratch ()
   "Switch to the *scratch* buffer"
@@ -100,13 +100,13 @@ the current region (if it's active), or the current symbol."
   (call-interactively 'occur))
 
 (defun oht-toggle-comment-region-or-line ()
-    "Comments or uncomments the region or the current line if there's no active region."
-    (interactive)
-    (let (beg end)
-        (if (region-active-p)
-            (setq beg (region-beginning) end (region-end))
-            (setq beg (line-beginning-position) end (line-end-position)))
-        (comment-or-uncomment-region beg end)))
+  "Comments or uncomments the region or the current line if there's no active region."
+  (interactive)
+  (let (beg end)
+    (if (region-active-p)
+        (setq beg (region-beginning) end (region-end))
+      (setq beg (line-beginning-position) end (line-end-position)))
+    (comment-or-uncomment-region beg end)))
 
 ;; Normally, when `eval-last-sexp' is called with an argument the result is
 ;; inserted at point, this advises the function to REPLACE the last sexp.
@@ -126,8 +126,8 @@ the current region (if it's active), or the current symbol."
   (let ((oldpos (point)))
     (back-to-indentation)
     (and (<= oldpos (point))
-	 (/= (line-beginning-position) oldpos)
-	 (beginning-of-line))))
+         (/= (line-beginning-position) oldpos)
+         (beginning-of-line))))
 
 
 ;;; Secondary Selection
@@ -152,7 +152,7 @@ the current region (if it's active), or the current symbol."
   ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
   (kill-new
    (buffer-substring (overlay-start mouse-secondary-overlay)
-		     (overlay-end mouse-secondary-overlay))
+                     (overlay-end mouse-secondary-overlay))
    t))
 
 (defun oht/cut-secondary-selection-paste ()

@@ -17,11 +17,11 @@
   (setq composition-mode-status (not composition-mode-status))
   (if composition-mode-status
       (progn
-		(visual-line-mode t)
-		(setq-local line-spacing 2)
-		(olivetti-mode t)
-		(text-scale-increase 1)
-		(variable-pitch-mode 1))
+        (visual-line-mode t)
+        (setq-local line-spacing 2)
+        (olivetti-mode t)
+        (text-scale-increase 1)
+        (variable-pitch-mode 1))
     (progn
       (visual-line-mode -1)
       (setq-local line-spacing 0)

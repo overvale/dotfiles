@@ -79,11 +79,11 @@
 (defvar vimacs-normal-cursor 'box
   "Cursor shape to display in Normal mode. See `cursor-type' for info.")
 (defvar vimacs-insert-cursor 'bar
-    "Cursor shape to display in Insert mode. See `cursor-type' for info.")
+  "Cursor shape to display in Insert mode. See `cursor-type' for info.")
 (defvar vimacs-visual-cursor 'hollow
-    "Cursor shape to display in Visual mode. See `cursor-type' for info.")
+  "Cursor shape to display in Visual mode. See `cursor-type' for info.")
 (defvar vimacs-replace-cursor 'hbar
-    "Cursor shape to display in Replace mode. See `cursor-type' for info.")
+  "Cursor shape to display in Replace mode. See `cursor-type' for info.")
 
 ;; To customize put something like this in your config, after this code:
 ;; (setq vimacs-visual-cursor '(hbar . 9))
@@ -100,21 +100,21 @@
 ;; "mode indicator". Other than that this is 100% standard Emacs.
 (setq vimacs-mode-line-format
       '("%e"
-		vimacs-mode-indicator
-		mode-line-front-space
-		mode-line-mule-info
-		mode-line-client
-		mode-line-modified
-		mode-line-remote
-		mode-line-frame-identification
-		mode-line-buffer-identification
-		"   "
-		mode-line-position
-		(vc-mode vc-mode)
-		"  "
-		mode-line-modes
-		mode-line-misc-info
-		mode-line-end-spaces))
+        vimacs-mode-indicator
+        mode-line-front-space
+        mode-line-mule-info
+        mode-line-client
+        mode-line-modified
+        mode-line-remote
+        mode-line-frame-identification
+        mode-line-buffer-identification
+        "   "
+        mode-line-position
+        (vc-mode vc-mode)
+        "  "
+        mode-line-modes
+        mode-line-misc-info
+        mode-line-end-spaces))
 
 (defun vimacs-update-modeline (arg)
   "Set vimacs-mode-indicator to ARG and update mode-line locally.
@@ -147,101 +147,101 @@ thus typing is disabled but Emacs keybinding sequences are still allowed."
   :init-value nil
   :lighter " V:Normal"
   :keymap (let ((map (make-sparse-keymap)))
-			(define-key map (kbd "!") 'ignore)
-			(define-key map (kbd "#") 'ignore)
-			(define-key map (kbd "$") 'ignore)
-			(define-key map (kbd "%") 'ignore)
-			(define-key map (kbd "&") 'ignore)
-			(define-key map (kbd "'") 'ignore)
-			(define-key map (kbd "(") 'ignore)
-			(define-key map (kbd ")") 'ignore)
-			(define-key map (kbd "*") 'ignore)
-			(define-key map (kbd "+") 'ignore)
-			(define-key map (kbd ",") 'ignore)
-			(define-key map (kbd "-") 'ignore)
-			(define-key map (kbd ".") 'ignore)
-			(define-key map (kbd "/") 'isearch-forward)
-			(define-key map (kbd "0") 'ignore)
-			(define-key map (kbd "1") 'ignore)
-			(define-key map (kbd "2") 'ignore)
-			(define-key map (kbd "3") 'ignore)
-			(define-key map (kbd "4") 'ignore)
-			(define-key map (kbd "5") 'ignore)
-			(define-key map (kbd "6") 'ignore)
-			(define-key map (kbd "7") 'ignore)
-			(define-key map (kbd "8") 'ignore)
-			(define-key map (kbd "9") 'ignore)
-			(define-key map (kbd ":") 'execute-extended-command)
-			(define-key map (kbd ":") 'ignore)
-			(define-key map (kbd ";") 'ignore)
-			(define-key map (kbd "<") 'ignore)
-			(define-key map (kbd "=") 'ignore)
-			(define-key map (kbd ">") 'ignore)
-			(define-key map (kbd "?") 'ignore)
-			(define-key map (kbd "@") 'ignore)
-			(define-key map (kbd "A") 'ignore)
-			(define-key map (kbd "B") 'ignore)
-			(define-key map (kbd "C") 'ignore)
-			(define-key map (kbd "D") 'ignore)
-			(define-key map (kbd "E") 'ignore)
-			(define-key map (kbd "F") 'ignore)
-			(define-key map (kbd "G") 'ignore)
-			(define-key map (kbd "H") 'ignore)
-			(define-key map (kbd "I") 'ignore)
-			(define-key map (kbd "J") 'ignore)
-			(define-key map (kbd "K") 'ignore)
-			(define-key map (kbd "L") 'ignore)
-			(define-key map (kbd "M") 'ignore)
-			(define-key map (kbd "N") 'ignore)
-			(define-key map (kbd "O") 'ignore)
-			(define-key map (kbd "P") 'ignore)
-			(define-key map (kbd "Q") 'ignore)
-			(define-key map (kbd "R") 'vimacs-normal-to-replace)
-			(define-key map (kbd "S") 'ignore)
-			(define-key map (kbd "T") 'ignore)
-			(define-key map (kbd "U") 'ignore)
-			(define-key map (kbd "V") 'ignore)
-			(define-key map (kbd "W") 'ignore)
-			(define-key map (kbd "X") 'ignore)
-			(define-key map (kbd "Y") 'ignore)
-			(define-key map (kbd "Z") 'ignore)
-			(define-key map (kbd "[") 'ignore)
-			(define-key map (kbd "\"") 'ignore)
-			(define-key map (kbd "\\") 'ignore)
-			(define-key map (kbd "]") 'ignore)
-			(define-key map (kbd "^") 'ignore)
-			(define-key map (kbd "_") 'ignore)
-			(define-key map (kbd "`") 'ignore)
-			(define-key map (kbd "a") 'ignore)
-			(define-key map (kbd "b") 'backward-word)
-			(define-key map (kbd "c") 'ignore)
-			(define-key map (kbd "d") 'ignore)
-			(define-key map (kbd "e") 'forward-word)
-			(define-key map (kbd "f") 'ignore)
-			(define-key map (kbd "g") 'ignore)
-			(define-key map (kbd "h") 'backward-char)
-			(define-key map (kbd "i") 'vimacs-normal-to-insert)
-			(define-key map (kbd "j") 'next-line)
-			(define-key map (kbd "k") 'previous-line)
-			(define-key map (kbd "l") 'forward-char)
-			(define-key map (kbd "m") 'ignore)
-			(define-key map (kbd "n") 'ignore)
-			(define-key map (kbd "o") 'ignore)
-			(define-key map (kbd "p") 'ignore)
-			(define-key map (kbd "q") 'ignore)
-			(define-key map (kbd "r") 'ignore)
-			(define-key map (kbd "s") 'ignore)
-			(define-key map (kbd "t") 'ignore)
-			(define-key map (kbd "u") 'ignore)
-			(define-key map (kbd "v") 'vimacs-normal-to-visual)
-			(define-key map (kbd "w") 'ignore)
-			(define-key map (kbd "x") 'ignore)
-			(define-key map (kbd "y") 'ignore)
-			(define-key map (kbd "z") 'ignore)
-			(define-key map (kbd "{") 'backward-paragraph)
-			(define-key map (kbd "|") 'ignore)
-			(define-key map (kbd "}") 'forward-paragraph)
-			(define-key map (kbd "~") 'ignore)
+            (define-key map (kbd "!") 'ignore)
+            (define-key map (kbd "#") 'ignore)
+            (define-key map (kbd "$") 'ignore)
+            (define-key map (kbd "%") 'ignore)
+            (define-key map (kbd "&") 'ignore)
+            (define-key map (kbd "'") 'ignore)
+            (define-key map (kbd "(") 'ignore)
+            (define-key map (kbd ")") 'ignore)
+            (define-key map (kbd "*") 'ignore)
+            (define-key map (kbd "+") 'ignore)
+            (define-key map (kbd ",") 'ignore)
+            (define-key map (kbd "-") 'ignore)
+            (define-key map (kbd ".") 'ignore)
+            (define-key map (kbd "/") 'isearch-forward)
+            (define-key map (kbd "0") 'ignore)
+            (define-key map (kbd "1") 'ignore)
+            (define-key map (kbd "2") 'ignore)
+            (define-key map (kbd "3") 'ignore)
+            (define-key map (kbd "4") 'ignore)
+            (define-key map (kbd "5") 'ignore)
+            (define-key map (kbd "6") 'ignore)
+            (define-key map (kbd "7") 'ignore)
+            (define-key map (kbd "8") 'ignore)
+            (define-key map (kbd "9") 'ignore)
+            (define-key map (kbd ":") 'execute-extended-command)
+            (define-key map (kbd ":") 'ignore)
+            (define-key map (kbd ";") 'ignore)
+            (define-key map (kbd "<") 'ignore)
+            (define-key map (kbd "=") 'ignore)
+            (define-key map (kbd ">") 'ignore)
+            (define-key map (kbd "?") 'ignore)
+            (define-key map (kbd "@") 'ignore)
+            (define-key map (kbd "A") 'ignore)
+            (define-key map (kbd "B") 'ignore)
+            (define-key map (kbd "C") 'ignore)
+            (define-key map (kbd "D") 'ignore)
+            (define-key map (kbd "E") 'ignore)
+            (define-key map (kbd "F") 'ignore)
+            (define-key map (kbd "G") 'ignore)
+            (define-key map (kbd "H") 'ignore)
+            (define-key map (kbd "I") 'ignore)
+            (define-key map (kbd "J") 'ignore)
+            (define-key map (kbd "K") 'ignore)
+            (define-key map (kbd "L") 'ignore)
+            (define-key map (kbd "M") 'ignore)
+            (define-key map (kbd "N") 'ignore)
+            (define-key map (kbd "O") 'ignore)
+            (define-key map (kbd "P") 'ignore)
+            (define-key map (kbd "Q") 'ignore)
+            (define-key map (kbd "R") 'vimacs-normal-to-replace)
+            (define-key map (kbd "S") 'ignore)
+            (define-key map (kbd "T") 'ignore)
+            (define-key map (kbd "U") 'ignore)
+            (define-key map (kbd "V") 'ignore)
+            (define-key map (kbd "W") 'ignore)
+            (define-key map (kbd "X") 'ignore)
+            (define-key map (kbd "Y") 'ignore)
+            (define-key map (kbd "Z") 'ignore)
+            (define-key map (kbd "[") 'ignore)
+            (define-key map (kbd "\"") 'ignore)
+            (define-key map (kbd "\\") 'ignore)
+            (define-key map (kbd "]") 'ignore)
+            (define-key map (kbd "^") 'ignore)
+            (define-key map (kbd "_") 'ignore)
+            (define-key map (kbd "`") 'ignore)
+            (define-key map (kbd "a") 'ignore)
+            (define-key map (kbd "b") 'backward-word)
+            (define-key map (kbd "c") 'ignore)
+            (define-key map (kbd "d") 'ignore)
+            (define-key map (kbd "e") 'forward-word)
+            (define-key map (kbd "f") 'ignore)
+            (define-key map (kbd "g") 'ignore)
+            (define-key map (kbd "h") 'backward-char)
+            (define-key map (kbd "i") 'vimacs-normal-to-insert)
+            (define-key map (kbd "j") 'next-line)
+            (define-key map (kbd "k") 'previous-line)
+            (define-key map (kbd "l") 'forward-char)
+            (define-key map (kbd "m") 'ignore)
+            (define-key map (kbd "n") 'ignore)
+            (define-key map (kbd "o") 'ignore)
+            (define-key map (kbd "p") 'ignore)
+            (define-key map (kbd "q") 'ignore)
+            (define-key map (kbd "r") 'ignore)
+            (define-key map (kbd "s") 'ignore)
+            (define-key map (kbd "t") 'ignore)
+            (define-key map (kbd "u") 'ignore)
+            (define-key map (kbd "v") 'vimacs-normal-to-visual)
+            (define-key map (kbd "w") 'ignore)
+            (define-key map (kbd "x") 'ignore)
+            (define-key map (kbd "y") 'ignore)
+            (define-key map (kbd "z") 'ignore)
+            (define-key map (kbd "{") 'backward-paragraph)
+            (define-key map (kbd "|") 'ignore)
+            (define-key map (kbd "}") 'forward-paragraph)
+            (define-key map (kbd "~") 'ignore)
             map))
 
 ;; One interesting feature of Emacs is that you can have multiple minor modes
@@ -255,11 +255,11 @@ thus typing is disabled but Emacs keybinding sequences are still allowed."
   :init-value nil
   :lighter " V:Select"
   :keymap (let ((map (make-sparse-keymap)))
-			(define-key map (kbd "<ESC>") 'vimacs-visual-to-normal)
-			(define-key map (kbd "i") 'vimacs-visual-to-insert)
-			;; it doesn't make sense to go from visual to replace, so prohibit
-			;; that since the normal binding would otherwise be active.
-			(define-key map (kbd "R") 'ignore)
+            (define-key map (kbd "<ESC>") 'vimacs-visual-to-normal)
+            (define-key map (kbd "i") 'vimacs-visual-to-insert)
+            ;; it doesn't make sense to go from visual to replace, so prohibit
+            ;; that since the normal binding would otherwise be active.
+            (define-key map (kbd "R") 'ignore)
             map))
 
 (define-minor-mode vimacs-replace-mode
@@ -267,7 +267,7 @@ thus typing is disabled but Emacs keybinding sequences are still allowed."
   :init-value nil
   :lighter " V:Replace"
   :keymap (let ((map (make-sparse-keymap)))
-			(define-key map (kbd "<ESC>") 'vimacs-replace-to-normal)
+            (define-key map (kbd "<ESC>") 'vimacs-replace-to-normal)
             map))
 
 

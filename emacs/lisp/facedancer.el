@@ -80,20 +80,20 @@ and fixed-pitch faces as relative (float) sizes. This allows
 text-scale-adjust to work correctly."
   (interactive)
   (set-face-attribute 'default nil
-					  :family facedancer-monospace
-					  :weight facedancer-monospace-weight
-					  :width  facedancer-monospace-width
-					  :height (* facedancer-monospace-size 10))
+                      :family facedancer-monospace
+                      :weight facedancer-monospace-weight
+                      :width  facedancer-monospace-width
+                      :height (* facedancer-monospace-size 10))
   (set-face-attribute 'fixed-pitch nil
-					  :family facedancer-monospace
-					  :weight facedancer-monospace-weight
-					  :width  facedancer-monospace-width
-					  :height 1.0)
+                      :family facedancer-monospace
+                      :weight facedancer-monospace-weight
+                      :width  facedancer-monospace-width
+                      :height 1.0)
   (set-face-attribute 'variable-pitch nil
-					  :family facedancer-variable
-					  :weight facedancer-variable-weight
-					  :width  facedancer-variable-width
-					  :height 1.0))
+                      :family facedancer-variable
+                      :weight facedancer-variable-weight
+                      :width  facedancer-variable-width
+                      :height 1.0))
 
 
 ;;; Facedancer Mode
@@ -133,34 +133,34 @@ call that function with a hook, like so:
   :init-value nil
   :lighter " FaceD"
   (if facedancer-mode
-	  (progn
-		(setq-local facedancer-default-remapping
-					(face-remap-add-relative 'default
-											 :family facedancer-monospace
-											 :weight facedancer-monospace-weight
-											 :width  facedancer-monospace-width
-											 :height (/ (float facedancer-monospace-size)
-														(float facedancer-variable-size))))
-		(setq-local facedancer-fixed-pitch-remapping
-					(face-remap-add-relative 'fixed-pitch
-											 :family facedancer-monospace
-											 :weight facedancer-monospace-weight
-											 :width  facedancer-monospace-width
-											 :height (/ (float facedancer-monospace-size)
-														(float facedancer-variable-size))))
-		(setq-local facedancer-variable-pitch-remapping
-					(face-remap-add-relative 'variable-pitch
-											 :family facedancer-variable
-											 :weight facedancer-variable-weight
-											 :width  facedancer-variable-width
-											 :height (/ (float facedancer-variable-size)
-														(float facedancer-monospace-size))))
-		(force-window-update (current-buffer)))
-	(progn
+      (progn
+        (setq-local facedancer-default-remapping
+                    (face-remap-add-relative 'default
+                                             :family facedancer-monospace
+                                             :weight facedancer-monospace-weight
+                                             :width  facedancer-monospace-width
+                                             :height (/ (float facedancer-monospace-size)
+                                                        (float facedancer-variable-size))))
+        (setq-local facedancer-fixed-pitch-remapping
+                    (face-remap-add-relative 'fixed-pitch
+                                             :family facedancer-monospace
+                                             :weight facedancer-monospace-weight
+                                             :width  facedancer-monospace-width
+                                             :height (/ (float facedancer-monospace-size)
+                                                        (float facedancer-variable-size))))
+        (setq-local facedancer-variable-pitch-remapping
+                    (face-remap-add-relative 'variable-pitch
+                                             :family facedancer-variable
+                                             :weight facedancer-variable-weight
+                                             :width  facedancer-variable-width
+                                             :height (/ (float facedancer-variable-size)
+                                                        (float facedancer-monospace-size))))
+        (force-window-update (current-buffer)))
+    (progn
       (face-remap-remove-relative facedancer-default-remapping)
       (face-remap-remove-relative facedancer-fixed-pitch-remapping)
       (face-remap-remove-relative facedancer-variable-pitch-remapping)
-	  (force-window-update (current-buffer)))))
+      (force-window-update (current-buffer)))))
 
 
 ;;; Facedancer Variable Adjust Mode
@@ -176,19 +176,19 @@ the fixed-pitch face down to the height defined by
   :lighter " V+"
   (if facedancer-vadjust-mode
       (progn
-		(setq-local variable-pitch-remapping
-					(face-remap-add-relative 'variable-pitch
-											 :height (/ (float facedancer-variable-size)
-														(float facedancer-monospace-size))))
-		(setq-local fixed-pitch-remapping
-					(face-remap-add-relative 'fixed-pitch
-											 :height (/ (float facedancer-monospace-size)
-														(float facedancer-variable-size))))
-		(force-window-update (current-buffer)))
-	(progn
+        (setq-local variable-pitch-remapping
+                    (face-remap-add-relative 'variable-pitch
+                                             :height (/ (float facedancer-variable-size)
+                                                        (float facedancer-monospace-size))))
+        (setq-local fixed-pitch-remapping
+                    (face-remap-add-relative 'fixed-pitch
+                                             :height (/ (float facedancer-monospace-size)
+                                                        (float facedancer-variable-size))))
+        (force-window-update (current-buffer)))
+    (progn
       (face-remap-remove-relative variable-pitch-remapping)
       (face-remap-remove-relative fixed-pitch-remapping)
-	  (force-window-update (current-buffer)))))
+      (force-window-update (current-buffer)))))
 
 ;; Add a hook which enables facedancer-vadjust-mode when buffer-face-mode
 ;; activates.

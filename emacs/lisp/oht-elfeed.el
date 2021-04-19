@@ -21,7 +21,7 @@
 
 (add-hook 'elfeed-new-entry-hook
           (elfeed-make-tagger :before "7 days ago"
-			      :remove 'unread))
+                              :remove 'unread))
 
 
 ;;; Search Shortcuts
@@ -97,7 +97,7 @@
         (title (elfeed-entry-title (hrs/elfeed-current-entry))))
     (pinboard-auth)
     (pinboard-not-too-soon :pinboard-save
-			   (pinboard-save url title "" "" t nil))))
+                           (pinboard-save url title "" "" t nil))))
 
 (defun oht-elfeed-show-download-video ()
   "In elfeed, download a video using youtube-dl."
@@ -119,11 +119,11 @@
   (setq elfeed-inhibit-images-status (not elfeed-inhibit-images-status))
   (if elfeed-inhibit-images-status
       (progn
-	(setq-local shr-inhibit-images t)
-	(elfeed-show-refresh))
+        (setq-local shr-inhibit-images t)
+        (elfeed-show-refresh))
     (progn
-	(setq-local shr-inhibit-images nil)
-	(elfeed-show-refresh))))
+      (setq-local shr-inhibit-images nil)
+      (elfeed-show-refresh))))
 
 
 ;; Open url in background

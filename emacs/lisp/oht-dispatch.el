@@ -44,14 +44,14 @@ For example you might want to do something like:
 
 (setq oht-dispatch-functions
       '(remember-notes
-		elfeed
-		org-agenda
-		list-bookmarks
-		mu4e
-		eww
-		oht-dispatch-downloads
-		oht-dispatch-NPR-news
-		oht-dispatch-CNN-news
+        elfeed
+        org-agenda
+        list-bookmarks
+        mu4e
+        eww
+        oht-dispatch-downloads
+        oht-dispatch-NPR-news
+        oht-dispatch-CNN-news
         oht-dispatch-google-news))"
   (interactive)
   (call-interactively

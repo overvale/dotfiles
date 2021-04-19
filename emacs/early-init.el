@@ -33,4 +33,4 @@
           '(width . 80) ; width (in characters)
           '(height . 50) ; height (in characters)
           '(internal-border-width . 0) ; border (in pixels)
-	  )))
+      )))

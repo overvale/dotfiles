@@ -23,11 +23,11 @@
   (setq eww-inhibit-images-status (not eww-inhibit-images-status))
   (if eww-inhibit-images-status
       (progn
-	(setq-local shr-inhibit-images t)
-	(eww-reload t))
+        (setq-local shr-inhibit-images t)
+        (eww-reload t))
     (progn
-	(setq-local shr-inhibit-images nil)
-	(eww-reload t))))
+      (setq-local shr-inhibit-images nil)
+      (eww-reload t))))
 
 
 ;;; Open URL in background buffer

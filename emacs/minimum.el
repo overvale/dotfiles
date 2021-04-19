@@ -223,7 +223,7 @@
   :init
   (marginalia-mode 1)
   (setq marginalia-annotators
-	'(marginalia-annotators-heavy marginalia-annotators-light)))
+    '(marginalia-annotators-heavy marginalia-annotators-light)))
 
 (use-package modus-themes
   ;; My preferred theme.

@@ -29,8 +29,6 @@
 
 ;;; Config
 
-;; We start by setting some configuration options.
-
 ;; Blink cursor globally. Disable if you don't like that.
 (blink-cursor-mode 1)
 
@@ -42,17 +40,53 @@
 ;; maintained, vim emulator like Evil.
 (global-set-key (kbd "C-c v") 'vimacs-insert-to-normal)
 
+
+;;; Mode Line Indicators
+
+;; These variables define the text that should be prepended to the mode-line
+;; to indicate what mode you are in. Emacs standard convention is to use
+;; "lighters" for this purpose (the text shown in parenthesis in the
+;; mode-line).
+
 ;; Define the "mode indicators" you want in the mode line. One for each mode.
-;; Replace these with anything you'd like.
-(setq vimacs-prefix-normal  " Normal | ")
-(setq vimacs-prefix-insert  " Insert | ")
-(setq vimacs-prefix-visual  " Visual | ")
-(setq vimacs-prefix-replace " Replace | ")
+;; To customize these see below.
+(defvar vimacs-normal-modeline  " [Normal] "
+  "Text to be used at start of mode-line to indicate Normal Mode.")
+(defvar vimacs-insert-modeline  " [Insert] "
+  "Text to be used at start of mode-line to indicate Insert Mode.")
+(defvar vimacs-visual-modeline  " [Visual] "
+  "Text to be used at start of mode-line to indicate Visual Mode.")
+(defvar vimacs-replace-modeline " [Replace] "
+  "Text to be used at start of mode-line to indicate Replace Mode.")
+
+;; To emulate Evil's style, just set these variables after loading this code.
+;; (setq vimacs-normal-modeline  " [N] "
+;;       vimacs-insert-modeline  " [I] "
+;;       vimacs-visual-modeline  " [V] "
+;;       vimacs-replace-modeline " [R] ")
 
 ;; It is also possible to change the color of the mode-line with each mode
 ;; using the `set-face-attribute' function, but that is left as an exercise
 ;; for the reader.
 
+
+;;; Cursor Settings
+
+;; These variables define the various cursor shapes in each mode.
+;; For details on acceptable formats for these settings see the documentation
+;; for the variable 'cursor-type'.
+
+(defvar vimacs-normal-cursor 'box
+  "Cursor shape to display in Normal mode. See `cursor-type' for info.")
+(defvar vimacs-insert-cursor 'bar
+    "Cursor shape to display in Insert mode. See `cursor-type' for info.")
+(defvar vimacs-visual-cursor 'hollow
+    "Cursor shape to display in Visual mode. See `cursor-type' for info.")
+(defvar vimacs-replace-cursor 'hbar
+    "Cursor shape to display in Replace mode. See `cursor-type' for info.")
+
+;; To customize put something like this in your config, after this code:
+;; (setq vimacs-visual-cursor '(hbar . 9))
 
 ;;; Utility Functions and Variables
 
@@ -66,7 +100,7 @@
 ;; "mode indicator". Other than that this is 100% standard Emacs.
 (setq vimacs-mode-line-format
       '("%e"
-		vimacs-mode-line-prefix ; mode indicator
+		vimacs-mode-indicator
 		mode-line-front-space
 		mode-line-mule-info
 		mode-line-client
@@ -82,12 +116,12 @@
 		mode-line-misc-info
 		mode-line-end-spaces))
 
-(defun vimacs-set-mode-line-prefix (arg)
-  "Set vimacs-mode-line-prefix to ARG and update mode-line locally.
+(defun vimacs-update-modeline (arg)
+  "Set vimacs-mode-indicator to ARG and update mode-line locally.
 
 This is a utility function for setting the mode-line-prefix
 and updating the mode-line in the current buffer."
-  (setq-local vimacs-mode-line-prefix arg)
+  (setq-local vimacs-mode-indicator arg)
   (setq-local mode-line-format vimacs-mode-line-format))
 
 
@@ -99,6 +133,10 @@ and updating the mode-line in the current buffer."
 
 ;; Don't call these modes directly, rather use the "Enter/Exit Modes"
 ;; functions provided below to move between the modes.
+
+;; I've bound only a small subset of the keys you might want to bind for a vim
+;; emulation. You'll need to map each binding to an equivalent Emacs function,
+;; or write your own function that approximates the vim behavior you want.
 
 (define-minor-mode vimacs-normal-mode
   "Custom vim/emacs NORMAL mode
@@ -246,15 +284,15 @@ thus typing is disabled but Emacs keybinding sequences are still allowed."
 (defun vimacs-insert-to-normal ()
   (interactive)
   (vimacs-normal-mode 1)
-  (setq-local cursor-type 'box)
-  (vimacs-set-mode-line-prefix vimacs-prefix-normal))
+  (setq-local cursor-type vimacs-normal-cursor)
+  (vimacs-update-modeline vimacs-normal-modeline))
 
 ;; Normal to Insert
 (defun vimacs-normal-to-insert ()
   (interactive)
   (vimacs-normal-mode -1)
-  (setq-local cursor-type 'bar)
-  (vimacs-set-mode-line-prefix vimacs-prefix-insert))
+  (setq-local cursor-type vimacs-insert-cursor)
+  (vimacs-update-modeline vimacs-insert-modeline))
 
 ;; Normal to Visual
 ;; Notice that normal mode is NOT deactivated. Visual mode is LAYERED on top
@@ -263,8 +301,8 @@ thus typing is disabled but Emacs keybinding sequences are still allowed."
   (interactive)
   (set-mark (point))
   (vimacs-visual-mode 1)
-  (setq-local cursor-type '(hbar . 9))
-  (vimacs-set-mode-line-prefix vimacs-prefix-visual))
+  (setq-local cursor-type vimacs-visual-cursor)
+  (vimacs-update-modeline vimacs-visual-modeline))
 
 ;; Visual to Normal
 (defun vimacs-visual-to-normal ()
@@ -272,16 +310,16 @@ thus typing is disabled but Emacs keybinding sequences are still allowed."
   (vimacs-visual-mode -1)
   ;; Normal mode should still be active
   (deactivate-mark)
-  (setq-local cursor-type 'box)
-  (vimacs-set-mode-line-prefix vimacs-prefix-normal))
+  (setq-local cursor-type vimacs-normal-cursor)
+  (vimacs-update-modeline vimacs-normal-modeline))
 
 ;; Visual to Insert
 (defun vimacs-visual-to-insert ()
   (interactive)
   (vimacs-visual-mode -1)
   (vimacs-normal-mode -1)
-  (setq-local cursor-type 'bar)
-  (vimacs-set-mode-line-prefix vimacs-prefix-insert))
+  (setq-local cursor-type vimacs-insert-cursor)
+  (vimacs-update-modeline vimacs-insert-modeline))
 
 ;; Normal to Replace
 (defun vimacs-normal-to-replace ()
@@ -289,8 +327,8 @@ thus typing is disabled but Emacs keybinding sequences are still allowed."
   (vimacs-normal-mode -1)
   (vimacs-replace-mode 1)
   (overwrite-mode 1)
-  (setq-local cursor-type 'hbar)
-  (vimacs-set-mode-line-prefix vimacs-prefix-replace))
+  (setq-local cursor-type vimacs-replace-cursor)
+  (vimacs-update-modeline vimacs-replace-modeline))
 
 ;; Replace to Normal
 (defun vimacs-replace-to-normal ()
@@ -298,8 +336,8 @@ thus typing is disabled but Emacs keybinding sequences are still allowed."
   (overwrite-mode -1)
   (vimacs-replace-mode -1)
   (vimacs-normal-mode 1)
-  (setq-local cursor-type 'box)
-  (vimacs-set-mode-line-prefix vimacs-prefix-normal))
+  (setq-local cursor-type vimacs-normal-cursor)
+  (vimacs-update-modeline vimacs-normal-modeline))
 
 
 ;; vimacs.el ends here -- happy hacking!

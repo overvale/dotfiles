@@ -357,7 +357,8 @@ org-todo-keywords to a transient command."
 
 (define-transient-command oht-transient-info ()
   [[("d" "Info Directory" Info-directory)
-    ("m" "Menu" Info-menu)]
+    ("m" "Menu" Info-menu)
+    ("F" "Go to Node" Info-goto-emacs-command-node)]
    [("s" "Search regex Info File" Info-search)
     ("i" "Index" Info-index)
     ("I" "Index, Virtual" Info-virtual-index)]]

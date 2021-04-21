@@ -193,7 +193,7 @@ the current region (if it's active), or the current symbol."
   (delete-overlay mouse-secondary-overlay))
 
 
-;;;; Youtube-dl
+;;; Youtube-dl
 
 ;; A few utilities for working with videos
 

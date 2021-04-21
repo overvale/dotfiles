@@ -102,6 +102,7 @@
 ;; Resize minibuffer and echo area
 (setq resize-mini-windows nil)
 
+
 ;;;; Kill Ring
 
 ;; If you have something on the system clipboard, and then kill
@@ -339,6 +340,7 @@
 ;; it consistent, use-package or not the hooks are named the same.
 (setq use-package-hook-name-suffix nil)
 
+
 ;;; Packages
 
 (use-package benchmark-init
@@ -371,6 +373,7 @@
   (modus-themes-load-operandi))
 
 (add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle)
+
 
 ;;;; Narrowing & Searching
 
@@ -1088,7 +1091,6 @@
     (facedancer-mode 'toggle))
   :config
   (facedancer-font-set))
-
 
 (use-package oht-dispatch
   :straight nil

@@ -75,11 +75,15 @@
 (setq create-lockfiles nil
       make-backup-files nil)
 (setq sentence-end-double-space nil)
-(setq locate-command "mdfind")
 (setq delete-by-moving-to-trash t)
-(setq trash-directory "~/.Trash/emacs")
 (setq confirm-kill-processes nil)
 (setq load-prefer-newer t)
+
+;; Mac-specific
+(if (equal system-type 'darwin)
+    (progn
+      (setq locate-command "mdfind")
+      (setq trash-directory "~/.Trash/emacs")))
 
 ;; When splitting the window, go to it
 (defadvice split-window-below (after split-window-below activate) (other-window 1))
@@ -114,8 +118,11 @@
 
 ;;;; Emacs Directory
 
-;; Set a variable for where your emacs dotfiles are located.
-(defvar oht-dotfiles "~/home/dot/emacs/")
+;; Set a variable for where your emacs dotfiles are located,
+;; different on each machine.
+(if (equal system-type 'darwin)
+    (progn
+      (defvar oht-dotfiles "~/home/dot/emacs/")))
 
 ;; Add lisp files to the load path.
 (add-to-list 'load-path (concat oht-dotfiles "lisp/"))
@@ -178,27 +185,18 @@
 (display-time-mode t)
 
 
-;;;; Modifiers & Emacs Anachronisms
-
-;; Make the command keys 'super'. Super is basically not used by Emacs so
-;; they're a safe playground for assigning your own bindings.
-(setq mac-command-modifier 'super)
-;; Meta is used a lot in Emacs, and I only ever use the left option key, so
-;; this works well for shortcuts.
-(setq mac-option-modifier 'meta)
-;; But sometimes you want to insert special characters like £¢∞§¶•≠
-(setq mac-right-option-modifier 'nil)
-
-;; In the old days ESC was used as a prefix key, but I want ESC to act like it
-;; does everywhere else on my system and, you know, escape from things. So
-;; I've remapped ESC to `keyboard-quit'.
-(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-
-
 ;;;; Basic Keybindings
 
 ;; This is done first so that if later parts of the config fail I still have
 ;; these familiar bindings to work with. They are all built-in functions.
+
+;; If on a Mac, use the command key as Super, left-option for Meta, and
+;; right-option for Alt.
+(if (equal system-type 'darwin)
+    (progn
+      (setq mac-command-modifier 'super
+            mac-option-modifier 'meta
+            mac-right-option-modifier 'nil)))
 
 ;; Mac-like
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
@@ -226,6 +224,7 @@
 (global-set-key (kbd "s-u")   'universal-argument)
 
 ;; Emacs Misc
+(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 (global-set-key (kbd "M-s-s")   'save-some-buffers)
 (global-set-key (kbd "M-c")     'capitalize-dwim)
 (global-set-key (kbd "M-l")     'downcase-dwim)

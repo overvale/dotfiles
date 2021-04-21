@@ -340,4 +340,5 @@ thus typing is disabled but Emacs keybinding sequences are still allowed."
   (vimacs-update-modeline vimacs-normal-modeline))
 
 
+(provide 'vimacs)
 ;; vimacs.el ends here -- happy hacking!

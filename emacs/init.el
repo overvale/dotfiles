@@ -409,6 +409,8 @@
   :commands use-embark-completions
   :bind
   ("s-e" . embark-act)
+  (:map embark-file-map
+        ("O" . macos-open-file))
   (:map embark-url-map
         ("d" . youtube-dl-URL-at-point)
         ("&" . browse-url-default-macosx-browser)))

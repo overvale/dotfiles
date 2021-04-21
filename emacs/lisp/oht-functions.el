@@ -39,6 +39,16 @@ Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.
     (string-equal system-type "darwin")
     (shell-command (format "open -a BBEdit \"%s\"" $path))))
 
+(defun macos-open-file ()
+  "Open the file inferred by ffap using `open'."
+  (interactive)
+  (if-let* ((file? (ffap-guess-file-name-at-point))
+            (file (expand-file-name file?)))
+      (progn
+        (message "Opening %s..." file)
+        (call-process "open" nil 0 nil file))
+    (message "No file found at point.")))
+
 (defun sanemacs/backward-kill-word ()
   "Kill word backward, without copying to clipboard."
   (interactive "*")

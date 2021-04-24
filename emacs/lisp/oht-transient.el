@@ -11,51 +11,145 @@
 ;; transient.
 
 
-;;; General Purpose Transients
+;;; General & Sub-Transients
 
 
-(define-transient-command oht-transient-general ()
+(transient-define-prefix oht-transient-general ()
   "General-purpose transient.
 
 I use this transient command as a jumping-off point. Many of the
 more following specific transients are included here. The idea is
 that, when lost, one can simply call this one transient and get
 wherever you need to go."
-  [[ "Misc"
+  ["General"
+   ["Quick Actions!"
      ("f" "Find File" find-file)
      ("m" "Magit Status" magit-status)
-     ("o" "Outline" consult-outline)
+     ("o" "Consult Outline" consult-outline)
      ("a" "AutoFill" auto-fill-mode)
      ("j" "Dired Jump" dired-jump)
      ("s" "Store Org Link" org-store-link)]
-   ["Commands"
-    ("c s" "Spelling..." oht-transient-spelling)
-    ("c d" "Dictionary" sdcv-search)
-    ("c f" "Fonts..." oht-transient-fonts)
-    ("c c" "Composition Mode" composition-mode)
-    ("c m" "Toggle Minor Modes" consult-minor-mode-menu)
-    ("c h" "Help..." oht-transient-help)]
-   [ "Bookmarks"
-     ("b s" "Set" bookmark-set)
-     ("b l" "List" list-bookmarks)
-     ("b j" "Jump" consult-bookmark)]
-   [ "Display"
-     ("d h" "Highlight Line" hl-line-mode)
-     ("d l" "Line Numbers" global-display-line-numbers-mode)
-     ("d g" "Fill Column" global-display-fill-column-indicator-mode)
-     ("d w" "Wrap" visual-line-mode)
-     ("d t" "Truncate" toggle-truncate-lines)
-     ("d W" "Whitespace" whitespace-mode)]
-   ["Tab Bar"
-    ("t t" "Tab Bar Mode" tab-bar-mode)
-    ("t n" "New" tab-bar-new-tab)
-    ("t k" "Kill" tab-bar-close-tab)
-    ("t z" "Undo Kill" tab-bar-undo-close-tab)
-    ("t ]" "Next" tab-bar-switch-to-next-tab)
-    ("t [" "Previous" tab-bar-switch-to-prev-tab)]])
+   ["Transients"
+    ("O" "Outline Navigation..." oht-transient-outline)
+    ("D" "Display..."   oht-transient-display)
+    ("T" "Tabs..."      oht-transient-tabs)
+    ("B" "Bookmarks..." oht-transient-bookmarks)
+    ("S" "Spelling..." oht-transient-spelling)
+    ("H" "Helpful Commands..." oht-transient-help)
+    ("M" "Toggle Minor Modes" consult-minor-mode-menu)]])
+
+(transient-define-prefix oht-transient-outline ()
+  "Transient for Outline Minor Mode navigation"
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  ["General -> Outline Navigation"
+   ["Show/Hide"
+    ("<backtab>" "Global Toggle" bicycle-cycle-global)
+    ("<tab>" "Toggle Children" bicycle-cycle)
+    ("o"     "Hide to This Sublevel" outline-hide-sublevels)
+    ("a"     "Show All" outline-show-all)]
+   ["Navigate"
+    ("n" "Next" outline-next-visible-heading)
+    ("p" "Previous" outline-previous-visible-heading)]
+   ["Edit"
+    ("M-<left>"  "Promote" outline-promote)
+    ("M-<right>" "Demote"  outline-demote)
+    ("M-<up>"    "Move Up" outline-move-subtree-up)
+    ("M-<down>"  "Move Down" outline-move-subtree-down)]
+   ["Other"
+    ("s-z" "Undo" undo-fu-only-undo)
+    ("s-Z" "Redo" undo-fu-only-redo)
+    ("c" "Consult" consult-outline :transient nil)]])
+
+(transient-define-prefix oht-transient-display ()
+  "A transient for controlling Emacs display"
+  ["General -> Display"
+   [("h" "Highlight Line" hl-line-mode)
+    ("l" "Line Numbers" global-display-line-numbers-mode)
+    ("g" "Fill Column" global-display-fill-column-indicator-mode)
+    ("w" "Wrap" visual-line-mode)
+    ("t" "Truncate" toggle-truncate-lines)
+    ("W" "Whitespace" whitespace-mode)
+    ("c" "Composition Mode" composition-mode)
+    ("f" "Fonts..." oht-transient-fonts)]])
+
+(transient-define-prefix oht-transient-fonts ()
+  "Set Font Properties"
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  ["General -> Display -> Fonts"
+   ["Modes"
+    ("v" "Var Mode" variable-pitch-mode)
+    ("V" "V+ Mode" facedancer-vadjust-mode)
+    ("o" "Olivetti" olivetti-mode)
+    ("w" "Wrap" visual-line-mode)
+    ("c" "Comp" composition-mode)]
+   ["Size"
+    ("0" "Reset Size" text-scale-mode)
+    ("=" "Larger" text-scale-increase)
+    ("+" "Larger" text-scale-increase)
+    ("-" "Smaller" text-scale-decrease)]
+   ["Other"
+    ("s" "Line Spacing" facedancer-line-spacing)
+    ("m" "Modus Toggle" modus-themes-toggle)]])
+
+(transient-define-prefix oht-transient-tabs ()
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  ["General -> Tabs"
+   [("t" "Tab Bar Mode" tab-bar-mode)
+    ("n" "New" tab-bar-new-tab)
+    ("k" "Kill" tab-bar-close-tab)
+    ("z" "Undo Kill" tab-bar-undo-close-tab)
+    ("]" "Next" tab-bar-switch-to-next-tab)
+    ("[" "Previous" tab-bar-switch-to-prev-tab)]])
+
+(transient-define-prefix oht-transient-bookmarks ()
+  "A transient for controlling bookmarks"
+  [["General -> Bookmarks"
+    ("s" "Set"  bookmark-set)
+    ("l" "List" list-bookmarks)
+    ("j" "Jump" consult-bookmark)]])
+
+(transient-define-prefix oht-transient-spelling ()
+  "Transient for a spelling interface"
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  [["Toggle Modes"
+    ("m" "Flyspell" flyspell-mode)
+    ("M" "Prog Flyspell" flyspell-prog-mode)]
+   ["Check"
+    ("b" "Buffer" flyspell-buffer)
+    ("r" "Region" flyspell-region)]
+   ["Correction"
+    ("n" "Next" flyspell-goto-next-error)
+    ("<return>" "Fix" flyspell-correct-wrapper)
+    ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
+    ("<DEL>" "Delete Word" kill-word)
+    ("s-z" "Undo" undo-fu-only-undo)
+    ("s-Z" "Redo" undo-fu-only-redo)]])
 
 
-(define-transient-command oht-transient-dispatch ()
+(transient-define-prefix oht-transient-help ()
+  "Transient for Helpful commands"
+  ["General -> Helpful Commands"
+   [("p" "At Point" helpful-at-point)]
+   [("c" "Callable" helpful-callable)
+    ("f" "Function" helpful-function)
+    ("C" "Command" helpful-command)
+    ("v" "Variable" helpful-variable)
+    ("s" "Symbol" helpful-symbol)
+    ("M" "Macro" helpful-macro)
+    ("k" "Key" helpful-key)
+    ("m" "Mode" helpful-mode)]
+   [("u" "Update" helpful-update)
+    ("V" "Visit Reference" helpful-visit-reference)
+    ("K" "Kill Helpful Buffers" helpful-kill-buffers)]])
+
+
+;;; Other Transients
+
+(transient-define-prefix oht-transient-dispatch ()
   "Jump directly to your most-used stuff."
   ["Work"
    [("t" "Today + Priority" oht-org-agenda-today)
@@ -75,8 +169,7 @@ wherever you need to go."
     ("r" "Reading"     oht-dispatch-reading)
     ("w" "Watch"       oht-dispatch-watch)]])
 
-
-(define-transient-command oht-transient-window ()
+(transient-define-prefix oht-transient-window ()
   "Most commonly used window commands"
   [["Splits"
     ("s" "Horizontal" split-window-below)
@@ -97,55 +190,17 @@ wherever you need to go."
     ("<up>"    "↑" windmove-up    :transient t)
     ("<down>"  "↓" windmove-down  :transient t)]
    ["Move"
-    ("S-<left>"  "S-←" buf-move-left  :transient t)
-    ("S-<right>" "S-→" buf-move-right :transient t)
-    ("S-<up>"    "S-↑" buf-move-up    :transient t)
-    ("S-<down>"  "S-↓" buf-move-down  :transient t)]
+    ("S-<left>"  "Move ←" buf-move-left  :transient t)
+    ("S-<right>" "Move →" buf-move-right :transient t)
+    ("S-<up>"    "Move ↑" buf-move-up    :transient t)
+    ("S-<down>"  "Move ↓" buf-move-down  :transient t)]
    ["Undo/Redo"
     ("s-z" "Winner Undo" winner-undo :transient t)
     ("s-Z" "Winner Redo" winner-redo :transient t)]])
 
 
-(define-transient-command oht-transient-help ()
-  "Transient for Helpful commands"
-  [[("p" "At Point" helpful-at-point)]
-   [("c" "Callable" helpful-callable)
-    ("f" "Function" helpful-function)
-    ("C" "Command" helpful-command)
-    ("v" "Variable" helpful-variable)
-    ("s" "Symbol" helpful-symbol)
-    ("M" "Macro" helpful-macro)
-    ("k" "Key" helpful-key)
-    ("m" "Mode" helpful-mode)]
-   [("u" "Update" helpful-update)
-    ("V" "Visit Reference" helpful-visit-reference)
-    ("K" "Kill Helpful Buffers" helpful-kill-buffers)]])
-
-
-(define-transient-command oht-transient-fonts ()
-  "Set Font Properties"
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  [["Modes"
-    ("v" "Var Mode" variable-pitch-mode)
-    ("V" "V+ Mode" facedancer-vadjust-mode)
-    ("o" "Olivetti" olivetti-mode)
-    ("w" "Wrap" visual-line-mode)
-    ("c" "Comp" composition-mode)
-    ]
-   ["Size"
-    ("0" "Reset Size" text-scale-mode)
-    ("=" "Larger" text-scale-increase)
-    ("+" "Larger" text-scale-increase)
-    ("-" "Smaller" text-scale-decrease)
-    ]
-   ["Other"
-    ("s" "Line Spacing" facedancer-line-spacing)
-    ("m" "Modus Toggle" modus-themes-toggle)]])
-
-
-(define-transient-command oht-transient-2nd ()
-  "Secondary Selection"
+(transient-define-prefix oht-transient-2nd ()
+  "Transient for working with the secondary selection"
   [["Cut/Copy"
     ("xx" "Cut 2nd" oht/cut-secondary-selection)
     ("cc" "Copy 2nd" oht/copy-secondary-selection)]
@@ -158,53 +213,12 @@ wherever you need to go."
     ("d"  "Delete 2nd" oht/delete-secondary-selection)]])
 
 
-(define-transient-command oht-transient-outline ()
-  "Outline Navigation"
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  [["Show/Hide"
-    ("<backtab>" "Global Toggle" bicycle-cycle-global)
-    ("<tab>" "Toggle Children" bicycle-cycle)
-    ("o"     "Hide to This Sublevel" outline-hide-sublevels)
-    ("a"     "Show All" outline-show-all)]
-   ["Navigate"
-    ("n" "Next" outline-next-visible-heading)
-    ("p" "Previous" outline-previous-visible-heading)]
-   ["Edit"
-    ("M-<left>"  "Promote" outline-promote)
-    ("M-<right>" "Demote"  outline-demote)
-    ("M-<up>"    "Move Up" outline-move-subtree-up)
-    ("M-<down>"  "Move Down" outline-move-subtree-down)]
-   ["Other"
-    ("s-z" "Undo" undo-fu-only-undo)
-    ("s-Z" "Redo" undo-fu-only-redo)
-    ("c" "Consult" consult-outline :transient nil)]])
-
-
-(define-transient-command oht-transient-spelling ()
-  "Spelling Interface"
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  [["Toggle Modes"
-    ("m" "Flyspell" flyspell-mode)
-    ("M" "Prog Flyspell" flyspell-prog-mode)]
-   ["Check"
-    ("b" "Buffer" flyspell-buffer)
-    ("r" "Region" flyspell-region)]
-   ["Correction"
-    ("n" "Next" flyspell-goto-next-error)
-    ("<return>" "Fix" flyspell-correct-wrapper)
-    ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
-    ("<DEL>" "Delete Word" kill-word)
-    ("s-z" "Undo" undo-fu-only-undo)
-    ("s-Z" "Redo" undo-fu-only-redo)]])
-
-
 ;;; Mode-Specific Transients
 
-(define-transient-command oht-transient-org ()
+(transient-define-prefix oht-transient-org ()
   "Transient for Org Mode"
-  [["Navigation"
+  ["Org Mode"
+   ["Navigation"
     ("o" "Outline" consult-outline)
     ("n" "Narrow" org-narrow-to-subtree)
     ("w" "Widen" widen)
@@ -226,7 +240,7 @@ wherever you need to go."
     ("i" "Insert Link" org-insert-last-stored-link)]])
 
 
-(define-transient-command oht-transient-org-agenda ()
+(transient-define-prefix oht-transient-org-agenda ()
   "A transient for setting org-agenda todo status.
 
 I've created this because I don't like how org-todo messes with
@@ -239,22 +253,23 @@ org-todo-keywords to a transient command."
     ("c" "CANCELED" org-agenda-todo-set-canceled)]])
 
 
-(define-transient-command oht-transient-org-todo ()
+(transient-define-prefix oht-transient-org-todo ()
   "A transient for setting org todo status.
 
 I've created this because I don't like how org-todo messes with
 windows. There is likely a much better way to automatically map
 org-todo-keywords to a transient command."
-  ["Change Status To..."
+  ["Org mode -> Change Status To..."
    [("t" "TODO"     org-todo-set-todo)
     ("l" "LATER"    org-todo-set-later)]
    [("d" "DONE"     org-todo-set-done)
     ("c" "CANCELED" org-todo-set-canceled)]])
 
 
-(define-transient-command oht-transient-dired ()
-  "Dired commands."
-  [["Action"
+(transient-define-prefix oht-transient-dired ()
+  "Transient for dired commands"
+  ["Dired Mode"
+   ["Action"
     ("RET" "Open file"            dired-find-file)
     ("o" "  Open in other window" dired-find-file-other-window)
     ("C-o" "Open in other window (No select)" dired-display-file)
@@ -292,9 +307,10 @@ org-todo-keywords to a transient command."
     ("m" "Marks..." oht-transient-dired-marks)]])
 
 
-(define-transient-command oht-transient-dired-marks ()
-  "Sub-transient for dired."
-  [["Toggles"
+(transient-define-prefix oht-transient-dired-marks ()
+  "Sub-transient for dired marks"
+  ["Dired Mode -> Marks"
+   ["Toggles"
     ("mm"  "Mark"                 dired-mark)
     ("mM"  "Mark all"             dired-mark-subdir-files)
     ("mu"  "Unmark"               dired-unmark)
@@ -330,10 +346,12 @@ org-todo-keywords to a transient command."
     ("&"   "Async shell command"  dired-do-async-shell-command)]])
 
 
-(define-transient-command oht-transient-eww ()
+(transient-define-prefix oht-transient-eww ()
+  "Transient for EWW"
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
-  [["Actions"
+  ["EWW"
+   ["Actions"
     ("G" "Browse" prot-eww-browse-dwim)
     ("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
     ("&" "Browse With External Browser" eww-browse-with-external-browser)
@@ -355,8 +373,10 @@ org-todo-keywords to a transient command."
     ("M-p" "Previous Bookmark" eww-previous-bookmark)]
    ])
 
-(define-transient-command oht-transient-info ()
-  [[("d" "Info Directory" Info-directory)
+(transient-define-prefix oht-transient-info ()
+  "Transient for Info mode"
+  ["Info"
+   [("d" "Info Directory" Info-directory)
     ("m" "Menu" Info-menu)
     ("F" "Go to Node" Info-goto-emacs-command-node)]
    [("s" "Search regex Info File" Info-search)
@@ -376,17 +396,9 @@ org-todo-keywords to a transient command."
     ("]" "Backward Node" Info-forward-node)]])
 
 
-;;; Ideas for Further Development
+;;; Ideas for Further Development:
 
-;; https://github.com/jojojames/matcha
-;; https://github.com/conao3/transient-dwim.el
-
-;; org-agenda commands
 ;; ibuffer commands
-;; query-replace
-;; occur?
-;; Help
-;;   - info-apropos
 
 
 (provide 'oht-transient)

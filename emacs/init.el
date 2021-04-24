@@ -1038,18 +1038,16 @@
              oht-transient-eww
              oht-transient-info)
   :init
+  ;; Any commands these transients use, whose packages are potentially not
+  ;; loaded yet, need to be autoloaded.
   (autoload 'org-store-link "org")
   :config
   (load (concat oht-dotfiles "lisp/oht-transient.el"))
   :bind*
   ("s-<return>" . oht-transient-general)
-  ("C-h H" . oht-transient-help)
   ("s-w" . oht-transient-window)
-  ("s-F" . oht-transient-fonts)
   ("s-2" . oht-transient-2nd)
-  ("s-0" . oht-transient-outline)
-  ("s-d" . oht-transient-dispatch)
-  ("C-," . oht-transient-spelling))
+  ("s-d" . oht-transient-dispatch))
 
 
 ;;;; Pseudo-Packages, or my lisp files

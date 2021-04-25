@@ -1,4 +1,4 @@
-;;; oht-eww.el --- Additional config for the eww browser -*- lexical-binding: t -*-
+;;; eww-extras.el --- Additional config for the eww browser -*- lexical-binding: t -*-
 
 
 ;;; Display
@@ -157,4 +157,4 @@ To be used by `eww-after-render-hook'."
 (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer)
 
 
-(provide 'oht-eww)
+(provide 'eww-extras)

@@ -1,4 +1,4 @@
-;; oht-transient.el --- -*- lexical-binding: t -*-
+;; transient-extras.el --- -*- lexical-binding: t -*-
 
 
 ;;; Commentary
@@ -84,7 +84,7 @@ wherever you need to go."
     ("V" "V+ Mode" facedancer-vadjust-mode)
     ("o" "Olivetti" olivetti-mode)
     ("w" "Wrap" visual-line-mode)
-    ("c" "Comp" composition-mode)]
+    ("c" "Composition" composition-mode)]
    ["Size"
     ("0" "Reset Size" text-scale-mode)
     ("=" "Larger" text-scale-increase)
@@ -402,4 +402,4 @@ org-todo-keywords to a transient command."
 ;; ibuffer commands
 
 
-(provide 'oht-transient)
+(provide 'transient-extras)

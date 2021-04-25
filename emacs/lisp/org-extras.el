@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t -*-
+;;; org-extras.el ----*- lexical-binding: t -*-
 
 ;;; Agenda Settings
 
@@ -270,4 +270,4 @@
 (add-hook 'imenu-after-jump-hook 'ok-imenu-show-entry)
 
 
-(provide 'oht-org)
+(provide 'org-extras)

@@ -1,4 +1,4 @@
-;;; oht-elfeed-pre.el --- Loaded before Elfeed -*- lexical-binding: t -*-
+;;; elfeed-extras.el --- Loaded before Elfeed -*- lexical-binding: t -*-
 
 
 ;;; Feed Title and Tag Changes
@@ -143,4 +143,4 @@
   (message "Browsing in buried buffer"))
 
 
-(provide 'oht-elfeed-pre)
+(provide 'elfeed-extras)

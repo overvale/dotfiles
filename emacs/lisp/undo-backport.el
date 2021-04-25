@@ -1,4 +1,4 @@
-;;; oht-undo-backport.el -*- lexical-binding: t -*-
+;;; undo-backport.el -*- lexical-binding: t -*-
 
 ;; https://old.reddit.com/r/emacs/comments/j0fj7d/what_other_undoxx_packages_exist_besides_undotree/g6tndgw/
 
@@ -138,4 +138,4 @@ as an argument limits undo to changes within the current region."
     (setq undo-list (cdr undo-list)))
   (gethash undo-list undo-equiv-table))
 
-(provide 'oht-undo-backport)
+(provide 'undo-backport)

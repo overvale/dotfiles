@@ -678,7 +678,7 @@
   :straight (:type git :host github :repo "casouri/vundo" :branch "master")
   :commands vundo
   ;; The below is back-ported from Emacs 28, once you upgrade you can safely remove this:
-  :config (load (concat oht-dotfiles "lisp/oht-undo-backport.el")))
+  :config (load (concat oht-dotfiles "lisp/undo-backport.el")))
 
 (use-package expand-region
   :bind
@@ -761,7 +761,7 @@
   :commands (org-mode oht-org-agenda-today)
   :bind ("s-C" . org-capture)
   :config
-  (load (concat oht-dotfiles "lisp/oht-org.el"))
+  (load (concat oht-dotfiles "lisp/org-extras.el"))
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
   (add-hook 'org-mode-hook
@@ -825,7 +825,7 @@
     "Jump to an eww bookmarked location using EWW."
     (eww (bookmark-prop-get record 'location)))
   :config
-  (load (concat oht-dotfiles "lisp/oht-eww.el"))
+  (load (concat oht-dotfiles "lisp/eww-extras.el"))
   :commands (eww prot-eww-browse-dwim)
   :bind
   (:map eww-mode-map
@@ -836,7 +836,7 @@
   :hook (elfeed-show-mode-hook . oht-elfeed-show-fonts)
   :config
   (load "~/home/src/rss-feeds.el")
-  (load (concat oht-dotfiles "lisp/oht-elfeed.el"))
+  (load (concat oht-dotfiles "lisp/elfeed-extras.el"))
   (setq elfeed-use-curl t
         elfeed-curl-max-connections 10
         elfeed-db-directory "~/.emacs.d/elfeed/"
@@ -1012,7 +1012,7 @@
   (setq transient-mode-line-format mode-line-format
         transient-display-buffer-action '(display-buffer-below-selected))
   :config
-  (load (concat oht-dotfiles "lisp/oht-transient.el"))
+  (load (concat oht-dotfiles "lisp/transient-extras.el"))
   :bind*
   ("s-<return>" . oht-transient-general)
   ("s-w" . oht-transient-window)
@@ -1060,7 +1060,7 @@
   :config
   (facedancer-font-set))
 
-(use-package oht-functions
+(use-package misc-functions
   :straight nil
   :demand
   :config
@@ -1079,7 +1079,7 @@
   :straight nil
   :commands (composition-mode))
 
-(use-package oht-find-file-directories
+(use-package find-file-directories
   ;; BEAUTIFUL set of functions from Radian for creating directories when
   ;; finding files.
   :straight nil

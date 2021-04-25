@@ -1,4 +1,4 @@
-;; oht-functions.el --- -*- lexical-binding: t; -*-
+;; misc-functions.el --- -*- lexical-binding: t; -*-
 
 
 ;;; Misc Functions
@@ -231,4 +231,4 @@ If no region is active, then stay active and swap."
   (browse-url "http://68k.news/"))
 
 
-(provide 'oht-functions)
+(provide 'misc-functions)

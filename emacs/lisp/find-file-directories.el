@@ -1,4 +1,4 @@
-;;; oht-find-file-directories.el -*- lexical-binding: t -*-
+;;; find-file-directories.el -*- lexical-binding: t -*-
 
 ;; The following code is taken directly from Radian
 ;; https://github.com/raxod502/radian
@@ -172,4 +172,4 @@ This is a function for `after-save-hook'. Remove
                ))
   (advice-add fun :around #'radian--advice-find-file-create-directories))
 
-(provide 'oht-find-file-directories)
+(provide 'find-file-directories)

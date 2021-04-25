@@ -964,6 +964,7 @@
   (pdf-tools-install)
   (setq-default pdf-view-display-size 'fit-page)
   (setq pdf-annot-activate-created-annotations nil)
+  (setq pdf-annot-list-format '((page . 3) (type . 24) (contents . 200)))
   ;; Required for retina scaling to work
   (setq pdf-view-use-scaling t
         pdf-view-use-imagemagick nil)
@@ -987,6 +988,10 @@
   ;; seems to fix export
   :straight (:host github :repo "machc/pdf-tools-org" :branch "master")
   :commands pdf-tools-org-export-to-org)
+
+;; The bad news is that pdf-tools might be entering a period of being
+;; unmaintained. The github issue tracker is full of people commenting that
+;; the maintainer cannot be reached. [2021-04-21]
 
 
 ;;;; Transient

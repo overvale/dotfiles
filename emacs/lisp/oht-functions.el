@@ -1,4 +1,5 @@
-;; -*- lexical-binding: t; -*-
+;; oht-functions.el --- -*- lexical-binding: t; -*-
+
 
 ;;; Misc Functions
 
@@ -30,15 +31,6 @@
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 
-(defun oht/open-in-bbedit ()
-  "Open current file or dir in BBEdit.
-Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'"
-  (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ) )))
-    (message "path is %s" $path)
-    (string-equal system-type "darwin")
-    (shell-command (format "open -a BBEdit \"%s\"" $path))))
-
 (defun macos-open-file ()
   "Open the file inferred by ffap using `open'."
   (interactive)
@@ -55,7 +47,6 @@ Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.
   (push-mark)
   (backward-word)
   (delete-region (point) (mark)))
-
 
 (defun oht/pipe-region (start end command)
   "Run shell-command-on-region interactivly replacing the region in place"
@@ -84,31 +75,6 @@ Adapted from: URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.
   (find-file (completing-read "Find File Recursively: "
                               (directory-files-recursively default-directory ".+"))))
 
-(defun oht/find-scratch ()
-  "Switch to the *scratch* buffer"
-  (interactive)
-  (switch-to-buffer "*scratch*"))
-
-(defun all-occur (rexp)
-  "Search all buffers for REXP."
-  (interactive "MSearch open buffers for regex: ")
-  (multi-occur (buffer-list) rexp))
-
-(defun occur-dwim ()
-  "Call `occur' with a sane default.
-Taken from oremacs.com. This will offer as the default candidate:
-the current region (if it's active), or the current symbol."
-  (interactive)
-  (push (if (region-active-p)
-            (buffer-substring-no-properties
-             (region-beginning)
-             (region-end))
-          (let ((sym (thing-at-point 'symbol)))
-            (when (stringp sym)
-              (regexp-quote sym))))
-        regexp-history)
-  (call-interactively 'occur))
-
 (defun oht-toggle-comment-region-or-line ()
   "Comments or uncomments the region or the current line if there's no active region."
   (interactive)
@@ -118,18 +84,6 @@ the current region (if it's active), or the current symbol."
       (setq beg (line-beginning-position) end (line-end-position)))
     (comment-or-uncomment-region beg end)))
 
-;; Normally, when `eval-last-sexp' is called with an argument the result is
-;; inserted at point, this advises the function to REPLACE the last sexp.
-(defadvice eval-last-sexp (around replace-sexp (arg) activate)
-  "Evaluate and replace when called with a prefix argument."
-  (if arg
-      (let ((pos (point)))
-        ad-do-it
-        (goto-char pos)
-        (backward-kill-sexp)
-        (forward-sexp))
-    ad-do-it))
-
 (defun my/smart-beginning-of-line ()
   "Move point to first non-whitespace character or beginning-of-line."
   (interactive)
@@ -138,6 +92,40 @@ the current region (if it's active), or the current symbol."
     (and (<= oldpos (point))
          (/= (line-beginning-position) oldpos)
          (beginning-of-line))))
+
+(defun mark-whole-line ()
+  "Put the point at end of this whole line, mark at beginning"
+  (interactive)
+  (beginning-of-line)
+  (set-mark-command nil)
+  (end-of-line))
+
+
+;;; Transient Mark
+
+;; https://www.masteringemacs.org/article/fixing-mark-commands-transient-mark-mode
+
+(defun exchange-point-and-mark-dwim ()
+  "If a region is active, then leave it activated and swap point and mark.
+If no region is active, then stay active and swap."
+  (interactive)
+  (if (use-region-p)
+      (exchange-point-and-mark)
+    (exchange-point-and-mark)
+    (deactivate-mark nil)))
+
+(defun push-mark-no-activate ()
+  "Pushes `point' to `mark-ring' and does not activate the region
+   Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled"
+  (interactive)
+  (push-mark (point) t nil)
+  (message "Pushed mark to ring"))
+
+(defun jump-to-mark ()
+  "Jumps to the local mark, respecting the `mark-ring' order.
+  This is the same as using \\[set-mark-command] with the prefix argument."
+  (interactive)
+  (set-mark-command 1))
 
 
 ;;; Secondary Selection
@@ -208,6 +196,39 @@ the current region (if it's active), or the current symbol."
                                youtube-dl-output-dir
                                "%(title)s.%(ext)s"
                                (ffap-url-at-point))))
+
+
+;;; Dispatch
+
+(defun oht-dispatch-downloads ()
+  "Open ~/downloads"
+  (interactive)
+  (find-file "~/Downloads"))
+
+(defun oht-dispatch-reading ()
+  "Open ~/downloads/reading"
+  (interactive)
+  (find-file "~/Downloads/reading"))
+
+(defun oht-dispatch-watch ()
+  "Open ~/downloads/watch"
+  (interactive)
+  (find-file "~/Downloads/watch"))
+
+(defun oht-dispatch-NPR-news ()
+  "Open text.npr.org"
+  (interactive)
+  (browse-url "https://text.npr.org"))
+
+(defun oht-dispatch-CNN-news ()
+  "Open lite.cnn.com"
+  (interactive)
+  (browse-url "https://lite.cnn.com/en"))
+
+(defun oht-dispatch-google-news ()
+  "Open 68k.news"
+  (interactive)
+  (browse-url "http://68k.news/"))
 
 
 (provide 'oht-functions)

@@ -162,13 +162,21 @@
 ;; want wrapping to happen at the word instead of character.
 (setq-default word-wrap 1)
 
-
 ;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
 ;; This is inconsistent with macOS behavior, which is that "C-a" always goes
 ;; to the beginning of the logical line and "s-<left>" goes to the beginning
-;; of the visual line. Also note the bindings in `oht-keys-mode'.
+;; of the visual line.
 (global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
 (global-set-key (kbd "s-<right>") 'end-of-visual-line)
+;; for C-a and C-e see oht-keys-mode below
+
+;; Additionally, in visual-line-mode the function kill-line kills to the end
+;; of the VISUAL line, which is inconsistent with Mac OS, and my own
+;; expectations. Therefore we need to remap it to a function which kills to
+;; the end of the whole line.
+(global-set-key (kbd "C-k") (lambda ()
+                              (interactive)
+                              (kill-line nil)))
 
 ;; and while we're at it...
 (global-set-key (kbd "s-<up>") 'beginning-of-buffer)
@@ -242,7 +250,6 @@
 ;; Minor modes can override global bindings (see README), so any bindings you
 ;; don't want overridden should be placed in their own minor mode.
 
-;; Define the keymap, mode, and switch it on
 (defvar oht-keys-mode-keymap (make-keymap) "Keymap for oht-keys-mode")
 (define-minor-mode oht-keys-mode
   "Minor mode for my personal keybindings."
@@ -250,10 +257,8 @@
   :keymap oht-keys-mode-keymap)
 (oht-keys-mode 1)
 
-;; My bindings
+;; My bindings -- take precedence over global bindings
 (define-key oht-keys-mode-keymap (kbd "<C-return>") 'execute-extended-command)
-(define-key oht-keys-mode-keymap (kbd "C-;") 'backward-word)
-(define-key oht-keys-mode-keymap (kbd "C-'") 'forward-word)
 (define-key oht-keys-mode-keymap (kbd "C-a") 'beginning-of-line)
 (define-key oht-keys-mode-keymap (kbd "C-e") 'end-of-line)
 
@@ -343,12 +348,6 @@
 
 ;;; Packages
 
-(use-package benchmark-init
-  :demand
-  :config
-  ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
-
 (use-package blackout
   :demand
   :config
@@ -357,19 +356,11 @@
   (blackout 'auto-fill-function " Fill"))
 
 (use-package modus-themes
-  :init (setq modus-themes-bold-constructs nil
-              modus-themes-slanted-constructs nil
-              modus-themes-syntax 'nil
-              modus-themes-links 'faint-neutral-underline
-              modus-themes-prompts 'nil
+  :init (setq modus-themes-links 'faint-neutral-underline
               modus-themes-mode-line 'accented
-              modus-themes-completions 'nil
               modus-themes-region 'bg-only
               modus-themes-diffs 'desaturated
-              modus-themes-org-blocks 'grayscale
-              modus-themes-scale-headings nil
-              modus-themes-variable-pitch-ui nil
-              modus-themes-variable-pitch-headings nil)
+              modus-themes-org-blocks 'grayscale)
   (modus-themes-load-operandi))
 
 (add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle)
@@ -388,16 +379,7 @@
 (use-package vertico
   :straight (:host github :repo "minad/vertico" :branch "main")
   :init
-  (vertico-mode)
-
-  (defun crm-indicator (args)
-    (cons (concat "[CRM] " (car args)) (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-  )
+  (vertico-mode))
 
 (use-package marginalia
   :straight (:type git :host github :repo "minad/marginalia" :branch "main")
@@ -543,13 +525,11 @@
   (defun oht/view-mode-exit ()
     (interactive)
     (view-mode -1)
-    (hl-line-mode -1)
-    )
+    (hl-line-mode -1))
   (defun oht/exit-view-replace-rectangle ()
     (interactive)
     (oht/view-mode-exit)
-    (call-interactively 'replace-rectangle)
-    )
+    (call-interactively 'replace-rectangle))
   (bind-key "s-j" 'view-mode)
   :bind (:map view-mode-map
               ;; common
@@ -688,17 +668,6 @@
   :custom (olivetti-body-width 84)
   :blackout " Olvti")
 
-(use-package which-key
-  :disabled
-  :init
-  ;; Echo unfinished commands after this delay.
-  ;; Setting to 0 means do not echo commands.
-  (setq echo-keystrokes 0.01)
-  :config
-  ;; (which-key-mode t)
-  (setq which-key-idle-delay 1.0)
-  :blackout)
-
 (use-package undo-fu
   :bind
   ("s-z" . undo-fu-only-undo)
@@ -719,10 +688,6 @@
   ;; replaces zap-to-char with an avy-like interface
   ;; note that it searches forward and backward
   :bind ("M-z" . zzz-up-to-char))
-
-(use-package sdcv-mode
-  :straight (sdcv-mode :type git :host github :repo "gucong/emacs-sdcv" :branch "master")
-  :commands sdcv-search)
 
 (use-package unfill
   :commands (unfill-paragraph unfill-toggle unfill-region)
@@ -756,10 +721,6 @@
              buf-move-down
              buf-move-left
              buf-move-right))
-
-(use-package bookmark-view
-  :straight (:type git :host github :repo "minad/bookmark-view" :branch "master")
-  :commands (bookmark-view))
 
 (use-package visual-regexp
   ;; Provides an alternate version of `query-replace' which highlights matches
@@ -1090,42 +1051,27 @@
   :config
   (facedancer-font-set))
 
-(use-package oht-dispatch
-  :straight nil
-  :demand)
-
 (use-package oht-functions
   :straight nil
   :demand
   :config
   (global-set-key [remap beginning-of-line] #'my/smart-beginning-of-line)
   :bind
+  ("s-l" . mark-whole-line)
+  ("C-x C-x" . exchange-point-and-mark-dwim)
+  ("C-`" . push-mark-no-activate)
+  ("M-`" . consult-mark)
   ("M-DEL" . sanemacs/backward-kill-word)
   ("C-DEL" . sanemacs/backward-kill-word)
   ("s-/" . oht-toggle-comment-region-or-line)
   ("s-|" . oht/pipe-region))
 
-(use-package oht-mac
-  :straight nil
-  :demand
-  :bind
-  ("s-l" . oht-mac-mark-whole-line)
-  ;; C-k only killing the visual line also isn't how macOS works.
-  ("C-k" . oht-mac-kill-line))
-
 (use-package oht-composition
   :straight nil
   :commands (composition-mode))
 
-(use-package oht-transient-mark
-  :straight nil
-  :bind
-  ("C-x C-x" . exchange-point-and-mark-dwim)
-  ("C-`" . push-mark-no-activate)
-  ("M-`" . consult-mark))
-
 (use-package oht-find-file-directories
-  ;; Beautiful set of functions from Radian for creating directories when
+  ;; BEAUTIFUL set of functions from Radian for creating directories when
   ;; finding files.
   :straight nil
   :demand)

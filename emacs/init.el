@@ -1075,15 +1075,41 @@
   ("s-/" . oht-toggle-comment-region-or-line)
   ("s-|" . oht/pipe-region))
 
-(use-package oht-composition
-  :straight nil
-  :commands (composition-mode))
-
 (use-package find-file-directories
   ;; BEAUTIFUL set of functions from Radian for creating directories when
   ;; finding files.
   :straight nil
   :demand)
+
+
+;;;; Composition mode
+
+(define-minor-mode composition-mode
+  "A tiny minor-mode to toggle some settings I like when writing
+
+This is really just a wrapper around some extant features I toggle on/off
+when I'm writing. I've wrapped them in a minor mode to make it easy to
+toggle them on/off. It also allows me to define a lighter for the
+mode-line."
+  :init-value nil
+  :lighter " Comp"
+  (if composition-mode
+      (progn
+        (visual-line-mode t)
+        (setq-local line-spacing 2)
+        (olivetti-mode t)
+        (text-scale-increase 1)
+        (variable-pitch-mode 1))
+    (progn
+      (visual-line-mode -1)
+      (setq-local line-spacing 0)
+      (olivetti-mode -1)
+      (text-scale-increase 0)
+      (variable-pitch-mode -1)
+      ;; This shouldn't be needed, but is:
+      (toggle-truncate-lines 1))))
+
+
 
 
 ;;; End of init.el

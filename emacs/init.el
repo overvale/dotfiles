@@ -1009,6 +1009,8 @@
   ;; Any commands these transients use, whose packages are potentially not
   ;; loaded yet, need to be autoloaded.
   (autoload 'org-store-link "org")
+  (setq transient-mode-line-format mode-line-format
+        transient-display-buffer-action '(display-buffer-below-selected))
   :config
   (load (concat oht-dotfiles "lisp/oht-transient.el"))
   :bind*

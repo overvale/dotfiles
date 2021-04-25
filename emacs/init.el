@@ -588,6 +588,7 @@
               ("u" . upcase-dwim)
               ("d" . downcase-dwim)
               ("w" . kill-ring-save)
+              ("|" . oht/pipe-region)
               ("R" . replace-rectangle)
               ("E" . eval-region)
               ("q" . selected-off))
@@ -703,6 +704,7 @@
   :bind
   ("C-h f" . #'helpful-function)
   ("C-h v" . #'helpful-variable)
+  ("C-h o" . #'helpful-symbol)
   ("C-h k" . #'helpful-key)
   ("C-h p" . #'helpful-at-point))
 

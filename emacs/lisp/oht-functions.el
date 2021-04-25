@@ -68,7 +68,7 @@
 (defun oht/org-insert-date-today-inactive ()
   "Inserts today's date in org inactive format."
   (interactive)
-  (insert (format-time-string "\[%Y-%m-%d\]")))
+  (insert (format-time-string "\[%Y-%m-%d %a\]")))
 
 (defun find-file-recursively ()
   "Find Files Recursively using completing read."

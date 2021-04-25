@@ -28,7 +28,8 @@ wherever you need to go."
      ("o" "Consult Outline" consult-outline)
      ("a" "AutoFill" auto-fill-mode)
      ("j" "Dired Jump" dired-jump)
-     ("s" "Store Org Link" org-store-link)]
+     ("s" "Store Org Link" org-store-link)
+     ("g" "Consult Grep" consult-grep)]
    ["Transients"
     ("O" "Outline Navigation..." oht-transient-outline)
     ("D" "Display..."   oht-transient-display)

@@ -239,7 +239,6 @@
 (global-set-key (kbd "M-l")     'downcase-dwim)
 (global-set-key (kbd "M-u")     'upcase-dwim)
 (global-set-key (kbd "M-SPC")   'cycle-spacing)
-(global-set-key (kbd "M-/")     'hippie-expand)
 (global-set-key (kbd "C-x r r") 'replace-rectangle)
 (global-set-key (kbd "C-h C-f") 'find-function)
 (global-set-key (kbd "C-h C-v") 'find-variable)
@@ -513,6 +512,21 @@
       ;; Pulse to highlight!
       (pulse-momentary-highlight-region begin end)))
   (advice-add 'yank :around #'ct/yank-pulse-advice))
+
+(use-package hippie-exp
+  :straight nil
+  :init
+  (setq hippie-expand-try-functions-list
+        '(try-complete-file-name-partially
+          try-complete-file-name
+          try-expand-line
+          try-expand-dabbrev
+          try-expand-dabbrev-all-buffers
+          try-expand-dabbrev-from-kill
+          try-complete-lisp-symbol-partially
+          try-complete-lisp-symbol))
+  :bind
+  ("M-/" . hippie-expand))
 
 
 ;;;; View / Selected

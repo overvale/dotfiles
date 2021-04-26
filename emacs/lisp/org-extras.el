@@ -270,4 +270,33 @@
 (add-hook 'imenu-after-jump-hook 'ok-imenu-show-entry)
 
 
+;;; Narrow/Widen
+
+;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/narrow-extras.el
+
+(defun narrow-or-widen-dwim (p)
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or defun,
+whichever applies first. Narrowing to org-src-block actually
+calls `org-edit-src-code'.
+With prefix P, don't widen, just narrow even if buffer is
+already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+	    ((and (bound-and-true-p org-src-mode) (not p))
+	     (org-edit-src-exit))
+	    ((region-active-p)
+         (narrow-to-region (region-beginning) (region-end)))
+        ((derived-mode-p 'org-mode)
+         (or (ignore-errors (org-edit-src-code))
+             (ignore-errors (org-narrow-to-block))
+             (org-narrow-to-subtree)))
+        ((derived-mode-p 'latex-mode)
+         (LaTeX-narrow-to-environment))
+	    ((derived-mode-p 'tex-mode)
+	     (TeX-narrow-to-group))
+        (t (narrow-to-defun))))
+
+
 (provide 'org-extras)

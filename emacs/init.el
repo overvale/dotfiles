@@ -602,7 +602,7 @@
               ("u" . upcase-dwim)
               ("d" . downcase-dwim)
               ("w" . kill-ring-save)
-              ("|" . oht/pipe-region)
+              ("|" . pipe-region)
               ("R" . replace-rectangle)
               ("E" . eval-region)
               ("q" . selected-off))
@@ -1087,7 +1087,7 @@
   ("M-DEL" . sanemacs/backward-kill-word)
   ("C-DEL" . sanemacs/backward-kill-word)
   ("s-/" . oht-toggle-comment-region-or-line)
-  ("s-|" . oht/pipe-region))
+  ("s-|" . pipe-region))
 
 (use-package find-file-directories
   ;; BEAUTIFUL set of functions from Radian for creating directories when

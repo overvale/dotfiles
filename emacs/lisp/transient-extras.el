@@ -177,7 +177,7 @@ wherever you need to go."
     ("v" "Vertical"   split-window-right)
     ("b" "Balance"    balance-windows)
     ("f" "Fit"        fit-window-to-buffer)
-    ("r" "Rotate"     oht/rotate-window-split)]
+    ("r" "Rotate"     toggle-window-split)]
    ["Window"
     ("c" "Clone Indirect" clone-indirect-buffer)
     ("t" "Tear Off" tear-off-window)
@@ -220,8 +220,7 @@ wherever you need to go."
   ["Org Mode"
    ["Navigation"
     ("o" "Outline" consult-outline)
-    ("n" "Narrow" org-narrow-to-subtree)
-    ("w" "Widen" widen)
+    ("n" "Narrow/Widen" narrow-or-widen-dwim)
     ("g" "Go To" org-goto)
     ("m" "Visible Markup" visible-mode)]
    ["Item"

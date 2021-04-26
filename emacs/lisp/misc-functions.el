@@ -3,33 +3,19 @@
 
 ;;; Misc Functions
 
-(defun oht/rotate-window-split ()
-  "Toggle between vertical and horizontal split."
-  ;; Source: https://www.emacswiki.org/emacs/ToggleWindowSplit.
-  ;; Author: Jeff Dwork
+(defun toggle-window-split ()
+  "Toggle window split from vertical to horizontal."
   (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-             (next-win-buffer (window-buffer (next-window)))
-             (this-win-edges (window-edges (selected-window)))
-             (next-win-edges (window-edges (next-window)))
-             (this-win-2nd (not (and (<= (car this-win-edges)
-                                         (car next-win-edges))
-                                     (<= (cadr this-win-edges)
-                                         (cadr next-win-edges)))))
-             (splitter
-              (if (= (car this-win-edges)
-                     (car (window-edges (next-window))))
-                  'split-window-horizontally
-                'split-window-vertically)))
-        (delete-other-windows)
-        (let ((first-win (selected-window)))
-          (funcall splitter)
-          (if this-win-2nd (other-window 1))
-          (set-window-buffer (selected-window) this-win-buffer)
-          (set-window-buffer (next-window) next-win-buffer)
-          (select-window first-win)
-          (if this-win-2nd (other-window 1))))))
+  (if (> (length (window-list)) 2)
+      (error "Can't toggle with more than 2 windows.")
+    (let ((was-full-height (window-full-height-p)))
+      (delete-other-windows)
+      (if was-full-height
+          (split-window-vertically)
+        (split-window-horizontally))
+      (save-selected-window
+        (other-window 1)
+        (switch-to-buffer (other-buffer))))))
 
 (defun macos-open-file ()
   "Open the file inferred by ffap using `open'."
@@ -48,17 +34,26 @@
   (backward-word)
   (delete-region (point) (mark)))
 
-(defun oht/pipe-region (start end command)
-  "Run shell-command-on-region interactivly replacing the region in place"
-  (interactive (let (string)
-                 (unless (mark)
-                   (error "The mark is not set now, so there is no region"))
-                 (setq string (read-from-minibuffer "Shell command on region: "
-                                                    nil nil nil
-                                                    'shell-command-history))
-                 (list (region-beginning) (region-end)
-                       string)))
-  (shell-command-on-region start end command t t))
+(defun pipe-region (start end command)
+  ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/text-extras.el
+  "Pipe region through shell command. If the mark is inactive,
+pipe whole buffer."
+  (interactive (append
+                (if (use-region-p)
+                    (list (region-beginning) (region-end))
+                  (list (point-min) (point-max)))
+                (list (read-shell-command "Pipe through: "))))
+  (let ((exit-status (call-shell-region start end command t t)))
+    (unless (equal 0 exit-status)
+      (let ((error-msg (string-trim-right (buffer-substring (mark) (point)))))
+        (undo)
+        (cond
+         ((null exit-status)
+          (message "Unknown error"))
+         ((stringp exit-status)
+          (message "Signal %s" exit-status))
+         (t
+          (message "[%d] %s" exit-status error-msg)))))))
 
 (defun oht/org-insert-date-today ()
   "Insert today's date using standard org formatting."

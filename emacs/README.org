@@ -156,7 +156,7 @@ It's not key binding, but you can remap one command to another with:
 
 * Setting Variables
 
-There are two kinds of variables, global ones, and buffer local ones.
+There are two kinds of variables, global ones, and buffer-local ones.
 
 =setq= simply sets the value of a variable, so if the variable global it sets
 its value globally, and if the variable is buffer local it sets the value

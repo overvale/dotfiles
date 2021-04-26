@@ -2,7 +2,6 @@
 
 ;;; Agenda Settings
 
-;; This defines which files you want included in your agenda/TODO views.
 (setq org-agenda-files '("~/home/org/"))
 
 ;; On my laptop, include this

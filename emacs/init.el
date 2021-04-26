@@ -1,41 +1,54 @@
 ;;; init.el --- Oliver Taylor's Emacs Config -*- lexical-binding: t -*-
 
+;; Copyright (C) 2021 Oliver Taylor
+
+;; Author: Oliver Taylor
 ;; Homepage: https://github.com/olivertaylor/dotfiles
 
 
-;;; Set Up
+;;; Configuration
 
-;;;; Startup
+;;;; Settings
 
-;; Garbage Collection!
-;; This is actually the 2nd step, for the first step, see `early-init.el'
+;; Garbage collection. This is actually the 2nd step, for the 1st step, see
+;; `early-init.el'
 (add-hook 'emacs-startup-hook
           (lambda ()
             (setq gc-cons-threshold 16777216 ; 16mb
                   gc-cons-percentage 0.1)
             (garbage-collect)) t)
 
-;; When testing startup performance, it can be useful to print a message
-;; saying how long it took to start up.
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (message "Emacs ready in %s with %d garbage collections."
-                     (format "%.2f seconds"
-                             (float-time
-                              (time-subtract after-init-time before-init-time)))
-                     gcs-done)))
+            (message (concat "Emacs startup: " (emacs-init-time)))))
 
-;; Inhibit most of the default stuff on startup, and ensure nothing
-;; extra is loaded.
+(setq custom-file (make-temp-file "emacs-custom-"))
+
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t
       initial-buffer-choice 'remember-notes)
 
+;; (when (string= (system-name) "shadowfax.local")
+;;       (defvar oht-dotfiles "~/home/dot/emacs/"))
 
-;;;; Preferences
+(defvar oht-dotfiles "~/home/dot/emacs/")
+(add-to-list 'load-path (concat oht-dotfiles "lisp/"))
 
-;; Activate modes to set settings -- sure Emacs!
+(defun find-emacs-dotfiles ()
+  "Find lisp files in your Emacs dotfiles directory, pass to completing-read."
+  (interactive)
+  (find-file (completing-read "Find Elisp Dotfile: "
+                              (directory-files-recursively oht-dotfiles "\.el$"))))
+
+(defvar oht-orgfiles "~/home/org/")
+
+(defun find-org-files ()
+  "Find org files in your org directory, pass to completing-read."
+  (interactive)
+  (find-file (completing-read "Find Org Files: "
+                              (directory-files-recursively oht-orgfiles "\.org$"))))
+
 (delete-selection-mode -1)
 (global-auto-revert-mode 1)
 (save-place-mode 1)
@@ -43,117 +56,56 @@
 (winner-mode 1)
 (show-paren-mode t)
 (blink-cursor-mode -1)
+(minibuffer-depth-indicate-mode 1)
 (set-language-environment "UTF-8")
 
 ;; Needs to be set in BOTH early-init AND init ¯\_(ツ)_/¯
 (scroll-bar-mode -1)
 
-;; There are two kinds of variables, global ones, and buffer local ones.
-;;
-;; `setq' simply sets the value of a variable, so if the variable global it
-;; sets its value globally, and if the variable is buffer local it sets the
-;; value locally (and new buffers will inherit the default value).
-;;
-;; `setq-local' takes a global variable and makes a buffer local "copy" that
-;; doesn't effect the global value.
-;;
-;; `setq-default' takes a local variable and sets a new default value for all
-;; new buffers, but doesn't change it in existing buffers.
-
-;; Visual/Interface Stuff
 (setq-default cursor-type 'box)
-(setq visible-bell t)
+(setq visible-bell nil)
 (setq-default indicate-empty-lines nil)
 (setq frame-title-format '("%b"))
 (setq uniquify-buffer-name-style 'forward)
 (defalias 'yes-or-no-p 'y-or-n-p)
-(setq split-window-keep-point nil)
 
-;; Settings
+(setq display-time-format "%H:%M  %Y-%m-%d"
+      display-time-interval 60
+      display-time-mail-directory nil
+      display-time-default-load-average nil)
+
+(column-number-mode t)
+(display-time-mode t)
+
+(setq enable-recursive-minibuffers 1)
 (setq vc-follow-symlinks t
       find-file-visit-truename t)
 (setq create-lockfiles nil
       make-backup-files nil)
-(setq sentence-end-double-space nil)
+(setq load-prefer-newer t)
 (setq delete-by-moving-to-trash t)
 (setq confirm-kill-processes nil)
-(setq load-prefer-newer t)
+(setq save-interprogram-paste-before-kill t
+      kill-do-not-save-duplicates t)
 
-;; Mac-specific
-(if (equal system-type 'darwin)
-    (progn
-      (setq locate-command "mdfind")
-      (setq trash-directory "~/.Trash/emacs")))
+(when (string= system-type "darwin")
+      (setq locate-command "mdfind"
+            trash-directory "~/.Trash/emacs"))
 
-;; When splitting the window, go to it
+(setq split-window-keep-point nil)
 (defadvice split-window-below (after split-window-below activate) (other-window 1))
 (defadvice split-window-right (after split-window-right activate) (other-window 1))
 
-
-;;;; Minibuffer
-
-;; An example: you call `switch-buffer' and search for something in the
-;; minibuffer. You then want to call a command inside that minibuffer.
-(setq enable-recursive-minibuffers 1)
-
-;; And show an indicator when you do that.
-(minibuffer-depth-indicate-mode 1)
-
-;; Resize minibuffer and echo area
-(setq resize-mini-windows nil)
-
-
-;;;; Kill Ring
-
-;; If you have something on the system clipboard, and then kill
-;; something in Emacs, then by default whatever you had on the system
-;; clipboard is gone and there is no way to get it back. Setting the
-;; following option makes it so that when you kill something in Emacs,
-;; whatever was previously on the system clipboard is pushed into the
-;; kill ring. This way, you can paste it with `yank-pop'.
-(setq save-interprogram-paste-before-kill t)
-
-;; And remove duplicates from the kill-ring
-(setq kill-do-not-save-duplicates t)
-
-
-;;;; Emacs Directory
-
-;; Set a variable for where your emacs dotfiles are located,
-;; different on each machine.
-(if (equal system-type 'darwin)
-    (progn
-      (defvar oht-dotfiles "~/home/dot/emacs/")))
-
-;; Add lisp files to the load path.
-(add-to-list 'load-path (concat oht-dotfiles "lisp/"))
-
-;; When customizing Emacs interactively (ie: not in this document or init.el)
-;; Emacs appends code to your init.el file, which can be annoying when editing
-;; it by hand. This tells Emacs to place these customizations in a separate
-;; file.
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-
-;; Quickly edit your emacs config by binding this
-(defun oht-find-emacs-dotfiles ()
-  "Finds lisp files in dotfiles directory and passes to completing-read."
-  (interactive)
-  (find-file (completing-read "Find Elisp Dotfile: "
-                              (directory-files-recursively oht-dotfiles "\.el$"))))
-
-
-;;;; Tab/Fill Settings, Visual Line Mode
-
+(setq sentence-end-double-space nil)
 (setq-default tab-width 4
               indent-tabs-mode nil
               fill-column 78)
 
-;; Confusingly, `visual-line-mode', `word-wrap', and `truncate-lines' are all
-;; different things. `visual-line-mode' is a wrapper around a bunch of
-;; things, probably best explained here:
-;; http://ergoemacs.org/emacs/emacs_long_line_wrap.html
+;; `visual-line-mode', `word-wrap', and `truncate-lines' all do different
+;; things. `visual-line-mode' is a wrapper around a bunch of things, probably
+;; best explained here: http://ergoemacs.org/emacs/emacs_long_line_wrap.html
 ;; `word-wrap' ONLY wraps lines word-wise instead of character-wise.
-;; `truncate-lines' ONLY controls if wrapping happens at all. If set to
+;; `truncate-lines' ONLY controls if wrapping happens at all; if set to
 ;; non-nil it is supposed to let lines run off the window, but this is a
 ;; buffer-local setting that I cannot (no matter what I try) get to be global.
 (setq-default truncate-lines t)
@@ -162,42 +114,33 @@
 ;; want wrapping to happen at the word instead of character.
 (setq-default word-wrap 1)
 
-;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
-;; This is inconsistent with macOS behavior, which is that "C-a" always goes
-;; to the beginning of the logical line and "s-<left>" goes to the beginning
-;; of the visual line.
-(global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
-(global-set-key (kbd "s-<right>") 'end-of-visual-line)
-;; for C-a and C-e see oht-keys-mode below
 
-;; Additionally, in visual-line-mode the function kill-line kills to the end
-;; of the VISUAL line, which is inconsistent with Mac OS, and my own
-;; expectations. Therefore we need to remap it to a function which kills to
-;; the end of the whole line.
-(global-set-key (kbd "C-k") (lambda ()
-                              (interactive)
-                              (kill-line nil)))
-
-;; and while we're at it...
-(global-set-key (kbd "s-<up>") 'beginning-of-buffer)
-(global-set-key (kbd "s-<down>") 'end-of-buffer)
-
-
-;;;; Mode Line
-
-(setq display-time-format "%H:%M  %Y-%m-%d")
-(setq display-time-interval 60)
-(setq display-time-mail-directory nil)
-(setq display-time-default-load-average nil)
-
-(column-number-mode t)
-(display-time-mode t)
-
-
-;;;; Basic Keybindings
+;;;; Keybindings
 
 ;; This is done first so that if later parts of the config fail I still have
 ;; these familiar bindings to work with. They are all built-in functions.
+
+;; Minor modes override global bindings (see README), so any bindings you
+;; don't want overridden should be placed in a minor mode. This technique is
+;; stolen from the package bind-key.
+
+(defvar oht-keys-mode-keymap (make-keymap)
+  "Keymap for oht-keys-mode")
+
+(define-minor-mode oht-keys-mode
+  "Minor mode for my personal keybindings.
+
+The only purpose of this minor mode is to override global keybindings.
+Keybindings you define here will take precedence."
+  :init-value t
+  :global t
+  :keymap oht-keys-mode-keymap)
+
+;; Stolen from bind-key:
+;; the keymaps in `emulation-mode-map-alists' take precedence over
+;; `minor-mode-map-alist'
+(add-to-list 'emulation-mode-map-alists
+             `((oht-keys-mode . ,oht-keys-mode-keymap)))
 
 ;; If on a Mac, use the command key as Super, left-option for Meta, and
 ;; right-option for Alt.
@@ -221,19 +164,38 @@
 (global-set-key (kbd "s-[") 'previous-buffer)
 (global-set-key (kbd "s-]") 'next-buffer)
 (global-set-key (kbd "s-<backspace>") (lambda () (interactive) (kill-line 0)))
-(global-set-key (kbd "s-,") 'oht-find-emacs-dotfiles)
+(global-set-key (kbd "s-<up>") 'beginning-of-buffer)
+(global-set-key (kbd "s-<down>") 'end-of-buffer)
+
+;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
+;; This is inconsistent with macOS behavior, which is that "C-a" always goes
+;; to the beginning of the logical line and "s-<left>" goes to the beginning
+;; of the visual line.
+(define-key oht-keys-mode-keymap (kbd "C-a") 'beginning-of-line)
+(define-key oht-keys-mode-keymap (kbd "C-e") 'end-of-line)
+(global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
+(global-set-key (kbd "s-<right>") 'end-of-visual-line)
+
+;; Additionally, in visual-line-mode the function kill-line kills to the end
+;; of the VISUAL line, which is inconsistent with Mac OS, and my own
+;; expectations. Therefore we need to remap it to a function which kills to
+;; the end of the whole line.
+(defun kill-rest-whole-line ()
+  "Kill the rest of the whole line."
+  (interactive)
+  (kill-line nil))
+(global-set-key (kbd "C-k") 'kill-rest-whole-line)
 
 ;; Emacs SUPER!
 (global-set-key (kbd "s-k")   'kill-this-buffer)
 (global-set-key (kbd "s-b")   'switch-to-buffer)
 (global-set-key (kbd "s-B")   'ibuffer)
-(global-set-key (kbd "s-M-b") 'list-bookmarks)
 (global-set-key (kbd "s-o")   'other-window)
 (global-set-key (kbd "s-O")   'find-file)
-(global-set-key (kbd "s-u")   'universal-argument)
 
 ;; Emacs Misc
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+(define-key oht-keys-mode-keymap (kbd "<C-return>") 'execute-extended-command)
 (global-set-key (kbd "M-s-s")   'save-some-buffers)
 (global-set-key (kbd "M-c")     'capitalize-dwim)
 (global-set-key (kbd "M-l")     'downcase-dwim)
@@ -243,24 +205,8 @@
 (global-set-key (kbd "C-h C-f") 'find-function)
 (global-set-key (kbd "C-h C-v") 'find-variable)
 
-
-;;;; Minor Mode for Personal Keybindings
-
-;; Minor modes can override global bindings (see README), so any bindings you
-;; don't want overridden should be placed in their own minor mode.
-
-(defvar oht-keys-mode-keymap (make-keymap) "Keymap for oht-keys-mode")
-(define-minor-mode oht-keys-mode
-  "Minor mode for my personal keybindings."
-  :global t
-  :keymap oht-keys-mode-keymap)
-(oht-keys-mode 1)
-
-;; My bindings -- take precedence over global bindings
-(define-key oht-keys-mode-keymap (kbd "<C-return>") 'execute-extended-command)
-(define-key oht-keys-mode-keymap (kbd "C-a") 'beginning-of-line)
-(define-key oht-keys-mode-keymap (kbd "C-e") 'end-of-line)
-
+(global-set-key (kbd "s-,") 'find-emacs-dotfiles)
+(global-set-key (kbd "s-<") 'find-org-files)
 
 ;;;; Mouse
 
@@ -270,23 +216,11 @@
 (global-set-key [S-down-mouse-1] 'ignore)
 (global-set-key [S-mouse-1] 'mouse-save-then-kill)
 
-;; Using the mouse for horizontal/vertical splits is great because
-;; the windows split exactly where you click the mouse.
-;; See 'Rebinding Mouse Buttons' for more info.
-;;
-;; 1. Use s-click to create splits
-;; 2. Use M-s-click to delete windows
-
-;; To add a vertical split to a window, just s-click on the mode-line
-(global-set-key [mode-line s-mouse-1] 'mouse-split-window-horizontally)
-;; and make this work everywhere else
+;; s-click to split windows at that exact spot
 (global-set-key [s-mouse-1] 'mouse-split-window-horizontally)
-;; Use shift to add a horizontal split to the window
 (global-set-key [S-s-mouse-1] 'mouse-split-window-vertically)
 
-;; Delete a window with M-s--click on its mode-line
-(global-set-key [mode-line M-s-mouse-1] 'mouse-delete-window)
-;; And make this work everywhere
+;; Delete a window with M-s--click
 (global-set-key [M-s-mouse-1] 'mouse-delete-window)
 
 ;; The below bindings are taken directly from the source of `mouse.el'
@@ -302,6 +236,8 @@
 (global-set-key [C-M-drag-mouse-1] 'mouse-set-secondary)
 (global-set-key [C-M-down-mouse-1] 'mouse-drag-secondary)
 
+
+;;; Packages
 
 ;;;; Straight / Use Package
 
@@ -345,7 +281,7 @@
 (setq use-package-hook-name-suffix nil)
 
 
-;;; Packages
+;;;; Minimum
 
 (use-package blackout
   :demand
@@ -393,7 +329,8 @@
   :bind
   ("s-e" . embark-act)
   (:map embark-file-map
-        ("O" . macos-open-file))
+        ("O" . macos-open-file)
+        ("j" . dired-jump))
   (:map embark-url-map
         ("d" . youtube-dl-URL-at-point)
         ("&" . browse-url-default-macosx-browser)))
@@ -411,8 +348,8 @@
         `((consult-mark :preview-key any))))
 
 (use-package embark-consult
-  :straight nil
-  :after (embark consult))
+  :after (embark consult)
+  :demand t)
 
 (use-package ctrlf
   :bind
@@ -1023,7 +960,7 @@
   ;; Any commands these transients use, whose packages are potentially not
   ;; loaded yet, need to be autoloaded.
   (autoload 'org-store-link "org")
-  (setq transient-mode-line-format mode-line-format
+  (setq transient-mode-line-format 'line
         transient-display-buffer-action '(display-buffer-below-selected))
   :config
   (load (concat oht-dotfiles "lisp/transient-extras.el"))

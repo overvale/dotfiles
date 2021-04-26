@@ -33,6 +33,7 @@ wherever you need to go."
    ["Transients"
     ("O" "Outline Navigation..." oht-transient-outline)
     ("D" "Display..."   oht-transient-display)
+    ("F" "Fonts..." oht-transient-fonts)
     ("T" "Tabs..."      oht-transient-tabs)
     ("B" "Bookmarks..." oht-transient-bookmarks)
     ("S" "Spelling..." oht-transient-spelling)
@@ -71,14 +72,13 @@ wherever you need to go."
     ("w" "Wrap" visual-line-mode)
     ("t" "Truncate" toggle-truncate-lines)
     ("W" "Whitespace" whitespace-mode)
-    ("c" "Composition Mode" composition-mode)
-    ("f" "Fonts..." oht-transient-fonts)]])
+    ("c" "Composition Mode" composition-mode)]])
 
 (transient-define-prefix oht-transient-fonts ()
   "Set Font Properties"
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
-  ["General -> Display -> Fonts"
+  ["General -> Fonts"
    ["Modes"
     ("v" "Var Mode" variable-pitch-mode)
     ("V" "V+ Mode" facedancer-vadjust-mode)
@@ -198,7 +198,6 @@ wherever you need to go."
    ["Undo/Redo"
     ("s-z" "Winner Undo" winner-undo :transient t)
     ("s-Z" "Winner Redo" winner-redo :transient t)]])
-
 
 (transient-define-prefix oht-transient-2nd ()
   "Transient for working with the secondary selection"

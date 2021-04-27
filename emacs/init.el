@@ -49,18 +49,18 @@
   (find-file (completing-read "Find Org Files: "
                               (directory-files-recursively oht-orgfiles "\.org$"))))
 
-(delete-selection-mode -1)
-(global-auto-revert-mode 1)
-(save-place-mode 1)
-(recentf-mode 1)
-(winner-mode 1)
-(show-paren-mode t)
-(blink-cursor-mode -1)
-(minibuffer-depth-indicate-mode 1)
-(set-language-environment "UTF-8")
-
-;; Needs to be set in BOTH early-init AND init ¯\_(ツ)_/¯
-(scroll-bar-mode -1)
+(custom-set-variables
+ '(delete-selection-mode nil)
+ '(global-auto-revert-mode t)
+ '(save-place-mode t)
+ '(recentf-mode t)
+ '(winner-mode t)
+ '(show-paren-mode t)
+ '(blink-cursor-mode nil)
+ '(ring-bell-function #'ignore)
+ '(scroll-bar-mode nil) ; set in early-init AND here ¯\_(ツ)_/¯
+ '(minibuffer-depth-indicate-mode t)
+ '(set-language-environment "UTF-8"))
 
 (setq-default cursor-type 'box)
 (setq visible-bell nil)
@@ -296,11 +296,13 @@ Keybindings you define here will take precedence."
   (blackout 'auto-fill-function " Fill"))
 
 (use-package modus-themes
-  :init (setq modus-themes-links 'faint-neutral-underline
-              modus-themes-mode-line 'accented
-              modus-themes-region 'bg-only
-              modus-themes-diffs 'desaturated
-              modus-themes-org-blocks 'grayscale)
+  :custom
+  (modus-themes-links 'faint-neutral-underline)
+  (modus-themes-mode-line 'accented)
+  (modus-themes-region 'bg-only)
+  (modus-themes-diffs 'desaturated)
+  (modus-themes-org-blocks 'grayscale)
+  :init
   (modus-themes-load-operandi))
 
 (add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle)
@@ -311,10 +313,10 @@ Keybindings you define here will take precedence."
 (use-package orderless
   :straight (:host github :repo "oantolin/orderless" :branch "master")
   :demand
-  :init
-  (setq completion-styles '(orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion))))))
+  :custom
+  (completion-styles '(orderless))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles . (partial-completion))))))
 
 (use-package vertico
   :straight (:host github :repo "minad/vertico" :branch "main")
@@ -323,10 +325,11 @@ Keybindings you define here will take precedence."
 
 (use-package marginalia
   :straight (:type git :host github :repo "minad/marginalia" :branch "main")
+  :custom
+  (marginalia-annotators
+   '(marginalia-annotators-heavy marginalia-annotators-light))
   :init
-  (marginalia-mode 1)
-  (setq marginalia-annotators
-        '(marginalia-annotators-heavy marginalia-annotators-light)))
+  (marginalia-mode 1))
 
 (use-package embark
   :straight (:host github :repo "oantolin/embark" :branch "master")
@@ -347,10 +350,10 @@ Keybindings you define here will take precedence."
   ("M-y" . consult-yank-pop)
   ("s-f" . consult-line)
   ([remap yank-pop] . consult-yank-pop)
-  :config
-  (setq consult-preview-key (kbd "C-="))
-  (setq consult-config
-        `((consult-mark :preview-key any))))
+  :custom
+  (consult-preview-key (kbd "C-="))
+  (consult-config
+   `((consult-mark :preview-key any))))
 
 (use-package embark-consult
   :after (embark consult)
@@ -360,8 +363,8 @@ Keybindings you define here will take precedence."
   :bind
   ("C-s" . ctrlf-forward-fuzzy)
   ("C-r" . ctrlf-backward-fuzzy)
-  :config
-  (setq ctrlf-go-to-end-of-match nil))
+  :custom
+  (ctrlf-go-to-end-of-match nil))
 
 
 ;;;; Built-In Packages
@@ -373,10 +376,11 @@ Keybindings you define here will take precedence."
 
 (use-package remember
   :straight nil
+  :custom
+  (remember-data-file "~/home/org/remember-notes")
+  (remember-notes-initial-major-mode 'fundamental-mode)
+  (remember-notes-auto-save-visited-file-name t)
   :init
-  (setq remember-data-file "~/home/org/remember-notes")
-  (setq remember-notes-initial-major-mode 'fundamental-mode)
-  (setq remember-notes-auto-save-visited-file-name t)
   (defun oht-remember-dwim ()
     "If the region is active, capture with region, otherwise just capture."
     (interactive)
@@ -390,38 +394,39 @@ Keybindings you define here will take precedence."
 (use-package bookmark
   :straight nil
   :commands (list-bookmarks)
+  :custom
+  (bookmark-save-flag 1)
+  (bookmark-default-file "~/home/bookmarks")
+  (bookmark-bmenu-file-column 45)
   :init
   (add-hook 'bookmark-bmenu-mode (lambda ()
                                    (hl-line-mode 1)))
-  (setq bookmark-save-flag 1)
-  (setq bookmark-default-file "~/home/bookmarks")
-  (setq bookmark-bmenu-file-column 45)
   :bind ("M-s-b" . list-bookmarks))
 
 (use-package ibuffer
   :straight nil
   :commands ibuffer
-  :config
-  (setq ibuffer-show-empty-filter-groups nil
-        ibuffer-saved-filter-groups
-        '(("default"
-           ("Read"  (or (mode . eww-mode)
-                        (mode . elfeed-search-mode)
-                        (mode . elfeed-show-mode)))
-           ("Org"   (mode . org-mode))
-           ("Mail"  (or
-                     (mode . mu4e-view-mode)
-                     (mode . mu4e-main-mode)
-                     (mode . mu4e-headers-mode)
-                     (mode . mu4e-view-raw-mode)
-                     (mode . mu4e-compose-mode)
-                     (mode . message-mode)
-                     (mode . mail-mode)))
-           ("Dired" (mode . dired-mode))
-           ("ELisp" (mode . emacs-lisp-mode))
-           ("Help"  (or (name . "\*Help\*")
-                        (name . "\*Apropos\*")
-                        (name . "\*Info\*"))))))
+  :custom
+  (ibuffer-show-empty-filter-groups nil)
+  (ibuffer-saved-filter-groups
+   '(("default"
+      ("Read"  (or (mode . eww-mode)
+                   (mode . elfeed-search-mode)
+                   (mode . elfeed-show-mode)))
+      ("Org"   (mode . org-mode))
+      ("Mail"  (or (mode . mu4e-view-mode)
+                   (mode . mu4e-main-mode)
+                   (mode . mu4e-headers-mode)
+                   (mode . mu4e-view-raw-mode)
+                   (mode . mu4e-compose-mode)
+                   (mode . message-mode)
+                   (mode . mail-mode)))
+      ("Dired" (mode . dired-mode))
+      ("ELisp" (mode . emacs-lisp-mode))
+      ("Help"  (or (name . "\*Help\*")
+                   (name . "\*Apropos\*")
+                   (name . "\*Info\*"))))))
+  :init
   (defun oht-ibuffer-hook ()
     (hl-line-mode 1)
     (ibuffer-auto-mode 1)
@@ -457,16 +462,16 @@ Keybindings you define here will take precedence."
 
 (use-package hippie-exp
   :straight nil
-  :init
-  (setq hippie-expand-try-functions-list
-        '(try-complete-file-name-partially
-          try-complete-file-name
-          try-expand-line
-          try-expand-dabbrev
-          try-expand-dabbrev-all-buffers
-          try-expand-dabbrev-from-kill
-          try-complete-lisp-symbol-partially
-          try-complete-lisp-symbol))
+  :custom
+  (hippie-expand-try-functions-list
+   '(try-complete-file-name-partially
+     try-complete-file-name
+     try-expand-line
+     try-expand-dabbrev
+     try-expand-dabbrev-all-buffers
+     try-expand-dabbrev-from-kill
+     try-complete-lisp-symbol-partially
+     try-complete-lisp-symbol))
   :bind
   ("M-/" . hippie-expand))
 
@@ -475,9 +480,9 @@ Keybindings you define here will take precedence."
 
 (use-package view
   :straight nil
+  :custom
+  (view-read-only t)
   :init
-  (setq view-read-only t)
-  (add-hook 'view-mode-hook 'hl-line-mode)
   (defun oht/view-mode-exit ()
     (interactive)
     (view-mode -1)
@@ -486,40 +491,41 @@ Keybindings you define here will take precedence."
     (interactive)
     (oht/view-mode-exit)
     (call-interactively 'replace-rectangle))
-  (bind-key "s-j" 'view-mode)
-  :bind (:map view-mode-map
-              ;; common
-              ("n" . next-line)
-              ("p" . previous-line)
-              ("f" . forward-char)
-              ("b" . backward-char)
-              ("F" . forward-word)
-              ("B" . backward-word)
-              ("a" . beginning-of-visual-line)
-              ("e" . end-of-visual-line)
-              ("{" . backward-paragraph)
-              ("}" . forward-paragraph)
-              ("(" . backward-sentence)
-              (")" . forward-sentence)
-              ("s" . ctrlf-forward-fuzzy)
-              ("r" . ctrlf-backward-fuzzy)
-              ("[" . scroll-down-line)
-              ("]" . scroll-up-line)
-              ("x" . exchange-point-and-mark)
-              ("M" . rectangle-mark-mode)
-              ;; unique
-              ("R" . oht/exit-view-replace-rectangle)
-              ("m" . set-mark-command)
-              ("<RET>" . oht/view-mode-exit)
-              ("s-j" . oht/view-mode-exit)
-              ("q" . quit-window))
+  :bind
+  ("s-j" . view-mode)
+  (:map view-mode-map
+        ;; common
+        ("n" . next-line)
+        ("p" . previous-line)
+        ("f" . forward-char)
+        ("b" . backward-char)
+        ("F" . forward-word)
+        ("B" . backward-word)
+        ("a" . beginning-of-visual-line)
+        ("e" . end-of-visual-line)
+        ("{" . backward-paragraph)
+        ("}" . forward-paragraph)
+        ("(" . backward-sentence)
+        (")" . forward-sentence)
+        ("s" . ctrlf-forward-fuzzy)
+        ("r" . ctrlf-backward-fuzzy)
+        ("[" . scroll-down-line)
+        ("]" . scroll-up-line)
+        ("x" . exchange-point-and-mark)
+        ("M" . rectangle-mark-mode)
+        ;; unique
+        ("R" . oht/exit-view-replace-rectangle)
+        ("m" . set-mark-command)
+        ("<RET>" . oht/view-mode-exit)
+        ("s-j" . oht/view-mode-exit)
+        ("q" . quit-window))
+  :hook (view-mode-hook . hl-line-mode)
   :blackout " VIEW")
 
 (use-package selected
   :commands selected-minor-mode
   :init
   (selected-global-mode 1)
-  :blackout selected-minor-mode
   :bind (:map selected-keymap
               ;; common
               ("n" . next-line)
@@ -550,7 +556,8 @@ Keybindings you define here will take precedence."
               ("q" . selected-off))
   :config
   (add-hook 'elfeed-show-mode (lambda ()
-                                (selected-minor-mode -1))))
+                                (selected-minor-mode -1)))
+  :blackout selected-minor-mode)
 
 
 ;;;; Dired
@@ -558,8 +565,8 @@ Keybindings you define here will take precedence."
 (use-package dired
   :straight nil
   :commands (dired dired-jump dired-jump-other-window)
-  :init
-  (setq dired-use-ls-dired nil) ; no more warning message
+  :custom
+  (dired-use-ls-dired nil) ; no more warning message
   :bind (:map dired-mode-map
               ("s-\\" . oht-transient-dired)
               ("O" . dired-open-file)
@@ -580,8 +587,8 @@ Keybindings you define here will take precedence."
 
 (use-package dired-subtree
   :after dired
-  :config
-  (setq dired-subtree-use-backgrounds nil)
+  :custom
+  (dired-subtree-use-backgrounds nil)
   :bind (:map dired-mode-map
               ("<tab>" . dired-subtree-toggle)))
 
@@ -591,13 +598,13 @@ Keybindings you define here will take precedence."
 (use-package flyspell
   :straight nil
   :commands (flyspell-mode flyspell-prog-mode turn-on-flyspell)
-  :init
-  (add-hook 'text-mode-hook 'turn-on-flyspell)
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-  :config
-  (setq ispell-program-name "/usr/local/bin/aspell")
-  (customize-set-variable 'ispell-extra-args '("--sug-mode=ultra"))
-  (setq ispell-list-command "list")
+  :custom
+  (ispell-program-name "/usr/local/bin/aspell")
+  (ispell-extra-args '("--sug-mode=ultra"))
+  (ispell-list-command "list")
+  :hook
+  (text-mode-hook . turn-on-flyspell)
+  (prog-mode-hook . flyspell-prog-mode)
   :blackout " Spell")
 
 (use-package flyspell-correct
@@ -690,8 +697,8 @@ Keybindings you define here will take precedence."
   ;; example, Python or Perl regexps.
   :after visual-regexp
   :bind (([remap query-replace-regexp] . #'vr/query-replace))
-  :init
-  (setq vr/engine 'pcre2el))
+  :custom
+  (vr/engine 'pcre2el))
 
 
 ;;;; Languages
@@ -766,17 +773,17 @@ Keybindings you define here will take precedence."
 
 (use-package eww
   :straight nil
+  :custom
+  (eww-restore-desktop nil)
+  (eww-desktop-remove-duplicates t)
+  (eww-header-line-format "%t %u")
+  (eww-download-directory "~/Downloads/")
+  (eww-bookmarks-directory "~/.emacs.d/eww-bookmarks/")
+  (eww-history-limit 150)
+  (eww-use-external-browser-for-content-type "\\`\\(video/\\|audio/\\|application/pdf\\)")
+  (url-cookie-trusted-urls '()
+                           url-cookie-untrusted-urls '(".*"))
   :init
-  (setq eww-restore-desktop nil)
-  (setq eww-desktop-remove-duplicates t)
-  (setq eww-header-line-format "%t %u")
-  (setq eww-download-directory "~/Downloads/")
-  (setq eww-bookmarks-directory "~/.emacs.d/eww-bookmarks/")
-  (setq eww-history-limit 150)
-  (setq eww-use-external-browser-for-content-type
-        "\\`\\(video/\\|audio/\\|application/pdf\\)")
-  (setq url-cookie-trusted-urls '()
-        url-cookie-untrusted-urls '(".*"))
   (defun oht-eww-bookmark-handler (record)
     "Jump to an eww bookmarked location using EWW."
     (eww (bookmark-prop-get record 'location)))
@@ -793,14 +800,15 @@ Keybindings you define here will take precedence."
   :config
   (load "~/home/src/rss-feeds.el")
   (load (concat oht-dotfiles "lisp/elfeed-extras.el"))
-  (setq elfeed-use-curl t
-        elfeed-curl-max-connections 10
-        elfeed-db-directory "~/.emacs.d/elfeed/"
-        elfeed-enclosure-default-dir "~/Downloads/"
-        elfeed-search-filter "@4-week-ago +unread"
-        elfeed-sort-order 'descending
-        elfeed-search-clipboard-type 'CLIPBOARD
-        elfeed-show-truncate-long-urls t)
+  :custom
+  (elfeed-use-curl t)
+  (elfeed-curl-max-connections 10)
+  (elfeed-db-directory "~/.emacs.d/elfeed/")
+  (elfeed-enclosure-default-dir "~/Downloads/")
+  (elfeed-search-filter "@4-week-ago +unread")
+  (elfeed-sort-order 'descending)
+  (elfeed-search-clipboard-type 'CLIPBOARD)
+  (elfeed-show-truncate-long-urls t)
   :bind
   (:map elfeed-search-mode-map
         ("a" . hrs/elfeed-pinboard-current-entry)
@@ -836,43 +844,43 @@ Keybindings you define here will take precedence."
 
 (use-package message
   :straight nil
-  :config
-  (setq message-send-mail-function 'smtpmail-send-it
-        message-cite-style 'message-cite-style-thunderbird
-        message-cite-function 'message-cite-original
-        message-kill-buffer-on-exit t
-        message-citation-line-format "On %d %b %Y at %R, %f wrote:\n"
-        message-citation-line-function 'message-insert-formatted-citation-line))
+  :custom
+  (message-send-mail-function 'smtpmail-send-it)
+  (message-cite-style 'message-cite-style-thunderbird)
+  (message-cite-function 'message-cite-original)
+  (message-kill-buffer-on-exit t)
+  (message-citation-line-format "On %d %b %Y at %R, %f wrote:\n")
+  (message-citation-line-function 'message-insert-formatted-citation-line))
 
 (use-package mu4e
   :load-path "/usr/local/Cellar/mu/1.4.15/share/emacs/site-lisp/mu/mu4e"
   :commands mu4e
   :bind (:map mu4e-headers-mode-map
               ("G" . mu4e-update-mail-and-index))
+  :custom
+  (mu4e-attachments-dir "~/Downloads")
+  (mu4e-update-interval (* 5 60))
+  (mu4e-change-filenames-when-moving t)
+  (mu4e-completing-read-function 'completing-read)
+  (mu4e-compose-dont-reply-to-self t)
+  (mu4e-compose-format-flowed nil)
+  (mu4e-confirm-quit nil)
+  (mu4e-headers-date-format "%Y-%m-%d")
+  (mu4e-headers-include-related nil)
+  (mu4e-headers-skip-duplicates t)
+  (mu4e-headers-time-format "%H:%M")
+  (mu4e-headers-visible-lines 20)
+  (mu4e-use-fancy-chars nil)
+  (mu4e-view-show-addresses t)
+  (mu4e-view-show-images t)
+  (mu4e-sent-messages-behavior 'delete)
+  (mu4e-headers-fields
+   '((:human-date . 12)
+     (:flags . 6)
+     (:from . 22)
+     (:thread-subject)))
   :config
   (load "~/home/ingenuity/mu4e.el")
-  (setq mu4e-attachments-dir "~/Downloads"
-        mu4e-update-interval (* 5 60)
-        mu4e-change-filenames-when-moving t
-        mu4e-completing-read-function 'completing-read
-        mu4e-compose-dont-reply-to-self t
-        mu4e-compose-format-flowed nil
-        mu4e-confirm-quit nil
-        mu4e-headers-date-format "%Y-%m-%d"
-        mu4e-headers-include-related nil
-        mu4e-headers-skip-duplicates t
-        mu4e-headers-time-format "%H:%M"
-        mu4e-headers-visible-lines 20
-        mu4e-use-fancy-chars nil
-        mu4e-view-show-addresses t
-        mu4e-view-show-images t
-        mu4e-sent-messages-behavior 'delete)
-  (setq mu4e-headers-fields
-        '((:human-date . 12)
-          (:flags . 6)
-          (:from . 22)
-          (:thread-subject)))
-  ;; Hooks and settings
   (defun jcs-view-in-eww (msg)
     (eww-browse-url (concat "file://" (mu4e~write-body-to-html msg))))
   (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
@@ -890,12 +898,12 @@ Keybindings you define here will take precedence."
 
 (use-package smtpmail
   :straight nil
-  :init
-  (setq auth-sources '("~/home/ingenuity/authinfo"))
-  (setq    smtpmail-stream-type 'starttls
-           smtpmail-default-smtp-server "smtp.gmail.com"
-           smtpmail-smtp-server "smtp.gmail.com"
-           smtpmail-smtp-service 587))
+  :custom
+  (auth-sources '("~/home/ingenuity/authinfo"))
+  (smtpmail-stream-type 'starttls)
+  (smtpmail-default-smtp-server "smtp.gmail.com")
+  (smtpmail-smtp-server "smtp.gmail.com")
+  (smtpmail-smtp-service 587))
 
 
 ;;;; PDFs
@@ -913,17 +921,18 @@ Keybindings you define here will take precedence."
   ;; set it manually (this code is taken directly from the pdf-tools source).
   :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
   :magic ("%PDF" . pdf-view-mode)
+  :custom
+  (pdf-view-display-size 'fit-page)
+  (pdf-annot-activate-created-annotations nil)
+  (pdf-annot-list-format '((page . 3) (type . 24) (contents . 200)))
+  ;; Required for retina scaling to work
+  (pdf-view-use-scaling t)
+  (pdf-view-use-imagemagick nil)
   :config
   ;; pdf-tools uses the `pdf-tools-install' function to set up hooks and
   ;; various things to ensure everything works as it should. PDFs will open
   ;; just fine without this, but not all features will be available.
   (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-page)
-  (setq pdf-annot-activate-created-annotations nil)
-  (setq pdf-annot-list-format '((page . 3) (type . 24) (contents . 200)))
-  ;; Required for retina scaling to work
-  (setq pdf-view-use-scaling t
-        pdf-view-use-imagemagick nil)
   (defun oht-pdf-annot-fonts ()
     (hl-line-mode 1)
     (pdf-annot-list-follow-minor-mode))
@@ -965,8 +974,9 @@ Keybindings you define here will take precedence."
   ;; Any commands these transients use, whose packages are potentially not
   ;; loaded yet, need to be autoloaded.
   (autoload 'org-store-link "org")
-  (setq transient-mode-line-format 'line
-        transient-display-buffer-action '(display-buffer-below-selected))
+  :custom
+  (transient-mode-line-format 'line)
+  (transient-display-buffer-action '(display-buffer-below-selected))
   :config
   (load (concat oht-dotfiles "lisp/transient-extras.el"))
   :bind*

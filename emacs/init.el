@@ -101,24 +101,12 @@
               indent-tabs-mode nil
               fill-column 78)
 
-;; `visual-line-mode', `word-wrap', and `truncate-lines' all do different
-;; things. `visual-line-mode' is a wrapper around a bunch of things, probably
-;; best explained here: http://ergoemacs.org/emacs/emacs_long_line_wrap.html
-;; `word-wrap' ONLY wraps lines word-wise instead of character-wise.
-;; `truncate-lines' ONLY controls if wrapping happens at all; if set to
-;; non-nil it is supposed to let lines run off the window, but this is a
-;; buffer-local setting that I cannot (no matter what I try) get to be global.
-(setq-default truncate-lines t)
-
-;; When visual-line-mode is off and truncate-lines is toggled off, I still
-;; want wrapping to happen at the word instead of character.
-(setq-default word-wrap 1)
-
-
 ;;;; Keybindings
 
-;; This is done first so that if later parts of the config fail I still have
-;; these familiar bindings to work with. They are all built-in functions.
+;; I do keybindings first because I've found the most fragile parts of my
+;; config are the package declarations. This way if something gets screwed up
+;; in the packages (missing parenthesis) all my most important keybindings
+;; (none of which require packages) are still loaded.
 
 ;; Minor modes override global bindings (see README), so any bindings you
 ;; don't want overridden should be placed in a minor mode. This technique is
@@ -167,25 +155,6 @@ Keybindings you define here will take precedence."
 (global-set-key (kbd "s-<up>") 'beginning-of-buffer)
 (global-set-key (kbd "s-<down>") 'end-of-buffer)
 
-;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
-;; This is inconsistent with macOS behavior, which is that "C-a" always goes
-;; to the beginning of the logical line and "s-<left>" goes to the beginning
-;; of the visual line.
-(define-key oht-keys-mode-keymap (kbd "C-a") 'beginning-of-line)
-(define-key oht-keys-mode-keymap (kbd "C-e") 'end-of-line)
-(global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
-(global-set-key (kbd "s-<right>") 'end-of-visual-line)
-
-;; Additionally, in visual-line-mode the function kill-line kills to the end
-;; of the VISUAL line, which is inconsistent with Mac OS, and my own
-;; expectations. Therefore we need to remap it to a function which kills to
-;; the end of the whole line.
-(defun kill-rest-whole-line ()
-  "Kill the rest of the whole line."
-  (interactive)
-  (kill-line nil))
-(global-set-key (kbd "C-k") 'kill-rest-whole-line)
-
 ;; Emacs SUPER!
 (global-set-key (kbd "s-k")   'kill-this-buffer)
 (global-set-key (kbd "s-b")   'switch-to-buffer)
@@ -207,6 +176,42 @@ Keybindings you define here will take precedence."
 
 (global-set-key (kbd "s-,") 'find-emacs-dotfiles)
 (global-set-key (kbd "s-<") 'find-org-files)
+
+
+;;;; Visual Line Mode, Fixes
+
+;; `visual-line-mode', `word-wrap', and `truncate-lines' all do different
+;; things. `visual-line-mode' is a wrapper around a bunch of things, probably
+;; best explained here: http://ergoemacs.org/emacs/emacs_long_line_wrap.html
+;; `word-wrap' ONLY wraps lines word-wise instead of character-wise.
+;; `truncate-lines' ONLY controls if wrapping happens at all; if set to
+;; non-nil it is supposed to let lines run off the window, but this is a
+;; buffer-local setting that I cannot (no matter what I try) get to be global.
+(setq-default truncate-lines t)
+
+;; When visual-line-mode is off and truncate-lines is toggled off, I still
+;; want wrapping to happen at the word instead of character.
+(setq-default word-wrap 1)
+
+;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
+;; This is inconsistent with macOS behavior, which is that "C-a" always goes
+;; to the beginning of the logical line and "s-<left>" goes to the beginning
+;; of the visual line.
+(define-key oht-keys-mode-keymap (kbd "C-a") 'beginning-of-line)
+(define-key oht-keys-mode-keymap (kbd "C-e") 'end-of-line)
+(global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
+(global-set-key (kbd "s-<right>") 'end-of-visual-line)
+
+;; Additionally, in visual-line-mode the function kill-line kills to the end
+;; of the VISUAL line, which is inconsistent with Mac OS, and my own
+;; expectations. Therefore we need to remap it to a function which kills to
+;; the end of the whole line.
+(defun kill-rest-whole-line ()
+  "Kill the rest of the whole line."
+  (interactive)
+  (kill-line nil))
+(global-set-key (kbd "C-k") 'kill-rest-whole-line)
+
 
 ;;;; Mouse
 

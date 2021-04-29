@@ -11,14 +11,14 @@
   (let ((feed (elfeed-db-get-feed "https://craigmod.com/index.xml")))
     (setf (elfeed-feed-title feed) "Craig Mod"))
   (let ((feed (elfeed-db-get-feed "https://reddit.com/r/emacs/top/.rss?sort=top&t=day")))
-    (setf (elfeed-feed-title feed) "r/emacs"))
-  (let ((feed (elfeed-db-get-feed "http://feeds.feedburner.com/Metafilter")))
-    (setf (elfeed-feed-title feed) "MetaFilter")))
+    (setf (elfeed-feed-title feed) "r/emacs")))
 
+;; add 'youtube' tag to entries whose feed-url contains 'youtube'
 (add-hook 'elfeed-new-entry-hook
           (elfeed-make-tagger :feed-url "youtube\\.com"
                               :add '(youtube)))
 
+;; Mark all entries older than 7 days as read
 (add-hook 'elfeed-new-entry-hook
           (elfeed-make-tagger :before "7 days ago"
                               :remove 'unread))
@@ -35,6 +35,11 @@
   (lambda ()
     (interactive)
     (elfeed-search-set-filter "+unread +emacs")))
+
+(define-key elfeed-search-mode-map "O"
+  (lambda ()
+    (interactive)
+    (elfeed-search-set-filter "+unread -emacs -news")))
 
 (define-key elfeed-search-mode-map "S"
   (lambda ()
@@ -54,6 +59,9 @@
   (interactive)
   (let ((browse-url-generic-program "/usr/bin/open"))
     (elfeed-show-visit t)))
+
+
+;;; Star and Unread Tags
 
 ;; Elfeed doesn't have a built-in way of flagging or marking items for later,
 ;; but it does have tags, which you can use for this. The below is some simple
@@ -83,6 +91,9 @@
   (elfeed-expose #'elfeed-show-untag 'unread)
   "Mark the current entry read.")
 
+
+;;; Pinboard
+
 (defun hrs/elfeed-current-entry ()
   "Return the elfeed entry, in both show and search modes."
   (cond ((eq major-mode 'elfeed-show-mode)
@@ -99,6 +110,9 @@
     (pinboard-not-too-soon :pinboard-save
                            (pinboard-save url title "" "" t nil))))
 
+
+;;; Download Youtube Video
+
 (defun oht-elfeed-show-download-video ()
   "In elfeed, download a video using youtube-dl."
   (interactive)
@@ -108,6 +122,7 @@
                                "%(title)s.%(ext)s"
                                (elfeed-entry-link elfeed-show-entry))))
 
+;;; Toggle Images
 
 ;; Creates a toggle for showing images
 (make-variable-buffer-local
@@ -126,7 +141,7 @@
       (elfeed-show-refresh))))
 
 
-;; Open url in background
+;;; Open URL in Background
 
 (defun oht-elfeed-search-browse-and-bury ()
   "Browse elfeed entry and bury buffer."

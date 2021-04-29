@@ -10,8 +10,7 @@
 
 ;;;; Settings
 
-;; Garbage collection. This is actually the 2nd step, for the 1st step, see
-;; `early-init.el'
+;; This is the 2nd step, for the 1st step, see `early-init.el'
 (add-hook 'emacs-startup-hook
           (lambda ()
             (setq gc-cons-threshold 16777216 ; 16mb
@@ -89,8 +88,8 @@
       kill-do-not-save-duplicates t)
 
 (when (string= system-type "darwin")
-      (setq locate-command "mdfind"
-            trash-directory "~/.Trash/emacs"))
+  (setq locate-command "mdfind"
+        trash-directory "~/.Trash/emacs"))
 
 (setq split-window-keep-point nil)
 (defadvice split-window-below (after split-window-below activate) (other-window 1))
@@ -282,7 +281,7 @@ Keybindings you define here will take precedence."
 ;; use-package does this and then forget that Emacs requires the suffix, then
 ;; spend 15 minutes banging my head against a wall trying to figure out why
 ;; the non-use-package hooks I'm writing don't work. So to avoid that I make
-;; it consistent, use-package or not the hooks are named the same.
+;; it consistent, use-package or not, the hooks are named the same.
 (setq use-package-hook-name-suffix nil)
 
 
@@ -671,11 +670,6 @@ Keybindings you define here will take precedence."
   ("C-h k" . #'helpful-key)
   ("C-h p" . #'helpful-at-point))
 
-(use-package pinboard
-  :commands (pinboard pinboard-add pinboard-add-for-later)
-  :init
-  (setf epa-pinentry-mode 'loopback))
-
 (use-package move-text
   :bind
   ("M-<up>" . move-text-up)
@@ -727,6 +721,8 @@ Keybindings you define here will take precedence."
   (load (concat oht-dotfiles "lisp/org-extras.el"))
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
+  (add-hook 'org-agenda-mode-hook
+            (lambda () (hl-line-mode 1)))
   (add-hook 'org-mode-hook
             (lambda ()
               (define-key org-mode-map (kbd "s-\\") 'oht-transient-org))))

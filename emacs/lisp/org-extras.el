@@ -15,7 +15,7 @@
 ;; Look & Feel
 (setq org-hide-emphasis-markers t
       org-fontify-quote-and-verse-blocks t
-      org-ellipsis " ⬎"
+      org-ellipsis "..."
       org-insert-heading-respect-content t)
 
 ;; Agenda
@@ -87,6 +87,8 @@
   (org-agenda nil "t"))
 
 ;;;; Settings
+
+(setq org-agenda-use-time-grid nil)
 
 ;; Agenda Sorting
 (setq org-agenda-sorting-strategy

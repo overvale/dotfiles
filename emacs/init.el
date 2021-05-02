@@ -25,7 +25,7 @@
 
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
-      inhibit-default-init t
+      ;; inhibit-default-init t
       initial-buffer-choice 'remember-notes)
 
 ;; (when (string= (system-name) "shadowfax.local")
@@ -411,7 +411,8 @@ Keybindings you define here will take precedence."
    '(("default"
       ("Read"  (or (mode . eww-mode)
                    (mode . elfeed-search-mode)
-                   (mode . elfeed-show-mode)))
+                   (mode . elfeed-show-mode)
+                   (mode . hackernews-mode)))
       ("Org"   (mode . org-mode))
       ("Mail"  (or (mode . mu4e-view-mode)
                    (mode . mu4e-main-mode)
@@ -583,13 +584,6 @@ Keybindings you define here will take precedence."
               (dired-hide-details-mode 1)
               (auto-revert-mode)
               (hl-line-mode 1))))
-
-(use-package dired-subtree
-  :after dired
-  :custom
-  (dired-subtree-use-backgrounds nil)
-  :bind (:map dired-mode-map
-              ("<tab>" . dired-subtree-toggle)))
 
 
 ;;;; Flyspell

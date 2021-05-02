@@ -162,37 +162,40 @@
 ;;; Capture Templates
 
 (setq org-capture-templates
-      ;; INBOX
-      '(("i" "Inbox")
-        ("ip" "Personal Inbox" entry
+      '(
+        ("p" "Personal")
+        ("pi" "Personal Inbox" entry
          (file+headline "~/home/org/life.org" "Inbox")
-         "* %?\n\n")
-        ("ii" "Ingenuity Inbox" entry
-         (file+headline "~/home/org/ingenuity.org" "Inbox")
-         "* %?\n\n")
-
-        ;; LOGBOOK
-        ("l" "Log Entry")
-        ("lp" "Personal Log Entry" entry
-         (file "~/home/org/logbook.org")
-         "* %?\n%t\n\n")
-        ("lP" ".plan" entry
+         "* %?\n\n" :empty-lines 1)
+        ("pl" "Personal Log Entry" entry
+         (file+olp+datetree "~/home/org/logbook.org")
+         "* %?\n%t\n\n" :empty-lines 1 :tree-type month )
+        ("pp" ".plan" entry
          (file "~/home/org/logbook.org")
          (file "~/home/dot/emacs/capture-templates/plan.org"))
-        ("li" "Ingenuity Log Entry" entry
+
+        ("i" "Ingenuity")
+        ("ii" "Ingenuity Inbox" entry
+         (file+headline "~/home/org/ingenuity.org" "Inbox")
+         "* %?\n\n" :empty-lines 1)
+        ("il" "Ingenuity Log Entry" entry
          (file "~/home/org/ingenuity_logbook.org")
-         "* %? %t\n\n")
-        ("lc" "Ingenuity Cold Call" entry
+         "* %? %t\n\n" :empty-lines 1)
+        ("ic" "Ingenuity Cold Call" entry
          (file "~/home/org/ingenuity_logbook.org")
          (file "~/home/dot/emacs/capture-templates/cold-call.org"))
-
-        ;; OTHER
-        ("f" "Mail Follow Up" entry
+        ("if" "Ingenuity Mail Follow Up" entry
          (file+headline "~/home/org/ingenuity.org" "Mail")
-         "* TODO %a\n\n  %i")
+         "* TODO %a\n\n  %i" :empty-lines 1)
+
+        ("s" "Scanline")
+        ("sl" "Scanline Log Entry" entry
+         (file+olp+datetree "~/home/org/scanline_logbook.org")
+         "* %^{prompt}\n%T\n\n%?" :empty-lines 1 :tree-type week )
+
         ("e" "Emacs Config" entry
          (file+headline "~/home/org/emacs.org" "Emacs Config")
-         "* TODO %?")))
+         "* TODO %?" :empty-lines 1)))
 
 ;;;; Functions
 

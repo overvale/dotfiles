@@ -25,13 +25,13 @@
 
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
-      ;; inhibit-default-init t
       initial-buffer-choice 'remember-notes)
 
-;; (when (string= (system-name) "shadowfax.local")
-;;       (defvar oht-dotfiles "~/home/dot/emacs/"))
-
 (defvar oht-dotfiles "~/home/dot/emacs/")
+(defvar oht-orgfiles "~/home/org/")
+(defvar oht-ingenuity-dir "~/home/ingenuity/")
+(defvar user-downloads-directory "~/Downloads")
+
 (add-to-list 'load-path (concat oht-dotfiles "lisp/"))
 
 (defun find-emacs-dotfiles ()
@@ -39,8 +39,6 @@
   (interactive)
   (find-file (completing-read "Find Elisp Dotfile: "
                               (directory-files-recursively oht-dotfiles "\.el$"))))
-
-(defvar oht-orgfiles "~/home/org/")
 
 (defun find-org-files ()
   "Find org files in your org directory, pass to completing-read."
@@ -376,7 +374,7 @@ Keybindings you define here will take precedence."
 (use-package remember
   :straight nil
   :custom
-  (remember-data-file "~/home/org/remember-notes")
+  (remember-data-file (concat oht-orgfiles "remember-notes"))
   (remember-notes-initial-major-mode 'fundamental-mode)
   (remember-notes-auto-save-visited-file-name t)
   :init
@@ -395,7 +393,6 @@ Keybindings you define here will take precedence."
   :commands (list-bookmarks)
   :custom
   (bookmark-save-flag 1)
-  (bookmark-default-file "~/home/bookmarks")
   (bookmark-bmenu-file-column 45)
   :init
   (add-hook 'bookmark-bmenu-mode (lambda ()
@@ -767,8 +764,8 @@ Keybindings you define here will take precedence."
   (eww-restore-desktop nil)
   (eww-desktop-remove-duplicates t)
   (eww-header-line-format "%t %u")
-  (eww-download-directory "~/Downloads/")
-  (eww-bookmarks-directory "~/.emacs.d/eww-bookmarks/")
+  (eww-download-directory user-downloads-directory)
+  (eww-bookmarks-directory (concat user-emacs-directory "eww-bookmarks/"))
   (eww-history-limit 150)
   (eww-use-external-browser-for-content-type "\\`\\(video/\\|audio/\\|application/pdf\\)")
   (url-cookie-trusted-urls '()
@@ -788,13 +785,14 @@ Keybindings you define here will take precedence."
   :commands elfeed
   :hook (elfeed-show-mode-hook . oht-elfeed-show-fonts)
   :config
-  (load "~/home/src/rss-feeds.el")
+  (when (string= (system-name) "shadowfax.local")
+    (load "~/home/src/rss-feeds.el"))
   (load (concat oht-dotfiles "lisp/elfeed-extras.el"))
   :custom
   (elfeed-use-curl t)
   (elfeed-curl-max-connections 10)
-  (elfeed-db-directory "~/.emacs.d/elfeed/")
-  (elfeed-enclosure-default-dir "~/Downloads/")
+  (elfeed-db-directory (concat user-emacs-directory "elfeed/"))
+  (elfeed-enclosure-default-dir user-downloads-directory)
   (elfeed-search-filter "@4-week-ago +unread")
   (elfeed-sort-order 'descending)
   (elfeed-search-clipboard-type 'CLIPBOARD)
@@ -848,7 +846,7 @@ Keybindings you define here will take precedence."
   :bind (:map mu4e-headers-mode-map
               ("G" . mu4e-update-mail-and-index))
   :custom
-  (mu4e-attachments-dir "~/Downloads")
+  (mu4e-attachments-dir user-downloads-directory)
   (mu4e-update-interval (* 5 60))
   (mu4e-change-filenames-when-moving t)
   (mu4e-completing-read-function 'completing-read)
@@ -870,7 +868,7 @@ Keybindings you define here will take precedence."
      (:from . 22)
      (:thread-subject)))
   :config
-  (load "~/home/ingenuity/mu4e.el")
+  (load (concat oht-ingenuity-dir "mu4e.el"))
   (defun jcs-view-in-eww (msg)
     (eww-browse-url (concat "file://" (mu4e~write-body-to-html msg))))
   (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
@@ -889,7 +887,7 @@ Keybindings you define here will take precedence."
 (use-package smtpmail
   :straight nil
   :custom
-  (auth-sources '("~/home/ingenuity/authinfo"))
+  (auth-sources '((concat oht-ingenuity-dir "authinfo")))
   (smtpmail-stream-type 'starttls)
   (smtpmail-default-smtp-server "smtp.gmail.com")
   (smtpmail-smtp-server "smtp.gmail.com")

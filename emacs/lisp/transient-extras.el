@@ -150,6 +150,36 @@ wherever you need to go."
 
 ;;; Other Transients
 
+(defun oht-dispatch-downloads ()
+  "Open ~/downloads"
+  (interactive)
+  (find-file "~/Downloads"))
+
+(defun oht-dispatch-reading ()
+  "Open ~/downloads/reading"
+  (interactive)
+  (find-file "~/Downloads/reading"))
+
+(defun oht-dispatch-watch ()
+  "Open ~/downloads/watch"
+  (interactive)
+  (find-file "~/Downloads/watch"))
+
+(defun oht-dispatch-NPR-news ()
+  "Open text.npr.org"
+  (interactive)
+  (browse-url "https://text.npr.org"))
+
+(defun oht-dispatch-CNN-news ()
+  "Open lite.cnn.com"
+  (interactive)
+  (browse-url "https://lite.cnn.com/en"))
+
+(defun oht-dispatch-google-news ()
+  "Open 68k.news"
+  (interactive)
+  (browse-url "http://68k.news/"))
+
 (transient-define-prefix oht-transient-dispatch ()
   "Jump directly to your most-used stuff."
   ["Work"

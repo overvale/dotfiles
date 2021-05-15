@@ -215,6 +215,16 @@
 
 (add-hook 'org-capture-before-finalize-hook 'add-newline-at-end-if-none)
 
+(defun oht/org-insert-date-today ()
+  "Insert today's date using standard org formatting."
+  (interactive)
+  (org-insert-time-stamp (current-time)))
+
+(defun oht/org-insert-date-today-inactive ()
+  "Inserts today's date in org inactive format."
+  (interactive)
+  (insert (format-time-string "\[%Y-%m-%d %a\]")))
+
 
 ;;; Narrow/Widen
 

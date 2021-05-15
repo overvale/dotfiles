@@ -20,7 +20,8 @@
 
 ;; Agenda
 (setq org-agenda-window-setup 'current-window
-      org-agenda-restore-windows-after-quit t)
+      org-agenda-restore-windows-after-quit t
+      org-agenda-start-with-log-mode t)
 
 ;; Source Code Blocks
 (setq org-src-fontify-natively t
@@ -103,7 +104,8 @@
 ;;    org-agenda-todo-ignore-scheduled,
 ;;    org-agenda-todo-ignore-deadlines
 (setq org-agenda-todo-ignore-scheduled 'all
-      org-agenda-todo-ignore-deadlines 'near)
+      org-agenda-todo-ignore-deadlines 'near
+      org-deadline-warning-days 5)
 
 ;; If this option is set, the same options will also apply for the tags-todo
 ;; search, which is the general tags/property matcher restricted to unfinished
@@ -171,7 +173,7 @@
          "* %?\n\n" :empty-lines 1)
         ("pl" "Personal Log Entry" entry
          (file+olp+datetree "~/home/org/logbook.org")
-         "* %?\n%t\n\n" :empty-lines 1 :tree-type month )
+         "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
         ("pp" ".plan" entry
          (file "~/home/org/logbook.org")
          (file "~/home/dot/emacs/capture-templates/plan.org"))
@@ -182,7 +184,7 @@
          "* %?\n\n" :empty-lines 1)
         ("il" "Ingenuity Log Entry" entry
          (file "~/home/org/ingenuity_logbook.org")
-         "* %? %t\n\n" :empty-lines 1)
+         "* %? %T\n\n" :empty-lines 1)
         ("ic" "Ingenuity Cold Call" entry
          (file "~/home/org/ingenuity_logbook.org")
          (file "~/home/dot/emacs/capture-templates/cold-call.org"))

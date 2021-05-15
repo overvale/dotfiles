@@ -131,7 +131,7 @@ configWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reload
 
 local applicationHotkeys = {
    m = 'Mail',
-   g = 'Mimestream',
+   i = 'Mimestream',
    c = 'Calendar',
    e = 'Emacs',
    s = 'Safari',

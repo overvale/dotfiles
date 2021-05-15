@@ -90,8 +90,8 @@
         trash-directory "~/.Trash/emacs"))
 
 (setq split-window-keep-point nil)
-(defadvice split-window-below (after split-window-below activate) (other-window 1))
-(defadvice split-window-right (after split-window-right activate) (other-window 1))
+;; (defadvice split-window-below (after split-window-below activate) (other-window 1))
+;; (defadvice split-window-right (after split-window-right activate) (other-window 1))
 
 (setq sentence-end-double-space nil)
 (setq-default tab-width 4
@@ -554,6 +554,8 @@ Keybindings you define here will take precedence."
   :config
   (add-hook 'elfeed-show-mode (lambda ()
                                 (selected-minor-mode -1)))
+  (add-hook 'elfeed-search-mode (lambda ()
+                                (selected-minor-mode -1)))
   :blackout selected-minor-mode)
 
 
@@ -804,7 +806,7 @@ Keybindings you define here will take precedence."
         ("B" . oht-elfeed-search-browse-and-bury)
         ("*" . elfeed-search-tag--star)
         ("8" . elfeed-search-untag--star)
-        )
+        ("o" . delete-other-windows))
   (:map elfeed-show-mode-map
         ("a" . hrs/elfeed-pinboard-current-entry)
         ("&" . bjm/elfeed-show-visit-gui)
@@ -812,6 +814,7 @@ Keybindings you define here will take precedence."
         ("u" . elfeed-show-tag--unread)
         ("*" . elfeed-show-tag--star)
         ("8" . elfeed-show-tag--unstar)
+        ("o" . delete-other-windows)
         ("d" . oht-elfeed-show-download-video)
         ("i" . elfeed-inhibit-images-toggle)
         ("B" . oht-elfeed-show-browse-and-bury)))

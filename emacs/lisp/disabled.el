@@ -207,3 +207,85 @@ as an argument limits undo to changes within the current region."
   (while (and (consp undo-list) (eq (car undo-list) nil))
     (setq undo-list (cdr undo-list)))
   (gethash undo-list undo-equiv-table))
+
+;;; EWW Bookmarks
+
+;; The below code allows you to create standard emacs bookmarks in eww-mode.
+;; It does this by customizing the `bookmark-make-record-function' variable to
+;; a custom function.
+;;
+;; Adapted from:
+;; 1. https://www.emacswiki.org/emacs/bookmark%2B-1.el
+;; 2. https://github.com/TotalView/dotemacs/blob/master/.emacs.d/elpa/w3m-20140330.1933/bookmark-w3m.el
+
+;; This function creates a properly formatted bookmark entry. It names a
+;; 'handler' that's used when visiting the bookmark, defined below.
+(defun oht-eww-bookmark-make-record ()
+  "Make a bookmark record for the current eww buffer"
+  `(,(plist-get eww-data :title)
+    ((location . ,(eww-current-url))
+     (handler . oht-eww-bookmark-handler)
+     (defaults . (,(plist-get eww-data :title))))))
+
+;; This function simply tells Emacs to use the custom function when using the
+;; bookmarking system.
+(defun oht-eww-set-bookmark-handler ()
+  "This tells Emacs which function to use to create bookmarks."
+  (interactive)
+  (set (make-local-variable 'bookmark-make-record-function)
+       #'oht-eww-bookmark-make-record))
+
+(defun oht-eww-bookmark-handler (record)
+  "Jump to an eww bookmarked location using EWW."
+  (eww (bookmark-prop-get record 'location)))
+
+;; Finally, add a hook to set the make-record-function
+(add-hook 'eww-mode-hook 'oht-eww-set-bookmark-handler)
+
+;;; Prot EWW Extensions
+
+;; The following are taken from https://protesilaos.com/dotemacs
+
+;;;###autoload
+(defun prot-eww-browse-dwim (url &optional arg)
+  "Visit a URL, maybe from `eww-prompt-history', with completion.
+
+With optional prefix ARG (\\[universal-argument]) open URL in a
+new eww buffer.
+
+If URL does not look like a valid link, run a web query using
+`eww-search-prefix'.
+
+When called from an eww buffer, provide the current link as
+initial input."
+  (interactive
+   (list
+    (completing-read "Run EWW on: " eww-prompt-history
+                     nil nil (plist-get eww-data :url) 'eww-prompt-history)
+    current-prefix-arg))
+  (eww url (if arg 4)))
+
+;;;###autoload
+(defun prot-eww-visit-bookmark (&optional arg)
+  "Visit bookmarked URL.
+
+With optional prefix ARG (\\[universal-argument]) open URL in a
+new EWW buffer."
+  (interactive "P")
+  (eww-read-bookmarks t)
+  (let ((list (gensym)))
+    (dolist (bookmark eww-bookmarks)
+      (push (plist-get bookmark :url) list))
+    (eww (completing-read "Visit EWW bookmark: " list)
+         (if arg 4 nil))))
+
+(autoload 'View-quit "view")
+
+;;;###autoload
+(defun prot-eww-bookmark-page (title)
+  "Add eww bookmark named with TITLE."
+  (interactive
+   (list
+    (read-string "Set bookmark title: " (plist-get eww-data :title))))
+  (plist-put eww-data :title title)
+  (eww-add-bookmark))

@@ -1225,18 +1225,57 @@ org-todo-keywords to a transient command."
   (url-cookie-trusted-urls '()
                            url-cookie-untrusted-urls '(".*"))
   :init
-  (defun oht-eww-bookmark-handler (record)
-    "Jump to an eww bookmarked location using EWW."
-    (eww (bookmark-prop-get record 'location)))
+  (defun oht-eww-fonts ()
+    "Apply some customization to fonts in eww-mode."
+    (facedancer-vadjust-mode)
+    (text-scale-increase 1)
+    (setq-local line-spacing 2))
+  :commands (eww)
+  :hook (eww-mode-hook . oht-eww-fonts)
+  :bind
+  (:map eww-mode-map
+        ("s-\\" . oht-transient-eww))
   :config
-  (load (concat oht-dotfiles "lisp/eww-extras.el"))
+
+  (make-variable-buffer-local
+   (defvar eww-inhibit-images-status nil
+     "EWW Inhibit Images Status"))
+
+  (defun eww-inhibit-images-toggle ()
+    (interactive)
+    (setq eww-inhibit-images-status (not eww-inhibit-images-status))
+    (if eww-inhibit-images-status
+        (progn (setq-local shr-inhibit-images t)
+               (eww-reload t))
+      (progn (setq-local shr-inhibit-images nil)
+             (eww-reload t))))
+
+  (defun oht-eww-open-in-new-buffer-bury ()
+    "Open URL at point in a new buried buffer"
+    (interactive)
+    (eww-open-in-new-buffer)
+    (quit-window)
+    (message "Browsing in buried buffer"))
+
+  (defun prot-eww--rename-buffer ()
+    "Rename EWW buffer using page title or URL.
+To be used by `eww-after-render-hook'."
+    (let ((name (if (eq "" (plist-get eww-data :title))
+                    (plist-get eww-data :url)
+                  (plist-get eww-data :title))))
+      (rename-buffer (format "*eww # %s*" name) t)))
+
+  (add-hook 'eww-after-render-hook #'prot-eww--rename-buffer)
+  (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
+  (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer)
+
   (transient-define-prefix oht-transient-eww ()
     "Transient for EWW"
     :transient-suffix 'transient--do-stay
     :transient-non-suffix 'transient--do-warn
     ["EWW"
      ["Actions"
-      ("G" "Browse" prot-eww-browse-dwim)
+      ("G" "Browse" eww)
       ("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
       ("&" "Browse With External Browser" eww-browse-with-external-browser)
       ("w" "Copy URL" eww-copy-page-url)]
@@ -1254,12 +1293,9 @@ org-todo-keywords to a transient command."
       ("b" "Bookmark" bookmark-set)
       ("B" "List Bookmarks" eww-list-bookmarks)
       ("M-n" "Next Bookmark" eww-next-bookmark)
-      ("M-p" "Previous Bookmark" eww-previous-bookmark)]
-     ])
-  :commands (eww prot-eww-browse-dwim)
-  :bind
-  (:map eww-mode-map
-        ("s-\\" . oht-transient-eww)))
+      ("M-p" "Previous Bookmark" eww-previous-bookmark)]])
+
+  ) ; End "use-package eww"
 
 (use-package elfeed
   :commands elfeed
@@ -1684,7 +1720,7 @@ wherever you need to go."
   ["Browsing"
    [("e" "Elfeed"      elfeed)
     ("h" "Hacker News" hackernews)]
-   [("E" "EWW"         prot-eww-browse-dwim)
+   [("E" "EWW"         eww)
     ("n" "NPR News"    oht-dispatch-NPR-news)
     ("c" "CNN News"    oht-dispatch-CNN-news)
     ("g" "Google News" oht-dispatch-google-news)]

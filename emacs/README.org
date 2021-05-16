@@ -276,6 +276,22 @@ something like:
   )
 #+end_src
 
+* Pseudo-Packages, or my lisp files
+
+The code in each of the files in =~/.emacs/lisp/= is available to =use-package=
+because, at the beginning of this file, I've added the path to my =load-path=.
+To actually use the code in those files you need to do two things:
+
+1. Tell =straight= not to install it.
+2. Make sure =use-package= loads the file when needed. If the code is only
+   needed when a command is called, you should name the =:command=. You can
+   also =:demand= that the file be loaded, or say that it should be loaded
+   =:after= another package.
+
+Keep in mind that a file must exist for each of these use-package
+declarations. If you don't want to separate the code into a separate file you
+can "use" the Emacs package.
+
 * Minimum
 
 I've codified the above into a simple init file called =minimum.el= which provides the following features:

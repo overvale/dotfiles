@@ -184,6 +184,31 @@ pipe whole buffer."
   (set-mark-command nil)
   (end-of-line))
 
+(defun narrow-or-widen-dwim (p)
+  ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/narrow-extras.el
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or defun,
+whichever applies first. Narrowing to org-src-block actually
+calls `org-edit-src-code'.
+With prefix P, don't widen, just narrow even if buffer is
+already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+	    ((and (bound-and-true-p org-src-mode) (not p))
+	     (org-edit-src-exit))
+	    ((region-active-p)
+         (narrow-to-region (region-beginning) (region-end)))
+        ((derived-mode-p 'org-mode)
+         (or (ignore-errors (org-edit-src-code))
+             (ignore-errors (org-narrow-to-block))
+             (org-narrow-to-subtree)))
+        ((derived-mode-p 'latex-mode)
+         (LaTeX-narrow-to-environment))
+	    ((derived-mode-p 'tex-mode)
+	     (TeX-narrow-to-group))
+        (t (narrow-to-defun))))
+
 
 ;;;;; Transient Mark
 
@@ -904,16 +929,134 @@ Keybindings you define here will take precedence."
 
 (use-package org
   :commands (org-mode oht-org-agenda-today)
-  :bind ("s-C" . org-capture)
+  :bind
+  ("s-C" . org-capture)
+  (:map org-mode-map
+        ("s-\\" . oht-transient-org))
   :config
-  (load (concat oht-dotfiles "lisp/org-extras.el"))
+
+  (custom-set-variables
+   '(org-list-allow-alphabetical t)
+   '(org-enforce-todo-dependencies t)
+   '(org-enforce-todo-checkbox-dependencies t)
+   '(org-log-done 'time)
+   '(org-log-into-drawer t))
+
+  (setq org-special-ctrl-a/e t
+        org-special-ctrl-k t
+        org-adapt-indentation nil
+        org-catch-invisible-edits 'show-and-error
+        org-outline-path-complete-in-steps nil
+        org-refile-targets '((org-agenda-files :maxlevel . 3))
+        org-hide-emphasis-markers t
+        org-ellipsis "..."
+        org-insert-heading-respect-content t
+        org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+"))
+        org-list-indent-offset 2)
+
+  ;; src blocks
+  (setq org-src-fontify-natively t
+        org-fontify-quote-and-verse-blocks t
+        org-src-tab-acts-natively t
+        org-edit-src-content-indentation 0)
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
-  (add-hook 'org-agenda-mode-hook
-            (lambda () (hl-line-mode 1)))
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (define-key org-mode-map (kbd "s-\\") 'oht-transient-org))))
+
+  ;; Agenda Settings
+  (setq org-agenda-window-setup 'current-window
+        org-agenda-restore-windows-after-quit t
+        org-agenda-start-with-log-mode t
+        org-agenda-use-time-grid nil
+        org-deadline-warning-days 5
+        org-agenda-todo-ignore-scheduled 'all
+        org-agenda-todo-ignore-deadlines 'near
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-if-done t
+        org-agenda-sorting-strategy '(((agenda habit-down time-up priority-down category-up)
+                                       (todo category-up priority-down)
+                                       (tags priority-down category-keep)
+                                       (search category-keep))))
+
+  (setq org-agenda-files '("~/home/org/"))
+
+  (when (string= (system-name) "shadowfax.local")
+    (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org"))
+
+  (setq org-agenda-custom-commands
+        '(("1" "TODAY: Today's Agenda + Priority Tasks"
+           ((agenda "d" ((org-agenda-span 'day)))
+            (todo "TODO"
+                  ((org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
+          ("0" "COMPLETE: Week Agenda + All Tasks"
+           ((agenda "w" ((org-agenda-span 'week)))
+            (todo "TODO|LATER"
+                  ((org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
+                  )))))
+
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")))
+
+  (setq org-capture-templates
+        '(("p" "Personal")
+          ("pi" "Personal Inbox" entry
+           (file+headline "~/home/org/life.org" "Inbox")
+           "* %?\n\n" :empty-lines 1)
+          ("pl" "Personal Log Entry" entry
+           (file+olp+datetree "~/home/org/logbook.org")
+           "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
+          ;; -----------------------------
+          ("i" "Ingenuity")
+          ("ii" "Ingenuity Inbox" entry
+           (file+headline "~/home/org/ingenuity.org" "Inbox")
+           "* %?\n\n" :empty-lines 1)
+          ("il" "Ingenuity Log Entry" entry
+           (file "~/home/org/ingenuity_logbook.org")
+           "* %? %T\n\n" :empty-lines 1)
+          ("if" "Ingenuity Mail Follow Up" entry
+           (file+headline "~/home/org/ingenuity.org" "Mail")
+           "* TODO %a\n\n  %i" :empty-lines 1)
+          ;; -----------------------------
+          ("s" "Scanline")
+          ("sl" "Scanline Log Entry" entry
+           (file+olp+datetree "~/home/org/scanline_logbook.org")
+           "* %^{prompt}\n%T\n\n%?" :empty-lines 1 :tree-type week )
+          ;; -----------------------------
+          ("e" "Emacs Config" entry
+           (file+headline "~/home/org/emacs.org" "Emacs Config")
+           "* TODO %?" :empty-lines 1)))
+
+  (defun oht/org-insert-date-today ()
+    "Insert today's date using standard org formatting."
+    (interactive)
+    (org-insert-time-stamp (current-time)))
+
+  (defun oht/org-insert-date-today-inactive ()
+    "Inserts today's date in org inactive format."
+    (interactive)
+    (insert (format-time-string "\[%Y-%m-%d %a\]")))
+
+  ;; Functions for directly calling agenda commands, skipping the prompt.
+  ;; Useful when paired with transient.
+  (defun oht-org-agenda-today () (interactive) (org-agenda nil "1"))
+  (defun oht-org-agenda-complete () (interactive) (org-agenda nil "0"))
+  (defun oht-org-agenda-agenda () (interactive) (org-agenda nil "a"))
+  (defun oht-org-agenda-todos () (interactive) (org-agenda nil "t"))
+
+  ;; Functions for directly setting todo status, skipping the prompt.
+  ;; Useful when paired with transient.
+  (defun org-todo-set-todo () (interactive) (org-todo "TODO"))
+  (defun org-agenda-todo-set-todo () (interactive) (org-agenda-todo "TODO"))
+  (defun org-todo-set-later () (interactive) (org-todo "LATER"))
+  (defun org-agenda-todo-set-later () (interactive) (org-agenda-todo "LATER"))
+  (defun org-todo-set-done () (interactive) (org-todo "DONE"))
+  (defun org-agenda-todo-set-done () (interactive) (org-agenda-todo "DONE"))
+  (defun org-agenda-todo-set-canceled () (interactive) (org-agenda-todo "CANCELED"))
+  (defun org-todo-set-canceled () (interactive) (org-todo "CANCELED"))
+
+  ) ; End "use-package org"
+
 
 (use-package org-agenda
   :straight nil
@@ -921,7 +1064,8 @@ Keybindings you define here will take precedence."
   :bind
   (:map org-agenda-mode-map
         ("t" . oht-transient-org-agenda)
-        ("s-z" . org-agenda-undo)))
+        ("s-z" . org-agenda-undo))
+  :hook (org-agenda-mode-hook . hl-line-mode))
 
 
 ;;;; Outline

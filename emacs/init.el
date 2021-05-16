@@ -914,7 +914,8 @@ Keybindings you define here will take precedence."
   :commands magit-status)
 
 (use-package exec-path-from-shell
-  :demand)
+  :init
+  (exec-path-from-shell-initialize))
 
 (use-package olivetti
   :commands olivetti-mode

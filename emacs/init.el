@@ -1298,12 +1298,14 @@ To be used by `eww-after-render-hook'."
   ) ; End "use-package eww"
 
 (use-package elfeed
+  :if (string= (system-name) "shadowfax.local")
   :commands elfeed
+  :init
+  (defun oht-elfeed-show-fonts ()
+    "Apply some customization to fonts in elfeed-show-mode."
+    (facedancer-vadjust-mode)
+    (setq-local line-spacing 3))
   :hook (elfeed-show-mode-hook . oht-elfeed-show-fonts)
-  :config
-  (when (string= (system-name) "shadowfax.local")
-    (load "~/home/src/rss-feeds.el"))
-  (load (concat oht-dotfiles "lisp/elfeed-extras.el"))
   :custom
   (elfeed-use-curl t)
   (elfeed-curl-max-connections 10)
@@ -1315,15 +1317,17 @@ To be used by `eww-after-render-hook'."
   (elfeed-show-truncate-long-urls t)
   :bind
   (:map elfeed-search-mode-map
-        ("a" . hrs/elfeed-pinboard-current-entry)
         ("b" . elfeed-search-browse-url)
         ("B" . oht-elfeed-search-browse-and-bury)
         ("*" . elfeed-search-tag--star)
         ("8" . elfeed-search-untag--star)
-        ("o" . delete-other-windows))
+        ("o" . delete-other-windows)
+        ("N" . oht-elfeed-unread-news)
+        ("E" . oht-elfeed-unread-emacs)
+        ("O" . oht-elfeed-unread-other)
+        ("S" . oht-elfeed-starred))
   (:map elfeed-show-mode-map
-        ("a" . hrs/elfeed-pinboard-current-entry)
-        ("&" . bjm/elfeed-show-visit-gui)
+        ("&" . oht-elfeed-show-visit-generic)
         ("r" . elfeed-show-tag--read)
         ("u" . elfeed-show-tag--unread)
         ("*" . elfeed-show-tag--star)
@@ -1331,7 +1335,88 @@ To be used by `eww-after-render-hook'."
         ("o" . delete-other-windows)
         ("d" . oht-elfeed-show-download-video)
         ("i" . elfeed-inhibit-images-toggle)
-        ("B" . oht-elfeed-show-browse-and-bury)))
+        ("B" . oht-elfeed-show-browse-and-bury))
+  :config
+  ;; My feed list is stored outside my dotfiles -- not public.
+  (load "~/home/src/rss-feeds.el")
+
+  ;; Elfeed doesn't have a built-in way of flagging or marking items for later,
+  ;; but it does have tags, which you can use for this. The below is some simple
+  ;; aliases for adding and removing the 'star' tag.
+  (defalias 'elfeed-search-tag--star
+    (elfeed-expose #'elfeed-search-tag-all 'star)
+    "Add the 'star' tag to all selected entries")
+  (defalias 'elfeed-search-untag--star
+    (elfeed-expose #'elfeed-search-untag-all 'star)
+    "Remove the 'star' tag to all selected entries")
+  (defalias 'elfeed-show-tag--star
+    (elfeed-expose #'elfeed-show-tag 'star)
+    "Add the 'star' tag to current entry")
+  (defalias 'elfeed-show-tag--unstar
+    (elfeed-expose #'elfeed-show-untag 'star)
+    "Remove the 'star' tag to current entry")
+
+  ;; Even though there are bindings for marking items as 'read' and 'unread' in
+  ;; the search-mode, there are no such built-in bindings for show-mode. So we
+  ;; add them here.
+  (defalias 'elfeed-show-tag--unread
+    (elfeed-expose #'elfeed-show-tag 'unread)
+    "Mark the current entry unread.")
+  (defalias 'elfeed-show-tag--read
+    (elfeed-expose #'elfeed-show-untag 'unread)
+    "Mark the current entry read.")
+
+  (defun oht-elfeed-unread-news  () (interactive) (elfeed-search-set-filter "+unread +news"))
+  (defun oht-elfeed-unread-emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
+  (defun oht-elfeed-unread-other () (interactive) (elfeed-search-set-filter "+unread -emacs -news"))
+  (defun oht-elfeed-starred      () (interactive) (elfeed-search-set-filter "+star"))
+
+  (defun oht-elfeed-show-visit-generic ()
+    "Wrapper for elfeed-show-visit to use system browser instead of eww"
+    (interactive)
+    (let ((browse-url-generic-program "/usr/bin/open"))
+      (elfeed-show-visit t)))
+
+  (make-variable-buffer-local
+   (defvar elfeed-inhibit-images-status nil
+     "Elfeed Inhibit Images Status"))
+
+  (defun elfeed-inhibit-images-toggle ()
+    "Toggle display of images in elfeed-show."
+    (interactive)
+    (setq elfeed-inhibit-images-status (not elfeed-inhibit-images-status))
+    (if elfeed-inhibit-images-status
+        (progn
+          (setq-local shr-inhibit-images t)
+          (elfeed-show-refresh))
+      (progn
+        (setq-local shr-inhibit-images nil)
+        (elfeed-show-refresh))))
+
+  (defun oht-elfeed-show-download-video ()
+    "In elfeed-show-mode, download a video using youtube-dl."
+    (interactive)
+    (async-shell-command (format "%s -o \"%s%s\" -f mp4 \"%s\""
+                                 youtube-dl-path
+                                 youtube-dl-output-dir
+                                 "%(title)s.%(ext)s"
+                                 (elfeed-entry-link elfeed-show-entry))))
+
+  (defun oht-elfeed-search-browse-and-bury ()
+    "Browse elfeed entry and bury buffer."
+    (interactive)
+    (elfeed-search-browse-url)
+    (bury-buffer)
+    (message "Browsing in buried buffer"))
+
+  (defun oht-elfeed-show-browse-and-bury ()
+    "Browse elfeed entry and bury buffer."
+    (interactive)
+    (elfeed-show-visit)
+    (bury-buffer)
+    (message "Browsing in buried buffer"))
+
+  ) ; End "use-package elfeed"
 
 (use-package hackernews
   :commands hackernews

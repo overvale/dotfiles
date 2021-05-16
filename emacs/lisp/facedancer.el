@@ -101,7 +101,7 @@ text-scale-adjust to work correctly."
 ;; There are a number of built-in functions for dealing with setting
 ;; per-buffer fonts, but all of them are built on buffer-face-mode, which
 ;; works by remapping ONLY the default face to a new value. If you'd like to
-;; target specific faces (for example the variable-pitch face)
+;; remap specific faces (for example the variable-pitch face)
 ;; buffer-face-mode won't cut it. The below approach applies the exact same
 ;; approach as buffer-face-mode but allows you to target individual faces.
 

@@ -452,9 +452,17 @@ Keybindings you define here will take precedence."
 
 ;;;; Minimum
 
+;; I use a lot of transients. The best way I've found to configure them is to
+;; place all the mode-specific ones in their mode's use-package declaration,
+;; and autoload the transient-define-prefix command. Doing this also requires
+;; that you autoload the command BEFORE you declare any of the commands. Which
+;; is why this bit is here, and not down with the rest of my transient
+;; configuration.
 (use-package transient
   :commands (transient-define-prefix))
 
+;; Because many of my use-package declarations use the ':blackout' statement I
+;; need to configure this first.
 (use-package blackout
   :demand
   :config
@@ -462,6 +470,8 @@ Keybindings you define here will take precedence."
   (blackout 'emacs-lisp-mode "Elisp")
   (blackout 'auto-fill-function " Fill"))
 
+;; This is only here because I love it so much and don't have another good
+;; place for it below.
 (use-package modus-themes
   :custom
   (modus-themes-links 'faint-neutral-underline)
@@ -473,6 +483,7 @@ Keybindings you define here will take precedence."
   (modus-themes-load-operandi))
 
 (add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle)
+
 
 ;;;; Narrowing & Searching
 
@@ -663,95 +674,6 @@ Keybindings you define here will take precedence."
   :bind
   ("M-/" . hippie-expand))
 
-
-;;;; View / Selected
-
-(use-package view
-  :straight nil
-  :custom
-  (view-read-only t)
-  :init
-  (defun oht/view-mode-exit ()
-    (interactive)
-    (view-mode -1)
-    (hl-line-mode -1))
-  (defun oht/exit-view-replace-rectangle ()
-    (interactive)
-    (oht/view-mode-exit)
-    (call-interactively 'replace-rectangle))
-  :bind
-  ("s-j" . view-mode)
-  (:map view-mode-map
-        ;; common
-        ("n" . next-line)
-        ("p" . previous-line)
-        ("f" . forward-char)
-        ("b" . backward-char)
-        ("F" . forward-word)
-        ("B" . backward-word)
-        ("a" . beginning-of-visual-line)
-        ("e" . end-of-visual-line)
-        ("{" . backward-paragraph)
-        ("}" . forward-paragraph)
-        ("(" . backward-sentence)
-        (")" . forward-sentence)
-        ("s" . ctrlf-forward-fuzzy)
-        ("r" . ctrlf-backward-fuzzy)
-        ("[" . scroll-down-line)
-        ("]" . scroll-up-line)
-        ("x" . exchange-point-and-mark)
-        ("M" . rectangle-mark-mode)
-        ;; unique
-        ("R" . oht/exit-view-replace-rectangle)
-        ("m" . set-mark-command)
-        ("<RET>" . oht/view-mode-exit)
-        ("s-j" . oht/view-mode-exit)
-        ("q" . quit-window))
-  :hook (view-mode-hook . hl-line-mode)
-  :blackout " VIEW")
-
-(use-package selected
-  :commands selected-minor-mode
-  :init
-  (selected-global-mode 1)
-  :bind (:map selected-keymap
-              ;; common
-              ("n" . next-line)
-              ("p" . previous-line)
-              ("f" . forward-char)
-              ("b" . backward-char)
-              ("F" . forward-word)
-              ("B" . backward-word)
-              ("a" . beginning-of-visual-line)
-              ("e" . end-of-visual-line)
-              ("{" . backward-paragraph)
-              ("}" . forward-paragraph)
-              ("(" . backward-sentence)
-              (")" . forward-sentence)
-              ("s" . ctrlf-forward-fuzzy)
-              ("r" . ctrlf-backward-fuzzy)
-              ("[" . scroll-down-line)
-              ("]" . scroll-up-line)
-              ("x" . exchange-point-and-mark)
-              ("M" . rectangle-mark-mode)
-              ;; unique
-              ("u" . upcase-dwim)
-              ("d" . downcase-dwim)
-              ("w" . kill-ring-save)
-              ("|" . pipe-region)
-              ("R" . replace-rectangle)
-              ("E" . eval-region)
-              ("q" . selected-off))
-  :config
-  (add-hook 'elfeed-show-mode (lambda ()
-                                (selected-minor-mode -1)))
-  (add-hook 'elfeed-search-mode (lambda ()
-                                  (selected-minor-mode -1)))
-  :blackout selected-minor-mode)
-
-
-;;;; Dired
-
 (use-package dired
   :straight nil
   :commands (dired dired-jump dired-jump-other-window)
@@ -856,6 +778,87 @@ Keybindings you define here will take precedence."
       ("&"   "Async shell command"  dired-do-async-shell-command)]])
 
   ) ; End "use-package dired"
+
+
+;;;; View / Selected
+
+(use-package view
+  :straight nil
+  :custom
+  (view-read-only t)
+  :init
+  (defun oht/view-mode-exit ()
+    (interactive)
+    (view-mode -1)
+    (hl-line-mode -1))
+  (defun oht/exit-view-replace-rectangle ()
+    (interactive)
+    (oht/view-mode-exit)
+    (call-interactively 'replace-rectangle))
+  :bind
+  ("s-j" . view-mode)
+  (:map view-mode-map
+        ;; common
+        ("n" . next-line)
+        ("p" . previous-line)
+        ("f" . forward-char)
+        ("b" . backward-char)
+        ("F" . forward-word)
+        ("B" . backward-word)
+        ("a" . beginning-of-visual-line)
+        ("e" . end-of-visual-line)
+        ("{" . backward-paragraph)
+        ("}" . forward-paragraph)
+        ("(" . backward-sentence)
+        (")" . forward-sentence)
+        ("s" . ctrlf-forward-fuzzy)
+        ("r" . ctrlf-backward-fuzzy)
+        ("[" . scroll-down-line)
+        ("]" . scroll-up-line)
+        ("x" . exchange-point-and-mark)
+        ("M" . rectangle-mark-mode)
+        ;; unique
+        ("R" . oht/exit-view-replace-rectangle)
+        ("m" . set-mark-command)
+        ("<RET>" . oht/view-mode-exit)
+        ("s-j" . oht/view-mode-exit)
+        ("q" . quit-window))
+  :hook (view-mode-hook . hl-line-mode)
+  :blackout " VIEW")
+
+(use-package selected
+  :commands selected-minor-mode
+  :init
+  (selected-global-mode 1)
+  :bind (:map selected-keymap
+              ;; common
+              ("n" . next-line)
+              ("p" . previous-line)
+              ("f" . forward-char)
+              ("b" . backward-char)
+              ("F" . forward-word)
+              ("B" . backward-word)
+              ("a" . beginning-of-visual-line)
+              ("e" . end-of-visual-line)
+              ("{" . backward-paragraph)
+              ("}" . forward-paragraph)
+              ("(" . backward-sentence)
+              (")" . forward-sentence)
+              ("s" . ctrlf-forward-fuzzy)
+              ("r" . ctrlf-backward-fuzzy)
+              ("[" . scroll-down-line)
+              ("]" . scroll-up-line)
+              ("x" . exchange-point-and-mark)
+              ("M" . rectangle-mark-mode)
+              ;; unique
+              ("u" . upcase-dwim)
+              ("d" . downcase-dwim)
+              ("w" . kill-ring-save)
+              ("|" . pipe-region)
+              ("R" . replace-rectangle)
+              ("E" . eval-region)
+              ("q" . selected-off))
+  :blackout selected-minor-mode)
 
 
 ;;;; Flyspell
@@ -973,9 +976,6 @@ Keybindings you define here will take precedence."
   :bind (([remap query-replace-regexp] . #'vr/query-replace))
   :custom
   (vr/engine 'pcre2el))
-
-
-;;;; Languages
 
 (use-package fountain-mode
   :commands fountain-mode

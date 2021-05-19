@@ -1046,7 +1046,7 @@ Keybindings you define here will take precedence."
                                        (tags priority-down category-keep)
                                        (search category-keep))))
 
-  (setq org-agenda-files '("~/home/org/"))
+  (setq org-agenda-files (list oht-orgfiles))
 
   (when (string= (system-name) "shadowfax.local")
     (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org"))
@@ -1068,32 +1068,32 @@ Keybindings you define here will take precedence."
         '((sequence "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")))
 
   (setq org-capture-templates
-        '(("p" "Personal")
+        `(("p" "Personal")
           ("pi" "Personal Inbox" entry
-           (file+headline "~/home/org/life.org" "Inbox")
+           (file+headline ,(concat oht-orgfiles "life.org") "Inbox")
            "* %?\n\n" :empty-lines 1)
           ("pl" "Personal Log Entry" entry
-           (file+olp+datetree "~/home/org/logbook.org")
+           (file+olp+datetree ,(concat oht-orgfiles "logbook.org"))
            "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
           ;; -----------------------------
           ("i" "Ingenuity")
           ("ii" "Ingenuity Inbox" entry
-           (file+headline "~/home/org/ingenuity.org" "Inbox")
+           (file+headline ,(concat oht-orgfiles "ingenuity.org") "Inbox")
            "* %?\n\n" :empty-lines 1)
           ("il" "Ingenuity Log Entry" entry
-           (file "~/home/org/ingenuity_logbook.org")
+           (file ,(concat oht-orgfiles "ingenuity_logbook.org"))
            "* %? %T\n\n" :empty-lines 1)
           ("if" "Ingenuity Mail Follow Up" entry
-           (file+headline "~/home/org/ingenuity.org" "Mail")
+           (file+headline ,(concat oht-orgfiles "ingenuity.org") "Mail")
            "* TODO %a\n\n  %i" :empty-lines 1)
           ;; -----------------------------
           ("s" "Scanline")
           ("sl" "Scanline Log Entry" entry
-           (file+olp+datetree "~/home/org/scanline_logbook.org")
+           (file+olp+datetree ,(concat oht-orgfiles "scanline_logbook.org"))
            "* %^{prompt}\n%T\n\n%?" :empty-lines 1 :tree-type week )
           ;; -----------------------------
           ("e" "Emacs Config" entry
-           (file+headline "~/home/org/emacs.org" "Emacs Config")
+           (file+headline ,(concat oht-orgfiles "emacs.org") "Emacs Config")
            "* TODO %?" :empty-lines 1)))
 
   (defun oht/org-insert-date-today ()

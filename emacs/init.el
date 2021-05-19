@@ -590,17 +590,6 @@ Keybindings you define here will take precedence."
   ("s-_" . oht-remember-dwim)
   ("s--" . remember-notes))
 
-(use-package bookmark
-  :straight nil
-  :commands (list-bookmarks)
-  :custom
-  (bookmark-save-flag 1)
-  (bookmark-bmenu-file-column 45)
-  :init
-  (add-hook 'bookmark-bmenu-mode (lambda ()
-                                   (hl-line-mode 1)))
-  :bind ("M-s-b" . list-bookmarks))
-
 (use-package ibuffer
   :straight nil
   :commands ibuffer
@@ -931,11 +920,6 @@ Keybindings you define here will take precedence."
   :bind
   ("s-r" . er/expand-region)
   ("s-R" . er/contract-region))
-
-(use-package zzz-to-char
-  ;; replaces zap-to-char with an avy-like interface
-  ;; note that it searches forward and backward
-  :bind ("M-z" . zzz-up-to-char))
 
 (use-package unfill
   :commands (unfill-paragraph unfill-toggle unfill-region)

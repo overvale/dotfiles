@@ -831,6 +831,8 @@ Keybindings you define here will take precedence."
   :commands selected-minor-mode
   :init
   (selected-global-mode 1)
+  (defun disable-selected-minor-mode ()
+    (selected-minor-mode -1))
   :bind (:map selected-keymap
               ;; common
               ("n" . next-line)
@@ -1414,6 +1416,9 @@ To be used by `eww-after-render-hook'."
     (elfeed-show-visit)
     (bury-buffer)
     (message "Browsing in buried buffer"))
+
+  (add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
+  (add-hook 'elfeed-show-mode-hook 'disable-selected-minor-mode)
 
   ) ; End "use-package elfeed"
 

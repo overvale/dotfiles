@@ -66,7 +66,7 @@
 (setq uniquify-buffer-name-style 'forward)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(setq display-time-format "%H:%M  %Y-%m-%d"
+(setq display-time-format " %Y-%m-%d  %H:%M"
       display-time-interval 60
       display-time-mail-directory nil
       display-time-default-load-average nil)
@@ -79,6 +79,7 @@
       find-file-visit-truename t)
 (setq create-lockfiles nil
       make-backup-files nil)
+(setq bookmark-save-flag 1)
 (setq load-prefer-newer t)
 (setq delete-by-moving-to-trash t)
 (setq confirm-kill-processes nil)
@@ -156,6 +157,7 @@ pipe whole buffer."
 
 (defun find-file-recursively ()
   "Find Files Recursively using completing read."
+  (interactive)
   (find-file (completing-read "Find File Recursively: "
                               (directory-files-recursively default-directory ".+"))))
 
@@ -235,7 +237,6 @@ If no region is active, then stay active and swap."
   This is the same as using \\[set-mark-command] with the prefix argument."
   (interactive)
   (set-mark-command 1))
-
 
 
 ;;;;; Youtube-dl
@@ -464,14 +465,18 @@ Keybindings you define here will take precedence."
 ;; Because many of my use-package declarations use the ':blackout' statement I
 ;; need to configure this first.
 (use-package blackout
-  :demand
+  :commands (blackout)
   :config
   (blackout 'eldoc-mode)
   (blackout 'emacs-lisp-mode "Elisp")
   (blackout 'auto-fill-function " Fill"))
 
-;; This is only here because I love it so much and don't have another good
-;; place for it below.
+
+;;; Packages
+
+
+;;;; Modus -- the one true theme
+
 (use-package modus-themes
   :custom
   (modus-themes-links 'faint-neutral-underline)
@@ -1756,6 +1761,8 @@ wherever you need to go."
 
 
 ;;;; Facedancer
+
+;; TODO: should this be migrated to init.el?
 
 (use-package facedancer
   :straight nil

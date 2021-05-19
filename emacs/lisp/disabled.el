@@ -242,53 +242,6 @@ as an argument limits undo to changes within the current region."
 ;; Finally, add a hook to set the make-record-function
 (add-hook 'eww-mode-hook 'oht-eww-set-bookmark-handler)
 
-;;; Prot EWW Extensions
-
-;; The following are taken from https://protesilaos.com/dotemacs
-
-;;;###autoload
-(defun prot-eww-browse-dwim (url &optional arg)
-  "Visit a URL, maybe from `eww-prompt-history', with completion.
-
-With optional prefix ARG (\\[universal-argument]) open URL in a
-new eww buffer.
-
-If URL does not look like a valid link, run a web query using
-`eww-search-prefix'.
-
-When called from an eww buffer, provide the current link as
-initial input."
-  (interactive
-   (list
-    (completing-read "Run EWW on: " eww-prompt-history
-                     nil nil (plist-get eww-data :url) 'eww-prompt-history)
-    current-prefix-arg))
-  (eww url (if arg 4)))
-
-;;;###autoload
-(defun prot-eww-visit-bookmark (&optional arg)
-  "Visit bookmarked URL.
-
-With optional prefix ARG (\\[universal-argument]) open URL in a
-new EWW buffer."
-  (interactive "P")
-  (eww-read-bookmarks t)
-  (let ((list (gensym)))
-    (dolist (bookmark eww-bookmarks)
-      (push (plist-get bookmark :url) list))
-    (eww (completing-read "Visit EWW bookmark: " list)
-         (if arg 4 nil))))
-
-(autoload 'View-quit "view")
-
-;;;###autoload
-(defun prot-eww-bookmark-page (title)
-  "Add eww bookmark named with TITLE."
-  (interactive
-   (list
-    (read-string "Set bookmark title: " (plist-get eww-data :title))))
-  (plist-put eww-data :title title)
-  (eww-add-bookmark))
 
 
 ;;;; PDFs

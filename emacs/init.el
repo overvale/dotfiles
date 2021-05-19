@@ -494,7 +494,6 @@ Keybindings you define here will take precedence."
 ;;;; Narrowing & Searching
 
 (use-package orderless
-  :straight (:host github :repo "oantolin/orderless" :branch "master")
   :demand
   :custom
   (completion-styles '(orderless))
@@ -502,12 +501,10 @@ Keybindings you define here will take precedence."
   (completion-category-overrides '((file (styles . (partial-completion))))))
 
 (use-package vertico
-  :straight (:host github :repo "minad/vertico" :branch "main")
   :init
   (vertico-mode))
 
 (use-package marginalia
-  :straight (:type git :host github :repo "minad/marginalia" :branch "main")
   :custom
   (marginalia-annotators
    '(marginalia-annotators-heavy marginalia-annotators-light))
@@ -515,7 +512,6 @@ Keybindings you define here will take precedence."
   (marginalia-mode 1))
 
 (use-package embark
-  :straight (:host github :repo "oantolin/embark" :branch "master")
   :commands use-embark-completions
   :bind
   ("s-e" . embark-act)
@@ -527,7 +523,6 @@ Keybindings you define here will take precedence."
         ("&" . browse-url-default-macosx-browser)))
 
 (use-package consult
-  :straight (:type git :host github :repo "minad/consult" :branch "main")
   :bind
   ("s-b" . consult-buffer)
   ("M-y" . consult-yank-pop)

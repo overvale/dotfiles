@@ -85,7 +85,7 @@
 (setq save-interprogram-paste-before-kill t
       kill-do-not-save-duplicates t)
 
-(when (string= system-type "darwin")
+(when (eq system-type 'darwin)
   (setq locate-command "mdfind"
         trash-directory "~/.Trash/emacs"))
 
@@ -286,7 +286,7 @@ Keybindings you define here will take precedence."
 
 ;; If on a Mac, use the command key as Super, left-option for Meta, and
 ;; right-option for Alt.
-(if (equal system-type 'darwin)
+(when (eq system-type 'darwin)
     (progn
       (setq mac-command-modifier 'super
             mac-option-modifier 'meta
@@ -482,7 +482,13 @@ Keybindings you define here will take precedence."
   :init
   (modus-themes-load-operandi))
 
-(add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle)
+;; If on a Mac, assume Mitsuharu Yamamoto’s fork -- check for dark/light mode,
+;; if dark mode load the dark theme, also add a hook for syncing with the
+;; system.
+(when (eq system-type 'darwin)
+  (if (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua")
+      (modus-themes-load-vivendi))
+  (add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle))
 
 
 ;;;; Narrowing & Searching
@@ -857,6 +863,7 @@ Keybindings you define here will take precedence."
   :straight nil
   :commands (flyspell-mode flyspell-prog-mode turn-on-flyspell)
   :custom
+  ;; TODO: localize for system-type
   (ispell-program-name "/usr/local/bin/aspell")
   (ispell-extra-args '("--sug-mode=ultra"))
   (ispell-list-command "list")
@@ -903,6 +910,7 @@ Keybindings you define here will take precedence."
   :commands magit-status)
 
 (use-package exec-path-from-shell
+  :if (when (eq system-type 'darwin))
   :init
   (exec-path-from-shell-initialize))
 

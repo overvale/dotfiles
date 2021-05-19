@@ -243,6 +243,28 @@ as an argument limits undo to changes within the current region."
 (add-hook 'eww-mode-hook 'oht-eww-set-bookmark-handler)
 
 
+;;; Embark as Completion Framework
+
+;; The following will allow you to use an embark live collection as your
+;; completion framework.
+
+(defun resize-embark-collect-window (&rest _)
+  (when (memq embark-collect--kind '(:live :completions))
+    (fit-window-to-buffer (get-buffer-window)
+                          (floor (frame-height) 2) 1)))
+
+(defun switch-to-minibuffer-window ()
+  "switch to minibuffer window (if active)"
+  (interactive)
+  (when (active-minibuffer-window)
+    (select-window (active-minibuffer-window))))
+
+(add-hook 'embark-collect-post-revert-hook 'resize-embark-collect-window)
+(add-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
+(add-hook 'embark-collect-mode-hook 'hl-line-mode)
+(define-key minibuffer-local-map (kbd "C-p") 'embark-switch-to-collect-completions)
+(define-key embark-collect-mode-map (kbd "C-n") 'switch-to-minibuffer-window)
+
 
 ;;;; PDFs
 

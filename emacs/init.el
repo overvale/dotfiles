@@ -407,9 +407,42 @@ Keybindings you define here will take precedence."
 (global-set-key [C-M-down-mouse-1] 'mouse-drag-secondary)
 
 
-;;; Packages
+;;;; Completions
 
-;;;; Straight / Use Package
+;; The below is a fallback configuration for working with the default
+;; completions in Emacs. Thankfully, they do not interfere with Vertico.
+
+(setq completion-show-help nil)
+(add-hook 'completion-list-mode-hook 'hl-line-mode)
+
+(defun switch-to-minibuffer ()
+  "Focus the active minibuffer.
+Bind this to `completion-list-mode-map' to M-v to easily jump
+between the list of candidates present in the \\*Completions\\*
+buffer and the minibuffer (because by default M-v switches to the
+completions if invoked from inside the minibuffer."
+  (interactive)
+  (let ((mini (active-minibuffer-window)))
+    (when mini
+      (select-window mini))))
+
+(defun switch-to-completions-or-other-window ()
+  "Switch to the completions window, if it exists, or another window."
+  (interactive)
+  (if (not (get-buffer-window "*Completions*"))
+      (other-window 1)
+    (select-window (get-buffer-window "*Completions*"))
+    (when (bobp)
+      (next-completion 1))))
+
+(define-key completion-list-mode-map (kbd "n") 'next-completion)
+(define-key completion-list-mode-map (kbd "p") 'previous-completion)
+(define-key completion-list-mode-map (kbd "M-v") 'switch-to-minibuffer)
+
+(define-key minibuffer-local-map (kbd "s-o") 'switch-to-completions-or-other-window)
+
+
+;;; Packages Setup
 
 ;; Required Bootstrap to ensure it is installed
 (defvar bootstrap-version)
@@ -449,9 +482,6 @@ Keybindings you define here will take precedence."
 ;; the non-use-package hooks I'm writing don't work. So to avoid that I make
 ;; it consistent, use-package or not, the hooks are named the same.
 (setq use-package-hook-name-suffix nil)
-
-
-;;;; Minimum
 
 ;; I use a lot of transients. The best way I've found to configure them is to
 ;; place all the mode-specific ones in their mode's use-package declaration,

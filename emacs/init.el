@@ -896,7 +896,7 @@ completions if invoked from inside the minibuffer."
   ) ; End dired config
 
 
-;;; Packages
+;;; External Packages
 
 
 ;;;; Modus -- the one true theme
@@ -976,179 +976,6 @@ completions if invoked from inside the minibuffer."
   ("C-r" . ctrlf-backward-fuzzy)
   :custom
   (ctrlf-go-to-end-of-match nil))
-
-
-;;;; View / Selected
-
-(use-package view
-  :straight nil
-  :custom
-  (view-read-only t)
-  :init
-  (defun oht/view-mode-exit ()
-    (interactive)
-    (view-mode -1)
-    (hl-line-mode -1))
-  (defun oht/exit-view-replace-rectangle ()
-    (interactive)
-    (oht/view-mode-exit)
-    (call-interactively 'replace-rectangle))
-  :bind
-  ("s-j" . view-mode)
-  (:map view-mode-map
-        ;; common
-        ("n" . next-line)
-        ("p" . previous-line)
-        ("f" . forward-char)
-        ("b" . backward-char)
-        ("F" . forward-word)
-        ("B" . backward-word)
-        ("a" . beginning-of-visual-line)
-        ("e" . end-of-visual-line)
-        ("{" . backward-paragraph)
-        ("}" . forward-paragraph)
-        ("(" . backward-sentence)
-        (")" . forward-sentence)
-        ("s" . ctrlf-forward-fuzzy)
-        ("r" . ctrlf-backward-fuzzy)
-        ("[" . scroll-down-line)
-        ("]" . scroll-up-line)
-        ("x" . exchange-point-and-mark)
-        ("M" . rectangle-mark-mode)
-        ;; unique
-        ("R" . oht/exit-view-replace-rectangle)
-        ("m" . set-mark-command)
-        ("<RET>" . oht/view-mode-exit)
-        ("s-j" . oht/view-mode-exit)
-        ("q" . quit-window))
-  :hook (view-mode-hook . hl-line-mode)
-  :blackout " VIEW")
-
-(use-package selected
-  :commands selected-minor-mode
-  :init
-  (selected-global-mode 1)
-  (defun disable-selected-minor-mode ()
-    (selected-minor-mode -1))
-  :bind (:map selected-keymap
-              ;; common
-              ("n" . next-line)
-              ("p" . previous-line)
-              ("f" . forward-char)
-              ("b" . backward-char)
-              ("F" . forward-word)
-              ("B" . backward-word)
-              ("a" . beginning-of-visual-line)
-              ("e" . end-of-visual-line)
-              ("{" . backward-paragraph)
-              ("}" . forward-paragraph)
-              ("(" . backward-sentence)
-              (")" . forward-sentence)
-              ("s" . ctrlf-forward-fuzzy)
-              ("r" . ctrlf-backward-fuzzy)
-              ("[" . scroll-down-line)
-              ("]" . scroll-up-line)
-              ("x" . exchange-point-and-mark)
-              ("M" . rectangle-mark-mode)
-              ;; unique
-              ("u" . upcase-dwim)
-              ("d" . downcase-dwim)
-              ("w" . kill-ring-save)
-              ("|" . pipe-region)
-              ("R" . replace-rectangle)
-              ("E" . eval-region)
-              ("q" . selected-off))
-  :blackout selected-minor-mode)
-
-
-;;;; Misc Packages
-
-(use-package magit
-  :commands magit-status)
-
-(use-package exec-path-from-shell
-  :if (when (eq system-type 'darwin))
-  :init
-  (exec-path-from-shell-initialize))
-
-(use-package olivetti
-  :commands olivetti-mode
-  :custom (olivetti-body-width 84)
-  :blackout " Olvti")
-
-(use-package undo-fu
-  :bind
-  ("s-z" . undo-fu-only-undo)
-  ("s-Z" . undo-fu-only-redo))
-
-(use-package expand-region
-  :bind
-  ("s-r" . er/expand-region)
-  ("s-R" . er/contract-region))
-
-(use-package unfill
-  :commands (unfill-paragraph unfill-toggle unfill-region)
-  :bind
-  ("M-q" . unfill-toggle))
-
-(use-package whole-line-or-region
-  :init
-  (whole-line-or-region-global-mode 1)
-  :blackout whole-line-or-region-local-mode)
-
-(use-package helpful
-  :bind
-  ("C-h f" . #'helpful-function)
-  ("C-h v" . #'helpful-variable)
-  ("C-h o" . #'helpful-symbol)
-  ("C-h k" . #'helpful-key)
-  ("C-h p" . #'helpful-at-point))
-
-(use-package move-text
-  :bind
-  ("M-<up>" . move-text-up)
-  ("M-<down>" . move-text-down))
-
-(use-package buffer-move
-  :commands (buf-move-up
-             buf-move-down
-             buf-move-left
-             buf-move-right))
-
-(use-package visual-regexp
-  ;; Provides an alternate version of `query-replace' which highlights matches
-  ;; and replacements as you type.
-  :bind (([remap query-replace] . #'vr/query-replace)))
-
-(use-package visual-regexp-steroids
-  ;; Allows `visual-regexp' to use regexp engines other than Emacs'; for
-  ;; example, Python or Perl regexps.
-  :after visual-regexp
-  :bind (([remap query-replace-regexp] . #'vr/query-replace))
-  :custom
-  (vr/engine 'pcre2el))
-
-(use-package bicycle
-  :after outline
-  :bind
-  (:map outline-minor-mode-map
-        ([C-tab] . bicycle-cycle))
-  (:map emacs-lisp-mode-map
-        ("<backtab>" . bicycle-cycle-global)))
-
-(use-package fountain-mode
-  :commands fountain-mode
-  :custom
-  (fountain-add-continued-dialog nil)
-  (fountain-highlight-elements (quote (section-heading))))
-
-(use-package markdown-mode
-  :mode ("\\.text" . markdown-mode)
-  :magic ("%text" . markdown-mode)
-  :commands markdown-mode)
-
-(use-package lua-mode
-  :commands lua-mode)
 
 
 ;;;; Org
@@ -1337,6 +1164,89 @@ org-todo-keywords to a transient command."
         ("l" "LATER"    org-agenda-todo-set-later)]
        [("d" "DONE"     org-agenda-todo-set-done)
         ("c" "CANCELED" org-agenda-todo-set-canceled)]]))
+
+
+;;;; View / Selected
+
+(use-package view
+  :straight nil
+  :custom
+  (view-read-only t)
+  :init
+  (defun oht/view-mode-exit ()
+    (interactive)
+    (view-mode -1)
+    (hl-line-mode -1))
+  (defun oht/exit-view-replace-rectangle ()
+    (interactive)
+    (oht/view-mode-exit)
+    (call-interactively 'replace-rectangle))
+  :bind
+  ("s-j" . view-mode)
+  (:map view-mode-map
+        ;; common
+        ("n" . next-line)
+        ("p" . previous-line)
+        ("f" . forward-char)
+        ("b" . backward-char)
+        ("F" . forward-word)
+        ("B" . backward-word)
+        ("a" . beginning-of-visual-line)
+        ("e" . end-of-visual-line)
+        ("{" . backward-paragraph)
+        ("}" . forward-paragraph)
+        ("(" . backward-sentence)
+        (")" . forward-sentence)
+        ("s" . ctrlf-forward-fuzzy)
+        ("r" . ctrlf-backward-fuzzy)
+        ("[" . scroll-down-line)
+        ("]" . scroll-up-line)
+        ("x" . exchange-point-and-mark)
+        ("M" . rectangle-mark-mode)
+        ;; unique
+        ("R" . oht/exit-view-replace-rectangle)
+        ("m" . set-mark-command)
+        ("<RET>" . oht/view-mode-exit)
+        ("s-j" . oht/view-mode-exit)
+        ("q" . quit-window))
+  :hook (view-mode-hook . hl-line-mode)
+  :blackout " VIEW")
+
+(use-package selected
+  :commands selected-minor-mode
+  :init
+  (selected-global-mode 1)
+  (defun disable-selected-minor-mode ()
+    (selected-minor-mode -1))
+  :bind (:map selected-keymap
+              ;; common
+              ("n" . next-line)
+              ("p" . previous-line)
+              ("f" . forward-char)
+              ("b" . backward-char)
+              ("F" . forward-word)
+              ("B" . backward-word)
+              ("a" . beginning-of-visual-line)
+              ("e" . end-of-visual-line)
+              ("{" . backward-paragraph)
+              ("}" . forward-paragraph)
+              ("(" . backward-sentence)
+              (")" . forward-sentence)
+              ("s" . ctrlf-forward-fuzzy)
+              ("r" . ctrlf-backward-fuzzy)
+              ("[" . scroll-down-line)
+              ("]" . scroll-up-line)
+              ("x" . exchange-point-and-mark)
+              ("M" . rectangle-mark-mode)
+              ;; unique
+              ("u" . upcase-dwim)
+              ("d" . downcase-dwim)
+              ("w" . kill-ring-save)
+              ("|" . pipe-region)
+              ("R" . replace-rectangle)
+              ("E" . eval-region)
+              ("q" . selected-off))
+  :blackout selected-minor-mode)
 
 
 ;;;; Browser & News
@@ -1767,6 +1677,96 @@ wherever you need to go."
   :config
   (facedancer-font-set))
 
+
+
+;;;; Misc Packages
+
+(use-package magit
+  :commands magit-status)
+
+(use-package exec-path-from-shell
+  :if (when (eq system-type 'darwin))
+  :init
+  (exec-path-from-shell-initialize))
+
+(use-package olivetti
+  :commands olivetti-mode
+  :custom (olivetti-body-width 84)
+  :blackout " Olvti")
+
+(use-package undo-fu
+  :bind
+  ("s-z" . undo-fu-only-undo)
+  ("s-Z" . undo-fu-only-redo))
+
+(use-package expand-region
+  :bind
+  ("s-r" . er/expand-region)
+  ("s-R" . er/contract-region))
+
+(use-package unfill
+  :commands (unfill-paragraph unfill-toggle unfill-region)
+  :bind
+  ("M-q" . unfill-toggle))
+
+(use-package whole-line-or-region
+  :init
+  (whole-line-or-region-global-mode 1)
+  :blackout whole-line-or-region-local-mode)
+
+(use-package helpful
+  :bind
+  ("C-h f" . #'helpful-function)
+  ("C-h v" . #'helpful-variable)
+  ("C-h o" . #'helpful-symbol)
+  ("C-h k" . #'helpful-key)
+  ("C-h p" . #'helpful-at-point))
+
+(use-package move-text
+  :bind
+  ("M-<up>" . move-text-up)
+  ("M-<down>" . move-text-down))
+
+(use-package buffer-move
+  :commands (buf-move-up
+             buf-move-down
+             buf-move-left
+             buf-move-right))
+
+(use-package visual-regexp
+  ;; Provides an alternate version of `query-replace' which highlights matches
+  ;; and replacements as you type.
+  :bind (([remap query-replace] . #'vr/query-replace)))
+
+(use-package visual-regexp-steroids
+  ;; Allows `visual-regexp' to use regexp engines other than Emacs'; for
+  ;; example, Python or Perl regexps.
+  :after visual-regexp
+  :bind (([remap query-replace-regexp] . #'vr/query-replace))
+  :custom
+  (vr/engine 'pcre2el))
+
+(use-package bicycle
+  :after outline
+  :bind
+  (:map outline-minor-mode-map
+        ([C-tab] . bicycle-cycle))
+  (:map emacs-lisp-mode-map
+        ("<backtab>" . bicycle-cycle-global)))
+
+(use-package fountain-mode
+  :commands fountain-mode
+  :custom
+  (fountain-add-continued-dialog nil)
+  (fountain-highlight-elements (quote (section-heading))))
+
+(use-package markdown-mode
+  :mode ("\\.text" . markdown-mode)
+  :magic ("%text" . markdown-mode)
+  :commands markdown-mode)
+
+(use-package lua-mode
+  :commands lua-mode)
 
 
 ;;; End of init.el

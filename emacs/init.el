@@ -639,6 +639,26 @@ mode-line."
 (setq completion-show-help nil)
 (add-hook 'completion-list-mode-hook 'hl-line-mode)
 
+;; The completions list itself is read-only, so why not allow some nice navigation?
+(define-key completion-list-mode-map (kbd "n") 'next-completion)
+(define-key completion-list-mode-map (kbd "p") 'previous-completion)
+
+;; I want to use my usual 's-o' binding (other-window) to switch between the
+;; minibuffer and the completions list. There is a built-in
+;; `switch-to-completions' but it doesn't support Embark or fall-back to
+;; `other-window', so I made my own.
+
+(defun switch-to-completions-or-other-window ()
+  "Switch to the completions window, if it exists, or another window."
+  (interactive)
+  (if (get-buffer-window "*Embark Collect Completions*")
+      (select-window (get-buffer-window "*Embark Collect Completions*"))
+    (if (get-buffer-window "*Completions*")
+        (progn
+          (select-window (get-buffer-window "*Completions*"))
+          (when (bobp) (next-completion 1)))
+      (other-window 1))))
+
 (defun switch-to-minibuffer ()
   "Focus the active minibuffer.
 Bind this to `completion-list-mode-map' to M-v to easily jump
@@ -650,20 +670,8 @@ completions if invoked from inside the minibuffer."
     (when mini
       (select-window mini))))
 
-(defun switch-to-completions-or-other-window ()
-  "Switch to the completions window, if it exists, or another window."
-  (interactive)
-  (if (not (get-buffer-window "*Completions*"))
-      (other-window 1)
-    (select-window (get-buffer-window "*Completions*"))
-    (when (bobp)
-      (next-completion 1))))
-
-(define-key completion-list-mode-map (kbd "n") 'next-completion)
-(define-key completion-list-mode-map (kbd "p") 'previous-completion)
-(define-key completion-list-mode-map (kbd "M-v") 'switch-to-minibuffer)
-
 (define-key minibuffer-local-map (kbd "s-o") 'switch-to-completions-or-other-window)
+(define-key completion-list-mode-map (kbd "s-o") 'switch-to-minibuffer)
 
 
 ;;;; Outline
@@ -1676,7 +1684,6 @@ wherever you need to go."
     (facedancer-mode 'toggle))
   :config
   (facedancer-font-set))
-
 
 
 ;;;; Misc Packages

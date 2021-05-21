@@ -262,9 +262,6 @@ as an argument limits undo to changes within the current region."
 (add-hook 'embark-collect-post-revert-hook 'resize-embark-collect-window)
 (add-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
 (add-hook 'embark-collect-mode-hook 'hl-line-mode)
-(define-key minibuffer-local-map (kbd "C-p") 'embark-switch-to-collect-completions)
-(define-key embark-collect-mode-map (kbd "C-n") 'switch-to-minibuffer-window)
-
 
 ;;; PDFs
 

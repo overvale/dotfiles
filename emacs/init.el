@@ -14,6 +14,65 @@
 ;; occur buffer with the search [^;;;+].
 
 
+;;; Package Setup & Essential Packages
+
+;; Ensure straight is installed. This is boilerplate from the straight documentation.
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+;; Package `use-package' provides a handy macro by the same name which
+;; is essentially a wrapper around `with-eval-after-load' with a lot
+;; of handy syntactic sugar and useful features.
+(straight-use-package 'use-package)
+
+;; When configuring a feature with `use-package', also tell
+;; straight.el to install a package of the same name, unless otherwise
+;; specified using the `:straight' keyword.
+(setq straight-use-package-by-default t)
+
+;; Tell `use-package' to always load features lazily unless told
+;; otherwise. It's nicer to have this kind of thing be deterministic:
+;; if `:demand' is present, the loading is eager; otherwise, the
+;; loading is lazy. See
+;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
+(setq use-package-always-defer t)
+
+;; By default, use-package adds the suffix "-hook" to all your hook
+;; declarations, which I think is a reasonable default. I tend to forget that
+;; use-package does this and then forget that Emacs requires the suffix, then
+;; spend 15 minutes banging my head against a wall trying to figure out why
+;; the non-use-package hooks I'm writing don't work. So to avoid that I make
+;; it consistent, use-package or not, the hooks are named the same.
+(setq use-package-hook-name-suffix nil)
+
+;; I use blackout to configure mode listings in the mode-line, and since those
+;; settings are scattered across all my use-package declarations, I
+;; essentially need to define this as part of the use-package config.
+(use-package blackout
+  :commands (blackout)
+  :config
+  (blackout 'eldoc-mode)
+  (blackout 'emacs-lisp-mode "Elisp")
+  (blackout 'auto-fill-function " Fill"))
+
+;; I make extensive use of transients, this config is overflowing with them.
+;; To ensure I can define them anywhere I want in this config, I need to
+;; install it and autoload the command. But my actual config for the package
+;; is below.
+(use-package transient
+  :commands (transient-define-prefix))
+
+
 ;;; Configuration
 
 ;; General config, and settings for built-in packages.
@@ -298,10 +357,9 @@ Keybindings you define here will take precedence."
 ;; If on a Mac, use the command key as Super, left-option for Meta, and
 ;; right-option for Alt.
 (when (eq system-type 'darwin)
-  (progn
     (setq mac-command-modifier 'super
           mac-option-modifier 'meta
-          mac-right-option-modifier 'nil)))
+          mac-right-option-modifier 'nil))
 
 ;; Mac-like
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
@@ -425,29 +483,30 @@ Keybindings you define here will take precedence."
    '(ispell-extra-args '("--sug-mode=ultra"))
    '(ispell-list-command "list")))
 
+(blackout 'flyspell-mode " Spell")
+
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
 (global-set-key (kbd "M-;") #'flyspell-auto-correct-previous-word)
 
-(with-eval-after-load 'transient
-  (transient-define-prefix oht-transient-spelling ()
-    "Transient for a spelling interface"
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    [["Toggle Modes"
-      ("m" "Flyspell" flyspell-mode)
-      ("M" "Prog Flyspell" flyspell-prog-mode)]
-     ["Check"
-      ("b" "Buffer" flyspell-buffer)
-      ("r" "Region" flyspell-region)]
-     ["Correction"
-      ("n" "Next" flyspell-goto-next-error)
-      ("<return>" "Fix" ispell-word)
-      ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
-      ("<DEL>" "Delete Word" kill-word)
-      ("s-z" "Undo" undo-fu-only-undo)
-      ("s-Z" "Redo" undo-fu-only-redo)]]))
+(transient-define-prefix oht-transient-spelling ()
+  "Transient for a spelling interface"
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  [["Toggle Modes"
+    ("m" "Flyspell" flyspell-mode)
+    ("M" "Prog Flyspell" flyspell-prog-mode)]
+   ["Check"
+    ("b" "Buffer" flyspell-buffer)
+    ("r" "Region" flyspell-region)]
+   ["Correction"
+    ("n" "Next" flyspell-goto-next-error)
+    ("<return>" "Fix" ispell-word)
+    ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
+    ("<DEL>" "Delete Word" kill-word)
+    ("s-z" "Undo" undo-fu-only-undo)
+    ("s-Z" "Redo" undo-fu-only-redo)]])
 
 
 ;;;; Composition mode
@@ -487,26 +546,24 @@ mode-line."
 (defun oht-dispatch-CNN-news () (interactive) (browse-url "https://lite.cnn.com/en"))
 (defun oht-dispatch-google-news () (interactive) (browse-url "http://68k.news/"))
 
-(with-eval-after-load 'transient
-  (transient-define-prefix oht-transient-dispatch ()
-    "Jump directly to your most-used stuff."
-    ["Work"
-     [("t" "Today + Priority" oht-org-agenda-today)
-      ("0" "Week + TODOs" oht-org-agenda-complete)
-      ("a" "Agenda" oht-org-agenda-agenda)
-      ("T" "TODOs" oht-org-agenda-todos)
-      ("A" "Org Agenda Command..." org-agenda)]
-     [("m" "Mail" mu4e)]]
-    ["Browsing"
-     [("e" "Elfeed"      elfeed)
-      ("h" "Hacker News" hackernews)]
-     [("E" "EWW"         eww)
-      ("n" "NPR News"    oht-dispatch-NPR-news)
-      ("c" "CNN News"    oht-dispatch-CNN-news)
-      ("g" "Google News" oht-dispatch-google-news)]
-     [("d" "Downloads"   oht-dispatch-downloads)
-      ("r" "Reading"     oht-dispatch-reading)
-      ("w" "Watch"       oht-dispatch-watch)]]))
+(transient-define-prefix oht-transient-dispatch ()
+  "Jump directly to your most-used stuff."
+  ["Work"
+   [("t" "Today + Priority" oht-org-agenda-today)
+    ("0" "Week + TODOs" oht-org-agenda-complete)
+    ("a" "Agenda" oht-org-agenda-agenda)
+    ("T" "TODOs" oht-org-agenda-todos)
+    ("A" "Org Agenda Command..." org-agenda)]]
+  ["Browsing"
+   [("e" "Elfeed"      elfeed)
+    ("h" "Hacker News" hackernews)]
+   [("E" "EWW"         eww)
+    ("n" "NPR News"    oht-dispatch-NPR-news)
+    ("c" "CNN News"    oht-dispatch-CNN-news)
+    ("g" "Google News" oht-dispatch-google-news)]
+   [("d" "Downloads"   oht-dispatch-downloads)
+    ("r" "Reading"     oht-dispatch-reading)
+    ("w" "Watch"       oht-dispatch-watch)]])
 
 ;;;; Secondary Selection
 
@@ -560,19 +617,18 @@ mode-line."
   (interactive)
   (delete-overlay mouse-secondary-overlay))
 
-(with-eval-after-load 'transient
-  (transient-define-prefix oht-transient-2nd ()
-    "Transient for working with the secondary selection"
-    [["Cut/Copy"
-      ("xx" "Cut 2nd" oht/cut-secondary-selection)
-      ("cc" "Copy 2nd" oht/copy-secondary-selection)]
-     ["& Paste"
-      ("xv" "Cut 2nd & Paste" oht/cut-secondary-selection-paste)
-      ("cv" "Copy 2nd & Paste" oht/copy-secondary-selection-paste)]
-     ["Mark"
-      ("m"  "Mark Region as 2nd" oht/mark-region-as-secondary-selection)
-      ("g"  "Make 2nd the Region" oht/mark-secondary-selection)
-      ("d"  "Delete 2nd" oht/delete-secondary-selection)]]))
+(transient-define-prefix oht-transient-2nd ()
+  "Transient for working with the secondary selection"
+  [["Cut/Copy"
+    ("xx" "Cut 2nd" oht/cut-secondary-selection)
+    ("cc" "Copy 2nd" oht/copy-secondary-selection)]
+   ["& Paste"
+    ("xv" "Cut 2nd & Paste" oht/cut-secondary-selection-paste)
+    ("cv" "Copy 2nd & Paste" oht/copy-secondary-selection-paste)]
+   ["Mark"
+    ("m"  "Mark Region as 2nd" oht/mark-region-as-secondary-selection)
+    ("g"  "Make 2nd the Region" oht/mark-secondary-selection)
+    ("d"  "Delete 2nd" oht/delete-secondary-selection)]])
 
 
 ;;;; Completions
@@ -618,6 +674,8 @@ completions if invoked from inside the minibuffer."
 (define-globalized-minor-mode global-outline-minor-mode
   outline-minor-mode outline-minor-mode)
 (global-outline-minor-mode +1)
+
+(blackout 'outline-minor-mode)
 
 ;;;; Pulse
 
@@ -708,7 +766,8 @@ completions if invoked from inside the minibuffer."
 ;;;; Info
 
 (with-eval-after-load 'info
-  (with-eval-after-load 'transient
+
+  (define-key Info-mode-map (kbd "s-\\") 'oht-transient-info)
 
     (transient-define-prefix oht-transient-info ()
       "Transient for Info mode"
@@ -730,11 +789,7 @@ completions if invoked from inside the minibuffer."
        [("<" "Top Node" Info-top-node)
         (">" "Final Node" Info-final-node)
         ("[" "Forward Node" Info-backward-node)
-        ("]" "Backward Node" Info-forward-node)]])
-
-    (define-key Info-mode-map (kbd "s-\\") 'oht-transient-info)
-
-    )) ; End info
+        ("]" "Backward Node" Info-forward-node)]]))
 
 ;;;; Dired
 
@@ -760,145 +815,86 @@ completions if invoked from inside the minibuffer."
               (auto-revert-mode)
               (hl-line-mode 1)))
 
-  (with-eval-after-load 'transient
-    (transient-define-prefix oht-transient-dired ()
-      "Transient for dired commands"
-      ["Dired Mode"
-       ["Action"
-        ("RET" "Open file"            dired-find-file)
-        ("o" "  Open in other window" dired-find-file-other-window)
-        ("C-o" "Open in other window (No select)" dired-display-file)
-        ("v" "  Open file (View mode)"dired-view-file)
-        ("=" "  Diff"                 dired-diff)
-        ("w" "  Copy filename"        dired-copy-filename-as-kill)
-        ("W" "  Open in browser"      browse-url-of-dired-file)
-        ("y" "  Show file type"       dired-show-file-type)]
-       ["Attribute"
-        ("R"   "Rename"               dired-do-rename)
-        ("G"   "Group"                dired-do-chgrp)
-        ("M"   "Mode"                 dired-do-chmod)
-        ("O"   "Owner"                dired-do-chown)
-        ("T"   "Timestamp"            dired-do-touch)]
-       ["Navigation"
-        ("j" "  Goto file"            dired-goto-file)
-        ("+" "  Create directory"     dired-create-directory)
-        ("<" "  Jump prev directory"  dired-prev-dirline)
-        (">" "  Jump next directory"  dired-next-dirline)
-        ("^" "  Move up directory"    dired-up-directory)]
-       ["Display"
-        ("g" "  Refresh buffer"       revert-buffer)
-        ("l" "  Refresh file"         dired-do-redisplay)
-        ("k" "  Remove line"          dired-do-kill-lines)
-        ("s" "  Sort"                 dired-sort-toggle-or-edit)
-        ("(" "  Toggle detail info"   dired-hide-details-mode)
-        ("i" "  Insert subdir"        dired-maybe-insert-subdir)
-        ("$" "  Hide subdir"          dired-hide-subdir)
-        ("M-$" "Hide subdir all"      dired-hide-subdir)]
-       ["Extension"
-        ("e"   "wdired"               wdired-change-to-wdired-mode)
-        ("/"   "dired-filter"         ignore)
-        ("n"   "dired-narrow"         ignore)]]
-      [["Marks"
-        ("m" "Marks..." oht-transient-dired-marks)]]))
+  (transient-define-prefix oht-transient-dired ()
+    "Transient for dired commands"
+    ["Dired Mode"
+     ["Action"
+      ("RET" "Open file"            dired-find-file)
+      ("o" "  Open in other window" dired-find-file-other-window)
+      ("C-o" "Open in other window (No select)" dired-display-file)
+      ("v" "  Open file (View mode)"dired-view-file)
+      ("=" "  Diff"                 dired-diff)
+      ("w" "  Copy filename"        dired-copy-filename-as-kill)
+      ("W" "  Open in browser"      browse-url-of-dired-file)
+      ("y" "  Show file type"       dired-show-file-type)]
+     ["Attribute"
+      ("R"   "Rename"               dired-do-rename)
+      ("G"   "Group"                dired-do-chgrp)
+      ("M"   "Mode"                 dired-do-chmod)
+      ("O"   "Owner"                dired-do-chown)
+      ("T"   "Timestamp"            dired-do-touch)]
+     ["Navigation"
+      ("j" "  Goto file"            dired-goto-file)
+      ("+" "  Create directory"     dired-create-directory)
+      ("<" "  Jump prev directory"  dired-prev-dirline)
+      (">" "  Jump next directory"  dired-next-dirline)
+      ("^" "  Move up directory"    dired-up-directory)]
+     ["Display"
+      ("g" "  Refresh buffer"       revert-buffer)
+      ("l" "  Refresh file"         dired-do-redisplay)
+      ("k" "  Remove line"          dired-do-kill-lines)
+      ("s" "  Sort"                 dired-sort-toggle-or-edit)
+      ("(" "  Toggle detail info"   dired-hide-details-mode)
+      ("i" "  Insert subdir"        dired-maybe-insert-subdir)
+      ("$" "  Hide subdir"          dired-hide-subdir)
+      ("M-$" "Hide subdir all"      dired-hide-subdir)]
+     ["Extension"
+      ("e"   "wdired"               wdired-change-to-wdired-mode)
+      ("/"   "dired-filter"         ignore)
+      ("n"   "dired-narrow"         ignore)]]
+    [["Marks"
+      ("m" "Marks..." oht-transient-dired-marks)]])
 
-  (with-eval-after-load 'transient
-    (transient-define-prefix oht-transient-dired-marks ()
-      "Sub-transient for dired marks"
-      ["Dired Mode -> Marks"
-       ["Toggles"
-        ("mm"  "Mark"                 dired-mark)
-        ("mM"  "Mark all"             dired-mark-subdir-files)
-        ("mu"  "Unmark"               dired-unmark)
-        ("mU"  "Unmark all"           dired-unmark-all-marks)
-        ("mc"  "Change mark"          dired-change-marks)
-        ("mt"  "Toggle mark"          dired-toggle-marks)]
-       ["Type"
-        ("m*"  "Executables"          dired-mark-executables)
-        ("m/"  "Directories"          dired-mark-directories)
-        ("m@"  "Symlinks"             dired-mark-symlinks)
-        ("m&"  "Garbage files"        dired-flag-garbage-files)
-        ("m#"  "Auto save files"      dired-flag-auto-save-files)
-        ("m~"  "backup files"         dired-flag-backup-files)
-        ("m."  "Numerical backups"    dired-clean-directory)]
-       ["Search"
-        ("m%"  "Regexp"               dired-mark-files-regexp)
-        ("mg"  "Regexp file contents" dired-mark-files-containing-regexp)]]
-      [["Act on Marked"
-        ("x"   "Do action"            dired-do-flagged-delete)
-        ("C"   "Copy"                 dired-do-copy)
-        ("D"   "Delete"               dired-do-delete)
-        ("S"   "Symlink"              dired-do-symlink)
-        ("H"   "Hardlink"             dired-do-hardlink)
-        ("P"   "Print"                dired-do-print)
-        ("A"   "Find"                 dired-do-find-regexp)
-        ("Q"   "Replace"              dired-do-find-regexp-and-replace)
-        ("B"   "Elisp bytecompile"    dired-do-byte-compile)
-        ("L"   "Elisp load"           dired-do-load)
-        ("X"   "Shell command"        dired-do-shell-command)
-        ("Z"   "Compress"             dired-do-compress)
-        ("z"   "Compress to"          dired-do-compress-to)
-        ("!"   "Shell command"        dired-do-shell-command)
-        ("&"   "Async shell command"  dired-do-async-shell-command)]]))
+  (transient-define-prefix oht-transient-dired-marks ()
+    "Sub-transient for dired marks"
+    ["Dired Mode -> Marks"
+     ["Toggles"
+      ("mm"  "Mark"                 dired-mark)
+      ("mM"  "Mark all"             dired-mark-subdir-files)
+      ("mu"  "Unmark"               dired-unmark)
+      ("mU"  "Unmark all"           dired-unmark-all-marks)
+      ("mc"  "Change mark"          dired-change-marks)
+      ("mt"  "Toggle mark"          dired-toggle-marks)]
+     ["Type"
+      ("m*"  "Executables"          dired-mark-executables)
+      ("m/"  "Directories"          dired-mark-directories)
+      ("m@"  "Symlinks"             dired-mark-symlinks)
+      ("m&"  "Garbage files"        dired-flag-garbage-files)
+      ("m#"  "Auto save files"      dired-flag-auto-save-files)
+      ("m~"  "backup files"         dired-flag-backup-files)
+      ("m."  "Numerical backups"    dired-clean-directory)]
+     ["Search"
+      ("m%"  "Regexp"               dired-mark-files-regexp)
+      ("mg"  "Regexp file contents" dired-mark-files-containing-regexp)]]
+    [["Act on Marked"
+      ("x"   "Do action"            dired-do-flagged-delete)
+      ("C"   "Copy"                 dired-do-copy)
+      ("D"   "Delete"               dired-do-delete)
+      ("S"   "Symlink"              dired-do-symlink)
+      ("H"   "Hardlink"             dired-do-hardlink)
+      ("P"   "Print"                dired-do-print)
+      ("A"   "Find"                 dired-do-find-regexp)
+      ("Q"   "Replace"              dired-do-find-regexp-and-replace)
+      ("B"   "Elisp bytecompile"    dired-do-byte-compile)
+      ("L"   "Elisp load"           dired-do-load)
+      ("X"   "Shell command"        dired-do-shell-command)
+      ("Z"   "Compress"             dired-do-compress)
+      ("z"   "Compress to"          dired-do-compress-to)
+      ("!"   "Shell command"        dired-do-shell-command)
+      ("&"   "Async shell command"  dired-do-async-shell-command)]])
 
   ) ; End dired config
 
-
-;;; Package Setup, Critical & Built-In Packages
-
-;;;; Straight & Use-Package
-
-;; Required Bootstrap to ensure it is installed
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-
-;; Package `use-package' provides a handy macro by the same name which
-;; is essentially a wrapper around `with-eval-after-load' with a lot
-;; of handy syntactic sugar and useful features.
-(straight-use-package 'use-package)
-
-;; When configuring a feature with `use-package', also tell
-;; straight.el to install a package of the same name, unless otherwise
-;; specified using the `:straight' keyword.
-(setq straight-use-package-by-default t)
-
-;; Tell `use-package' to always load features lazily unless told
-;; otherwise. It's nicer to have this kind of thing be deterministic:
-;; if `:demand' is present, the loading is eager; otherwise, the
-;; loading is lazy. See
-;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
-(setq use-package-always-defer t)
-
-;; By default, use-package adds the suffix "-hook" to all your hook
-;; declarations, which I think is a reasonable default. I tend to forget that
-;; use-package does this and then forget that Emacs requires the suffix, then
-;; spend 15 minutes banging my head against a wall trying to figure out why
-;; the non-use-package hooks I'm writing don't work. So to avoid that I make
-;; it consistent, use-package or not, the hooks are named the same.
-(setq use-package-hook-name-suffix nil)
-
-;; Because many of my use-package declarations use the ':blackout' statement I
-;; need to configure this first.
-(use-package blackout
-  :commands (blackout)
-  :config
-  (blackout 'flyspell-mode " Spell")
-  (blackout 'outline-minor-mode)
-  (blackout 'eldoc-mode)
-  (blackout 'emacs-lisp-mode "Elisp")
-  (blackout 'auto-fill-function " Fill"))
-
-
-;;;; Built-In Packages
 
 ;;; Packages
 
@@ -1285,40 +1281,39 @@ completions if invoked from inside the minibuffer."
   (defun org-agenda-todo-set-canceled () (interactive) (org-agenda-todo "CANCELED"))
   (defun org-todo-set-canceled () (interactive) (org-todo "CANCELED"))
 
-  (with-eval-after-load 'transient
-    (transient-define-prefix oht-transient-org ()
-      "Transient for Org Mode"
-      ["Org Mode"
-       ["Navigation"
-        ("o" "Outline" consult-outline)
-        ("n" "Narrow/Widen" narrow-or-widen-dwim)
-        ("g" "Go To" org-goto)
-        ("m" "Visible Markup" visible-mode)]
-       ["Item"
-        ("t" "TODO" oht-transient-org-todo)
-        ("I" "Clock In" org-clock-in)
-        ("O" "Clock Out" org-clock-out)
-        ("a" "Archive Subtree" org-archive-subtree)
-        ("r" "Refile" org-refile)
-        ("c" "Checkbox" org-toggle-checkbox)]
-       ["Insert"
-        ("." "Insert Date, Active" oht/org-insert-date-today)
-        (">" "Insert Date, Inactive" oht/org-insert-date-today-inactive)
-        ("<" "Structure Template" org-insert-structure-template)]
-       ["Links"
-        ("s" "Store Link" org-store-link)
-        ("i" "Insert Link" org-insert-last-stored-link)]])
+  (transient-define-prefix oht-transient-org ()
+    "Transient for Org Mode"
+    ["Org Mode"
+     ["Navigation"
+      ("o" "Outline" consult-outline)
+      ("n" "Narrow/Widen" narrow-or-widen-dwim)
+      ("g" "Go To" org-goto)
+      ("m" "Visible Markup" visible-mode)]
+     ["Item"
+      ("t" "TODO" oht-transient-org-todo)
+      ("I" "Clock In" org-clock-in)
+      ("O" "Clock Out" org-clock-out)
+      ("a" "Archive Subtree" org-archive-subtree)
+      ("r" "Refile" org-refile)
+      ("c" "Checkbox" org-toggle-checkbox)]
+     ["Insert"
+      ("." "Insert Date, Active" oht/org-insert-date-today)
+      (">" "Insert Date, Inactive" oht/org-insert-date-today-inactive)
+      ("<" "Structure Template" org-insert-structure-template)]
+     ["Links"
+      ("s" "Store Link" org-store-link)
+      ("i" "Insert Link" org-insert-last-stored-link)]])
 
-    (transient-define-prefix oht-transient-org-todo ()
-      "A transient for setting org todo status.
+  (transient-define-prefix oht-transient-org-todo ()
+    "A transient for setting org todo status.
 I've created this because I don't like how org-todo messes with
 windows. There is likely a much better way to automatically map
 org-todo-keywords to a transient command."
-      ["Org mode -> Change Status To..."
-       [("t" "TODO"     org-todo-set-todo)
-        ("l" "LATER"    org-todo-set-later)]
-       [("d" "DONE"     org-todo-set-done)
-        ("c" "CANCELED" org-todo-set-canceled)]]))
+    ["Org mode -> Change Status To..."
+     [("t" "TODO"     org-todo-set-todo)
+      ("l" "LATER"    org-todo-set-later)]
+     [("d" "DONE"     org-todo-set-done)
+      ("c" "CANCELED" org-todo-set-canceled)]])
 
   ) ; End "use-package org"
 
@@ -1332,7 +1327,6 @@ org-todo-keywords to a transient command."
         ("s-z" . org-agenda-undo))
   :hook (org-agenda-mode-hook . hl-line-mode)
   :config
-  (with-eval-after-load 'transient
     (transient-define-prefix oht-transient-org-agenda ()
       "A transient for setting org-agenda todo status.
 I've created this because I don't like how org-todo messes with
@@ -1343,7 +1337,6 @@ org-todo-keywords to a transient command."
         ("l" "LATER"    org-agenda-todo-set-later)]
        [("d" "DONE"     org-agenda-todo-set-done)
         ("c" "CANCELED" org-agenda-todo-set-canceled)]]))
-    ) ; End "use-package org-agenda"
 
 
 ;;;; Browser & News
@@ -1415,7 +1408,6 @@ To be used by `eww-after-render-hook'."
   (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
   (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer)
 
-  (with-eval-after-load 'transient
     (transient-define-prefix oht-transient-eww ()
       "Transient for EWW"
       :transient-suffix 'transient--do-stay
@@ -1440,7 +1432,7 @@ To be used by `eww-after-render-hook'."
         ("b" "Bookmark" bookmark-set)
         ("B" "List Bookmarks" eww-list-bookmarks)
         ("M-n" "Next Bookmark" eww-next-bookmark)
-        ("M-p" "Previous Bookmark" eww-previous-bookmark)]]))
+        ("M-p" "Previous Bookmark" eww-previous-bookmark)]])
 
   ) ; End "use-package eww"
 

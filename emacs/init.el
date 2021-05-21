@@ -6,7 +6,17 @@
 ;; Homepage: https://github.com/olivertaylor/dotfiles
 
 
+;;; Commentary:
+
+;; This file has an outline which can be viewed by looking at comments
+;; starting with three or more semicolons. `outline-minor-mode' supports this
+;; convention by default and helps with navigation. You can also create an
+;; occur buffer with the search [^;;;+].
+
+
 ;;; Configuration
+
+;; General config, and settings for built-in packages.
 
 ;;;; Settings
 
@@ -288,10 +298,10 @@ Keybindings you define here will take precedence."
 ;; If on a Mac, use the command key as Super, left-option for Meta, and
 ;; right-option for Alt.
 (when (eq system-type 'darwin)
-    (progn
-      (setq mac-command-modifier 'super
-            mac-option-modifier 'meta
-            mac-right-option-modifier 'nil)))
+  (progn
+    (setq mac-command-modifier 'super
+          mac-option-modifier 'meta
+          mac-right-option-modifier 'nil)))
 
 ;; Mac-like
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
@@ -407,6 +417,164 @@ Keybindings you define here will take precedence."
 (global-set-key [C-M-down-mouse-1] 'mouse-drag-secondary)
 
 
+;;;; Flyspell
+
+(when (eq system-type 'darwin)
+  (custom-set-variables
+   '(ispell-program-name "/usr/local/bin/aspell")
+   '(ispell-extra-args '("--sug-mode=ultra"))
+   '(ispell-list-command "list")))
+
+(add-hook 'text-mode-hook 'turn-on-flyspell)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+(global-set-key (kbd "M-;") #'flyspell-auto-correct-previous-word)
+
+(with-eval-after-load 'transient
+  (transient-define-prefix oht-transient-spelling ()
+    "Transient for a spelling interface"
+    :transient-suffix 'transient--do-stay
+    :transient-non-suffix 'transient--do-warn
+    [["Toggle Modes"
+      ("m" "Flyspell" flyspell-mode)
+      ("M" "Prog Flyspell" flyspell-prog-mode)]
+     ["Check"
+      ("b" "Buffer" flyspell-buffer)
+      ("r" "Region" flyspell-region)]
+     ["Correction"
+      ("n" "Next" flyspell-goto-next-error)
+      ("<return>" "Fix" ispell-word)
+      ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
+      ("<DEL>" "Delete Word" kill-word)
+      ("s-z" "Undo" undo-fu-only-undo)
+      ("s-Z" "Redo" undo-fu-only-redo)]]))
+
+
+;;;; Composition mode
+
+(define-minor-mode composition-mode
+  "A tiny minor-mode to toggle some settings I like when writing
+
+This is really just a wrapper around some extant features I toggle on/off
+when I'm writing. I've wrapped them in a minor mode to make it easy to
+toggle them on/off. It also allows me to define a lighter for the
+mode-line."
+  :init-value nil
+  :lighter " Comp"
+  (if composition-mode
+      (progn
+        (visual-line-mode t)
+        (setq-local line-spacing 2)
+        (olivetti-mode t)
+        (text-scale-increase 1)
+        (variable-pitch-mode 1))
+    (progn
+      (visual-line-mode -1)
+      (setq-local line-spacing 0)
+      (olivetti-mode -1)
+      (text-scale-increase 0)
+      (variable-pitch-mode -1)
+      ;; This shouldn't be needed, but is:
+      (toggle-truncate-lines 1))))
+
+
+;;;; Dispatch
+
+(defun oht-dispatch-downloads () (interactive) (find-file "~/Downloads"))
+(defun oht-dispatch-reading () (interactive) (find-file "~/Downloads/reading"))
+(defun oht-dispatch-watch () (interactive) (find-file "~/Downloads/watch"))
+(defun oht-dispatch-NPR-news () (interactive) (browse-url "https://text.npr.org"))
+(defun oht-dispatch-CNN-news () (interactive) (browse-url "https://lite.cnn.com/en"))
+(defun oht-dispatch-google-news () (interactive) (browse-url "http://68k.news/"))
+
+(with-eval-after-load 'transient
+  (transient-define-prefix oht-transient-dispatch ()
+    "Jump directly to your most-used stuff."
+    ["Work"
+     [("t" "Today + Priority" oht-org-agenda-today)
+      ("0" "Week + TODOs" oht-org-agenda-complete)
+      ("a" "Agenda" oht-org-agenda-agenda)
+      ("T" "TODOs" oht-org-agenda-todos)
+      ("A" "Org Agenda Command..." org-agenda)]
+     [("m" "Mail" mu4e)]]
+    ["Browsing"
+     [("e" "Elfeed"      elfeed)
+      ("h" "Hacker News" hackernews)]
+     [("E" "EWW"         eww)
+      ("n" "NPR News"    oht-dispatch-NPR-news)
+      ("c" "CNN News"    oht-dispatch-CNN-news)
+      ("g" "Google News" oht-dispatch-google-news)]
+     [("d" "Downloads"   oht-dispatch-downloads)
+      ("r" "Reading"     oht-dispatch-reading)
+      ("w" "Watch"       oht-dispatch-watch)]]))
+
+;;;; Secondary Selection
+
+;; Emacs's Secondary Selection assumes you only want to interact with it via
+;; the mouse, however it is perfectly possible to do it via the keyboard, all
+;; you need is some wrapper functions to make things keybinding-addressable.
+
+;; A few functions for working with the Secondary Selection. The primary way I
+;; interact with these is through a hydra.
+
+(defun oht/cut-secondary-selection ()
+  "Cut the secondary selection."
+  (interactive)
+  (mouse-kill-secondary))
+
+(defun oht/copy-secondary-selection ()
+  "Copy the secondary selection."
+  (interactive)
+  ;; there isn't a keybinding-addressable function to kill-ring-save
+  ;; the 2nd selection so here I've made my own. This is extracted
+  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
+  (kill-new
+   (buffer-substring (overlay-start mouse-secondary-overlay)
+                     (overlay-end mouse-secondary-overlay))
+   t))
+
+(defun oht/cut-secondary-selection-paste ()
+  "Cut the secondary selection and paste at point."
+  (interactive)
+  (mouse-kill-secondary)
+  (yank))
+
+(defun oht/copy-secondary-selection-paste ()
+  "Copy the secondary selection and paste at point."
+  (interactive)
+  (oht/copy-secondary-selection)
+  (yank))
+
+(defun oht/mark-region-as-secondary-selection ()
+  "Make the region the secondary selection."
+  (interactive)
+  (secondary-selection-from-region))
+
+(defun oht/mark-secondary-selection ()
+  "Mark the Secondary Selection as the region."
+  (interactive)
+  (secondary-selection-to-region))
+
+(defun oht/delete-secondary-selection ()
+  "Delete the Secondary Selection."
+  (interactive)
+  (delete-overlay mouse-secondary-overlay))
+
+(with-eval-after-load 'transient
+  (transient-define-prefix oht-transient-2nd ()
+    "Transient for working with the secondary selection"
+    [["Cut/Copy"
+      ("xx" "Cut 2nd" oht/cut-secondary-selection)
+      ("cc" "Copy 2nd" oht/copy-secondary-selection)]
+     ["& Paste"
+      ("xv" "Cut 2nd & Paste" oht/cut-secondary-selection-paste)
+      ("cv" "Copy 2nd & Paste" oht/copy-secondary-selection-paste)]
+     ["Mark"
+      ("m"  "Mark Region as 2nd" oht/mark-region-as-secondary-selection)
+      ("g"  "Make 2nd the Region" oht/mark-secondary-selection)
+      ("d"  "Delete 2nd" oht/delete-secondary-selection)]]))
+
+
 ;;;; Completions
 
 ;; The below is a fallback configuration for working with the default
@@ -442,7 +610,249 @@ completions if invoked from inside the minibuffer."
 (define-key minibuffer-local-map (kbd "s-o") 'switch-to-completions-or-other-window)
 
 
-;;; Packages Setup
+;;;; Outline
+
+;; `outline' provides major and minor modes for collapsing sections of a
+;; buffer into an outline-like format. Let's turn that minor mode into a
+;; global minor mode and enable it.
+(define-globalized-minor-mode global-outline-minor-mode
+  outline-minor-mode outline-minor-mode)
+(global-outline-minor-mode +1)
+
+;;;; Pulse
+
+(defun pulse-line (&rest _)
+  "Interactive function to pulse the current line."
+  (interactive)
+  (pulse-momentary-highlight-one-line (point)))
+
+(defun ct/yank-pulse-advice (orig-fn &rest args)
+  "Pulse line when yanking"
+  ;; From https://christiantietze.de/posts/2020/12/emacs-pulse-highlight-yanked-text/
+  ;; Define the variables first
+  (let (begin end)
+    ;; Initialize `begin` to the current point before pasting
+    (setq begin (point))
+    ;; Forward to the decorated function (i.e. `yank`)
+    (apply orig-fn args)
+    ;; Initialize `end` to the current point after pasting
+    (setq end (point))
+    ;; Pulse to highlight!
+    (pulse-momentary-highlight-region begin end)))
+
+(defadvice other-window (after other-window-pulse activate) (pulse-line))
+(defadvice delete-window (after delete-window-pulse activate) (pulse-line))
+(defadvice recenter-top-bottom (after recenter-top-bottom-pulse activate) (pulse-line))
+
+(advice-add 'yank :around #'ct/yank-pulse-advice)
+
+
+;;;; Remember Mode
+
+(custom-set-variables
+ '(remember-data-file (concat oht-orgfiles "remember-notes"))
+ '(remember-notes-initial-major-mode 'fundamental-mode)
+ '(remember-notes-auto-save-visited-file-name t))
+
+(defun oht-remember-dwim ()
+  "If the region is active, capture with region, otherwise just capture."
+  (interactive)
+  (if (use-region-p)
+      (let ((current-prefix-arg 4)) (call-interactively 'remember))
+    (remember)))
+
+(global-set-key (kbd "s-_") 'oht-remember-dwim)
+(global-set-key (kbd "s--") 'remember-notes)
+
+
+;;;; iBuffer
+
+(setq ibuffer-show-empty-filter-groups nil)
+
+(setq ibuffer-saved-filter-groups
+      '(("default"
+         ("Read"  (or (mode . eww-mode)
+                      (mode . elfeed-search-mode)
+                      (mode . elfeed-show-mode)
+                      (mode . hackernews-mode)))
+         ("Org"   (or (mode . org-mode)
+                      (mode . org-agenda-mode)))
+         ("Mail"  (or (mode . mu4e-view-mode)
+                      (mode . mu4e-main-mode)
+                      (mode . mu4e-headers-mode)
+                      (mode . mu4e-view-raw-mode)
+                      (mode . mu4e-compose-mode)
+                      (mode . message-mode)
+                      (mode . mail-mode)))
+         ("Dired" (mode . dired-mode))
+         ("ELisp" (mode . emacs-lisp-mode))
+         ("Help"  (or (name . "\*Help\*")
+                      (name . "\*Apropos\*")
+                      (name . "\*Info\*"))))))
+
+(defun oht-ibuffer-hook ()
+  (hl-line-mode 1)
+  (ibuffer-auto-mode 1)
+  (ibuffer-switch-to-saved-filter-groups "default"))
+
+(add-hook 'ibuffer-mode-hook 'oht-ibuffer-hook)
+
+
+;;;; Hippie Expand
+
+(setq hippie-expand-try-functions-list
+      '(try-complete-file-name-partially
+        try-complete-file-name
+        try-expand-line
+        try-expand-dabbrev
+        try-expand-dabbrev-all-buffers
+        try-expand-dabbrev-from-kill
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol))
+
+(global-set-key (kbd "M-/") 'hippie-expand)
+
+;;;; Info
+
+(with-eval-after-load 'info
+  (with-eval-after-load 'transient
+
+    (transient-define-prefix oht-transient-info ()
+      "Transient for Info mode"
+      ["Info"
+       [("d" "Info Directory" Info-directory)
+        ("m" "Menu" Info-menu)
+        ("F" "Go to Node" Info-goto-emacs-command-node)]
+       [("s" "Search regex Info File" Info-search)
+        ("i" "Index" Info-index)
+        ("I" "Index, Virtual" Info-virtual-index)]]
+      ["Navigation"
+       [("l" "Left, History" Info-history-back)
+        ("r" "Right, History" Info-history-forward)
+        ("L" "List, History" Info-history)]
+       [("T" "Table of Contents" Info-toc)
+        ("n" "Next Node" Info-next)
+        ("p" "Previous Node" Info-prev)
+        ("u" "Up" Info-up)]
+       [("<" "Top Node" Info-top-node)
+        (">" "Final Node" Info-final-node)
+        ("[" "Forward Node" Info-backward-node)
+        ("]" "Backward Node" Info-forward-node)]])
+
+    (define-key Info-mode-map (kbd "s-\\") 'oht-transient-info)
+
+    )) ; End info
+
+;;;; Dired
+
+(with-eval-after-load 'dired
+
+  (setq dired-use-ls-dired nil) ; no more warning message
+
+  (defun dired-open-file ()
+    "In dired, open the file named on this line."
+    (interactive)
+    (let* ((file (dired-get-filename nil t)))
+      (message "Opening %s..." file)
+      (call-process "open" nil 0 nil file)
+      (message "Opening %s done" file)))
+
+  (define-key dired-mode-map (kbd "s-\\") 'oht-transient-dired)
+  (define-key dired-mode-map (kbd "O") 'dired-open-file)
+  (define-key dired-mode-map (kbd "s-z") 'dired-undo)
+
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (dired-hide-details-mode 1)
+              (auto-revert-mode)
+              (hl-line-mode 1)))
+
+  (with-eval-after-load 'transient
+    (transient-define-prefix oht-transient-dired ()
+      "Transient for dired commands"
+      ["Dired Mode"
+       ["Action"
+        ("RET" "Open file"            dired-find-file)
+        ("o" "  Open in other window" dired-find-file-other-window)
+        ("C-o" "Open in other window (No select)" dired-display-file)
+        ("v" "  Open file (View mode)"dired-view-file)
+        ("=" "  Diff"                 dired-diff)
+        ("w" "  Copy filename"        dired-copy-filename-as-kill)
+        ("W" "  Open in browser"      browse-url-of-dired-file)
+        ("y" "  Show file type"       dired-show-file-type)]
+       ["Attribute"
+        ("R"   "Rename"               dired-do-rename)
+        ("G"   "Group"                dired-do-chgrp)
+        ("M"   "Mode"                 dired-do-chmod)
+        ("O"   "Owner"                dired-do-chown)
+        ("T"   "Timestamp"            dired-do-touch)]
+       ["Navigation"
+        ("j" "  Goto file"            dired-goto-file)
+        ("+" "  Create directory"     dired-create-directory)
+        ("<" "  Jump prev directory"  dired-prev-dirline)
+        (">" "  Jump next directory"  dired-next-dirline)
+        ("^" "  Move up directory"    dired-up-directory)]
+       ["Display"
+        ("g" "  Refresh buffer"       revert-buffer)
+        ("l" "  Refresh file"         dired-do-redisplay)
+        ("k" "  Remove line"          dired-do-kill-lines)
+        ("s" "  Sort"                 dired-sort-toggle-or-edit)
+        ("(" "  Toggle detail info"   dired-hide-details-mode)
+        ("i" "  Insert subdir"        dired-maybe-insert-subdir)
+        ("$" "  Hide subdir"          dired-hide-subdir)
+        ("M-$" "Hide subdir all"      dired-hide-subdir)]
+       ["Extension"
+        ("e"   "wdired"               wdired-change-to-wdired-mode)
+        ("/"   "dired-filter"         ignore)
+        ("n"   "dired-narrow"         ignore)]]
+      [["Marks"
+        ("m" "Marks..." oht-transient-dired-marks)]]))
+
+  (with-eval-after-load 'transient
+    (transient-define-prefix oht-transient-dired-marks ()
+      "Sub-transient for dired marks"
+      ["Dired Mode -> Marks"
+       ["Toggles"
+        ("mm"  "Mark"                 dired-mark)
+        ("mM"  "Mark all"             dired-mark-subdir-files)
+        ("mu"  "Unmark"               dired-unmark)
+        ("mU"  "Unmark all"           dired-unmark-all-marks)
+        ("mc"  "Change mark"          dired-change-marks)
+        ("mt"  "Toggle mark"          dired-toggle-marks)]
+       ["Type"
+        ("m*"  "Executables"          dired-mark-executables)
+        ("m/"  "Directories"          dired-mark-directories)
+        ("m@"  "Symlinks"             dired-mark-symlinks)
+        ("m&"  "Garbage files"        dired-flag-garbage-files)
+        ("m#"  "Auto save files"      dired-flag-auto-save-files)
+        ("m~"  "backup files"         dired-flag-backup-files)
+        ("m."  "Numerical backups"    dired-clean-directory)]
+       ["Search"
+        ("m%"  "Regexp"               dired-mark-files-regexp)
+        ("mg"  "Regexp file contents" dired-mark-files-containing-regexp)]]
+      [["Act on Marked"
+        ("x"   "Do action"            dired-do-flagged-delete)
+        ("C"   "Copy"                 dired-do-copy)
+        ("D"   "Delete"               dired-do-delete)
+        ("S"   "Symlink"              dired-do-symlink)
+        ("H"   "Hardlink"             dired-do-hardlink)
+        ("P"   "Print"                dired-do-print)
+        ("A"   "Find"                 dired-do-find-regexp)
+        ("Q"   "Replace"              dired-do-find-regexp-and-replace)
+        ("B"   "Elisp bytecompile"    dired-do-byte-compile)
+        ("L"   "Elisp load"           dired-do-load)
+        ("X"   "Shell command"        dired-do-shell-command)
+        ("Z"   "Compress"             dired-do-compress)
+        ("z"   "Compress to"          dired-do-compress-to)
+        ("!"   "Shell command"        dired-do-shell-command)
+        ("&"   "Async shell command"  dired-do-async-shell-command)]]))
+
+  ) ; End dired config
+
+
+;;; Package Setup, Critical & Built-In Packages
+
+;;;; Straight & Use-Package
 
 ;; Required Bootstrap to ensure it is installed
 (defvar bootstrap-version)
@@ -483,24 +893,19 @@ completions if invoked from inside the minibuffer."
 ;; it consistent, use-package or not, the hooks are named the same.
 (setq use-package-hook-name-suffix nil)
 
-;; I use a lot of transients. The best way I've found to configure them is to
-;; place all the mode-specific ones in their mode's use-package declaration,
-;; and autoload the transient-define-prefix command. Doing this also requires
-;; that you autoload the command BEFORE you declare any of the commands. Which
-;; is why this bit is here, and not down with the rest of my transient
-;; configuration.
-(use-package transient
-  :commands (transient-define-prefix))
-
 ;; Because many of my use-package declarations use the ':blackout' statement I
 ;; need to configure this first.
 (use-package blackout
   :commands (blackout)
   :config
+  (blackout 'flyspell-mode " Spell")
+  (blackout 'outline-minor-mode)
   (blackout 'eldoc-mode)
   (blackout 'emacs-lisp-mode "Elisp")
   (blackout 'auto-fill-function " Fill"))
 
+
+;;;; Built-In Packages
 
 ;;; Packages
 
@@ -552,7 +957,6 @@ completions if invoked from inside the minibuffer."
   (marginalia-mode 1))
 
 (use-package embark
-  :commands use-embark-completions
   :bind
   ("s-e" . embark-act)
   (:map embark-file-map
@@ -583,232 +987,6 @@ completions if invoked from inside the minibuffer."
   ("C-r" . ctrlf-backward-fuzzy)
   :custom
   (ctrlf-go-to-end-of-match nil))
-
-
-;;;; Built-In Packages
-
-(use-package info
-  :straight nil
-  :bind (:map Info-mode-map
-              ("s-\\" . oht-transient-info))
-  :config
-  (transient-define-prefix oht-transient-info ()
-    "Transient for Info mode"
-    ["Info"
-     [("d" "Info Directory" Info-directory)
-      ("m" "Menu" Info-menu)
-      ("F" "Go to Node" Info-goto-emacs-command-node)]
-     [("s" "Search regex Info File" Info-search)
-      ("i" "Index" Info-index)
-      ("I" "Index, Virtual" Info-virtual-index)]]
-    ["Navigation"
-     [("l" "Left, History" Info-history-back)
-      ("r" "Right, History" Info-history-forward)
-      ("L" "List, History" Info-history)]
-     [("T" "Table of Contents" Info-toc)
-      ("n" "Next Node" Info-next)
-      ("p" "Previous Node" Info-prev)
-      ("u" "Up" Info-up)]
-     [("<" "Top Node" Info-top-node)
-      (">" "Final Node" Info-final-node)
-      ("[" "Forward Node" Info-backward-node)
-      ("]" "Backward Node" Info-forward-node)]]))
-
-(use-package remember
-  :straight nil
-  :custom
-  (remember-data-file (concat oht-orgfiles "remember-notes"))
-  (remember-notes-initial-major-mode 'fundamental-mode)
-  (remember-notes-auto-save-visited-file-name t)
-  :init
-  (defun oht-remember-dwim ()
-    "If the region is active, capture with region, otherwise just capture."
-    (interactive)
-    (if (use-region-p)
-        (let ((current-prefix-arg 4)) (call-interactively 'remember))
-      (remember)))
-  :bind
-  ("s-_" . oht-remember-dwim)
-  ("s--" . remember-notes))
-
-(use-package ibuffer
-  :straight nil
-  :commands ibuffer
-  :custom
-  (ibuffer-show-empty-filter-groups nil)
-  (ibuffer-saved-filter-groups
-   '(("default"
-      ("Read"  (or (mode . eww-mode)
-                   (mode . elfeed-search-mode)
-                   (mode . elfeed-show-mode)
-                   (mode . hackernews-mode)))
-      ("Org"   (or (mode . org-mode)
-                   (mode . org-agenda-mode)))
-      ("Mail"  (or (mode . mu4e-view-mode)
-                   (mode . mu4e-main-mode)
-                   (mode . mu4e-headers-mode)
-                   (mode . mu4e-view-raw-mode)
-                   (mode . mu4e-compose-mode)
-                   (mode . message-mode)
-                   (mode . mail-mode)))
-      ("Dired" (mode . dired-mode))
-      ("ELisp" (mode . emacs-lisp-mode))
-      ("Help"  (or (name . "\*Help\*")
-                   (name . "\*Apropos\*")
-                   (name . "\*Info\*"))))))
-  :init
-  (defun oht-ibuffer-hook ()
-    (hl-line-mode 1)
-    (ibuffer-auto-mode 1)
-    (ibuffer-switch-to-saved-filter-groups "default"))
-  :hook (ibuffer-mode-hook . oht-ibuffer-hook))
-
-(use-package pulse
-  :straight nil
-  :init
-  (defun pulse-line (&rest _)
-    "Interactive function to pulse the current line."
-    (interactive)
-    (pulse-momentary-highlight-one-line (point)))
-
-  (defadvice other-window (after other-window-pulse activate) (pulse-line))
-  (defadvice delete-window (after delete-window-pulse activate) (pulse-line))
-  (defadvice recenter-top-bottom (after recenter-top-bottom-pulse activate) (pulse-line))
-
-  (defun ct/yank-pulse-advice (orig-fn &rest args)
-    "Pulse line when yanking"
-    ;; From https://christiantietze.de/posts/2020/12/emacs-pulse-highlight-yanked-text/
-    ;; Define the variables first
-    (let (begin end)
-      ;; Initialize `begin` to the current point before pasting
-      (setq begin (point))
-      ;; Forward to the decorated function (i.e. `yank`)
-      (apply orig-fn args)
-      ;; Initialize `end` to the current point after pasting
-      (setq end (point))
-      ;; Pulse to highlight!
-      (pulse-momentary-highlight-region begin end)))
-  (advice-add 'yank :around #'ct/yank-pulse-advice))
-
-(use-package hippie-exp
-  :straight nil
-  :custom
-  (hippie-expand-try-functions-list
-   '(try-complete-file-name-partially
-     try-complete-file-name
-     try-expand-line
-     try-expand-dabbrev
-     try-expand-dabbrev-all-buffers
-     try-expand-dabbrev-from-kill
-     try-complete-lisp-symbol-partially
-     try-complete-lisp-symbol))
-  :bind
-  ("M-/" . hippie-expand))
-
-(use-package dired
-  :straight nil
-  :commands (dired dired-jump dired-jump-other-window)
-  :custom
-  (dired-use-ls-dired nil) ; no more warning message
-  :bind (:map dired-mode-map
-              ("s-\\" . oht-transient-dired)
-              ("O" . dired-open-file)
-              ("s-z" . dired-undo))
-  :config
-
-  (defun dired-open-file ()
-    "In dired, open the file named on this line."
-    (interactive)
-    (let* ((file (dired-get-filename nil t)))
-      (message "Opening %s..." file)
-      (call-process "open" nil 0 nil file)
-      (message "Opening %s done" file)))
-
-  (add-hook 'dired-mode-hook
-            (lambda ()
-              (dired-hide-details-mode 1)
-              (auto-revert-mode)
-              (hl-line-mode 1)))
-
-  (transient-define-prefix oht-transient-dired ()
-    "Transient for dired commands"
-    ["Dired Mode"
-     ["Action"
-      ("RET" "Open file"            dired-find-file)
-      ("o" "  Open in other window" dired-find-file-other-window)
-      ("C-o" "Open in other window (No select)" dired-display-file)
-      ("v" "  Open file (View mode)"dired-view-file)
-      ("=" "  Diff"                 dired-diff)
-      ("w" "  Copy filename"        dired-copy-filename-as-kill)
-      ("W" "  Open in browser"      browse-url-of-dired-file)
-      ("y" "  Show file type"       dired-show-file-type)]
-     ["Attribute"
-      ("R"   "Rename"               dired-do-rename)
-      ("G"   "Group"                dired-do-chgrp)
-      ("M"   "Mode"                 dired-do-chmod)
-      ("O"   "Owner"                dired-do-chown)
-      ("T"   "Timestamp"            dired-do-touch)]
-     ["Navigation"
-      ("j" "  Goto file"            dired-goto-file)
-      ("+" "  Create directory"     dired-create-directory)
-      ("<" "  Jump prev directory"  dired-prev-dirline)
-      (">" "  Jump next directory"  dired-next-dirline)
-      ("^" "  Move up directory"    dired-up-directory)]
-     ["Display"
-      ("g" "  Refresh buffer"       revert-buffer)
-      ("l" "  Refresh file"         dired-do-redisplay)
-      ("k" "  Remove line"          dired-do-kill-lines)
-      ("s" "  Sort"                 dired-sort-toggle-or-edit)
-      ("(" "  Toggle detail info"   dired-hide-details-mode)
-      ("i" "  Insert subdir"        dired-maybe-insert-subdir)
-      ("$" "  Hide subdir"          dired-hide-subdir)
-      ("M-$" "Hide subdir all"      dired-hide-subdir)]
-     ["Extension"
-      ("e"   "wdired"               wdired-change-to-wdired-mode)
-      ("/"   "dired-filter"         ignore)
-      ("n"   "dired-narrow"         ignore)]]
-    [["Marks"
-      ("m" "Marks..." oht-transient-dired-marks)]])
-
-  (transient-define-prefix oht-transient-dired-marks ()
-    "Sub-transient for dired marks"
-    ["Dired Mode -> Marks"
-     ["Toggles"
-      ("mm"  "Mark"                 dired-mark)
-      ("mM"  "Mark all"             dired-mark-subdir-files)
-      ("mu"  "Unmark"               dired-unmark)
-      ("mU"  "Unmark all"           dired-unmark-all-marks)
-      ("mc"  "Change mark"          dired-change-marks)
-      ("mt"  "Toggle mark"          dired-toggle-marks)]
-     ["Type"
-      ("m*"  "Executables"          dired-mark-executables)
-      ("m/"  "Directories"          dired-mark-directories)
-      ("m@"  "Symlinks"             dired-mark-symlinks)
-      ("m&"  "Garbage files"        dired-flag-garbage-files)
-      ("m#"  "Auto save files"      dired-flag-auto-save-files)
-      ("m~"  "backup files"         dired-flag-backup-files)
-      ("m."  "Numerical backups"    dired-clean-directory)]
-     ["Search"
-      ("m%"  "Regexp"               dired-mark-files-regexp)
-      ("mg"  "Regexp file contents" dired-mark-files-containing-regexp)]]
-    [["Act on Marked"
-      ("x"   "Do action"            dired-do-flagged-delete)
-      ("C"   "Copy"                 dired-do-copy)
-      ("D"   "Delete"               dired-do-delete)
-      ("S"   "Symlink"              dired-do-symlink)
-      ("H"   "Hardlink"             dired-do-hardlink)
-      ("P"   "Print"                dired-do-print)
-      ("A"   "Find"                 dired-do-find-regexp)
-      ("Q"   "Replace"              dired-do-find-regexp-and-replace)
-      ("B"   "Elisp bytecompile"    dired-do-byte-compile)
-      ("L"   "Elisp load"           dired-do-load)
-      ("X"   "Shell command"        dired-do-shell-command)
-      ("Z"   "Compress"             dired-do-compress)
-      ("z"   "Compress to"          dired-do-compress-to)
-      ("!"   "Shell command"        dired-do-shell-command)
-      ("&"   "Async shell command"  dired-do-async-shell-command)]])
-
-  ) ; End "use-package dired"
 
 
 ;;;; View / Selected
@@ -894,53 +1072,6 @@ completions if invoked from inside the minibuffer."
   :blackout selected-minor-mode)
 
 
-;;;; Flyspell
-
-(use-package flyspell
-  :straight nil
-  :commands (flyspell-mode flyspell-prog-mode turn-on-flyspell)
-  :custom
-  ;; TODO: localize for system-type
-  (ispell-program-name "/usr/local/bin/aspell")
-  (ispell-extra-args '("--sug-mode=ultra"))
-  (ispell-list-command "list")
-  :hook
-  (text-mode-hook . turn-on-flyspell)
-  (prog-mode-hook . flyspell-prog-mode)
-  :bind
-  ("M-;" . #'flyspell-auto-correct-previous-word)
-  :config
-  (transient-define-prefix oht-transient-spelling ()
-    "Transient for a spelling interface"
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    [["Toggle Modes"
-      ("m" "Flyspell" flyspell-mode)
-      ("M" "Prog Flyspell" flyspell-prog-mode)]
-     ["Check"
-      ("b" "Buffer" flyspell-buffer)
-      ("r" "Region" flyspell-region)]
-     ["Correction"
-      ("n" "Next" flyspell-goto-next-error)
-      ("<return>" "Fix" flyspell-correct-wrapper)
-      ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
-      ("<DEL>" "Delete Word" kill-word)
-      ("s-z" "Undo" undo-fu-only-undo)
-      ("s-Z" "Redo" undo-fu-only-redo)]])
-  :blackout " Spell")
-
-(use-package flyspell-correct
-  ;; used in spelling transient
-  :commands (flyspell-correct-wrapper)
-  :custom
-  (flyspell-correct-interface 'flyspell-correct-dummy)
-  :init
-  (advice-add 'flyspell-correct-dummy :around
-              (defun my--fsc-wrapper (func &rest args)
-                (let ((selectrum-should-sort-p nil))
-                  (apply func args)))))
-
-
 ;;;; Misc Packages
 
 (use-package magit
@@ -1007,6 +1138,14 @@ completions if invoked from inside the minibuffer."
   :bind (([remap query-replace-regexp] . #'vr/query-replace))
   :custom
   (vr/engine 'pcre2el))
+
+(use-package bicycle
+  :after outline
+  :bind
+  (:map outline-minor-mode-map
+        ([C-tab] . bicycle-cycle))
+  (:map emacs-lisp-mode-map
+        ("<backtab>" . bicycle-cycle-global)))
 
 (use-package fountain-mode
   :commands fountain-mode
@@ -1153,39 +1292,40 @@ completions if invoked from inside the minibuffer."
   (defun org-agenda-todo-set-canceled () (interactive) (org-agenda-todo "CANCELED"))
   (defun org-todo-set-canceled () (interactive) (org-todo "CANCELED"))
 
-  (transient-define-prefix oht-transient-org ()
-    "Transient for Org Mode"
-    ["Org Mode"
-     ["Navigation"
-      ("o" "Outline" consult-outline)
-      ("n" "Narrow/Widen" narrow-or-widen-dwim)
-      ("g" "Go To" org-goto)
-      ("m" "Visible Markup" visible-mode)]
-     ["Item"
-      ("t" "TODO" oht-transient-org-todo)
-      ("I" "Clock In" org-clock-in)
-      ("O" "Clock Out" org-clock-out)
-      ("a" "Archive Subtree" org-archive-subtree)
-      ("r" "Refile" org-refile)
-      ("c" "Checkbox" org-toggle-checkbox)]
-     ["Insert"
-      ("." "Insert Date, Active" oht/org-insert-date-today)
-      (">" "Insert Date, Inactive" oht/org-insert-date-today-inactive)
-      ("<" "Structure Template" org-insert-structure-template)]
-     ["Links"
-      ("s" "Store Link" org-store-link)
-      ("i" "Insert Link" org-insert-last-stored-link)]])
+  (with-eval-after-load 'transient
+    (transient-define-prefix oht-transient-org ()
+      "Transient for Org Mode"
+      ["Org Mode"
+       ["Navigation"
+        ("o" "Outline" consult-outline)
+        ("n" "Narrow/Widen" narrow-or-widen-dwim)
+        ("g" "Go To" org-goto)
+        ("m" "Visible Markup" visible-mode)]
+       ["Item"
+        ("t" "TODO" oht-transient-org-todo)
+        ("I" "Clock In" org-clock-in)
+        ("O" "Clock Out" org-clock-out)
+        ("a" "Archive Subtree" org-archive-subtree)
+        ("r" "Refile" org-refile)
+        ("c" "Checkbox" org-toggle-checkbox)]
+       ["Insert"
+        ("." "Insert Date, Active" oht/org-insert-date-today)
+        (">" "Insert Date, Inactive" oht/org-insert-date-today-inactive)
+        ("<" "Structure Template" org-insert-structure-template)]
+       ["Links"
+        ("s" "Store Link" org-store-link)
+        ("i" "Insert Link" org-insert-last-stored-link)]])
 
-  (transient-define-prefix oht-transient-org-todo ()
-    "A transient for setting org todo status.
+    (transient-define-prefix oht-transient-org-todo ()
+      "A transient for setting org todo status.
 I've created this because I don't like how org-todo messes with
 windows. There is likely a much better way to automatically map
 org-todo-keywords to a transient command."
-    ["Org mode -> Change Status To..."
-     [("t" "TODO"     org-todo-set-todo)
-      ("l" "LATER"    org-todo-set-later)]
-     [("d" "DONE"     org-todo-set-done)
-      ("c" "CANCELED" org-todo-set-canceled)]])
+      ["Org mode -> Change Status To..."
+       [("t" "TODO"     org-todo-set-todo)
+        ("l" "LATER"    org-todo-set-later)]
+       [("d" "DONE"     org-todo-set-done)
+        ("c" "CANCELED" org-todo-set-canceled)]]))
 
   ) ; End "use-package org"
 
@@ -1199,36 +1339,18 @@ org-todo-keywords to a transient command."
         ("s-z" . org-agenda-undo))
   :hook (org-agenda-mode-hook . hl-line-mode)
   :config
-  (transient-define-prefix oht-transient-org-agenda ()
-    "A transient for setting org-agenda todo status.
+  (with-eval-after-load 'transient
+    (transient-define-prefix oht-transient-org-agenda ()
+      "A transient for setting org-agenda todo status.
 I've created this because I don't like how org-todo messes with
 windows. There is likely a much better way to automatically map
 org-todo-keywords to a transient command."
-    ["Change Status To..."
-     [("t" "TODO"     org-agenda-todo-set-todo)
-      ("l" "LATER"    org-agenda-todo-set-later)]
-     [("d" "DONE"     org-agenda-todo-set-done)
-      ("c" "CANCELED" org-agenda-todo-set-canceled)]])
-  ) ; End "use-package org-agenda"
-
-
-;;;; Outline
-
-;; `outline' provides major and minor modes for collapsing sections of a
-;; buffer into an outline-like format. Let's turn that minor mode into a
-;; global minor mode and enable it.
-(define-globalized-minor-mode global-outline-minor-mode
-  outline-minor-mode outline-minor-mode)
-(global-outline-minor-mode +1)
-(blackout 'outline-minor-mode)
-
-(use-package bicycle
-  :after outline
-  :bind
-  (:map outline-minor-mode-map
-        ([C-tab] . bicycle-cycle))
-  (:map emacs-lisp-mode-map
-        ("<backtab>" . bicycle-cycle-global)))
+      ["Change Status To..."
+       [("t" "TODO"     org-agenda-todo-set-todo)
+        ("l" "LATER"    org-agenda-todo-set-later)]
+       [("d" "DONE"     org-agenda-todo-set-done)
+        ("c" "CANCELED" org-agenda-todo-set-canceled)]]))
+    ) ; End "use-package org-agenda"
 
 
 ;;;; Browser & News
@@ -1300,31 +1422,32 @@ To be used by `eww-after-render-hook'."
   (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
   (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer)
 
-  (transient-define-prefix oht-transient-eww ()
-    "Transient for EWW"
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    ["EWW"
-     ["Actions"
-      ("G" "Browse" eww)
-      ("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
-      ("&" "Browse With External Browser" eww-browse-with-external-browser)
-      ("w" "Copy URL" eww-copy-page-url)]
-     ["Display"
-      ("i" "Toggle Images" eww-inhibit-images-toggle)
-      ("F" "Toggle Fonts" eww-toggle-fonts)
-      ("R" "Readable" eww-readable)
-      ("M-C" "Colors" eww-toggle-colors)]
-     ["History"
-      ("H" "History" eww-list-histories)
-      ("l" "Back" eww-back-url)
-      ("r" "Forward" eww-forward-url)]
-     ["Bookmarks"
-      ("a" "Add Eww Bookmark" eww-add-bookmark)
-      ("b" "Bookmark" bookmark-set)
-      ("B" "List Bookmarks" eww-list-bookmarks)
-      ("M-n" "Next Bookmark" eww-next-bookmark)
-      ("M-p" "Previous Bookmark" eww-previous-bookmark)]])
+  (with-eval-after-load 'transient
+    (transient-define-prefix oht-transient-eww ()
+      "Transient for EWW"
+      :transient-suffix 'transient--do-stay
+      :transient-non-suffix 'transient--do-warn
+      ["EWW"
+       ["Actions"
+        ("G" "Browse" eww)
+        ("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
+        ("&" "Browse With External Browser" eww-browse-with-external-browser)
+        ("w" "Copy URL" eww-copy-page-url)]
+       ["Display"
+        ("i" "Toggle Images" eww-inhibit-images-toggle)
+        ("F" "Toggle Fonts" eww-toggle-fonts)
+        ("R" "Readable" eww-readable)
+        ("M-C" "Colors" eww-toggle-colors)]
+       ["History"
+        ("H" "History" eww-list-histories)
+        ("l" "Back" eww-back-url)
+        ("r" "Forward" eww-forward-url)]
+       ["Bookmarks"
+        ("a" "Add Eww Bookmark" eww-add-bookmark)
+        ("b" "Bookmark" bookmark-set)
+        ("B" "List Bookmarks" eww-list-bookmarks)
+        ("M-n" "Next Bookmark" eww-next-bookmark)
+        ("M-p" "Previous Bookmark" eww-previous-bookmark)]]))
 
   ) ; End "use-package eww"
 
@@ -1700,101 +1823,6 @@ wherever you need to go."
   ) ; End "use-package transient"
 
 
-;;;; Secondary Selection
-
-;; Emacs's Secondary Selection assumes you only want to interact with it via
-;; the mouse, however it is perfectly possible to do it via the keyboard, all
-;; you need is some wrapper functions to make things keybinding-addressable.
-
-;; A few functions for working with the Secondary Selection. The primary way I
-;; interact with these is through a hydra.
-
-(defun oht/cut-secondary-selection ()
-  "Cut the secondary selection."
-  (interactive)
-  (mouse-kill-secondary))
-
-(defun oht/copy-secondary-selection ()
-  "Copy the secondary selection."
-  (interactive)
-  ;; there isn't a keybinding-addressable function to kill-ring-save
-  ;; the 2nd selection so here I've made my own. This is extracted
-  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
-  (kill-new
-   (buffer-substring (overlay-start mouse-secondary-overlay)
-                     (overlay-end mouse-secondary-overlay))
-   t))
-
-(defun oht/cut-secondary-selection-paste ()
-  "Cut the secondary selection and paste at point."
-  (interactive)
-  (mouse-kill-secondary)
-  (yank))
-
-(defun oht/copy-secondary-selection-paste ()
-  "Copy the secondary selection and paste at point."
-  (interactive)
-  (oht/copy-secondary-selection)
-  (yank))
-
-(defun oht/mark-region-as-secondary-selection ()
-  "Make the region the secondary selection."
-  (interactive)
-  (secondary-selection-from-region))
-
-(defun oht/mark-secondary-selection ()
-  "Mark the Secondary Selection as the region."
-  (interactive)
-  (secondary-selection-to-region))
-
-(defun oht/delete-secondary-selection ()
-  "Delete the Secondary Selection."
-  (interactive)
-  (delete-overlay mouse-secondary-overlay))
-
-(transient-define-prefix oht-transient-2nd ()
-  "Transient for working with the secondary selection"
-  [["Cut/Copy"
-    ("xx" "Cut 2nd" oht/cut-secondary-selection)
-    ("cc" "Copy 2nd" oht/copy-secondary-selection)]
-   ["& Paste"
-    ("xv" "Cut 2nd & Paste" oht/cut-secondary-selection-paste)
-    ("cv" "Copy 2nd & Paste" oht/copy-secondary-selection-paste)]
-   ["Mark"
-    ("m"  "Mark Region as 2nd" oht/mark-region-as-secondary-selection)
-    ("g"  "Make 2nd the Region" oht/mark-secondary-selection)
-    ("d"  "Delete 2nd" oht/delete-secondary-selection)]])
-
-;;;; Dispatch
-
-(defun oht-dispatch-downloads () (interactive) (find-file "~/Downloads"))
-(defun oht-dispatch-reading () (interactive) (find-file "~/Downloads/reading"))
-(defun oht-dispatch-watch () (interactive) (find-file "~/Downloads/watch"))
-(defun oht-dispatch-NPR-news () (interactive) (browse-url "https://text.npr.org"))
-(defun oht-dispatch-CNN-news () (interactive) (browse-url "https://lite.cnn.com/en"))
-(defun oht-dispatch-google-news () (interactive) (browse-url "http://68k.news/"))
-
-(transient-define-prefix oht-transient-dispatch ()
-  "Jump directly to your most-used stuff."
-  ["Work"
-   [("t" "Today + Priority" oht-org-agenda-today)
-    ("0" "Week + TODOs" oht-org-agenda-complete)
-    ("a" "Agenda" oht-org-agenda-agenda)
-    ("T" "TODOs" oht-org-agenda-todos)
-    ("A" "Org Agenda Command..." org-agenda)]
-   [("m" "Mail" mu4e)]]
-  ["Browsing"
-   [("e" "Elfeed"      elfeed)
-    ("h" "Hacker News" hackernews)]
-   [("E" "EWW"         eww)
-    ("n" "NPR News"    oht-dispatch-NPR-news)
-    ("c" "CNN News"    oht-dispatch-CNN-news)
-    ("g" "Google News" oht-dispatch-google-news)]
-   [("d" "Downloads"   oht-dispatch-downloads)
-    ("r" "Reading"     oht-dispatch-reading)
-    ("w" "Watch"       oht-dispatch-watch)]])
-
-
 ;;;; Facedancer
 
 ;; TODO: should this be migrated to init.el?
@@ -1821,34 +1849,6 @@ wherever you need to go."
     (facedancer-mode 'toggle))
   :config
   (facedancer-font-set))
-
-
-;;;; Composition mode
-
-(define-minor-mode composition-mode
-  "A tiny minor-mode to toggle some settings I like when writing
-
-This is really just a wrapper around some extant features I toggle on/off
-when I'm writing. I've wrapped them in a minor mode to make it easy to
-toggle them on/off. It also allows me to define a lighter for the
-mode-line."
-  :init-value nil
-  :lighter " Comp"
-  (if composition-mode
-      (progn
-        (visual-line-mode t)
-        (setq-local line-spacing 2)
-        (olivetti-mode t)
-        (text-scale-increase 1)
-        (variable-pitch-mode 1))
-    (progn
-      (visual-line-mode -1)
-      (setq-local line-spacing 0)
-      (olivetti-mode -1)
-      (text-scale-increase 0)
-      (variable-pitch-mode -1)
-      ;; This shouldn't be needed, but is:
-      (toggle-truncate-lines 1))))
 
 
 

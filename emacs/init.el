@@ -1067,11 +1067,11 @@ completions if invoked from inside the minibuffer."
           ("il" "Ingenuity Log Entry" entry
            (file ,(concat oht-orgfiles "ingenuity_logbook.org"))
            "* %? %T\n\n" :empty-lines 1)
-          ("if" "Ingenuity Mail Follow Up" entry
-           (file+headline ,(concat oht-orgfiles "ingenuity.org") "Mail")
-           "* TODO %a\n\n  %i" :empty-lines 1)
           ;; -----------------------------
           ("s" "Scanline")
+          ("si" "Scanline Inbox" entry
+           (file+headline ,(concat oht-orgfiles "scanline.org") "Inbox")
+           "* %?\n\n" :empty-lines 1)
           ("sl" "Scanline Log Entry" entry
            (file+olp+datetree ,(concat oht-orgfiles "scanline_logbook.org"))
            "* %^{prompt}\n%T\n\n%?" :empty-lines 1 :tree-type week )

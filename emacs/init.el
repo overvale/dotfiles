@@ -693,7 +693,21 @@ completions if invoked from inside the minibuffer."
 (define-key completion-list-mode-map (kbd "s-o") 'switch-to-minibuffer)
 
 
+;;;; Isearch
 
+(setq search-whitespace-regexp ".*?")
+(setq isearch-lax-whitespace t)
+(setq isearch-lazy-count t)
+
+(defun isearch-exit-at-start ()
+  "Exit search at the beginning of the current match."
+  (when (and isearch-forward
+             (number-or-marker-p isearch-other-end)
+             (not mark-active)
+             (not isearch-mode-end-hook-quit))
+    (goto-char isearch-other-end)))
+
+(add-hook 'isearch-mode-end-hook 'isearch-exit-at-start)
 
 
 ;;;; Outline

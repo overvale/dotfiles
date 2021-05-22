@@ -692,15 +692,8 @@ completions if invoked from inside the minibuffer."
 (define-key minibuffer-local-map (kbd "s-o") 'switch-to-completions-or-other-window)
 (define-key completion-list-mode-map (kbd "s-o") 'switch-to-minibuffer)
 
-;; Since pressing return will exit with the top candidate, if you type C-n
-;; you'll naturally want the 2nd candidate.
 
-(defun switch-to-2nd-completion-or-other-window ()
-  (interactive)
-  (switch-to-completions-or-other-window)
-  (next-completion 1))
 
-(define-key minibuffer-local-map (kbd "C-n") 'switch-to-2nd-completion-or-other-window)
 
 
 ;;;; Outline

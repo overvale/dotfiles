@@ -1672,7 +1672,8 @@ wherever you need to go."
       ("v" "Vertical"   split-window-right)
       ("b" "Balance"    balance-windows)
       ("f" "Fit"        fit-window-to-buffer)
-      ("r" "Rotate"     toggle-window-split)]
+      ("r" "Rotate"     toggle-window-split)
+      ("F" "Find Other Win" find-file-other-window)]
      ["Window"
       ("c" "Clone Indirect" clone-indirect-buffer)
       ("t" "Tear Off" tear-off-window)

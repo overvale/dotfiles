@@ -636,12 +636,31 @@ mode-line."
 ;; The below is a fallback configuration for working with the default
 ;; completions in Emacs. Thankfully, they do not interfere with Vertico.
 
-(setq completion-show-help nil)
-(add-hook 'completion-list-mode-hook 'hl-line-mode)
+(setq completion-show-help nil
+      resize-mini-windows t)
 
 ;; The completions list itself is read-only, so why not allow some nice navigation?
 (define-key completion-list-mode-map (kbd "n") 'next-completion)
 (define-key completion-list-mode-map (kbd "p") 'previous-completion)
+
+(defun exit-with-top-completion ()
+  "Exit minibuffer with top completion candidate."
+  (interactive)
+  (let ((content (minibuffer-contents-no-properties)))
+    (unless (test-completion content
+                             minibuffer-completion-table
+                             minibuffer-completion-predicate)
+      (when-let ((completions (completion-all-sorted-completions)))
+        (delete-minibuffer-contents)
+        (insert
+         (concat
+          (substring content 0 (or (cdr (last completions)) 0))
+          (car completions)))))
+    (exit-minibuffer)))
+
+(define-key minibuffer-local-completion-map          (kbd "<return>") 'exit-with-top-completion)
+(define-key minibuffer-local-must-match-map          (kbd "<return>") 'exit-with-top-completion)
+(define-key minibuffer-local-filename-completion-map (kbd "<return>") 'exit-with-top-completion)
 
 ;; I want to use my usual 's-o' binding (other-window) to switch between the
 ;; minibuffer and the completions list. There is a built-in
@@ -672,6 +691,16 @@ completions if invoked from inside the minibuffer."
 
 (define-key minibuffer-local-map (kbd "s-o") 'switch-to-completions-or-other-window)
 (define-key completion-list-mode-map (kbd "s-o") 'switch-to-minibuffer)
+
+;; Since pressing return will exit with the top candidate, if you type C-n
+;; you'll naturally want the 2nd candidate.
+
+(defun switch-to-2nd-completion-or-other-window ()
+  (interactive)
+  (switch-to-completions-or-other-window)
+  (next-completion 1))
+
+(define-key minibuffer-local-map (kbd "C-n") 'switch-to-2nd-completion-or-other-window)
 
 
 ;;;; Outline

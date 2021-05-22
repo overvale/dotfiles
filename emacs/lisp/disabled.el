@@ -248,20 +248,15 @@ as an argument limits undo to changes within the current region."
 ;; The following will allow you to use an embark live collection as your
 ;; completion framework.
 
+(add-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
+
 (defun resize-embark-collect-window (&rest _)
   (when (memq embark-collect--kind '(:live :completions))
     (fit-window-to-buffer (get-buffer-window)
                           (floor (frame-height) 2) 1)))
 
-(defun switch-to-minibuffer-window ()
-  "switch to minibuffer window (if active)"
-  (interactive)
-  (when (active-minibuffer-window)
-    (select-window (active-minibuffer-window))))
-
 (add-hook 'embark-collect-post-revert-hook 'resize-embark-collect-window)
-(add-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
-(add-hook 'embark-collect-mode-hook 'hl-line-mode)
+
 
 ;;; PDFs
 

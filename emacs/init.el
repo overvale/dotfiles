@@ -16,6 +16,9 @@
 
 ;;; Package Setup & Essential Packages
 
+
+;;;; Straight.el & Use-Package
+
 ;; Ensure straight is installed. This is boilerplate from the straight documentation.
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -30,15 +33,14 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; Package `use-package' provides a handy macro by the same name which
-;; is essentially a wrapper around `with-eval-after-load' with a lot
-;; of handy syntactic sugar and useful features.
+;; Ensure use-package is installed.
 (straight-use-package 'use-package)
 
-;; When configuring a feature with `use-package', also tell
-;; straight.el to install a package of the same name, unless otherwise
-;; specified using the `:straight' keyword.
+;; Install all declared packages. Can be overridden with `:straight nil'.
 (setq straight-use-package-by-default t)
+
+
+;;;; Use Package Config
 
 ;; Tell `use-package' to always load features lazily unless told
 ;; otherwise. It's nicer to have this kind of thing be deterministic:
@@ -76,6 +78,7 @@
 ;;; Configuration
 
 ;; General config, and settings for built-in packages.
+
 
 ;;;; Settings
 

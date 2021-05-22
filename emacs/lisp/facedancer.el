@@ -1,5 +1,11 @@
 ;;; facedancer.el --- Tools for adjusting faces -*- lexical-binding: t -*-
 
+;; --------------------------------------------------------------------------
+;; NOTE: This file is not loaded by my config. These settings are now part of
+;; my init.el file. I'm keeping this here in case anyone stumbling on this
+;; wants to use it as part of their config.
+;; --------------------------------------------------------------------------
+
 ;; Copyright (C) 2021 Oliver Taylor
 
 ;; Author: Oliver Taylor

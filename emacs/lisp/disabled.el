@@ -556,3 +556,69 @@ This is a function for `after-save-hook'. Remove
   (smtpmail-default-smtp-server "smtp.gmail.com")
   (smtpmail-smtp-server "smtp.gmail.com")
   (smtpmail-smtp-service 587))
+
+;;; Package Config
+
+(custom-set-variables
+ '(package-archives
+   '(("melpa" . "https://melpa.org/packages/")
+     ("gnu" . "https://elpa.gnu.org/packages/")
+     ("org" . "https://orgmode.org/elpa/"))))
+(require 'package)
+(package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile (require 'use-package))
+
+;; Ensure all packages in use-package delcarations are installed, unless
+;; spesified.
+(setq use-package-always-ensure t)
+
+;; package.el loads every package you ever installed at startup, even if some
+;; of those packages are no longer referenced by your init-file. `package'
+;; includes an autoremove function, but that function looks at
+;; `package-selected-packages' for the canonical list of packages, not your
+;; init file. The problem with use-package is that it doesn't update that
+;; variable, so nothing can be autoremoved if your strategy is to only use
+;; your init file as the single source of truth for what packages should be
+;; installed. Below is a variable, function, and advice, that should help with
+;; that. Taken from here: https://github.com/jwiegley/use-package/issues/870#issuecomment-771881305
+;; Keep in mind, however, that you need to manually call
+;; `use-package-autoremove' to actually remove packages. In general, I much
+;; prefer straight's approach to this problem: simply never loading any
+;; package that doesn't have a use-package declaration.
+
+(defvar use-package-selected-packages '(use-package)
+  "Packages pulled in by use-package.")
+
+(defun use-package-autoremove ()
+  "Autoremove packages not used by use-package."
+  (interactive)
+  (let ((package-selected-packages use-package-selected-packages))
+    (package-autoremove)))
+
+(eval-and-compile
+  (define-advice use-package-handler/:ensure (:around (fn name-symbol keyword args rest state) select)
+    (let ((items (funcall fn name-symbol keyword args rest state)))
+      (dolist (ensure args items)
+        (let ((package
+               (or (and (eq ensure t) (use-package-as-symbol name-symbol))
+                   ensure)))
+          (when package
+            (when (consp package)
+              (setq package (car package)))
+            (push `(add-to-list 'use-package-selected-packages ',package) items))))))
+  (define-advice use-package-handler/:quelpa (:around (fn name-symbol keyword args rest state) select)
+    (let ((package (pcase (car args)
+                     ((pred symbolp) (car args))
+                     ((pred listp) (car (car args))))))
+      (cons `(add-to-list 'use-package-selected-packages ',package)
+            (funcall fn name-symbol keyword args rest state)))))
+
+;; Automatically remove undeclared packages
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (use-package-autoremove)))

@@ -118,7 +118,14 @@
 
 ;;; Configuration
 
-;; General config, and settings for built-in packages.
+;;;; User/Machine Settings
+
+(defvar oht-dotfiles "~/home/dot/emacs/")
+(defvar oht-orgfiles "~/home/org/")
+(defvar oht-ingenuity-dir "~/home/ingenuity/")
+(defvar user-downloads-directory "~/Downloads")
+
+(add-to-list 'load-path (concat oht-dotfiles "lisp/"))
 
 
 ;;;; Settings
@@ -139,25 +146,6 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
       initial-buffer-choice 'remember-notes)
-
-(defvar oht-dotfiles "~/home/dot/emacs/")
-(defvar oht-orgfiles "~/home/org/")
-(defvar oht-ingenuity-dir "~/home/ingenuity/")
-(defvar user-downloads-directory "~/Downloads")
-
-(add-to-list 'load-path (concat oht-dotfiles "lisp/"))
-
-(defun find-emacs-dotfiles ()
-  "Find lisp files in your Emacs dotfiles directory, pass to completing-read."
-  (interactive)
-  (find-file (completing-read "Find Elisp Dotfile: "
-                              (directory-files-recursively oht-dotfiles "\.el$"))))
-
-(defun find-org-files ()
-  "Find org files in your org directory, pass to completing-read."
-  (interactive)
-  (find-file (completing-read "Find Org Files: "
-                              (directory-files-recursively oht-orgfiles "\.org$"))))
 
 (custom-set-variables
  '(delete-selection-mode nil)
@@ -323,6 +311,18 @@ already narrowed."
 	    ((derived-mode-p 'tex-mode)
 	     (TeX-narrow-to-group))
         (t (narrow-to-defun))))
+
+(defun find-emacs-dotfiles ()
+  "Find lisp files in your Emacs dotfiles directory, pass to completing-read."
+  (interactive)
+  (find-file (completing-read "Find Elisp Dotfile: "
+                              (directory-files-recursively oht-dotfiles "\.el$"))))
+
+(defun find-org-files ()
+  "Find org files in your org directory, pass to completing-read."
+  (interactive)
+  (find-file (completing-read "Find Org Files: "
+                              (directory-files-recursively oht-orgfiles "\.org$"))))
 
 
 ;;;;; Transient Mark

@@ -980,28 +980,32 @@ completions if invoked from inside the minibuffer."
 
 ;;;; iBuffer
 
-(setq ibuffer-show-empty-filter-groups nil)
+(with-eval-after-load 'ibuffer
 
-(setq ibuffer-saved-filter-groups
-      '(("default"
-         ("Read"  (or (mode . eww-mode)
-                      (mode . elfeed-search-mode)
-                      (mode . elfeed-show-mode)
-                      (mode . hackernews-mode)))
-         ("Org"   (or (mode . org-mode)
-                      (mode . org-agenda-mode)))
-         ("Dired" (mode . dired-mode))
-         ("ELisp" (mode . emacs-lisp-mode))
-         ("Help"  (or (name . "\*Help\*")
-                      (name . "\*Apropos\*")
-                      (name . "\*Info\*"))))))
+  (setq ibuffer-show-empty-filter-groups nil)
 
-(defun oht-ibuffer-hook ()
-  (hl-line-mode 1)
-  (ibuffer-auto-mode 1)
-  (ibuffer-switch-to-saved-filter-groups "default"))
+  (setq ibuffer-saved-filter-groups
+        '(("default"
+           ("Read"  (or (mode . eww-mode)
+                        (mode . elfeed-search-mode)
+                        (mode . elfeed-show-mode)
+                        (mode . hackernews-mode)))
+           ("Org"   (or (mode . org-mode)
+                        (mode . org-agenda-mode)))
+           ("Dired" (mode . dired-mode))
+           ("ELisp" (mode . emacs-lisp-mode))
+           ("Help"  (or (name . "\*Help\*")
+                        (name . "\*Apropos\*")
+                        (name . "\*Info\*"))))))
 
-(add-hook 'ibuffer-mode-hook 'oht-ibuffer-hook)
+  (defun oht-ibuffer-hook ()
+    (hl-line-mode 1)
+    (ibuffer-auto-mode 1)
+    (ibuffer-switch-to-saved-filter-groups "default"))
+
+  (add-hook 'ibuffer-mode-hook 'oht-ibuffer-hook)
+
+  ) ; End ibuffer
 
 
 ;;;; Hippie Expand

@@ -900,7 +900,7 @@ completions if invoked from inside the minibuffer."
     (when mini
       (select-window mini))))
 
-(define-key minibuffer-local-map (kbd "s-o") 'switch-to-completions-or-other-window)
+(define-key minibuffer-local-completion-map (kbd "s-o") 'switch-to-completions-or-other-window)
 (define-key completion-list-mode-map (kbd "s-o") 'switch-to-minibuffer)
 
 

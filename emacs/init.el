@@ -527,7 +527,8 @@ Keybindings you define here will take precedence."
    '(ispell-extra-args '("--sug-mode=ultra"))
    '(ispell-list-command "list")))
 
-(blackout 'flyspell-mode " Spell")
+(eval-after-load 'flyspell
+  '(blackout 'flyspell-mode " Spell"))
 
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)

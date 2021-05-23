@@ -1746,10 +1746,10 @@ To be used by `eww-after-render-hook'."
     (bury-buffer)
     (message "Browsing in buried buffer"))
 
-  (add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
-  (add-hook 'elfeed-show-mode-hook 'disable-selected-minor-mode)
-
   ) ; End "use-package elfeed"
+
+(add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
+(add-hook 'elfeed-show-mode-hook 'disable-selected-minor-mode)
 
 (use-package hackernews
   :commands hackernews

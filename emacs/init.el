@@ -1792,7 +1792,9 @@ wherever you need to go."
       ("a" "AutoFill" auto-fill-mode)
       ("j" "Dired Jump" dired-jump)
       ("s" "Store Org Link" org-store-link)
-      ("g" "Consult Grep" consult-grep)]
+      ("ca" "Consult Apropos" consult-apropos)
+      ("cm" "Consult Mode Commands" consult-mode-command)
+      ("cg" "Consult Grep" consult-grep)]
      ["Transients"
       ("O" "Outline Navigation..." oht-transient-outline)
       ("D" "Display..."   oht-transient-display)

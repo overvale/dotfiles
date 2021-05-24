@@ -31,7 +31,7 @@
 (eval-when-compile (require 'use-package))
 
 ;; Ensure all packages in use-package delcarations are installed, unless
-;; spesified.
+;; specified.
 (setq use-package-always-ensure t)
 
 ;; package.el loads every package you ever installed at startup, even if some
@@ -370,11 +370,6 @@ If no region is active, then stay active and swap."
 
 
 ;;;; Keybindings
-
-;; I do keybindings first because I've found the most fragile parts of my
-;; config are the package declarations. This way if something gets screwed up
-;; in the packages (missing parenthesis) all my most important keybindings
-;; (none of which require packages) are still loaded.
 
 ;; Minor modes override global bindings (see README), so any bindings you
 ;; don't want overridden should be placed in a minor mode. This technique is
@@ -842,7 +837,7 @@ mode-line."
     ("d"  "Delete 2nd" oht/delete-secondary-selection)]])
 
 
-;;;; Completions
+;;;; Minibuffer
 
 ;; Save minibuffer commands to a history list
 (savehist-mode 1)
@@ -880,7 +875,6 @@ mode-line."
 ;; minibuffer and the completions list. There is a built-in
 ;; `switch-to-completions' but it doesn't support Embark or fall-back to
 ;; `other-window', so I made my own.
-
 (defun switch-to-completions-or-other-window ()
   "Switch to the completions window, if it exists, or another window."
   (interactive)

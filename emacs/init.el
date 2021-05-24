@@ -844,6 +844,9 @@ mode-line."
 
 ;;;; Completions
 
+;; Save minibuffer commands to a history list
+(savehist-mode 1)
+
 ;; The below is a fallback configuration for working with the default
 ;; completions in Emacs. Thankfully, they do not interfere with Vertico.
 
@@ -1213,11 +1216,6 @@ completions if invoked from inside the minibuffer."
 (use-package vertico
   :init
   (vertico-mode))
-
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  :init
-  (savehist-mode))
 
 (use-package marginalia
   :custom

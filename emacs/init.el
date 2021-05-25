@@ -416,9 +416,9 @@ Keybindings you define here will take precedence."
 ;; If on a Mac, use the command key as Super, left-option for Meta, and
 ;; right-option for Alt.
 (when (eq system-type 'darwin)
-    (setq mac-command-modifier 'super
-          mac-option-modifier 'meta
-          mac-right-option-modifier 'nil))
+  (setq mac-command-modifier 'super
+        mac-option-modifier 'meta
+        mac-right-option-modifier 'nil))
 
 ;; If on Windows, use Windows key as Super
 (when (eq system-type 'windows-nt)
@@ -1052,27 +1052,27 @@ completions if invoked from inside the minibuffer."
 
   (define-key Info-mode-map (kbd "s-\\") 'oht-transient-info)
 
-    (transient-define-prefix oht-transient-info ()
-      "Transient for Info mode"
-      ["Info"
-       [("d" "Info Directory" Info-directory)
-        ("m" "Menu" Info-menu)
-        ("F" "Go to Node" Info-goto-emacs-command-node)]
-       [("s" "Search regex Info File" Info-search)
-        ("i" "Index" Info-index)
-        ("I" "Index, Virtual" Info-virtual-index)]]
-      ["Navigation"
-       [("l" "Left, History" Info-history-back)
-        ("r" "Right, History" Info-history-forward)
-        ("L" "List, History" Info-history)]
-       [("T" "Table of Contents" Info-toc)
-        ("n" "Next Node" Info-next)
-        ("p" "Previous Node" Info-prev)
-        ("u" "Up" Info-up)]
-       [("<" "Top Node" Info-top-node)
-        (">" "Final Node" Info-final-node)
-        ("[" "Forward Node" Info-backward-node)
-        ("]" "Backward Node" Info-forward-node)]]))
+  (transient-define-prefix oht-transient-info ()
+    "Transient for Info mode"
+    ["Info"
+     [("d" "Info Directory" Info-directory)
+      ("m" "Menu" Info-menu)
+      ("F" "Go to Node" Info-goto-emacs-command-node)]
+     [("s" "Search regex Info File" Info-search)
+      ("i" "Index" Info-index)
+      ("I" "Index, Virtual" Info-virtual-index)]]
+    ["Navigation"
+     [("l" "Left, History" Info-history-back)
+      ("r" "Right, History" Info-history-forward)
+      ("L" "List, History" Info-history)]
+     [("T" "Table of Contents" Info-toc)
+      ("n" "Next Node" Info-next)
+      ("p" "Previous Node" Info-prev)
+      ("u" "Up" Info-up)]
+     [("<" "Top Node" Info-top-node)
+      (">" "Final Node" Info-final-node)
+      ("[" "Forward Node" Info-backward-node)
+      ("]" "Backward Node" Info-forward-node)]]))
 
 ;;;; Dired
 
@@ -1250,9 +1250,9 @@ completions if invoked from inside the minibuffer."
   :init (vertico-mode)
   :config
   (advice-add #'vertico--setup :after
-            (lambda (&rest _)
-              (setq-local completion-auto-help nil
-                          completion-show-inline-help nil))))
+              (lambda (&rest _)
+                (setq-local completion-auto-help nil
+                            completion-show-inline-help nil))))
 
 (use-package marginalia
   :bind (:map minibuffer-local-map
@@ -1467,16 +1467,16 @@ org-todo-keywords to a transient command."
         ("s-z" . org-agenda-undo))
   :hook (org-agenda-mode-hook . hl-line-mode)
   :config
-    (transient-define-prefix oht-transient-org-agenda ()
-      "A transient for setting org-agenda todo status.
+  (transient-define-prefix oht-transient-org-agenda ()
+    "A transient for setting org-agenda todo status.
 I've created this because I don't like how org-todo messes with
 windows. There is likely a much better way to automatically map
 org-todo-keywords to a transient command."
-      ["Change Status To..."
-       [("t" "TODO"     org-agenda-todo-set-todo)
-        ("l" "LATER"    org-agenda-todo-set-later)]
-       [("d" "DONE"     org-agenda-todo-set-done)
-        ("c" "CANCELED" org-agenda-todo-set-canceled)]]))
+    ["Change Status To..."
+     [("t" "TODO"     org-agenda-todo-set-todo)
+      ("l" "LATER"    org-agenda-todo-set-later)]
+     [("d" "DONE"     org-agenda-todo-set-done)
+      ("c" "CANCELED" org-agenda-todo-set-canceled)]]))
 
 
 ;;;; View / Selected
@@ -1631,31 +1631,31 @@ To be used by `eww-after-render-hook'."
   (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
   (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer)
 
-    (transient-define-prefix oht-transient-eww ()
-      "Transient for EWW"
-      :transient-suffix 'transient--do-stay
-      :transient-non-suffix 'transient--do-warn
-      ["EWW"
-       ["Actions"
-        ("G" "Browse" eww)
-        ("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
-        ("&" "Browse With External Browser" eww-browse-with-external-browser)
-        ("w" "Copy URL" eww-copy-page-url)]
-       ["Display"
-        ("i" "Toggle Images" eww-inhibit-images-toggle)
-        ("F" "Toggle Fonts" eww-toggle-fonts)
-        ("R" "Readable" eww-readable)
-        ("M-C" "Colors" eww-toggle-colors)]
-       ["History"
-        ("H" "History" eww-list-histories)
-        ("l" "Back" eww-back-url)
-        ("r" "Forward" eww-forward-url)]
-       ["Bookmarks"
-        ("a" "Add Eww Bookmark" eww-add-bookmark)
-        ("b" "Bookmark" bookmark-set)
-        ("B" "List Bookmarks" eww-list-bookmarks)
-        ("M-n" "Next Bookmark" eww-next-bookmark)
-        ("M-p" "Previous Bookmark" eww-previous-bookmark)]])
+  (transient-define-prefix oht-transient-eww ()
+    "Transient for EWW"
+    :transient-suffix 'transient--do-stay
+    :transient-non-suffix 'transient--do-warn
+    ["EWW"
+     ["Actions"
+      ("G" "Browse" eww)
+      ("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
+      ("&" "Browse With External Browser" eww-browse-with-external-browser)
+      ("w" "Copy URL" eww-copy-page-url)]
+     ["Display"
+      ("i" "Toggle Images" eww-inhibit-images-toggle)
+      ("F" "Toggle Fonts" eww-toggle-fonts)
+      ("R" "Readable" eww-readable)
+      ("M-C" "Colors" eww-toggle-colors)]
+     ["History"
+      ("H" "History" eww-list-histories)
+      ("l" "Back" eww-back-url)
+      ("r" "Forward" eww-forward-url)]
+     ["Bookmarks"
+      ("a" "Add Eww Bookmark" eww-add-bookmark)
+      ("b" "Bookmark" bookmark-set)
+      ("B" "List Bookmarks" eww-list-bookmarks)
+      ("M-n" "Next Bookmark" eww-next-bookmark)
+      ("M-p" "Previous Bookmark" eww-previous-bookmark)]])
 
   ) ; End "use-package eww"
 

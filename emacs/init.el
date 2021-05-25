@@ -1258,13 +1258,13 @@ completions if invoked from inside the minibuffer."
   :bind (:map minibuffer-local-map
               ("M-A" . marginalia-cycle))
   :init
+  (marginalia-mode)
   (defun marginalia-use-none ()
     (interactive)
     (mapc (lambda (x)
             (setcdr x (cons 'none (remq 'none (cdr x)))))
           marginalia-annotator-registry))
-  (marginalia-use-none)
-  (marginalia-mode))
+  (marginalia-use-none))
 
 (use-package embark
   :bind

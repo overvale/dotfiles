@@ -1247,15 +1247,24 @@ completions if invoked from inside the minibuffer."
   (completion-category-overrides '((file (styles . (partial-completion))))))
 
 (use-package vertico
-  :init
-  (vertico-mode))
+  :init (vertico-mode)
+  :config
+  (advice-add #'vertico--setup :after
+            (lambda (&rest _)
+              (setq-local completion-auto-help nil
+                          completion-show-inline-help nil))))
 
 (use-package marginalia
-  :custom
-  (marginalia-annotators
-   '(marginalia-annotators-heavy marginalia-annotators-light))
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle))
   :init
-  (marginalia-mode 1))
+  (defun marginalia-use-none ()
+    (interactive)
+    (mapc (lambda (x)
+            (setcdr x (cons 'none (remq 'none (cdr x)))))
+          marginalia-annotator-registry))
+  (marginalia-use-none)
+  (marginalia-mode))
 
 (use-package embark
   :bind

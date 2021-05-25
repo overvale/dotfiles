@@ -944,6 +944,11 @@ completions if invoked from inside the minibuffer."
 
 (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start)
 
+(use-package isearch-mb
+  ;; This package improves isearch by allowing you to edit the search in the
+  ;; minibuffer in a standard way.
+  :init (isearch-mb-mode))
+
 
 ;;;; Outline
 
@@ -1282,14 +1287,6 @@ completions if invoked from inside the minibuffer."
 (use-package embark-consult
   :after (embark consult)
   :demand t)
-
-(use-package ctrlf
-  :bind
-  ("C-s" . ctrlf-forward-fuzzy)
-  ("C-r" . ctrlf-backward-fuzzy)
-  :custom
-  (ctrlf-go-to-end-of-match nil))
-
 
 ;;;; Org
 

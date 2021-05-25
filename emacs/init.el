@@ -1803,7 +1803,6 @@ To be used by `eww-after-render-hook'."
 ;; transient.
 
 (use-package transient
-  :ensure nil
   :init
   ;; Any commands these transients use, whose packages are potentially not
   ;; loaded yet, need to be autoloaded.
@@ -1969,6 +1968,7 @@ wherever you need to go."
 ;;;; Misc Packages
 
 (use-package magit
+  :if (when (eq system-type 'darwin))
   :commands magit-status)
 
 (use-package exec-path-from-shell

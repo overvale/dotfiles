@@ -150,8 +150,7 @@
 (setq custom-file (make-temp-file "emacs-custom-"))
 
 (setq inhibit-startup-message t
-      inhibit-startup-echo-area-message user-login-name
-      initial-buffer-choice 'remember-notes)
+      inhibit-startup-echo-area-message user-login-name)
 
 (custom-set-variables
  '(delete-selection-mode nil)
@@ -431,7 +430,6 @@ Keybindings you define here will take precedence."
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "s-m") 'iconify-frame)
 (global-set-key (kbd "s-s") 'save-buffer)
-(global-set-key (kbd "s-S") 'write-file) ;save as
 (global-set-key (kbd "s-a") 'mark-whole-buffer)
 (global-set-key (kbd "s-z") 'undo)
 (global-set-key (kbd "s-x") 'kill-region)
@@ -462,9 +460,6 @@ Keybindings you define here will take precedence."
 (global-set-key (kbd "M-l")     'downcase-dwim)
 (global-set-key (kbd "M-u")     'upcase-dwim)
 (global-set-key (kbd "M-SPC")   'cycle-spacing)
-(global-set-key (kbd "C-x r r") 'replace-rectangle)
-(global-set-key (kbd "C-h C-f") 'find-function)
-(global-set-key (kbd "C-h C-v") 'find-variable)
 
 ;; Custom functions
 (global-set-key [remap beginning-of-line] #'my/smart-beginning-of-line)
@@ -1263,7 +1258,6 @@ completions if invoked from inside the minibuffer."
   (marginalia-mode 1))
 
 (use-package embark
-  :demand
   :bind
   ("s-e" . embark-act)
   (:map embark-file-map

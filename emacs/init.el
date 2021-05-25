@@ -1203,16 +1203,28 @@ completions if invoked from inside the minibuffer."
 (setq text-scale-mode-step 1.09)
 
 (when (eq system-type 'darwin)
+  ;; config
   (setq facedancer-monospace "IBM Plex Mono"
         facedancer-variable  "IBM Plex Serif"
         facedancer-monospace-size 12
-        facedancer-variable-size  14))
+        facedancer-variable-size  14)
+  ;; set faces
+  (facedancer-font-set)
+  ;; customize mode-line
+  (set-face-attribute 'mode-line nil          :family "IBM Plex Sans" :height 130)
+  (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130))
 
 (when (eq system-type 'windows-nt)
+  ;; config
   (setq facedancer-monospace "Consolas"
         facedancer-variable  "Calibri"
         facedancer-monospace-size 11
-        facedancer-variable-size  12))
+        facedancer-variable-size  12)
+  ;; set faces
+  (facedancer-font-set)
+  ;; customize mode-line
+  (set-face-attribute 'mode-line nil          :family "Calibri" :height 130)
+  (set-face-attribute 'mode-line-inactive nil :family "Calibri" :height 130))
 
 (defun facedancer-prot-fonts ()
   (interactive)
@@ -1222,16 +1234,6 @@ completions if invoked from inside the minibuffer."
               facedancer-variable-size  13)
   (facedancer-mode 'toggle))
 
-;; Set the actual fonts.
-(facedancer-font-set)
-
-(when (eq system-type 'darwin)
-  (set-face-attribute 'mode-line nil          :family "IBM Plex Sans" :height 130)
-  (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130))
-
-(when (eq system-type 'windows-nt)
-  (set-face-attribute 'mode-line nil          :family "Calibri" :height 130)
-  (set-face-attribute 'mode-line-inactive nil :family "Calibri" :height 130))
 
 ;;; External Packages
 

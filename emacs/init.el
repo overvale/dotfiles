@@ -1251,39 +1251,7 @@ completions if invoked from inside the minibuffer."
         ("j" . dired-jump))
   (:map embark-url-map
         ("d" . youtube-dl-URL-at-point)
-        ("&" . browse-url-default-macosx-browser))
-
-  :config
-  ;; replacement for minibuffer-completion-help with embark alternative
-  ;; this means you hit TAB to trigger the completions list
-  ;; https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/
-  (defun embark-minibuffer-completion-help (_start _end)
-    (unless embark-collect-linked-buffer
-      (embark-collect-completions)))
-  (advice-add 'minibuffer-completion-help
-              :override #'embark-minibuffer-completion-help)
-
-  ;; resize Embark Collect buffer to fit contents
-  (add-hook 'embark-collect-post-revert-hook
-            (defun resize-embark-collect-window (&rest _)
-              (when (memq embark-collect--kind '(:live :completions))
-                (fit-window-to-buffer (get-buffer-window)
-                                      (floor (frame-height) 2) 1))))
-
-  ;; Embark by default uses embark-minibuffer-candidates which does not sort the
-  ;; completion candidates at all, this means that exit-with-top-completion
-  ;; won't always pick the first one listed! If you want to ensure
-  ;; exit-with-top-completion picks the first completion in the embark collect
-  ;; buffer, you should configure Embark to use
-  ;; embark-sorted-minibuffer-candidates instead. This can be done as follows:
-  (setq embark-candidate-collectors
-        (cl-substitute 'embark-sorted-minibuffer-candidates
-                       'embark-minibuffer-candidates
-                       embark-candidate-collectors))
-
-  (define-key minibuffer-local-completion-map (kbd "C-n") 'switch-to-completions-or-other-window)
-
-  ) ; End embark
+        ("&" . browse-url-default-macosx-browser)))
 
 (use-package consult
   :bind

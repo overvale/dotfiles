@@ -120,10 +120,16 @@
 
 ;;;; User/Machine Settings
 
-(defvar oht-dotfiles "~/home/dot/emacs/")
-(defvar oht-orgfiles "~/home/org/")
-(defvar oht-ingenuity-dir "~/home/ingenuity/")
-(defvar user-downloads-directory "~/Downloads")
+(when (eq system-type 'darwin)
+  (defvar oht-dotfiles "~/home/dot/emacs/")
+  (defvar oht-orgfiles "~/home/org/")
+  (defvar oht-ingenuity-dir "~/home/ingenuity/")
+  (defvar user-downloads-directory "~/Downloads"))
+
+(when (eq system-type 'windows-nt)
+  (defvar oht-dotfiles "~/.emacs.d/")
+  (defvar oht-orgfiles "~/home/org/")
+  (defvar user-downloads-directory "~/home/Downloads"))
 
 (add-to-list 'load-path (concat oht-dotfiles "lisp/"))
 
@@ -156,7 +162,8 @@
  '(show-paren-mode t)
  '(blink-cursor-mode nil)
  '(ring-bell-function #'ignore)
- '(scroll-bar-mode nil) ; set in early-init AND here ¯\_(ツ)_/¯
+ '(scroll-bar-mode nil)
+ '(tool-bar-mode nil)
  '(minibuffer-depth-indicate-mode t)
  '(set-language-environment "UTF-8"))
 
@@ -356,8 +363,9 @@ If no region is active, then stay active and swap."
 
 ;; A few utilities for working with videos
 
-(setq youtube-dl-path "/usr/local/bin/youtube-dl")
-(setq youtube-dl-output-dir "~/Downloads/")
+(when (eq system-type 'darwin)
+  (setq youtube-dl-path "/usr/local/bin/youtube-dl")
+  (setq youtube-dl-output-dir "~/Downloads/"))
 
 (defun youtube-dl-URL-at-point ()
   "Send the URL at point to youtube-dl."
@@ -399,6 +407,12 @@ Keybindings you define here will take precedence."
     (setq mac-command-modifier 'super
           mac-option-modifier 'meta
           mac-right-option-modifier 'nil))
+
+;; If on Windows, use Windows key as Super
+(when (eq system-type 'windows-nt)
+  (setq w32-pass-lwindow-to-system nil)
+  (setq w32-lwindow-modifier 'super)
+  (w32-register-hot-key [s-]))
 
 ;; Mac-like
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
@@ -1175,11 +1189,17 @@ completions if invoked from inside the minibuffer."
 (setq-default line-spacing nil)
 (setq text-scale-mode-step 1.09)
 
-(setq facedancer-monospace "IBM Plex Mono"
-      facedancer-variable  "IBM Plex Serif"
-      facedancer-variable-weight 'normal
-      facedancer-monospace-size 12
-      facedancer-variable-size  14)
+(when (eq system-type 'darwin)
+  (setq facedancer-monospace "IBM Plex Mono"
+        facedancer-variable  "IBM Plex Serif"
+        facedancer-monospace-size 12
+        facedancer-variable-size  14))
+
+(when (eq system-type 'windows-nt)
+  (setq facedancer-monospace "Consolas"
+        facedancer-variable  "Calibri"
+        facedancer-monospace-size 11
+        facedancer-variable-size  12))
 
 (defun facedancer-prot-fonts ()
   (interactive)
@@ -1192,9 +1212,13 @@ completions if invoked from inside the minibuffer."
 ;; Set the actual fonts.
 (facedancer-font-set)
 
-(set-face-attribute 'mode-line nil          :family "IBM Plex Sans" :height 130)
-(set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130)
+(when (eq system-type 'darwin)
+  (set-face-attribute 'mode-line nil          :family "IBM Plex Sans" :height 130)
+  (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130))
 
+(when (eq system-type 'windows-nt)
+  (set-face-attribute 'mode-line nil          :family "Calibri" :height 130)
+  (set-face-attribute 'mode-line-inactive nil :family "Calibri" :height 130))
 
 ;;; External Packages
 

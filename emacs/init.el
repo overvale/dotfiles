@@ -156,6 +156,10 @@
 (setq uniquify-buffer-name-style 'forward)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+(blackout 'eldoc-mode)
+(blackout 'emacs-lisp-mode "Elisp")
+(blackout 'auto-fill-function " Fill")
+
 (setq display-time-format " %Y-%m-%d  %H:%M"
       display-time-interval 60
       display-time-mail-directory nil
@@ -326,6 +330,11 @@ already narrowed."
   (find-file (completing-read "Find Org Files: "
                               (directory-files-recursively oht-orgfiles "\.org$"))))
 
+(defun find-user-init-file ()
+  "Find the user-init-file"
+  (interactive)
+  (find-file user-init-file))
+
 
 ;;;;; Transient Mark
 
@@ -446,7 +455,7 @@ Keybindings you define here will take precedence."
 
 ;; Custom functions
 (global-set-key [remap beginning-of-line] #'my/smart-beginning-of-line)
-(global-set-key (kbd "s-,") 'find-emacs-dotfiles)
+(global-set-key (kbd "s-,") 'find-user-init-file)
 (global-set-key (kbd "s-<") 'find-org-files)
 (global-set-key (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
 (global-set-key (kbd "C-`") 'push-mark-no-activate)
@@ -1188,15 +1197,15 @@ completions if invoked from inside the minibuffer."
 
 (when (eq system-type 'darwin)
   ;; config
-  (setq facedancer-monospace "IBM Plex Mono"
-        facedancer-variable  "IBM Plex Serif"
+  (setq facedancer-monospace "SF Mono"
+        facedancer-variable  "SF Pro Text"
         facedancer-monospace-size 12
-        facedancer-variable-size  14)
+        facedancer-variable-size  13)
   ;; set faces
   (facedancer-font-set)
   ;; customize mode-line
-  (set-face-attribute 'mode-line nil          :family "IBM Plex Sans" :height 130)
-  (set-face-attribute 'mode-line-inactive nil :family "IBM Plex Sans" :height 130))
+  (set-face-attribute 'mode-line nil          :family "SF Compact" :height 130)
+  (set-face-attribute 'mode-line-inactive nil :family "SF Compact" :height 130))
 
 (when (eq system-type 'windows-nt)
   ;; config

@@ -18,9 +18,10 @@
 ;; This file is loaded before the GUI is initialized (see docs). If these
 ;; settings are applied AFTER the GUI is initialized then you might actually
 ;; see all these settings happen (window moving around / flashing).
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(menu-bar-mode 1)
+(custom-set-variables
+ '(tool-bar-mode nil)
+ '(scroll-bar-mode nil)
+ '(menu-bar-mode t))
 
 ;; Frame default parameters
 (setq default-frame-alist

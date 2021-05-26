@@ -1199,6 +1199,7 @@ completions if invoked from inside the minibuffer."
 
 (use-package modus-themes
   :custom
+  (modus-themes-slanted-constructs t)
   (modus-themes-links 'faint-neutral-underline)
   (modus-themes-mode-line 'accented)
   (modus-themes-region 'bg-only)

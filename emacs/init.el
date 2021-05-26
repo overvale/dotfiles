@@ -24,14 +24,6 @@
 
 (require 'package)
 
-;; load all the installed packages, looking at 'package-load-list'
-;; which defaults to loading all installed packages.
-;; I've also set 'package-quickstart t' to precompute autoloads for all packages.
-(package-initialize)
-
-;; disable packages using 'package-load-list', for example:
-;; (setq package-load-list '((org-journal nil) all))
-
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -41,6 +33,34 @@
 ;; Ensure all packages in use-package delcarations are installed, unless
 ;; specified.
 (setq use-package-always-ensure t)
+
+;; Tell `use-package' to always load features lazily unless told
+;; otherwise. It's nicer to have this kind of thing be deterministic:
+;; if `:demand' is present, the loading is eager; otherwise, the
+;; loading is lazy. See
+;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
+(setq use-package-always-defer t)
+
+;; By default, use-package adds the suffix "-hook" to all your hook
+;; declarations, which I think is a reasonable default. I tend to forget that
+;; use-package does this and then forget that Emacs requires the suffix, then
+;; spend 15 minutes banging my head against a wall trying to figure out why
+;; the non-use-package hooks I'm writing don't work. So to avoid that I make
+;; it consistent, use-package or not, the hooks are named the same.
+(setq use-package-hook-name-suffix nil)
+
+;; I use blackout to configure mode listings in the mode-line, and since those
+;; settings are scattered across all my use-package declarations, I
+;; essentially need to define this as part of the use-package config.
+(use-package blackout
+  :commands (blackout))
+
+;; I make extensive use of transients, this config is overflowing with them.
+;; To ensure I can define them anywhere I want in this config, I need to
+;; install it and autoload the command. But my actual config for the package
+;; is below.
+(use-package transient
+  :commands (transient-define-prefix))
 
 ;; package.el loads every package you ever installed at startup, even if some
 ;; of those packages are no longer referenced by your init-file. `package'
@@ -83,53 +103,11 @@
           (when package
             (when (consp package)
               (setq package (car package)))
-            (push `(add-to-list 'use-package-selected-packages ',package) items))))))
-  (define-advice use-package-handler/:quelpa (:around (fn name-symbol keyword args rest state) select)
-    (let ((package (pcase (car args)
-                     ((pred symbolp) (car args))
-                     ((pred listp) (car (car args))))))
-      (cons `(add-to-list 'use-package-selected-packages ',package)
-            (funcall fn name-symbol keyword args rest state)))))
+            (push `(add-to-list 'use-package-selected-packages ',package) items)))))))
 
-;; Automatically remove undeclared packages
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (use-package-autoremove)))
-
-
-;;;; Use Package Config
-
-;; Tell `use-package' to always load features lazily unless told
-;; otherwise. It's nicer to have this kind of thing be deterministic:
-;; if `:demand' is present, the loading is eager; otherwise, the
-;; loading is lazy. See
-;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
-(setq use-package-always-defer t)
-
-;; By default, use-package adds the suffix "-hook" to all your hook
-;; declarations, which I think is a reasonable default. I tend to forget that
-;; use-package does this and then forget that Emacs requires the suffix, then
-;; spend 15 minutes banging my head against a wall trying to figure out why
-;; the non-use-package hooks I'm writing don't work. So to avoid that I make
-;; it consistent, use-package or not, the hooks are named the same.
-(setq use-package-hook-name-suffix nil)
-
-;; I use blackout to configure mode listings in the mode-line, and since those
-;; settings are scattered across all my use-package declarations, I
-;; essentially need to define this as part of the use-package config.
-(use-package blackout
-  :commands (blackout)
-  :config
-  (blackout 'eldoc-mode)
-  (blackout 'emacs-lisp-mode "Elisp")
-  (blackout 'auto-fill-function " Fill"))
-
-;; I make extensive use of transients, this config is overflowing with them.
-;; To ensure I can define them anywhere I want in this config, I need to
-;; install it and autoload the command. But my actual config for the package
-;; is below.
-(use-package transient
-  :commands (transient-define-prefix))
+;; Automatically remove undeclared packages, after loading this file. Packages
+;; will remain loaded until restart.
+(add-hook 'emacs-startup-hook (lambda () (use-package-autoremove)))
 
 
 ;;; Configuration
@@ -151,17 +129,6 @@
 
 
 ;;;; Settings
-
-;; This is the 2nd step, for the 1st step, see `early-init.el'
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (setq gc-cons-threshold 16777216 ; 16mb
-                  gc-cons-percentage 0.1)
-            (garbage-collect)) t)
-
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (message (concat "Emacs startup: " (emacs-init-time)))))
 
 (setq custom-file (make-temp-file "emacs-custom-"))
 

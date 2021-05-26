@@ -1,23 +1,18 @@
 ;;; early-init.el --- -*- lexical-binding: t -*-
 
-;; Stolen from doom-emacs/early-init.el
-(setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
-      gc-cons-percentage 0.6)
+;; Documentation: (info "(emacs) Early Init File")
 
-;; Do not initialize packages prior to evaluating the user's init file
-(setq package-enable-at-startup nil)
+;; Unless 'package-enable-at-startup' is set to 'nil' Emacs will automatically
+;; load all installed packages after early-init.el but before init.el
 
-;; Precompute package autoloads to speed up startup.
+;; Packages to load and not load are defined in 'package-load-list'. You can
+;; customize it with something like:
+;; (setq package-load-list '((org-journal nil) all))
+
+;; Precompute package autoloads to speed-up startup.
 (setq package-quickstart t)
 
-;; Resizing the Emacs frame can be a terribly expensive part of changing the
-;; font. By inhibiting this, we halve startup times, particularly when we use
-;; fonts that are larger than the system default (which would resize the frame).
-(setq frame-inhibit-implied-resize t)
-
-;; This file is loaded before the GUI is initialized (see docs). If these
-;; settings are applied AFTER the GUI is initialized then you might actually
-;; see all these settings happen (window moving around / flashing).
+;; Set these settings before the GUI frame is created
 (custom-set-variables
  '(tool-bar-mode nil)
  '(scroll-bar-mode nil)

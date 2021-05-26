@@ -580,7 +580,14 @@ This is a function for `after-save-hook'. Remove
   (smtpmail-smtp-server "smtp.gmail.com")
   (smtpmail-smtp-service 587))
 
-;;; Package Config
+;;; Replacing Package with Straight
+
+;;;; in early-init
+
+;; Normally, packages are initialized prior to loading a user's init file.
+;; If you're using straight instead of package this is an unnecessary step,
+;; and you can prevent Emacs from doing this by placing this in early-init.el:
+(setq package-enable-at-startup nil)
 
 ;; Ensure straight is installed. This is boilerplate from the straight documentation.
 (defvar bootstrap-version)
@@ -601,3 +608,17 @@ This is a function for `after-save-hook'. Remove
 
 ;; Install all declared packages. Can be overridden with `:straight nil'.
 (setq straight-use-package-by-default t)
+
+;;; Garbage Collection
+
+
+;; Stolen from doom-emacs/early-init.el
+(setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
+      gc-cons-percentage 0.6)
+
+;; ...then, in init.el:
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold 16777216 ; 16mb
+                  gc-cons-percentage 0.1)
+            (garbage-collect)) t)

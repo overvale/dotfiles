@@ -18,11 +18,19 @@
 
 (custom-set-variables
  '(package-archives
-   '(("melpa" . "https://melpa.org/packages/")
-     ("gnu" . "https://elpa.gnu.org/packages/")
+   '(("gnu" . "https://elpa.gnu.org/packages/")
+     ("melpa" . "https://melpa.org/packages/")
      ("org" . "https://orgmode.org/elpa/"))))
+
 (require 'package)
+
+;; load all the installed packages, looking at 'package-load-list'
+;; which defaults to loading all installed packages.
+;; I've also set 'package-quickstart t' to precompute autoloads for all packages.
 (package-initialize)
+
+;; disable packages using 'package-load-list', for example:
+;; (setq package-load-list '((org-journal nil) all))
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -38,15 +46,23 @@
 ;; of those packages are no longer referenced by your init-file. `package'
 ;; includes an autoremove function, but that function looks at
 ;; `package-selected-packages' for the canonical list of packages, not your
-;; init file. The problem with use-package is that it doesn't update that
-;; variable, so nothing can be autoremoved if your strategy is to only use
-;; your init file as the single source of truth for what packages should be
-;; installed. Below is a variable, function, and advice, that should help with
-;; that. Taken from here: https://github.com/jwiegley/use-package/issues/870#issuecomment-771881305
+;; init file, and `use-package' does not update that variable.
+;;
+;; Below is a few things that creates a list of packages 'ensured' by
+;; use-package and a function to autoremove anything not in that list.
+;; This is taken from here:
+;; https://github.com/jwiegley/use-package/issues/870#issuecomment-771881305
+;;
 ;; Keep in mind, however, that you need to manually call
-;; `use-package-autoremove' to actually remove packages. In general, I much
-;; prefer straight's approach to this problem: simply never loading any
-;; package that doesn't have a use-package declaration.
+;; `use-package-autoremove' to actually remove packages. Straight allows you
+;; to prevent the loading of any package not in a use-package declaration,
+;; which is not possible when using Package since all installed packages are
+;; loaded when `package-initialize' is called.
+;;
+;; In theory it should be possible to create advice similar to the below to
+;; populate the 'package-load-list' prior to calling `package-initialize'.
+;; This would have the effect of blocking the loading of any package not
+;; declared by use-package.
 
 (defvar use-package-selected-packages '(use-package)
   "Packages pulled in by use-package.")

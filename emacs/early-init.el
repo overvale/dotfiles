@@ -1,19 +1,14 @@
 ;;; early-init.el --- -*- lexical-binding: t -*-
 
-;; Most of this is stolen from doom-emacs/early-init.el
-
-;; A big contributor to startup times is garbage collection. We up the gc
-;; threshold to temporarily prevent it from running, then reset it later by
-;; enabling `gcmh-mode'. Not resetting it will cause stuttering/freezes.
+;; Stolen from doom-emacs/early-init.el
 (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
       gc-cons-percentage 0.6)
 
-;; In Emacs 27+, package initialization occurs before `user-init-file' is
-;; loaded, but after `early-init-file'. Doom handles package initialization, so
-;; we must prevent Emacs from doing it early!
+;; Do not initialize packages prior to evaluating the user's init file
 (setq package-enable-at-startup nil)
-(setq package-quickstart nil)
-(fset #'package--ensure-init-file #'ignore)  ; DEPRECATED Removed in 28
+
+;; Precompute package autoloads to speed up startup.
+(setq package-quickstart t)
 
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the
 ;; font. By inhibiting this, we halve startup times, particularly when we use

@@ -469,8 +469,11 @@ Keybindings you define here will take precedence."
 (global-set-key (kbd "s-o")   'other-window)
 (global-set-key (kbd "s-O")   'find-file)
 (global-set-key (kbd "s-l")   'mark-whole-line)
+(global-set-key (kbd "M-s-l") 'mark-whole-line)
 (global-set-key (kbd "s-/")   'oht-toggle-comment-region-or-line)
 (global-set-key (kbd "s-|")   'pipe-region)
+(global-set-key (kbd "s-,")   'find-user-init-file)
+(global-set-key (kbd "s-<")   'find-org-files)
 
 ;; Emacs Misc
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
@@ -480,11 +483,11 @@ Keybindings you define here will take precedence."
 (global-set-key (kbd "M-l")     'downcase-dwim)
 (global-set-key (kbd "M-u")     'upcase-dwim)
 (global-set-key (kbd "M-SPC")   'cycle-spacing)
+(global-set-key (kbd "M-z")     'zap-to-char)
+(global-set-key (kbd "M-Z")     'zap-up-to-char)
 
 ;; Custom functions
 (global-set-key [remap beginning-of-line] #'my/smart-beginning-of-line)
-(global-set-key (kbd "s-,") 'find-user-init-file)
-(global-set-key (kbd "s-<") 'find-org-files)
 (global-set-key (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
 (global-set-key (kbd "C-`") 'push-mark-no-activate)
 (global-set-key (kbd "M-`") 'consult-mark)
@@ -1576,6 +1579,7 @@ org-todo-keywords to a transient command."
               ("u" . upcase-dwim)
               ("d" . downcase-dwim)
               ("w" . kill-ring-save)
+              ("l" . mark-whole-line)
               ("|" . pipe-region)
               ("R" . replace-rectangle)
               ("E" . eval-region)
@@ -1834,6 +1838,7 @@ To be used by `eww-after-render-hook'."
   :bind*
   ("s-<return>" . oht-transient-general)
   ("s-w" . oht-transient-window)
+  ("M-s-w" . oht-transient-window)
   ("s-2" . oht-transient-2nd)
   ("s-d" . oht-transient-dispatch)
   :config
@@ -1855,6 +1860,12 @@ wherever you need to go."
       ("ca" "Consult Apropos" consult-apropos)
       ("cm" "Consult Mode Commands" consult-mode-command)
       ("cg" "Consult Grep" consult-grep)]
+     ["Windows"
+      ("w" "Window Transient..." oht-transient-window)
+      ("0" "Kill Window" delete-window)
+      ("1" "Only Window" delete-other-windows)
+      ("2" "Split Below" split-window-below)
+      ("3" "Split Right" split-window-right)]
      ["Transients"
       ("O" "Outline Navigation..." oht-transient-outline)
       ("D" "Display..."   oht-transient-display)

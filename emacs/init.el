@@ -125,8 +125,6 @@
   (defvar oht-orgfiles "~/home/org/")
   (defvar user-downloads-directory "~/home/Downloads"))
 
-(add-to-list 'load-path (concat oht-dotfiles "lisp/"))
-
 
 ;;;; Settings
 

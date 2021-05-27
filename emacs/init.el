@@ -356,11 +356,37 @@ If no region is active, then stay active and swap."
   (push-mark (point) t nil)
   (message "Pushed mark to ring"))
 
-(defun jump-to-mark ()
-  "Jumps to the local mark, respecting the `mark-ring' order.
-  This is the same as using \\[set-mark-command] with the prefix argument."
+;; https://stackoverflow.com/a/27661338
+
+(defun marker-is-point-p (marker)
+  "test if marker is current point"
+  (and (eq (marker-buffer marker) (current-buffer))
+       (= (marker-position marker) (point))))
+
+(defun push-mark-maybe ()
+  "push mark onto `global-mark-ring' if mark head or tail is not current location"
+  (if (not global-mark-ring) (error "global-mark-ring empty")
+    (unless (or (marker-is-point-p (car global-mark-ring))
+                (marker-is-point-p (car (reverse global-mark-ring))))
+      (push-mark))))
+
+(defun backward-global-mark ()
+  "use `pop-global-mark', pushing current point if not on ring."
   (interactive)
-  (set-mark-command 1))
+  (push-mark-maybe)
+  (when (marker-is-point-p (car global-mark-ring))
+    (call-interactively 'pop-global-mark))
+  (call-interactively 'pop-global-mark))
+
+(defun forward-global-mark ()
+  "hack `pop-global-mark' to go in reverse, pushing current point if not on ring."
+  (interactive)
+  (push-mark-maybe)
+  (setq global-mark-ring (nreverse global-mark-ring))
+  (when (marker-is-point-p (car global-mark-ring))
+    (call-interactively 'pop-global-mark))
+  (call-interactively 'pop-global-mark)
+  (setq global-mark-ring (nreverse global-mark-ring)))
 
 
 ;;;;; Youtube-dl
@@ -430,6 +456,8 @@ Keybindings you define here will take precedence."
 (global-set-key (kbd "s-n") 'make-frame-command)
 (global-set-key (kbd "s-[") 'previous-buffer)
 (global-set-key (kbd "s-]") 'next-buffer)
+(global-set-key (kbd "s-{") 'backward-global-mark)
+(global-set-key (kbd "s-}") 'forward-global-mark)
 (global-set-key (kbd "s-<backspace>") (lambda () (interactive) (kill-line 0)))
 (global-set-key (kbd "s-<up>") 'beginning-of-buffer)
 (global-set-key (kbd "s-<down>") 'end-of-buffer)

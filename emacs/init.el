@@ -954,7 +954,6 @@ completions if invoked from inside the minibuffer."
   "Exit search at the beginning of the current match."
   (when (and isearch-forward
              (number-or-marker-p isearch-other-end)
-             (not mark-active)
              (not isearch-mode-end-hook-quit))
     (goto-char isearch-other-end)))
 

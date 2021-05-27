@@ -1223,7 +1223,7 @@ completions if invoked from inside the minibuffer."
       (modus-themes-load-vivendi))
   (add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle))
 
-(setq-default line-spacing nil)
+(setq-default line-spacing 1)
 (setq text-scale-mode-step 1.09)
 
 (when (eq system-type 'darwin)
@@ -1235,26 +1235,27 @@ completions if invoked from inside the minibuffer."
   ;; set faces
   (facedancer-font-set)
   ;; customize mode-line
-  (set-face-attribute 'mode-line nil          :family "SF Compact" :height 130)
-  (set-face-attribute 'mode-line-inactive nil :family "SF Compact" :height 130))
+  (set-face-attribute 'mode-line nil          :family "SF Compact Text" :height 130)
+  (set-face-attribute 'mode-line-inactive nil :family "SF Compact Text" :height 130))
 
 (when (eq system-type 'windows-nt)
   ;; config
   (setq facedancer-monospace "Consolas"
         facedancer-variable  "Calibri"
-        facedancer-monospace-size 11
-        facedancer-variable-size  12)
+        facedancer-monospace-size 10
+        facedancer-variable-size  11)
   ;; set faces
   (facedancer-font-set)
   ;; customize mode-line
-  (set-face-attribute 'mode-line nil          :family "Calibri" :height 130)
-  (set-face-attribute 'mode-line-inactive nil :family "Calibri" :height 130))
+  (set-face-attribute 'mode-line nil          :family "Calibri" :height 110)
+  (set-face-attribute 'mode-line-inactive nil :family "Calibri" :height 110))
 
 (defun facedancer-prot-fonts ()
   (interactive)
   (setq-local facedancer-monospace "Iosevka Comfy"
               facedancer-variable  "Inter"
-              facedancer-monospace-size 14
+              line-spacing nil
+              facedancer-monospace-size 13
               facedancer-variable-size  13)
   (facedancer-mode 'toggle))
 

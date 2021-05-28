@@ -232,8 +232,8 @@
         (call-process "open" nil 0 nil file))
     (message "No file found at point.")))
 
-(defun sanemacs/backward-kill-word ()
-  "Kill word backward, without copying to clipboard."
+(defun backward-delete-word ()
+  "Delete word backward, without saving to kill ring."
   (interactive "*")
   (push-mark)
   (backward-word)
@@ -266,23 +266,14 @@ pipe whole buffer."
   (find-file (completing-read "Find File Recursively: "
                               (directory-files-recursively default-directory ".+"))))
 
-(defun oht-toggle-comment-region-or-line ()
-  "Comments or uncomments the region or the current line if there's no active region."
+(defun comment-or-uncomment-region-dwim ()
+  "Toggle comment for region, or line."
   (interactive)
   (let (beg end)
     (if (region-active-p)
         (setq beg (region-beginning) end (region-end))
       (setq beg (line-beginning-position) end (line-end-position)))
     (comment-or-uncomment-region beg end)))
-
-(defun my/smart-beginning-of-line ()
-  "Move point to first non-whitespace character or beginning-of-line."
-  (interactive)
-  (let ((oldpos (point)))
-    (back-to-indentation)
-    (and (<= oldpos (point))
-         (/= (line-beginning-position) oldpos)
-         (beginning-of-line))))
 
 (defun mark-whole-line ()
   "Put the point at end of this whole line, mark at beginning"
@@ -354,38 +345,6 @@ If no region is active, then stay active and swap."
   (push-mark (point) t nil)
   (message "Pushed mark to ring"))
 
-;; https://stackoverflow.com/a/27661338
-
-(defun marker-is-point-p (marker)
-  "test if marker is current point"
-  (and (eq (marker-buffer marker) (current-buffer))
-       (= (marker-position marker) (point))))
-
-(defun push-mark-maybe ()
-  "push mark onto `global-mark-ring' if mark head or tail is not current location"
-  (if (not global-mark-ring) (error "global-mark-ring empty")
-    (unless (or (marker-is-point-p (car global-mark-ring))
-                (marker-is-point-p (car (reverse global-mark-ring))))
-      (push-mark))))
-
-(defun backward-global-mark ()
-  "use `pop-global-mark', pushing current point if not on ring."
-  (interactive)
-  (push-mark-maybe)
-  (when (marker-is-point-p (car global-mark-ring))
-    (call-interactively 'pop-global-mark))
-  (call-interactively 'pop-global-mark))
-
-(defun forward-global-mark ()
-  "hack `pop-global-mark' to go in reverse, pushing current point if not on ring."
-  (interactive)
-  (push-mark-maybe)
-  (setq global-mark-ring (nreverse global-mark-ring))
-  (when (marker-is-point-p (car global-mark-ring))
-    (call-interactively 'pop-global-mark))
-  (call-interactively 'pop-global-mark)
-  (setq global-mark-ring (nreverse global-mark-ring)))
-
 
 ;;;;; Youtube-dl
 
@@ -442,40 +401,40 @@ Keybindings you define here will take precedence."
   (setq w32-lwindow-modifier 'super)
   (w32-register-hot-key [s-]))
 
-;; Mac-like
+;; Mode Leader
+(defvar oht-mode-leader "s-\\"
+  "Defines leader key for mode-specific transients.
+Borrows the concept of a 'leader key' from Vim so I can press
+a single shortcut in any mode and get transient that I've defined
+for that mode.")
+
+;; Super Bindings
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "s-m") 'iconify-frame)
+(global-set-key (kbd "s-n") 'make-frame-command)
 (global-set-key (kbd "s-s") 'save-buffer)
-(global-set-key (kbd "s-a") 'mark-whole-buffer)
-(global-set-key (kbd "s-z") 'undo)
+(global-set-key (kbd "s-,") 'find-user-init-file)
+(global-set-key (kbd "s-o") 'find-file)
+(global-set-key (kbd "s-z") 'undo-fu-only-undo)
 (global-set-key (kbd "s-x") 'kill-region)
 (global-set-key (kbd "s-c") 'kill-ring-save)
 (global-set-key (kbd "s-v") 'yank)
-(global-set-key (kbd "s-n") 'make-frame-command)
 (global-set-key (kbd "s-[") 'previous-buffer)
 (global-set-key (kbd "s-]") 'next-buffer)
-(global-set-key (kbd "s-{") 'backward-global-mark)
-(global-set-key (kbd "s-}") 'forward-global-mark)
-(global-set-key (kbd "s-<backspace>") (lambda () (interactive) (kill-line 0)))
-(global-set-key (kbd "s-<up>") 'beginning-of-buffer)
-(global-set-key (kbd "s-<down>") 'end-of-buffer)
 
-;; Emacs SUPER!
-(global-set-key (kbd "s-k")   'kill-this-buffer)
-(global-set-key (kbd "s-b")   'switch-to-buffer)
-(global-set-key (kbd "s-B")   'ibuffer)
-(global-set-key (kbd "s-o")   'other-window)
-(global-set-key (kbd "s-O")   'find-file)
-(global-set-key (kbd "s-l")   'mark-whole-line)
-(global-set-key (kbd "M-s-l") 'mark-whole-line)
-(global-set-key (kbd "s-/")   'oht-toggle-comment-region-or-line)
-(global-set-key (kbd "s-|")   'pipe-region)
-(global-set-key (kbd "s-,")   'find-user-init-file)
-(global-set-key (kbd "s-<")   'find-org-files)
+(global-set-key (kbd "s-e") 'embark-act)
+(global-set-key (kbd "s-b") 'consult-buffer)
+(global-set-key (kbd "s-f") 'consult-line)
+(global-set-key (kbd "s-<return>") 'oht-transient-general)
+(global-set-key (kbd "s-w") 'oht-transient-window)
+(global-set-key (kbd "s-2") 'oht-transient-2nd)
+(global-set-key (kbd "s-d") 'oht-transient-dispatch)
 
-;; Emacs Misc
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+
 (define-key oht-keys-mode-keymap (kbd "<C-return>") 'execute-extended-command)
+(define-key oht-keys-mode-keymap (kbd "M-o") 'other-window)
+
 (global-set-key (kbd "M-s-s")   'save-some-buffers)
 (global-set-key (kbd "M-c")     'capitalize-dwim)
 (global-set-key (kbd "M-l")     'downcase-dwim)
@@ -483,14 +442,9 @@ Keybindings you define here will take precedence."
 (global-set-key (kbd "M-SPC")   'cycle-spacing)
 (global-set-key (kbd "M-z")     'zap-to-char)
 (global-set-key (kbd "M-Z")     'zap-up-to-char)
-
-;; Custom functions
-(global-set-key [remap beginning-of-line] #'my/smart-beginning-of-line)
 (global-set-key (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
-(global-set-key (kbd "C-`") 'push-mark-no-activate)
-(global-set-key (kbd "M-`") 'consult-mark)
-(global-set-key (kbd "M-DEL") 'sanemacs/backward-kill-word)
-(global-set-key (kbd "C-DEL") 'sanemacs/backward-kill-word)
+(global-set-key (kbd "M-DEL")   'backward-delete-word)
+(global-set-key (kbd "C-DEL")   'backward-delete-word)
 
 
 ;;;; Visual Line Mode, Fixes
@@ -514,8 +468,9 @@ Keybindings you define here will take precedence."
 ;; of the visual line.
 (define-key oht-keys-mode-keymap (kbd "C-a") 'beginning-of-line)
 (define-key oht-keys-mode-keymap (kbd "C-e") 'end-of-line)
-(global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
-(global-set-key (kbd "s-<right>") 'end-of-visual-line)
+(when (eq system-type 'darwin)
+  (global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
+  (global-set-key (kbd "s-<right>") 'end-of-visual-line))
 
 ;; Additionally, in visual-line-mode the function kill-line kills to the end
 ;; of the VISUAL line, which is inconsistent with Mac OS, and my own
@@ -588,8 +543,8 @@ Keybindings you define here will take precedence."
     ("<return>" "Fix" ispell-word)
     ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
     ("<DEL>" "Delete Word" kill-word)
-    ("s-z" "Undo" undo-fu-only-undo)
-    ("s-Z" "Redo" undo-fu-only-redo)]])
+    ("C-/" "Undo" undo-fu-only-undo)
+    ("M-/" "Redo" undo-fu-only-redo)]])
 
 
 ;;;; Facedancer Mode
@@ -940,8 +895,8 @@ completions if invoked from inside the minibuffer."
     (when mini
       (select-window mini))))
 
-(define-key minibuffer-local-completion-map (kbd "s-o") 'switch-to-completions-or-other-window)
-(define-key completion-list-mode-map (kbd "s-o") 'switch-to-minibuffer)
+(define-key minibuffer-local-completion-map (kbd "M-o") 'switch-to-completions-or-other-window)
+(define-key completion-list-mode-map (kbd "M-o") 'switch-to-minibuffer)
 
 
 ;;;; Isearch
@@ -1018,9 +973,6 @@ completions if invoked from inside the minibuffer."
       (let ((current-prefix-arg 4)) (call-interactively 'remember))
     (remember)))
 
-(global-set-key (kbd "s-_") 'oht-remember-dwim)
-(global-set-key (kbd "s--") 'remember-notes)
-
 
 ;;;; iBuffer
 
@@ -1064,13 +1016,13 @@ completions if invoked from inside the minibuffer."
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol))
 
-(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "M-<tab>") 'hippie-expand)
 
 ;;;; Info
 
 (with-eval-after-load 'info
 
-  (define-key Info-mode-map (kbd "s-\\") 'oht-transient-info)
+  (define-key Info-mode-map (kbd oht-mode-leader) 'oht-transient-info)
 
   (transient-define-prefix oht-transient-info ()
     "Transient for Info mode"
@@ -1108,9 +1060,9 @@ completions if invoked from inside the minibuffer."
       (call-process "open" nil 0 nil file)
       (message "Opening %s done" file)))
 
-  (define-key dired-mode-map (kbd "s-\\") 'oht-transient-dired)
+  (define-key dired-mode-map (kbd oht-mode-leader) 'oht-transient-dired)
   (define-key dired-mode-map (kbd "O") 'dired-open-file)
-  (define-key dired-mode-map (kbd "s-z") 'dired-undo)
+  (define-key dired-mode-map (kbd "C-/") 'dired-undo)
 
   (add-hook 'dired-mode-hook
             (lambda ()
@@ -1280,17 +1232,10 @@ completions if invoked from inside the minibuffer."
   :bind (:map minibuffer-local-map
               ("M-A" . marginalia-cycle))
   :init
-  (marginalia-mode)
-  (defun marginalia-use-none ()
-    (interactive)
-    (mapc (lambda (x)
-            (setcdr x (cons 'none (remq 'none (cdr x)))))
-          marginalia-annotator-registry))
-  (marginalia-use-none))
+  (marginalia-mode))
 
 (use-package embark
   :bind
-  ("s-e" . embark-act)
   (:map embark-file-map
         ("O" . macos-open-file)
         ("j" . dired-jump))
@@ -1300,9 +1245,6 @@ completions if invoked from inside the minibuffer."
 
 (use-package consult
   :bind
-  ("s-b" . consult-buffer)
-  ("M-y" . consult-yank-pop)
-  ("s-f" . consult-line)
   ([remap yank-pop] . consult-yank-pop)
   :custom
   (consult-preview-key (kbd "C-="))
@@ -1317,11 +1259,9 @@ completions if invoked from inside the minibuffer."
 
 (use-package org
   :commands (org-mode oht-org-agenda-today)
-  :bind
-  ("s-C" . org-capture)
-  (:map org-mode-map
-        ("s-\\" . oht-transient-org))
   :config
+
+  (define-key org-mode-map (kbd oht-mode-leader) 'oht-transient-org)
 
   (custom-set-variables
    '(org-list-allow-alphabetical t)
@@ -1486,7 +1426,7 @@ org-todo-keywords to a transient command."
   :bind
   (:map org-agenda-mode-map
         ("t" . oht-transient-org-agenda)
-        ("s-z" . org-agenda-undo))
+        ("C-/" . org-agenda-undo))
   :hook (org-agenda-mode-hook . hl-line-mode)
   :config
   (transient-define-prefix oht-transient-org-agenda ()
@@ -1517,7 +1457,6 @@ org-todo-keywords to a transient command."
     (oht/view-mode-exit)
     (call-interactively 'replace-rectangle))
   :bind
-  ("s-j" . view-mode)
   (:map view-mode-map
         ;; common
         ("n" . next-line)
@@ -1542,7 +1481,6 @@ org-todo-keywords to a transient command."
         ("R" . oht/exit-view-replace-rectangle)
         ("m" . set-mark-command)
         ("<RET>" . oht/view-mode-exit)
-        ("s-j" . oht/view-mode-exit)
         ("q" . quit-window))
   :hook (view-mode-hook . hl-line-mode)
   :blackout " VIEW")
@@ -1617,10 +1555,9 @@ org-todo-keywords to a transient command."
     (setq-local line-spacing 2))
   :commands (eww)
   :hook (eww-mode-hook . oht-eww-fonts)
-  :bind
-  (:map eww-mode-map
-        ("s-\\" . oht-transient-eww))
   :config
+
+  (define-key eww-mode-map (kbd oht-mode-leader) 'oht-transient-eww)
 
   (make-variable-buffer-local
    (defvar eww-inhibit-images-status nil
@@ -1833,12 +1770,6 @@ To be used by `eww-after-render-hook'."
   :custom
   (transient-mode-line-format 'line)
   (transient-display-buffer-action '(display-buffer-below-selected))
-  :bind*
-  ("s-<return>" . oht-transient-general)
-  ("s-w" . oht-transient-window)
-  ("M-s-w" . oht-transient-window)
-  ("s-2" . oht-transient-2nd)
-  ("s-d" . oht-transient-dispatch)
   :config
 
   (transient-define-prefix oht-transient-general ()
@@ -1850,14 +1781,20 @@ wherever you need to go."
     ["General"
      ["Quick Actions!"
       ("f" "Find File" find-file)
+      ("b" "Switch Buffer" consult-buffer)
+      ("B" "iBuffer" ibuffer)
+      ("k" "Org Capture" org-capture)
+      ("K" "Kill Buffer" kill-this-buffer)
       ("m" "Magit Status" magit-status)
       ("o" "Consult Outline" consult-outline)
       ("a" "AutoFill" auto-fill-mode)
       ("j" "Dired Jump" dired-jump)
       ("s" "Store Org Link" org-store-link)
-      ("ca" "Consult Apropos" consult-apropos)
-      ("cm" "Consult Mode Commands" consult-mode-command)
-      ("cg" "Consult Grep" consult-grep)]
+      ("v" "View Mode" view-mode)]
+     ["Consult"
+      ("c a" "Consult Apropos" consult-apropos)
+      ("c m" "Consult Mode Commands" consult-mode-command)
+      ("c g" "Consult Grep" consult-grep)]
      ["Windows"
       ("w" "Window Transient..." oht-transient-window)
       ("0" "Kill Window" delete-window)
@@ -1869,7 +1806,6 @@ wherever you need to go."
       ("D" "Display..."   oht-transient-display)
       ("F" "Fonts..." oht-transient-fonts)
       ("T" "Tabs..."      oht-transient-tabs)
-      ("B" "Bookmarks..." oht-transient-bookmarks)
       ("S" "Spelling..." oht-transient-spelling)
       ("H" "Helpful Commands..." oht-transient-help)
       ("M" "Toggle Minor Modes" consult-minor-mode-menu)]])
@@ -1893,8 +1829,8 @@ wherever you need to go."
       ("M-<up>"    "Move Up" outline-move-subtree-up)
       ("M-<down>"  "Move Down" outline-move-subtree-down)]
      ["Other"
-      ("s-z" "Undo" undo-fu-only-undo)
-      ("s-Z" "Redo" undo-fu-only-redo)
+      ("C-/" "Undo" undo-fu-only-undo)
+      ("M-/" "Redo" undo-fu-only-redo)
       ("c" "Consult" consult-outline :transient nil)]])
 
   (transient-define-prefix oht-transient-display ()
@@ -1939,13 +1875,6 @@ wherever you need to go."
       ("]" "Next" tab-bar-switch-to-next-tab)
       ("[" "Previous" tab-bar-switch-to-prev-tab)]])
 
-  (transient-define-prefix oht-transient-bookmarks ()
-    "A transient for controlling bookmarks"
-    [["General -> Bookmarks"
-      ("s" "Set"  bookmark-set)
-      ("l" "List" list-bookmarks)
-      ("j" "Jump" consult-bookmark)]])
-
   (transient-define-prefix oht-transient-help ()
     "Transient for Helpful commands"
     ["General -> Helpful Commands"
@@ -1989,8 +1918,8 @@ wherever you need to go."
       ("S-<up>"    "Move ↑" buf-move-up    :transient t)
       ("S-<down>"  "Move ↓" buf-move-down  :transient t)]
      ["Undo/Redo"
-      ("s-z" "Winner Undo" winner-undo :transient t)
-      ("s-Z" "Winner Redo" winner-redo :transient t)]])
+      ("C-/" "Winner Undo" winner-undo :transient t)
+      ("M-/" "Winner Redo" winner-redo :transient t)]])
 
   ) ; End "use-package transient"
 
@@ -2013,13 +1942,8 @@ wherever you need to go."
 
 (use-package undo-fu
   :bind
-  ("s-z" . undo-fu-only-undo)
-  ("s-Z" . undo-fu-only-redo))
-
-(use-package expand-region
-  :bind
-  ("s-r" . er/expand-region)
-  ("s-R" . er/contract-region))
+  ("C-/" . undo-fu-only-undo)
+  ("M-/" . undo-fu-only-redo))
 
 (use-package unfill
   :commands (unfill-paragraph unfill-toggle unfill-region)
@@ -2040,9 +1964,16 @@ wherever you need to go."
   ("C-h p" . #'helpful-at-point))
 
 (use-package move-text
+  :commands (move-text-up move-text-down)
   :bind
-  ("M-<up>" . move-text-up)
-  ("M-<down>" . move-text-down))
+  ("C-x C-t" . oht-transient-transpose-lines)
+  :config
+  (transient-define-prefix oht-transient-transpose-lines ()
+    :transient-suffix 'transient--do-stay
+    :transient-non-suffix 'transient--do-warn
+    [["Move Lines"
+      ("n" "Down" move-text-down)
+      ("p" "Up" move-text-up)]]))
 
 (use-package buffer-move
   :commands (buf-move-up

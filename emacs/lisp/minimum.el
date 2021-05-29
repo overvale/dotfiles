@@ -7,14 +7,8 @@
 
 ;; There are many "Emacs starter kits" out there, this one is mine. It is
 ;; designed to be exceedingly simple. Just copy this one file to
-;; ~/.emacs/init.el and open Emacs. Everything should get installed and
-;; configured automatically.
-
-;; This is really meant for someone who is comfortable configuring their
-;; dotfiles and wants to get started with Emacs in a way that is familiar to
-;; that experience. Simply put: if I could travel back in time to the
-;; beginning of my Emacs journey, I would give myself this file and say "start
-;; with this".
+;; ~/.emacs/init.el and open Emacs. Install the below packages by calling
+;; `package-install-selected-packages'.
 
 
 ;;; Goals and Philosophy
@@ -25,14 +19,15 @@
 ;; 2. I'm a Mac user, so this config targets Mac users and sets some of the
 ;;    most common shortcuts, as well as making the modifier keys behave in a
 ;;    slightly more predictable way.
-;; 3. I use, and recommend, the combination of `straight' and
-;;    `use-package' to manage the installation and configuration of packages.
-;;    Using these 2 tools makes the package declarations in your init file the
-;;    single source of what should be loaded and used by Emacs. Which is a
-;;    better first-run experience than the default (in my opinion).
+;; 3. I use the built-in `package' system and the package `use-package' to
+;;    install and configure packages. Along with the code below, this allows
+;;    you use your init file as a single "source of truth" for your
+;;    configuration. Much of the confusion a beginner experiences (in my
+;;    opinion) is rooted in Emacs's ability to be customized both by an init
+;;    file and interactively (which saves to an init file).
 ;; 4. I highly recommend, for first-time users, the combination of the
-;;    packages `selectrum', `selectrum-prescient', and `marginalia'. These
-;;    tools make Emacs easier to explore and discover capabilities. You may
+;;    packages `vertico', `orderless', and `marginalia'. These tools make
+;;    Emacs easier to explore and discover capabilities. You may 
 ;;    eventually decide they're not for you, but I think they're a great place
 ;;    to start.
 ;; 5. Provides some convenience bindings for my most used Emacs features.
@@ -69,15 +64,14 @@
 
 ;;; Keyboard modifiers setup
 
-;; The below is designed for Mac users.
-
-;; This makes your command key the 'super' key, which you can bind with "s-a",
-;; keep in mind that shift is "S-a".
-(setq mac-command-modifier 'super)
-
-;; This makes the left option META and right one OPTION.
-(setq mac-option-modifier 'meta)
-(setq mac-right-option-modifier 'nil)
+;; When on a Mac, do this...
+(when (eq system-type 'darwin)
+  ;; This makes your command key the 'super' key, which you can bind with "s-a",
+  ;; keep in mind that shift is "S-a".
+  (setq mac-command-modifier 'super)
+  ;; This makes the left option META and right one OPTION.
+  (setq mac-option-modifier 'meta)
+  (setq mac-right-option-modifier 'nil))
 
 
 ;;; Keybindings
@@ -102,20 +96,19 @@
 ;; Mac-like bindings
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "s-m") 'iconify-frame)
+(global-set-key (kbd "s-n") 'make-frame-command)
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-a") 'mark-whole-buffer)
 (global-set-key (kbd "s-z") 'undo)
 (global-set-key (kbd "s-x") 'kill-region)
 (global-set-key (kbd "s-c") 'kill-ring-save)
 (global-set-key (kbd "s-v") 'yank)
-(global-set-key (kbd "s-n") 'make-frame-command)
 
 ;; Emacs SUPER!
 (global-set-key (kbd "s-b") 'switch-to-buffer)
 (global-set-key (kbd "s-B") 'ibuffer)
 (global-set-key (kbd "s-o") 'other-window)
 (global-set-key (kbd "s-O") 'find-file)
-(global-set-key (kbd "s-u") 'universal-argument)
 
 ;; Emacs Misc
 (global-set-key (kbd "M-c") 'capitalize-dwim)
@@ -149,35 +142,36 @@
 
 ;;; Package Management
 
-;; - `straight' is used to install/update packages.
+;; - `package' is used to install/update packages.
 ;; - `use-package' is used to precisely control the loading of packages and
 ;;    configure them.
 
-;; Install the `straight' package if it isn't installed
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+;; This config does not install or remove anything automatically. You'll need
+;; to do that by calling functions. You can either do this interactively
+;; (typing in the commands) or calling these functions from your init file.
 
-;; Install and load `use-package'
-(straight-use-package 'use-package)
+;; Install packages with `package-install-selected-packages', remove packages
+;; with `package-autoremove'. Both functions look at the variable
+;; `package-selected-packages' for the canonical list of packages.
 
-;; Tell Straight to use `use-package' config declarations for installation of packages.
-(setq straight-use-package-by-default t)
+;; By default, the only source of packages is elpa.gnu.org, but there are tons
+;; of great packages on MELBA, to be able to install those we add the URL to
+;; the following variable:
+(push '("melpa" . "https://melpa.org/packages/") package-archives)
 
-;; Don't load any packages unless explicitly told to do so in the config, see
-;; `use-package' documentation for more info. I HIGHLY recommend reading up on this.
-;; Until you really understand how use-package loads packages you might drive yourself
-;; crazy trying to get a package to load properly.
-(setq use-package-always-defer t)
+;; Load the package library so we can work with it.
+(require 'package)
+
+;; This tells Emacs that you'd like to install this package. You'll need to
+;; repeat this for each package you want to install. Use-Package comes with a
+;; way to do this as part of a configuration statement, but if you do it that
+;; way you'll need to manually remove all packages you no longer use. Adding
+;; the packages you want to this list will allow you to call
+;; `package-autoremove' and delete everything not in this list.
+(add-to-list 'package-selected-packages 'use-package)
+
+;; Load use-package so we can use it.
+(require 'use-package)
 
 
 ;;; Packages
@@ -186,6 +180,7 @@
 ;; most common source of breakage, so if something goes wrong below all of the
 ;; above settings are still loaded.
 
+(add-to-list 'package-selected-packages 'undo-fu)
 (use-package undo-fu
   ;; Undo in Emacs is confusing, for example there's no redo command and you can
   ;; undo an undo. That's fine if you're an Emacs wizard, but this package
@@ -194,11 +189,13 @@
   ("s-z" . undo-fu-only-undo)
   ("s-Z" . undo-fu-only-redo))
 
+(add-to-list 'package-selected-packages 'which-key)
 (use-package which-key
   ;; Displays useful pop-ups for when you type an incomplete binding.
   :init
   (which-key-mode 1))
 
+(add-to-list 'package-selected-packages 'whole-line-or-region)
 (use-package whole-line-or-region
   ;; the region isn't always 'active' (visible), in those cases, if you call a
   ;; command that acts on a region you'll be acting on an invisible region.
@@ -207,24 +204,31 @@
   :init
   (whole-line-or-region-global-mode 1))
 
+(add-to-list 'package-selected-packages 'orderless)
 (use-package orderless
+  ;; orderless allows for "fuzzy matching" when filtering lists of commands,
+  ;; variables, and functions. This is extremely useful since it is not always
+  ;; easy to predict how those symbols are named.
   :demand
   :init
   (setq completion-styles '(orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 
+(add-to-list 'package-selected-packages 'vertico)
 (use-package vertico
+  ;; Vertico creates a useful interface for picking things from a list, which
+  ;; is something you do all the time in Emacs.
   :init
   (vertico-mode))
 
+(add-to-list 'package-selected-packages 'marginalia)
 (use-package marginalia
   ;; Display useful information about the selection candidates.
   :init
-  (marginalia-mode 1)
-  (setq marginalia-annotators
-    '(marginalia-annotators-heavy marginalia-annotators-light)))
+  (marginalia-mode))
 
+(add-to-list 'package-selected-packages 'modus-themes)
 (use-package modus-themes
   ;; My preferred theme.
   :init

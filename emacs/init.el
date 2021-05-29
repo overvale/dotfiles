@@ -122,7 +122,6 @@
 (column-number-mode t)
 (display-time-mode t)
 
-(setq enable-recursive-minibuffers 1)
 (setq vc-follow-symlinks t
       find-file-visit-truename t)
 (setq create-lockfiles nil
@@ -146,6 +145,7 @@
 (setq-default tab-width 4
               indent-tabs-mode nil
               fill-column 78)
+
 
 ;;;; Functions
 
@@ -317,6 +317,26 @@ If no region is active, then stay active and swap."
 
 ;;;; Keybindings
 
+;; If on a Mac, use the command key as Super, left-option for Meta, and
+;; right-option for Alt.
+(when (eq system-type 'darwin)
+  (setq mac-command-modifier 'super
+        mac-option-modifier 'meta
+        mac-right-option-modifier 'nil))
+
+;; If on Windows, use Windows key as Super
+(when (eq system-type 'windows-nt)
+  (setq w32-pass-lwindow-to-system nil)
+  (setq w32-lwindow-modifier 'super)
+  (w32-register-hot-key [s-]))
+
+;; Mode Leader
+(defvar oht-mode-leader "s-\\"
+  "Defines leader key for mode-specific transients.
+Borrows the concept of a 'leader key' from Vim so I can press
+a single shortcut in any mode and get transient that I've defined
+for that mode.")
+
 ;; Minor modes override global bindings (see README), so any bindings you
 ;; don't want overridden should be placed in a minor mode. This technique is
 ;; stolen from the package bind-key.
@@ -338,26 +358,6 @@ Keybindings you define here will take precedence."
 ;; `minor-mode-map-alist'
 (add-to-list 'emulation-mode-map-alists
              `((oht-keys-mode . ,oht-keys-mode-keymap)))
-
-;; If on a Mac, use the command key as Super, left-option for Meta, and
-;; right-option for Alt.
-(when (eq system-type 'darwin)
-  (setq mac-command-modifier 'super
-        mac-option-modifier 'meta
-        mac-right-option-modifier 'nil))
-
-;; If on Windows, use Windows key as Super
-(when (eq system-type 'windows-nt)
-  (setq w32-pass-lwindow-to-system nil)
-  (setq w32-lwindow-modifier 'super)
-  (w32-register-hot-key [s-]))
-
-;; Mode Leader
-(defvar oht-mode-leader "s-\\"
-  "Defines leader key for mode-specific transients.
-Borrows the concept of a 'leader key' from Vim so I can press
-a single shortcut in any mode and get transient that I've defined
-for that mode.")
 
 ;; Super Bindings
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
@@ -697,6 +697,7 @@ the fixed-pitch face down to the height defined by
     ("r" "Reading"     oht-dispatch-reading)
     ("w" "Watch"       oht-dispatch-watch)]])
 
+
 ;;;; Secondary Selection
 
 ;; Emacs's Secondary Selection assumes you only want to interact with it via
@@ -765,14 +766,11 @@ the fixed-pitch face down to the height defined by
 
 ;;;; Minibuffer
 
-;; Save minibuffer commands to a history list
-(savehist-mode 1)
-
-;; The below is a fallback configuration for working with the default
-;; completions in Emacs. Thankfully, they do not interfere with Vertico.
-
-(setq completion-show-help nil
-      resize-mini-windows t)
+(custom-set-variables
+ '(enable-recursive-minibuffers t)
+ '(savehist-mode t)
+ '(completion-show-help nil)
+ '(resize-mini-windows t))
 
 ;; The completions list itself is read-only, so why not allow some nice navigation?
 (define-key completion-list-mode-map (kbd "n") 'next-completion)

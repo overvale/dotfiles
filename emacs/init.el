@@ -73,10 +73,10 @@
 (when (eq system-type 'darwin)
   (defvar oht-dotfiles "~/home/dot/emacs/")
   (defvar oht-orgfiles "~/home/org/")
-  (defvar oht-ingenuity-dir "~/home/ingenuity/")
   (defvar user-downloads-directory "~/Downloads"))
 
 (when (eq system-type 'windows-nt)
+  (cd "~/")
   (defvar oht-dotfiles "~/.emacs.d/")
   (defvar oht-orgfiles "~/home/org/")
   (defvar user-downloads-directory "~/home/Downloads"))
@@ -285,11 +285,6 @@ already narrowed."
   (interactive)
   (find-file user-init-file))
 
-
-;;;;; Transient Mark
-
-;; https://www.masteringemacs.org/article/fixing-mark-commands-transient-mark-mode
-
 (defun exchange-point-and-mark-dwim ()
   "If a region is active, then leave it activated and swap point and mark.
 If no region is active, then stay active and swap."
@@ -305,11 +300,6 @@ If no region is active, then stay active and swap."
   (interactive)
   (push-mark (point) t nil)
   (message "Pushed mark to ring"))
-
-
-;;;;; Youtube-dl
-
-;; A few utilities for working with videos
 
 (when (eq system-type 'darwin)
   (setq youtube-dl-path "/usr/local/bin/youtube-dl")
@@ -675,35 +665,10 @@ the fixed-pitch face down to the height defined by
 (add-hook 'buffer-face-mode-hook (lambda () (facedancer-vadjust-mode 'toggle)))
 
 
-;;;; Composition mode
-
-(define-minor-mode composition-mode
-  "A tiny minor-mode to toggle some settings I like when writing
-
-This is really just a wrapper around some extant features I toggle on/off
-when I'm writing. I've wrapped them in a minor mode to make it easy to
-toggle them on/off. It also allows me to define a lighter for the
-mode-line."
-  :init-value nil
-  :lighter " Comp"
-  (if composition-mode
-      (progn
-        (visual-line-mode t)
-        (setq-local line-spacing 2)
-        (olivetti-mode t)
-        (text-scale-increase 1)
-        (variable-pitch-mode 1))
-    (progn
-      (visual-line-mode -1)
-      (setq-local line-spacing 0)
-      (olivetti-mode -1)
-      (text-scale-increase 0)
-      (variable-pitch-mode -1)
-      ;; This shouldn't be needed, but is:
-      (toggle-truncate-lines 1))))
-
-
 ;;;; Dispatch
+
+;; Almost like an "app launcher" inside Emacs. These are the most common
+;; things I do in Emacs.
 
 (defun oht-dispatch-downloads () (interactive) (find-file "~/Downloads"))
 (defun oht-dispatch-reading () (interactive) (find-file "~/Downloads/reading"))
@@ -1891,11 +1856,6 @@ wherever you need to go."
 (use-package magit
   :if (when (eq system-type 'darwin))
   :commands magit-status)
-
-(use-package exec-path-from-shell
-  :if (when (eq system-type 'darwin))
-  :init
-  (exec-path-from-shell-initialize))
 
 (use-package olivetti
   :commands olivetti-mode

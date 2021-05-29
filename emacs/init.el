@@ -20,6 +20,41 @@
 
 (require 'package)
 
+;; List every package you'd like to install.
+(setq package-selected-packages
+      '(bicycle
+        blackout
+        buffer-move
+        consult
+        elfeed
+        embark
+        embark-consult
+        eww
+        fountain-mode
+        hackernews
+        helpful
+        isearch-mb
+        lua-mode
+        magit
+        marginalia
+        markdown-mode
+        modus-themes
+        move-text
+        olivetti
+        orderless
+        org
+        selected
+        transient
+        undo-fu
+        unfill
+        vertico
+        visual-regexp
+        visual-regexp-steroids
+        whole-line-or-region
+        use-package))
+
+;; Remove anything not in 'package-selected-packages'.
+(add-hook 'emacs-startup-hook 'package-autoremove)
 
 (setq use-package-always-defer t
       use-package-hook-name-suffix nil)

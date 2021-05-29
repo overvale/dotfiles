@@ -195,6 +195,11 @@
   (backward-word)
   (delete-region (point) (mark)))
 
+(defun kill-to-beg-line ()
+  "Kill from point to the beginning of the line."
+  (interactive)
+  (kill-line 0))
+
 (defun pipe-region (start end command)
   ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/text-extras.el
   "Pipe region through shell command. If the mark is inactive,
@@ -401,6 +406,7 @@ for that mode.")
 (global-set-key (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
 (global-set-key (kbd "M-DEL")   'backward-delete-word)
 (global-set-key (kbd "C-DEL")   'backward-delete-word)
+(global-set-key (kbd "C-M-k")   'kill-to-beg-line)
 
 
 ;;;; Visual Line Mode, Fixes

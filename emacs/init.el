@@ -16,11 +16,7 @@
 
 ;;; Package Setup & Essential Packages
 
-(custom-set-variables
- '(package-archives
-   '(("org" . "https://orgmode.org/elpa/")
-     ("melpa" . "https://melpa.org/packages/")
-     ("gnu" . "https://elpa.gnu.org/packages/"))))
+(push '("melpa" . "https://melpa.org/packages/") package-archives)
 
 (require 'package)
 

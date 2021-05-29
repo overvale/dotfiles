@@ -16,27 +16,25 @@
 
 ;;; Package Setup & Essential Packages
 
-;; Install packages with `package-install-selected-packages', remove packages
-;; with `package-autoremove'. Both functions look at the variable
-;; `package-selected-packages' for the canonical list of packages.
-;; Interactively installing and removing packages updates this list, but I
-;; want my init file to be a single source of truth about which packages
-;; should be installed. To this end I've written a macro for "selecting" packages.
-
+;; Tell Emacs which packages you'd like installed using this macro:
 (defmacro select-package (package)
   "Add PACKAGE to ‘package-selected-packages’."
   (declare (indent 1))
   `(add-to-list 'package-selected-packages ,package))
 
-;; Automatically remove anything not in 'package-selected-packages'.
-(add-hook 'emacs-startup-hook 'package-autoremove)
+;; Install packages with `package-install-selected-packages', remove packages
+;; with `package-autoremove'. Both functions look at the variable
+;; `package-selected-packages' for the canonical list of packages.
 
-;; Add melpa to package archives
+;; You can automatically remove anything not in 'package-selected-packages'
+;; (thus not in this init file) by un-commenting this hook:
+;; (add-hook 'emacs-startup-hook 'package-autoremove)
+
+;; Add melpa to package archives.
 (push '("melpa" . "https://melpa.org/packages/") package-archives)
 
 (require 'package)
 
-;; Use-Package Setup
 (select-package 'use-package)
 (setq use-package-always-defer t
       use-package-hook-name-suffix nil)
@@ -318,9 +316,9 @@ Borrows the concept of a 'leader key' from Vim so I can press
 a single shortcut in any mode and get transient that I've defined
 for that mode.")
 
-;; Minor modes override global bindings (see README), so any bindings you
-;; don't want overridden should be placed in a minor mode. This technique is
-;; stolen from the package bind-key.
+;; Minor modes override global bindings, so any bindings you don't want
+;; overridden should be placed in a minor mode. This technique is stolen from
+;; the package bind-key.
 
 (defvar oht-keys-mode-keymap (make-keymap)
   "Keymap for oht-keys-mode")
@@ -368,6 +366,7 @@ Keybindings you define here will take precedence."
 (define-key oht-keys-mode-keymap (kbd "<C-return>") 'execute-extended-command)
 (define-key oht-keys-mode-keymap (kbd "M-o") 'other-window)
 
+(global-set-key (kbd "M-<tab>") 'hippie-expand)
 (global-set-key (kbd "M-s-s")   'save-some-buffers)
 (global-set-key (kbd "M-c")     'capitalize-dwim)
 (global-set-key (kbd "M-l")     'downcase-dwim)
@@ -387,9 +386,7 @@ Keybindings you define here will take precedence."
 ;; things. `visual-line-mode' is a wrapper around a bunch of things, probably
 ;; best explained here: http://ergoemacs.org/emacs/emacs_long_line_wrap.html
 ;; `word-wrap' ONLY wraps lines word-wise instead of character-wise.
-;; `truncate-lines' ONLY controls if wrapping happens at all; if set to
-;; non-nil it is supposed to let lines run off the window, but this is a
-;; buffer-local setting that I cannot (no matter what I try) get to be global.
+;; `truncate-lines' ONLY controls if wrapping happens at all.
 (setq-default truncate-lines t)
 
 ;; When visual-line-mode is off and truncate-lines is toggled off, I still
@@ -482,6 +479,12 @@ Keybindings you define here will take precedence."
 
 
 ;;;; Facedancer Mode
+
+;; Facedancer's goal is to make customizing Emacs' fonts easy.
+;; facedancer-font-set allows you to set the global fonts.
+;; facedancer-mode allows you to set per-buffer fonts.
+;; facedancer-vadjust-mode allows optical adjustment of the variable-pitch height.
+
 
 ;;;;; Variables
 
@@ -684,9 +687,6 @@ the fixed-pitch face down to the height defined by
 ;; Emacs's Secondary Selection assumes you only want to interact with it via
 ;; the mouse, however it is perfectly possible to do it via the keyboard, all
 ;; you need is some wrapper functions to make things keybinding-addressable.
-
-;; A few functions for working with the Secondary Selection. The primary way I
-;; interact with these is through a hydra.
 
 (defun oht/cut-secondary-selection ()
   "Cut the secondary selection."
@@ -923,7 +923,6 @@ completions if invoked from inside the minibuffer."
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol))
 
-(global-set-key (kbd "M-<tab>") 'hippie-expand)
 
 ;;;; Info
 

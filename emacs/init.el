@@ -62,52 +62,6 @@
 (use-package transient
   :commands (transient-define-prefix))
 
-;; package.el loads every package you ever installed at startup, even if some
-;; of those packages are no longer referenced by your init-file. `package'
-;; includes an autoremove function, but that function looks at
-;; `package-selected-packages' for the canonical list of packages, not your
-;; init file, and `use-package' does not update that variable.
-;;
-;; Below is a few things that creates a list of packages 'ensured' by
-;; use-package and a function to autoremove anything not in that list.
-;; This is taken from here:
-;; https://github.com/jwiegley/use-package/issues/870#issuecomment-771881305
-;;
-;; Keep in mind, however, that you need to manually call
-;; `use-package-autoremove' to actually remove packages. Straight allows you
-;; to prevent the loading of any package not in a use-package declaration,
-;; which is not possible when using Package since all installed packages are
-;; loaded when `package-initialize' is called.
-;;
-;; In theory it should be possible to create advice similar to the below to
-;; populate the 'package-load-list' prior to calling `package-initialize'.
-;; This would have the effect of blocking the loading of any package not
-;; declared by use-package.
-
-(defvar use-package-selected-packages '(use-package)
-  "Packages pulled in by use-package.")
-
-(defun use-package-autoremove ()
-  "Autoremove packages not used by use-package."
-  (interactive)
-  (let ((package-selected-packages use-package-selected-packages))
-    (package-autoremove)))
-
-(eval-and-compile
-  (define-advice use-package-handler/:ensure (:around (fn name-symbol keyword args rest state) select)
-    (let ((items (funcall fn name-symbol keyword args rest state)))
-      (dolist (ensure args items)
-        (let ((package
-               (or (and (eq ensure t) (use-package-as-symbol name-symbol))
-                   ensure)))
-          (when package
-            (when (consp package)
-              (setq package (car package)))
-            (push `(add-to-list 'use-package-selected-packages ',package) items)))))))
-
-;; Automatically remove undeclared packages, after loading this file. Packages
-;; will remain loaded until restart.
-(add-hook 'emacs-startup-hook (lambda () (use-package-autoremove)))
 
 
 ;;; Configuration

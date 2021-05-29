@@ -580,6 +580,57 @@ This is a function for `after-save-hook'. Remove
   (smtpmail-smtp-server "smtp.gmail.com")
   (smtpmail-smtp-service 587))
 
+;;; Use-Package Autoremove
+
+;; I want my init file to define all the packages I use, install them, and
+;; remove them when no longer referenced. This is not how Package behaves by
+;; default. Below is code that makes Package do this.
+;;
+;; When starting-up, package.el loads all packages in the variable
+;; 'package-load-list', which defaults to 'all'. That means Package loads all
+;; installed packages at startup -- even if those packages are not in your
+;; init file. Package includes an autoremove function, but that function looks
+;; at the variable `package-selected-packages' for the canonical list of
+;; packages (not your init file) and `use-package' does not update that
+;; variable.
+;;
+;; Below is a few things that creates a list of packages 'ensured' by
+;; use-package and a function to autoremove anything not in that list.
+;; This is taken from here:
+;; https://github.com/jwiegley/use-package/issues/870#issuecomment-771881305
+;;
+;; Keep in mind, however, that you need to manually call
+;; `use-package-autoremove' to actually remove packages. Straight allows you
+;; to prevent the loading of any package not in a use-package declaration,
+;; which is not possible when using Package since all installed packages are
+;; loaded when `package-initialize' is called.
+
+(defvar use-package-selected-packages '(use-package)
+  "Packages pulled in by use-package.")
+
+(defun use-package-autoremove ()
+  "Autoremove packages not used by use-package."
+  (interactive)
+  (let ((package-selected-packages use-package-selected-packages))
+    (package-autoremove)))
+
+(define-advice use-package-handler/:ensure (:around (fn name-symbol keyword args rest state) select)
+  (let ((items (funcall fn name-symbol keyword args rest state)))
+    (dolist (ensure args items)
+      (let ((package
+             (or (and (eq ensure t) (use-package-as-symbol name-symbol))
+                 ensure)))
+        (when package
+          (when (consp package)
+            (setq package (car package)))
+          (push `(add-to-list 'use-package-selected-packages ',package) items))))))
+
+;; Automatically remove undeclared packages, after loading this file. Packages
+;; will remain loaded until restart.
+(add-hook 'after-init--hook 'use-package-autoremove)
+
+
+
 ;;; Replacing Package with Straight
 
 ;;;; in early-init
@@ -622,3 +673,41 @@ This is a function for `after-save-hook'. Remove
             (setq gc-cons-threshold 16777216 ; 16mb
                   gc-cons-percentage 0.1)
             (garbage-collect)) t)
+
+;;; Composition mode
+
+(define-minor-mode composition-mode
+  "A tiny minor-mode to toggle some settings I like when writing.
+This is really just a wrapper around some extant features I toggle on/off
+when I'm writing. I've wrapped them in a minor mode to make it easy to
+toggle them on/off. It also allows me to define a lighter for the
+mode-line."
+  :init-value nil
+  :lighter " Comp"
+  (if composition-mode
+      (progn
+        (visual-line-mode t)
+        (setq-local line-spacing 2)
+        (olivetti-mode t)
+        (text-scale-increase 1)
+        (variable-pitch-mode 1))
+    (progn
+      (visual-line-mode -1)
+      (setq-local line-spacing 0)
+      (olivetti-mode -1)
+      (text-scale-increase 0)
+      (variable-pitch-mode -1)
+      ;; This shouldn't be needed, but is:
+      (toggle-truncate-lines 1))))
+
+;;; Lisp Alternative to Use-Package
+
+(add-to-list package-selected-packages 'olivetti)
+
+(custom-set-variables
+ '(olivetti-body-width 84))
+
+(autoload 'olivetti-mode "olivetti")
+
+(eval-after-load 'olivetti
+  '(blackout 'olivetti-mode " Olvti"))

@@ -20,44 +20,15 @@
 
 (require 'package)
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
 
-(eval-when-compile (require 'use-package))
+(setq use-package-always-defer t
+      use-package-hook-name-suffix nil)
 
-;; Ensure all packages in use-package delcarations are installed, unless
-;; specified.
-(setq use-package-always-ensure t)
+(require 'use-package)
 
-;; Tell `use-package' to always load features lazily unless told
-;; otherwise. It's nicer to have this kind of thing be deterministic:
-;; if `:demand' is present, the loading is eager; otherwise, the
-;; loading is lazy. See
-;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
-(setq use-package-always-defer t)
-
-;; By default, use-package adds the suffix "-hook" to all your hook
-;; declarations, which I think is a reasonable default. I tend to forget that
-;; use-package does this and then forget that Emacs requires the suffix, then
-;; spend 15 minutes banging my head against a wall trying to figure out why
-;; the non-use-package hooks I'm writing don't work. So to avoid that I make
-;; it consistent, use-package or not, the hooks are named the same.
-(setq use-package-hook-name-suffix nil)
-
-;; I use blackout to configure mode listings in the mode-line, and since those
-;; settings are scattered across all my use-package declarations, I
-;; essentially need to define this as part of the use-package config.
-(use-package blackout
-  :commands (blackout))
-
-;; I make extensive use of transients, this config is overflowing with them.
-;; To ensure I can define them anywhere I want in this config, I need to
-;; install it and autoload the command. But my actual config for the package
-;; is below.
-(use-package transient
-  :commands (transient-define-prefix))
-
+;; I use the following packages throughout this config, so I declare them here.
+(autoload 'blackout "blackout" nil t)
+(autoload 'transient-define-prefix "transient" nil t)
 
 
 ;;; Configuration

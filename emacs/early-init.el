@@ -3,14 +3,10 @@
 ;; Documentation: (info "(emacs) Early Init File")
 
 ;; Unless 'package-enable-at-startup' is set to 'nil' Emacs will automatically
-;; load all installed packages after early-init.el but before init.el
-
-;; Packages to load and not load are defined in 'package-load-list'. You can
-;; customize it with something like:
+;; load all installed packages after early-init.el but before init.el To
+;; prevent an installed package from loading at startup, customize the
+;; `package-load-list' like this:
 ;; (setq package-load-list '((org-journal nil) all))
-
-;; Precompute package autoloads to speed-up startup.
-(setq package-quickstart t)
 
 ;; Set these settings before the GUI frame is created
 (custom-set-variables

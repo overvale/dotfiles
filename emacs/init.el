@@ -16,17 +16,25 @@
 
 ;;; Package Setup & Essential Packages
 
+;; Install packages with `package-install-selected-packages', remove packages
+;; with `package-autoremove'. Both functions look at the variable
+;; `package-selected-packages' for the canonical list of packages.
+;; Interactively installing and removing packages updates this list, but I
+;; want my init file to be a single source of truth about which packages
+;; should be installed. To this end I've written a macro for "selecting" packages.
+
 (defmacro select-package (package)
   "Add PACKAGE to ‘package-selected-packages’."
   (declare (indent 1))
   `(add-to-list 'package-selected-packages ,package))
 
+;; Automatically remove anything not in 'package-selected-packages'.
+(add-hook 'emacs-startup-hook 'package-autoremove)
+
+;; Add melpa to package archives
 (push '("melpa" . "https://melpa.org/packages/") package-archives)
 
 (require 'package)
-
-;; Remove anything not in 'package-selected-packages'.
-(add-hook 'emacs-startup-hook 'package-autoremove)
 
 ;; Use-Package Setup
 (select-package 'use-package)
@@ -34,7 +42,7 @@
       use-package-hook-name-suffix nil)
 (require 'use-package)
 
-;; I use the following packages throughout this config, so I declare them here.
+;; I use the following packages/commands throughout this config, so I declare them here.
 (autoload 'blackout "blackout" nil t)
 (autoload 'transient-define-prefix "transient" nil t)
 

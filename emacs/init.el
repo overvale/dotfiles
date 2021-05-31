@@ -14,33 +14,72 @@
 ;; occur buffer with the search [^;;;+].
 
 
-;;; Package Setup & Essential Packages
+;;; Package Management
 
-;; Tell Emacs which packages you'd like installed using this macro:
-(defmacro select-package (package)
-  "Add PACKAGE to ‘package-selected-packages’."
-  (declare (indent 1))
-  `(add-to-list 'package-selected-packages ,package))
+;;;; Package Setup
+
+(add-to-list 'package-archives'("melpa" . "https://melpa.org/packages/") t)
+
+(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
+
+;; On first run, with no packages installed, Emacs will stop loading this file
+;; as soon as it encounters code from a package not yet installed. So, when
+;; setting up a new machine, it is important for the very first thing to be a
+;; listing of all the packages you'd like to install so you can install all
+;; the packages you need with `package-install-selected-packages'.
+(setq package-selected-packages
+      '(bicycle
+		buffer-move
+		consult
+		embark
+		embark-consult
+		fountain-mode
+		hackernews
+		helpful
+		isearch-mb
+		marginalia
+		markdown-mode
+		modus-themes
+		move-text
+		olivetti
+		orderless
+		selected
+		transient
+		undo-fu
+		unfill
+		vertico
+		visual-regexp
+		visual-regexp-steroids
+		whole-line-or-region
+        blackout
+        lua-mode
+        use-package))
+
+(when (string= (system-name) "shadowfax.local")
+  (add-to-list 'package-selected-packages 'elfeed))
+
+(when (eq system-type 'darwin)
+  (add-to-list 'package-selected-packages 'magit))
 
 ;; Install packages with `package-install-selected-packages', remove packages
 ;; with `package-autoremove'. Both functions look at the variable
 ;; `package-selected-packages' for the canonical list of packages.
 
-;; You can automatically remove anything not in 'package-selected-packages'
+;; You can automatically remove anything not in `package-selected-packages'
 ;; (thus not in this init file) by un-commenting this hook:
 ;; (add-hook 'emacs-startup-hook 'package-autoremove)
 
-;; Add melpa to package archives.
-(push '("melpa" . "https://melpa.org/packages/") package-archives)
 
-(require 'package)
+;;;; Use-Package, Blackout, Transient
 
-(select-package 'use-package)
+;; This config requires these 3 packages to run properly.
+
+(eval-when-compile
+  (require 'use-package))
+
 (setq use-package-always-defer t
       use-package-hook-name-suffix nil)
-(require 'use-package)
 
-;; I use the following packages/commands throughout this config, so I declare them here.
 (autoload 'blackout "blackout" nil t)
 (autoload 'transient-define-prefix "transient" nil t)
 
@@ -822,8 +861,6 @@ completions if invoked from inside the minibuffer."
 (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start)
 
 ;; isearch-mb allows you to edit the isearch in the minibuffer. Lovely.
-(select-package 'isearch-mb)
-
 (isearch-mb-mode)
 
 
@@ -1059,7 +1096,6 @@ completions if invoked from inside the minibuffer."
 
 ;;; Appearance
 
-(select-package 'modus-themes)
 (use-package modus-themes
   :custom
   (modus-themes-slanted-constructs t)
@@ -1120,7 +1156,6 @@ completions if invoked from inside the minibuffer."
 
 ;;;; Narrowing & Searching
 
-(select-package 'orderless)
 (use-package orderless
   :demand
   :custom
@@ -1128,7 +1163,6 @@ completions if invoked from inside the minibuffer."
   (completion-category-defaults nil)
   (completion-category-overrides '((file (styles . (partial-completion))))))
 
-(select-package 'vertico)
 (use-package vertico
   :init (vertico-mode)
   :config
@@ -1137,14 +1171,12 @@ completions if invoked from inside the minibuffer."
                 (setq-local completion-auto-help nil
                             completion-show-inline-help nil))))
 
-(select-package 'marginalia)
 (use-package marginalia
   :bind (:map minibuffer-local-map
               ("M-A" . marginalia-cycle))
   :init
   (marginalia-mode))
 
-(select-package 'embark)
 (use-package embark
   :bind
   (:map embark-file-map
@@ -1154,7 +1186,6 @@ completions if invoked from inside the minibuffer."
         ("d" . youtube-dl-URL-at-point)
         ("&" . browse-url-default-macosx-browser)))
 
-(select-package 'consult)
 (use-package consult
   :bind
   ([remap yank-pop] . consult-yank-pop)
@@ -1163,10 +1194,10 @@ completions if invoked from inside the minibuffer."
   (consult-config
    `((consult-mark :preview-key any))))
 
-(select-package 'embark-consult)
 (use-package embark-consult
   :after (embark consult)
   :demand t)
+
 
 ;;;; Org
 
@@ -1396,7 +1427,6 @@ org-todo-keywords to a transient command."
   :hook (view-mode-hook . hl-line-mode)
   :blackout " VIEW")
 
-(select-package 'selected)
 (use-package selected
   :commands selected-minor-mode
   :init
@@ -1530,8 +1560,6 @@ To be used by `eww-after-render-hook'."
 
   ) ; End "use-package eww"
 
-(when (string= (system-name) "shadowfax.local")
-  (select-package 'elfeed))
 (use-package elfeed
   :if (string= (system-name) "shadowfax.local")
   :commands elfeed
@@ -1656,7 +1684,6 @@ To be used by `eww-after-render-hook'."
 (add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
 (add-hook 'elfeed-show-mode-hook 'disable-selected-minor-mode)
 
-(select-package 'hackernews)
 (use-package hackernews
   :commands hackernews
   :bind
@@ -1676,7 +1703,6 @@ To be used by `eww-after-render-hook'."
 ;; the source code, find anything I think I might use, and pop it in a
 ;; transient.
 
-(select-package 'transient)
 (use-package transient
   :init
   ;; Any commands these transients use, whose packages are potentially not
@@ -1841,37 +1867,30 @@ wherever you need to go."
 
 ;;;; Misc Packages
 
-(when (eq system-type 'darwin)
-  (select-package 'magit))
 (use-package magit
   :if (when (eq system-type 'darwin))
   :commands magit-status)
 
-(select-package 'olivetti)
 (use-package olivetti
   :commands olivetti-mode
   :custom (olivetti-body-width 84)
   :blackout " Olvti")
 
-(select-package 'undo-fu)
 (use-package undo-fu
   :bind
   ("C-/" . undo-fu-only-undo)
   ("M-/" . undo-fu-only-redo))
 
-(select-package 'unfill)
 (use-package unfill
   :commands (unfill-paragraph unfill-toggle unfill-region)
   :bind
   ("M-q" . unfill-toggle))
 
-(select-package 'whole-line-or-region)
 (use-package whole-line-or-region
   :init
   (whole-line-or-region-global-mode 1)
   :blackout whole-line-or-region-local-mode)
 
-(select-package 'helpful)
 (use-package helpful
   :bind
   ("C-h f" . #'helpful-function)
@@ -1880,7 +1899,6 @@ wherever you need to go."
   ("C-h k" . #'helpful-key)
   ("C-h p" . #'helpful-at-point))
 
-(select-package 'move-text)
 (use-package move-text
   :commands (move-text-up move-text-down)
   :bind
@@ -1893,20 +1911,17 @@ wherever you need to go."
       ("n" "Down" move-text-down)
       ("p" "Up" move-text-up)]]))
 
-(select-package 'buffer-move)
 (use-package buffer-move
   :commands (buf-move-up
              buf-move-down
              buf-move-left
              buf-move-right))
 
-(select-package 'visual-regexp)
 (use-package visual-regexp
   ;; Provides an alternate version of `query-replace' which highlights matches
   ;; and replacements as you type.
   :bind (([remap query-replace] . #'vr/query-replace)))
 
-(select-package 'visual-regexp-steroids)
 (use-package visual-regexp-steroids
   ;; Allows `visual-regexp' to use regexp engines other than Emacs'; for
   ;; example, Python or Perl regexps.
@@ -1915,7 +1930,6 @@ wherever you need to go."
   :custom
   (vr/engine 'pcre2el))
 
-(select-package 'bicycle)
 (use-package bicycle
   :after outline
   :bind
@@ -1924,20 +1938,17 @@ wherever you need to go."
   (:map emacs-lisp-mode-map
         ("<backtab>" . bicycle-cycle-global)))
 
-(select-package 'fountain-mode)
 (use-package fountain-mode
   :commands fountain-mode
   :custom
   (fountain-add-continued-dialog nil)
   (fountain-highlight-elements (quote (section-heading))))
 
-(select-package 'markdown-mode)
 (use-package markdown-mode
   :mode ("\\.text" . markdown-mode)
   :magic ("%text" . markdown-mode)
   :commands markdown-mode)
 
-(select-package 'lua-mode)
 (use-package lua-mode
   :commands lua-mode)
 

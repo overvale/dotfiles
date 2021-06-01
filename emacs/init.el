@@ -14,76 +14,6 @@
 ;; occur buffer with the search [^;;;+].
 
 
-;;; Package Management
-
-;;;; Package Setup
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
-
-;; On first run, with no packages installed, Emacs will stop loading this file
-;; as soon as it encounters code from a package not yet installed. So, when
-;; setting up a new machine, it is important for the very first thing to be a
-;; listing of all the packages you'd like to install so you can install all
-;; the packages you need with `package-install-selected-packages'.
-(setq package-selected-packages
-      '(bicycle
-        buffer-move
-        consult
-        embark
-        embark-consult
-        fountain-mode
-        hackernews
-        helpful
-        isearch-mb
-        marginalia
-        markdown-mode
-        modus-themes
-        move-text
-        olivetti
-        orderless
-        selected
-        transient
-        undo-fu
-        unfill
-        vertico
-        visual-regexp
-        visual-regexp-steroids
-        whole-line-or-region
-        blackout
-        lua-mode
-        use-package))
-
-(when (string= (system-name) "shadowfax.local")
-  (add-to-list 'package-selected-packages 'elfeed))
-
-(when (eq system-type 'darwin)
-  (add-to-list 'package-selected-packages 'magit))
-
-;; Install packages with `package-install-selected-packages', remove packages
-;; with `package-autoremove'. Both functions look at the variable
-;; `package-selected-packages' for the canonical list of packages.
-
-;; You can automatically remove anything not in `package-selected-packages'
-;; (thus not in this init file) by un-commenting this hook:
-;; (add-hook 'emacs-startup-hook 'package-autoremove)
-
-
-;;;; Use-Package, Blackout, Transient
-
-;; This config requires these 3 packages to run properly.
-
-(eval-when-compile
-  (require 'use-package))
-
-(setq use-package-always-defer t
-      use-package-hook-name-suffix nil)
-
-(autoload 'blackout "blackout" nil t)
-(autoload 'transient-define-prefix "transient" nil t)
-
-
 ;;; Configuration
 
 ;;;; User/Machine Settings
@@ -479,6 +409,74 @@ Keybindings you define here will take precedence."
 (global-set-key [C-M-drag-mouse-1] 'mouse-set-secondary)
 (global-set-key [C-M-down-mouse-1] 'mouse-drag-secondary)
 
+
+;;; Package Management
+
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
+
+;; On first run, with no packages installed, Emacs will stop loading this file
+;; as soon as it encounters code from a package not yet installed. So, when
+;; setting up a new machine, it is important for the very first thing to be a
+;; listing of all the packages you'd like to install so you can install all
+;; the packages you need with `package-install-selected-packages'.
+(setq package-selected-packages
+      '(bicycle
+        buffer-move
+        consult
+        embark
+        embark-consult
+        fountain-mode
+        hackernews
+        helpful
+        isearch-mb
+        marginalia
+        markdown-mode
+        modus-themes
+        move-text
+        olivetti
+        orderless
+        selected
+        transient
+        undo-fu
+        unfill
+        vertico
+        visual-regexp
+        visual-regexp-steroids
+        whole-line-or-region
+        blackout
+        lua-mode
+        use-package))
+
+(when (string= (system-name) "shadowfax.local")
+  (add-to-list 'package-selected-packages 'elfeed))
+
+(when (eq system-type 'darwin)
+  (add-to-list 'package-selected-packages 'magit))
+
+;; Install packages with `package-install-selected-packages', remove packages
+;; with `package-autoremove'. Both functions look at the variable
+;; `package-selected-packages' for the canonical list of packages.
+
+;; You can automatically remove anything not in `package-selected-packages'
+;; (thus not in this init file) by un-commenting this hook:
+;; (add-hook 'emacs-startup-hook 'package-autoremove)
+
+;; Use-Package, Blackout, Transient
+;; This config requires these 3 packages to run properly.
+
+(eval-when-compile
+  (require 'use-package))
+
+(setq use-package-always-defer t
+      use-package-hook-name-suffix nil)
+
+(autoload 'blackout "blackout" nil t)
+(autoload 'transient-define-prefix "transient" nil t)
+
+
+;;; Built-In Packages & Lisp
 
 ;;;; Flyspell
 

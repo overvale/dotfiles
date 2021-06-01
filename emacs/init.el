@@ -18,7 +18,7 @@
 
 ;;;; Package Setup
 
-(add-to-list 'package-archives'("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
 
@@ -29,28 +29,28 @@
 ;; the packages you need with `package-install-selected-packages'.
 (setq package-selected-packages
       '(bicycle
-		buffer-move
-		consult
-		embark
-		embark-consult
-		fountain-mode
-		hackernews
-		helpful
-		isearch-mb
-		marginalia
-		markdown-mode
-		modus-themes
-		move-text
-		olivetti
-		orderless
-		selected
-		transient
-		undo-fu
-		unfill
-		vertico
-		visual-regexp
-		visual-regexp-steroids
-		whole-line-or-region
+        buffer-move
+        consult
+        embark
+        embark-consult
+        fountain-mode
+        hackernews
+        helpful
+        isearch-mb
+        marginalia
+        markdown-mode
+        modus-themes
+        move-text
+        olivetti
+        orderless
+        selected
+        transient
+        undo-fu
+        unfill
+        vertico
+        visual-regexp
+        visual-regexp-steroids
+        whole-line-or-region
         blackout
         lua-mode
         use-package))
@@ -167,8 +167,6 @@
 
 ;;;; Functions
 
-;;;;; Miscellaneous
-
 (defun occur-dwim ()
   "Call `occur' with a sane default."
   (interactive)
@@ -272,9 +270,9 @@ already narrowed."
   (interactive "P")
   (declare (interactive-only))
   (cond ((and (buffer-narrowed-p) (not p)) (widen))
-	    ((and (bound-and-true-p org-src-mode) (not p))
-	     (org-edit-src-exit))
-	    ((region-active-p)
+        ((and (bound-and-true-p org-src-mode) (not p))
+         (org-edit-src-exit))
+        ((region-active-p)
          (narrow-to-region (region-beginning) (region-end)))
         ((derived-mode-p 'org-mode)
          (or (ignore-errors (org-edit-src-code))
@@ -282,8 +280,8 @@ already narrowed."
              (org-narrow-to-subtree)))
         ((derived-mode-p 'latex-mode)
          (LaTeX-narrow-to-environment))
-	    ((derived-mode-p 'tex-mode)
-	     (TeX-narrow-to-group))
+        ((derived-mode-p 'tex-mode)
+         (TeX-narrow-to-group))
         (t (narrow-to-defun))))
 
 (defun find-emacs-dotfiles ()

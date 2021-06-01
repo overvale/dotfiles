@@ -7,8 +7,8 @@
 
 ;; There are many "Emacs starter kits" out there, this one is mine. It is
 ;; designed to be exceedingly simple. Just copy this one file to
-;; ~/.emacs/init.el and open Emacs. Install the below packages by calling
-;; `package-install-selected-packages'.
+;; ~/.emacs/init.el and open Emacs. then innstall the below packages by
+;; calling `package-install-selected-packages'.
 
 
 ;;; Goals and Philosophy
@@ -16,20 +16,23 @@
 ;; 1. Don't bother learning the Emacs key bindings you don't want to. Once you
 ;;    learn how to configure Emacs you can create whatever bindings make
 ;;    sense to you.
+;;
 ;; 2. I'm a Mac user, so this config targets Mac users and sets some of the
 ;;    most common shortcuts, as well as making the modifier keys behave in a
 ;;    slightly more predictable way.
-;; 3. I use the built-in `package' system and the package `use-package' to
-;;    install and configure packages. Along with the code below, this allows
+;;
+;; 3. I use the built-in `package' to install packages and the package
+;;    `use-package' to configure them. Along with the code below, this allows
 ;;    you use your init file as a single "source of truth" for your
 ;;    configuration. Much of the confusion a beginner experiences (in my
 ;;    opinion) is rooted in Emacs's ability to be customized both by an init
 ;;    file and interactively (which saves to an init file).
-;; 4. I highly recommend, for first-time users, the combination of the
-;;    packages `vertico', `orderless', and `marginalia'. These tools make
-;;    Emacs easier to explore and discover capabilities. You may 
-;;    eventually decide they're not for you, but I think they're a great place
-;;    to start.
+;;
+;; 4. I highly recommend the combination of the packages `vertico',
+;;    `orderless', and `marginalia'. These tools make it easier to explore
+;;    Emacs and discover capabilities. You may eventually decide they're not
+;;    for you, but I think they're a great place to start.
+;;
 ;; 5. Provides some convenience bindings for my most used Emacs features.
 
 ;; ---------------------------------------------------------------------------
@@ -142,35 +145,30 @@
 
 ;;; Package Management
 
-;; - `package' is used to install/update packages.
-;; - `use-package' is used to precisely control the loading of packages and
-;;    configure them.
-
-;; This config does not install or remove anything automatically. You'll need
-;; to do that by calling functions. You can either do this interactively
-;; (typing in the commands) or calling these functions from your init file.
-
-;; Install packages with `package-install-selected-packages', remove packages
-;; with `package-autoremove'. Both functions look at the variable
-;; `package-selected-packages' for the canonical list of packages.
+;; `package' is used to install/update packages.
 
 ;; By default, the only source of packages is elpa.gnu.org, but there are tons
 ;; of great packages on MELBA, to be able to install those we add the URL to
 ;; the following variable:
-(push '("melpa" . "https://melpa.org/packages/") package-archives)
+(add-to-list 'package-archives'("melpa" . "https://melpa.org/packages/") t)
 
-;; Load the package library so we can work with it.
-(require 'package)
+;; Prefer ELPA over MELPA
+(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
 
-;; This tells Emacs that you'd like to install this package. You'll need to
-;; repeat this for each package you want to install. Use-Package comes with a
-;; way to do this as part of a configuration statement, but if you do it that
-;; way you'll need to manually remove all packages you no longer use. Adding
-;; the packages you want to this list will allow you to call
-;; `package-autoremove' and delete everything not in this list.
-(add-to-list 'package-selected-packages 'use-package)
+;; A list of all packages you'd like to install.
+;; Install packages with (package-install-selected-packages)
+;; Remove packages, once removed from this list, with (package-autoremove)
+(setq package-selected-packages
+      '(use-package
+        undo-fu
+        which-key
+        whole-line-or-region
+        orderless
+        vertico
+        marginalia
+        modus-themes))
 
-;; Load use-package so we can use it.
+;; Use Package is for configuring packages.
 (require 'use-package)
 
 
@@ -180,7 +178,6 @@
 ;; most common source of breakage, so if something goes wrong below all of the
 ;; above settings are still loaded.
 
-(add-to-list 'package-selected-packages 'undo-fu)
 (use-package undo-fu
   ;; Undo in Emacs is confusing, for example there's no redo command and you can
   ;; undo an undo. That's fine if you're an Emacs wizard, but this package
@@ -189,13 +186,11 @@
   ("s-z" . undo-fu-only-undo)
   ("s-Z" . undo-fu-only-redo))
 
-(add-to-list 'package-selected-packages 'which-key)
 (use-package which-key
   ;; Displays useful pop-ups for when you type an incomplete binding.
   :init
   (which-key-mode 1))
 
-(add-to-list 'package-selected-packages 'whole-line-or-region)
 (use-package whole-line-or-region
   ;; the region isn't always 'active' (visible), in those cases, if you call a
   ;; command that acts on a region you'll be acting on an invisible region.
@@ -204,7 +199,6 @@
   :init
   (whole-line-or-region-global-mode 1))
 
-(add-to-list 'package-selected-packages 'orderless)
 (use-package orderless
   ;; orderless allows for "fuzzy matching" when filtering lists of commands,
   ;; variables, and functions. This is extremely useful since it is not always
@@ -215,20 +209,17 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 
-(add-to-list 'package-selected-packages 'vertico)
 (use-package vertico
   ;; Vertico creates a useful interface for picking things from a list, which
   ;; is something you do all the time in Emacs.
   :init
   (vertico-mode))
 
-(add-to-list 'package-selected-packages 'marginalia)
 (use-package marginalia
   ;; Display useful information about the selection candidates.
   :init
   (marginalia-mode))
 
-(add-to-list 'package-selected-packages 'modus-themes)
 (use-package modus-themes
   ;; My preferred theme.
   :init

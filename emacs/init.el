@@ -1778,8 +1778,7 @@ wherever you need to go."
       ("g" "Fill Column" global-display-fill-column-indicator-mode)
       ("w" "Wrap" visual-line-mode)
       ("t" "Truncate" toggle-truncate-lines)
-      ("W" "Whitespace" whitespace-mode)
-      ("c" "Composition Mode" composition-mode)]])
+      ("W" "Whitespace" whitespace-mode)]])
 
   (transient-define-prefix oht-transient-fonts ()
     "Set Font Properties"
@@ -1790,8 +1789,7 @@ wherever you need to go."
       ("v" "Var Mode" variable-pitch-mode)
       ("V" "V+ Mode" facedancer-vadjust-mode)
       ("o" "Olivetti" olivetti-mode)
-      ("w" "Wrap" visual-line-mode)
-      ("c" "Composition" composition-mode)]
+      ("w" "Wrap" visual-line-mode)]
      ["Size"
       ("0" "Reset Size" text-scale-mode)
       ("=" "Larger" text-scale-increase)

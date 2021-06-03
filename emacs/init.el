@@ -902,7 +902,7 @@ completions if invoked from inside the minibuffer."
  '(remember-notes-initial-major-mode 'fundamental-mode)
  '(remember-notes-auto-save-visited-file-name t))
 
-(defun oht-remember-dwim ()
+(defun remember-dwim ()
   "If the region is active, capture with region, otherwise just capture."
   (interactive)
   (if (use-region-p)

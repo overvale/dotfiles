@@ -287,23 +287,19 @@ for that mode.")
 ;; overridden should be placed in a minor mode. This technique is stolen from
 ;; the package bind-key.
 
-(defvar oht-keys-mode-keymap (make-keymap)
-  "Keymap for oht-keys-mode")
+(defvar bosskey-mode-map (make-keymap)
+  "Keymap for bosskey-mode.")
 
-(define-minor-mode oht-keys-mode
-  "Minor mode for my personal keybindings.
-
+(define-minor-mode bosskey-mode
+  "Minor mode for my personal keybindings, which override others.
 The only purpose of this minor mode is to override global keybindings.
 Keybindings you define here will take precedence."
   :init-value t
   :global t
-  :keymap oht-keys-mode-keymap)
+  :keymap bosskey-mode-map)
 
-;; Stolen from bind-key:
-;; the keymaps in `emulation-mode-map-alists' take precedence over
-;; `minor-mode-map-alist'
 (add-to-list 'emulation-mode-map-alists
-             `((oht-keys-mode . ,oht-keys-mode-keymap)))
+             `((bosskey-mode . ,bosskey-mode-map)))
 
 ;; Super Bindings
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
@@ -330,8 +326,8 @@ Keybindings you define here will take precedence."
 
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
-(define-key oht-keys-mode-keymap (kbd "<C-return>") 'execute-extended-command)
-(define-key oht-keys-mode-keymap (kbd "M-o") 'other-window)
+(define-key bosskey-mode-map (kbd "<C-return>") 'execute-extended-command)
+(define-key bosskey-mode-map (kbd "M-o") 'other-window)
 
 (global-set-key (kbd "M-<tab>") 'hippie-expand)
 (global-set-key (kbd "M-s-s")   'save-some-buffers)
@@ -364,8 +360,8 @@ Keybindings you define here will take precedence."
 ;; This is inconsistent with macOS behavior, which is that "C-a" always goes
 ;; to the beginning of the logical line and "s-<left>" goes to the beginning
 ;; of the visual line.
-(define-key oht-keys-mode-keymap (kbd "C-a") 'beginning-of-line)
-(define-key oht-keys-mode-keymap (kbd "C-e") 'end-of-line)
+(define-key bosskey-mode-map (kbd "C-a") 'beginning-of-line)
+(define-key bosskey-mode-map (kbd "C-e") 'end-of-line)
 (when (eq system-type 'darwin)
   (global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
   (global-set-key (kbd "s-<right>") 'end-of-visual-line))

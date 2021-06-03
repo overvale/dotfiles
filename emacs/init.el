@@ -1113,9 +1113,9 @@ completions if invoked from inside the minibuffer."
 (when (eq system-type 'darwin)
   ;; config
   (setq facedancer-monospace "SF Mono"
-        facedancer-variable  "SF Pro Text"
+        facedancer-variable  "New York"
         facedancer-monospace-size 12
-        facedancer-variable-size  13)
+        facedancer-variable-size  14)
   ;; set faces
   (facedancer-font-set)
   ;; customize mode-line

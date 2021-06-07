@@ -94,6 +94,9 @@
               indent-tabs-mode nil
               fill-column 78)
 
+;; The Mark
+(setq set-mark-command-repeat-pop t
+      mark-even-if-inactive nil)
 
 ;;;; Functions
 
@@ -232,8 +235,9 @@ already narrowed."
   (find-file user-init-file))
 
 (defun exchange-point-and-mark-dwim ()
-  "If a region is active, then leave it activated and swap point and mark.
-If no region is active, then stay active and swap."
+  "Respect region active/inactive and swap point and mark.
+If a region is active, then leave it activated and swap point and mark.
+If no region is active, then just swap point and mark."
   (interactive)
   (if (use-region-p)
       (exchange-point-and-mark)
@@ -338,8 +342,6 @@ Keybindings you define here will take precedence."
 (global-set-key (kbd "M-z")     'zap-to-char)
 (global-set-key (kbd "M-Z")     'zap-up-to-char)
 (global-set-key (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
-(global-set-key (kbd "M-DEL")   'backward-delete-word)
-(global-set-key (kbd "C-DEL")   'backward-delete-word)
 (global-set-key (kbd "C-M-k")   'kill-to-beg-line)
 
 
@@ -440,7 +442,6 @@ Keybindings you define here will take precedence."
         vertico
         visual-regexp
         visual-regexp-steroids
-        whole-line-or-region
         blackout
         lua-mode
         use-package))
@@ -1875,11 +1876,6 @@ wherever you need to go."
   :commands (unfill-paragraph unfill-toggle unfill-region)
   :bind
   ("M-q" . unfill-toggle))
-
-(use-package whole-line-or-region
-  :init
-  (whole-line-or-region-global-mode 1)
-  :blackout whole-line-or-region-local-mode)
 
 (use-package helpful
   :bind

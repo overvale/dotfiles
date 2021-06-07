@@ -63,6 +63,7 @@
 (set-language-environment "UTF-8")
 (setq uniquify-buffer-name-style 'forward)
 (setq save-interprogram-paste-before-kill t)
+(setq mark-even-if-inactive nil)
 
 
 ;;; Keyboard modifiers setup
@@ -162,7 +163,6 @@
       '(use-package
         undo-fu
         which-key
-        whole-line-or-region
         orderless
         vertico
         marginalia
@@ -190,14 +190,6 @@
   ;; Displays useful pop-ups for when you type an incomplete binding.
   :init
   (which-key-mode 1))
-
-(use-package whole-line-or-region
-  ;; the region isn't always 'active' (visible), in those cases, if you call a
-  ;; command that acts on a region you'll be acting on an invisible region.
-  ;; This package makes it so that only the active region is acted upon, and
-  ;; the fallback in the current line, instead of an invisible region.
-  :init
-  (whole-line-or-region-global-mode 1))
 
 (use-package orderless
   ;; orderless allows for "fuzzy matching" when filtering lists of commands,

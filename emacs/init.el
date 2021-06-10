@@ -807,7 +807,7 @@ the fixed-pitch face down to the height defined by
 (define-key minibuffer-local-must-match-map          (kbd "<return>") 'exit-with-top-completion)
 (define-key minibuffer-local-filename-completion-map (kbd "<return>") 'exit-with-top-completion)
 
-;; I want to use my usual 's-o' binding (other-window) to switch between the
+;; I want to use my usual other-window binding to switch between the
 ;; minibuffer and the completions list. There is a built-in
 ;; `switch-to-completions' but it doesn't support Embark or fall-back to
 ;; `other-window', so I made my own.
@@ -1135,6 +1135,7 @@ completions if invoked from inside the minibuffer."
   (set-face-attribute 'mode-line-inactive nil :family "Calibri" :height 110))
 
 (defun facedancer-prot-fonts ()
+  "Use Prot's preferred fonts in the current buffer."
   (interactive)
   (setq-local facedancer-monospace "Iosevka Comfy"
               facedancer-variable  "Inter"
@@ -1961,7 +1962,7 @@ wherever you need to go."
   :commands (oblique-strategy)
   :init
   (setq initial-scratch-message (concat
-                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved and Lisp evaluation.\n"
+                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n"))
   :config
   (defun my/oblique-strategy ()

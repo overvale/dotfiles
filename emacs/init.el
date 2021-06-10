@@ -1481,14 +1481,13 @@ org-todo-keywords to a transient command."
 ;;;; Browser & News
 
 (setq shr-max-image-proportion 0.5)
-(setq shr-use-fonts t)
 (setq shr-width 80)
+(setq shr-bullet "• ")
 
 ;; Set default browser in Emacs
 (setq browse-url-browser-function 'eww-browse-url)
-
 ;; Prefixing with universal argument uses browse-url-default-browser
-;; which, for me, is `browse-url-default-macosx-browser'
+;; which seems to be the system browser.
 
 (use-package eww
   :custom

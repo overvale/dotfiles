@@ -362,8 +362,8 @@ Keybindings you define here will take precedence."
 ;; This is inconsistent with macOS behavior, which is that "C-a" always goes
 ;; to the beginning of the logical line and "s-<left>" goes to the beginning
 ;; of the visual line.
-(define-key bosskey-mode-map (kbd "C-a") 'beginning-of-line)
-(define-key bosskey-mode-map (kbd "C-e") 'end-of-line)
+;; (define-key bosskey-mode-map (kbd "C-a") 'beginning-of-line)
+;; (define-key bosskey-mode-map (kbd "C-e") 'end-of-line)
 (when (eq system-type 'darwin)
   (global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
   (global-set-key (kbd "s-<right>") 'end-of-visual-line))
@@ -376,7 +376,7 @@ Keybindings you define here will take precedence."
   "Kill the rest of the whole line."
   (interactive)
   (kill-line nil))
-(global-set-key (kbd "C-k") 'kill-rest-whole-line)
+;;(global-set-key (kbd "C-k") 'kill-rest-whole-line)
 
 
 ;;;; Mouse

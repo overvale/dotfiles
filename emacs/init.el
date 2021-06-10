@@ -698,6 +698,7 @@ the fixed-pitch face down to the height defined by
   "Jump directly to your most-used stuff."
   ["Work"
    [("t" "Today + Priority" oht-org-agenda-today)
+    ("p" "Today + Priority (pop-up)" oht-org-agenda-today-pop-up)
     ("0" "Week + TODOs" oht-org-agenda-complete)
     ("a" "Agenda" oht-org-agenda-agenda)
     ("T" "TODOs" oht-org-agenda-todos)
@@ -1319,6 +1320,25 @@ completions if invoked from inside the minibuffer."
   (defun org-agenda-todo-set-done () (interactive) (org-agenda-todo "DONE"))
   (defun org-agenda-todo-set-canceled () (interactive) (org-agenda-todo "CANCELED"))
   (defun org-todo-set-canceled () (interactive) (org-todo "CANCELED"))
+
+  (defun oht-org-agenda-exit-delete-window ()
+    "Wrapper around org-agenda-exit & delete-window."
+    (interactive)
+    (org-agenda-exit)
+    (delete-window))
+
+  (defun oht-org-agenda-today-pop-up ()
+    "Displays oht-org-agenda-today in a small window.
+Also provides bindings for deleting the window, thus burying the
+buffer, and exiting the agenda and releasing all the buffers."
+    (interactive)
+    (split-window-below)
+    (other-window 1)
+    (oht-org-agenda-today)
+    (fit-window-to-buffer)
+    (use-local-map (copy-keymap org-agenda-mode-map))
+    (local-set-key (kbd "x") 'oht-org-agenda-exit-delete-window)
+    (local-set-key (kbd "q") 'delete-window))
 
   (transient-define-prefix oht-transient-org ()
     "Transient for Org Mode"

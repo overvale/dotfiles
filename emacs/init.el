@@ -1952,5 +1952,19 @@ wherever you need to go."
 (use-package lua-mode
   :commands lua-mode)
 
+(use-package oblique
+  :if (string= (system-name) "shadowfax.local")
+  :load-path "~/home/src/oblique-strategies/"
+  :commands (oblique-strategy)
+  :init
+  (setq initial-scratch-message (concat
+                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved and Lisp evaluation.\n"
+                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n"))
+  :config
+  (defun my/oblique-strategy ()
+    "Draw and message an oblique strategy."
+    (interactive)
+    (message (oblique-strategy))))
+
 
 ;;; End of init.el

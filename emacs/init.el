@@ -1701,6 +1701,7 @@ To be used by `eww-after-render-hook'."
   ;; Any commands these transients use, whose packages are potentially not
   ;; loaded yet, need to be autoloaded.
   (autoload 'org-store-link "org")
+  (autoload 'dired-jump "dired" nil t)
   :custom
   (transient-mode-line-format 'line)
   (transient-display-buffer-action '(display-buffer-below-selected))
@@ -1719,7 +1720,6 @@ wherever you need to go."
       ("B" "iBuffer" ibuffer)
       ("k" "Org Capture" org-capture)
       ("K" "Kill Buffer" kill-this-buffer)
-      ("m" "Magit Status" magit-status)
       ("o" "Consult Outline" consult-outline)
       ("a" "AutoFill" auto-fill-mode)
       ("j" "Dired Jump" dired-jump)

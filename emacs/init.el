@@ -688,16 +688,19 @@ the fixed-pitch face down to the height defined by
 (defun oht-dispatch-NPR-news () (interactive) (browse-url "https://text.npr.org"))
 (defun oht-dispatch-CNN-news () (interactive) (browse-url "https://lite.cnn.com/en"))
 (defun oht-dispatch-google-news () (interactive) (browse-url "http://68k.news/"))
+(defun oht-dispatch-mail () (interactive) (shell-command "open -a Mail"))
 
 (transient-define-prefix oht-transient-dispatch ()
   "Jump directly to your most-used stuff."
-  ["Work"
-   [("t" "Today + Priority" oht-org-agenda-today)
+  [["Org Mode"
+    ("t" "Today + Priority" oht-org-agenda-today)
     ("p" "Today + Priority (pop-up)" oht-org-agenda-today-pop-up)
     ("0" "Week + TODOs" oht-org-agenda-complete)
     ("a" "Agenda" oht-org-agenda-agenda)
     ("T" "TODOs" oht-org-agenda-todos)
-    ("A" "Org Agenda Command..." org-agenda)]]
+    ("A" "Org Agenda Command..." org-agenda)]
+   ["Other"
+    ("m" "Open Mail" oht-dispatch-mail)]]
   ["Browsing"
    [("e" "Elfeed"      elfeed)
     ("h" "Hacker News" hackernews)]

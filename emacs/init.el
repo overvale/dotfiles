@@ -414,11 +414,6 @@ Keybindings you define here will take precedence."
 
 (setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
 
-;; On first run, with no packages installed, Emacs will stop loading this file
-;; as soon as it encounters code from a package not yet installed. So, when
-;; setting up a new machine, it is important for the very first thing to be a
-;; listing of all the packages you'd like to install so you can install all
-;; the packages you need with `package-install-selected-packages'.
 (setq package-selected-packages
       '(bicycle
         buffer-move

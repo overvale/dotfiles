@@ -32,71 +32,69 @@
 
 ;;;; Settings
 
+;; Save all interactive customization to a temp file, which is never loaded.
+;; This means interactive customization is session-local. Only this init file persists sessions.
 (setq custom-file (make-temp-file "emacs-custom-"))
 
-(setq inhibit-startup-message t
-      inhibit-startup-echo-area-message user-login-name)
+;; For most of my "settings" I use custom-set-variables, which does a bunch of neat stuff.
+;; First, it calls a variable's "setter" function, if it has one.
+;; Second, it can activate modes as well as set variables.
+;; Third, it handles setting buffer-local variables correctly.
+;; https://with-emacs.com/posts/tutorials/almost-all-you-need-to-know-about-variables/#_user_options
+;; https://old.reddit.com/r/emacs/comments/exnxha/withemacs_almost_all_you_need_to_know_about/fgadihl/
 
 (custom-set-variables
- '(delete-selection-mode nil)
+ '(inhibit-startup-screen t)
  '(global-auto-revert-mode t)
  '(save-place-mode t)
  '(recentf-mode t)
  '(winner-mode t)
  '(show-paren-mode t)
  '(blink-cursor-mode nil)
- '(ring-bell-function #'ignore)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(minibuffer-depth-indicate-mode t)
- '(set-language-environment "UTF-8"))
-
-(setq-default cursor-type 'box)
-(setq visible-bell nil)
-(setq-default indicate-empty-lines nil)
-(setq frame-title-format '("%b"))
-(setq uniquify-buffer-name-style 'forward)
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-(blackout 'eldoc-mode)
-(blackout 'emacs-lisp-mode "Elisp")
-(blackout 'auto-fill-function " Fill")
-
-(setq display-time-format " %Y-%m-%d  %H:%M"
-      display-time-interval 60
-      display-time-mail-directory nil
-      display-time-default-load-average nil)
-
-(column-number-mode t)
-(display-time-mode t)
-
-(setq vc-follow-symlinks t
-      find-file-visit-truename t)
-(setq create-lockfiles nil
-      make-backup-files nil)
-(setq bookmark-save-flag 1)
-(setq load-prefer-newer t)
-(setq delete-by-moving-to-trash t)
-(setq confirm-kill-processes nil)
-(setq save-interprogram-paste-before-kill t
-      kill-do-not-save-duplicates t)
+ '(ring-bell-function 'ignore)
+ '(set-language-environment "UTF-8")
+ '(frame-title-format '("%b"))
+ '(uniquify-buffer-name-style 'forward)
+ '(vc-follow-symlinks t)
+ '(find-file-visit-truename t)
+ '(create-lockfiles nil)
+ '(make-backup-files nil)
+ '(load-prefer-newer t)
+ '(bookmark-save-flag 1)
+ ;;'(bookmark-menu-confirm-deletion t)
+ '(delete-by-moving-to-trash t)
+ '(confirm-kill-processes nil)
+ '(save-interprogram-paste-before-kill t)
+ '(kill-do-not-save-duplicates t)
+ '(split-window-keep-point nil)
+ '(sentence-end-double-space nil)
+ '(set-mark-command-repeat-pop t)
+ '(mark-even-if-inactive nil)
+ '(tab-width 4)
+ '(indent-tabs-mode nil)
+ '(fill-column 78))
 
 (when (eq system-type 'darwin)
   (setq locate-command "mdfind"
-        trash-directory "~/.Trash/emacs"))
+        trash-dircetory "~/.Trash"))
 
-(setq split-window-keep-point nil)
-;; (defadvice split-window-below (after split-window-below activate) (other-window 1))
-;; (defadvice split-window-right (after split-window-right activate) (other-window 1))
+;; Mode Line
+(custom-set-variables
+ '(display-time-format " %Y-%m-%d  %H:%M")
+ '(display-time-interval 60)
+ '(display-time-default-load-average nil)
+ '(column-number-mode t)
+ '(display-time-mode t))
 
-(setq sentence-end-double-space nil)
-(setq-default tab-width 4
-              indent-tabs-mode nil
-              fill-column 78)
+;; Include battery in mode-line on laptop
+(when (string= (system-name) "shadowfax.local")
+  (custom-set-variables
+   '(display-battery-mode t)
+   '(battery-mode-line-format " [%b%p%%]")))
 
-;; The Mark
-(setq set-mark-command-repeat-pop t
-      mark-even-if-inactive nil)
 
 ;;;; Functions
 

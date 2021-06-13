@@ -98,19 +98,6 @@
 
 ;;;; Functions
 
-(defun occur-dwim ()
-  "Call `occur' with a sane default."
-  (interactive)
-  (push (if (region-active-p)
-            (buffer-substring-no-properties
-             (region-beginning)
-             (region-end))
-          (let ((sym (thing-at-point 'symbol)))
-            (when (stringp sym)
-              (regexp-quote sym))))
-        regexp-history)
-  (call-interactively 'occur))
-
 (defun toggle-window-split ()
   "Toggle window split from vertical to horizontal."
   (interactive)
@@ -134,13 +121,6 @@
         (message "Opening %s..." file)
         (call-process "open" nil 0 nil file))
     (message "No file found at point.")))
-
-(defun backward-delete-word ()
-  "Delete word backward, without saving to kill ring."
-  (interactive "*")
-  (push-mark)
-  (backward-word)
-  (delete-region (point) (mark)))
 
 (defun kill-to-beg-line ()
   "Kill from point to the beginning of the line."
@@ -360,21 +340,9 @@ Keybindings you define here will take precedence."
 ;; This is inconsistent with macOS behavior, which is that "C-a" always goes
 ;; to the beginning of the logical line and "s-<left>" goes to the beginning
 ;; of the visual line.
-;; (define-key bosskey-mode-map (kbd "C-a") 'beginning-of-line)
-;; (define-key bosskey-mode-map (kbd "C-e") 'end-of-line)
 (when (eq system-type 'darwin)
   (global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
   (global-set-key (kbd "s-<right>") 'end-of-visual-line))
-
-;; Additionally, in visual-line-mode the function kill-line kills to the end
-;; of the VISUAL line, which is inconsistent with Mac OS, and my own
-;; expectations. Therefore we need to remap it to a function which kills to
-;; the end of the whole line.
-(defun kill-rest-whole-line ()
-  "Kill the rest of the whole line."
-  (interactive)
-  (kill-line nil))
-;;(global-set-key (kbd "C-k") 'kill-rest-whole-line)
 
 
 ;;;; Mouse
@@ -468,15 +436,6 @@ Keybindings you define here will take precedence."
 ;;; Built-In Packages & Lisp
 
 ;;;; Flyspell
-
-(when (eq system-type 'darwin)
-  (custom-set-variables
-   '(ispell-program-name "/usr/local/bin/aspell")
-   '(ispell-extra-args '("--sug-mode=ultra"))
-   '(ispell-list-command "list")))
-
-(eval-after-load 'flyspell
-  '(blackout 'flyspell-mode " Spell"))
 
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
@@ -784,25 +743,6 @@ the fixed-pitch face down to the height defined by
 (define-key completion-list-mode-map (kbd "n") 'next-completion)
 (define-key completion-list-mode-map (kbd "p") 'previous-completion)
 
-(defun exit-with-top-completion ()
-  "Exit minibuffer with top completion candidate."
-  (interactive)
-  (let ((content (minibuffer-contents-no-properties)))
-    (unless (test-completion content
-                             minibuffer-completion-table
-                             minibuffer-completion-predicate)
-      (when-let ((completions (completion-all-sorted-completions)))
-        (delete-minibuffer-contents)
-        (insert
-         (concat
-          (substring content 0 (or (cdr (last completions)) 0))
-          (car completions)))))
-    (exit-minibuffer)))
-
-(define-key minibuffer-local-completion-map          (kbd "<return>") 'exit-with-top-completion)
-(define-key minibuffer-local-must-match-map          (kbd "<return>") 'exit-with-top-completion)
-(define-key minibuffer-local-filename-completion-map (kbd "<return>") 'exit-with-top-completion)
-
 ;; I want to use my usual other-window binding to switch between the
 ;; minibuffer and the completions list. There is a built-in
 ;; `switch-to-completions' but it doesn't support Embark or fall-back to
@@ -1106,26 +1046,20 @@ completions if invoked from inside the minibuffer."
 (setq text-scale-mode-step 1.09)
 
 (when (eq system-type 'darwin)
-  ;; config
   (setq facedancer-monospace "SF Mono"
         facedancer-variable  "New York"
         facedancer-monospace-size 12
         facedancer-variable-size  14)
-  ;; set faces
   (facedancer-font-set)
-  ;; customize mode-line
   (set-face-attribute 'mode-line nil          :family "SF Compact Text" :height 130)
   (set-face-attribute 'mode-line-inactive nil :family "SF Compact Text" :height 130))
 
 (when (eq system-type 'windows-nt)
-  ;; config
   (setq facedancer-monospace "Consolas"
         facedancer-variable  "Calibri"
         facedancer-monospace-size 10
         facedancer-variable-size  11)
-  ;; set faces
   (facedancer-font-set)
-  ;; customize mode-line
   (set-face-attribute 'mode-line nil          :family "Calibri" :height 110)
   (set-face-attribute 'mode-line-inactive nil :family "Calibri" :height 110))
 
@@ -1184,7 +1118,7 @@ completions if invoked from inside the minibuffer."
 
 (use-package embark-consult
   :after (embark consult)
-  :demand t)
+  :demand)
 
 
 ;;;; Org
@@ -1266,14 +1200,6 @@ completions if invoked from inside the minibuffer."
           ("pl" "Personal Log Entry" entry
            (file+olp+datetree ,(concat oht-orgfiles "logbook.org"))
            "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
-          ;; -----------------------------
-          ("i" "Ingenuity")
-          ("ii" "Ingenuity Inbox" entry
-           (file+headline ,(concat oht-orgfiles "ingenuity.org") "Inbox")
-           "* %?\n\n" :empty-lines 1)
-          ("il" "Ingenuity Log Entry" entry
-           (file ,(concat oht-orgfiles "ingenuity_logbook.org"))
-           "* %? %T\n\n" :empty-lines 1)
           ;; -----------------------------
           ("s" "Scanline")
           ("si" "Scanline Inbox" entry
@@ -1949,12 +1875,7 @@ wherever you need to go."
   :init
   (setq initial-scratch-message (concat
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
-                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n"))
-  :config
-  (defun my/oblique-strategy ()
-    "Draw and message an oblique strategy."
-    (interactive)
-    (message (oblique-strategy))))
+                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
 
 ;;; End of init.el

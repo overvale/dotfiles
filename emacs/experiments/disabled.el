@@ -267,6 +267,25 @@ as an argument limits undo to changes within the current region."
               (fit-window-to-buffer (get-buffer-window)
                                     (floor (frame-height) 2) 1))))
 
+(defun exit-with-top-completion ()
+  "Exit minibuffer with top completion candidate."
+  (interactive)
+  (let ((content (minibuffer-contents-no-properties)))
+    (unless (test-completion content
+                             minibuffer-completion-table
+                             minibuffer-completion-predicate)
+      (when-let ((completions (completion-all-sorted-completions)))
+        (delete-minibuffer-contents)
+        (insert
+         (concat
+          (substring content 0 (or (cdr (last completions)) 0))
+          (car completions)))))
+    (exit-minibuffer)))
+
+(define-key minibuffer-local-completion-map          (kbd "<return>") 'exit-with-top-completion)
+(define-key minibuffer-local-must-match-map          (kbd "<return>") 'exit-with-top-completion)
+(define-key minibuffer-local-filename-completion-map (kbd "<return>") 'exit-with-top-completion)
+
 ;; Embark by default uses embark-minibuffer-candidates which does not sort the
 ;; completion candidates at all, this means that exit-with-top-completion
 ;; won't always pick the first one listed! If you want to ensure

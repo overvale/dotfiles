@@ -801,6 +801,8 @@ completions if invoked from inside the minibuffer."
 ;; isearch-mb allows you to edit the isearch in the minibuffer. Lovely.
 (isearch-mb-mode)
 
+;; Quit isearch when calling occur
+(add-to-list 'isearch-mb--after-exit #'occur)
 
 ;;;; Outline
 

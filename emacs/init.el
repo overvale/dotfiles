@@ -432,6 +432,10 @@ Keybindings you define here will take precedence."
 (autoload 'blackout "blackout" nil t)
 (autoload 'transient-define-prefix "transient" nil t)
 
+(blackout 'eldoc-mode)
+(blackout 'emacs-lisp-mode "Elisp")
+(blackout 'auto-fill-function " Fill")
+
 
 ;;; Built-In Packages & Lisp
 

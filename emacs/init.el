@@ -16,7 +16,7 @@
 
 ;;; Configuration
 
-;;;; User/Machine Settings
+;;;; Variables
 
 (when (eq system-type 'darwin)
   (defvar oht-dotfiles "~/home/dot/emacs/")
@@ -323,7 +323,7 @@ Keybindings you define here will take precedence."
 (global-set-key (kbd "C-M-k")   'kill-to-beg-line)
 
 
-;;;; Visual Line Mode, Fixes
+;;;; Truncation, Wrapping, Visual Line
 
 ;; `visual-line-mode', `word-wrap', and `truncate-lines' all do different
 ;; things. `visual-line-mode' is a wrapper around a bunch of things, probably
@@ -813,6 +813,7 @@ completions if invoked from inside the minibuffer."
 
 (blackout 'outline-minor-mode)
 
+
 ;;;; Pulse
 
 (defun pulse-line (&rest _)
@@ -925,6 +926,7 @@ completions if invoked from inside the minibuffer."
       (">" "Final Node" Info-final-node)
       ("[" "Forward Node" Info-backward-node)
       ("]" "Backward Node" Info-forward-node)]]))
+
 
 ;;;; Dired
 

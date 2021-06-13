@@ -446,23 +446,29 @@ Keybindings you define here will take precedence."
 
 (global-set-key (kbd "M-;") #'flyspell-auto-correct-previous-word)
 
-(transient-define-prefix oht-transient-spelling ()
-  "Transient for a spelling interface"
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  [["Toggle Modes"
-    ("m" "Flyspell" flyspell-mode)
-    ("M" "Prog Flyspell" flyspell-prog-mode)]
-   ["Check"
-    ("b" "Buffer" flyspell-buffer)
-    ("r" "Region" flyspell-region)]
-   ["Correction"
-    ("n" "Next" flyspell-goto-next-error)
-    ("<return>" "Fix" ispell-word)
-    ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
-    ("<DEL>" "Delete Word" kill-word)
-    ("C-/" "Undo" undo-fu-only-undo)
-    ("M-/" "Redo" undo-fu-only-redo)]])
+(with-eval-after-load 'flyspell
+
+  (blackout 'flyspell-mode " Spell")
+
+  (transient-define-prefix oht-transient-spelling ()
+    "Transient for a spelling interface"
+    :transient-suffix 'transient--do-stay
+    :transient-non-suffix 'transient--do-warn
+    [["Toggle Modes"
+      ("m" "Flyspell" flyspell-mode)
+      ("M" "Prog Flyspell" flyspell-prog-mode)]
+     ["Check"
+      ("b" "Buffer" flyspell-buffer)
+      ("r" "Region" flyspell-region)]
+     ["Correction"
+      ("n" "Next" flyspell-goto-next-error)
+      ("<return>" "Fix" ispell-word)
+      ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
+      ("<DEL>" "Delete Word" kill-word)
+      ("C-/" "Undo" undo-fu-only-undo)
+      ("M-/" "Redo" undo-fu-only-redo)]])
+
+  ) ; end flyspell
 
 
 ;;;; Facedancer Mode

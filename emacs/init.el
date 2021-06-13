@@ -1670,9 +1670,7 @@ To be used by `eww-after-render-hook'."
       ("O" "Outline Navigation..." oht-transient-outline)
       ("D" "Display..."   oht-transient-display)
       ("F" "Fonts..." oht-transient-fonts)
-      ("T" "Tabs..."      oht-transient-tabs)
       ("S" "Spelling..." oht-transient-spelling)
-      ("H" "Helpful Commands..." oht-transient-help)
       ("M" "Toggle Minor Modes" consult-minor-mode-menu)]])
 
   (transient-define-prefix oht-transient-outline ()
@@ -1726,33 +1724,6 @@ To be used by `eww-after-render-hook'."
      ["Other"
       ("s" "Line Spacing" facedancer-line-spacing)
       ("m" "Modus Toggle" modus-themes-toggle)]])
-
-  (transient-define-prefix oht-transient-tabs ()
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    ["General -> Tabs"
-     [("t" "Tab Bar Mode" tab-bar-mode)
-      ("n" "New" tab-bar-new-tab)
-      ("k" "Kill" tab-bar-close-tab)
-      ("z" "Undo Kill" tab-bar-undo-close-tab)
-      ("]" "Next" tab-bar-switch-to-next-tab)
-      ("[" "Previous" tab-bar-switch-to-prev-tab)]])
-
-  (transient-define-prefix oht-transient-help ()
-    "Transient for Helpful commands"
-    ["General -> Helpful Commands"
-     [("p" "At Point" helpful-at-point)]
-     [("c" "Callable" helpful-callable)
-      ("f" "Function" helpful-function)
-      ("C" "Command" helpful-command)
-      ("v" "Variable" helpful-variable)
-      ("s" "Symbol" helpful-symbol)
-      ("M" "Macro" helpful-macro)
-      ("k" "Key" helpful-key)
-      ("m" "Mode" helpful-mode)]
-     [("u" "Update" helpful-update)
-      ("V" "Visit Reference" helpful-visit-reference)
-      ("K" "Kill Helpful Buffers" helpful-kill-buffers)]])
 
   (transient-define-prefix oht-transient-window ()
     "Most commonly used window commands"

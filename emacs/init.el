@@ -242,6 +242,16 @@ If no region is active, then just swap point and mark."
                                "%(title)s.%(ext)s"
                                (ffap-url-at-point))))
 
+(defun org-insert-date-today ()
+  "Insert today's date using standard org formatting."
+  (interactive)
+  (insert (format-time-string "<%Y-%m-%d %a>")))
+
+(defun org-insert-date-today-inactive ()
+  "Inserts today's date in org inactive format."
+  (interactive)
+  (insert (format-time-string "\[%Y-%m-%d %a\]")))
+
 
 ;;;; Keybindings
 
@@ -1227,16 +1237,6 @@ completions if invoked from inside the minibuffer."
            (file+headline ,(concat oht-orgfiles "emacs.org") "Emacs Config")
            "* TODO %?" :empty-lines 1)))
 
-  (defun oht/org-insert-date-today ()
-    "Insert today's date using standard org formatting."
-    (interactive)
-    (org-insert-time-stamp (current-time)))
-
-  (defun oht/org-insert-date-today-inactive ()
-    "Inserts today's date in org inactive format."
-    (interactive)
-    (insert (format-time-string "\[%Y-%m-%d %a\]")))
-
   ;; Functions for directly calling agenda commands, skipping the prompt.
   ;; Useful when paired with transient.
   (defun oht-org-agenda-today () (interactive) (org-agenda nil "1"))
@@ -1290,8 +1290,8 @@ buffer, and exiting the agenda and releasing all the buffers."
       ("r" "Refile" org-refile)
       ("c" "Checkbox" org-toggle-checkbox)]
      ["Insert"
-      ("." "Insert Date, Active" oht/org-insert-date-today)
-      (">" "Insert Date, Inactive" oht/org-insert-date-today-inactive)
+      ("." "Insert Date, Active" org-insert-date-today)
+      (">" "Insert Date, Inactive" org-insert-date-today-inactive)
       ("<" "Structure Template" org-insert-structure-template)]
      ["Links"
       ("s" "Store Link" org-store-link)

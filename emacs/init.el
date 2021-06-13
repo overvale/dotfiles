@@ -1087,16 +1087,6 @@ completions if invoked from inside the minibuffer."
   (set-face-attribute 'mode-line nil          :family "Calibri" :height 110)
   (set-face-attribute 'mode-line-inactive nil :family "Calibri" :height 110))
 
-(defun facedancer-prot-fonts ()
-  "Use Prot's preferred fonts in the current buffer."
-  (interactive)
-  (setq-local facedancer-monospace "Iosevka Comfy"
-              facedancer-variable  "Inter"
-              line-spacing nil
-              facedancer-monospace-size 13
-              facedancer-variable-size  13)
-  (facedancer-mode 'toggle))
-
 
 ;;; External Packages
 

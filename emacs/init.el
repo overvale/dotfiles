@@ -1509,12 +1509,6 @@ To be used by `eww-after-render-hook'."
 (use-package elfeed
   :if (string= (system-name) "shadowfax.local")
   :commands elfeed
-  :init
-  (defun oht-elfeed-show-fonts ()
-    "Apply some customization to fonts in elfeed-show-mode."
-    (facedancer-vadjust-mode)
-    (setq-local line-spacing 3))
-  :hook (elfeed-show-mode-hook . oht-elfeed-show-fonts)
   :custom
   (elfeed-use-curl t)
   (elfeed-curl-max-connections 10)
@@ -1548,6 +1542,11 @@ To be used by `eww-after-render-hook'."
   :config
   ;; My feed list is stored outside my dotfiles -- not public.
   (load "~/home/src/rss-feeds.el")
+
+  (defun oht-elfeed-show-fonts ()
+    "Apply some customization to fonts in elfeed-show-mode."
+    (facedancer-vadjust-mode)
+    (setq-local line-spacing 3))
 
   ;; Elfeed doesn't have a built-in way of flagging or marking items for later,
   ;; but it does have tags, which you can use for this. The below is some simple
@@ -1625,10 +1624,11 @@ To be used by `eww-after-render-hook'."
     (bury-buffer)
     (message "Browsing in buried buffer"))
 
-  ) ; End "use-package elfeed"
+  :hook ((elfeed-show-mode-hook . oht-elfeed-show-fonts)
+         (elfeed-search-mode-hook . disable-selected-minor-mode)
+         (elfeed-show-mode-hook . disable-selected-minor-mode))
 
-(add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
-(add-hook 'elfeed-show-mode-hook 'disable-selected-minor-mode)
+  ) ; End "use-package elfeed"
 
 
 ;;;; Transient

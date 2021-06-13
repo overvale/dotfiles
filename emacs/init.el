@@ -947,7 +947,7 @@ completions if invoked from inside the minibuffer."
   (setq dired-use-ls-dired nil) ; no more warning message
 
   (defun dired-open-file ()
-    "In dired, open the file named on this line."
+    "In dired, open the file named on this line using the 'open' shell command."
     (interactive)
     (let* ((file (dired-get-filename nil t)))
       (message "Opening %s..." file)
@@ -1633,17 +1633,8 @@ To be used by `eww-after-render-hook'."
 
 ;;;; Transient
 
-;; I LOVE transient commands. Basically, I don't want to learn a lot of
-;; keybindings, I want a simple set of bindings that reveal the vast power
-;; at your fingertips. So any time I find myself using a mode/package that I
-;; can't remember the bindings/commands for I take the time to comb through
-;; the source code, find anything I think I might use, and pop it in a
-;; transient.
-
 (use-package transient
   :init
-  ;; Any commands these transients use, whose packages are potentially not
-  ;; loaded yet, need to be autoloaded.
   (autoload 'org-store-link "org")
   (autoload 'dired-jump "dired" nil t)
   :custom
@@ -1652,11 +1643,7 @@ To be used by `eww-after-render-hook'."
   :config
 
   (transient-define-prefix oht-transient-general ()
-    "General-purpose transient.
-I use this transient command as a jumping-off point. Many of the
-more following specific transients are included here. The idea is
-that, when lost, one can simply call this one transient and get
-wherever you need to go."
+    "General-purpose transient."
     ["General"
      ["Quick Actions!"
       ("f" "Find File" find-file)
@@ -1848,13 +1835,9 @@ wherever you need to go."
              buf-move-right))
 
 (use-package visual-regexp
-  ;; Provides an alternate version of `query-replace' which highlights matches
-  ;; and replacements as you type.
   :bind (([remap query-replace] . #'vr/query-replace)))
 
 (use-package visual-regexp-steroids
-  ;; Allows `visual-regexp' to use regexp engines other than Emacs'; for
-  ;; example, Python or Perl regexps.
   :after visual-regexp
   :bind (([remap query-replace-regexp] . #'vr/query-replace))
   :custom

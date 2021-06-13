@@ -419,7 +419,6 @@ Keybindings you define here will take precedence."
         embark
         embark-consult
         fountain-mode
-        hackernews
         helpful
         isearch-mb
         marginalia
@@ -701,8 +700,7 @@ the fixed-pitch face down to the height defined by
     ("m" "Open Mail" oht-dispatch-mail)]]
   ["Browsing"
    [("e" "Elfeed"      elfeed)
-    ("h" "Hacker News" hackernews)]
-   [("E" "EWW"         eww)
+    ("E" "EWW"         eww)
     ("n" "NPR News"    oht-dispatch-NPR-news)
     ("c" "CNN News"    oht-dispatch-CNN-news)
     ("g" "Google News" oht-dispatch-google-news)]
@@ -918,8 +916,7 @@ completions if invoked from inside the minibuffer."
         '(("default"
            ("Read"  (or (mode . eww-mode)
                         (mode . elfeed-search-mode)
-                        (mode . elfeed-show-mode)
-                        (mode . hackernews-mode)))
+                        (mode . elfeed-show-mode)))
            ("Org"   (or (mode . org-mode)
                         (mode . org-agenda-mode)))
            ("Dired" (mode . dired-mode))
@@ -1692,15 +1689,6 @@ To be used by `eww-after-render-hook'."
 
 (add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
 (add-hook 'elfeed-show-mode-hook 'disable-selected-minor-mode)
-
-(use-package hackernews
-  :commands hackernews
-  :bind
-  (:map hackernews-mode-map
-        ("o" . delete-other-windows))
-  :custom
-  (hackernews-items-per-page 30)
-  (hackernews-default-feed 'top))
 
 
 ;;;; Transient

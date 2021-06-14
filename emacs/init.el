@@ -252,13 +252,22 @@ If no region is active, then just swap point and mark."
   (interactive)
   (insert (format-time-string "\[%Y-%m-%d %a\]")))
 
+;; Dispatch Functions -- I use these to launch frequently-used stuff
+(defun oht-dispatch-downloads () (interactive) (find-file "~/Downloads"))
+(defun oht-dispatch-reading () (interactive) (find-file "~/Downloads/reading"))
+(defun oht-dispatch-watch () (interactive) (find-file "~/Downloads/watch"))
+(defun oht-dispatch-google-news () (interactive) (browse-url "http://68k.news/"))
 
-;;;; Keybindings
+
+;;; Keybindings
+
+;;;; Modifiers
 
 ;; If on a Mac, use the command key as Super, left-option for Meta, and
 ;; right-option for Alt.
 (when (eq system-type 'darwin)
   (setq mac-command-modifier 'super
+        mac-right-command-modifier 'meta
         mac-option-modifier 'meta
         mac-right-option-modifier 'nil))
 
@@ -268,12 +277,24 @@ If no region is active, then just swap point and mark."
   (setq w32-lwindow-modifier 'super)
   (w32-register-hot-key [s-]))
 
-;; Mode Leader
-(defvar oht-mode-leader "s-\\"
-  "Defines leader key for mode-specific transients.
-Borrows the concept of a 'leader key' from Vim so I can press
-a single shortcut in any mode and get transient that I've defined
-for that mode.")
+;;;; Mode Leader
+
+;; Borrows the concept of a 'leader key' from Vim so I can press
+;; a single shortcut in any mode and get transient that I've defined
+;; for that mode.
+
+(defvar oht-mode-leader "M-="
+  "Defines leader key for mode-specific transients.")
+
+(defun oht-mode-leader-help ()
+  "If no mode-leader is defined, show a helpful message."
+  (interactive)
+  (message "No mode-leader defined."))
+
+(global-set-key (kbd "M-=") 'oht-mode-leader-help)
+
+
+;;;; Bosskey Mode
 
 ;; Minor modes override global bindings, so any bindings you don't want
 ;; overridden should be placed in a minor mode. This technique is stolen from
@@ -293,44 +314,43 @@ Keybindings you define here will take precedence."
 (add-to-list 'emulation-mode-map-alists
              `((bosskey-mode . ,bosskey-mode-map)))
 
-;; Super Bindings
-(global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
-(global-set-key (kbd "s-m") 'iconify-frame)
-(global-set-key (kbd "s-n") 'make-frame-command)
-(global-set-key (kbd "s-s") 'save-buffer)
-(global-set-key (kbd "s-,") 'find-user-init-file)
-(global-set-key (kbd "s-o") 'find-file)
-(global-set-key (kbd "s-z") 'undo-fu-only-undo)
-(global-set-key (kbd "s-Z") 'undo-fu-only-redo)
-(global-set-key (kbd "s-x") 'kill-region)
-(global-set-key (kbd "s-c") 'kill-ring-save)
-(global-set-key (kbd "s-v") 'yank)
-(global-set-key (kbd "s-[") 'previous-buffer)
-(global-set-key (kbd "s-]") 'next-buffer)
 
-(global-set-key (kbd "s-e") 'embark-act)
-(global-set-key (kbd "s-b") 'consult-buffer)
-(global-set-key (kbd "s-f") 'consult-line)
-(global-set-key (kbd "s-<return>") 'oht-transient-general)
-(global-set-key (kbd "s-w") 'oht-transient-window)
-(global-set-key (kbd "s-2") 'oht-transient-2nd)
-(global-set-key (kbd "s-d") 'oht-transient-dispatch)
+;;;; Actual Keybindings
 
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
-(define-key bosskey-mode-map (kbd "<C-return>") 'execute-extended-command)
+(when (eq system-type 'darwin)
+  (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
+  (global-set-key (kbd "s-m") 'iconify-frame)
+  (global-set-key (kbd "s-n") 'make-frame-command)
+  (global-set-key (kbd "s-s") 'save-buffer)
+  (global-set-key (kbd "s-,") 'find-user-init-file)
+  (global-set-key (kbd "s-o") 'find-file)
+  (global-set-key (kbd "s-z") 'undo-fu-only-undo)
+  (global-set-key (kbd "s-Z") 'undo-fu-only-redo)
+  (global-set-key (kbd "s-x") 'kill-region)
+  (global-set-key (kbd "s-c") 'kill-ring-save)
+  (global-set-key (kbd "s-v") 'yank))
+
+;; Will not be overridden
+(define-key bosskey-mode-map (kbd "C-<return>") 'execute-extended-command)
+(define-key bosskey-mode-map (kbd "S-<return>") 'oht-transient-general)
+(define-key bosskey-mode-map (kbd "M-w") 'oht-transient-window)
+(define-key bosskey-mode-map (kbd "M-[") 'previous-buffer)
+(define-key bosskey-mode-map (kbd "M-]") 'next-buffer)
 (define-key bosskey-mode-map (kbd "M-o") 'other-window)
 
+;; Can be overridden by minor modes
 (global-set-key (kbd "M-<tab>") 'hippie-expand)
 (global-set-key (kbd "M-s-s")   'save-some-buffers)
 (global-set-key (kbd "M-c")     'capitalize-dwim)
 (global-set-key (kbd "M-l")     'downcase-dwim)
 (global-set-key (kbd "M-u")     'upcase-dwim)
-(global-set-key (kbd "M-SPC")   'cycle-spacing)
-(global-set-key (kbd "M-z")     'zap-to-char)
-(global-set-key (kbd "M-Z")     'zap-up-to-char)
+(global-set-key (kbd "M-\\")    'cycle-spacing)
+(global-set-key (kbd "M-z")     'zap-up-to-char)
 (global-set-key (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
 (global-set-key (kbd "C-M-k")   'kill-to-beg-line)
+(global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
 
 
 ;;;; Truncation, Wrapping, Visual Line
@@ -651,41 +671,6 @@ the fixed-pitch face down to the height defined by
 ;; Add a hook which enables facedancer-vadjust-mode when buffer-face-mode
 ;; activates.
 (add-hook 'buffer-face-mode-hook (lambda () (facedancer-vadjust-mode 'toggle)))
-
-
-;;;; Dispatch
-
-;; Almost like an "app launcher" inside Emacs. These are the most common
-;; things I do in Emacs.
-
-(defun oht-dispatch-downloads () (interactive) (find-file "~/Downloads"))
-(defun oht-dispatch-reading () (interactive) (find-file "~/Downloads/reading"))
-(defun oht-dispatch-watch () (interactive) (find-file "~/Downloads/watch"))
-(defun oht-dispatch-NPR-news () (interactive) (browse-url "https://text.npr.org"))
-(defun oht-dispatch-CNN-news () (interactive) (browse-url "https://lite.cnn.com/en"))
-(defun oht-dispatch-google-news () (interactive) (browse-url "http://68k.news/"))
-(defun oht-dispatch-mail () (interactive) (shell-command "open -a Mail"))
-
-(transient-define-prefix oht-transient-dispatch ()
-  "Jump directly to your most-used stuff."
-  [["Org Mode"
-    ("t" "Today + Priority" oht-org-agenda-today)
-    ("p" "Today + Priority (pop-up)" oht-org-agenda-today-pop-up)
-    ("0" "Week + TODOs" oht-org-agenda-complete)
-    ("a" "Agenda" oht-org-agenda-agenda)
-    ("T" "TODOs" oht-org-agenda-todos)
-    ("A" "Org Agenda Command..." org-agenda)]
-   ["Other"
-    ("m" "Open Mail" oht-dispatch-mail)]]
-  ["Browsing"
-   [("e" "Elfeed"      elfeed)
-    ("E" "EWW"         eww)
-    ("n" "NPR News"    oht-dispatch-NPR-news)
-    ("c" "CNN News"    oht-dispatch-CNN-news)
-    ("g" "Google News" oht-dispatch-google-news)]
-   [("d" "Downloads"   oht-dispatch-downloads)
-    ("r" "Reading"     oht-dispatch-reading)
-    ("w" "Watch"       oht-dispatch-watch)]])
 
 
 ;;;; Secondary Selection
@@ -1114,6 +1099,8 @@ completions if invoked from inside the minibuffer."
   (marginalia-mode))
 
 (use-package embark
+  :init
+  (define-key bosskey-mode-map (kbd "C-;") 'embark-act)
   :bind
   (:map embark-file-map
         ("O" . macos-open-file)
@@ -1627,41 +1614,43 @@ To be used by `eww-after-render-hook'."
   :init
   (autoload 'org-store-link "org")
   (autoload 'dired-jump "dired" nil t)
-  :custom
-  (transient-mode-line-format 'line)
-  (transient-display-buffer-action '(display-buffer-below-selected))
   :config
 
   (transient-define-prefix oht-transient-general ()
     "General-purpose transient."
-    ["General"
-     ["Quick Actions!"
-      ("f" "Find File" find-file)
-      ("b" "Switch Buffer" consult-buffer)
-      ("B" "iBuffer" ibuffer)
-      ("k" "Org Capture" org-capture)
-      ("K" "Kill Buffer" kill-this-buffer)
-      ("o" "Consult Outline" consult-outline)
+    ["** GENERAL TRANSIENT **"
+     ["Actions/Toggles"
       ("a" "AutoFill" auto-fill-mode)
       ("j" "Dired Jump" dired-jump)
-      ("s" "Store Org Link" org-store-link)
-      ("v" "View Mode" view-mode)]
+      ("v" "View Mode" view-mode)
+      ("K" "Kill Buffer" kill-this-buffer)
+      ("b" "Switch Buffer" switch-to-buffer)
+      ("B" "iBuffer" ibuffer)]
+     ["Org Mode"
+      ("o k" "Capture" org-capture)
+      ("o s" "Store Link" org-store-link)
+      ("o t" "Today" oht-org-agenda-today)
+      ("o p" "Today (pop-up)" oht-org-agenda-today-pop-up)
+      ("o 0" "Complete" oht-org-agenda-complete)
+      ("o a" "Agenda..." org-agenda)]
+     ["Reading"
+      ("r e" "Elfeed"      elfeed)
+      ("r E" "EWW"         eww)
+      ("r g" "Google News" oht-dispatch-google-news)
+      ("r d" "Downloads"   oht-dispatch-downloads)]
      ["Consult"
+      ("c l" "Consult Line" consult-line)
+      ("c o" "Consult Outline" consult-outline)
+      ("c g" "Consult Grep" consult-grep)
+      ("c b" "Consult Buffer" consult-buffer)
       ("c a" "Consult Apropos" consult-apropos)
-      ("c m" "Consult Mode Commands" consult-mode-command)
-      ("c g" "Consult Grep" consult-grep)]
-     ["Windows"
-      ("w" "Window Transient..." oht-transient-window)
-      ("0" "Kill Window" delete-window)
-      ("1" "Only Window" delete-other-windows)
-      ("2" "Split Below" split-window-below)
-      ("3" "Split Right" split-window-right)]
+      ("c M" "Toggle Minor Modes" consult-minor-mode-menu)]
      ["Transients"
       ("O" "Outline Navigation..." oht-transient-outline)
+      ("@" "Secondary Selection..." oht-transient-2nd)
       ("D" "Display..."   oht-transient-display)
       ("F" "Fonts..." oht-transient-fonts)
-      ("S" "Spelling..." oht-transient-spelling)
-      ("M" "Toggle Minor Modes" consult-minor-mode-menu)]])
+      ("S" "Spelling..." oht-transient-spelling)]])
 
   (transient-define-prefix oht-transient-outline ()
     "Transient for Outline Minor Mode navigation"

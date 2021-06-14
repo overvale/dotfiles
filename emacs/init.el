@@ -50,7 +50,8 @@
  '(recentf-mode t)
  '(winner-mode t)
  '(show-paren-mode t)
- '(blink-cursor-mode nil)
+ '(blink-cursor-mode t)
+ '(cursor-type '(bar . 3))
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(minibuffer-depth-indicate-mode t)
@@ -1040,6 +1041,7 @@ completions if invoked from inside the minibuffer."
   (modus-themes-region 'bg-only)
   (modus-themes-diffs 'desaturated)
   (modus-themes-org-blocks 'grayscale)
+  (modus-themes-syntax 'faint)
   :init
   (modus-themes-load-operandi))
 

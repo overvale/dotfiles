@@ -760,3 +760,12 @@ mode-line."
    [("u" "Update" helpful-update)
     ("V" "Visit Reference" helpful-visit-reference)
     ("K" "Kill Helpful Buffers" helpful-kill-buffers)]])
+;;; Mouse Window Splits
+
+;; s-click to split windows at that exact spot
+(global-set-key [s-mouse-1] 'mouse-split-window-horizontally)
+(global-set-key [S-s-mouse-1] 'mouse-split-window-vertically)
+
+;; Delete a window with M-s--click
+(global-set-key [M-s-mouse-1] 'mouse-delete-window)
+

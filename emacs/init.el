@@ -268,8 +268,8 @@ If no region is active, then just swap point and mark."
 ;; right-option for Alt.
 (when (eq system-type 'darwin)
   (setq mac-command-modifier 'super
-        mac-right-command-modifier 'meta
         mac-option-modifier 'meta
+        mac-right-command-modifier 'meta
         mac-right-option-modifier 'nil))
 
 ;; If on Windows, use Windows key as Super
@@ -315,49 +315,44 @@ Keybindings you define here will take precedence."
   (global-set-key (kbd "s-Z") 'undo-fu-only-redo)
   (global-set-key (kbd "s-x") 'kill-region)
   (global-set-key (kbd "s-c") 'kill-ring-save)
-  (global-set-key (kbd "s-v") 'yank))
+  (global-set-key (kbd "s-v") 'yank)
+  (global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
+  (global-set-key (kbd "s-<right>") 'end-of-visual-line)
+  (global-set-key (kbd "s-<up>") 'beginning-of-buffer)
+  (global-set-key (kbd "s-<down>") 'end-of-buffer))
 
 ;; Will not be overridden
-(define-key bosskey-mode-map (kbd "C-<return>") 'execute-extended-command)
 (define-key bosskey-mode-map (kbd "S-<return>") 'oht-transient-general)
-(define-key bosskey-mode-map (kbd "M-w") 'oht-transient-window)
 (define-key bosskey-mode-map (kbd "M-[") 'previous-buffer)
 (define-key bosskey-mode-map (kbd "M-]") 'next-buffer)
 (define-key bosskey-mode-map (kbd "M-o") 'other-window)
+(define-key bosskey-mode-map (kbd "M-.") 'embark-act)
 
-;; Can be overridden by minor modes
-(global-set-key (kbd "M-<tab>") 'hippie-expand)
-(global-set-key (kbd "M-s-s")   'save-some-buffers)
+;; Improved default bindings -- might be overridden
+(global-set-key (kbd "M-'")     'hippie-expand)
 (global-set-key (kbd "M-c")     'capitalize-dwim)
 (global-set-key (kbd "M-l")     'downcase-dwim)
 (global-set-key (kbd "M-u")     'upcase-dwim)
 (global-set-key (kbd "M-\\")    'cycle-spacing)
 (global-set-key (kbd "M-z")     'zap-up-to-char)
 (global-set-key (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
-(global-set-key (kbd "C-M-k")   'kill-to-beg-line)
 (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
+(global-set-key (kbd "C-x C-n") 'make-frame-command)
+(global-set-key (kbd "C-x C-,") 'find-user-init-file)
+(global-set-key (kbd "M-g .")   'xref-find-definitions)
 
-
-;;;; Truncation, Wrapping, Visual Line
-
-;; `visual-line-mode', `word-wrap', and `truncate-lines' all do different
-;; things. `visual-line-mode' is a wrapper around a bunch of things, probably
-;; best explained here: http://ergoemacs.org/emacs/emacs_long_line_wrap.html
-;; `word-wrap' ONLY wraps lines word-wise instead of character-wise.
-;; `truncate-lines' ONLY controls if wrapping happens at all.
-(setq-default truncate-lines t)
-
-;; When visual-line-mode is off and truncate-lines is toggled off, I still
-;; want wrapping to happen at the word instead of character.
-(setq-default word-wrap 1)
-
-;; Turning on `visual-line-mode' binds "C-a" to `beginning-of-visual-line'.
-;; This is inconsistent with macOS behavior, which is that "C-a" always goes
-;; to the beginning of the logical line and "s-<left>" goes to the beginning
-;; of the visual line.
-(when (eq system-type 'darwin)
-  (global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
-  (global-set-key (kbd "s-<right>") 'end-of-visual-line))
+;; Unbind meta digit arguments -- use control digit arguments instead
+(global-set-key (kbd "M-0") 'delete-window)
+(global-set-key (kbd "M-1") 'delete-other-windows)
+(global-set-key (kbd "M-2") 'split-window-below)
+(global-set-key (kbd "M-3") 'split-window-right)
+(global-set-key (kbd "M-4") 'undefined)
+(global-set-key (kbd "M-5") 'undefined)
+(global-set-key (kbd "M-6") 'undefined)
+(global-set-key (kbd "M-7") 'undefined)
+(global-set-key (kbd "M-8") 'undefined)
+(global-set-key (kbd "M-9") 'undefined)
+(global-set-key (kbd "M--") 'undefined)
 
 
 ;;;; Mouse
@@ -367,13 +362,6 @@ Keybindings you define here will take precedence."
 ;; Start by making shift-click extend the selection (region)
 (global-set-key [S-down-mouse-1] 'ignore)
 (global-set-key [S-mouse-1] 'mouse-save-then-kill)
-
-;; s-click to split windows at that exact spot
-(global-set-key [s-mouse-1] 'mouse-split-window-horizontally)
-(global-set-key [S-s-mouse-1] 'mouse-split-window-vertically)
-
-;; Delete a window with M-s--click
-(global-set-key [M-s-mouse-1] 'mouse-delete-window)
 
 ;; The below bindings are taken directly from the source of `mouse.el'
 ;; but I've swapped the modifier keys. This makes more sense to me.
@@ -458,8 +446,6 @@ Keybindings you define here will take precedence."
 
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
-(global-set-key (kbd "M-;") #'flyspell-auto-correct-previous-word)
 
 (with-eval-after-load 'flyspell
 
@@ -977,8 +963,6 @@ completions if invoked from inside the minibuffer."
   (marginalia-mode))
 
 (use-package embark
-  :init
-  (define-key bosskey-mode-map (kbd "C-;") 'embark-act)
   :bind
   (:map embark-file-map
         ("O" . macos-open-file)
@@ -1471,7 +1455,6 @@ To be used by `eww-after-render-hook'."
       ("a" "AutoFill" auto-fill-mode)
       ("j" "Dired Jump" dired-jump)
       ("v" "View Mode" view-mode)
-      ("K" "Kill Buffer" kill-this-buffer)
       ("b" "Switch Buffer" switch-to-buffer)
       ("B" "iBuffer" ibuffer)]
      ["Org Mode"
@@ -1494,6 +1477,7 @@ To be used by `eww-after-render-hook'."
       ("c a" "Consult Apropos" consult-apropos)
       ("c M" "Toggle Minor Modes" consult-minor-mode-menu)]
      ["Transients"
+      ("w" "Windows..." oht-transient-window)
       ("M" "Mode Transient..." call-mode-help-transient)
       ("O" "Outline Navigation..." oht-transient-outline)
       ("@" "Secondary Selection..." oht-transient-2nd)
@@ -1581,7 +1565,9 @@ To be used by `eww-after-render-hook'."
       ("S-<down>"  "Move ↓" buf-move-down  :transient t)]
      ["Undo/Redo"
       ("C-/" "Winner Undo" winner-undo :transient t)
-      ("M-/" "Winner Redo" winner-redo :transient t)]])
+      ("M-/" "Winner Redo" winner-redo :transient t)]
+     ["Exit"
+      ("q" "Quit" transient-quit-all)]])
 
   ) ; End "use-package transient"
 

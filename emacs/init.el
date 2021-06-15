@@ -19,6 +19,7 @@
 ;;;; Variables
 
 (when (eq system-type 'darwin)
+  (cd "~/home")
   (defvar oht-dotfiles "~/home/dot/emacs/")
   (defvar oht-orgfiles "~/home/org/")
   (defvar user-downloads-directory "~/Downloads"))

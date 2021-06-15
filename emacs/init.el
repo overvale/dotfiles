@@ -278,22 +278,6 @@ If no region is active, then just swap point and mark."
   (setq w32-lwindow-modifier 'super)
   (w32-register-hot-key [s-]))
 
-;;;; Mode Leader
-
-;; Borrows the concept of a 'leader key' from Vim so I can press
-;; a single shortcut in any mode and get transient that I've defined
-;; for that mode.
-
-(defvar oht-mode-leader "M-="
-  "Defines leader key for mode-specific transients.")
-
-(defun oht-mode-leader-help ()
-  "If no mode-leader is defined, show a helpful message."
-  (interactive)
-  (message "No mode-leader defined."))
-
-(global-set-key (kbd "M-=") 'oht-mode-leader-help)
-
 
 ;;;; Bosskey Mode
 
@@ -897,35 +881,6 @@ completions if invoked from inside the minibuffer."
         try-complete-lisp-symbol))
 
 
-;;;; Info
-
-(with-eval-after-load 'info
-
-  (define-key Info-mode-map (kbd oht-mode-leader) 'oht-transient-info)
-
-  (transient-define-prefix oht-transient-info ()
-    "Transient for Info mode"
-    ["Info"
-     [("d" "Info Directory" Info-directory)
-      ("m" "Menu" Info-menu)
-      ("F" "Go to Node" Info-goto-emacs-command-node)]
-     [("s" "Search regex Info File" Info-search)
-      ("i" "Index" Info-index)
-      ("I" "Index, Virtual" Info-virtual-index)]]
-    ["Navigation"
-     [("l" "Left, History" Info-history-back)
-      ("r" "Right, History" Info-history-forward)
-      ("L" "List, History" Info-history)]
-     [("T" "Table of Contents" Info-toc)
-      ("n" "Next Node" Info-next)
-      ("p" "Previous Node" Info-prev)
-      ("u" "Up" Info-up)]
-     [("<" "Top Node" Info-top-node)
-      (">" "Final Node" Info-final-node)
-      ("[" "Forward Node" Info-backward-node)
-      ("]" "Backward Node" Info-forward-node)]]))
-
-
 ;;;; Dired
 
 (with-eval-after-load 'dired
@@ -940,7 +895,6 @@ completions if invoked from inside the minibuffer."
       (call-process "open" nil 0 nil file)
       (message "Opening %s done" file)))
 
-  (define-key dired-mode-map (kbd oht-mode-leader) 'oht-transient-dired)
   (define-key dired-mode-map (kbd "O") 'dired-open-file)
   (define-key dired-mode-map (kbd "C-/") 'dired-undo)
 
@@ -949,84 +903,6 @@ completions if invoked from inside the minibuffer."
               (dired-hide-details-mode 1)
               (auto-revert-mode)
               (hl-line-mode 1)))
-
-  (transient-define-prefix oht-transient-dired ()
-    "Transient for dired commands"
-    ["Dired Mode"
-     ["Action"
-      ("RET" "Open file"            dired-find-file)
-      ("o" "  Open in other window" dired-find-file-other-window)
-      ("C-o" "Open in other window (No select)" dired-display-file)
-      ("v" "  Open file (View mode)"dired-view-file)
-      ("=" "  Diff"                 dired-diff)
-      ("w" "  Copy filename"        dired-copy-filename-as-kill)
-      ("W" "  Open in browser"      browse-url-of-dired-file)
-      ("y" "  Show file type"       dired-show-file-type)]
-     ["Attribute"
-      ("R"   "Rename"               dired-do-rename)
-      ("G"   "Group"                dired-do-chgrp)
-      ("M"   "Mode"                 dired-do-chmod)
-      ("O"   "Owner"                dired-do-chown)
-      ("T"   "Timestamp"            dired-do-touch)]
-     ["Navigation"
-      ("j" "  Goto file"            dired-goto-file)
-      ("+" "  Create directory"     dired-create-directory)
-      ("<" "  Jump prev directory"  dired-prev-dirline)
-      (">" "  Jump next directory"  dired-next-dirline)
-      ("^" "  Move up directory"    dired-up-directory)]
-     ["Display"
-      ("g" "  Refresh buffer"       revert-buffer)
-      ("l" "  Refresh file"         dired-do-redisplay)
-      ("k" "  Remove line"          dired-do-kill-lines)
-      ("s" "  Sort"                 dired-sort-toggle-or-edit)
-      ("(" "  Toggle detail info"   dired-hide-details-mode)
-      ("i" "  Insert subdir"        dired-maybe-insert-subdir)
-      ("$" "  Hide subdir"          dired-hide-subdir)
-      ("M-$" "Hide subdir all"      dired-hide-subdir)]
-     ["Extension"
-      ("e"   "wdired"               wdired-change-to-wdired-mode)
-      ("/"   "dired-filter"         ignore)
-      ("n"   "dired-narrow"         ignore)]]
-    [["Marks"
-      ("m" "Marks..." oht-transient-dired-marks)]])
-
-  (transient-define-prefix oht-transient-dired-marks ()
-    "Sub-transient for dired marks"
-    ["Dired Mode -> Marks"
-     ["Toggles"
-      ("mm"  "Mark"                 dired-mark)
-      ("mM"  "Mark all"             dired-mark-subdir-files)
-      ("mu"  "Unmark"               dired-unmark)
-      ("mU"  "Unmark all"           dired-unmark-all-marks)
-      ("mc"  "Change mark"          dired-change-marks)
-      ("mt"  "Toggle mark"          dired-toggle-marks)]
-     ["Type"
-      ("m*"  "Executables"          dired-mark-executables)
-      ("m/"  "Directories"          dired-mark-directories)
-      ("m@"  "Symlinks"             dired-mark-symlinks)
-      ("m&"  "Garbage files"        dired-flag-garbage-files)
-      ("m#"  "Auto save files"      dired-flag-auto-save-files)
-      ("m~"  "backup files"         dired-flag-backup-files)
-      ("m."  "Numerical backups"    dired-clean-directory)]
-     ["Search"
-      ("m%"  "Regexp"               dired-mark-files-regexp)
-      ("mg"  "Regexp file contents" dired-mark-files-containing-regexp)]]
-    [["Act on Marked"
-      ("x"   "Do action"            dired-do-flagged-delete)
-      ("C"   "Copy"                 dired-do-copy)
-      ("D"   "Delete"               dired-do-delete)
-      ("S"   "Symlink"              dired-do-symlink)
-      ("H"   "Hardlink"             dired-do-hardlink)
-      ("P"   "Print"                dired-do-print)
-      ("A"   "Find"                 dired-do-find-regexp)
-      ("Q"   "Replace"              dired-do-find-regexp-and-replace)
-      ("B"   "Elisp bytecompile"    dired-do-byte-compile)
-      ("L"   "Elisp load"           dired-do-load)
-      ("X"   "Shell command"        dired-do-shell-command)
-      ("Z"   "Compress"             dired-do-compress)
-      ("z"   "Compress to"          dired-do-compress-to)
-      ("!"   "Shell command"        dired-do-shell-command)
-      ("&"   "Async shell command"  dired-do-async-shell-command)]])
 
   ) ; End dired config
 
@@ -1129,8 +1005,6 @@ completions if invoked from inside the minibuffer."
 (use-package org
   :commands (org-mode oht-org-agenda-today)
   :config
-
-  (define-key org-mode-map (kbd oht-mode-leader) 'oht-transient-org)
 
   (custom-set-variables
    '(org-list-allow-alphabetical t)
@@ -1423,8 +1297,6 @@ org-todo-keywords to a transient command."
   :hook (eww-mode-hook . oht-eww-fonts)
   :config
 
-  (define-key eww-mode-map (kbd oht-mode-leader) 'oht-transient-eww)
-
   (make-variable-buffer-local
    (defvar eww-inhibit-images-status nil
      "EWW Inhibit Images Status"))
@@ -1456,32 +1328,6 @@ To be used by `eww-after-render-hook'."
   (add-hook 'eww-after-render-hook #'prot-eww--rename-buffer)
   (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
   (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer)
-
-  (transient-define-prefix oht-transient-eww ()
-    "Transient for EWW"
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    ["EWW"
-     ["Actions"
-      ("G" "Browse" eww)
-      ("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
-      ("&" "Browse With External Browser" eww-browse-with-external-browser)
-      ("w" "Copy URL" eww-copy-page-url)]
-     ["Display"
-      ("i" "Toggle Images" eww-inhibit-images-toggle)
-      ("F" "Toggle Fonts" eww-toggle-fonts)
-      ("R" "Readable" eww-readable)
-      ("M-C" "Colors" eww-toggle-colors)]
-     ["History"
-      ("H" "History" eww-list-histories)
-      ("l" "Back" eww-back-url)
-      ("r" "Forward" eww-forward-url)]
-     ["Bookmarks"
-      ("a" "Add Eww Bookmark" eww-add-bookmark)
-      ("b" "Bookmark" bookmark-set)
-      ("B" "List Bookmarks" eww-list-bookmarks)
-      ("M-n" "Next Bookmark" eww-next-bookmark)
-      ("M-p" "Previous Bookmark" eww-previous-bookmark)]])
 
   ) ; End "use-package eww"
 
@@ -1648,6 +1494,7 @@ To be used by `eww-after-render-hook'."
       ("c a" "Consult Apropos" consult-apropos)
       ("c M" "Toggle Minor Modes" consult-minor-mode-menu)]
      ["Transients"
+      ("M" "Mode Transient..." call-mode-help-transient)
       ("O" "Outline Navigation..." oht-transient-outline)
       ("@" "Secondary Selection..." oht-transient-2nd)
       ("D" "Display..."   oht-transient-display)
@@ -1737,6 +1584,153 @@ To be used by `eww-after-render-hook'."
       ("M-/" "Winner Redo" winner-redo :transient t)]])
 
   ) ; End "use-package transient"
+
+;;;; Mode Help Transients
+
+;; Emacs has so many modes. Who can remember all the commands? These
+;; mode-specific transients are designed to help with that.
+
+(defun call-mode-help-transient ()
+  "Call a helpful transient based on the mode you're in."
+  (interactive)
+  (if (progn
+        (when (derived-mode-p 'Info-mode)
+          (info-mode-help-transient))
+        (when (derived-mode-p 'dired-mode)
+          (dired-mode-help-transient))
+        (when (derived-mode-p 'eww-mode)
+          (eww-mode-help-transient)))
+      nil ; if the above succeeds, do nothing, else...
+    (message "No transient defined for this mode.")))
+
+(with-eval-after-load 'info
+  (transient-define-prefix info-mode-help-transient ()
+    "Transient for Info mode"
+    ["Info"
+     [("d" "Info Directory" Info-directory)
+      ("m" "Menu" Info-menu)
+      ("F" "Go to Node" Info-goto-emacs-command-node)]
+     [("s" "Search regex Info File" Info-search)
+      ("i" "Index" Info-index)
+      ("I" "Index, Virtual" Info-virtual-index)]]
+    ["Navigation"
+     [("l" "Left, History" Info-history-back)
+      ("r" "Right, History" Info-history-forward)
+      ("L" "List, History" Info-history)]
+     [("T" "Table of Contents" Info-toc)
+      ("n" "Next Node" Info-next)
+      ("p" "Previous Node" Info-prev)
+      ("u" "Up" Info-up)]
+     [("<" "Top Node" Info-top-node)
+      (">" "Final Node" Info-final-node)
+      ("[" "Forward Node" Info-backward-node)
+      ("]" "Backward Node" Info-forward-node)]]))
+
+(with-eval-after-load 'dired
+  (transient-define-prefix dired-mode-help-transient ()
+    "Transient for dired commands"
+    ["Dired Mode"
+     ["Action"
+      ("RET" "Open file"            dired-find-file)
+      ("o" "  Open in other window" dired-find-file-other-window)
+      ("C-o" "Open in other window (No select)" dired-display-file)
+      ("v" "  Open file (View mode)"dired-view-file)
+      ("=" "  Diff"                 dired-diff)
+      ("w" "  Copy filename"        dired-copy-filename-as-kill)
+      ("W" "  Open in browser"      browse-url-of-dired-file)
+      ("y" "  Show file type"       dired-show-file-type)]
+     ["Attribute"
+      ("R"   "Rename"               dired-do-rename)
+      ("G"   "Group"                dired-do-chgrp)
+      ("M"   "Mode"                 dired-do-chmod)
+      ("O"   "Owner"                dired-do-chown)
+      ("T"   "Timestamp"            dired-do-touch)]
+     ["Navigation"
+      ("j" "  Goto file"            dired-goto-file)
+      ("+" "  Create directory"     dired-create-directory)
+      ("<" "  Jump prev directory"  dired-prev-dirline)
+      (">" "  Jump next directory"  dired-next-dirline)
+      ("^" "  Move up directory"    dired-up-directory)]
+     ["Display"
+      ("g" "  Refresh buffer"       revert-buffer)
+      ("l" "  Refresh file"         dired-do-redisplay)
+      ("k" "  Remove line"          dired-do-kill-lines)
+      ("s" "  Sort"                 dired-sort-toggle-or-edit)
+      ("(" "  Toggle detail info"   dired-hide-details-mode)
+      ("i" "  Insert subdir"        dired-maybe-insert-subdir)
+      ("$" "  Hide subdir"          dired-hide-subdir)
+      ("M-$" "Hide subdir all"      dired-hide-subdir)]
+     ["Extension"
+      ("e"   "wdired"               wdired-change-to-wdired-mode)
+      ("/"   "dired-filter"         ignore)
+      ("n"   "dired-narrow"         ignore)]]
+    [["Marks"
+      ("m" "Marks..." dired-mode-help-transient--marks)]])
+  (transient-define-prefix dired-mode-help-transient--marks ()
+    "Sub-transient for dired marks"
+    ["Dired Mode -> Marks"
+     ["Toggles"
+      ("mm"  "Mark"                 dired-mark)
+      ("mM"  "Mark all"             dired-mark-subdir-files)
+      ("mu"  "Unmark"               dired-unmark)
+      ("mU"  "Unmark all"           dired-unmark-all-marks)
+      ("mc"  "Change mark"          dired-change-marks)
+      ("mt"  "Toggle mark"          dired-toggle-marks)]
+     ["Type"
+      ("m*"  "Executables"          dired-mark-executables)
+      ("m/"  "Directories"          dired-mark-directories)
+      ("m@"  "Symlinks"             dired-mark-symlinks)
+      ("m&"  "Garbage files"        dired-flag-garbage-files)
+      ("m#"  "Auto save files"      dired-flag-auto-save-files)
+      ("m~"  "backup files"         dired-flag-backup-files)
+      ("m."  "Numerical backups"    dired-clean-directory)]
+     ["Search"
+      ("m%"  "Regexp"               dired-mark-files-regexp)
+      ("mg"  "Regexp file contents" dired-mark-files-containing-regexp)]]
+    [["Act on Marked"
+      ("x"   "Do action"            dired-do-flagged-delete)
+      ("C"   "Copy"                 dired-do-copy)
+      ("D"   "Delete"               dired-do-delete)
+      ("S"   "Symlink"              dired-do-symlink)
+      ("H"   "Hardlink"             dired-do-hardlink)
+      ("P"   "Print"                dired-do-print)
+      ("A"   "Find"                 dired-do-find-regexp)
+      ("Q"   "Replace"              dired-do-find-regexp-and-replace)
+      ("B"   "Elisp bytecompile"    dired-do-byte-compile)
+      ("L"   "Elisp load"           dired-do-load)
+      ("X"   "Shell command"        dired-do-shell-command)
+      ("Z"   "Compress"             dired-do-compress)
+      ("z"   "Compress to"          dired-do-compress-to)
+      ("!"   "Shell command"        dired-do-shell-command)
+      ("&"   "Async shell command"  dired-do-async-shell-command)]])
+  ) ; End dired config
+
+(with-eval-after-load 'eww
+  (transient-define-prefix eww-mode-help-transient ()
+    "Transient for EWW"
+    :transient-suffix 'transient--do-stay
+    :transient-non-suffix 'transient--do-warn
+    ["EWW"
+     ["Actions"
+      ("G" "Browse" eww)
+      ("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
+      ("&" "Browse With External Browser" eww-browse-with-external-browser)
+      ("w" "Copy URL" eww-copy-page-url)]
+     ["Display"
+      ("i" "Toggle Images" eww-inhibit-images-toggle)
+      ("F" "Toggle Fonts" eww-toggle-fonts)
+      ("R" "Readable" eww-readable)
+      ("M-C" "Colors" eww-toggle-colors)]
+     ["History"
+      ("H" "History" eww-list-histories)
+      ("l" "Back" eww-back-url)
+      ("r" "Forward" eww-forward-url)]
+     ["Bookmarks"
+      ("a" "Add Eww Bookmark" eww-add-bookmark)
+      ("b" "Bookmark" bookmark-set)
+      ("B" "List Bookmarks" eww-list-bookmarks)
+      ("M-n" "Next Bookmark" eww-next-bookmark)
+      ("M-p" "Previous Bookmark" eww-previous-bookmark)]]))
 
 
 ;;;; Misc Packages

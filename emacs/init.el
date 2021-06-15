@@ -66,6 +66,8 @@
  '(load-prefer-newer t)
  '(bookmark-save-flag 1)
  ;;'(bookmark-menu-confirm-deletion t)
+ '(word-wrap t)
+ '(truncate-lines t)
  '(delete-by-moving-to-trash t)
  '(confirm-kill-processes nil)
  '(save-interprogram-paste-before-kill t)

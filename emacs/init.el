@@ -1173,6 +1173,28 @@ org-todo-keywords to a transient command."
 
 ;;;; View / Selected
 
+(defun define-navigation-keys (map)
+  "Defines navigation keys for a map supplied by argument."
+  (interactive "S")
+  (define-key map (kbd "n") 'next-line)
+  (define-key map (kbd "p") 'previous-line)
+  (define-key map (kbd "f") 'forward-char)
+  (define-key map (kbd "b") 'backward-char)
+  (define-key map (kbd "F") 'forward-word)
+  (define-key map (kbd "B") 'backward-word)
+  (define-key map (kbd "a") 'beginning-of-line)
+  (define-key map (kbd "e") 'end-of-line)
+  (define-key map (kbd "{") 'backward-paragraph)
+  (define-key map (kbd "}") 'forward-paragraph)
+  (define-key map (kbd "(") 'backward-sentence)
+  (define-key map (kbd ")") 'forward-sentence)
+  (define-key map (kbd "s") 'isearch-forward)
+  (define-key map (kbd "r") 'isearch-backward)
+  (define-key map (kbd "[") 'scroll-down-line)
+  (define-key map (kbd "]") 'scroll-up-line)
+  (define-key map (kbd "x") 'exchange-point-and-mark)
+  (define-key map (kbd "M") 'rectangle-mark-mode))
+
 (use-package view
   :custom
   (view-read-only t)
@@ -1187,31 +1209,13 @@ org-todo-keywords to a transient command."
     (call-interactively 'replace-rectangle))
   :bind
   (:map view-mode-map
-        ;; common
-        ("n" . next-line)
-        ("p" . previous-line)
-        ("f" . forward-char)
-        ("b" . backward-char)
-        ("F" . forward-word)
-        ("B" . backward-word)
-        ("a" . beginning-of-visual-line)
-        ("e" . end-of-visual-line)
-        ("{" . backward-paragraph)
-        ("}" . forward-paragraph)
-        ("(" . backward-sentence)
-        (")" . forward-sentence)
-        ("s" . ctrlf-forward-fuzzy)
-        ("r" . ctrlf-backward-fuzzy)
-        ("[" . scroll-down-line)
-        ("]" . scroll-up-line)
-        ("x" . exchange-point-and-mark)
-        ("M" . rectangle-mark-mode)
-        ;; unique
         ("R" . oht/exit-view-replace-rectangle)
         ("m" . set-mark-command)
         ("<RET>" . oht/view-mode-exit)
         ("q" . quit-window))
   :hook (view-mode-hook . hl-line-mode)
+  :config
+  (define-navigation-keys view-mode-map)
   :blackout " VIEW")
 
 (use-package selected
@@ -1221,26 +1225,6 @@ org-todo-keywords to a transient command."
   (defun disable-selected-minor-mode ()
     (selected-minor-mode -1))
   :bind (:map selected-keymap
-              ;; common
-              ("n" . next-line)
-              ("p" . previous-line)
-              ("f" . forward-char)
-              ("b" . backward-char)
-              ("F" . forward-word)
-              ("B" . backward-word)
-              ("a" . beginning-of-visual-line)
-              ("e" . end-of-visual-line)
-              ("{" . backward-paragraph)
-              ("}" . forward-paragraph)
-              ("(" . backward-sentence)
-              (")" . forward-sentence)
-              ("s" . ctrlf-forward-fuzzy)
-              ("r" . ctrlf-backward-fuzzy)
-              ("[" . scroll-down-line)
-              ("]" . scroll-up-line)
-              ("x" . exchange-point-and-mark)
-              ("M" . rectangle-mark-mode)
-              ;; unique
               ("u" . upcase-dwim)
               ("d" . downcase-dwim)
               ("w" . kill-ring-save)
@@ -1249,6 +1233,8 @@ org-todo-keywords to a transient command."
               ("R" . replace-rectangle)
               ("E" . eval-region)
               ("q" . selected-off))
+  :config
+  (define-navigation-keys selected-keymap)
   :blackout selected-minor-mode)
 
 

@@ -1436,47 +1436,69 @@ To be used by `eww-after-render-hook'."
 
   (transient-define-prefix oht-transient-general ()
     "General-purpose transient."
-    ["** GENERAL TRANSIENT **"
-     ["Actions/Toggles"
+    [["Actions/Toggles"
       ("a" "AutoFill" auto-fill-mode)
       ("j" "Dired Jump" dired-jump)
       ("v" "View Mode" view-mode)
-      ("b" "Switch Buffer" switch-to-buffer)
-      ("B" "iBuffer" ibuffer)]
-     ["Org Mode"
-      ("o k" "Capture" org-capture)
-      ("o s" "Store Link" org-store-link)
-      ("o t" "Today" oht-org-agenda-today)
-      ("o p" "Today (pop-up)" oht-org-agenda-today-pop-up)
-      ("o 0" "Complete" oht-org-agenda-complete)
-      ("o a" "Agenda..." org-agenda)]
+      ("b" "Switch Buffer" consult-buffer)
+      ("B" "iBuffer" ibuffer)
+      ("m" "Mode Transient..." call-mode-help-transient)]
      ["Reading"
       ("r e" "Elfeed"      elfeed)
       ("r E" "EWW"         eww)
       ("r g" "Google News" oht-dispatch-google-news)
       ("r d" "Downloads"   oht-dispatch-downloads)]
-     ["Consult"
-      ("c l" "Consult Line" consult-line)
-      ("c o" "Consult Outline" consult-outline)
-      ("c g" "Consult Grep" consult-grep)
-      ("c b" "Consult Buffer" consult-buffer)
-      ("c a" "Consult Apropos" consult-apropos)
-      ("c M" "Toggle Minor Modes" consult-minor-mode-menu)]
      ["Transients"
+      ("o" "Org..." oht-transient-general--org)
+      ("t" "Toggle..." oht-transient-general--toggles)
       ("w" "Windows..." oht-transient-window)
-      ("M" "Mode Transient..." call-mode-help-transient)
-      ("O" "Outline Navigation..." oht-transient-outline)
-      ("@" "Secondary Selection..." oht-transient-2nd)
-      ("D" "Display..."   oht-transient-display)
-      ("F" "Fonts..." oht-transient-fonts)
-      ("S" "Spelling..." oht-transient-spelling)]])
+      ("c" "Consult..." oht-transient-general--consult)]
+     [""
+      ("0" "Outline..." oht-transient-outline)
+      ("2" "Secondary..." oht-transient-2nd)
+      ("f" "Fonts..." oht-transient-fonts)
+      ("s" "Spelling..." oht-transient-spelling)]])
+
+  (transient-define-prefix oht-transient-general--org ()
+    "Transient for Org commands useful outside org mode."
+    ["Org Mode"
+     ["Agenda Commands"
+      ("t" "Today" oht-org-agenda-today)
+      ("p" "Today (pop-up)" oht-org-agenda-today-pop-up)
+      ("0" "Complete" oht-org-agenda-complete)
+      ("a" "Agenda..." org-agenda)]
+     ["Other"
+      ("k" "Capture" org-capture)
+      ("s" "Store Link" org-store-link)]])
+
+  (transient-define-prefix oht-transient-general--toggles ()
+    :transient-suffix 'transient--do-stay
+    :transient-non-suffix 'transient--do-warn
+    [["Toggle"
+     ("h" "Highlight Line" hl-line-mode)
+     ("l" "Line Numbers" global-display-line-numbers-mode)
+     ("g" "Fill Column" global-display-fill-column-indicator-mode)
+     ("w" "Wrap" visual-line-mode)
+     ("t" "Truncate" toggle-truncate-lines)
+     ("W" "Whitespace" whitespace-mode)]
+     ["Action"
+      ("q" "Quit" transient-quit-all)]])
+
+  (transient-define-prefix oht-transient-general--consult ()
+    ["Consult"
+     ("l" "Line" consult-line)
+     ("o" "Outline" consult-outline)
+     ("g" "Grep" consult-grep)
+     ("b" "Buffer" consult-buffer)
+     ("a" "Apropos" consult-apropos)
+     ("m" "Marks" consult-mark)
+     ("M" "Minor Modes" consult-minor-mode-menu)])
 
   (transient-define-prefix oht-transient-outline ()
     "Transient for Outline Minor Mode navigation"
     :transient-suffix 'transient--do-stay
     :transient-non-suffix 'transient--do-warn
-    ["General -> Outline Navigation"
-     ["Show/Hide"
+    [["Show/Hide"
       ("<backtab>" "Global Toggle" bicycle-cycle-global)
       ("<tab>" "Toggle Children" bicycle-cycle)
       ("o"     "Hide to This Sublevel" outline-hide-sublevels)
@@ -1494,22 +1516,11 @@ To be used by `eww-after-render-hook'."
       ("M-/" "Redo" undo-fu-only-redo)
       ("c" "Consult" consult-outline :transient nil)]])
 
-  (transient-define-prefix oht-transient-display ()
-    "A transient for controlling Emacs display"
-    ["General -> Display"
-     [("h" "Highlight Line" hl-line-mode)
-      ("l" "Line Numbers" global-display-line-numbers-mode)
-      ("g" "Fill Column" global-display-fill-column-indicator-mode)
-      ("w" "Wrap" visual-line-mode)
-      ("t" "Truncate" toggle-truncate-lines)
-      ("W" "Whitespace" whitespace-mode)]])
-
   (transient-define-prefix oht-transient-fonts ()
     "Set Font Properties"
     :transient-suffix 'transient--do-stay
     :transient-non-suffix 'transient--do-warn
-    ["General -> Fonts"
-     ["Modes"
+    [["Modes"
       ("v" "Var Mode" variable-pitch-mode)
       ("V" "V+ Mode" facedancer-vadjust-mode)
       ("o" "Olivetti" olivetti-mode)

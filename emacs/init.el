@@ -306,6 +306,17 @@ Keybindings you define here will take precedence."
   "Defines a key binding for bosskey-mode."
   `(define-key bosskey-mode-map (kbd ,key) ,command))
 
+(defmacro boss-keys (&rest body)
+  ;; https://github.com/kerbyfc/dotmacs/blob/master/bindings/bindings.el
+  "Defines multiple key bindings for bosskey-mode.
+Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR is a command."
+  `(progn
+     ,@(cl-loop for binding in body
+                collect
+                `(let ((key ,(car binding))
+                       (def ,(cadr binding)))
+                   (define-key bosskey-mode-map (kbd key) def)))))
+
 
 ;;;; Actual Keybindings
 
@@ -313,50 +324,52 @@ Keybindings you define here will take precedence."
 
 ;; Mac-like bindings
 (when (eq system-type 'darwin)
-  (boss-key "s-q"       'save-buffers-kill-terminal)
-  (boss-key "s-m"       'iconify-frame)
-  (boss-key "s-n"       'make-frame-command)
-  (boss-key "s-s"       'save-buffer)
-  (boss-key "s-,"       'find-user-init-file)
-  (boss-key "s-o"       'find-file)
-  (boss-key "s-z"       'undo-fu-only-undo)
-  (boss-key "s-Z"       'undo-fu-only-redo)
-  (boss-key "s-x"       'kill-region)
-  (boss-key "s-c"       'kill-ring-save)
-  (boss-key "s-v"       'yank)
-  (boss-key "s-<left>"  'beginning-of-visual-line)
-  (boss-key "s-<right>" 'end-of-visual-line)
-  (boss-key "s-<up>"    'beginning-of-buffer)
-  (boss-key "s-<down>"  'end-of-buffer))
+  (boss-keys
+   ("s-q"       'save-buffers-kill-terminal)
+   ("s-m"       'iconify-frame)
+   ("s-n"       'make-frame-command)
+   ("s-s"       'save-buffer)
+   ("s-,"       'find-user-init-file)
+   ("s-o"       'find-file)
+   ("s-z"       'undo-fu-only-undo)
+   ("s-Z"       'undo-fu-only-redo)
+   ("s-x"       'kill-region)
+   ("s-c"       'kill-ring-save)
+   ("s-v"       'yank)
+   ("s-<left>"  'beginning-of-visual-line)
+   ("s-<right>" 'end-of-visual-line)
+   ("s-<up>"    'beginning-of-buffer)
+   ("s-<down>"  'end-of-buffer)))
 
 ;; Personal keybindings
-(boss-key "C-<return>" 'oht-transient-general)
-(boss-key "M-["        'previous-buffer)
-(boss-key "M-]"        'next-buffer)
-(boss-key "M-o"        'other-window)
-(boss-key "M-."        'embark-act)
-(boss-key "M-'"        'hippie-expand)
-(boss-key "M-c"        'capitalize-dwim)
-(boss-key "M-l"        'downcase-dwim)
-(boss-key "M-u"        'upcase-dwim)
-(boss-key "M-\\"       'cycle-spacing)
-(boss-key "M-z"        'zap-up-to-char)
-(boss-key "C-x C-x"    'exchange-point-and-mark-dwim)
-(boss-key "C-x C-b"    'ibuffer-other-window)
-(boss-key "C-x C-n"    'make-frame-command)
-(boss-key "C-x C-,"    'find-user-init-file)
-(boss-key "M-g ."      'xref-find-definitions)
-(boss-key "M-0"        'delete-window)
-(boss-key "M-1"        'delete-other-windows)
-(boss-key "M-2"        'split-window-below)
-(boss-key "M-3"        'split-window-right)
-(boss-key "M-4"        'undefined)
-(boss-key "M-5"        'undefined)
-(boss-key "M-6"        'undefined)
-(boss-key "M-7"        'undefined)
-(boss-key "M-8"        'undefined)
-(boss-key "M-9"        'undefined)
-(boss-key "M--"        'undefined)
+(boss-keys
+ ("C-<return>" 'oht-transient-general)
+ ("M-["        'previous-buffer)
+ ("M-]"        'next-buffer)
+ ("M-o"        'other-window)
+ ("M-."        'embark-act)
+ ("M-'"        'hippie-expand)
+ ("M-c"        'capitalize-dwim)
+ ("M-l"        'downcase-dwim)
+ ("M-u"        'upcase-dwim)
+ ("M-\\"       'cycle-spacing)
+ ("M-z"        'zap-up-to-char)
+ ("C-x C-x"    'exchange-point-and-mark-dwim)
+ ("C-x C-b"    'ibuffer-other-window)
+ ("C-x C-n"    'make-frame-command)
+ ("C-x C-,"    'find-user-init-file)
+ ("M-g ."      'xref-find-definitions)
+ ("M-0"        'delete-window)
+ ("M-1"        'delete-other-windows)
+ ("M-2"        'split-window-below)
+ ("M-3"        'split-window-right)
+ ("M-4"        'undefined)
+ ("M-5"        'undefined)
+ ("M-6"        'undefined)
+ ("M-7"        'undefined)
+ ("M-8"        'undefined)
+ ("M-9"        'undefined)
+ ("M--"        'undefined))
 
 
 ;;;; Mouse

@@ -451,7 +451,7 @@ Keybindings you define here will take precedence."
 
   (blackout 'flyspell-mode " Spell")
 
-  (transient-define-prefix oht-transient-spelling ()
+  (transient-define-prefix flyspell-mode-transient ()
     "Transient for a spelling interface"
     :transient-suffix 'transient--do-stay
     :transient-non-suffix 'transient--do-warn
@@ -1457,7 +1457,7 @@ To be used by `eww-after-render-hook'."
       ("0" "Outline..." oht-transient-outline)
       ("2" "Secondary..." oht-transient-2nd)
       ("f" "Fonts..." oht-transient-fonts)
-      ("s" "Spelling..." oht-transient-spelling)]])
+      ("s" "Spelling..." flyspell-mode-transient)]])
 
   (transient-define-prefix oht-transient-general--org ()
     "Transient for Org commands useful outside org mode."

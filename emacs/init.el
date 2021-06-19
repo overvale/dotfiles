@@ -262,6 +262,13 @@ If no region is active, then just swap point and mark."
 (defun oht-dispatch-watch () (interactive) (find-file "~/Downloads/watch"))
 (defun oht-dispatch-google-news () (interactive) (browse-url "http://68k.news/"))
 
+(defun kill-buffer-dwim (u-arg)
+  "Call kill-current-buffer, with C-u: call kill-buffer."
+  (interactive "P")
+  (if u-arg
+      (call-interactively 'kill-buffer)
+    (call-interactively 'kill-current-buffer)))
+
 
 ;;; Keybindings
 
@@ -354,6 +361,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
  ("M-u"        'upcase-dwim)
  ("M-\\"       'cycle-spacing)
  ("M-z"        'zap-up-to-char)
+ ("C-x k"      'kill-buffer-dwim)
  ("C-x C-x"    'exchange-point-and-mark-dwim)
  ("C-x C-b"    'ibuffer-other-window)
  ("C-x C-n"    'make-frame-command)

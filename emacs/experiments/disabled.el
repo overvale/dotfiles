@@ -769,3 +769,12 @@ mode-line."
 ;; Delete a window with M-s--click
 (global-set-key [M-s-mouse-1] 'mouse-delete-window)
 
+;;; Macros
+
+(defmacro use-blackout (feature mode &optional replacement)
+  "Like `blackout', but adding `with-eval-after-load'.
+FEATURE is name of lisp feature, MODE and REPLACEMENT are as in `blackout'."
+  (declare (indent defun))
+  `(with-eval-after-load ',feature
+     (blackout ',mode ,replacement)))
+

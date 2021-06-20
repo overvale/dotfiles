@@ -778,3 +778,61 @@ FEATURE is name of lisp feature, MODE and REPLACEMENT are as in `blackout'."
   `(with-eval-after-load ',feature
      (blackout ',mode ,replacement)))
 
+;;; facedancer-mode
+
+;; There are a number of built-in functions for dealing with setting
+;; per-buffer fonts, but all of them are built on buffer-face-mode, which
+;; works by remapping ONLY the default face to a new value. If you'd like to
+;; remap specific faces (for example the variable-pitch face)
+;; buffer-face-mode won't cut it. The below approach applies the exact same
+;; approach as buffer-face-mode but allows you to target individual faces.
+
+(define-minor-mode facedancer-mode
+  "Local minor mode for setting custom fonts per buffer.
+To use, create a function which sets the variables locally, then
+call that function with a hook, like so:
+
+    (defun my/custom-elfeed-fonts ()
+      (setq-local facedancer-monospace-family \"Iosevka\"
+                  facedancer-variable-family  \"Inter\")
+      (facedancer-mode 'toggle))
+
+    (add-hook 'elfeed-show-mode 'my/custom-elfeed-fonts)"
+  :init-value nil
+  :lighter " FaceD"
+  (if facedancer-mode
+      (progn
+        (setq-local facedancer-default-remapping
+                    (face-remap-add-relative 'default
+                                             :family facedancer-monospace-family
+                                             :weight facedancer-monospace-weight
+                                             :width  facedancer-monospace-width
+                                             :height (* 10 facedancer-monospace-height)))
+        (setq-local facedancer-fixed-pitch-remapping
+                    (face-remap-add-relative 'fixed-pitch
+                                             :family facedancer-monospace-family
+                                             :weight facedancer-monospace-weight
+                                             :width  facedancer-monospace-width
+                                             :height (/ (float facedancer-monospace-height)
+                                                        (float facedancer-variable-height))))
+        (setq-local facedancer-variable-pitch-remapping
+                    (face-remap-add-relative 'variable-pitch
+                                             :family facedancer-variable-family
+                                             :weight facedancer-variable-weight
+                                             :width  facedancer-variable-width
+                                             :height (/ (float facedancer-variable-height)
+                                                        (float facedancer-monospace-height))))
+        (force-window-update (current-buffer)))
+    (progn
+      (face-remap-remove-relative facedancer-default-remapping)
+      (face-remap-remove-relative facedancer-fixed-pitch-remapping)
+      (face-remap-remove-relative facedancer-variable-pitch-remapping)
+      (force-window-update (current-buffer)))))
+
+(defun my/go-fonts ()
+  ;; To make this work, now that I've defined all these variables using defcustom,
+  ;; you have to make each variable buffer-local. That's why this is disabled.
+  ;; https://stackoverflow.com/questions/21917049/how-can-i-set-buffer-local-value-for-a-variable-defined-by-defcustom
+  (interactive)
+  (setq-local facedancer-monospace-family "Go Mono")
+  (facedancer-mode 'toggle))

@@ -374,6 +374,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
  ("M-u"        'upcase-dwim)
  ("M-\\"       'cycle-spacing)
  ("M-z"        'zap-up-to-char)
+ ("M-H"        'oht-transient-marks)
  ("C-x k"      'kill-buffer-dwim)
  ("C-x C-x"    'exchange-point-and-mark-dwim)
  ("C-x C-b"    'ibuffer-other-window)
@@ -1560,13 +1561,13 @@ To be used by `eww-after-render-hook'."
     :transient-suffix 'transient--do-stay
     :transient-non-suffix 'transient--do-exit
     [[
-      ("M-f" "Word" mark-word)
-      ("C-e" "Line" mark-line)
-      ("M-e" "Sentence" mark-sentence)
-      ("M-h" "Paragraph" mark-paragraph)]
-     [
+      ("w" "Word" mark-word)
       ("s" "Sexp" mark-sexp)
       ("d" "Defun" mark-defun)]
+     [
+      ("n" "Line" mark-line)
+      (")" "Sentence" mark-sentence)
+      ("}" "Paragraph" mark-paragraph)]
      [
       ("<" "Beginning of Buffer" mark-beginning-of-buffer)
       (">" "End of Buffer" mark-end-of-buffer)]

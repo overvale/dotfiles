@@ -102,6 +102,21 @@
 
 ;;;; Functions
 
+(defun mark-line (arg)
+  "Put mark at end of line.
+ARG works as in `forward-line'.  If this command is repeated,
+it marks the next ARG lines after the ones already marked."
+  (interactive "p")
+  (push-mark
+   (save-excursion
+     (if (and (eq last-command this-command) (mark t))
+	 (goto-char (mark)))
+     (forward-line arg)
+     (point))
+   nil t))
+
+(defalias 'mark-sentence 'mark-end-of-sentence)
+
 (defun toggle-window-split ()
   "Toggle window split from vertical to horizontal."
   (interactive)
@@ -166,13 +181,6 @@ pipe whole buffer."
         (setq beg (region-beginning) end (region-end))
       (setq beg (line-beginning-position) end (line-end-position)))
     (comment-or-uncomment-region beg end)))
-
-(defun mark-whole-line ()
-  "Put the point at end of this whole line, mark at beginning"
-  (interactive)
-  (beginning-of-line)
-  (set-mark-command nil)
-  (end-of-line))
 
 (defun narrow-or-widen-dwim (p)
   ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/narrow-extras.el
@@ -1205,7 +1213,7 @@ org-todo-keywords to a transient command."
               ("u" . upcase-dwim)
               ("d" . downcase-dwim)
               ("w" . kill-ring-save)
-              ("l" . mark-whole-line)
+              ("l" . mark-line)
               ("|" . pipe-region)
               ("R" . replace-rectangle)
               ("E" . eval-region)

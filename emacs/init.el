@@ -66,7 +66,7 @@
  '(make-backup-files nil)
  '(load-prefer-newer t)
  '(bookmark-save-flag 1)
- ;;'(bookmark-menu-confirm-deletion t)
+ ;;'(bookmark-menu-confirm-deletion t) ; Emacs 28
  '(word-wrap t)
  '(truncate-lines t)
  '(delete-by-moving-to-trash t)
@@ -148,8 +148,7 @@ it marks the next ARG lines after the ones already marked."
 
 (defun pipe-region (start end command)
   ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/text-extras.el
-  "Pipe region through shell command. If the mark is inactive,
-pipe whole buffer."
+  "Pipe region/buffer through shell command."
   (interactive (append
                 (if (use-region-p)
                     (list (region-beginning) (region-end))
@@ -269,7 +268,7 @@ If no region is active, then just swap point and mark."
 (defun oht-dispatch-watch () (interactive) (find-file "~/Downloads/watch"))
 (defun oht-dispatch-google-news () (interactive) (browse-url "http://68k.news/"))
 
-(defun kill-buffer-dwim (u-arg)
+(defun kill-buffer-dwim (&optional u-arg)
   "Call kill-current-buffer, with C-u: call kill-buffer."
   (interactive "P")
   (if u-arg
@@ -339,6 +338,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 
 ;;;; Actual Keybindings
 
+;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
 ;; Mac-like bindings
@@ -609,11 +609,11 @@ NAME and ARGS are as in `use-package'."
          (set-face-attribute 'mode-line-inactive nil :height (* value 10))))
 
 (define-minor-mode facedancer-vadjust-mode
-  "Minor mode to adjust the variable-pitch face size buffer-locally.
+  "Minor mode to adjust the variable-pitch face height buffer-locally.
 A minor mode to scale (in the current buffer) the variable-pitch
-face up to the height defined by ‘facedancer-variable-size’ and
+face up to the height defined by ‘facedancer-variable-height’ and
 the fixed-pitch face down to the height defined by
-‘facedancer-monospace-size’."
+‘facedancer-monospace-height’."
   :init-value nil
   :lighter " V+"
   (if facedancer-vadjust-mode

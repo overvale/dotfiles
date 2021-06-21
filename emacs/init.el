@@ -141,11 +141,6 @@ it marks the next ARG lines after the ones already marked."
         (call-process "open" nil 0 nil file))
     (message "No file found at point.")))
 
-(defun kill-to-beg-line ()
-  "Kill from point to the beginning of the line."
-  (interactive)
-  (kill-line 0))
-
 (defun pipe-region (start end command)
   ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/text-extras.el
   "Pipe region/buffer through shell command."

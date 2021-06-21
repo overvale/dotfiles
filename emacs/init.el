@@ -938,12 +938,7 @@ completions if invoked from inside the minibuffer."
   (completion-category-overrides '((file (styles . (partial-completion))))))
 
 (use-package vertico
-  :init (vertico-mode)
-  :config
-  (advice-add #'vertico--setup :after
-              (lambda (&rest _)
-                (setq-local completion-auto-help nil
-                            completion-show-inline-help nil))))
+  :init (vertico-mode))
 
 (use-package marginalia
   :bind (:map minibuffer-local-map

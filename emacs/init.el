@@ -20,8 +20,8 @@
 
 (when (eq system-type 'darwin)
   (cd "~/home")
-  (defvar oht-dotfiles "~/home/dot/emacs/")
-  (defvar oht-orgfiles "~/home/org/")
+  (defvar oht-dotfiles             "~/home/dot/emacs/")
+  (defvar oht-orgfiles             "~/home/org/")
   (defvar user-downloads-directory "~/Downloads"))
 
 (when (eq system-type 'windows-nt)
@@ -242,15 +242,14 @@ If no region is active, then just swap point and mark."
   (message "Pushed mark to ring"))
 
 (when (eq system-type 'darwin)
-  (setq youtube-dl-path "/usr/local/bin/youtube-dl")
-  (setq youtube-dl-output-dir "~/Downloads/"))
+  (setq youtube-dl-path "/usr/local/bin/youtube-dl"))
 
 (defun youtube-dl-URL-at-point ()
   "Send the URL at point to youtube-dl."
   (interactive)
   (async-shell-command (format "%s -o \"%s%s\" -f best \"%s\""
                                youtube-dl-path
-                               youtube-dl-output-dir
+                               user-downloads-directory
                                "%(title)s.%(ext)s"
                                (ffap-url-at-point))))
 

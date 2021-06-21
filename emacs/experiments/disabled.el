@@ -836,3 +836,15 @@ call that function with a hook, like so:
   (interactive)
   (setq-local facedancer-monospace-family "Go Mono")
   (facedancer-mode 'toggle))
+
+;;; Transient Keymaps
+
+(defun test/easy-nav ()
+  (interactive)
+  (set-transient-map
+   (let ((map (make-sparse-keymap)))
+     (define-key map [?p] 'previous-line)
+     (define-key map [?n] 'next-line)
+     (message "Easy Nav!")
+     map) t))
+

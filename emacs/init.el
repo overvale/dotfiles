@@ -1155,8 +1155,6 @@ org-todo-keywords to a transient command."
   (define-key map (kbd "p") 'previous-line)
   (define-key map (kbd "f") 'forward-char)
   (define-key map (kbd "b") 'backward-char)
-  (define-key map (kbd "F") 'forward-word)
-  (define-key map (kbd "B") 'backward-word)
   (define-key map (kbd "a") 'beginning-of-line)
   (define-key map (kbd "e") 'end-of-line)
   (define-key map (kbd "{") 'backward-paragraph)
@@ -1420,7 +1418,6 @@ To be used by `eww-after-render-hook'."
       ("v" "View Mode" view-mode)
       ("b" "Switch Buffer" consult-buffer)
       ("B" "iBuffer" ibuffer)
-      ("SPC" "Set Mark..." oht-transient-marks)
       ("m" "Mode Transient..." call-mode-help-transient)]
      ["Reading"
       ("r e" "Elfeed"      elfeed)
@@ -1549,20 +1546,31 @@ To be used by `eww-after-render-hook'."
     "Transient for setting the mark."
     :transient-suffix 'transient--do-stay
     :transient-non-suffix 'transient--do-exit
-    [[
-      ("w" "Word" mark-word)
+    ["Mark"
+     [("@" "Word" mark-word)
       ("s" "Sexp" mark-sexp)
       ("d" "Defun" mark-defun)]
-     [
-      ("n" "Line" mark-line)
+     [("n" "Line" mark-line)
       (")" "Sentence" mark-sentence)
       ("}" "Paragraph" mark-paragraph)]
-     [
-      ("<" "Beginning of Buffer" mark-beginning-of-buffer)
+     [("<" "Beginning of Buffer" mark-beginning-of-buffer)
       (">" "End of Buffer" mark-end-of-buffer)]
-     [
-      ("x" "Exchange Point/Mark" exchange-point-and-mark :transient nil)
+     [("x" "Exchange Point/Mark" exchange-point-and-mark :transient nil)
       ("q" "Quit" transient-quit-all)]])
+
+  (transient-define-prefix oht-transient-transpose ()
+    "Transient for transpose commands."
+    :transient-suffix 'transient--do-stay
+    :transient-non-suffix 'transient--do-exit
+    ["Transpose"
+     ["Forward"
+      ("f" "Char" transpose-chars)
+      ("@" "Word" transpose-words)
+      ("n" "Line" transpose-lines)
+      (")" "Sentence" transpose-sentences)
+      ("}" "Paragraph" transpose-paragraphs)
+      ("s" "Sexps" transpose-sexps)
+      ("r" "Regions" transpose-regions)]])
 
   ) ; End "use-package transient"
 

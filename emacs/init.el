@@ -1430,6 +1430,7 @@ To be used by `eww-after-render-hook'."
       ("v" "View Mode" view-mode)
       ("b" "Switch Buffer" consult-buffer)
       ("B" "iBuffer" ibuffer)
+      ("SPC" "Set Mark..." oht-transient-marks)
       ("m" "Mode Transient..." call-mode-help-transient)]
      ["Reading"
       ("r e" "Elfeed"      elfeed)
@@ -1552,6 +1553,25 @@ To be used by `eww-after-render-hook'."
       ("C-/" "Winner Undo" winner-undo :transient t)
       ("M-/" "Winner Redo" winner-redo :transient t)]
      ["Exit"
+      ("q" "Quit" transient-quit-all)]])
+
+  (transient-define-prefix oht-transient-marks ()
+    "Transient for setting the mark."
+    :transient-suffix 'transient--do-stay
+    :transient-non-suffix 'transient--do-exit
+    [[
+      ("M-f" "Word" mark-word)
+      ("C-e" "Line" mark-line)
+      ("M-e" "Sentence" mark-sentence)
+      ("M-h" "Paragraph" mark-paragraph)]
+     [
+      ("s" "Sexp" mark-sexp)
+      ("d" "Defun" mark-defun)]
+     [
+      ("<" "Beginning of Buffer" mark-beginning-of-buffer)
+      (">" "End of Buffer" mark-end-of-buffer)]
+     [
+      ("x" "Exchange Point/Mark" exchange-point-and-mark :transient nil)
       ("q" "Quit" transient-quit-all)]])
 
   ) ; End "use-package transient"

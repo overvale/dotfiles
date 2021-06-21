@@ -1168,28 +1168,23 @@ org-todo-keywords to a transient command."
   (define-key map (kbd "x") 'exchange-point-and-mark)
   (define-key map (kbd "M") 'rectangle-mark-mode))
 
-(use-package view
-  :custom
-  (view-read-only t)
-  :init
-  (defun oht/view-mode-exit ()
-    (interactive)
-    (view-mode -1)
-    (hl-line-mode -1))
-  (defun oht/exit-view-replace-rectangle ()
-    (interactive)
-    (oht/view-mode-exit)
-    (call-interactively 'replace-rectangle))
-  :bind
-  (:map view-mode-map
-        ("R" . oht/exit-view-replace-rectangle)
-        ("m" . set-mark-command)
-        ("<RET>" . oht/view-mode-exit)
-        ("q" . quit-window))
-  :hook (view-mode-hook . hl-line-mode)
-  :config
-  (define-navigation-keys view-mode-map)
-  :blackout " VIEW")
+(defvar navigation-mode-map (make-keymap)
+  "Keymap for navigation-mode.
+By the way, navigation-mode doesn't actually exist, it is only a keymap.")
+
+;; Assign navigation-keys to the map
+(define-navigation-keys navigation-mode-map)
+
+(defun navigation-mode--enter ()
+  (interactive)
+  (message "Navigation Mode")
+  (set-transient-map navigation-mode-map t 'navigation-mode--exit))
+
+(defun navigation-mode--exit ()
+  (interactive)
+  (message "Navigation Mode Exited"))
+
+(global-set-key (kbd "M-N") 'navigation-mode--enter)
 
 (use-package selected
   :commands selected-minor-mode

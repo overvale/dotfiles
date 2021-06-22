@@ -1222,23 +1222,11 @@ By the way, navigation-mode doesn't actually exist, it is only a keymap.")
 (setq shr-max-image-proportion 0.5)
 (setq shr-width 80)
 (setq shr-bullet "• ")
-
-;; Set default browser in Emacs
-(setq browse-url-browser-function 'eww-browse-url)
-;; Prefixing with universal argument uses browse-url-default-browser
-;; which seems to be the system browser.
+(setq browse-url-browser-function 'eww-browse-url) ; Use EWW as Emacs's browser
 
 (use-package eww
   :custom
-  (eww-restore-desktop nil)
-  (eww-desktop-remove-duplicates t)
-  (eww-header-line-format "%t %u")
-  (eww-download-directory user-downloads-directory)
-  (eww-bookmarks-directory (concat user-emacs-directory "eww-bookmarks/"))
-  (eww-history-limit 150)
   (eww-use-external-browser-for-content-type "\\`\\(video/\\|audio/\\|application/pdf\\)")
-  (url-cookie-trusted-urls '()
-                           url-cookie-untrusted-urls '(".*"))
   :init
   (defun eww-mode-setup ()
     "Apply some customization to fonts in eww-mode."
@@ -1248,7 +1236,6 @@ By the way, navigation-mode doesn't actually exist, it is only a keymap.")
   :commands (eww)
   :hook (eww-mode-hook . eww-mode-setup)
   :config
-
   (make-variable-buffer-local
    (defvar eww-inhibit-images-status nil
      "EWW Inhibit Images Status"))
@@ -1281,13 +1268,9 @@ To be used by `eww-after-render-hook'."
   :commands elfeed
   :custom
   (elfeed-use-curl t)
-  (elfeed-curl-max-connections 10)
   (elfeed-db-directory (concat user-emacs-directory "elfeed/"))
   (elfeed-enclosure-default-dir user-downloads-directory)
-  (elfeed-search-filter "@4-week-ago +unread")
-  (elfeed-sort-order 'descending)
-  (elfeed-search-clipboard-type 'CLIPBOARD)
-  (elfeed-show-truncate-long-urls t)
+;;(elfeed-search-clipboard-type 'CLIPBOARD)
   :bind
   (:map elfeed-search-mode-map
         ("b" . elfeed-search-browse-url)
@@ -1374,7 +1357,7 @@ To be used by `eww-after-render-hook'."
     (interactive)
     (async-shell-command (format "%s -o \"%s%s\" -f mp4 \"%s\""
                                  youtube-dl-path
-                                 youtube-dl-output-dir
+                                 user-downloads-directory
                                  "%(title)s.%(ext)s"
                                  (elfeed-entry-link elfeed-show-entry))))
 

@@ -236,18 +236,6 @@ If no region is active, then just swap point and mark."
   (push-mark (point) t nil)
   (message "Pushed mark to ring"))
 
-(when (eq system-type 'darwin)
-  (setq youtube-dl-path "/usr/local/bin/youtube-dl"))
-
-(defun youtube-dl-URL-at-point ()
-  "Send the URL at point to youtube-dl."
-  (interactive)
-  (async-shell-command (format "%s -o \"%s%s\" -f best \"%s\""
-                               youtube-dl-path
-                               user-downloads-directory
-                               "%(title)s.%(ext)s"
-                               (ffap-url-at-point))))
-
 (defun org-insert-date-today ()
   "Insert today's date using standard org formatting."
   (interactive)
@@ -954,6 +942,17 @@ completions if invoked from inside the minibuffer."
   (marginalia-mode))
 
 (use-package embark
+  :config
+  (when (eq system-type 'darwin)
+    (setq youtube-dl-path "/usr/local/bin/youtube-dl"))
+  (defun youtube-dl-URL-at-point ()
+    "Send the URL at point to youtube-dl."
+    (interactive)
+    (async-shell-command (format "%s -o \"%s%s\" -f best \"%s\""
+                                 youtube-dl-path
+                                 user-downloads-directory
+                                 "%(title)s.%(ext)s"
+                                 (ffap-url-at-point))))
   :bind
   (:map embark-file-map
         ("O" . macos-open-file)

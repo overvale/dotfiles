@@ -26,8 +26,8 @@
 
 (when (eq system-type 'windows-nt)
   (cd "~/")
-  (defvar oht-dotfiles "~/.emacs.d/")
-  (defvar oht-orgfiles "~/home/org/")
+  (defvar oht-dotfiles             "~/.emacs.d/")
+  (defvar oht-orgfiles             "~/home/org/")
   (defvar user-downloads-directory "~/home/Downloads"))
 
 
@@ -53,6 +53,7 @@
  '(show-paren-mode t)
  '(blink-cursor-mode t)
  '(cursor-type '(bar . 3))
+ '(cursor-in-non-selected-windows 'hollow)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(minibuffer-depth-indicate-mode t)
@@ -919,7 +920,7 @@ completions if invoked from inside the minibuffer."
    '(facedancer-monospace-family "SF Mono")
    '(facedancer-variable-family  "New York")
    '(facedancer-mode-line-family "SF Compact Text")
-   '(facedancer-mode-line-height 14)))
+   '(facedancer-mode-line-height 13)))
 
 (when (eq system-type 'windows-nt)
   (custom-set-variables

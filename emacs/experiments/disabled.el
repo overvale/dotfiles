@@ -857,3 +857,12 @@ call that function with a hook, like so:
      (message "Easy Nav!")
      map) t))
 
+(defun move-text-transiently ()
+    (interactive)
+    (set-transient-map
+     (let ((map (make-sparse-keymap)))
+       (message "move-text-up/down")
+       (define-key map (kbd "p") 'move-text-up)
+       (define-key map (kbd "n") 'move-text-down)
+       map) t))
+

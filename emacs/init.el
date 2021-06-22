@@ -884,11 +884,13 @@ completions if invoked from inside the minibuffer."
   (define-key dired-mode-map (kbd "O") 'dired-open-file)
   (define-key dired-mode-map (kbd "C-/") 'dired-undo)
 
-  (add-hook 'dired-mode-hook
-            (lambda ()
-              (dired-hide-details-mode 1)
-              (auto-revert-mode)
-              (hl-line-mode 1)))
+  (defun dired-mode-setup ()
+    "Settings for dired mode."
+    (dired-hide-details-mode 1)
+    (auto-revert-mode)
+    (hl-line-mode 1))
+
+  (add-hook 'dired-mode-hook 'dired-mode-setup)
 
   ) ; End dired config
 
@@ -1243,13 +1245,13 @@ By the way, navigation-mode doesn't actually exist, it is only a keymap.")
   (url-cookie-trusted-urls '()
                            url-cookie-untrusted-urls '(".*"))
   :init
-  (defun oht-eww-fonts ()
+  (defun eww-mode-setup ()
     "Apply some customization to fonts in eww-mode."
     (facedancer-vadjust-mode)
     (text-scale-increase 1)
     (setq-local line-spacing 2))
   :commands (eww)
-  :hook (eww-mode-hook . oht-eww-fonts)
+  :hook (eww-mode-hook . eww-mode-setup)
   :config
 
   (make-variable-buffer-local

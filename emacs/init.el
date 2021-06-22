@@ -856,6 +856,7 @@ completions if invoked from inside the minibuffer."
       '(try-complete-file-name-partially
         try-complete-file-name
         try-expand-line
+        try-expand-line-all-buffers
         try-expand-dabbrev
         try-expand-dabbrev-all-buffers
         try-expand-dabbrev-from-kill

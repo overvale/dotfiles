@@ -418,30 +418,30 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 (setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
 
 (setq package-selected-packages
-      '(bicycle
-        buffer-move
-        consult
-        embark
-        embark-consult
-        fountain-mode
-        helpful
+      '(use-package
         isearch-mb
-        marginalia
-        markdown-mode
+        blackout
         modus-themes
-        move-text
-        olivetti
         orderless
+        vertico
+        marginalia
+        embark
+        consult
+        embark-consult
+        org
         selected
         transient
+        olivetti
         undo-fu
         unfill
-        vertico
+        helpful
+        move-text
         visual-regexp
         visual-regexp-steroids
-        blackout
+        fountain-mode
+        markdown-mode
         lua-mode
-        use-package))
+        orgalist))
 
 (when (string= (system-name) "shadowfax.local")
   (add-to-list 'package-selected-packages 'elfeed))
@@ -1139,7 +1139,7 @@ org-todo-keywords to a transient command."
       ("c" "CANCELED" org-agenda-todo-set-canceled)]]))
 
 
-;;;; View / Selected
+;;;; Navigation Mode / Selected
 
 (defun define-navigation-keys (map)
   "Defines navigation keys for a map supplied by argument."
@@ -1518,11 +1518,6 @@ To be used by `eww-after-render-hook'."
       ("<right>" "→" windmove-right :transient t)
       ("<up>"    "↑" windmove-up    :transient t)
       ("<down>"  "↓" windmove-down  :transient t)]
-     ["Move"
-      ("S-<left>"  "Move ←" buf-move-left  :transient t)
-      ("S-<right>" "Move →" buf-move-right :transient t)
-      ("S-<up>"    "Move ↑" buf-move-up    :transient t)
-      ("S-<down>"  "Move ↓" buf-move-down  :transient t)]
      ["Undo/Redo"
       ("C-/" "Winner Undo" winner-undo :transient t)
       ("M-/" "Winner Redo" winner-redo :transient t)]
@@ -1750,12 +1745,6 @@ To be used by `eww-after-render-hook'."
       ("n" "Down" move-text-down)
       ("p" "Up" move-text-up)]]))
 
-(use-package buffer-move
-  :commands (buf-move-up
-             buf-move-down
-             buf-move-left
-             buf-move-right))
-
 (use-package visual-regexp
   :bind (([remap query-replace] . #'vr/query-replace)))
 
@@ -1763,14 +1752,6 @@ To be used by `eww-after-render-hook'."
   :after visual-regexp
   :custom
   (vr/engine 'pcre2el))
-
-(use-package bicycle
-  :after outline
-  :bind
-  (:map outline-minor-mode-map
-        ([C-tab] . bicycle-cycle))
-  (:map emacs-lisp-mode-map
-        ("<backtab>" . bicycle-cycle-global)))
 
 (use-package fountain-mode
   :commands fountain-mode
@@ -1794,6 +1775,9 @@ To be used by `eww-after-render-hook'."
   (setq initial-scratch-message (concat
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
+
+(use-package orgalist
+  :hook (git-commit-mode-hook . orgalist-mode))
 
 
 ;;; End of init.el

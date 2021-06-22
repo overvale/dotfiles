@@ -784,28 +784,23 @@ completions if invoked from inside the minibuffer."
 
 ;;;; Pulse
 
-(defun pulse-line (&rest _)
+(defun pulse-line ()
   "Interactive function to pulse the current line."
   (interactive)
   (pulse-momentary-highlight-one-line (point)))
 
-(defun ct/yank-pulse-advice (orig-fn &rest args)
-  "Pulse line when yanking"
-  ;; From https://christiantietze.de/posts/2020/12/emacs-pulse-highlight-yanked-text/
-  ;; Define the variables first
-  (let (begin end)
-    ;; Initialize `begin` to the current point before pasting
-    (setq begin (point))
-    ;; Forward to the decorated function (i.e. `yank`)
-    (apply orig-fn args)
-    ;; Initialize `end` to the current point after pasting
-    (setq end (point))
-    ;; Pulse to highlight!
-    (pulse-momentary-highlight-region begin end)))
-
 (defadvice other-window (after other-window-pulse activate) (pulse-line))
 (defadvice delete-window (after delete-window-pulse activate) (pulse-line))
 (defadvice recenter-top-bottom (after recenter-top-bottom-pulse activate) (pulse-line))
+
+(defun ct/yank-pulse-advice (orig-fn &rest args)
+  "Pulse line when yanking"
+  ;; From https://christiantietze.de/posts/2020/12/emacs-pulse-highlight-yanked-text/
+  (let (begin end)
+    (setq begin (point))
+    (apply orig-fn args)
+    (setq end (point))
+    (pulse-momentary-highlight-region begin end)))
 
 (advice-add 'yank :around #'ct/yank-pulse-advice)
 

@@ -367,7 +367,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
  ("M-\\"       'cycle-spacing)
  ("M-z"        'zap-up-to-char)
  ("M-H"        'oht-transient-marks)
- ("M-N"        'navigation-mode--enter)
+ ("M-N"        'navigation-keymap--activate)
  ("C-x k"      'kill-buffer-dwim)
  ("C-x C-x"    'exchange-point-and-mark-dwim)
  ("C-x C-b"    'ibuffer-other-window)
@@ -1184,23 +1184,22 @@ org-todo-keywords to a transient command."
   (define-key map (kbd "x") 'exchange-point-and-mark)
   (define-key map (kbd "SPC") 'rectangle-mark-mode))
 
-(defvar navigation-mode-map (make-keymap)
-  "Keymap for navigation-mode.
-By the way, navigation-mode doesn't actually exist, it is only a keymap.")
+(defvar navigation-keymap (make-keymap)
+  "Transient keymap for navigating buffers.")
 
 ;; Assign navigation-keys to the map
-(define-navigation-keys navigation-mode-map)
+(define-navigation-keys navigation-keymap)
 
-(defun navigation-mode--enter ()
+(defun navigation-keymap--activate ()
   (interactive)
   (pulse-line)
-  (message "Navigation Mode Entered")
-  (set-transient-map navigation-mode-map t 'navigation-mode--exit))
+  (message "Navigation Keymap Activated")
+  (set-transient-map navigation-keymap t 'navigation-keymap--deactivate))
 
-(defun navigation-mode--exit ()
+(defun navigation-keymap--deactivate ()
   (interactive)
   (pulse-line)
-  (message "Navigation Mode Exited"))
+  (message "Navigation Keymap Deactivated"))
 
 (use-package selected
   :commands selected-minor-mode

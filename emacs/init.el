@@ -1191,11 +1191,13 @@ By the way, navigation-mode doesn't actually exist, it is only a keymap.")
 
 (defun navigation-mode--enter ()
   (interactive)
-  (message "Navigation Mode")
+  (pulse-line)
+  (message "Navigation Mode Entered")
   (set-transient-map navigation-mode-map t 'navigation-mode--exit))
 
 (defun navigation-mode--exit ()
   (interactive)
+  (pulse-line)
   (message "Navigation Mode Exited"))
 
 (use-package selected

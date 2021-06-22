@@ -771,6 +771,15 @@ mode-line."
 
 ;;; Macros
 
+(defmacro use-package-select (name &rest args)
+  "Like `use-package', but adding package to package-selected-packages.
+NAME and ARGS are as in `use-package'."
+  (declare (indent defun))
+  `(progn
+     (add-to-list 'package-selected-packages ',name)
+     (use-package ,name
+       ,@args)))
+
 (defmacro use-blackout (feature mode &optional replacement)
   "Like `blackout', but adding `with-eval-after-load'.
 FEATURE is name of lisp feature, MODE and REPLACEMENT are as in `blackout'."

@@ -462,15 +462,6 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 (eval-when-compile
   (require 'use-package))
 
-(defmacro use-package-select (name &rest args)
-  "Like `use-package', but adding package to package-selected-packages.
-NAME and ARGS are as in `use-package'."
-  (declare (indent defun))
-  `(progn
-     (add-to-list 'package-selected-packages ',name)
-     (use-package ,name
-       ,@args)))
-
 (setq use-package-always-defer t
       use-package-hook-name-suffix nil)
 

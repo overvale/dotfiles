@@ -363,12 +363,10 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
  ("M-o"        'other-window)
  ("M-."        'embark-act)
  ("M-'"        'hippie-expand)
- ("M-c"        'capitalize-dwim)
- ("M-l"        'downcase-dwim)
- ("M-u"        'upcase-dwim)
  ("M-\\"       'cycle-spacing)
  ("M-z"        'zap-up-to-char)
  ("M-H"        'oht-transient-marks)
+ ("M-N"        'navigation-mode--enter)
  ("C-x k"      'kill-buffer-dwim)
  ("C-x C-x"    'exchange-point-and-mark-dwim)
  ("C-x C-b"    'ibuffer-other-window)
@@ -387,6 +385,9 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
  ("M-9"        'undefined)
  ("M--"        'undefined))
 
+(global-set-key [remap capitalize-word] 'capitalize-dwim)
+(global-set-key [remap downcase-word]   'downcase-dwim)
+(global-set-key [remap upcase-word]     'upcase-dwim)
 
 ;;;; Mouse
 
@@ -1122,6 +1123,7 @@ org-todo-keywords to a transient command."
   :bind
   (:map org-agenda-mode-map
         ("t" . oht-transient-org-agenda)
+        ("s-z" . org-agenda-undo)
         ("C-/" . org-agenda-undo))
   :hook (org-agenda-mode-hook . hl-line-mode)
   :config
@@ -1146,6 +1148,8 @@ org-todo-keywords to a transient command."
   (define-key map (kbd "p") 'previous-line)
   (define-key map (kbd "f") 'forward-char)
   (define-key map (kbd "b") 'backward-char)
+  (define-key map (kbd "M-f") 'forward-word)
+  (define-key map (kbd "M-b") 'backward-word)
   (define-key map (kbd "a") 'beginning-of-line)
   (define-key map (kbd "e") 'end-of-line)
   (define-key map (kbd "{") 'backward-paragraph)
@@ -1157,7 +1161,7 @@ org-todo-keywords to a transient command."
   (define-key map (kbd "[") 'scroll-down-line)
   (define-key map (kbd "]") 'scroll-up-line)
   (define-key map (kbd "x") 'exchange-point-and-mark)
-  (define-key map (kbd "M") 'rectangle-mark-mode))
+  (define-key map (kbd "SPC") 'rectangle-mark-mode))
 
 (defvar navigation-mode-map (make-keymap)
   "Keymap for navigation-mode.
@@ -1175,8 +1179,6 @@ By the way, navigation-mode doesn't actually exist, it is only a keymap.")
   (interactive)
   (message "Navigation Mode Exited"))
 
-(global-set-key (kbd "M-N") 'navigation-mode--enter)
-
 (use-package selected
   :commands selected-minor-mode
   :init
@@ -1187,7 +1189,6 @@ By the way, navigation-mode doesn't actually exist, it is only a keymap.")
               ("u" . upcase-dwim)
               ("d" . downcase-dwim)
               ("w" . kill-ring-save)
-              ("l" . mark-line)
               ("|" . pipe-region)
               ("R" . replace-rectangle)
               ("E" . eval-region)
@@ -1760,7 +1761,6 @@ To be used by `eww-after-render-hook'."
 
 (use-package visual-regexp-steroids
   :after visual-regexp
-  :bind (([remap query-replace-regexp] . #'vr/query-replace))
   :custom
   (vr/engine 'pcre2el))
 

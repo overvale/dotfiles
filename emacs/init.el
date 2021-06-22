@@ -759,6 +759,28 @@ completions if invoked from inside the minibuffer."
 
 (blackout 'outline-minor-mode)
 
+(transient-define-prefix oht-transient-outline ()
+  "Transient for Outline Minor Mode navigation"
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  [["Show/Hide"
+    ("<backtab>" "Global Toggle" bicycle-cycle-global)
+    ("<tab>" "Toggle Children" bicycle-cycle)
+    ("o"     "Hide to This Sublevel" outline-hide-sublevels)
+    ("a"     "Show All" outline-show-all)]
+   ["Navigate"
+    ("n" "Next" outline-next-visible-heading)
+    ("p" "Previous" outline-previous-visible-heading)]
+   ["Edit"
+    ("M-<left>"  "Promote" outline-promote)
+    ("M-<right>" "Demote"  outline-demote)
+    ("M-<up>"    "Move Up" outline-move-subtree-up)
+    ("M-<down>"  "Move Down" outline-move-subtree-down)]
+   ["Other"
+    ("C-/" "Undo" undo-fu-only-undo)
+    ("M-/" "Redo" undo-fu-only-redo)
+    ("c" "Consult" consult-outline :transient nil)]])
+
 
 ;;;; Pulse
 
@@ -1456,28 +1478,6 @@ To be used by `eww-after-render-hook'."
      ("a" "Apropos" consult-apropos)
      ("m" "Marks" consult-mark)
      ("M" "Minor Modes" consult-minor-mode-menu)])
-
-  (transient-define-prefix oht-transient-outline ()
-    "Transient for Outline Minor Mode navigation"
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    [["Show/Hide"
-      ("<backtab>" "Global Toggle" bicycle-cycle-global)
-      ("<tab>" "Toggle Children" bicycle-cycle)
-      ("o"     "Hide to This Sublevel" outline-hide-sublevels)
-      ("a"     "Show All" outline-show-all)]
-     ["Navigate"
-      ("n" "Next" outline-next-visible-heading)
-      ("p" "Previous" outline-previous-visible-heading)]
-     ["Edit"
-      ("M-<left>"  "Promote" outline-promote)
-      ("M-<right>" "Demote"  outline-demote)
-      ("M-<up>"    "Move Up" outline-move-subtree-up)
-      ("M-<down>"  "Move Down" outline-move-subtree-down)]
-     ["Other"
-      ("C-/" "Undo" undo-fu-only-undo)
-      ("M-/" "Redo" undo-fu-only-redo)
-      ("c" "Consult" consult-outline :transient nil)]])
 
   (transient-define-prefix oht-transient-fonts ()
     "Set Font Properties"

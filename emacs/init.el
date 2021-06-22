@@ -1262,13 +1262,6 @@ By the way, navigation-mode doesn't actually exist, it is only a keymap.")
       (progn (setq-local shr-inhibit-images nil)
              (eww-reload t))))
 
-  (defun oht-eww-open-in-new-buffer-bury ()
-    "Open URL at point in a new buried buffer"
-    (interactive)
-    (eww-open-in-new-buffer)
-    (quit-window)
-    (message "Browsing in buried buffer"))
-
   (defun prot-eww--rename-buffer ()
     "Rename EWW buffer using page title or URL.
 To be used by `eww-after-render-hook'."
@@ -1298,7 +1291,6 @@ To be used by `eww-after-render-hook'."
   :bind
   (:map elfeed-search-mode-map
         ("b" . elfeed-search-browse-url)
-        ("B" . oht-elfeed-search-browse-and-bury)
         ("*" . elfeed-search-tag--star)
         ("8" . elfeed-search-untag--star)
         ("o" . delete-other-windows)
@@ -1314,8 +1306,7 @@ To be used by `eww-after-render-hook'."
         ("8" . elfeed-show-tag--unstar)
         ("o" . delete-other-windows)
         ("d" . oht-elfeed-show-download-video)
-        ("i" . elfeed-inhibit-images-toggle)
-        ("B" . oht-elfeed-show-browse-and-bury))
+        ("i" . elfeed-inhibit-images-toggle))
   :config
   ;; My feed list is stored outside my dotfiles -- not public.
   (load "~/home/src/rss-feeds.el")
@@ -1386,20 +1377,6 @@ To be used by `eww-after-render-hook'."
                                  youtube-dl-output-dir
                                  "%(title)s.%(ext)s"
                                  (elfeed-entry-link elfeed-show-entry))))
-
-  (defun oht-elfeed-search-browse-and-bury ()
-    "Browse elfeed entry and bury buffer."
-    (interactive)
-    (elfeed-search-browse-url)
-    (bury-buffer)
-    (message "Browsing in buried buffer"))
-
-  (defun oht-elfeed-show-browse-and-bury ()
-    "Browse elfeed entry and bury buffer."
-    (interactive)
-    (elfeed-show-visit)
-    (bury-buffer)
-    (message "Browsing in buried buffer"))
 
   :hook ((elfeed-show-mode-hook . oht-elfeed-show-fonts)
          (elfeed-search-mode-hook . disable-selected-minor-mode)
@@ -1681,7 +1658,6 @@ To be used by `eww-after-render-hook'."
     ["EWW"
      ["Actions"
       ("G" "Browse" eww)
-      ("M-<return>" "Open in new buffer" oht-eww-open-in-new-buffer-bury)
       ("&" "Browse With External Browser" eww-browse-with-external-browser)
       ("w" "Copy URL" eww-copy-page-url)]
      ["Display"

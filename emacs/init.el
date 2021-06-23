@@ -1172,26 +1172,21 @@ org-todo-keywords to a transient command."
 
   ) ; End "use-package org"
 
+(add-hook 'org-agenda-mode-hook 'hl-line-mode)
 
-(use-package org-agenda
-  :commands org-agenda
-  :bind
-  (:map org-agenda-mode-map
-        ("t" . oht-transient-org-agenda)
-        ("s-z" . org-agenda-undo)
-        ("C-/" . org-agenda-undo))
-  :hook (org-agenda-mode-hook . hl-line-mode)
-  :config
-  (transient-define-prefix oht-transient-org-agenda ()
-    "A transient for setting org-agenda todo status.
-I've created this because I don't like how org-todo messes with
-windows. There is likely a much better way to automatically map
-org-todo-keywords to a transient command."
-    ["Change Status To..."
-     [("t" "TODO"     org-agenda-todo-set-todo)
-      ("l" "LATER"    org-agenda-todo-set-later)]
-     [("d" "DONE"     org-agenda-todo-set-done)
-      ("c" "CANCELED" org-agenda-todo-set-canceled)]]))
+(with-eval-after-load 'org-agenda
+  (defvar org-agenda-todo-map
+    (let ((map (make-sparse-keymap "Org TODO")))
+      (define-key map "t" '("TODO"     . org-agenda-todo-set-todo))
+      (define-key map "l" '("LATER"    . org-agenda-todo-set-later))
+      (define-key map "d" '("DONE"     . org-agenda-todo-set-done))
+      (define-key map "c" '("CANCELED" . org-agenda-todo-set-canceled))
+      map) "A map for setting org statuses.")
+  (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
+  (define-key org-agenda-mode-map (kbd "C-/") 'org-agenda-undo)
+  (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))
+
+
 
 
 ;;;; Navigation Mode / Selected

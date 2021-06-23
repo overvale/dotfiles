@@ -162,21 +162,6 @@ it marks the next ARG lines after the ones already marked."
          (t
           (message "[%d] %s" exit-status error-msg)))))))
 
-(defun find-file-recursively ()
-  "Find Files Recursively using completing read."
-  (interactive)
-  (find-file (completing-read "Find File Recursively: "
-                              (directory-files-recursively default-directory ".+"))))
-
-(defun comment-or-uncomment-region-dwim ()
-  "Toggle comment for region, or line."
-  (interactive)
-  (let (beg end)
-    (if (region-active-p)
-        (setq beg (region-beginning) end (region-end))
-      (setq beg (line-beginning-position) end (line-end-position)))
-    (comment-or-uncomment-region beg end)))
-
 (defun narrow-or-widen-dwim (p)
   ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/narrow-extras.el
   "Widen if buffer is narrowed, narrow-dwim otherwise.
@@ -218,6 +203,12 @@ already narrowed."
   "Find the user-init-file"
   (interactive)
   (find-file user-init-file))
+
+(defun find-file-recursively ()
+  "Find Files Recursively using completing read."
+  (interactive)
+  (find-file (completing-read "Find File Recursively: "
+                              (directory-files-recursively default-directory ".+"))))
 
 (defun exchange-point-and-mark-dwim ()
   "Respect region active/inactive and swap point and mark.
@@ -324,8 +315,7 @@ Keybindings you define here will take precedence."
   `(define-key bosskey-mode-map (kbd ,key) ,command))
 
 (defmacro boss-keys (&rest body)
-  ;; https://github.com/kerbyfc/dotmacs/blob/master/bindings/bindings.el
-  "Defines multiple key bindings for bosskey-mode.
+  "Defines key bindings for bosskey-mode.
 Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR is a command."
   `(progn
      ,@(cl-loop for binding in body
@@ -845,12 +835,12 @@ completions if invoked from inside the minibuffer."
                         (name . "\*Apropos\*")
                         (name . "\*Info\*"))))))
 
-  (defun oht-ibuffer-hook ()
+  (defun ibuffer-setup ()
     (hl-line-mode 1)
     (ibuffer-auto-mode 1)
     (ibuffer-switch-to-saved-filter-groups "default"))
 
-  (add-hook 'ibuffer-mode-hook 'oht-ibuffer-hook)
+  (add-hook 'ibuffer-mode-hook 'ibuffer-setup)
 
   ) ; End ibuffer
 

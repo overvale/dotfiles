@@ -71,6 +71,7 @@
  '(word-wrap t)
  '(truncate-lines t)
  '(delete-by-moving-to-trash t)
+ '(trash-directory "~/.Trash")
  '(confirm-kill-processes nil)
  '(save-interprogram-paste-before-kill t)
  '(kill-do-not-save-duplicates t)

@@ -361,6 +361,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
  ("M-z"        'zap-up-to-char)
  ("M-H"        'oht-transient-marks)
  ("M-N"        'navigation-keymap--activate)
+ ("C-d"        'delete-forward-char)
  ("C-x k"      'kill-buffer-dwim)
  ("C-x C-x"    'exchange-point-and-mark-dwim)
  ("C-x C-b"    'ibuffer-other-window)

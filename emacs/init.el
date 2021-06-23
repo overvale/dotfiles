@@ -431,6 +431,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
     (define-key map "a" '("autoremove" . package-autoremove))
     (define-key map "d" '("delete" . package-delete))
     (define-key map "i" '("install" . package-install))
+    (define-key map "f" '("refresh" . package-refresh-contents))
     (define-key map "l" '("list" . list-packages))
     map))
 

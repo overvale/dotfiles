@@ -22,14 +22,13 @@
   (cd "~/home")
   (defvar oht-dotfiles             "~/home/dot/emacs/")
   (defvar oht-orgfiles             "~/home/org/")
-  (defvar user-downloads-directory "~/Downloads"))
+  (defvar user-downloads-directory "~/Downloads/"))
 
 (when (eq system-type 'windows-nt)
   (cd "~/")
   (defvar oht-dotfiles             "~/.emacs.d/")
   (defvar oht-orgfiles             "~/home/org/")
-  (defvar user-downloads-directory "~/home/Downloads"))
-
+  (defvar user-downloads-directory "~/home/Downloads/"))
 
 ;;;; Settings
 

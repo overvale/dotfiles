@@ -917,17 +917,18 @@ completions if invoked from inside the minibuffer."
 
 ;;; Appearance
 
-(use-package modus-themes
-  :custom
-  (modus-themes-slanted-constructs t)
-  (modus-themes-links 'faint-neutral-underline)
-  (modus-themes-mode-line 'accented)
-  (modus-themes-region 'bg-only)
-  (modus-themes-diffs 'desaturated)
-  (modus-themes-org-blocks 'grayscale)
-  (modus-themes-syntax 'faint)
-  :init
-  (modus-themes-load-operandi))
+(select-package 'modus-themes)
+
+(custom-set-variables
+  '(modus-themes-slanted-constructs t)
+  '(modus-themes-links 'faint-neutral-underline)
+  '(modus-themes-mode-line 'accented)
+  '(modus-themes-region 'bg-only)
+  '(modus-themes-diffs 'desaturated)
+  '(modus-themes-org-blocks 'grayscale)
+  '(modus-themes-syntax 'faint))
+
+(modus-themes-load-operandi)
 
 ;; If on a Mac, assume Mitsuharu Yamamoto’s fork -- check for dark/light mode,
 ;; if dark mode load the dark theme, also add a hook for syncing with the

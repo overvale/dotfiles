@@ -1052,6 +1052,7 @@ completions if invoked from inside the minibuffer."
 
   (setq org-special-ctrl-a/e t
         org-special-ctrl-k t
+        org-return-follows-link t
         org-adapt-indentation nil
         org-catch-invisible-edits 'show-and-error
         org-outline-path-complete-in-steps nil

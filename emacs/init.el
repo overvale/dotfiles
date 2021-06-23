@@ -1230,16 +1230,23 @@ org-todo-keywords to a transient command."
 ;; Assign navigation-keys to the map
 (define-navigation-keys navigation-keymap)
 
+(defun navigation-keymap-eldoc-function ()
+  (eldoc-message "Navigation Keymap"))
+
 (defun navigation-keymap--activate ()
   (interactive)
   (pulse-line)
   (message "Navigation Keymap Activated")
+  (add-function :before-until (local 'eldoc-documentation-function)
+                #'navigation-keymap-eldoc-function)
   (set-transient-map navigation-keymap t 'navigation-keymap--deactivate))
 
 (defun navigation-keymap--deactivate ()
   (interactive)
   (pulse-line)
-  (message "Navigation Keymap Deactivated"))
+  (message "Navigation Keymap Deactivated")
+  (remove-function (local 'eldoc-documentation-function)
+                   #'navigation-keymap-eldoc-function))
 
 (use-package selected
   :commands selected-minor-mode

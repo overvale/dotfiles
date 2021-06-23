@@ -16,8 +16,6 @@
 
 ;;; Configuration
 
-;;;; Variables
-
 (when (eq system-type 'darwin)
   (cd "~/home")
   (defvar oht-dotfiles             "~/home/dot/emacs/")
@@ -30,7 +28,6 @@
   (defvar oht-orgfiles             "~/home/org/")
   (defvar user-downloads-directory "~/home/Downloads/"))
 
-;;;; Settings
 
 ;; Save all interactive customization to a temp file, which is never loaded.
 ;; This means interactive customization is session-local. Only this init file persists sessions.
@@ -101,7 +98,7 @@
    '(battery-mode-line-format " [%b%p%%]")))
 
 
-;;;; Functions
+;;; Functions
 
 (defun mark-line (arg)
   "Put mark at end of line.
@@ -258,8 +255,6 @@ If no region is active, then just swap point and mark."
 
 ;;; Keybindings
 
-;;;; Modifiers
-
 ;; If on a Mac, use the command key as Super, left-option for Meta, and
 ;; right-option for Alt.
 (when (eq system-type 'darwin)
@@ -273,9 +268,6 @@ If no region is active, then just swap point and mark."
   (setq w32-pass-lwindow-to-system nil)
   (setq w32-lwindow-modifier 'super)
   (w32-register-hot-key [s-]))
-
-
-;;;; Keybinding Macros
 
 ;; Let's start by making my own macro to define multiple keys. Why would I do
 ;; this if I'm also using `bind-key'? So that I can bind keys to keymaps.
@@ -323,9 +315,6 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
                 `(let ((key ,(car binding))
                        (def ,(cadr binding)))
                    (define-key bosskey-mode-map (kbd key) def)))))
-
-
-;;;; Actual Keybindings
 
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
@@ -384,8 +373,6 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 (global-set-key [remap downcase-word]   'downcase-dwim)
 (global-set-key [remap upcase-word]     'upcase-dwim)
 
-;;;; Mouse
-
 ;; Gasp! An Emacs user that actually uses the mouse?! Scandalous.
 
 ;; Start by making shift-click extend the selection (region)
@@ -437,9 +424,6 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 
 (global-set-key (kbd "C-x p") pkg-ops-map)
 
-
-;;;; Blackout, Transient
-
 ;; This config requires these 2 packages to run properly.
 
 (select-package 'blackout)
@@ -452,37 +436,50 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 (autoload 'transient-define-prefix "transient" nil t)
 
 
-;;; Built-In Packages & Lisp
 
-;;;; Flyspell
+;;; Appearance
 
-(add-hook 'text-mode-hook 'turn-on-flyspell)
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+(select-package 'modus-themes)
 
-(with-eval-after-load 'flyspell
+(custom-set-variables
+  '(modus-themes-slanted-constructs t)
+  '(modus-themes-links 'faint-neutral-underline)
+  '(modus-themes-mode-line 'accented)
+  '(modus-themes-region 'bg-only)
+  '(modus-themes-diffs 'desaturated)
+  '(modus-themes-org-blocks 'grayscale)
+  '(modus-themes-syntax 'faint))
 
-  (blackout 'flyspell-mode " Spell")
+(modus-themes-load-operandi)
 
-  (transient-define-prefix flyspell-mode-transient ()
-    "Transient for a spelling interface"
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    [["Toggle Modes"
-      ("m" "Flyspell" flyspell-mode)
-      ("M" "Prog Flyspell" flyspell-prog-mode)]
-     ["Check"
-      ("b" "Buffer" flyspell-buffer)
-      ("r" "Region" flyspell-region)]
-     ["Correction"
-      ("n" "Next" flyspell-goto-next-error)
-      ("<return>" "Fix" ispell-word)
-      ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
-      ("<DEL>" "Delete Word" kill-word)
-      ("C-/" "Undo" undo-fu-only-undo)
-      ("M-/" "Redo" undo-fu-only-redo)]])
+;; If on a Mac, assume Mitsuharu Yamamoto’s fork -- check for dark/light mode,
+;; if dark mode load the dark theme, also add a hook for syncing with the
+;; system.
+(when (eq system-type 'darwin)
+  (if (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua")
+      (modus-themes-load-vivendi))
+  (add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle))
 
-  ) ; end flyspell
+(setq text-scale-mode-step 1.09)
 
+(when (eq system-type 'darwin)
+  (custom-set-variables
+   '(facedancer-monospace-family "SF Mono")
+   '(facedancer-variable-family  "New York")
+   '(facedancer-mode-line-family "SF Compact Text")
+   '(facedancer-mode-line-height 13)))
+
+(when (eq system-type 'windows-nt)
+  (custom-set-variables
+   '(facedancer-monospace-family "Consolas")
+   '(facedancer-variable-family  "Calibri")
+   '(facedancer-mode-line-family "Calibri")
+   '(facedancer-monospace-height 10)
+   '(facedancer-variable-height 11)
+   '(facedancer-mode-line-height 11)))
+
+
+;;; Packages & Lisp
 
 ;;;; Facedancer Mode
 
@@ -661,6 +658,36 @@ the fixed-pitch face down to the height defined by
     ("m"  "Mark Region as 2nd" oht/mark-region-as-secondary-selection)
     ("g"  "Make 2nd the Region" oht/mark-secondary-selection)
     ("d"  "Delete 2nd" oht/delete-secondary-selection)]])
+
+
+;;;; Flyspell
+
+(add-hook 'text-mode-hook 'turn-on-flyspell)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+(with-eval-after-load 'flyspell
+
+  (blackout 'flyspell-mode " Spell")
+
+  (transient-define-prefix flyspell-mode-transient ()
+    "Transient for a spelling interface"
+    :transient-suffix 'transient--do-stay
+    :transient-non-suffix 'transient--do-warn
+    [["Toggle Modes"
+      ("m" "Flyspell" flyspell-mode)
+      ("M" "Prog Flyspell" flyspell-prog-mode)]
+     ["Check"
+      ("b" "Buffer" flyspell-buffer)
+      ("r" "Region" flyspell-region)]
+     ["Correction"
+      ("n" "Next" flyspell-goto-next-error)
+      ("<return>" "Fix" ispell-word)
+      ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
+      ("<DEL>" "Delete Word" kill-word)
+      ("C-/" "Undo" undo-fu-only-undo)
+      ("M-/" "Redo" undo-fu-only-redo)]])
+
+  ) ; end flyspell
 
 
 ;;;; Minibuffer
@@ -877,7 +904,6 @@ completions if invoked from inside the minibuffer."
   (my:hippie-expand-with 'hippie-expand))
 
 
-
 ;;;; Dired
 
 (setq dired-use-ls-dired nil) ; no more warning message
@@ -904,53 +930,7 @@ completions if invoked from inside the minibuffer."
 (add-hook 'dired-mode-hook 'dired-mode-setup)
 
 
-;;; Appearance
-
-(select-package 'modus-themes)
-
-(custom-set-variables
-  '(modus-themes-slanted-constructs t)
-  '(modus-themes-links 'faint-neutral-underline)
-  '(modus-themes-mode-line 'accented)
-  '(modus-themes-region 'bg-only)
-  '(modus-themes-diffs 'desaturated)
-  '(modus-themes-org-blocks 'grayscale)
-  '(modus-themes-syntax 'faint))
-
-(modus-themes-load-operandi)
-
-;; If on a Mac, assume Mitsuharu Yamamoto’s fork -- check for dark/light mode,
-;; if dark mode load the dark theme, also add a hook for syncing with the
-;; system.
-(when (eq system-type 'darwin)
-  (if (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua")
-      (modus-themes-load-vivendi))
-  (add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle))
-
-(setq text-scale-mode-step 1.09)
-
-(when (eq system-type 'darwin)
-  (custom-set-variables
-   '(facedancer-monospace-family "SF Mono")
-   '(facedancer-variable-family  "New York")
-   '(facedancer-mode-line-family "SF Compact Text")
-   '(facedancer-mode-line-height 13)))
-
-(when (eq system-type 'windows-nt)
-  (custom-set-variables
-   '(facedancer-monospace-family "Consolas")
-   '(facedancer-variable-family  "Calibri")
-   '(facedancer-mode-line-family "Calibri")
-   '(facedancer-monospace-height 10)
-   '(facedancer-variable-height 11)
-   '(facedancer-mode-line-height 11)))
-
-
-;;; External Packages
-
 ;;;; Narrowing & Searching
-
-;;;;; Orderless
 
 (select-package 'orderless)
 (require 'orderless)
@@ -1185,7 +1165,7 @@ org-todo-keywords to a transient command."
   (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))
 
 
-;;;; Navigation Mode
+;;;; Navigation Keymap
 
 (defun define-navigation-keys (map)
   "Defines navigation keys for a map supplied by argument."

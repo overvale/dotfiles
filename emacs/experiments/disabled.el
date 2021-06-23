@@ -866,3 +866,182 @@ call that function with a hook, like so:
        (define-key map (kbd "n") 'move-text-down)
        map) t))
 
+;;; EWW
+
+(setq shr-max-image-proportion 0.5)
+(setq shr-width 80)
+(setq shr-bullet "• ")
+(setq browse-url-browser-function 'eww-browse-url) ; Use EWW as Emacs's browser
+
+(use-package eww
+  :custom
+  (eww-use-external-browser-for-content-type "\\`\\(video/\\|audio/\\|application/pdf\\)")
+  :init
+  (defun eww-mode-setup ()
+    "Apply some customization to fonts in eww-mode."
+    (facedancer-vadjust-mode)
+    (text-scale-increase 1)
+    (setq-local line-spacing 2))
+  :commands (eww)
+  :hook (eww-mode-hook . eww-mode-setup)
+  :config
+  (make-variable-buffer-local
+   (defvar eww-inhibit-images-status nil
+     "EWW Inhibit Images Status"))
+
+  (defun eww-inhibit-images-toggle ()
+    (interactive)
+    (setq eww-inhibit-images-status (not eww-inhibit-images-status))
+    (if eww-inhibit-images-status
+        (progn (setq-local shr-inhibit-images t)
+               (eww-reload t))
+      (progn (setq-local shr-inhibit-images nil)
+             (eww-reload t))))
+
+  (defun prot-eww--rename-buffer ()
+    "Rename EWW buffer using page title or URL.
+To be used by `eww-after-render-hook'."
+    (let ((name (if (eq "" (plist-get eww-data :title))
+                    (plist-get eww-data :url)
+                  (plist-get eww-data :title))))
+      (rename-buffer (format "*eww # %s*" name) t)))
+
+  (add-hook 'eww-after-render-hook #'prot-eww--rename-buffer)
+  (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
+  (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer)
+
+  ) ; End "use-package eww"
+
+(with-eval-after-load 'eww
+  (transient-define-prefix eww-mode-help-transient ()
+    "Transient for EWW"
+    :transient-suffix 'transient--do-stay
+    :transient-non-suffix 'transient--do-warn
+    ["EWW"
+     ["Actions"
+      ("G" "Browse" eww)
+      ("&" "Browse With External Browser" eww-browse-with-external-browser)
+      ("w" "Copy URL" eww-copy-page-url)]
+     ["Display"
+      ("i" "Toggle Images" eww-inhibit-images-toggle)
+      ("F" "Toggle Fonts" eww-toggle-fonts)
+      ("R" "Readable" eww-readable)
+      ("M-C" "Colors" eww-toggle-colors)]
+     ["History"
+      ("H" "History" eww-list-histories)
+      ("l" "Back" eww-back-url)
+      ("r" "Forward" eww-forward-url)]
+     ["Bookmarks"
+      ("a" "Add Eww Bookmark" eww-add-bookmark)
+      ("b" "Bookmark" bookmark-set)
+      ("B" "List Bookmarks" eww-list-bookmarks)
+      ("M-n" "Next Bookmark" eww-next-bookmark)
+      ("M-p" "Previous Bookmark" eww-previous-bookmark)]]))
+
+
+;;; Elfeed
+
+(use-package elfeed
+  :if (string= (system-name) "shadowfax.local")
+  :commands elfeed
+  :custom
+  (elfeed-use-curl t)
+  (elfeed-db-directory (concat user-emacs-directory "elfeed/"))
+  (elfeed-enclosure-default-dir user-downloads-directory)
+;;(elfeed-search-clipboard-type 'CLIPBOARD)
+  :bind
+  (:map elfeed-search-mode-map
+        ("b" . elfeed-search-browse-url)
+        ("*" . elfeed-search-tag--star)
+        ("8" . elfeed-search-untag--star)
+        ("o" . delete-other-windows)
+        ("N" . oht-elfeed-unread-news)
+        ("E" . oht-elfeed-unread-emacs)
+        ("O" . oht-elfeed-unread-other)
+        ("S" . oht-elfeed-starred))
+  (:map elfeed-show-mode-map
+        ("&" . oht-elfeed-show-visit-generic)
+        ("r" . elfeed-show-tag--read)
+        ("u" . elfeed-show-tag--unread)
+        ("*" . elfeed-show-tag--star)
+        ("8" . elfeed-show-tag--unstar)
+        ("o" . delete-other-windows)
+        ("d" . oht-elfeed-show-download-video)
+        ("i" . elfeed-inhibit-images-toggle))
+  :config
+  ;; My feed list is stored outside my dotfiles -- not public.
+  (load "~/home/src/rss-feeds.el")
+
+  (defun oht-elfeed-show-fonts ()
+    "Apply some customization to fonts in elfeed-show-mode."
+    (facedancer-vadjust-mode)
+    (setq-local line-spacing 3))
+
+  ;; Elfeed doesn't have a built-in way of flagging or marking items for later,
+  ;; but it does have tags, which you can use for this. The below is some simple
+  ;; aliases for adding and removing the 'star' tag.
+  (defalias 'elfeed-search-tag--star
+    (elfeed-expose #'elfeed-search-tag-all 'star)
+    "Add the 'star' tag to all selected entries")
+  (defalias 'elfeed-search-untag--star
+    (elfeed-expose #'elfeed-search-untag-all 'star)
+    "Remove the 'star' tag to all selected entries")
+  (defalias 'elfeed-show-tag--star
+    (elfeed-expose #'elfeed-show-tag 'star)
+    "Add the 'star' tag to current entry")
+  (defalias 'elfeed-show-tag--unstar
+    (elfeed-expose #'elfeed-show-untag 'star)
+    "Remove the 'star' tag to current entry")
+
+  ;; Even though there are bindings for marking items as 'read' and 'unread' in
+  ;; the search-mode, there are no such built-in bindings for show-mode. So we
+  ;; add them here.
+  (defalias 'elfeed-show-tag--unread
+    (elfeed-expose #'elfeed-show-tag 'unread)
+    "Mark the current entry unread.")
+  (defalias 'elfeed-show-tag--read
+    (elfeed-expose #'elfeed-show-untag 'unread)
+    "Mark the current entry read.")
+
+  (defun oht-elfeed-unread-news  () (interactive) (elfeed-search-set-filter "+unread +news"))
+  (defun oht-elfeed-unread-emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
+  (defun oht-elfeed-unread-other () (interactive) (elfeed-search-set-filter "+unread -emacs -news"))
+  (defun oht-elfeed-starred      () (interactive) (elfeed-search-set-filter "+star"))
+
+  (defun oht-elfeed-show-visit-generic ()
+    "Wrapper for elfeed-show-visit to use system browser instead of eww"
+    (interactive)
+    (let ((browse-url-generic-program "/usr/bin/open"))
+      (elfeed-show-visit t)))
+
+  (make-variable-buffer-local
+   (defvar elfeed-inhibit-images-status nil
+     "Elfeed Inhibit Images Status"))
+
+  (defun elfeed-inhibit-images-toggle ()
+    "Toggle display of images in elfeed-show."
+    (interactive)
+    (setq elfeed-inhibit-images-status (not elfeed-inhibit-images-status))
+    (if elfeed-inhibit-images-status
+        (progn
+          (setq-local shr-inhibit-images t)
+          (elfeed-show-refresh))
+      (progn
+        (setq-local shr-inhibit-images nil)
+        (elfeed-show-refresh))))
+
+  (defun oht-elfeed-show-download-video ()
+    "In elfeed-show-mode, download a video using youtube-dl."
+    (interactive)
+    (async-shell-command (format "%s -o \"%s%s\" -f mp4 \"%s\""
+                                 youtube-dl-path
+                                 user-downloads-directory
+                                 "%(title)s.%(ext)s"
+                                 (elfeed-entry-link elfeed-show-entry))))
+
+  :hook ((elfeed-show-mode-hook . oht-elfeed-show-fonts)
+         (elfeed-search-mode-hook . disable-selected-minor-mode)
+         (elfeed-show-mode-hook . disable-selected-minor-mode))
+
+  ) ; End "use-package elfeed"
+

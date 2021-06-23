@@ -450,6 +450,19 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 ;; (thus not in this init file) by un-commenting this hook:
 ;; (add-hook 'emacs-startup-hook 'package-autoremove)
 
+(defvar pkg-ops-map
+  (let ((map (make-sparse-keymap "Packages")))
+    (define-key map "h" '("describe" . describe-package))
+    (define-key map "r" '("reinstall" . package-reinstall))
+    (define-key map "a" '("autoremove" . package-autoremove))
+    (define-key map "d" '("delete" . package-delete))
+    (define-key map "i" '("install" . package-install))
+    (define-key map "l" '("list" . list-packages))
+    map))
+
+(global-set-key (kbd "C-x p") pkg-ops-map)
+
+
 ;;;; Use-Package, Blackout, Transient
 
 ;; This config requires these 3 packages to run properly.

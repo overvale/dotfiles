@@ -417,33 +417,6 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
   "Adds package to `package-selected-packages'."
   `(add-to-list 'package-selected-packages ,package))
 
-(setq package-selected-packages
-      '(use-package
-        blackout
-        orderless
-        vertico
-        marginalia
-        embark
-        consult
-        embark-consult
-        org
-        selected
-        transient
-        olivetti
-        undo-fu
-        unfill
-        helpful
-        move-text
-        visual-regexp
-        visual-regexp-steroids
-        fountain-mode
-        markdown-mode
-        lua-mode
-        orgalist))
-
-(when (eq system-type 'darwin)
-  (add-to-list 'package-selected-packages 'magit))
-
 ;; Install packages with `package-install-selected-packages', remove packages
 ;; with `package-autoremove'. Both functions look at the variable
 ;; `package-selected-packages' for the canonical list of packages.
@@ -465,15 +438,9 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 (global-set-key (kbd "C-x p") pkg-ops-map)
 
 
-;;;; Use-Package, Blackout, Transient
+;;;; Blackout, Transient
 
-;; This config requires these 3 packages to run properly.
-
-(select-package 'use-package)
-(require 'use-package)
-
-(setq use-package-always-defer t
-      use-package-hook-name-suffix nil)
+;; This config requires these 2 packages to run properly.
 
 (select-package 'blackout)
 (autoload 'blackout "blackout" nil t)
@@ -836,28 +803,24 @@ completions if invoked from inside the minibuffer."
 
 ;;;; iBuffer
 
-(with-eval-after-load 'ibuffer
+(setq ibuffer-show-empty-filter-groups nil)
 
-  (setq ibuffer-show-empty-filter-groups nil)
+(setq ibuffer-saved-filter-groups
+      '(("default"
+         ("Org"   (or (mode . org-mode)
+                      (mode . org-agenda-mode)))
+         ("Dired" (mode . dired-mode))
+         ("ELisp" (mode . emacs-lisp-mode))
+         ("Help"  (or (name . "\*Help\*")
+                      (name . "\*Apropos\*")
+                      (name . "\*Info\*"))))))
 
-  (setq ibuffer-saved-filter-groups
-        '(("default"
-           ("Org"   (or (mode . org-mode)
-                        (mode . org-agenda-mode)))
-           ("Dired" (mode . dired-mode))
-           ("ELisp" (mode . emacs-lisp-mode))
-           ("Help"  (or (name . "\*Help\*")
-                        (name . "\*Apropos\*")
-                        (name . "\*Info\*"))))))
+(defun ibuffer-setup ()
+  (hl-line-mode 1)
+  (ibuffer-auto-mode 1)
+  (ibuffer-switch-to-saved-filter-groups "default"))
 
-  (defun ibuffer-setup ()
-    (hl-line-mode 1)
-    (ibuffer-auto-mode 1)
-    (ibuffer-switch-to-saved-filter-groups "default"))
-
-  (add-hook 'ibuffer-mode-hook 'ibuffer-setup)
-
-  ) ; End ibuffer
+(add-hook 'ibuffer-mode-hook 'ibuffer-setup)
 
 
 ;;;; Hippie Expand
@@ -917,31 +880,28 @@ completions if invoked from inside the minibuffer."
 
 ;;;; Dired
 
+(setq dired-use-ls-dired nil) ; no more warning message
+
+(defun dired-open-file ()
+  "In dired, open the file named on this line using the 'open' shell command."
+  (interactive)
+  (let* ((file (dired-get-filename nil t)))
+    (message "Opening %s..." file)
+    (call-process "open" nil 0 nil file)
+    (message "Opening %s done" file)))
+
 (with-eval-after-load 'dired
-
-  (setq dired-use-ls-dired nil) ; no more warning message
-
-  (defun dired-open-file ()
-    "In dired, open the file named on this line using the 'open' shell command."
-    (interactive)
-    (let* ((file (dired-get-filename nil t)))
-      (message "Opening %s..." file)
-      (call-process "open" nil 0 nil file)
-      (message "Opening %s done" file)))
-
   (define-keys dired-mode-map
     ("O"   'dired-open-file)
-    ("C-/" 'dired-undo))
+    ("C-/" 'dired-undo)))
 
-  (defun dired-mode-setup ()
-    "Settings for dired mode."
-    (dired-hide-details-mode 1)
-    (auto-revert-mode)
-    (hl-line-mode 1))
+(defun dired-mode-setup ()
+  "Settings for dired mode."
+  (dired-hide-details-mode 1)
+  (auto-revert-mode)
+  (hl-line-mode 1))
 
-  (add-hook 'dired-mode-hook 'dired-mode-setup)
-
-  ) ; End dired config
+(add-hook 'dired-mode-hook 'dired-mode-setup)
 
 
 ;;; Appearance
@@ -990,24 +950,25 @@ completions if invoked from inside the minibuffer."
 
 ;;;; Narrowing & Searching
 
-(use-package orderless
-  :demand
-  :custom
-  (completion-styles '(orderless))
-  (completion-category-defaults nil)
-  (completion-category-overrides '((file (styles . (partial-completion))))))
+;;;;; Orderless
 
-(use-package vertico
-  :init (vertico-mode))
+(select-package 'orderless)
+(require 'orderless)
+(custom-set-variables
+ '(completion-styles '(orderless))
+ '(completion-category-defaults nil)
+ '(completion-category-overrides '((file (styles . (partial-completion))))))
 
-(use-package marginalia
-  :bind (:map minibuffer-local-map
-              ("M-A" . marginalia-cycle))
-  :init
-  (marginalia-mode))
+(select-package 'vertico)
+(vertico-mode)
 
-(use-package embark
-  :config
+(select-package 'marginalia)
+(define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)
+(marginalia-mode)
+
+(select-package 'embark)
+(with-eval-after-load 'embark
+
   (when (eq system-type 'darwin)
     (setq youtube-dl-path "/usr/local/bin/youtube-dl"))
   (defun youtube-dl-URL-at-point ()
@@ -1018,32 +979,38 @@ completions if invoked from inside the minibuffer."
                                  user-downloads-directory
                                  "%(title)s.%(ext)s"
                                  (ffap-url-at-point))))
-  :bind
-  (:map embark-file-map
-        ("O" . macos-open-file)
-        ("j" . dired-jump))
-  (:map embark-url-map
-        ("d" . youtube-dl-URL-at-point)
-        ("&" . browse-url-default-macosx-browser)))
 
-(use-package consult
-  :bind
-  ([remap yank-pop] . consult-yank-pop)
-  :custom
-  (consult-preview-key (kbd "C-="))
-  (consult-config
+  (autoload 'dired-jump "dired")
+  (define-keys embark-file-map
+    ("O" 'macos-open-file)
+    ("j" 'dired-jump))
+
+  (define-keys embark-url-map
+    ("d" 'youtube-dl-URL-at-point)
+    ("&" 'browse-url-default-macosx-browser))
+
+  ) ; end embark
+
+(select-package 'consult)
+(global-set-key [remap yank-pop] 'consult-yank-pop)
+(custom-set-variables
+ '(consult-preview-key (kbd "C-="))
+ '(consult-config
    `((consult-mark :preview-key any))))
 
-(use-package embark-consult
-  :after (embark consult)
-  :demand)
+(select-package 'embark-consult)
+(with-eval-after-load 'consult
+  (with-eval-after-load 'embark
+    (require 'embark-consult)))
 
 
 ;;;; Org
 
-(use-package org
-  :commands (org-mode oht-org-agenda-today)
-  :config
+(autoload 'oht-org-agenda-today-pop-up "org")
+(autoload 'oht-org-agenda-today "org")
+
+(select-package 'org)
+(with-eval-after-load 'org
 
   (custom-set-variables
    '(org-list-allow-alphabetical t)
@@ -1201,7 +1168,7 @@ org-todo-keywords to a transient command."
      [("d" "DONE"     org-todo-set-done)
       ("c" "CANCELED" org-todo-set-canceled)]])
 
-  ) ; End "use-package org"
+  ) ; End org config
 
 (add-hook 'org-agenda-mode-hook 'hl-line-mode)
 
@@ -1218,9 +1185,7 @@ org-todo-keywords to a transient command."
   (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))
 
 
-
-
-;;;; Navigation Mode / Selected
+;;;; Navigation Mode
 
 (defun define-navigation-keys (map)
   "Defines navigation keys for a map supplied by argument."
@@ -1268,33 +1233,37 @@ org-todo-keywords to a transient command."
   (remove-function (local 'eldoc-documentation-function)
                    #'navigation-keymap-eldoc-function))
 
-(use-package selected
-  :commands selected-minor-mode
-  :init
-  (selected-global-mode 1)
-  (defun disable-selected-minor-mode ()
-    (selected-minor-mode -1))
-  :bind (:map selected-keymap
-              ("u" . upcase-dwim)
-              ("d" . downcase-dwim)
-              ("c" . capitalize-dwim)
-              ("w" . kill-ring-save)
-              ("|" . pipe-region)
-              ("R" . replace-rectangle)
-              ("E" . eval-region)
-              ("q" . selected-off))
-  :config
-  (define-navigation-keys selected-keymap)
-  :blackout selected-minor-mode)
+;;;; Selected
+
+(select-package 'selected)
+
+(selected-global-mode 1)
+
+(defun disable-selected-minor-mode ()
+  (selected-minor-mode -1))
+
+(with-eval-after-load 'selected
+  (define-keys selected-keymap
+    ("u" 'upcase-dwim)
+    ("d" 'downcase-dwim)
+    ("c" 'capitalize-dwim)
+    ("w" 'kill-ring-save)
+    ("|" 'pipe-region)
+    ("R" 'replace-rectangle)
+    ("E" 'eval-region)
+    ("q" 'selected-off))
+   (define-navigation-keys selected-keymap)
+   (blackout 'selected-minor-mode))
 
 
 ;;;; Transient
 
-(use-package transient
-  :init
-  (autoload 'org-store-link "org")
-  (autoload 'dired-jump "dired" nil t)
-  :config
+(select-package 'transient)
+
+(autoload 'org-store-link "org")
+(autoload 'dired-jump "dired" nil t)
+
+(with-eval-after-load 'transient
 
   (transient-define-prefix oht-transient-general ()
     "General-purpose transient."
@@ -1426,7 +1395,8 @@ org-todo-keywords to a transient command."
       ("s" "Sexps" transpose-sexps)
       ("r" "Regions" transpose-regions)]])
 
-  ) ; End "use-package transient"
+  ) ; End transient config
+
 
 ;;;; Mode Help Transients
 
@@ -1549,78 +1519,66 @@ org-todo-keywords to a transient command."
 
 ;;;; Misc Packages
 
-(use-package magit
-  :if (when (eq system-type 'darwin))
-  :commands magit-status)
+(when (eq system-type 'darwin)
+  (select-package 'magit))
 
-(use-package olivetti
-  :commands olivetti-mode
-  :custom (olivetti-body-width 84)
-  :blackout " Olvti")
+(select-package 'olivetti)
+(with-eval-after-load 'olivetti
+  (custom-set-variables '(olivetti-body-width 84)))
 
-(use-package undo-fu
-  :bind
-  ("C-/" . undo-fu-only-undo)
-  ("M-/" . undo-fu-only-redo))
+(select-package 'undo-fu)
 
-(use-package unfill
-  :commands (unfill-paragraph unfill-toggle unfill-region)
-  :bind
-  ("M-q" . unfill-toggle))
+(select-package 'unfill)
+(global-set-key (kbd "M-q") 'until-toggle)
 
-(use-package helpful
-  :bind
-  ("C-h f" . #'helpful-function)
-  ("C-h v" . #'helpful-variable)
-  ("C-h o" . #'helpful-symbol)
-  ("C-h k" . #'helpful-key)
-  ("C-h p" . #'helpful-at-point))
+(select-package 'helpful)
+(global-set-key (kbd "C-h f") 'helpful-function)
+(global-set-key (kbd "C-h v") 'helpful-variable)
+(global-set-key (kbd "C-h o") 'helpful-symbol)
+(global-set-key (kbd "C-h k") 'helpful-key)
+(global-set-key (kbd "C-h p") 'helpful-at-point)
 
-(use-package move-text
-  :commands (move-text-up move-text-down)
-  :bind
-  ("C-x C-t" . oht-transient-transpose-lines)
-  :config
-  (transient-define-prefix oht-transient-transpose-lines ()
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    [["Move Lines"
-      ("n" "Down" move-text-down)
-      ("p" "Up" move-text-up)]]))
+(select-package 'move-text)
+(global-set-key (kbd "C-x C-t") 'oht-transient-transpose-lines)
+(transient-define-prefix oht-transient-transpose-lines ()
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  [["Move Lines"
+    ("n" "Down" move-text-down)
+    ("p" "Up" move-text-up)]])
 
-(use-package visual-regexp
-  :bind (([remap query-replace] . #'vr/query-replace)))
+(select-package 'visual-regexp)
+(global-set-key [remap query-replace] 'vr/query-replace)
 
-(use-package visual-regexp-steroids
-  :after visual-regexp
-  :custom
-  (vr/engine 'pcre2el))
+(select-package 'visual-regexp-steroids)
+(with-eval-after-load 'visual-regexp
+  (with-eval-after-load 'visual-regexp-steroids
+    (custom-set-variables
+     '(vr/engine 'pcre2el))))
 
-(use-package fountain-mode
-  :commands fountain-mode
-  :custom
-  (fountain-add-continued-dialog nil)
-  (fountain-highlight-elements (quote (section-heading))))
+(select-package 'fountain-mode)
+(custom-set-variables
+ '(fountain-add-continued-dialog nil)
+ '(fountain-highlight-elements (quote (section-heading))))
 
-(use-package markdown-mode
-  :mode ("\\.text" . markdown-mode)
-  :magic ("%text" . markdown-mode)
-  :commands markdown-mode)
+(select-package 'markdown-mode)
+(add-to-list 'magic-mode-alist
+             '("%text" . markdown-mode))
+(add-to-list 'auto-mode-alist
+             '("\\.text" . markdown-mode))
 
-(use-package lua-mode
-  :commands lua-mode)
+(select-package 'lua-mode)
 
-(use-package oblique
-  :if (string= (system-name) "shadowfax.local")
-  :load-path "~/home/src/oblique-strategies/"
-  :commands (oblique-strategy)
-  :init
+(when (string= (system-name) "shadowfax.local")
+  (select-package 'oblique)
+  (add-to-list 'load-path "~/home/src/oblique-strategies/")
+  (autoload 'oblique-strategy "oblique")
   (setq initial-scratch-message (concat
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
-(use-package orgalist
-  :hook (git-commit-mode-hook . orgalist-mode))
+(select-package 'orgalist)
+(add-hook 'git-commit-mode-hook 'orgalist-mode)
 
 
 ;;; End of init.el

@@ -284,11 +284,26 @@ If no region is active, then just swap point and mark."
   (w32-register-hot-key [s-]))
 
 
-;;;; Bosskey Mode
+;;;; Keybinding Macros
+
+;; Let's start by making my own macro to define multiple keys. Why would I do
+;; this if I'm also using `bind-key'? So that I can bind keys to keymaps.
+;; `bind-key' assumes you always want to bind keys to commands, but you can
+;; bind them to keymaps too, which is super handy, thus the macro.
+
+(defmacro define-keys (keymap &rest body)
+  "Defines key bindings in BODY for keymap in KEYMAP.
+Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR is a command."
+  `(progn
+     ,@(cl-loop for binding in body
+                collect
+                `(let ((map ,keymap)
+                       (key ,(car binding))
+                       (def ,(cadr binding)))
+                   (define-key map (kbd key) def)))))
 
 ;; Minor modes override global bindings, so any bindings you don't want
-;; overridden should be placed in a minor mode. This technique is stolen from
-;; the package bind-key.
+;; overridden should be placed in a minor mode.
 
 (defvar bosskey-mode-map (make-keymap)
   "Keymap for bosskey-mode.")
@@ -901,8 +916,9 @@ completions if invoked from inside the minibuffer."
       (call-process "open" nil 0 nil file)
       (message "Opening %s done" file)))
 
-  (define-key dired-mode-map (kbd "O") 'dired-open-file)
-  (define-key dired-mode-map (kbd "C-/") 'dired-undo)
+  (define-keys dired-mode-map
+    ("O"   'dired-open-file)
+    ("C-/" 'dired-undo))
 
   (defun dired-mode-setup ()
     "Settings for dired mode."

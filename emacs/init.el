@@ -1275,6 +1275,7 @@ org-todo-keywords to a transient command."
   :bind (:map selected-keymap
               ("u" . upcase-dwim)
               ("d" . downcase-dwim)
+              ("c" . capitalize-dwim)
               ("w" . kill-ring-save)
               ("|" . pipe-region)
               ("R" . replace-rectangle)

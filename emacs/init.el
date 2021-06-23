@@ -745,8 +745,8 @@ completions if invoked from inside the minibuffer."
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
   [["Show/Hide"
-    ("<backtab>" "Global Toggle" bicycle-cycle-global)
-    ("<tab>" "Toggle Children" bicycle-cycle)
+    ("<tab>" "Show Subtree" outline-show-subtree)
+    ("<backtab>" "Hide Subtree" outline-hide-subtree)
     ("o"     "Hide to This Sublevel" outline-hide-sublevels)
     ("a"     "Show All" outline-show-all)]
    ["Navigate"

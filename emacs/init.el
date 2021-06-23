@@ -421,11 +421,13 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 
 (setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
 
+(defmacro select-package (package)
+  "Adds package to `package-selected-packages'."
+  `(add-to-list 'package-selected-packages ,package))
+
 (setq package-selected-packages
       '(use-package
-        isearch-mb
         blackout
-        modus-themes
         orderless
         vertico
         marginalia
@@ -458,21 +460,24 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 ;; (thus not in this init file) by un-commenting this hook:
 ;; (add-hook 'emacs-startup-hook 'package-autoremove)
 
-;; Use-Package, Blackout, Transient
+;;;; Use-Package, Blackout, Transient
+
 ;; This config requires these 3 packages to run properly.
 
-(eval-when-compile
-  (require 'use-package))
+(select-package 'use-package)
+(require 'use-package)
 
 (setq use-package-always-defer t
       use-package-hook-name-suffix nil)
 
+(select-package 'blackout)
 (autoload 'blackout "blackout" nil t)
-(autoload 'transient-define-prefix "transient" nil t)
-
 (blackout 'eldoc-mode)
 (blackout 'emacs-lisp-mode "Elisp")
 (blackout 'auto-fill-function " Fill")
+
+(select-package 'transient)
+(autoload 'transient-define-prefix "transient" nil t)
 
 
 ;;; Built-In Packages & Lisp
@@ -743,11 +748,14 @@ completions if invoked from inside the minibuffer."
 
 (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start)
 
-;; isearch-mb allows you to edit the isearch in the minibuffer. Lovely.
+;; The package 'isearch-mb' allows you to edit the incremental search in the
+;; minibuffer as you type, rather than having to call `isearch-edit-string'.
+(select-package 'isearch-mb)
 (isearch-mb-mode)
 
 ;; Quit isearch when calling occur
 (add-to-list 'isearch-mb--after-exit #'occur)
+
 
 ;;;; Outline
 

@@ -411,7 +411,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 ;; (thus not in this init file) by un-commenting this hook:
 ;; (add-hook 'emacs-startup-hook 'package-autoremove)
 
-(defvar pkg-ops-map
+(setq pkg-ops-map
   (let ((map (make-sparse-keymap "Packages")))
     (define-key map "h" '("describe" . describe-package))
     (define-key map "r" '("reinstall" . package-reinstall))
@@ -1136,30 +1136,26 @@ buffer, and exiting the agenda and releasing all the buffers."
      ["Links"
       ("s" "Store Link" org-store-link)
       ("i" "Insert Link" org-insert-last-stored-link)]])
-
-  (transient-define-prefix oht-transient-org-todo ()
-    "A transient for setting org todo status.
-I've created this because I don't like how org-todo messes with
-windows. There is likely a much better way to automatically map
-org-todo-keywords to a transient command."
-    ["Org mode -> Change Status To..."
-     [("t" "TODO"     org-todo-set-todo)
-      ("l" "LATER"    org-todo-set-later)]
-     [("d" "DONE"     org-todo-set-done)
-      ("c" "CANCELED" org-todo-set-canceled)]])
+  (setq org-todo-map
+    (let ((map (make-sparse-keymap "Org TODO")))
+      (define-key map "t" '("TODO"     . org-todo-set-todo))
+      (define-key map "l" '("LATER"    . org-todo-set-later))
+      (define-key map "d" '("DONE"     . org-todo-set-done))
+      (define-key map "c" '("CANCELED" . org-todo-set-canceled))
+      map))
 
   ) ; End org config
 
 (add-hook 'org-agenda-mode-hook 'hl-line-mode)
 
 (with-eval-after-load 'org-agenda
-  (defvar org-agenda-todo-map
-    (let ((map (make-sparse-keymap "Org TODO")))
+  (setq org-agenda-todo-map
+    (let ((map (make-sparse-keymap "Org Agenda TODO")))
       (define-key map "t" '("TODO"     . org-agenda-todo-set-todo))
       (define-key map "l" '("LATER"    . org-agenda-todo-set-later))
       (define-key map "d" '("DONE"     . org-agenda-todo-set-done))
       (define-key map "c" '("CANCELED" . org-agenda-todo-set-canceled))
-      map) "A map for setting org statuses.")
+      map))
   (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "C-/") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))

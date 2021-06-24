@@ -1114,28 +1114,6 @@ buffer, and exiting the agenda and releasing all the buffers."
     (local-set-key (kbd "x") 'oht-org-agenda-exit-delete-window)
     (local-set-key (kbd "q") 'delete-window))
 
-  (transient-define-prefix oht-transient-org ()
-    "Transient for Org Mode"
-    ["Org Mode"
-     ["Navigation"
-      ("o" "Outline" consult-outline)
-      ("n" "Narrow/Widen" narrow-or-widen-dwim)
-      ("g" "Go To" org-goto)
-      ("m" "Visible Markup" visible-mode)]
-     ["Item"
-      ("t" "TODO" oht-transient-org-todo)
-      ("I" "Clock In" org-clock-in)
-      ("O" "Clock Out" org-clock-out)
-      ("a" "Archive Subtree" org-archive-subtree)
-      ("r" "Refile" org-refile)
-      ("c" "Checkbox" org-toggle-checkbox)]
-     ["Insert"
-      ("." "Insert Date, Active" org-insert-date-today)
-      (">" "Insert Date, Inactive" org-insert-date-today-inactive)
-      ("<" "Structure Template" org-insert-structure-template)]
-     ["Links"
-      ("s" "Store Link" org-store-link)
-      ("i" "Insert Link" org-insert-last-stored-link)]])
   (setq org-todo-map
     (let ((map (make-sparse-keymap "Org TODO")))
       (define-key map "t" '("TODO"     . org-todo-set-todo))
@@ -1383,12 +1361,38 @@ buffer, and exiting the agenda and releasing all the buffers."
   "Call a helpful transient based on the mode you're in."
   (interactive)
   (if (progn
+        (when (derived-mode-p 'org-mode)
+          (org-mode-help-transient))
         (when (derived-mode-p 'Info-mode)
           (info-mode-help-transient))
         (when (derived-mode-p 'dired-mode)
           (dired-mode-help-transient)))
       nil ; if the above succeeds, do nothing, else...
     (message "No transient defined for this mode.")))
+
+(with-eval-after-load 'org
+  (transient-define-prefix org-mode-help-transient ()
+    "Transient for Org Mode"
+    ["Org Mode"
+     ["Navigation"
+      ("o" "Outline" consult-outline)
+      ("n" "Narrow/Widen" narrow-or-widen-dwim)
+      ("g" "Go To" org-goto)
+      ("m" "Visible Markup" visible-mode)]
+     ["Item"
+      ("t" "TODO" org-todo-map)
+      ("I" "Clock In" org-clock-in)
+      ("O" "Clock Out" org-clock-out)
+      ("a" "Archive Subtree" org-archive-subtree)
+      ("r" "Refile" org-refile)
+      ("c" "Checkbox" org-toggle-checkbox)]
+     ["Insert"
+      ("." "Insert Date, Active" org-insert-date-today)
+      (">" "Insert Date, Inactive" org-insert-date-today-inactive)
+      ("<" "Structure Template" org-insert-structure-template)]
+     ["Links"
+      ("s" "Store Link" org-store-link)
+      ("i" "Insert Link" org-insert-last-stored-link)]]))
 
 (with-eval-after-load 'info
   (transient-define-prefix info-mode-help-transient ()

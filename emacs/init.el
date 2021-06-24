@@ -234,12 +234,6 @@ If no region is active, then just swap point and mark."
   (interactive)
   (insert (format-time-string "\[%Y-%m-%d %a\]")))
 
-;; Dispatch Functions -- I use these to launch frequently-used stuff
-(defun oht-dispatch-downloads () (interactive) (find-file "~/Downloads"))
-(defun oht-dispatch-reading () (interactive) (find-file "~/Downloads/reading"))
-(defun oht-dispatch-watch () (interactive) (find-file "~/Downloads/watch"))
-(defun oht-dispatch-google-news () (interactive) (browse-url "http://68k.news/"))
-
 (defun kill-buffer-dwim (&optional u-arg)
   "Call kill-current-buffer, with C-u: call kill-buffer."
   (interactive "P")

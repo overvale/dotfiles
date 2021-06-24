@@ -772,10 +772,10 @@ completions if invoked from inside the minibuffer."
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
   [["Show/Hide"
-    ("<tab>" "Show Subtree" outline-show-subtree)
-    ("<backtab>" "Hide Subtree" outline-hide-subtree)
-    ("o"     "Hide to This Sublevel" outline-hide-sublevels)
-    ("a"     "Show All" outline-show-all)]
+    ("f" "Show Subtree" outline-show-subtree)
+    ("b" "Hide Subtree" outline-hide-subtree)
+    ("o" "Hide to This Sublevel" outline-hide-sublevels)
+    ("a" "Show All" outline-show-all)]
    ["Navigate"
     ("n" "Next" outline-next-visible-heading)
     ("p" "Previous" outline-previous-visible-heading)]

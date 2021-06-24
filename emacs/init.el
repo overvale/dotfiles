@@ -1523,9 +1523,9 @@ buffer, and exiting the agenda and releasing all the buffers."
 (transient-define-prefix oht-transient-transpose-lines ()
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
-  [["Move Lines"
-    ("n" "Down" move-text-down)
-    ("p" "Up" move-text-up)]])
+  ["Move Lines"
+   [("n" "Down" move-text-down)]
+   [("p" "Up" move-text-up)]])
 
 (select-package 'visual-regexp)
 (global-set-key [remap query-replace] 'vr/query-replace)

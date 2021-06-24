@@ -1116,6 +1116,15 @@ buffer, and exiting the agenda and releasing all the buffers."
       (define-key map "c" '("CANCELED" . org-todo-set-canceled))
       map))
 
+  (defun echo-area-tooltips ()
+    "Show tooltips in the echo area automatically for current buffer."
+    (setq-local help-at-pt-display-when-idle t
+                help-at-pt-timer-delay 0)
+    (help-at-pt-cancel-timer)
+    (help-at-pt-set-timer))
+
+  (add-hook 'org-mode-hook #'echo-area-tooltips)
+
   ) ; End org config
 
 (add-hook 'org-agenda-mode-hook 'hl-line-mode)

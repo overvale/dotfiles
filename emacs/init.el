@@ -1561,8 +1561,8 @@ buffer, and exiting the agenda and releasing all the buffers."
 (global-set-key (kbd "C-h p") 'helpful-at-point)
 
 (select-package 'move-text)
-(global-set-key (kbd "C-x C-t") 'oht-transient-transpose-lines)
-(transient-define-prefix oht-transient-transpose-lines ()
+(global-set-key (kbd "C-x C-t") 'move-text-transient)
+(transient-define-prefix move-text-transient ()
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
   ["Move Lines"

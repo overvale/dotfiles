@@ -262,17 +262,25 @@ If no region is active, then just swap point and mark."
   (setq w32-lwindow-modifier 'super)
   (w32-register-hot-key [s-]))
 
-(defmacro define-keys (keymap &rest body)
-  "Defines key bindings in BODY for keymap in KEYMAP.
-Accepts CONS where CAR is a key in string form (to be passed to `kbd')
-and CADR is a command."
-  (declare (indent defun))
-  `(progn
-     ,@(cl-loop for binding in body
-                collect
-                `(let ((key ,(car binding))
-                       (def ,(cadr binding)))
-                   (define-key ,keymap (kbd key) def)))))
+;; The below is taken from:
+;; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
+
+(select-package 'dash)
+(require 'dash)
+
+(defun define-keys (keymap &rest pairs)
+  "Define alternating key-def PAIRS for KEYMAP."
+  (-each
+      (-partition 2 pairs)
+    (-lambda ((key def))
+      (define-key keymap key def))))
+
+(defun global-set-keys (&rest pairs)
+  "Set alternating key-def PAIRS globally."
+  (-each
+      (-partition 2 pairs)
+    (-lambda ((key def))
+      (global-set-key key def))))
 
 ;; Minor modes override global bindings, so any bindings you don't want
 ;; overridden should be placed in a minor mode.
@@ -296,64 +304,22 @@ Keybindings you define here will take precedence."
 ;; Mac-like bindings
 (when (eq system-type 'darwin)
   (define-keys bosskey-mode-map
-    ("s-q"       'save-buffers-kill-terminal)
-    ("s-m"       'iconify-frame)
-    ("s-w"       'delete-frame)
-    ("s-n"       'make-frame-command)
-    ("s-s"       'save-buffer)
-    ("s-,"       'find-user-init-file)
-    ("s-o"       'find-file)
-    ("s-z"       'undo-fu-only-undo)
-    ("s-Z"       'undo-fu-only-redo)
-    ("s-x"       'kill-region)
-    ("s-c"       'kill-ring-save)
-    ("s-v"       'yank)
-    ("s-<left>"  'beginning-of-visual-line)
-    ("s-<right>" 'end-of-visual-line)
-    ("s-<up>"    'beginning-of-buffer)
-    ("s-<down>"  'end-of-buffer)))
-
-;; Personal keybindings
-(define-keys bosskey-mode-map
-  ("C-<return>" 'general-transient)
-  ("M-]"        'next-buffer)
-  ("M-["        'previous-buffer)
-  ("M-o"        'other-window)
-  ("C-M-h"      'mark-line)
-  ("M-."        'embark-act)
-  ("M-'"        'my:hippie-expand)
-  ("M-\\"       'cycle-spacing)
-  ("M-z"        'zap-up-to-char)
-  ("C-d"        'delete-forward-char)
-  ("C-x C-x"    'exchange-point-and-mark-dwim)
-  ("M-0"        'delete-window)
-  ("M-1"        'delete-other-windows)
-  ("M-2"        'split-window-below)
-  ("M-3"        'split-window-right)
-  ("M-4"        'undefined)
-  ("M-5"        'undefined)
-  ("M-6"        'undefined)
-  ("M-7"        'undefined)
-  ("M-8"        'undefined)
-  ("M-9"        'undefined))
-
-(global-set-key [remap capitalize-word] 'capitalize-dwim)
-(global-set-key [remap downcase-word]   'downcase-dwim)
-(global-set-key [remap upcase-word]     'upcase-dwim)
-
-;; Make shift-click extend the region.
-(global-set-key [S-down-mouse-1] 'ignore)
-(global-set-key [S-mouse-1] 'mouse-save-then-kill)
-
-;; Use M-drag-mouse-1 to create rectangle regions.
-(global-set-key [M-down-mouse-1] #'mouse-drag-region-rectangle)
-(global-set-key [M-drag-mouse-1] #'ignore)
-(global-set-key [M-mouse-1]      #'mouse-set-point)
-
-;; Use C-M-drag-mouse-1 to create secondary selections.
-(global-set-key [C-M-mouse-1]      'mouse-start-secondary)
-(global-set-key [C-M-drag-mouse-1] 'mouse-set-secondary)
-(global-set-key [C-M-down-mouse-1] 'mouse-drag-secondary)
+    (kbd "s-q")       'save-buffers-kill-terminal
+    (kbd "s-m")       'iconify-frame
+    (kbd "s-w")       'delete-frame
+    (kbd "s-n")       'make-frame-command
+    (kbd "s-s")       'save-buffer
+    (kbd "s-,")       'find-user-init-file
+    (kbd "s-o")       'find-file
+    (kbd "s-z")       'undo-fu-only-undo
+    (kbd "s-Z")       'undo-fu-only-redo
+    (kbd "s-x")       'kill-region
+    (kbd "s-c")       'kill-ring-save
+    (kbd "s-v")       'yank
+    (kbd "s-<left>")  'beginning-of-visual-line
+    (kbd "s-<right>") 'end-of-visual-line
+    (kbd "s-<up>")    'beginning-of-buffer
+    (kbd "s-<down>")  'end-of-buffer))
 
 
 ;;; Package Management
@@ -388,6 +354,43 @@ Keybindings you define here will take precedence."
 ;; Transient is used throughout this config, so I configure it here.
 (select-package 'transient)
 (require 'transient)
+(define-keys bosskey-mode-map
+  (kbd "C-<return>") 'general-transient
+  (kbd "M-]")        'next-buffer
+  (kbd "M-[")        'previous-buffer
+  (kbd "M-o")        'other-window
+  (kbd "C-M-h")      'mark-line
+  (kbd "M-.")        'embark-act
+  (kbd "M-'")        'my:hippie-expand
+  (kbd "M-\\")       'cycle-spacing
+  (kbd "M-z")        'zap-up-to-char
+  (kbd "C-d")        'delete-forward-char
+  (kbd "C-x C-x")    'exchange-point-and-mark-dwim
+  (kbd "M-0")        'delete-window
+  (kbd "M-1")        'delete-other-windows
+  (kbd "M-2")        'split-window-below
+  (kbd "M-3")        'split-window-right
+  (kbd "M-4")        'undefined
+  (kbd "M-5")        'undefined
+  (kbd "M-6")        'undefined
+  (kbd "M-7")        'undefined
+  (kbd "M-8")        'undefined
+  (kbd "M-9")        'undefined)
+
+(global-set-keys [remap capitalize-word] 'capitalize-dwim
+                 [remap downcase-word]   'downcase-dwim
+                 [remap upcase-word]     'upcase-dwim
+                 ;; Make shift-click extend the region.
+                 [S-down-mouse-1] 'ignore
+                 [S-mouse-1] 'mouse-save-then-kill
+                 ;; Use M-drag-mouse-1 to create rectangle regions.
+                 [M-down-mouse-1] #'mouse-drag-region-rectangle
+                 [M-drag-mouse-1] #'ignore
+                 [M-mouse-1]      #'mouse-set-point
+                 ;; Use C-M-drag-mouse-1 to create secondary selections.
+                 [C-M-mouse-1]      'mouse-start-secondary
+                 [C-M-drag-mouse-1] 'mouse-set-secondary
+                 [C-M-down-mouse-1] 'mouse-drag-secondary)
 
 
 ;;; Appearance
@@ -855,8 +858,8 @@ completions if invoked from inside the minibuffer."
 
 (with-eval-after-load 'dired
   (define-keys dired-mode-map
-    ("O"   'dired-open-file)
-    ("C-/" 'dired-undo)))
+    (kbd "O")   'dired-open-file
+    (kbd "C-/") 'dired-undo))
 
 (defun dired-mode-setup ()
   "Settings for dired mode."
@@ -894,11 +897,9 @@ completions if invoked from inside the minibuffer."
 
   (autoload 'dired-jump "dired")
   (define-keys embark-file-map
-    ("O" 'macos-open-file)
-    ("j" 'dired-jump))
-
-  (define-keys embark-url-map
-    ("&" 'browse-url-default-macosx-browser))
+    "O" 'macos-open-file
+    "j" 'dired-jump)
+  (define-key embark-url-map "&" 'browse-url-default-macosx-browser)
 
   ;; replacement for minibuffer-completion-help with embark alternative
   ;; this means you hit TAB to trigger the completions list
@@ -972,14 +973,14 @@ completions if invoked from inside the minibuffer."
 
 (with-eval-after-load 'selected
   (define-keys selected-keymap
-    ("u" 'upcase-dwim)
-    ("d" 'downcase-dwim)
-    ("c" 'capitalize-dwim)
-    ("w" 'kill-ring-save)
-    ("|" 'pipe-region)
-    ("R" 'replace-rectangle)
-    ("E" 'eval-region)
-    ("q" 'selected-off))
+    "u" 'upcase-dwim
+    "d" 'downcase-dwim
+    "c" 'capitalize-dwim
+    "w" 'kill-ring-save
+    "|" 'pipe-region
+    "R" 'replace-rectangle
+    "E" 'eval-region
+    "q" 'selected-off)
    (define-navigation-keys selected-keymap)
    (blackout 'selected-minor-mode))
 

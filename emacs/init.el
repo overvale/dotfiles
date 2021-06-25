@@ -28,7 +28,6 @@
   (defvar oht-orgfiles             "~/home/org/")
   (defvar user-downloads-directory "~/home/Downloads/"))
 
-
 ;; Save all interactive customization to a temp file, which is never loaded.
 ;; This means interactive customization is session-local. Only this init file persists sessions.
 (setq custom-file (make-temp-file "emacs-custom-"))
@@ -36,7 +35,7 @@
 ;; For most of my "settings" I use custom-set-variables, which does a bunch of neat stuff.
 ;; First, it calls a variable's "setter" function, if it has one.
 ;; Second, it can activate modes as well as set variables.
-;; Third, it handles setting buffer-local variables correctly.
+;; Third, it takes care of setting the default for buffer-local variables correctly.
 ;; https://with-emacs.com/posts/tutorials/almost-all-you-need-to-know-about-variables/#_user_options
 ;; https://old.reddit.com/r/emacs/comments/exnxha/withemacs_almost_all_you_need_to_know_about/fgadihl/
 
@@ -359,21 +358,16 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 (global-set-key [remap downcase-word]   'downcase-dwim)
 (global-set-key [remap upcase-word]     'upcase-dwim)
 
-;; Gasp! An Emacs user that actually uses the mouse?! Scandalous.
-
-;; Start by making shift-click extend the selection (region)
+;; Make shift-click extend the region.
 (global-set-key [S-down-mouse-1] 'ignore)
 (global-set-key [S-mouse-1] 'mouse-save-then-kill)
 
-;; The below bindings are taken directly from the source of `mouse.el'
-;; but I've swapped the modifier keys. This makes more sense to me.
-
-;; Use M-drag-mouse-1 to create rectangle regions
+;; Use M-drag-mouse-1 to create rectangle regions.
 (global-set-key [M-down-mouse-1] #'mouse-drag-region-rectangle)
 (global-set-key [M-drag-mouse-1] #'ignore)
 (global-set-key [M-mouse-1]      #'mouse-set-point)
 
-;; Use C-M-drag-mouse-1 to create secondary selections
+;; Use C-M-drag-mouse-1 to create secondary selections.
 (global-set-key [C-M-mouse-1]      'mouse-start-secondary)
 (global-set-key [C-M-drag-mouse-1] 'mouse-set-secondary)
 (global-set-key [C-M-down-mouse-1] 'mouse-drag-secondary)
@@ -389,13 +383,6 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
   "Adds package to `package-selected-packages'."
   `(add-to-list 'package-selected-packages ,package))
 
-;; Install packages with `package-install-selected-packages', remove packages
-;; with `package-autoremove'. Both functions look at the variable
-;; `package-selected-packages' for the canonical list of packages.
-
-;; You can automatically remove anything not in `package-selected-packages'
-;; (thus not in this init file) by un-commenting this hook:
-;; (add-hook 'emacs-startup-hook 'package-autoremove)
 
 (setq pkg-ops-map
   (let ((map (make-sparse-keymap "Packages")))
@@ -409,14 +396,14 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 
 (global-set-key (kbd "C-c p") pkg-ops-map)
 
-;; This config requires these 2 packages to run properly.
-
+;; Blackout is used throughout this config, so I configure it here.
 (select-package 'blackout)
 (autoload 'blackout "blackout" nil t)
 (blackout 'eldoc-mode)
 (blackout 'emacs-lisp-mode "Elisp")
 (blackout 'auto-fill-function " Fill")
 
+;; Transient is used throughout this config, so I configure it here.
 (select-package 'transient)
 (require 'transient)
 

@@ -934,25 +934,21 @@ completions if invoked from inside the minibuffer."
  '(completion-category-overrides '((file (styles . (partial-completion))))))
 
 (select-package 'vertico)
-(vertico-mode)
+;;(vertico-mode)
 
 (select-package 'marginalia)
 (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)
 (marginalia-mode)
 
 (select-package 'embark)
+(require 'embark)
 (with-eval-after-load 'embark
 
-  (when (eq system-type 'darwin)
-    (setq youtube-dl-path "/usr/local/bin/youtube-dl"))
-  (defun youtube-dl-URL-at-point ()
-    "Send the URL at point to youtube-dl."
-    (interactive)
-    (async-shell-command (format "%s -o \"%s%s\" -f best \"%s\""
-                                 youtube-dl-path
-                                 user-downloads-directory
-                                 "%(title)s.%(ext)s"
-                                 (ffap-url-at-point))))
+  (setq embark-collect-initial-view-alist
+        '((file . list)
+          (buffer . list)
+          (symbol . list)
+          (t . list)))
 
   (autoload 'dired-jump "dired")
   (define-keys embark-file-map
@@ -960,8 +956,53 @@ completions if invoked from inside the minibuffer."
     ("j" 'dired-jump))
 
   (define-keys embark-url-map
-    ("d" 'youtube-dl-URL-at-point)
     ("&" 'browse-url-default-macosx-browser))
+
+  ;; replacement for minibuffer-completion-help with embark alternative
+  ;; this means you hit TAB to trigger the completions list
+  ;; https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/
+  (defun embark-minibuffer-completion-help (_start _end)
+    (unless embark-collect-linked-buffer
+      (embark-collect-completions)))
+  (advice-add 'minibuffer-completion-help
+              :override #'embark-minibuffer-completion-help)
+
+  ;; resize Embark Collect buffer to fit contents
+  (add-hook 'embark-collect-post-revert-hook
+            (defun resize-embark-collect-window (&rest _)
+              (when (memq embark-collect--kind '(:live :completions))
+                (fit-window-to-buffer (get-buffer-window)
+                                      (floor (frame-height) 2) 1))))
+
+  (defun exit-with-top-completion ()
+    "Exit minibuffer with top completion candidate."
+    (interactive)
+    (let ((content (minibuffer-contents-no-properties)))
+      (unless (test-completion content
+                               minibuffer-completion-table
+                               minibuffer-completion-predicate)
+        (when-let ((completions (completion-all-sorted-completions)))
+          (delete-minibuffer-contents)
+          (insert
+           (concat
+            (substring content 0 (or (cdr (last completions)) 0))
+            (car completions)))))
+      (exit-minibuffer)))
+
+  ;; Embark by default uses embark-minibuffer-candidates which does not sort the
+  ;; completion candidates at all, this means that exit-with-top-completion
+  ;; won't always pick the first one listed! If you want to ensure
+  ;; exit-with-top-completion picks the first completion in the embark collect
+  ;; buffer, you should configure Embark to use
+  ;; embark-sorted-minibuffer-candidates instead. This can be done as follows:
+  (setq embark-candidate-collectors
+        (cl-substitute 'embark-sorted-minibuffer-candidates
+                       'embark-minibuffer-candidates
+                       embark-candidate-collectors))
+
+  (define-key minibuffer-local-completion-map          (kbd "<return>") 'exit-with-top-completion)
+  (define-key minibuffer-local-must-match-map          (kbd "<return>") 'exit-with-top-completion)
+  (define-key minibuffer-local-filename-completion-map (kbd "<return>") 'exit-with-top-completion)
 
   ) ; end embark
 

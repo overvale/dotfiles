@@ -333,7 +333,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 
 ;; Personal keybindings
 (boss-keys
- ("C-<return>" 'oht-transient-general)
+ ("C-<return>" 'general-transient)
  ("M-]"        'next-buffer)
  ("M-["        'previous-buffer)
  ("M-o"        'other-window)
@@ -619,19 +619,6 @@ the fixed-pitch face down to the height defined by
   (interactive)
   (delete-overlay mouse-secondary-overlay))
 
-(transient-define-prefix oht-transient-2nd ()
-  "Transient for working with the secondary selection"
-  [["Cut/Copy"
-    ("xx" "Cut 2nd" oht/cut-secondary-selection)
-    ("cc" "Copy 2nd" oht/copy-secondary-selection)]
-   ["& Paste"
-    ("xv" "Cut 2nd & Paste" oht/cut-secondary-selection-paste)
-    ("cv" "Copy 2nd & Paste" oht/copy-secondary-selection-paste)]
-   ["Mark"
-    ("m"  "Mark Region as 2nd" oht/mark-region-as-secondary-selection)
-    ("g"  "Make 2nd the Region" oht/mark-secondary-selection)
-    ("d"  "Delete 2nd" oht/delete-secondary-selection)]])
-
 
 ;;;; Flyspell
 
@@ -639,28 +626,7 @@ the fixed-pitch face down to the height defined by
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
 (with-eval-after-load 'flyspell
-
-  (blackout 'flyspell-mode " Spell")
-
-  (transient-define-prefix flyspell-mode-transient ()
-    "Transient for a spelling interface"
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    [["Toggle Modes"
-      ("m" "Flyspell" flyspell-mode)
-      ("M" "Prog Flyspell" flyspell-prog-mode)]
-     ["Check"
-      ("b" "Buffer" flyspell-buffer)
-      ("r" "Region" flyspell-region)]
-     ["Correction"
-      ("n" "Next" flyspell-goto-next-error)
-      ("<return>" "Fix" ispell-word)
-      ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
-      ("<DEL>" "Delete Word" kill-word)
-      ("C-/" "Undo" undo-fu-only-undo)
-      ("M-/" "Redo" undo-fu-only-redo)]])
-
-  ) ; end flyspell
+  (blackout 'flyspell-mode " Spell"))
 
 
 ;;;; Minibuffer
@@ -741,28 +707,6 @@ completions if invoked from inside the minibuffer."
 (global-outline-minor-mode +1)
 
 (blackout 'outline-minor-mode)
-
-(transient-define-prefix oht-transient-outline ()
-  "Transient for Outline Minor Mode navigation"
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  [["Show/Hide"
-    ("f" "Show Subtree" outline-show-subtree)
-    ("b" "Hide Subtree" outline-hide-subtree)
-    ("o" "Hide to This Sublevel" outline-hide-sublevels)
-    ("a" "Show All" outline-show-all)]
-   ["Navigate"
-    ("n" "Next" outline-next-visible-heading)
-    ("p" "Previous" outline-previous-visible-heading)]
-   ["Edit"
-    ("M-<left>"  "Promote" outline-promote)
-    ("M-<right>" "Demote"  outline-demote)
-    ("M-<up>"    "Move Up" outline-move-subtree-up)
-    ("M-<down>"  "Move Down" outline-move-subtree-down)]
-   ["Other"
-    ("C-/" "Undo" undo-fu-only-undo)
-    ("M-/" "Redo" undo-fu-only-redo)
-    ("c" "Consult" consult-outline :transient nil)]])
 
 
 ;;;; Pulse
@@ -1225,150 +1169,260 @@ buffer, and exiting the agenda and releasing all the buffers."
    (blackout 'selected-minor-mode))
 
 
-;;;; Transient
+;;;; Misc Packages
 
-(select-package 'transient)
+(when (eq system-type 'darwin)
+  (select-package 'magit))
+
+(select-package 'olivetti)
+(with-eval-after-load 'olivetti
+  (custom-set-variables '(olivetti-body-width 84)))
+
+(select-package 'undo-fu)
+
+(select-package 'unfill)
+(global-set-key (kbd "M-q") 'unfill-toggle)
+
+(select-package 'helpful)
+(global-set-key (kbd "C-h f") 'helpful-function)
+(global-set-key (kbd "C-h v") 'helpful-variable)
+(global-set-key (kbd "C-h o") 'helpful-symbol)
+(global-set-key (kbd "C-h k") 'helpful-key)
+(global-set-key (kbd "C-h p") 'helpful-at-point)
+
+(select-package 'move-text)
+(global-set-key (kbd "C-x C-t") 'move-text-transient)
+(transient-define-prefix move-text-transient ()
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  ["Move Lines"
+   [("n" "Down" move-text-down)]
+   [("p" "Up" move-text-up)]])
+
+(select-package 'visual-regexp)
+(global-set-key [remap query-replace] 'vr/query-replace)
+
+(select-package 'visual-regexp-steroids)
+(with-eval-after-load 'visual-regexp
+  (with-eval-after-load 'visual-regexp-steroids
+    (custom-set-variables
+     '(vr/engine 'pcre2el))))
+
+(select-package 'fountain-mode)
+(custom-set-variables
+ '(fountain-add-continued-dialog nil)
+ '(fountain-highlight-elements (quote (section-heading))))
+
+(select-package 'markdown-mode)
+(add-to-list 'magic-mode-alist
+             '("%text" . markdown-mode))
+(add-to-list 'auto-mode-alist
+             '("\\.text" . markdown-mode))
+
+(select-package 'lua-mode)
+
+(when (string= (system-name) "shadowfax.local")
+  (select-package 'oblique)
+  (add-to-list 'load-path "~/home/src/oblique-strategies/")
+  (autoload 'oblique-strategy "oblique")
+  (setq initial-scratch-message (concat
+                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
+                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
+
+(select-package 'orgalist)
+(add-hook 'git-commit-mode-hook 'orgalist-mode)
+
+
+;;;; Transient
 
 (autoload 'org-store-link "org")
 (autoload 'dired-jump "dired" nil t)
+(transient-define-prefix general-transient ()
+  "General-purpose transient."
+  [["Actions/Toggles"
+    ("a" "AutoFill" auto-fill-mode)
+    ("j" "Dired Jump" dired-jump)
+    ("SPC" "Mark..." general-transient--mark)
+    ("n" "Navigation..." navigation-keymap--activate)
+    ("m" "Mode Transient..." call-mode-help-transient)]
+   [""
+    ("k" "Kill Buffer" kill-buffer-dwim)
+    ("b" "Switch Buffer" switch-to-buffer)
+    ("C-b" "iBuffer" ibuffer)]
+   ["Transients"
+    ("o" "Org..." general-transient--org)
+    ("t" "Toggle..." general-transient--toggles)
+    ("w" "Windows..." general-transient--window)
+    ("c" "Consult..." general-transient--consult)]
+   [""
+    ("0" "Outline..." outline-transient)
+    ("2" "Secondary..." secondary-selection-transient)
+    ("f" "Fonts..." general-transient--fonts)
+    ("s" "Spelling..." flyspell-mode-transient)]])
 
-(with-eval-after-load 'transient
+(transient-define-prefix general-transient--org ()
+  "Transient for Org commands useful outside org mode."
+  ["Org Mode"
+   ["Agenda Commands"
+    ("t" "Today" oht-org-agenda-today)
+    ("p" "Today (pop-up)" oht-org-agenda-today-pop-up)
+    ("0" "Complete" oht-org-agenda-complete)
+    ("a" "Agenda..." org-agenda)]
+   ["Other"
+    ("k" "Capture" org-capture)
+    ("s" "Store Link" org-store-link)]])
 
-  (transient-define-prefix oht-transient-general ()
-    "General-purpose transient."
-    [["Actions/Toggles"
-      ("a" "AutoFill" auto-fill-mode)
-      ("j" "Dired Jump" dired-jump)
-      ("SPC" "Mark..." oht-transient-marks)
-      ("n" "Navigation..." navigation-keymap--activate)
-      ("m" "Mode Transient..." call-mode-help-transient)]
-     [""
-      ("k" "Kill Buffer" kill-buffer-dwim)
-      ("b" "Switch Buffer" switch-to-buffer)
-      ("C-b" "iBuffer" ibuffer)]
-     ["Transients"
-      ("o" "Org..." oht-transient-general--org)
-      ("t" "Toggle..." oht-transient-general--toggles)
-      ("w" "Windows..." oht-transient-window)
-      ("c" "Consult..." oht-transient-general--consult)]
-     [""
-      ("0" "Outline..." oht-transient-outline)
-      ("2" "Secondary..." oht-transient-2nd)
-      ("f" "Fonts..." oht-transient-fonts)
-      ("s" "Spelling..." flyspell-mode-transient)]])
+(transient-define-prefix general-transient--toggles ()
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  [["Toggle"
+    ("h" "Highlight Line" hl-line-mode)
+    ("l" "Line Numbers" global-display-line-numbers-mode)
+    ("g" "Fill Column" global-display-fill-column-indicator-mode)
+    ("w" "Wrap" visual-line-mode)
+    ("t" "Truncate" toggle-truncate-lines)
+    ("W" "Whitespace" whitespace-mode)]
+   ["Action"
+    ("q" "Quit" transient-quit-all)]])
 
-  (transient-define-prefix oht-transient-general--org ()
-    "Transient for Org commands useful outside org mode."
-    ["Org Mode"
-     ["Agenda Commands"
-      ("t" "Today" oht-org-agenda-today)
-      ("p" "Today (pop-up)" oht-org-agenda-today-pop-up)
-      ("0" "Complete" oht-org-agenda-complete)
-      ("a" "Agenda..." org-agenda)]
-     ["Other"
-      ("k" "Capture" org-capture)
-      ("s" "Store Link" org-store-link)]])
+(transient-define-prefix general-transient--consult ()
+  ["Consult"
+   ("l" "Line" consult-line)
+   ("o" "Outline" consult-outline)
+   ("g" "Grep" consult-grep)
+   ("b" "Buffer" consult-buffer)
+   ("a" "Apropos" consult-apropos)
+   ("m" "Marks" consult-mark)
+   ("M" "Minor Modes" consult-minor-mode-menu)])
 
-  (transient-define-prefix oht-transient-general--toggles ()
+(transient-define-prefix general-transient--fonts ()
+  "Set Font Properties"
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  [["Modes"
+    ("v" "Var Mode" variable-pitch-mode)
+    ("V" "V+ Mode" facedancer-vadjust-mode)
+    ("o" "Olivetti" olivetti-mode)
+    ("w" "Wrap" visual-line-mode)]
+   ["Size"
+    ("0" "Reset Size" text-scale-mode)
+    ("=" "Larger" text-scale-increase)
+    ("+" "Larger" text-scale-increase)
+    ("-" "Smaller" text-scale-decrease)]
+   ["Other"
+    ("s" "Line Spacing" line-spacing-interactive)
+    ("m" "Modus Toggle" modus-themes-toggle)]])
+
+(transient-define-prefix general-transient--window ()
+  "Most commonly used window commands"
+  [["Splits"
+    ("s" "Horizontal" split-window-below)
+    ("v" "Vertical"   split-window-right)
+    ("b" "Balance"    balance-windows)
+    ("f" "Fit"        fit-window-to-buffer)
+    ("r" "Rotate"     toggle-window-split)
+    ("F" "Find Other Win" find-file-other-window)]
+   ["Window"
+    ("c" "Clone Indirect" clone-indirect-buffer)
+    ("t" "Tear Off" tear-off-window)
+    ("k" "Kill" delete-window)
+    ("K" "Kill Buffer+Win"  kill-buffer-and-window)
+    ("o" "Kill Others"  delete-other-windows)
+    ("m" "Maximize" maximize-window)]
+   ["Navigate"
+    ("<left>"  "←" windmove-left  :transient t)
+    ("<right>" "→" windmove-right :transient t)
+    ("<up>"    "↑" windmove-up    :transient t)
+    ("<down>"  "↓" windmove-down  :transient t)]
+   ["Undo/Redo"
+    ("C-/" "Winner Undo" winner-undo :transient t)
+    ("M-/" "Winner Redo" winner-redo :transient t)]
+   ["Exit"
+    ("q" "Quit" transient-quit-all)]])
+
+(transient-define-prefix general-transient--mark ()
+  "Transient for setting the mark."
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-exit
+  ["Mark"
+   [("@" "Word" mark-word)
+    ("s" "Sexp" mark-sexp)
+    ("d" "Defun" mark-defun)]
+   [("n" "Line" mark-line)
+    (")" "Sentence" mark-sentence)
+    ("}" "Paragraph" mark-paragraph)]
+   [("<" "Beginning of Buffer" mark-beginning-of-buffer)
+    (">" "End of Buffer" mark-end-of-buffer)]
+   [("x" "Exchange Point/Mark" exchange-point-and-mark :transient nil)
+    ("q" "Quit" transient-quit-all)]])
+
+(transient-define-prefix transpose-transient ()
+  "Transient for transpose commands."
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-exit
+  ["Transpose"
+   ["Forward"
+    ("f" "Char" transpose-chars)
+    ("@" "Word" transpose-words)
+    ("n" "Line" transpose-lines)
+    (")" "Sentence" transpose-sentences)
+    ("}" "Paragraph" transpose-paragraphs)
+    ("s" "Sexps" transpose-sexps)
+    ("r" "Regions" transpose-regions)]])
+
+(transient-define-prefix secondary-selection-transient ()
+  "Transient for working with the secondary selection"
+  [["Cut/Copy"
+    ("xx" "Cut 2nd" oht/cut-secondary-selection)
+    ("cc" "Copy 2nd" oht/copy-secondary-selection)]
+   ["& Paste"
+    ("xv" "Cut 2nd & Paste" oht/cut-secondary-selection-paste)
+    ("cv" "Copy 2nd & Paste" oht/copy-secondary-selection-paste)]
+   ["Mark"
+    ("m"  "Mark Region as 2nd" oht/mark-region-as-secondary-selection)
+    ("g"  "Make 2nd the Region" oht/mark-secondary-selection)
+    ("d"  "Delete 2nd" oht/delete-secondary-selection)]])
+
+(transient-define-prefix outline-transient ()
+  "Transient for Outline Minor Mode navigation"
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  [["Show/Hide"
+    ("f" "Show Subtree" outline-show-subtree)
+    ("b" "Hide Subtree" outline-hide-subtree)
+    ("o" "Hide to This Sublevel" outline-hide-sublevels)
+    ("a" "Show All" outline-show-all)]
+   ["Navigate"
+    ("n" "Next" outline-next-visible-heading)
+    ("p" "Previous" outline-previous-visible-heading)]
+   ["Edit"
+    ("M-<left>"  "Promote" outline-promote)
+    ("M-<right>" "Demote"  outline-demote)
+    ("M-<up>"    "Move Up" outline-move-subtree-up)
+    ("M-<down>"  "Move Down" outline-move-subtree-down)]
+   ["Other"
+    ("C-/" "Undo" undo-fu-only-undo)
+    ("M-/" "Redo" undo-fu-only-redo)
+    ("c" "Consult" consult-outline :transient nil)]])
+
+(with-eval-after-load 'flyspell
+  (transient-define-prefix flyspell-mode-transient ()
+    "Transient for a spelling interface"
     :transient-suffix 'transient--do-stay
     :transient-non-suffix 'transient--do-warn
-    [["Toggle"
-     ("h" "Highlight Line" hl-line-mode)
-     ("l" "Line Numbers" global-display-line-numbers-mode)
-     ("g" "Fill Column" global-display-fill-column-indicator-mode)
-     ("w" "Wrap" visual-line-mode)
-     ("t" "Truncate" toggle-truncate-lines)
-     ("W" "Whitespace" whitespace-mode)]
-     ["Action"
-      ("q" "Quit" transient-quit-all)]])
-
-  (transient-define-prefix oht-transient-general--consult ()
-    ["Consult"
-     ("l" "Line" consult-line)
-     ("o" "Outline" consult-outline)
-     ("g" "Grep" consult-grep)
-     ("b" "Buffer" consult-buffer)
-     ("a" "Apropos" consult-apropos)
-     ("m" "Marks" consult-mark)
-     ("M" "Minor Modes" consult-minor-mode-menu)])
-
-  (transient-define-prefix oht-transient-fonts ()
-    "Set Font Properties"
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    [["Modes"
-      ("v" "Var Mode" variable-pitch-mode)
-      ("V" "V+ Mode" facedancer-vadjust-mode)
-      ("o" "Olivetti" olivetti-mode)
-      ("w" "Wrap" visual-line-mode)]
-     ["Size"
-      ("0" "Reset Size" text-scale-mode)
-      ("=" "Larger" text-scale-increase)
-      ("+" "Larger" text-scale-increase)
-      ("-" "Smaller" text-scale-decrease)]
-     ["Other"
-      ("s" "Line Spacing" line-spacing-interactive)
-      ("m" "Modus Toggle" modus-themes-toggle)]])
-
-  (transient-define-prefix oht-transient-window ()
-    "Most commonly used window commands"
-    [["Splits"
-      ("s" "Horizontal" split-window-below)
-      ("v" "Vertical"   split-window-right)
-      ("b" "Balance"    balance-windows)
-      ("f" "Fit"        fit-window-to-buffer)
-      ("r" "Rotate"     toggle-window-split)
-      ("F" "Find Other Win" find-file-other-window)]
-     ["Window"
-      ("c" "Clone Indirect" clone-indirect-buffer)
-      ("t" "Tear Off" tear-off-window)
-      ("k" "Kill" delete-window)
-      ("K" "Kill Buffer+Win"  kill-buffer-and-window)
-      ("o" "Kill Others"  delete-other-windows)
-      ("m" "Maximize" maximize-window)]
-     ["Navigate"
-      ("<left>"  "←" windmove-left  :transient t)
-      ("<right>" "→" windmove-right :transient t)
-      ("<up>"    "↑" windmove-up    :transient t)
-      ("<down>"  "↓" windmove-down  :transient t)]
-     ["Undo/Redo"
-      ("C-/" "Winner Undo" winner-undo :transient t)
-      ("M-/" "Winner Redo" winner-redo :transient t)]
-     ["Exit"
-      ("q" "Quit" transient-quit-all)]])
-
-  (transient-define-prefix oht-transient-marks ()
-    "Transient for setting the mark."
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-exit
-    ["Mark"
-     [("@" "Word" mark-word)
-      ("s" "Sexp" mark-sexp)
-      ("d" "Defun" mark-defun)]
-     [("n" "Line" mark-line)
-      (")" "Sentence" mark-sentence)
-      ("}" "Paragraph" mark-paragraph)]
-     [("<" "Beginning of Buffer" mark-beginning-of-buffer)
-      (">" "End of Buffer" mark-end-of-buffer)]
-     [("x" "Exchange Point/Mark" exchange-point-and-mark :transient nil)
-      ("q" "Quit" transient-quit-all)]])
-
-  (transient-define-prefix oht-transient-transpose ()
-    "Transient for transpose commands."
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-exit
-    ["Transpose"
-     ["Forward"
-      ("f" "Char" transpose-chars)
-      ("@" "Word" transpose-words)
-      ("n" "Line" transpose-lines)
-      (")" "Sentence" transpose-sentences)
-      ("}" "Paragraph" transpose-paragraphs)
-      ("s" "Sexps" transpose-sexps)
-      ("r" "Regions" transpose-regions)]])
-
-  ) ; End transient config
-
+    [["Toggle Modes"
+      ("m" "Flyspell" flyspell-mode)
+      ("M" "Prog Flyspell" flyspell-prog-mode)]
+     ["Check"
+      ("b" "Buffer" flyspell-buffer)
+      ("r" "Region" flyspell-region)]
+     ["Correction"
+      ("n" "Next" flyspell-goto-next-error)
+      ("<return>" "Fix" ispell-word)
+      ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
+      ("<DEL>" "Delete Word" kill-word)
+      ("C-/" "Undo" undo-fu-only-undo)
+      ("M-/" "Redo" undo-fu-only-redo)]]))
 
 ;;;; Mode Help Transients
 
@@ -1513,70 +1567,6 @@ buffer, and exiting the agenda and releasing all the buffers."
       ("!"   "Shell command"        dired-do-shell-command)
       ("&"   "Async shell command"  dired-do-async-shell-command)]])
   ) ; End dired config
-
-
-;;;; Misc Packages
-
-(when (eq system-type 'darwin)
-  (select-package 'magit))
-
-(select-package 'olivetti)
-(with-eval-after-load 'olivetti
-  (custom-set-variables '(olivetti-body-width 84)))
-
-(select-package 'undo-fu)
-
-(select-package 'unfill)
-(global-set-key (kbd "M-q") 'unfill-toggle)
-
-(select-package 'helpful)
-(global-set-key (kbd "C-h f") 'helpful-function)
-(global-set-key (kbd "C-h v") 'helpful-variable)
-(global-set-key (kbd "C-h o") 'helpful-symbol)
-(global-set-key (kbd "C-h k") 'helpful-key)
-(global-set-key (kbd "C-h p") 'helpful-at-point)
-
-(select-package 'move-text)
-(global-set-key (kbd "C-x C-t") 'move-text-transient)
-(transient-define-prefix move-text-transient ()
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  ["Move Lines"
-   [("n" "Down" move-text-down)]
-   [("p" "Up" move-text-up)]])
-
-(select-package 'visual-regexp)
-(global-set-key [remap query-replace] 'vr/query-replace)
-
-(select-package 'visual-regexp-steroids)
-(with-eval-after-load 'visual-regexp
-  (with-eval-after-load 'visual-regexp-steroids
-    (custom-set-variables
-     '(vr/engine 'pcre2el))))
-
-(select-package 'fountain-mode)
-(custom-set-variables
- '(fountain-add-continued-dialog nil)
- '(fountain-highlight-elements (quote (section-heading))))
-
-(select-package 'markdown-mode)
-(add-to-list 'magic-mode-alist
-             '("%text" . markdown-mode))
-(add-to-list 'auto-mode-alist
-             '("\\.text" . markdown-mode))
-
-(select-package 'lua-mode)
-
-(when (string= (system-name) "shadowfax.local")
-  (select-package 'oblique)
-  (add-to-list 'load-path "~/home/src/oblique-strategies/")
-  (autoload 'oblique-strategy "oblique")
-  (setq initial-scratch-message (concat
-                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
-                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
-
-(select-package 'orgalist)
-(add-hook 'git-commit-mode-hook 'orgalist-mode)
 
 
 ;;; End of init.el

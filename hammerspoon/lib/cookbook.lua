@@ -5,6 +5,59 @@ Not all the code here actually works.
 
 ]]
 
+-- window hints
+hs.hotkey.bind(hyper, 'i', hs.hints.windowHints)
+
+-- window grid
+hs.grid.setGrid('6x4', nil, nil)
+hs.grid.setMargins({0, 0})
+hs.hotkey.bind(hyper, ';', hs.grid.show)
+
+-- Quarters
+hs.hotkey.bind(hyper, '1', function() hs.window.focusedWindow():moveToUnit({0, 0, .5, .5}) end)
+hs.hotkey.bind(hyper, '2', function() hs.window.focusedWindow():moveToUnit({.5, 0, 1, .5}) end)
+hs.hotkey.bind(hyper, '3', function() hs.window.focusedWindow():moveToUnit({0, .5, .5, 1}) end)
+hs.hotkey.bind(hyper, '4', function() hs.window.focusedWindow():moveToUnit({.5, .5, 1, 1}) end)
+
+-- App-Specific Bindings
+-- -----------------------------------------------
+
+-- Remote Desktop
+local msrdDisable = hs.hotkey.new({"cmd"}, "w", function()
+      -- nil
+end)
+
+-- Excel
+local excelDown = hs.hotkey.new({"ctrl"}, "n", function()
+   hs.eventtap.event.newKeyEvent({}, "down", true):post()
+   hs.eventtap.event.newKeyEvent({}, "down", false):post()
+end)
+local excelUp = hs.hotkey.new({"ctrl"}, "p", function()
+   hs.eventtap.event.newKeyEvent({}, "up", true):post()
+   hs.eventtap.event.newKeyEvent({}, "up", false):post()
+end)
+
+msrdDisable:disable()
+excelDown:disable()
+excelUp:disable()
+
+   if appName == "Microsoft Remote Desktop" then
+      if eventType == hs.application.watcher.activated then
+         msrdDisable:enable()
+      elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
+         msrdDisable:disable()
+      end
+   elseif appName == "Microsoft Excel" then
+      if eventType == hs.application.watcher.activated then
+         excelUp:enable()
+         excelDown:enable()
+      elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
+         excelUp:disable()
+         excelDown:disable()
+      end
+
+
+
 -- [ Learning! ]-------------------------------------------------------------
 
 hs.hotkey.bind({'cmd', 'ctrl'}, '1', function() hs.alert.show("alert") end)
@@ -329,3 +382,38 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "E", function()
   hs.application.get("Hammerspoon"):selectMenuItem("Console...")
   hs.application.launchOrFocus("Hammerspoon")
 end)
+
+
+-- Google File Stream Chooser
+-- -----------------------------------------------
+-- Hacked together from here: https://github.com/ebai101/dotfiles/blob/master/config/hammerspoon/reason.lua
+
+local fileStreamChooser = hs.chooser.new(function(choice) hs.open(choice['subText']) end)
+
+local function fileStreamPopulate()
+   local options = {}
+   hs.task.new('/usr/bin/find', function(task, out, err)
+		  for path in out:gmatch("[^\r\n]+") do
+		     table.insert(options, {
+				     ['text'] = string.match(path, ".*/(.+)$"),
+				     ['subText'] = path,
+				     ['modified'] = hs.fs.attributes(path).modification
+		     })
+		  end
+
+		  table.sort(options, function(a, b)
+				return a['modified'] > b['modified']
+		  end)
+
+		  fileStreamChooser:choices(options)
+
+   end, { '/Volumes/GoogleDrive/Shared drives', '-type', 'd', '-maxdepth', '1' }):start()
+   -- currently limited to a 'maxdepth' of 1 due to: https://github.com/Hammerspoon/hammerspoon/issues/2651
+end
+
+fileStreamChooser:showCallback(fileStreamPopulate)
+fileStreamChooser:searchSubText(true)
+
+hs.hotkey.bind( hyper, "o", function() fileStreamChooser:show() end)
+
+

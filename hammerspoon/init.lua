@@ -131,7 +131,6 @@ configWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reload
 
 local applicationHotkeys = {
    m = 'Mail',
-   i = 'Mimestream',
    c = 'Calendar',
    e = 'Emacs',
    s = 'Safari',
@@ -146,51 +145,6 @@ for key, app in pairs(applicationHotkeys) do
 	 hs.application.launchOrFocus(app)
    end)
 end
-
-hs.hotkey.bind({'ctrl', 'cmd'}, "h", function() os.execute( "open https://news.ycombinator.com" ) end)
-
-if (hostname == "shadowfax") then
-   hs.hotkey.bind({'ctrl', 'cmd'}, "k", function()
-	 os.execute( "open https://ievfx.slack.com" )
-   end)
-else
-   hs.hotkey.bind({'ctrl', 'cmd'}, "k", function()
-	 hs.application.launchOrFocus("Slack")
-   end)
-end
-
-
--- Google File Stream Chooser
--- -----------------------------------------------
--- Hacked together from here: https://github.com/ebai101/dotfiles/blob/master/config/hammerspoon/reason.lua
-
-local fileStreamChooser = hs.chooser.new(function(choice) hs.open(choice['subText']) end)
-
-local function fileStreamPopulate()
-   local options = {}
-   hs.task.new('/usr/bin/find', function(task, out, err)
-		  for path in out:gmatch("[^\r\n]+") do
-		     table.insert(options, {
-				     ['text'] = string.match(path, ".*/(.+)$"),
-				     ['subText'] = path,
-				     ['modified'] = hs.fs.attributes(path).modification
-		     })
-		  end
-
-		  table.sort(options, function(a, b)
-				return a['modified'] > b['modified']
-		  end)
-
-		  fileStreamChooser:choices(options)
-
-   end, { '/Volumes/GoogleDrive/Shared drives', '-type', 'd', '-maxdepth', '1' }):start()
-   -- currently limited to a 'maxdepth' of 1 due to: https://github.com/Hammerspoon/hammerspoon/issues/2651
-end
-
-fileStreamChooser:showCallback(fileStreamPopulate)
-fileStreamChooser:searchSubText(true)
-
-hs.hotkey.bind( hyper, "o", function() fileStreamChooser:show() end)
 
 
 -- Reload Notification in Menubar

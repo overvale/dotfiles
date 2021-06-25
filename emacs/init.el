@@ -614,6 +614,57 @@ the fixed-pitch face down to the height defined by
   (delete-overlay mouse-secondary-overlay))
 
 
+;;;; Navigation Keymap
+
+(defun define-navigation-keys (map)
+  "Defines navigation keys for a map supplied by argument."
+  (interactive "S")
+  (define-key map (kbd "n") 'next-line)
+  (define-key map (kbd "p") 'previous-line)
+  (define-key map (kbd "f") 'forward-char)
+  (define-key map (kbd "b") 'backward-char)
+  (define-key map (kbd "M-f") 'forward-word)
+  (define-key map (kbd "M-b") 'backward-word)
+  (define-key map (kbd "a") 'beginning-of-line)
+  (define-key map (kbd "e") 'end-of-line)
+  (define-key map (kbd "{") 'backward-paragraph)
+  (define-key map (kbd "}") 'forward-paragraph)
+  (define-key map (kbd "(") 'backward-sentence)
+  (define-key map (kbd ")") 'forward-sentence)
+  (define-key map (kbd "s") 'isearch-forward)
+  (define-key map (kbd "r") 'isearch-backward)
+  (define-key map (kbd "[") 'scroll-down-line)
+  (define-key map (kbd "]") 'scroll-up-line)
+  (define-key map (kbd "x") 'exchange-point-and-mark)
+  (define-key map (kbd "SPC") 'rectangle-mark-mode))
+
+(defvar navigation-keymap (make-keymap)
+  "Transient keymap for navigating buffers.")
+
+;; Assign navigation-keys to the map
+(define-navigation-keys navigation-keymap)
+
+(defun navigation-keymap-eldoc-function ()
+  (eldoc-message "Navigation Keymap"))
+
+(defun navigation-keymap--activate ()
+  (interactive)
+  (pulse-line)
+  (message "Navigation Keymap Activated")
+  (add-function :before-until (local 'eldoc-documentation-function)
+                #'navigation-keymap-eldoc-function)
+  (set-transient-map navigation-keymap t 'navigation-keymap--deactivate))
+
+(defun navigation-keymap--deactivate ()
+  (interactive)
+  (pulse-line)
+  (message "Navigation Keymap Deactivated")
+  (remove-function (local 'eldoc-documentation-function)
+                   #'navigation-keymap-eldoc-function))
+
+(boss-key "s-j" 'navigation-keymap--activate)
+
+
 ;;;; Flyspell
 
 (add-hook 'text-mode-hook 'turn-on-flyspell)
@@ -924,6 +975,93 @@ completions if invoked from inside the minibuffer."
     (require 'embark-consult)))
 
 
+;;;; Selected
+
+(select-package 'selected)
+
+(selected-global-mode 1)
+
+(defun disable-selected-minor-mode ()
+  (selected-minor-mode -1))
+
+(with-eval-after-load 'selected
+  (define-keys selected-keymap
+    ("u" 'upcase-dwim)
+    ("d" 'downcase-dwim)
+    ("c" 'capitalize-dwim)
+    ("w" 'kill-ring-save)
+    ("|" 'pipe-region)
+    ("R" 'replace-rectangle)
+    ("E" 'eval-region)
+    ("q" 'selected-off))
+   (define-navigation-keys selected-keymap)
+   (blackout 'selected-minor-mode))
+
+
+;;;; Misc Packages
+
+(when (eq system-type 'darwin)
+  (select-package 'magit))
+
+(select-package 'olivetti)
+(with-eval-after-load 'olivetti
+  (custom-set-variables '(olivetti-body-width 84)))
+
+(select-package 'undo-fu)
+
+(select-package 'unfill)
+(global-set-key (kbd "M-q") 'unfill-toggle)
+
+(select-package 'helpful)
+(global-set-key (kbd "C-h f") 'helpful-function)
+(global-set-key (kbd "C-h v") 'helpful-variable)
+(global-set-key (kbd "C-h o") 'helpful-symbol)
+(global-set-key (kbd "C-h k") 'helpful-key)
+(global-set-key (kbd "C-h p") 'helpful-at-point)
+
+(select-package 'move-text)
+(global-set-key (kbd "C-x C-t") 'move-text-transient)
+(transient-define-prefix move-text-transient ()
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  ["Move Lines"
+   [("n" "Down" move-text-down)]
+   [("p" "Up" move-text-up)]])
+
+(select-package 'visual-regexp)
+(global-set-key [remap query-replace] 'vr/query-replace)
+
+(select-package 'visual-regexp-steroids)
+(with-eval-after-load 'visual-regexp
+  (with-eval-after-load 'visual-regexp-steroids
+    (custom-set-variables
+     '(vr/engine 'pcre2el))))
+
+(select-package 'fountain-mode)
+(custom-set-variables
+ '(fountain-add-continued-dialog nil)
+ '(fountain-highlight-elements (quote (section-heading))))
+
+(select-package 'markdown-mode)
+(add-to-list 'magic-mode-alist
+             '("%text" . markdown-mode))
+(add-to-list 'auto-mode-alist
+             '("\\.text" . markdown-mode))
+
+(select-package 'lua-mode)
+
+(when (string= (system-name) "shadowfax.local")
+  (select-package 'oblique)
+  (add-to-list 'load-path "~/home/src/oblique-strategies/")
+  (autoload 'oblique-strategy "oblique")
+  (setq initial-scratch-message (concat
+                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
+                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
+
+(select-package 'orgalist)
+(add-hook 'git-commit-mode-hook 'orgalist-mode)
+
+
 ;;;; Org
 
 (autoload 'oht-org-agenda-today-pop-up "org")
@@ -995,6 +1133,8 @@ completions if invoked from inside the minibuffer."
 
   (setq org-todo-keywords
         '((sequence "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")))
+
+  (setq org-tag-alist '(("mtg1" . ?1) ("mtg2" . ?2) ("mtg3" . ?3)))
 
   (setq org-capture-templates
         `(("p" "Personal")
@@ -1086,144 +1226,6 @@ buffer, and exiting the agenda and releasing all the buffers."
   (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "C-/") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))
-
-
-;;;; Navigation Keymap
-
-(defun define-navigation-keys (map)
-  "Defines navigation keys for a map supplied by argument."
-  (interactive "S")
-  (define-key map (kbd "n") 'next-line)
-  (define-key map (kbd "p") 'previous-line)
-  (define-key map (kbd "f") 'forward-char)
-  (define-key map (kbd "b") 'backward-char)
-  (define-key map (kbd "M-f") 'forward-word)
-  (define-key map (kbd "M-b") 'backward-word)
-  (define-key map (kbd "a") 'beginning-of-line)
-  (define-key map (kbd "e") 'end-of-line)
-  (define-key map (kbd "{") 'backward-paragraph)
-  (define-key map (kbd "}") 'forward-paragraph)
-  (define-key map (kbd "(") 'backward-sentence)
-  (define-key map (kbd ")") 'forward-sentence)
-  (define-key map (kbd "s") 'isearch-forward)
-  (define-key map (kbd "r") 'isearch-backward)
-  (define-key map (kbd "[") 'scroll-down-line)
-  (define-key map (kbd "]") 'scroll-up-line)
-  (define-key map (kbd "x") 'exchange-point-and-mark)
-  (define-key map (kbd "SPC") 'rectangle-mark-mode))
-
-(defvar navigation-keymap (make-keymap)
-  "Transient keymap for navigating buffers.")
-
-;; Assign navigation-keys to the map
-(define-navigation-keys navigation-keymap)
-
-(defun navigation-keymap-eldoc-function ()
-  (eldoc-message "Navigation Keymap"))
-
-(defun navigation-keymap--activate ()
-  (interactive)
-  (pulse-line)
-  (message "Navigation Keymap Activated")
-  (add-function :before-until (local 'eldoc-documentation-function)
-                #'navigation-keymap-eldoc-function)
-  (set-transient-map navigation-keymap t 'navigation-keymap--deactivate))
-
-(defun navigation-keymap--deactivate ()
-  (interactive)
-  (pulse-line)
-  (message "Navigation Keymap Deactivated")
-  (remove-function (local 'eldoc-documentation-function)
-                   #'navigation-keymap-eldoc-function))
-
-(boss-key "s-j" 'navigation-keymap--activate)
-
-
-;;;; Selected
-
-(select-package 'selected)
-
-(selected-global-mode 1)
-
-(defun disable-selected-minor-mode ()
-  (selected-minor-mode -1))
-
-(with-eval-after-load 'selected
-  (define-keys selected-keymap
-    ("u" 'upcase-dwim)
-    ("d" 'downcase-dwim)
-    ("c" 'capitalize-dwim)
-    ("w" 'kill-ring-save)
-    ("|" 'pipe-region)
-    ("R" 'replace-rectangle)
-    ("E" 'eval-region)
-    ("q" 'selected-off))
-   (define-navigation-keys selected-keymap)
-   (blackout 'selected-minor-mode))
-
-
-;;;; Misc Packages
-
-(when (eq system-type 'darwin)
-  (select-package 'magit))
-
-(select-package 'olivetti)
-(with-eval-after-load 'olivetti
-  (custom-set-variables '(olivetti-body-width 84)))
-
-(select-package 'undo-fu)
-
-(select-package 'unfill)
-(global-set-key (kbd "M-q") 'unfill-toggle)
-
-(select-package 'helpful)
-(global-set-key (kbd "C-h f") 'helpful-function)
-(global-set-key (kbd "C-h v") 'helpful-variable)
-(global-set-key (kbd "C-h o") 'helpful-symbol)
-(global-set-key (kbd "C-h k") 'helpful-key)
-(global-set-key (kbd "C-h p") 'helpful-at-point)
-
-(select-package 'move-text)
-(global-set-key (kbd "C-x C-t") 'move-text-transient)
-(transient-define-prefix move-text-transient ()
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  ["Move Lines"
-   [("n" "Down" move-text-down)]
-   [("p" "Up" move-text-up)]])
-
-(select-package 'visual-regexp)
-(global-set-key [remap query-replace] 'vr/query-replace)
-
-(select-package 'visual-regexp-steroids)
-(with-eval-after-load 'visual-regexp
-  (with-eval-after-load 'visual-regexp-steroids
-    (custom-set-variables
-     '(vr/engine 'pcre2el))))
-
-(select-package 'fountain-mode)
-(custom-set-variables
- '(fountain-add-continued-dialog nil)
- '(fountain-highlight-elements (quote (section-heading))))
-
-(select-package 'markdown-mode)
-(add-to-list 'magic-mode-alist
-             '("%text" . markdown-mode))
-(add-to-list 'auto-mode-alist
-             '("\\.text" . markdown-mode))
-
-(select-package 'lua-mode)
-
-(when (string= (system-name) "shadowfax.local")
-  (select-package 'oblique)
-  (add-to-list 'load-path "~/home/src/oblique-strategies/")
-  (autoload 'oblique-strategy "oblique")
-  (setq initial-scratch-message (concat
-                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
-                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
-
-(select-package 'orgalist)
-(add-hook 'git-commit-mode-hook 'orgalist-mode)
 
 
 ;;;; Transient

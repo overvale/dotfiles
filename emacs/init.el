@@ -264,14 +264,15 @@ If no region is active, then just swap point and mark."
 
 (defmacro define-keys (keymap &rest body)
   "Defines key bindings in BODY for keymap in KEYMAP.
-Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR is a command."
+Accepts CONS where CAR is a key in string form (to be passed to `kbd')
+and CADR is a command."
+  (declare (indent defun))
   `(progn
      ,@(cl-loop for binding in body
                 collect
-                `(let ((map ,keymap)
-                       (key ,(car binding))
+                `(let ((key ,(car binding))
                        (def ,(cadr binding)))
-                   (define-key map (kbd key) def)))))
+                   (define-key ,keymap (kbd key) def)))))
 
 ;; Minor modes override global bindings, so any bindings you don't want
 ;; overridden should be placed in a minor mode.
@@ -289,67 +290,52 @@ Keybindings you define here will take precedence."
 (add-to-list 'emulation-mode-map-alists
              `((bosskey-mode . ,bosskey-mode-map)))
 
-(defmacro boss-key (key command)
-  "Defines a key binding for bosskey-mode."
-  `(define-key bosskey-mode-map (kbd ,key) ,command))
-
-(defmacro boss-keys (&rest body)
-  "Defines key bindings for bosskey-mode.
-Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR is a command."
-  `(progn
-     ,@(cl-loop for binding in body
-                collect
-                `(let ((key ,(nth 0 binding))
-                       (def ,(nth 1 binding)))
-                   (define-key bosskey-mode-map (kbd key) def)))))
-
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
 ;; Mac-like bindings
 (when (eq system-type 'darwin)
-  (boss-keys
-   ("s-q"       'save-buffers-kill-terminal)
-   ("s-m"       'iconify-frame)
-   ("s-w"       'delete-frame)
-   ("s-n"       'make-frame-command)
-   ("s-s"       'save-buffer)
-   ("s-,"       'find-user-init-file)
-   ("s-o"       'find-file)
-   ("s-z"       'undo-fu-only-undo)
-   ("s-Z"       'undo-fu-only-redo)
-   ("s-x"       'kill-region)
-   ("s-c"       'kill-ring-save)
-   ("s-v"       'yank)
-   ("s-<left>"  'beginning-of-visual-line)
-   ("s-<right>" 'end-of-visual-line)
-   ("s-<up>"    'beginning-of-buffer)
-   ("s-<down>"  'end-of-buffer)))
+  (define-keys bosskey-mode-map
+    ("s-q"       'save-buffers-kill-terminal)
+    ("s-m"       'iconify-frame)
+    ("s-w"       'delete-frame)
+    ("s-n"       'make-frame-command)
+    ("s-s"       'save-buffer)
+    ("s-,"       'find-user-init-file)
+    ("s-o"       'find-file)
+    ("s-z"       'undo-fu-only-undo)
+    ("s-Z"       'undo-fu-only-redo)
+    ("s-x"       'kill-region)
+    ("s-c"       'kill-ring-save)
+    ("s-v"       'yank)
+    ("s-<left>"  'beginning-of-visual-line)
+    ("s-<right>" 'end-of-visual-line)
+    ("s-<up>"    'beginning-of-buffer)
+    ("s-<down>"  'end-of-buffer)))
 
 ;; Personal keybindings
-(boss-keys
- ("C-<return>" 'general-transient)
- ("M-]"        'next-buffer)
- ("M-["        'previous-buffer)
- ("M-o"        'other-window)
- ("C-M-h"      'mark-line)
- ("M-."        'embark-act)
- ("M-'"        'my:hippie-expand)
- ("M-\\"       'cycle-spacing)
- ("M-z"        'zap-up-to-char)
- ("C-d"        'delete-forward-char)
- ("C-x C-x"    'exchange-point-and-mark-dwim)
- ("M-0"        'delete-window)
- ("M-1"        'delete-other-windows)
- ("M-2"        'split-window-below)
- ("M-3"        'split-window-right)
- ("M-4"        'undefined)
- ("M-5"        'undefined)
- ("M-6"        'undefined)
- ("M-7"        'undefined)
- ("M-8"        'undefined)
- ("M-9"        'undefined)
- ("M--"        'undefined))
+(define-keys bosskey-mode-map
+  ("C-<return>" 'general-transient)
+  ("M-]"        'next-buffer)
+  ("M-["        'previous-buffer)
+  ("M-o"        'other-window)
+  ("C-M-h"      'mark-line)
+  ("M-."        'embark-act)
+  ("M-'"        'my:hippie-expand)
+  ("M-\\"       'cycle-spacing)
+  ("M-z"        'zap-up-to-char)
+  ("C-d"        'delete-forward-char)
+  ("C-x C-x"    'exchange-point-and-mark-dwim)
+  ("M-0"        'delete-window)
+  ("M-1"        'delete-other-windows)
+  ("M-2"        'split-window-below)
+  ("M-3"        'split-window-right)
+  ("M-4"        'undefined)
+  ("M-5"        'undefined)
+  ("M-6"        'undefined)
+  ("M-7"        'undefined)
+  ("M-8"        'undefined)
+  ("M-9"        'undefined))
 
 (global-set-key [remap capitalize-word] 'capitalize-dwim)
 (global-set-key [remap downcase-word]   'downcase-dwim)
@@ -662,7 +648,7 @@ the fixed-pitch face down to the height defined by
   (remove-function (local 'eldoc-documentation-function)
                    #'navigation-keymap-eldoc-function))
 
-(boss-key "s-j" 'navigation-keymap--activate)
+(define-key bosskey-mode-map (kbd "s-j") 'navigation-keymap--activate)
 
 
 ;;;; Flyspell

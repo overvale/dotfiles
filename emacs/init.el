@@ -334,6 +334,8 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 ;; Personal keybindings
 (boss-keys
  ("C-<return>" 'oht-transient-general)
+ ("M-]"        'next-buffer)
+ ("M-["        'previous-buffer)
  ("M-o"        'other-window)
  ("C-M-h"      'mark-line)
  ("M-."        'embark-act)

@@ -297,7 +297,6 @@ as an argument limits undo to changes within the current region."
                      'embark-minibuffer-candidates
                      embark-candidate-collectors))
 
-(define-key minibuffer-local-completion-map (kbd "C-n") 'switch-to-completions-or-other-window)
 
 
 ;;; PDFs

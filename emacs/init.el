@@ -282,8 +282,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 ;; Minor modes override global bindings, so any bindings you don't want
 ;; overridden should be placed in a minor mode.
 
-(defvar bosskey-mode-map (make-keymap)
-  "Keymap for bosskey-mode.")
+(defvar bosskey-mode-map (make-keymap))
 
 (define-minor-mode bosskey-mode
   "Minor mode for my personal keybindings, which override others.
@@ -318,6 +317,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
   (boss-keys
    ("s-q"       'save-buffers-kill-terminal)
    ("s-m"       'iconify-frame)
+   ("s-w"       'delete-frame)
    ("s-n"       'make-frame-command)
    ("s-s"       'save-buffer)
    ("s-,"       'find-user-init-file)
@@ -335,22 +335,14 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 ;; Personal keybindings
 (boss-keys
  ("C-<return>" 'oht-transient-general)
- ("M-["        'previous-buffer)
- ("M-]"        'next-buffer)
  ("M-o"        'other-window)
+ ("C-M-h"      'mark-line)
  ("M-."        'embark-act)
  ("M-'"        'my:hippie-expand)
  ("M-\\"       'cycle-spacing)
  ("M-z"        'zap-up-to-char)
- ("M-H"        'oht-transient-marks)
- ("M-N"        'navigation-keymap--activate)
  ("C-d"        'delete-forward-char)
- ("C-x k"      'kill-buffer-dwim)
  ("C-x C-x"    'exchange-point-and-mark-dwim)
- ("C-x C-b"    'ibuffer-other-window)
- ("C-x C-n"    'make-frame-command)
- ("C-x C-,"    'find-user-init-file)
- ("M-g ."      'xref-find-definitions)
  ("M-0"        'delete-window)
  ("M-1"        'delete-other-windows)
  ("M-2"        'split-window-below)
@@ -408,15 +400,14 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 (setq pkg-ops-map
   (let ((map (make-sparse-keymap "Packages")))
     (define-key map "h" '("describe" . describe-package))
-    (define-key map "r" '("reinstall" . package-reinstall))
     (define-key map "a" '("autoremove" . package-autoremove))
     (define-key map "d" '("delete" . package-delete))
     (define-key map "i" '("install" . package-install))
-    (define-key map "f" '("refresh" . package-refresh-contents))
+    (define-key map "r" '("refresh" . package-refresh-contents))
     (define-key map "l" '("list" . list-packages))
     map))
 
-(global-set-key (kbd "C-x p") pkg-ops-map)
+(global-set-key (kbd "C-c p") pkg-ops-map)
 
 ;; This config requires these 2 packages to run properly.
 
@@ -711,6 +702,9 @@ the fixed-pitch face down to the height defined by
           (when (bobp) (next-completion 1)))
       (other-window 1))))
 
+(define-key minibuffer-local-completion-map (kbd "M-o") 'switch-to-completions-or-other-window)
+(define-key minibuffer-local-completion-map (kbd "C-n") 'switch-to-completions-or-other-window)
+
 (defun switch-to-minibuffer ()
   "Focus the active minibuffer.
 Bind this to `completion-list-mode-map' to M-v to easily jump
@@ -722,7 +716,6 @@ completions if invoked from inside the minibuffer."
     (when mini
       (select-window mini))))
 
-(define-key minibuffer-local-completion-map (kbd "M-o") 'switch-to-completions-or-other-window)
 (define-key completion-list-mode-map (kbd "M-o") 'switch-to-minibuffer)
 
 
@@ -1231,6 +1224,9 @@ buffer, and exiting the agenda and releasing all the buffers."
   (remove-function (local 'eldoc-documentation-function)
                    #'navigation-keymap-eldoc-function))
 
+(boss-key "s-j" 'navigation-keymap--activate)
+
+
 ;;;; Selected
 
 (select-package 'selected)
@@ -1268,10 +1264,13 @@ buffer, and exiting the agenda and releasing all the buffers."
     [["Actions/Toggles"
       ("a" "AutoFill" auto-fill-mode)
       ("j" "Dired Jump" dired-jump)
-      ("v" "View Mode" view-mode)
-      ("b" "Switch Buffer" consult-buffer)
-      ("B" "iBuffer" ibuffer)
+      ("SPC" "Mark..." oht-transient-marks)
+      ("n" "Navigation..." navigation-keymap--activate)
       ("m" "Mode Transient..." call-mode-help-transient)]
+     [""
+      ("k" "Kill Buffer" kill-buffer-dwim)
+      ("b" "Switch Buffer" switch-to-buffer)
+      ("C-b" "iBuffer" ibuffer)]
      ["Transients"
       ("o" "Org..." oht-transient-general--org)
       ("t" "Toggle..." oht-transient-general--toggles)
@@ -1553,7 +1552,7 @@ buffer, and exiting the agenda and releasing all the buffers."
 (select-package 'undo-fu)
 
 (select-package 'unfill)
-(global-set-key (kbd "M-q") 'until-toggle)
+(global-set-key (kbd "M-q") 'unfill-toggle)
 
 (select-package 'helpful)
 (global-set-key (kbd "C-h f") 'helpful-function)

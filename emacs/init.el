@@ -805,22 +805,9 @@ completions if invoked from inside the minibuffer."
 
 ;;;; iBuffer
 
-(setq ibuffer-show-empty-filter-groups nil)
-
-(setq ibuffer-saved-filter-groups
-      '(("default"
-         ("Org"   (or (mode . org-mode)
-                      (mode . org-agenda-mode)))
-         ("Dired" (mode . dired-mode))
-         ("ELisp" (mode . emacs-lisp-mode))
-         ("Help"  (or (name . "\*Help\*")
-                      (name . "\*Apropos\*")
-                      (name . "\*Info\*"))))))
-
 (defun ibuffer-setup ()
   (hl-line-mode 1)
-  (ibuffer-auto-mode 1)
-  (ibuffer-switch-to-saved-filter-groups "default"))
+  (ibuffer-auto-mode 1))
 
 (add-hook 'ibuffer-mode-hook 'ibuffer-setup)
 

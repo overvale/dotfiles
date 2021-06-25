@@ -1044,3 +1044,23 @@ To be used by `eww-after-render-hook'."
 
   ) ; End "use-package elfeed"
 
+;;; iBuffer
+
+
+(setq ibuffer-show-empty-filter-groups nil)
+
+(setq ibuffer-saved-filter-groups
+      '(("default"
+         ("Org"   (or (mode . org-mode)
+                      (mode . org-agenda-mode)))
+         ("Dired" (mode . dired-mode))
+         ("ELisp" (mode . emacs-lisp-mode))
+         ("Help"  (or (name . "\*Help\*")
+                      (name . "\*Apropos\*")
+                      (name . "\*Info\*"))))))
+
+(defun ibuffer-setup ()
+  (ibuffer-switch-to-saved-filter-groups "default")
+  )
+
+(add-hook 'ibuffer-mode-hook 'ibuffer-setup)

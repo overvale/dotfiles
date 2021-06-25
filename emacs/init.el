@@ -1381,13 +1381,13 @@ buffer, and exiting the agenda and releasing all the buffers."
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-warn
   [["Show/Hide"
-    ("f" "Show Subtree" outline-show-subtree)
-    ("b" "Hide Subtree" outline-hide-subtree)
+    ("<right>" "Show Subtree" outline-show-subtree)
+    ("<left>" "Hide Subtree" outline-hide-subtree)
     ("o" "Hide to This Sublevel" outline-hide-sublevels)
     ("a" "Show All" outline-show-all)]
    ["Navigate"
-    ("n" "Next" outline-next-visible-heading)
-    ("p" "Previous" outline-previous-visible-heading)]
+    ("<down>" "Next" outline-next-visible-heading)
+    ("<up>" "Previous" outline-previous-visible-heading)]
    ["Edit"
     ("M-<left>"  "Promote" outline-promote)
     ("M-<right>" "Demote"  outline-demote)

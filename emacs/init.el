@@ -268,21 +268,25 @@ even beep.)"
     ;; Delete lines or make the "Buffer is read-only" error.
     (flush-lines regexp rstart rend interactive)))
 
-;;; Keybindings
 
-;; If on a Mac, use the command key as Super, left-option for Meta, and
-;; right-option for Alt.
-(when (eq system-type 'darwin)
-  (setq mac-command-modifier 'super
-        mac-option-modifier 'meta
-        mac-right-command-modifier 'meta
-        mac-right-option-modifier 'nil))
+;;; Macros & Critical Functions
 
-;; If on Windows, use Windows key as Super
-(when (eq system-type 'windows-nt)
-  (setq w32-pass-lwindow-to-system nil)
-  (setq w32-lwindow-modifier 'super)
-  (w32-register-hot-key [s-]))
+;; These macros and functions are used throughout the config and are required for it to work correctly.
+
+(defmacro select-package (package)
+  "Adds package to `package-selected-packages'."
+  `(add-to-list 'package-selected-packages ,package t))
+
+;; Blackout is used throughout this config, so I configure it here.
+(select-package 'blackout)
+(autoload 'blackout "blackout" nil t)
+(blackout 'eldoc-mode)
+(blackout 'emacs-lisp-mode "Elisp")
+(blackout 'auto-fill-function " Fill")
+
+;; Transient is used throughout this config, so I configure it here.
+(select-package 'transient)
+(require 'transient)
 
 ;; The below is taken from:
 ;; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
@@ -303,6 +307,23 @@ even beep.)"
       (-partition 2 pairs)
     (-lambda ((key def))
       (global-set-key key def))))
+
+
+;;; Keybindings
+
+;; If on a Mac, use the command key as Super, left-option for Meta, and
+;; right-option for Alt.
+(when (eq system-type 'darwin)
+  (setq mac-command-modifier 'super
+        mac-option-modifier 'meta
+        mac-right-command-modifier 'meta
+        mac-right-option-modifier 'nil))
+
+;; If on Windows, use Windows key as Super
+(when (eq system-type 'windows-nt)
+  (setq w32-pass-lwindow-to-system nil)
+  (setq w32-lwindow-modifier 'super)
+  (w32-register-hot-key [s-]))
 
 ;; Minor modes override global bindings, so any bindings you don't want
 ;; overridden should be placed in a minor mode.
@@ -343,39 +364,6 @@ Keybindings you define here will take precedence."
     (kbd "s-<up>")    'beginning-of-buffer
     (kbd "s-<down>")  'end-of-buffer))
 
-
-;;; Package Management
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
-
-(defmacro select-package (package)
-  "Adds package to `package-selected-packages'."
-  `(add-to-list 'package-selected-packages ,package t))
-
-(setq pkg-ops-map
-  (let ((map (make-sparse-keymap "Packages")))
-    (define-key map "h" '("describe" . describe-package))
-    (define-key map "a" '("autoremove" . package-autoremove))
-    (define-key map "d" '("delete" . package-delete))
-    (define-key map "i" '("install" . package-install))
-    (define-key map "r" '("refresh" . package-refresh-contents))
-    (define-key map "l" '("list" . list-packages))
-    map))
-
-(global-set-key (kbd "C-c p") pkg-ops-map)
-
-;; Blackout is used throughout this config, so I configure it here.
-(select-package 'blackout)
-(autoload 'blackout "blackout" nil t)
-(blackout 'eldoc-mode)
-(blackout 'emacs-lisp-mode "Elisp")
-(blackout 'auto-fill-function " Fill")
-
-;; Transient is used throughout this config, so I configure it here.
-(select-package 'transient)
-(require 'transient)
 (define-keys bosskey-mode-map
   (kbd "C-<return>") 'general-transient
   (kbd "M-]")        'next-buffer
@@ -413,6 +401,25 @@ Keybindings you define here will take precedence."
                  [C-M-mouse-1]      'mouse-start-secondary
                  [C-M-drag-mouse-1] 'mouse-set-secondary
                  [C-M-down-mouse-1] 'mouse-drag-secondary)
+
+
+;;; Package Management
+
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
+
+(setq pkg-ops-map
+  (let ((map (make-sparse-keymap "Packages")))
+    (define-key map "h" '("describe" . describe-package))
+    (define-key map "a" '("autoremove" . package-autoremove))
+    (define-key map "d" '("delete" . package-delete))
+    (define-key map "i" '("install" . package-install))
+    (define-key map "r" '("refresh" . package-refresh-contents))
+    (define-key map "l" '("list" . list-packages))
+    map))
+
+(global-set-key (kbd "C-c p") pkg-ops-map)
 
 
 ;;; Appearance

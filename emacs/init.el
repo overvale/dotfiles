@@ -299,8 +299,8 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
   `(progn
      ,@(cl-loop for binding in body
                 collect
-                `(let ((key ,(car binding))
-                       (def ,(cadr binding)))
+                `(let ((key ,(nth 0 binding))
+                       (def ,(nth 1 binding)))
                    (define-key bosskey-mode-map (kbd key) def)))))
 
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/

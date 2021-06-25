@@ -383,8 +383,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 
 (defmacro select-package (package)
   "Adds package to `package-selected-packages'."
-  `(add-to-list 'package-selected-packages ,package))
-
+  `(add-to-list 'package-selected-packages ,package t))
 
 (setq pkg-ops-map
   (let ((map (make-sparse-keymap "Packages")))

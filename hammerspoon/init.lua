@@ -36,9 +36,6 @@ hs.urlevent.bind("success", genericSuccess)
 local anycomplete = require "anycomplete"
 anycomplete.registerDefaultBindings()
 
-require('bluetooth_sleep')
-require('keybinds') -- mostly for remapping keys
-
 require('quick_menu')
 
 if (hostname == "shadowfax") then
@@ -90,19 +87,6 @@ hs.hotkey.bind(hyper, 'j', function() hs.window.focusedWindow():moveToUnit({0, 0
 hs.hotkey.bind(hyper, 'k', function() hs.window.focusedWindow():moveToUnit({1/3, 0, 2/3, 1}) end)
 hs.hotkey.bind(hyper, 'l', function() hs.window.focusedWindow():moveToUnit({2/3, 0, 1/3, 1}) end)
 hs.hotkey.bind(hyper, 'f', function() hs.window.focusedWindow():moveToUnit({0, 0, 1, 1}) end)
--- Quarters
-hs.hotkey.bind(hyper, '1', function() hs.window.focusedWindow():moveToUnit({0, 0, .5, .5}) end)
-hs.hotkey.bind(hyper, '2', function() hs.window.focusedWindow():moveToUnit({.5, 0, 1, .5}) end)
-hs.hotkey.bind(hyper, '3', function() hs.window.focusedWindow():moveToUnit({0, .5, .5, 1}) end)
-hs.hotkey.bind(hyper, '4', function() hs.window.focusedWindow():moveToUnit({.5, .5, 1, 1}) end)
-
--- window hints
-hs.hotkey.bind(hyper, 'i', hs.hints.windowHints)
-
--- window grid
-hs.grid.setGrid('6x4', nil, nil)
-hs.grid.setMargins({0, 0})
-hs.hotkey.bind(hyper, ';', hs.grid.show)
 
 
 -- Reload Config
@@ -131,6 +115,7 @@ configWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reload
 
 local applicationHotkeys = {
    m = 'Mail',
+   n = 'NetNewsWire',
    c = 'Calendar',
    e = 'Emacs',
    s = 'Safari',
@@ -152,21 +137,21 @@ end
 -- This places a temporary message in the menubar. Because it comes and goes,
 -- it should probably be last in your config.
 
-local HSNotifyMenu = hs.menubar.new()
+-- local HSNotifyMenu = hs.menubar.new()
 
-function buildHSNotifyMenu()
--- When called, places the message in the menubar
--- and after a delay, calls a function to remove this item from the menubar
-   HSNotifyMenu:setTitle("🤘 Reloaded!")
-   hs.timer.doAfter(3, killHSNotifyMenu)
-end
+-- function buildHSNotifyMenu()
+-- -- When called, places the message in the menubar
+-- -- and after a delay, calls a function to remove this item from the menubar
+--    HSNotifyMenu:setTitle("🤘 Reloaded!")
+--    hs.timer.doAfter(2, killHSNotifyMenu)
+-- end
 
-function killHSNotifyMenu()
-   HSNotifyMenu:delete()
-end
+-- function killHSNotifyMenu()
+--    HSNotifyMenu:delete()
+-- end
 
--- Show when this file is evaluated
-buildHSNotifyMenu()
+-- -- Show when this file is evaluated
+-- buildHSNotifyMenu()
 
 
 

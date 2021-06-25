@@ -93,9 +93,7 @@ end
 -- Next, bind keys to the functions
 -- These bindings are enabled by default
 
-local bindDeleteWordBack    = hs.hotkey.bind({'ctrl'}, 'w', deleteWordBack)
 local bindDeleteWordForward = hs.hotkey.bind({'alt'},  'd', deleteWordForward)
-local bindDeleteLineBack    = hs.hotkey.bind({'ctrl'}, 'u', deleteLineBack)
 
 local bindMoveWordBack      = hs.hotkey.bind({'alt'}, 'b', moveWordBack)
 local bindMoveWordForward   = hs.hotkey.bind({'alt'}, "f", moveWordForward)

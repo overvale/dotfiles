@@ -14,19 +14,17 @@ function buildQuickMenu()
       { title = "[YYYY-MM-DD]", fn = snipISODate },
    }
    local menuTable = {
-      { title = "QuickMenu", disabled = true },
-      { title = "-" },
-      { title = "Copy Mail Message URL", fn = copyMailURL, shortcut = "m"},
+      { title = "Mail", disabled = true },
+      { title = "Copy Mail Message URL", fn = copyMailURL},
       { title = "New Mail Message", fn = newMailMessage },
       { title = "-" },
-      { title = "Open Org Inbox", fn = openOrgInbox, shortcut = "i" },
-      { title = "-" },
+      { title = "Org Mode", disabled = true },
+      { title = "Open Org Inbox", fn = openOrgInbox},
       { title = "Safari tabs → Org Inbox", fn = safariTabs2ORG },
       { title = "iOS Inbox → Org Inbox", fn = importIOSinbox },
       { title = "Clipboard → Org Inbox", fn = clipboard2ORG },
       { title = "-" },
       { title = "Snippets", menu = snippetMenu },
-      { title = "Open Google Drive Folder", fn = function() fileStreamChooser:show() end },
       { title = "-" },
       { title = "Remove From Menu Bar", fn = killQuickMenu },
    }

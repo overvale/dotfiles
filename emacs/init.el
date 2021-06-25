@@ -262,11 +262,6 @@ If no region is active, then just swap point and mark."
   (setq w32-lwindow-modifier 'super)
   (w32-register-hot-key [s-]))
 
-;; Let's start by making my own macro to define multiple keys. Why would I do
-;; this if I'm also using `bind-key'? So that I can bind keys to keymaps.
-;; `bind-key' assumes you always want to bind keys to commands, but you can
-;; bind them to keymaps too, which is super handy, thus the macro.
-
 (defmacro define-keys (keymap &rest body)
   "Defines key bindings in BODY for keymap in KEYMAP.
 Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR is a command."
@@ -804,7 +799,7 @@ completions if invoked from inside the minibuffer."
       )))
 
 (defun my:hippie-expand ()
-  "Offer ido-based completion for the word at point."
+  "Offer completion for the word at point."
   (interactive)
   (my:hippie-expand-with 'hippie-expand))
 
@@ -845,7 +840,6 @@ completions if invoked from inside the minibuffer."
  '(completion-category-overrides '((file (styles . (partial-completion))))))
 
 (select-package 'vertico)
-;;(vertico-mode)
 
 (select-package 'marginalia)
 (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)

@@ -418,8 +418,7 @@ Accepts CONS where CAR is a key in string form, to be passed to `kbd', and CADR 
 (blackout 'auto-fill-function " Fill")
 
 (select-package 'transient)
-(autoload 'transient-define-prefix "transient" nil t)
-
+(require 'transient)
 
 
 ;;; Appearance

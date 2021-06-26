@@ -1,6 +1,7 @@
 ;;; early-init.el --- -*- lexical-binding: t -*-
 
 ;; Documentation: (info "(emacs) Early Init File")
+;;                (info "(emacs) Package Installation")
 
 ;; Unless 'package-enable-at-startup' is set to 'nil' Emacs will automatically
 ;; "activate" all installed packages after early-init.el but before init.el.

@@ -14,7 +14,100 @@
 ;; occur buffer with the search [^;;;+].
 
 
-;;; Configuration
+;;; Package Management
+
+(require 'package)
+
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
+
+(setq pkg-ops-map
+  (let ((map (make-sparse-keymap "Packages")))
+    (define-key map "h" '("describe" . describe-package))
+    (define-key map "a" '("autoremove" . package-autoremove))
+    (define-key map "d" '("delete" . package-delete))
+    (define-key map "i" '("install" . package-install))
+    (define-key map "s" '("selected" . package-install-selected-packages))
+    (define-key map "r" '("refresh" . package-refresh-contents))
+    (define-key map "l" '("list" . list-packages))
+    map))
+
+(global-set-key (kbd "C-c p") pkg-ops-map)
+
+(setq package-selected-packages
+      '(dash
+        transient
+        blackout
+        modus-themes
+        isearch-mb
+        bicycle
+        orderless
+        vertico
+        marginalia
+        embark
+        consult
+        embark-consult
+        selected
+        undo-fu
+        unfill
+        helpful
+        move-text
+        visual-regexp
+        visual-regexp-steroids
+        fountain-mode
+        markdown-mode
+        lua-mode
+        orgalist
+        org))
+
+(when (eq system-type 'darwin)
+  (add-to-list 'package-selected-packages 'magit t))
+
+(when (string= (system-name) "shadowfax.local")
+  (add-to-list 'package-selected-packages 'oblique t))
+
+
+;;; Macros & Critical Functions
+
+;; These macros and functions are used throughout the config and are required
+;; for it to work correctly.
+
+(require 'transient)
+(require 'dash)
+
+(defun define-keys (keymap &rest pairs)
+  "Define alternating key-def PAIRS for KEYMAP."
+  ; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
+  (-each
+      (-partition 2 pairs)
+    (-lambda ((key def))
+      (define-key keymap key def))))
+
+(defun global-set-keys (&rest pairs)
+  "Set alternating key-def PAIRS globally."
+  ; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
+  (-each
+      (-partition 2 pairs)
+    (-lambda ((key def))
+      (global-set-key key def))))
+
+
+;;; Preferences
+
+;; If on a Mac, use the command key as Super, left-option for Meta, and
+;; right-option for Alt.
+(when (eq system-type 'darwin)
+  (setq mac-command-modifier 'super
+        mac-option-modifier 'meta
+        mac-right-command-modifier 'meta
+        mac-right-option-modifier 'nil))
+
+;; If on Windows, use Windows key as Super
+(when (eq system-type 'windows-nt)
+  (setq w32-pass-lwindow-to-system nil)
+  (setq w32-lwindow-modifier 'super)
+  (w32-register-hot-key [s-]))
 
 (when (eq system-type 'darwin)
   (cd "~/home")
@@ -97,7 +190,7 @@
    '(battery-mode-line-format " [%b%p%%]")))
 
 
-;;; Functions
+;;; Misc Functions
 
 (defun mark-line (arg)
   "Put mark at end of line.
@@ -269,110 +362,57 @@ even beep.)"
     (flush-lines regexp rstart rend interactive)))
 
 
-;;; Package Management
+;;;; Secondary Selection
 
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; Emacs's Secondary Selection assumes you only want to interact with it via
+;; the mouse, however it is perfectly possible to do it via the keyboard, all
+;; you need is some wrapper functions to make things keybinding-addressable.
 
-(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
+(defun oht/cut-secondary-selection ()
+  "Cut the secondary selection."
+  (interactive)
+  (mouse-kill-secondary))
 
-(setq pkg-ops-map
-  (let ((map (make-sparse-keymap "Packages")))
-    (define-key map "h" '("describe" . describe-package))
-    (define-key map "a" '("autoremove" . package-autoremove))
-    (define-key map "d" '("delete" . package-delete))
-    (define-key map "i" '("install" . package-install))
-    (define-key map "s" '("selected" . package-install-selected-packages))
-    (define-key map "r" '("refresh" . package-refresh-contents))
-    (define-key map "l" '("list" . list-packages))
-    map))
+(defun oht/copy-secondary-selection ()
+  "Copy the secondary selection."
+  (interactive)
+  ;; there isn't a keybinding-addressable function to kill-ring-save
+  ;; the 2nd selection so here I've made my own. This is extracted
+  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
+  (kill-new
+   (buffer-substring (overlay-start mouse-secondary-overlay)
+                     (overlay-end mouse-secondary-overlay))
+   t))
 
-(global-set-key (kbd "C-c p") pkg-ops-map)
+(defun oht/cut-secondary-selection-paste ()
+  "Cut the secondary selection and paste at point."
+  (interactive)
+  (mouse-kill-secondary)
+  (yank))
 
-(defun select-package (package)
-  "Adds package to `package-selected-packages'."
-  (add-to-list 'package-selected-packages package t))
+(defun oht/copy-secondary-selection-paste ()
+  "Copy the secondary selection and paste at point."
+  (interactive)
+  (oht/copy-secondary-selection)
+  (yank))
 
-(setq package-selected-packages
-      '(blackout
-        transient
-        dash
-        modus-themes
-        isearch-mb
-        orderless
-        vertico
-        marginalia
-        embark
-        consult
-        embark-consult
-        selected
-        olivetti
-        undo-fu
-        unfill
-        helpful
-        move-text
-        visual-regexp
-        visual-regexp-steroids
-        fountain-mode
-        markdown-mode
-        lua-mode
-        orgalist
-        org))
+(defun oht/mark-region-as-secondary-selection ()
+  "Make the region the secondary selection."
+  (interactive)
+  (secondary-selection-from-region))
 
-(when (eq system-type 'darwin)
-  (select-package 'magit))
+(defun oht/mark-secondary-selection ()
+  "Mark the Secondary Selection as the region."
+  (interactive)
+  (secondary-selection-to-region))
 
-(when (string= (system-name) "shadowfax.local")
-  (select-package 'oblique))
+(defun oht/delete-secondary-selection ()
+  "Delete the Secondary Selection."
+  (interactive)
+  (delete-overlay mouse-secondary-overlay))
 
 
-;;; Macros & Critical Functions
-
-;; These macros and functions are used throughout the config and are required
-;; for it to work correctly.
-
-(autoload 'blackout "blackout" nil t)
-(blackout 'eldoc-mode)
-(blackout 'emacs-lisp-mode "Elisp")
-(blackout 'auto-fill-function " Fill")
-
-(require 'transient)
-
-;; The below is taken from:
-;; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
-
-(require 'dash)
-
-(defun define-keys (keymap &rest pairs)
-  "Define alternating key-def PAIRS for KEYMAP."
-  (-each
-      (-partition 2 pairs)
-    (-lambda ((key def))
-      (define-key keymap key def))))
-
-(defun global-set-keys (&rest pairs)
-  "Set alternating key-def PAIRS globally."
-  (-each
-      (-partition 2 pairs)
-    (-lambda ((key def))
-      (global-set-key key def))))
-
-
-;;; Keybindings
-
-;; If on a Mac, use the command key as Super, left-option for Meta, and
-;; right-option for Alt.
-(when (eq system-type 'darwin)
-  (setq mac-command-modifier 'super
-        mac-option-modifier 'meta
-        mac-right-command-modifier 'meta
-        mac-right-option-modifier 'nil))
-
-;; If on Windows, use Windows key as Super
-(when (eq system-type 'windows-nt)
-  (setq w32-pass-lwindow-to-system nil)
-  (setq w32-lwindow-modifier 'super)
-  (w32-register-hot-key [s-]))
+;;; Boss Key -- Personal Keybindings
 
 ;; Minor modes override global bindings, so any bindings you don't want
 ;; overridden should be placed in a minor mode.
@@ -417,7 +457,6 @@ Keybindings you define here will take precedence."
   (kbd "C-<return>") 'general-transient
   (kbd "M-]")        'next-buffer
   (kbd "M-[")        'previous-buffer
-  (kbd "M-o")        'other-window
   (kbd "C-M-h")      'mark-line
   (kbd "M-.")        'embark-act
   (kbd "M-'")        'my:hippie-expand
@@ -443,6 +482,8 @@ Keybindings you define here will take precedence."
   (kbd "C-h k")      'helpful-key
   (kbd "C-h p")      'helpful-at-point)
 
+(global-set-key (kbd "M-o") 'other-window)
+
 (global-set-keys [remap query-replace] 'vr/query-replace
                  [remap capitalize-word] 'capitalize-dwim
                  [remap downcase-word]   'downcase-dwim
@@ -460,7 +501,7 @@ Keybindings you define here will take precedence."
                  [C-M-down-mouse-1] 'mouse-drag-secondary)
 
 
-;;; Appearance
+;;; Appearance & Mode-Line
 
 (custom-set-variables
   '(modus-themes-slanted-constructs t)
@@ -499,10 +540,13 @@ Keybindings you define here will take precedence."
    '(facedancer-variable-height 11)
    '(facedancer-mode-line-height 11)))
 
+(autoload 'blackout "blackout" nil t)
+(blackout 'eldoc-mode)
+(blackout 'emacs-lisp-mode "Elisp")
+(blackout 'auto-fill-function " Fill")
 
-;;; Packages & Lisp
 
-;;;; Facedancer Mode
+;;; Facedancer Mode
 
 ;; Facedancer defines a group of user options which set various attributes of
 ;; the default, fixed-pitch, and variable-pitch faces. Each option should be
@@ -618,57 +662,7 @@ the fixed-pitch face down to the height defined by
 (add-hook 'buffer-face-mode-hook (lambda () (facedancer-vadjust-mode 'toggle)))
 
 
-;;;; Secondary Selection
-
-;; Emacs's Secondary Selection assumes you only want to interact with it via
-;; the mouse, however it is perfectly possible to do it via the keyboard, all
-;; you need is some wrapper functions to make things keybinding-addressable.
-
-(defun oht/cut-secondary-selection ()
-  "Cut the secondary selection."
-  (interactive)
-  (mouse-kill-secondary))
-
-(defun oht/copy-secondary-selection ()
-  "Copy the secondary selection."
-  (interactive)
-  ;; there isn't a keybinding-addressable function to kill-ring-save
-  ;; the 2nd selection so here I've made my own. This is extracted
-  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
-  (kill-new
-   (buffer-substring (overlay-start mouse-secondary-overlay)
-                     (overlay-end mouse-secondary-overlay))
-   t))
-
-(defun oht/cut-secondary-selection-paste ()
-  "Cut the secondary selection and paste at point."
-  (interactive)
-  (mouse-kill-secondary)
-  (yank))
-
-(defun oht/copy-secondary-selection-paste ()
-  "Copy the secondary selection and paste at point."
-  (interactive)
-  (oht/copy-secondary-selection)
-  (yank))
-
-(defun oht/mark-region-as-secondary-selection ()
-  "Make the region the secondary selection."
-  (interactive)
-  (secondary-selection-from-region))
-
-(defun oht/mark-secondary-selection ()
-  "Mark the Secondary Selection as the region."
-  (interactive)
-  (secondary-selection-to-region))
-
-(defun oht/delete-secondary-selection ()
-  "Delete the Secondary Selection."
-  (interactive)
-  (delete-overlay mouse-secondary-overlay))
-
-
-;;;; Navigation Keymap
+;;; Navigation Keymap
 
 (defun define-navigation-keys (map)
   "Defines navigation keys for a map supplied by argument."
@@ -719,31 +713,51 @@ the fixed-pitch face down to the height defined by
 (define-key bosskey-mode-map (kbd "s-j") 'navigation-keymap--activate)
 
 
-;;;; Flyspell
+;;; Selected
 
-(add-hook 'text-mode-hook 'turn-on-flyspell)
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+(selected-global-mode 1)
 
-(with-eval-after-load 'flyspell
-  (blackout 'flyspell-mode " Spell"))
+(defun disable-selected-minor-mode ()
+  (selected-minor-mode -1))
+
+(with-eval-after-load 'selected
+  (define-keys selected-keymap
+    "u" 'upcase-dwim
+    "d" 'downcase-dwim
+    "c" 'capitalize-dwim
+    "w" 'kill-ring-save
+    "|" 'pipe-region
+    "R" 'replace-rectangle
+    "E" 'eval-region
+    "q" 'selected-off)
+   (define-navigation-keys selected-keymap)
+   (blackout 'selected-minor-mode))
 
 
-;;;; Minibuffer
+;;; Minibuffer
+
+(require 'orderless)
+(require 'embark)
+
+(marginalia-mode)
+
+(autoload 'dired-jump "dired")
 
 (custom-set-variables
  '(enable-recursive-minibuffers t)
  '(savehist-mode t)
  '(completion-show-help nil)
- '(resize-mini-windows t))
+ '(resize-mini-windows t)
+ '(completion-styles '(orderless))
+ '(completion-category-defaults nil)
+ '(completion-category-overrides '((file (styles . (partial-completion))))))
 
-;; The completions list itself is read-only, so why not allow some nice navigation?
-(define-key completion-list-mode-map (kbd "n") 'next-completion)
-(define-key completion-list-mode-map (kbd "p") 'previous-completion)
+(setq embark-collect-initial-view-alist
+      '((file . list)
+        (buffer . list)
+        (symbol . list)
+        (t . list)))
 
-;; I want to use my usual other-window binding to switch between the
-;; minibuffer and the completions list. There is a built-in
-;; `switch-to-completions' but it doesn't support Embark or fall-back to
-;; `other-window', so I made my own.
 (defun switch-to-completions-or-other-window ()
   "Switch to the completions window, if it exists, or another window."
   (interactive)
@@ -754,9 +768,6 @@ the fixed-pitch face down to the height defined by
           (select-window (get-buffer-window "*Completions*"))
           (when (bobp) (next-completion 1)))
       (other-window 1))))
-
-(define-key minibuffer-local-completion-map (kbd "M-o") 'switch-to-completions-or-other-window)
-(define-key minibuffer-local-completion-map (kbd "C-n") 'switch-to-completions-or-other-window)
 
 (defun switch-to-minibuffer ()
   "Focus the active minibuffer.
@@ -769,7 +780,124 @@ completions if invoked from inside the minibuffer."
     (when mini
       (select-window mini))))
 
-(define-key completion-list-mode-map (kbd "M-o") 'switch-to-minibuffer)
+(define-keys completion-list-mode-map  
+  (kbd "n") 'next-completion
+  (kbd "p") 'previous-completion
+  (kbd "M-o") 'switch-to-minibuffer)
+
+(define-keys minibuffer-local-completion-map
+  (kbd "M-o") 'switch-to-completions-or-other-window
+  (kbd "C-n") 'switch-to-completions-or-other-window)
+
+(define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)
+
+(define-keys embark-file-map
+  "O" 'macos-open-file
+  "j" 'dired-jump)
+
+(define-key embark-url-map "&" 'browse-url-default-macosx-browser)
+
+(defun embark-minibuffer-completion-help (_start _end)
+  "Embark alternative to minibuffer-completion-help.
+This means you hit TAB to trigger the completions list.
+Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/"
+  (unless embark-collect-linked-buffer
+    (embark-collect-completions)))
+(advice-add 'minibuffer-completion-help
+            :override #'embark-minibuffer-completion-help)
+
+;; resize Embark Collect buffer to fit contents
+(add-hook 'embark-collect-post-revert-hook
+          (defun resize-embark-collect-window (&rest _)
+            (when (memq embark-collect--kind '(:live :completions))
+              (fit-window-to-buffer (get-buffer-window)
+                                    (floor (frame-height) 2) 1))))
+
+(defun exit-with-top-completion ()
+  "Exit minibuffer with top completion candidate."
+  (interactive)
+  (let ((content (minibuffer-contents-no-properties)))
+    (unless (test-completion content
+                             minibuffer-completion-table
+                             minibuffer-completion-predicate)
+      (when-let ((completions (completion-all-sorted-completions)))
+        (delete-minibuffer-contents)
+        (insert
+         (concat
+          (substring content 0 (or (cdr (last completions)) 0))
+          (car completions)))))
+    (exit-minibuffer)))
+
+;; Embark by default uses embark-minibuffer-candidates which does not sort the
+;; completion candidates at all, this means that exit-with-top-completion
+;; won't always pick the first one listed! If you want to ensure
+;; exit-with-top-completion picks the first completion in the embark collect
+;; buffer, you should configure Embark to use
+;; embark-sorted-minibuffer-candidates instead. This can be done as follows:
+(setq embark-candidate-collectors
+      (cl-substitute 'embark-sorted-minibuffer-candidates
+                     'embark-minibuffer-candidates
+                     embark-candidate-collectors))
+
+(define-key minibuffer-local-completion-map          (kbd "<return>") 'exit-with-top-completion)
+(define-key minibuffer-local-must-match-map          (kbd "<return>") 'exit-with-top-completion)
+(define-key minibuffer-local-filename-completion-map (kbd "<return>") 'exit-with-top-completion)
+
+
+;;; Miscellaneous
+
+(defvar transpose-keymap (make-keymap)
+  "Transient keymap for transposing lines.")
+
+(define-key transpose-keymap "n" 'move-text-down)
+(define-key transpose-keymap "p" 'move-text-up)
+
+(defun transpose-keymap--activate ()
+  "Function for activating the transpose-keymap."
+  (interactive)
+  (set-transient-map transpose-keymap t))
+
+(global-set-key [remap yank-pop] 'consult-yank-pop)
+(custom-set-variables
+ '(consult-preview-key (kbd "C-="))
+ '(consult-config
+   `((consult-mark :preview-key any))))
+
+(with-eval-after-load 'consult
+  (with-eval-after-load 'embark
+    (require 'embark-consult)))
+
+(with-eval-after-load 'visual-regexp
+  (with-eval-after-load 'visual-regexp-steroids
+    (custom-set-variables
+     '(vr/engine 'pcre2el))))
+
+(custom-set-variables
+ '(fountain-add-continued-dialog nil)
+ '(fountain-highlight-elements (quote (section-heading))))
+
+(add-to-list 'magic-mode-alist
+             '("%text" . markdown-mode))
+(add-to-list 'auto-mode-alist
+             '("\\.text" . markdown-mode))
+
+(when (string= (system-name) "shadowfax.local")
+  (add-to-list 'load-path "~/home/src/oblique-strategies/")
+  (autoload 'oblique-strategy "oblique")
+  (setq initial-scratch-message (concat
+                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
+                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
+
+(add-hook 'git-commit-mode-hook 'orgalist-mode)
+
+
+;;;; Flyspell
+
+(add-hook 'text-mode-hook 'turn-on-flyspell)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+(with-eval-after-load 'flyspell
+  (blackout 'flyspell-mode " Spell"))
 
 
 ;;;; Isearch
@@ -805,6 +933,9 @@ completions if invoked from inside the minibuffer."
 (global-outline-minor-mode +1)
 
 (blackout 'outline-minor-mode)
+
+(define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
+(define-key outline-minor-mode-map (kbd "S-<tab>") 'bicycle-cycle-global)
 
 
 ;;;; Pulse
@@ -852,6 +983,32 @@ completions if invoked from inside the minibuffer."
   (ibuffer-auto-mode 1))
 
 (add-hook 'ibuffer-mode-hook 'ibuffer-setup)
+
+
+;;;; Dired
+
+(setq dired-use-ls-dired nil) ; no more warning message
+
+(defun dired-open-file ()
+  "In dired, open the file named on this line using the 'open' shell command."
+  (interactive)
+  (let* ((file (dired-get-filename nil t)))
+    (message "Opening %s..." file)
+    (call-process "open" nil 0 nil file)
+    (message "Opening %s done" file)))
+
+(with-eval-after-load 'dired
+  (define-keys dired-mode-map
+    (kbd "O")   'dired-open-file
+    (kbd "C-/") 'dired-undo))
+
+(defun dired-mode-setup ()
+  "Settings for dired mode."
+  (dired-hide-details-mode 1)
+  (auto-revert-mode)
+  (hl-line-mode 1))
+
+(add-hook 'dired-mode-hook 'dired-mode-setup)
 
 
 ;;;; Hippie Expand
@@ -908,176 +1065,7 @@ completions if invoked from inside the minibuffer."
   (my:hippie-expand-with 'hippie-expand))
 
 
-;;;; Dired
-
-(setq dired-use-ls-dired nil) ; no more warning message
-
-(defun dired-open-file ()
-  "In dired, open the file named on this line using the 'open' shell command."
-  (interactive)
-  (let* ((file (dired-get-filename nil t)))
-    (message "Opening %s..." file)
-    (call-process "open" nil 0 nil file)
-    (message "Opening %s done" file)))
-
-(with-eval-after-load 'dired
-  (define-keys dired-mode-map
-    (kbd "O")   'dired-open-file
-    (kbd "C-/") 'dired-undo))
-
-(defun dired-mode-setup ()
-  "Settings for dired mode."
-  (dired-hide-details-mode 1)
-  (auto-revert-mode)
-  (hl-line-mode 1))
-
-(add-hook 'dired-mode-hook 'dired-mode-setup)
-
-
-;;;; Narrowing & Searching
-
-(require 'orderless)
-(custom-set-variables
- '(completion-styles '(orderless))
- '(completion-category-defaults nil)
- '(completion-category-overrides '((file (styles . (partial-completion))))))
-
-(marginalia-mode)
-(define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)
-
-(require 'embark)
-(with-eval-after-load 'embark
-
-  (setq embark-collect-initial-view-alist
-        '((file . list)
-          (buffer . list)
-          (symbol . list)
-          (t . list)))
-
-  (autoload 'dired-jump "dired")
-  (define-keys embark-file-map
-    "O" 'macos-open-file
-    "j" 'dired-jump)
-  (define-key embark-url-map "&" 'browse-url-default-macosx-browser)
-
-  ;; replacement for minibuffer-completion-help with embark alternative
-  ;; this means you hit TAB to trigger the completions list
-  ;; https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/
-  (defun embark-minibuffer-completion-help (_start _end)
-    (unless embark-collect-linked-buffer
-      (embark-collect-completions)))
-  (advice-add 'minibuffer-completion-help
-              :override #'embark-minibuffer-completion-help)
-
-  ;; resize Embark Collect buffer to fit contents
-  (add-hook 'embark-collect-post-revert-hook
-            (defun resize-embark-collect-window (&rest _)
-              (when (memq embark-collect--kind '(:live :completions))
-                (fit-window-to-buffer (get-buffer-window)
-                                      (floor (frame-height) 2) 1))))
-
-  (defun exit-with-top-completion ()
-    "Exit minibuffer with top completion candidate."
-    (interactive)
-    (let ((content (minibuffer-contents-no-properties)))
-      (unless (test-completion content
-                               minibuffer-completion-table
-                               minibuffer-completion-predicate)
-        (when-let ((completions (completion-all-sorted-completions)))
-          (delete-minibuffer-contents)
-          (insert
-           (concat
-            (substring content 0 (or (cdr (last completions)) 0))
-            (car completions)))))
-      (exit-minibuffer)))
-
-  ;; Embark by default uses embark-minibuffer-candidates which does not sort the
-  ;; completion candidates at all, this means that exit-with-top-completion
-  ;; won't always pick the first one listed! If you want to ensure
-  ;; exit-with-top-completion picks the first completion in the embark collect
-  ;; buffer, you should configure Embark to use
-  ;; embark-sorted-minibuffer-candidates instead. This can be done as follows:
-  (setq embark-candidate-collectors
-        (cl-substitute 'embark-sorted-minibuffer-candidates
-                       'embark-minibuffer-candidates
-                       embark-candidate-collectors))
-
-  (define-key minibuffer-local-completion-map          (kbd "<return>") 'exit-with-top-completion)
-  (define-key minibuffer-local-must-match-map          (kbd "<return>") 'exit-with-top-completion)
-  (define-key minibuffer-local-filename-completion-map (kbd "<return>") 'exit-with-top-completion)
-
-  ) ; end embark
-
-(global-set-key [remap yank-pop] 'consult-yank-pop)
-(custom-set-variables
- '(consult-preview-key (kbd "C-="))
- '(consult-config
-   `((consult-mark :preview-key any))))
-
-(with-eval-after-load 'consult
-  (with-eval-after-load 'embark
-    (require 'embark-consult)))
-
-
-;;;; Selected
-
-(selected-global-mode 1)
-
-(defun disable-selected-minor-mode ()
-  (selected-minor-mode -1))
-
-(with-eval-after-load 'selected
-  (define-keys selected-keymap
-    "u" 'upcase-dwim
-    "d" 'downcase-dwim
-    "c" 'capitalize-dwim
-    "w" 'kill-ring-save
-    "|" 'pipe-region
-    "R" 'replace-rectangle
-    "E" 'eval-region
-    "q" 'selected-off)
-   (define-navigation-keys selected-keymap)
-   (blackout 'selected-minor-mode))
-
-
-;;;; Misc Packages
-
-(defvar transpose-keymap (make-keymap)
-  "Transient keymap for transposing lines.")
-
-(define-key transpose-keymap "n" 'move-text-down)
-(define-key transpose-keymap "p" 'move-text-up)
-
-(defun transpose-keymap--activate ()
-  "Function for activating the transpose-keymap."
-  (interactive)
-  (set-transient-map transpose-keymap t))
-
-(with-eval-after-load 'visual-regexp
-  (with-eval-after-load 'visual-regexp-steroids
-    (custom-set-variables
-     '(vr/engine 'pcre2el))))
-
-(custom-set-variables
- '(fountain-add-continued-dialog nil)
- '(fountain-highlight-elements (quote (section-heading))))
-
-(add-to-list 'magic-mode-alist
-             '("%text" . markdown-mode))
-(add-to-list 'auto-mode-alist
-             '("\\.text" . markdown-mode))
-
-(when (string= (system-name) "shadowfax.local")
-  (add-to-list 'load-path "~/home/src/oblique-strategies/")
-  (autoload 'oblique-strategy "oblique")
-  (setq initial-scratch-message (concat
-                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
-                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
-
-(add-hook 'git-commit-mode-hook 'orgalist-mode)
-
-
-;;;; Org
+;;; Org
 
 (autoload 'oht-org-agenda-today-pop-up "org")
 (autoload 'oht-org-agenda-today "org")
@@ -1242,7 +1230,7 @@ buffer, and exiting the agenda and releasing all the buffers."
   (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))
 
 
-;;;; Transient
+;;; Transient
 
 (autoload 'org-store-link "org")
 (autoload 'dired-jump "dired" nil t)

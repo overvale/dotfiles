@@ -423,8 +423,10 @@ Keybindings you define here will take precedence."
   (kbd "M-'")        'my:hippie-expand
   (kbd "M-\\")       'cycle-spacing
   (kbd "M-z")        'zap-up-to-char
+  (kbd "M-q")        'unfill-toggle
   (kbd "C-d")        'delete-forward-char
   (kbd "C-x C-x")    'exchange-point-and-mark-dwim
+  (kbd "C-x C-t")    'transpose-keymap--activate
   (kbd "M-0")        'delete-window
   (kbd "M-1")        'delete-other-windows
   (kbd "M-2")        'split-window-below
@@ -434,19 +436,25 @@ Keybindings you define here will take precedence."
   (kbd "M-6")        'undefined
   (kbd "M-7")        'undefined
   (kbd "M-8")        'undefined
-  (kbd "M-9")        'undefined)
+  (kbd "M-9")        'undefined
+  (kbd "C-h f")      'helpful-function
+  (kbd "C-h v")      'helpful-variable
+  (kbd "C-h o")      'helpful-symbol
+  (kbd "C-h k")      'helpful-key
+  (kbd "C-h p")      'helpful-at-point)
 
-(global-set-keys [remap capitalize-word] 'capitalize-dwim
+(global-set-keys [remap query-replace] 'vr/query-replace
+                 [remap capitalize-word] 'capitalize-dwim
                  [remap downcase-word]   'downcase-dwim
                  [remap upcase-word]     'upcase-dwim
-                 ;; Make shift-click extend the region.
+                 ;; -- Make shift-click extend the region.
                  [S-down-mouse-1] 'ignore
                  [S-mouse-1] 'mouse-save-then-kill
-                 ;; Use M-drag-mouse-1 to create rectangle regions.
+                 ;; -- Use M-drag-mouse-1 to create rectangle regions.
                  [M-down-mouse-1] #'mouse-drag-region-rectangle
                  [M-drag-mouse-1] #'ignore
                  [M-mouse-1]      #'mouse-set-point
-                 ;; Use C-M-drag-mouse-1 to create secondary selections.
+                 ;; -- Use C-M-drag-mouse-1 to create secondary selections.
                  [C-M-mouse-1]      'mouse-start-secondary
                  [C-M-drag-mouse-1] 'mouse-set-secondary
                  [C-M-down-mouse-1] 'mouse-drag-secondary)
@@ -934,10 +942,8 @@ completions if invoked from inside the minibuffer."
  '(completion-category-defaults nil)
  '(completion-category-overrides '((file (styles . (partial-completion))))))
 
-
-(define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)
 (marginalia-mode)
-
+(define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)
 
 (require 'embark)
 (with-eval-after-load 'embark
@@ -1002,13 +1008,11 @@ completions if invoked from inside the minibuffer."
 
   ) ; end embark
 
-
 (global-set-key [remap yank-pop] 'consult-yank-pop)
 (custom-set-variables
  '(consult-preview-key (kbd "C-="))
  '(consult-config
    `((consult-mark :preview-key any))))
-
 
 (with-eval-after-load 'consult
   (with-eval-after-load 'embark
@@ -1038,35 +1042,21 @@ completions if invoked from inside the minibuffer."
 
 ;;;; Misc Packages
 
+(defvar transpose-keymap (make-keymap)
+  "Transient keymap for transposing lines.")
 
-(with-eval-after-load 'olivetti
-  (custom-set-variables '(olivetti-body-width 84)))
+(define-key transpose-keymap "n" 'move-text-down)
+(define-key transpose-keymap "p" 'move-text-up)
 
-(global-set-key (kbd "M-q") 'unfill-toggle)
-
-(global-set-key (kbd "C-h f") 'helpful-function)
-(global-set-key (kbd "C-h v") 'helpful-variable)
-(global-set-key (kbd "C-h o") 'helpful-symbol)
-(global-set-key (kbd "C-h k") 'helpful-key)
-(global-set-key (kbd "C-h p") 'helpful-at-point)
-
-(global-set-key (kbd "C-x C-t") 'move-text-transient)
-(transient-define-prefix move-text-transient ()
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  ["Move Lines"
-   [("n" "Down" move-text-down)]
-   [("p" "Up" move-text-up)]])
-
-
-(global-set-key [remap query-replace] 'vr/query-replace)
-
+(defun transpose-keymap--activate ()
+  "Function for activating the transpose-keymap."
+  (interactive)
+  (set-transient-map transpose-keymap t))
 
 (with-eval-after-load 'visual-regexp
   (with-eval-after-load 'visual-regexp-steroids
     (custom-set-variables
      '(vr/engine 'pcre2el))))
-
 
 (custom-set-variables
  '(fountain-add-continued-dialog nil)
@@ -1405,7 +1395,7 @@ buffer, and exiting the agenda and releasing all the buffers."
 (transient-define-prefix outline-transient ()
   "Transient for Outline Minor Mode navigation"
   :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
+  :transient-non-suffix 'transient--do-stay
   [["Show/Hide"
     ("<right>" "Show Subtree" outline-show-subtree)
     ("<left>" "Hide Subtree" outline-hide-subtree)

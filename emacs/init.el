@@ -269,29 +269,78 @@ even beep.)"
     (flush-lines regexp rstart rend interactive)))
 
 
+;;; Package Management
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
+
+(setq pkg-ops-map
+  (let ((map (make-sparse-keymap "Packages")))
+    (define-key map "h" '("describe" . describe-package))
+    (define-key map "a" '("autoremove" . package-autoremove))
+    (define-key map "d" '("delete" . package-delete))
+    (define-key map "i" '("install" . package-install))
+    (define-key map "s" '("selected" . package-install-selected-packages))
+    (define-key map "r" '("refresh" . package-refresh-contents))
+    (define-key map "l" '("list" . list-packages))
+    map))
+
+(global-set-key (kbd "C-c p") pkg-ops-map)
+
+(defun select-package (package)
+  "Adds package to `package-selected-packages'."
+  (add-to-list 'package-selected-packages package t))
+
+(setq package-selected-packages
+      '(blackout
+        transient
+        dash
+        modus-themes
+        isearch-mb
+        orderless
+        vertico
+        marginalia
+        embark
+        consult
+        embark-consult
+        selected
+        olivetti
+        undo-fu
+        unfill
+        helpful
+        move-text
+        visual-regexp
+        visual-regexp-steroids
+        fountain-mode
+        markdown-mode
+        lua-mode
+        orgalist
+        org))
+
+(when (eq system-type 'darwin)
+  (select-package 'magit))
+
+(when (string= (system-name) "shadowfax.local")
+  (select-package 'oblique))
+
+
 ;;; Macros & Critical Functions
 
-;; These macros and functions are used throughout the config and are required for it to work correctly.
+;; These macros and functions are used throughout the config and are required
+;; for it to work correctly.
 
-(defmacro select-package (package)
-  "Adds package to `package-selected-packages'."
-  `(add-to-list 'package-selected-packages ,package t))
-
-;; Blackout is used throughout this config, so I configure it here.
-(select-package 'blackout)
 (autoload 'blackout "blackout" nil t)
 (blackout 'eldoc-mode)
 (blackout 'emacs-lisp-mode "Elisp")
 (blackout 'auto-fill-function " Fill")
 
-;; Transient is used throughout this config, so I configure it here.
-(select-package 'transient)
 (require 'transient)
 
 ;; The below is taken from:
 ;; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
 
-(select-package 'dash)
 (require 'dash)
 
 (defun define-keys (keymap &rest pairs)
@@ -403,28 +452,7 @@ Keybindings you define here will take precedence."
                  [C-M-down-mouse-1] 'mouse-drag-secondary)
 
 
-;;; Package Management
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
-
-(setq pkg-ops-map
-  (let ((map (make-sparse-keymap "Packages")))
-    (define-key map "h" '("describe" . describe-package))
-    (define-key map "a" '("autoremove" . package-autoremove))
-    (define-key map "d" '("delete" . package-delete))
-    (define-key map "i" '("install" . package-install))
-    (define-key map "r" '("refresh" . package-refresh-contents))
-    (define-key map "l" '("list" . list-packages))
-    map))
-
-(global-set-key (kbd "C-c p") pkg-ops-map)
-
-
 ;;; Appearance
-
-(select-package 'modus-themes)
 
 (custom-set-variables
   '(modus-themes-slanted-constructs t)
@@ -753,7 +781,6 @@ completions if invoked from inside the minibuffer."
 
 ;; The package 'isearch-mb' allows you to edit the incremental search in the
 ;; minibuffer as you type, rather than having to call `isearch-edit-string'.
-(select-package 'isearch-mb)
 (isearch-mb-mode)
 
 ;; Quit isearch when calling occur
@@ -901,20 +928,17 @@ completions if invoked from inside the minibuffer."
 
 ;;;; Narrowing & Searching
 
-(select-package 'orderless)
 (require 'orderless)
 (custom-set-variables
  '(completion-styles '(orderless))
  '(completion-category-defaults nil)
  '(completion-category-overrides '((file (styles . (partial-completion))))))
 
-(select-package 'vertico)
 
-(select-package 'marginalia)
 (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)
 (marginalia-mode)
 
-(select-package 'embark)
+
 (require 'embark)
 (with-eval-after-load 'embark
 
@@ -978,22 +1002,20 @@ completions if invoked from inside the minibuffer."
 
   ) ; end embark
 
-(select-package 'consult)
+
 (global-set-key [remap yank-pop] 'consult-yank-pop)
 (custom-set-variables
  '(consult-preview-key (kbd "C-="))
  '(consult-config
    `((consult-mark :preview-key any))))
 
-(select-package 'embark-consult)
+
 (with-eval-after-load 'consult
   (with-eval-after-load 'embark
     (require 'embark-consult)))
 
 
 ;;;; Selected
-
-(select-package 'selected)
 
 (selected-global-mode 1)
 
@@ -1016,26 +1038,18 @@ completions if invoked from inside the minibuffer."
 
 ;;;; Misc Packages
 
-(when (eq system-type 'darwin)
-  (select-package 'magit))
 
-(select-package 'olivetti)
 (with-eval-after-load 'olivetti
   (custom-set-variables '(olivetti-body-width 84)))
 
-(select-package 'undo-fu)
-
-(select-package 'unfill)
 (global-set-key (kbd "M-q") 'unfill-toggle)
 
-(select-package 'helpful)
 (global-set-key (kbd "C-h f") 'helpful-function)
 (global-set-key (kbd "C-h v") 'helpful-variable)
 (global-set-key (kbd "C-h o") 'helpful-symbol)
 (global-set-key (kbd "C-h k") 'helpful-key)
 (global-set-key (kbd "C-h p") 'helpful-at-point)
 
-(select-package 'move-text)
 (global-set-key (kbd "C-x C-t") 'move-text-transient)
 (transient-define-prefix move-text-transient ()
   :transient-suffix 'transient--do-stay
@@ -1044,37 +1058,32 @@ completions if invoked from inside the minibuffer."
    [("n" "Down" move-text-down)]
    [("p" "Up" move-text-up)]])
 
-(select-package 'visual-regexp)
+
 (global-set-key [remap query-replace] 'vr/query-replace)
 
-(select-package 'visual-regexp-steroids)
+
 (with-eval-after-load 'visual-regexp
   (with-eval-after-load 'visual-regexp-steroids
     (custom-set-variables
      '(vr/engine 'pcre2el))))
 
-(select-package 'fountain-mode)
+
 (custom-set-variables
  '(fountain-add-continued-dialog nil)
  '(fountain-highlight-elements (quote (section-heading))))
 
-(select-package 'markdown-mode)
 (add-to-list 'magic-mode-alist
              '("%text" . markdown-mode))
 (add-to-list 'auto-mode-alist
              '("\\.text" . markdown-mode))
 
-(select-package 'lua-mode)
-
 (when (string= (system-name) "shadowfax.local")
-  (select-package 'oblique)
   (add-to-list 'load-path "~/home/src/oblique-strategies/")
   (autoload 'oblique-strategy "oblique")
   (setq initial-scratch-message (concat
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
-(select-package 'orgalist)
 (add-hook 'git-commit-mode-hook 'orgalist-mode)
 
 
@@ -1083,7 +1092,6 @@ completions if invoked from inside the minibuffer."
 (autoload 'oht-org-agenda-today-pop-up "org")
 (autoload 'oht-org-agenda-today "org")
 
-(select-package 'org)
 (with-eval-after-load 'org
 
   (custom-set-variables

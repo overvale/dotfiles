@@ -140,7 +140,7 @@
  '(winner-mode t)
  '(show-paren-mode t)
  '(blink-cursor-mode t)
- '(cursor-type '(bar . 3))
+ '(cursor-type 'box)
  '(cursor-in-non-selected-windows 'hollow)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
@@ -412,7 +412,7 @@ even beep.)"
   (delete-overlay mouse-secondary-overlay))
 
 
-;;; Boss Key -- Personal Keybindings
+;;; Personal Keybindings
 
 ;; Minor modes override global bindings, so any bindings you don't want
 ;; overridden should be placed in a minor mode.
@@ -482,6 +482,7 @@ Keybindings you define here will take precedence."
   (kbd "C-h k")      'helpful-key
   (kbd "C-h p")      'helpful-at-point)
 
+;; I actually want this to be overridden by other modes, like minibuffer modes.
 (global-set-key (kbd "M-o") 'other-window)
 
 (global-set-keys [remap query-replace] 'vr/query-replace
@@ -741,8 +742,6 @@ the fixed-pitch face down to the height defined by
 
 (marginalia-mode)
 
-(autoload 'dired-jump "dired")
-
 (custom-set-variables
  '(enable-recursive-minibuffers t)
  '(savehist-mode t)
@@ -791,6 +790,7 @@ completions if invoked from inside the minibuffer."
 
 (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)
 
+(autoload 'dired-jump "dired")
 (define-keys embark-file-map
   "O" 'macos-open-file
   "j" 'dired-jump)

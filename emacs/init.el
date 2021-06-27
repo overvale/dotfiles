@@ -1204,6 +1204,9 @@ buffer, and exiting the agenda and releasing all the buffers."
       (define-key map "c" '("CANCELED" . org-todo-set-canceled))
       map))
 
+  ;; replace the regular binding with the above map
+  (define-key org-mode-map (kbd "C-c C-t") org-todo-map)
+
   (defun echo-area-tooltips ()
     "Show tooltips in the echo area automatically for current buffer."
     (setq-local help-at-pt-display-when-idle t
@@ -1449,7 +1452,7 @@ buffer, and exiting the agenda and releasing all the buffers."
       ("g" "Go To" org-goto)
       ("m" "Visible Markup" visible-mode)]
      ["Item"
-      ("t" "TODO" org-todo-map)
+      ("t" "TODO" org-todo)
       ("I" "Clock In" org-clock-in)
       ("O" "Clock Out" org-clock-out)
       ("a" "Archive Subtree" org-archive-subtree)

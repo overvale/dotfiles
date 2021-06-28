@@ -1,0 +1,7 @@
+#+TITLE: Oliver's Emacs Cookbook
+#+AUTHOR: Oliver Taylor
+#+LINK: https://olivertaylor.net
+
+
+If you find an error in any of this code, please don't hesitate to open a GitHub issue.
+

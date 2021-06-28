@@ -1246,6 +1246,7 @@ buffer, and exiting the agenda and releasing all the buffers."
     ("n" "Navigation..." navigation-keymap--activate)
     ("m" "Mode Transient..." call-mode-help-transient)]
    [""
+    ("." "Repeat Command" repeat-complex-command)
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("b" "Switch Buffer" switch-to-buffer)
     ("C-b" "iBuffer" ibuffer)]

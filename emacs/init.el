@@ -1177,7 +1177,10 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
           ;; -----------------------------
           ("e" "Emacs Config" entry
            (file+headline ,(concat oht-orgfiles "emacs.org") "Emacs Config")
-           "* TODO %?" :empty-lines 1)))
+           "* TODO %?" :empty-lines 1)
+          ("k" "Kiddos Log Entry" entry
+           (file+olp+datetree ,(concat oht-orgfiles "kiddos_logbook.org"))
+           "* %T\n\n%?" :empty-lines 1 :tree-type month )))
 
   ;; Functions for directly calling agenda commands, skipping the prompt.
   ;; Useful when paired with transient.

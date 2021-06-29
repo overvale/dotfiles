@@ -1,7 +1,152 @@
 #+TITLE: Oliver's Emacs Cookbook
 #+AUTHOR: Oliver Taylor
 #+LINK: https://olivertaylor.net
+#+OPTIONS: toc
 
+
+This is a somewhat random collection of useful bits of code I've come up with.
 
 If you find an error in any of this code, please don't hesitate to open a GitHub issue.
 
+** Resources
+
+- [[https://pinboard.in/u:Oliver/t:emacs/][Oliver's Pinboard Bookmarks]]
+- [[https://github.com/chrisdone/elisp-guide][chrisdone/elisp-guide]]
+
+** Keymap Prompt
+
+If you bind a key to a keymap, and not an interactive function, Emacs will display a useful
+prompt in the echo area. Quite handy for rarely used keymaps with only a few bindings.
+
+This is (of course) well documented in the Emacs info manuals, but my discovery of it should
+be credited to [[https://old.reddit.com/r/emacs/comments/ch016m/how_to_tell_if_a_keymap_is_active/euz3rfs/?context=3][u/oantolin on reddit]].
+
+#+begin_src emacs-lisp
+(setq pkg-ops-map
+  (let ((map (make-sparse-keymap "Packages")))
+    (define-key map "h" '("describe" . describe-package))
+    (define-key map "a" '("autoremove" . package-autoremove))
+    (define-key map "d" '("delete" . package-delete))
+    (define-key map "i" '("install" . package-install))
+    (define-key map "s" '("selected" . package-install-selected-packages))
+    (define-key map "r" '("refresh" . package-refresh-contents))
+    (define-key map "l" '("list" . list-packages))
+    map))
+
+(global-set-key (kbd "C-c p") pkg-ops-map)
+#+end_src
+
+** Marking Lines & Stuff
+
+Emacs has a lot of commands for marking (selecting) things.
+You can find them all by typing =M-x mark-= and seeing the available options.
+They all work the same way, they leave the point where it is and extend the region (selection)
+forward by a given about (word, sentence, etc).
+
+One command that is missing (no idea why) is one for marking lines.
+Fortunately, the code for =mark-end-of-sentence= is really simple and easily adapted to mark lines.
+
+#+begin_src emacs-lisp
+(defun mark-line (arg)
+  "Put mark at end of line.
+ARG works as in `forward-line'.  If this command is repeated,
+it marks the next ARG lines after the ones already marked."
+  (interactive "p")
+  (push-mark
+   (save-excursion
+     (if (and (eq last-command this-command) (mark t))
+	 (goto-char (mark)))
+     (forward-line arg)
+     (point))
+   nil t))
+#+end_src
+
+Additionally I have =mark-end-of-sentence= aliased to =mark-sentence=
+to be more consistent with the other mark commands.
+
+I have also found it valuable to create a far more logical set of bindings for all these commands.
+I use the transient package for this, but you could set this up with a prefix binding or however you prefer.
+
+#+begin_src emacs-lisp
+(transient-define-prefix general-transient--mark ()
+  "Transient for setting the mark."
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-exit
+  ["Mark"
+   [("w" "Word" mark-word)
+    ("s" "Sexp" mark-sexp)
+    ("d" "Defun" mark-defun)]
+   [("n" "Line" mark-line)
+    (")" "Sentence" mark-sentence)
+    ("}" "Paragraph" mark-paragraph)]
+   [("<" "Beginning of Buffer" mark-beginning-of-buffer)
+    (">" "End of Buffer" mark-end-of-buffer)]
+   [("x" "Exchange Point/Mark" exchange-point-and-mark :transient nil)
+    ("q" "Quit" transient-quit-all)]])
+#+end_src
+
+** Kill Buffer DWIM
+
+When you call =kill-buffer= Emacs prompts you for which buffer you'd like to
+kill. The default choice is the current buffer, which is good because 9 times
+out of 10 that's the buffer I want to kill, but confirming that choice every
+time is tedious.
+
+Emacs has a wonderful convention of "do what I mean" commands, versions of
+commands which do one thing if a condition is met and another if it isn't. My
+version of =kill-buffer= should kill the current buffer by default, and if it is
+prefixed by the universal argument I should be prompted for which buffer I'd
+like to kill. The best of both worlds I think.
+
+#+begin_src emacs-lisp
+(defun kill-buffer-dwim (&optional u-arg)
+  "Call kill-current-buffer, with C-u: call kill-buffer."
+  (interactive "P")
+  (if u-arg
+      (call-interactively 'kill-buffer)
+    (call-interactively 'kill-current-buffer)))
+#+end_src
+
+** Emacs Keybindings That Won't Get Overridden by Minor Modes
+
+Recently I've been making an effort to better understand what's happening
+under the hood of some of the packages I use, and I got curious about how
+[[https://melpa.org/#/bind-key][bind-key]] manages to ensure my bindings are never overridden by minor modes
+(which can be very annoying).
+
+To understand how bind-key does it you need to learn two things. First, you
+need to understand the order of priority which Emacs assigns to different
+keymaps, which is well explained at [[https://www.masteringemacs.org/article/mastering-key-bindings-emacs#keymap-lookup-order][Mastering Emacs]]. Second, you should read
+[[https://github.com/jwiegley/use-package/blob/master/bind-key.el][the bind-key source code]].
+
+The technique bind-key uses is to create a minor mode that you bind keys in,
+and insert those bindings into the variable =emulation-mode-map-alists=. Any
+keymaps in that variable take priority over all other minor modes.
+
+The code is actually very simple:
+
+#+begin_src elisp
+;; First, create the keymap
+(defvar my-keys-mode-map (make-keymap)
+  "Keymap for my-keys-mode")
+
+;; Next, create the minor mode, switch it on by default, make it global,
+;; and assign the keymap to it.
+(define-minor-mode my-keys-mode
+  "Minor mode for my personal keybindings."
+  :init-value t
+  :global t
+  :keymap my-keys-mode-map)
+
+;; Next, add the keymap to `emulation-mode-map-alists'
+(add-to-list 'emulation-mode-map-alists
+             `((my-keys-mode . ,my-keys-mode-map)))
+
+;; Finally, bind your keys!
+(define-key my-keys-mode-map (kbd "C-<return>") 'execute-extended-command)
+(define-key my-keys-mode-map (kbd "C-<tab>") 'next-buffer)
+#+end_src
+
+Now, some people would argue that it's much simpler to just use the bind-key
+package, but I've found it very helpful to learn this stuff for times when I
+can't use a package and need to create my own solutions.

@@ -1,4 +1,4 @@
-#+TITLE: Extending Emacs Bookmarks to Work With EWW
+#+TITLE: How Package.el Works with Use Package
 #+AUTHOR: Oliver Taylor
 #+LINK: https://olivertaylor.net
 #+DATE: 2021-04-31
@@ -18,6 +18,9 @@ groundbreaking here, just summarizing available information.
 
 1. Emacs "activates" ALL installed packages BEFORE reading the user-init-file
    unless you've set package-enable-at-startup to nil in the early init file.
+   I'm sure this activation does many things but the most important (to me) is
+   that it creates autoloads for all your packages. That way you can bind a
+   key to a command in a package without actually loading the package first.
 
 2. If you want to restrict exactly which installed packages are activated at
    startup you can customize the package-load-list, but you have to do it in
@@ -47,7 +50,7 @@ groundbreaking here, just summarizing available information.
 What I learned...
 
 If you're using an alternative to package.el such as Straight, don't forget to
-place (setq package-enable-at-startup nil) in your early init file.
+place =(setq package-enable-at-startup nil)= in your early init file.
 
 If you're using Use Package with package.el, and you want to manage your
 packages via your init file and NOT via interactive customization, you should

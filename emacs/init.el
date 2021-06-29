@@ -57,6 +57,7 @@
         visual-regexp-steroids
         fountain-mode
         markdown-mode
+        tron-legacy-theme
         lua-mode
         orgalist
         org))
@@ -519,6 +520,8 @@ Keybindings you define here will take precedence."
   '(modus-themes-syntax 'faint))
 
 (modus-themes-load-operandi)
+
+(setq tron-legacy-theme-softer-bg t)
 
 ;; If on a Mac, assume Mitsuharu Yamamoto’s fork -- check for dark/light mode,
 ;; if dark mode load the dark theme, also add a hook for syncing with the

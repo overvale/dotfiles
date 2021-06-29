@@ -150,3 +150,14 @@ The code is actually very simple:
 Now, some people would argue that it's much simpler to just use the bind-key
 package, but I've found it very helpful to learn this stuff for times when I
 can't use a package and need to create my own solutions.
+
+** Splitting Windows with the Mouse
+
+Did you know you can create and delete window splits with the mouse?
+Also, the mode-line has its own... keymap?
+
+#+begin_src emacs-lisp
+(global-set-key [mode-line S-mouse-1] 'mouse-delete-other-windows)
+(global-set-key [mode-line M-mouse-1] 'mouse-delete-window)
+(global-set-key [mode-line C-mouse-1] 'mouse-split-window-horizontally)
+#+end_src

@@ -466,6 +466,7 @@ Keybindings you define here will take precedence."
   (kbd "C-d")        'delete-forward-char
   (kbd "C-x C-x")    'exchange-point-and-mark-dwim
   (kbd "C-x C-t")    'transpose-keymap--activate
+  (kbd "C-x k")      'kill-buffer-dwim
   (kbd "M-0")        'delete-window
   (kbd "M-1")        'delete-other-windows
   (kbd "M-2")        'split-window-below
@@ -489,6 +490,10 @@ Keybindings you define here will take precedence."
                  [remap capitalize-word] 'capitalize-dwim
                  [remap downcase-word]   'downcase-dwim
                  [remap upcase-word]     'upcase-dwim
+                 ;; -- Mouse + Mode Line Magic
+                 [mode-line S-mouse-1] 'mouse-delete-other-windows
+                 [mode-line M-mouse-1] 'mouse-delete-window
+                 [mode-line C-mouse-1] 'mouse-split-window-horizontally
                  ;; -- Make shift-click extend the region.
                  [S-down-mouse-1] 'ignore
                  [S-mouse-1] 'mouse-save-then-kill
@@ -1346,7 +1351,7 @@ buffer, and exiting the agenda and releasing all the buffers."
   :transient-suffix 'transient--do-stay
   :transient-non-suffix 'transient--do-exit
   ["Mark"
-   [("@" "Word" mark-word)
+   [("w" "Word" mark-word)
     ("s" "Sexp" mark-sexp)
     ("d" "Defun" mark-defun)]
    [("n" "Line" mark-line)

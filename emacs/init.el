@@ -855,15 +855,27 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
 ;;; Miscellaneous
 
 (defvar transpose-keymap (make-keymap)
-  "Transient keymap for transposing lines.")
+  "Keymap for transposing lines with move-text")
 
-(define-key transpose-keymap "n" 'move-text-down)
-(define-key transpose-keymap "p" 'move-text-up)
+(defun transpose-keymap-eldoc-function ()
+  (eldoc-message "Transpose Lines"))
 
 (defun transpose-keymap--activate ()
-  "Function for activating the transpose-keymap."
   (interactive)
-  (set-transient-map transpose-keymap t))
+  (message "Transpose Lines Activated")
+  (add-function :before-until (local 'eldoc-documentation-function)
+                #'transpose-keymap-eldoc-function)
+  (set-transient-map transpose-keymap t 'transpose-keymap--deactivate))
+
+(defun transpose-keymap--deactivate ()
+  (interactive)
+  (message "Transpose Lines Deactivated")
+  (remove-function (local 'eldoc-documentation-function)
+                   #'transpose-keymap-eldoc-function))
+
+(global-set-key (kbd "C-x C-t") 'transpose-keymap--activate)
+(define-key transpose-keymap "p" 'move-text-up)
+(define-key transpose-keymap "n" 'move-text-down)
 
 (global-set-key [remap yank-pop] 'consult-yank-pop)
 (custom-set-variables

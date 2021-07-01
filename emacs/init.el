@@ -50,7 +50,6 @@
         embark-consult
         selected
         undo-fu
-        unfill
         helpful
         move-text
         visual-regexp
@@ -362,6 +361,21 @@ even beep.)"
     ;; Delete lines or make the "Buffer is read-only" error.
     (flush-lines regexp rstart rend interactive)))
 
+(defun unfill-paragraph ()
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
+
+(defun unfill-region ()
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil t)))
+
+(defun unfill-dwim ()
+  (interactive)
+  (if (use-region-p)
+      (unfill-region)
+    (unfill-paragraph)))
 
 ;;;; Secondary Selection
 
@@ -463,7 +477,6 @@ Keybindings you define here will take precedence."
   (kbd "M-'")        'my:hippie-expand
   (kbd "M-\\")       'cycle-spacing
   (kbd "M-z")        'zap-up-to-char
-  (kbd "M-q")        'unfill-toggle
   (kbd "C-d")        'delete-forward-char
   (kbd "C-x C-x")    'exchange-point-and-mark-dwim
   (kbd "C-x C-t")    'transpose-keymap--activate

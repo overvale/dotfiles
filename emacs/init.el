@@ -684,6 +684,22 @@ the fixed-pitch face down to the height defined by
 (add-hook 'buffer-face-mode-hook (lambda () (facedancer-vadjust-mode 'toggle)))
 
 
+;;; Dedicated Mode
+
+(define-minor-mode dedicated-mode
+  "Minor mode for dedicating windows.
+This minor mode dedicates the current window to the current buffer.
+The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp/extras.el"
+  :init-value nil
+  :lighter " [D]"
+  (let* ((window (selected-window))
+         (dedicated (window-dedicated-p window)))
+    (set-window-dedicated-p window (not dedicated))
+    (message "Window %sdedicated to %s"
+             (if dedicated "no longer " "")
+             (buffer-name))))
+
+
 ;;; Navigation Keymap
 
 (defun define-navigation-keys (map)
@@ -1360,6 +1376,7 @@ buffer, and exiting the agenda and releasing all the buffers."
     ("r" "Rotate"     toggle-window-split)
     ("F" "Find Other Win" find-file-other-window)]
    ["Window"
+    ("d" "Dedicate Window" dedicated-mode)
     ("c" "Clone Indirect" clone-indirect-buffer)
     ("t" "Tear Off" tear-off-window)
     ("k" "Kill" delete-window)

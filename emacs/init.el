@@ -775,8 +775,8 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 ;;; Minibuffer
 
 (require 'orderless)
-(require 'embark)
 
+(vertico-mode)
 (marginalia-mode)
 
 (custom-set-variables
@@ -788,97 +788,15 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
  '(completion-category-defaults nil)
  '(completion-category-overrides '((file (styles . (partial-completion))))))
 
-(setq embark-collect-initial-view-alist
-      '((file . list)
-        (buffer . list)
-        (symbol . list)
-        (t . list)))
-
-(defun switch-to-completions-or-other-window ()
-  "Switch to the completions window, if it exists, or another window."
-  (interactive)
-  (if (get-buffer-window "*Embark Collect Completions*")
-      (select-window (get-buffer-window "*Embark Collect Completions*"))
-    (if (get-buffer-window "*Completions*")
-        (progn
-          (select-window (get-buffer-window "*Completions*"))
-          (when (bobp) (next-completion 1)))
-      (other-window 1))))
-
-(defun switch-to-minibuffer ()
-  "Focus the active minibuffer.
-Bind this to `completion-list-mode-map' to M-v to easily jump
-between the list of candidates present in the \\*Completions\\*
-buffer and the minibuffer (because by default M-v switches to the
-completions if invoked from inside the minibuffer."
-  (interactive)
-  (let ((mini (active-minibuffer-window)))
-    (when mini
-      (select-window mini))))
-
-(define-keys completion-list-mode-map  
-  (kbd "n") 'next-completion
-  (kbd "p") 'previous-completion
-  (kbd "M-o") 'switch-to-minibuffer)
-
-(define-keys minibuffer-local-completion-map
-  (kbd "M-o") 'switch-to-completions-or-other-window
-  (kbd "C-n") 'switch-to-completions-or-other-window)
-
 (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)
 
-(autoload 'dired-jump "dired")
-(define-keys embark-file-map
-  "O" 'macos-open-file
-  "j" 'dired-jump)
-
-(define-key embark-url-map "&" 'browse-url-default-macosx-browser)
-
-(defun embark-minibuffer-completion-help (_start _end)
-  "Embark alternative to minibuffer-completion-help.
-This means you hit TAB to trigger the completions list.
-Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/"
-  (unless embark-collect-linked-buffer
-    (embark-collect-completions)))
-(advice-add 'minibuffer-completion-help
-            :override #'embark-minibuffer-completion-help)
-
-;; resize Embark Collect buffer to fit contents
-(add-hook 'embark-collect-post-revert-hook
-          (defun resize-embark-collect-window (&rest _)
-            (when (memq embark-collect--kind '(:live :completions))
-              (fit-window-to-buffer (get-buffer-window)
-                                    (floor (frame-height) 2) 1))))
-
-(defun exit-with-top-completion ()
-  "Exit minibuffer with top completion candidate."
-  (interactive)
-  (let ((content (minibuffer-contents-no-properties)))
-    (unless (test-completion content
-                             minibuffer-completion-table
-                             minibuffer-completion-predicate)
-      (when-let ((completions (completion-all-sorted-completions)))
-        (delete-minibuffer-contents)
-        (insert
-         (concat
-          (substring content 0 (or (cdr (last completions)) 0))
-          (car completions)))))
-    (exit-minibuffer)))
-
-;; Embark by default uses embark-minibuffer-candidates which does not sort the
-;; completion candidates at all, this means that exit-with-top-completion
-;; won't always pick the first one listed! If you want to ensure
-;; exit-with-top-completion picks the first completion in the embark collect
-;; buffer, you should configure Embark to use
-;; embark-sorted-minibuffer-candidates instead. This can be done as follows:
-(setq embark-candidate-collectors
-      (cl-substitute 'embark-sorted-minibuffer-candidates
-                     'embark-minibuffer-candidates
-                     embark-candidate-collectors))
-
-(define-key minibuffer-local-completion-map          (kbd "<return>") 'exit-with-top-completion)
-(define-key minibuffer-local-must-match-map          (kbd "<return>") 'exit-with-top-completion)
-(define-key minibuffer-local-filename-completion-map (kbd "<return>") 'exit-with-top-completion)
+(with-eval-after-load 'embark
+  (autoload 'dired-jump "dired")
+  (define-keys embark-file-map
+    "O" 'macos-open-file
+    "j" 'dired-jump)
+  (define-key embark-url-map
+    "&" 'browse-url-default-macosx-browser))
 
 
 ;;; Miscellaneous

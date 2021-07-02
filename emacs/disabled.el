@@ -251,10 +251,47 @@ as an argument limits undo to changes within the current region."
 ;; Automatically show candidates after typing
 (add-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
 
-;; replacement for minibuffer-completion-help with embark alternative
-;; this means you hit TAB to trigger the completions list
-;; https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/
+(setq embark-collect-initial-view-alist
+      '((file . list)
+        (buffer . list)
+        (symbol . list)
+        (t . list)))
+
+(defun switch-to-completions-or-other-window ()
+  "Switch to the completions window, if it exists, or another window."
+  (interactive)
+  (if (get-buffer-window "*Embark Collect Completions*")
+      (select-window (get-buffer-window "*Embark Collect Completions*"))
+    (if (get-buffer-window "*Completions*")
+        (progn
+          (select-window (get-buffer-window "*Completions*"))
+          (when (bobp) (next-completion 1)))
+      (other-window 1))))
+
+(defun switch-to-minibuffer ()
+  "Focus the active minibuffer.
+Bind this to `completion-list-mode-map' to M-v to easily jump
+between the list of candidates present in the \\*Completions\\*
+buffer and the minibuffer (because by default M-v switches to the
+completions if invoked from inside the minibuffer."
+  (interactive)
+  (let ((mini (active-minibuffer-window)))
+    (when mini
+      (select-window mini))))
+
+(define-keys completion-list-mode-map
+  (kbd "n") 'next-completion
+  (kbd "p") 'previous-completion
+  (kbd "M-o") 'switch-to-minibuffer)
+
+(define-keys minibuffer-local-completion-map
+  (kbd "M-o") 'switch-to-completions-or-other-window
+  (kbd "C-n") 'switch-to-completions-or-other-window)
+
 (defun embark-minibuffer-completion-help (_start _end)
+  "Embark alternative to minibuffer-completion-help.
+This means you hit TAB to trigger the completions list.
+Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/"
   (unless embark-collect-linked-buffer
     (embark-collect-completions)))
 (advice-add 'minibuffer-completion-help

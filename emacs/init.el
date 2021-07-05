@@ -92,6 +92,11 @@
     (-lambda ((key def))
       (global-set-key key def))))
 
+(defmacro λ (&rest body)
+  "Shorthand for interactive lambdas."
+  `(lambda ()
+     (interactive)
+     ,@body))
 
 ;;; Preferences
 
@@ -221,15 +226,34 @@ it marks the next ARG lines after the ones already marked."
         (other-window 1)
         (switch-to-buffer (other-buffer))))))
 
-(defun macos-open-file ()
-  "Open the file inferred by ffap using `open'."
-  (interactive)
-  (if-let* ((file? (ffap-guess-file-name-at-point))
-            (file (expand-file-name file?)))
-      (progn
-        (message "Opening %s..." file)
-        (call-process "open" nil 0 nil file))
-    (message "No file found at point.")))
+(defun rotate-windows (count)
+  "Rotate your windows.
+Dedicated windows are left untouched. Giving a negative prefix
+argument makes the windows rotate backwards."
+  (interactive "p")
+  (let* ((non-dedicated-windows (cl-remove-if 'window-dedicated-p (window-list)))
+         (num-windows (length non-dedicated-windows))
+         (i 0)
+         (step (+ num-windows count)))
+    (cond ((not (> num-windows 1))
+           (message "You can't rotate a single window!"))
+          (t
+           (dotimes (counter (- num-windows 1))
+             (let* ((next-i (% (+ step i) num-windows))
+
+                    (w1 (elt non-dedicated-windows i))
+                    (w2 (elt non-dedicated-windows next-i))
+
+                    (b1 (window-buffer w1))
+                    (b2 (window-buffer w2))
+
+                    (s1 (window-start w1))
+                    (s2 (window-start w2)))
+               (set-window-buffer w1 b2)
+               (set-window-buffer w2 b1)
+               (set-window-start w1 s2)
+               (set-window-start w2 s1)
+               (setq i next-i)))))))
 
 (defun pipe-region (start end command)
   ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/text-extras.el
@@ -376,6 +400,51 @@ even beep.)"
   (if (use-region-p)
       (unfill-region)
     (unfill-paragraph)))
+
+(defun crux-open-with (arg)
+  "Open visited file in default external program.
+When in dired mode, open file under the cursor.
+With a prefix ARG always prompt for command to use."
+  (interactive "P")
+  (let* ((current-file-name
+          (if (eq major-mode 'dired-mode)
+              (dired-get-file-for-visit)
+            buffer-file-name))
+         (open (pcase system-type
+                 (`darwin "open")
+                 ((or `gnu `gnu/linux `gnu/kfreebsd) "xdg-open")))
+         (program (if (or arg (not open))
+                      (read-shell-command "Open current file with: ")
+                    open)))
+    (call-process program nil 0 nil current-file-name)))
+
+(defun crux-rename-file-and-buffer ()
+  "Rename current buffer and if the buffer is visiting a file, rename it too."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (rename-buffer (read-from-minibuffer "New name: " (buffer-name)))
+      (let* ((new-name (read-file-name "New name: " (file-name-directory filename)))
+             (containing-dir (file-name-directory new-name)))
+        (make-directory containing-dir t)
+        (cond
+         ((vc-backend filename) (vc-rename-file filename new-name))
+         (t
+          (rename-file filename new-name t)
+          (set-visited-file-name new-name t t)))))))
+
+(defun crux-delete-file-and-buffer ()
+  "Kill the current buffer and deletes the file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (when filename
+      (if (vc-backend filename)
+          (vc-delete-file filename)
+        (when (y-or-n-p (format "Are you sure you want to delete %s? " filename))
+          (delete-file filename delete-by-moving-to-trash)
+          (message "Deleted file %s" filename)
+          (kill-buffer))))))
+
 
 ;;;; Secondary Selection
 
@@ -818,7 +887,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (with-eval-after-load 'embark
   (autoload 'dired-jump "dired")
   (define-keys embark-file-map
-    "O" 'macos-open-file
+    "O" 'crux-open-with
     "j" 'dired-jump)
   (define-key embark-url-map
     "&" 'browse-url-default-macosx-browser))

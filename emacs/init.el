@@ -49,6 +49,7 @@
         consult
         embark-consult
         selected
+        expand-region
         undo-fu
         helpful
         visual-regexp
@@ -476,6 +477,7 @@ Keybindings you define here will take precedence."
   (kbd "M-'")        'my:hippie-expand
   (kbd "M-\\")       'cycle-spacing
   (kbd "M-z")        'zap-up-to-char
+  (kbd "C-=")        'er/expand-region
   (kbd "C-d")        'delete-forward-char
   (kbd "C-x C-x")    'exchange-point-and-mark-dwim
   (kbd "C-x k")      'kill-buffer-dwim

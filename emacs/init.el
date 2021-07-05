@@ -51,14 +51,13 @@
         selected
         undo-fu
         helpful
-        move-text
         visual-regexp
         visual-regexp-steroids
+        olivetti
         fountain-mode
         markdown-mode
         tron-legacy-theme
         lua-mode
-        orgalist
         org))
 
 (when (eq system-type 'darwin)
@@ -855,8 +854,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
   (setq initial-scratch-message (concat
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
-
-(add-hook 'git-commit-mode-hook 'orgalist-mode)
 
 
 ;;;; Flyspell

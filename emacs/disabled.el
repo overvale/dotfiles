@@ -900,6 +900,29 @@ call that function with a hook, like so:
        (message "move-text-up/down")
        (define-key map (kbd "p") 'move-text-up)
        (define-key map (kbd "n") 'move-text-down)
+
+(defvar transpose-keymap (make-keymap)
+  "Keymap for transposing lines with move-text")
+
+(defun transpose-keymap-eldoc-function ()
+  (eldoc-message "Transpose Lines"))
+
+(defun transpose-keymap--activate ()
+  (interactive)
+  (message "Transpose Lines Activated")
+  (add-function :before-until (local 'eldoc-documentation-function)
+                #'transpose-keymap-eldoc-function)
+  (set-transient-map transpose-keymap t 'transpose-keymap--deactivate))
+
+(defun transpose-keymap--deactivate ()
+  (interactive)
+  (message "Transpose Lines Deactivated")
+  (remove-function (local 'eldoc-documentation-function)
+                   #'transpose-keymap-eldoc-function))
+
+(global-set-key (kbd "C-x C-t") 'transpose-keymap--activate)
+(define-key transpose-keymap "p" 'move-text-up)
+(define-key transpose-keymap "n" 'move-text-down)
        map) t))
 
 ;;; EWW

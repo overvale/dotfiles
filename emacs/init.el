@@ -479,7 +479,6 @@ Keybindings you define here will take precedence."
   (kbd "M-z")        'zap-up-to-char
   (kbd "C-d")        'delete-forward-char
   (kbd "C-x C-x")    'exchange-point-and-mark-dwim
-  (kbd "C-x C-t")    'transpose-keymap--activate
   (kbd "C-x k")      'kill-buffer-dwim
   (kbd "M-0")        'delete-window
   (kbd "M-1")        'delete-other-windows
@@ -825,29 +824,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
 
 ;;; Miscellaneous
-
-(defvar transpose-keymap (make-keymap)
-  "Keymap for transposing lines with move-text")
-
-(defun transpose-keymap-eldoc-function ()
-  (eldoc-message "Transpose Lines"))
-
-(defun transpose-keymap--activate ()
-  (interactive)
-  (message "Transpose Lines Activated")
-  (add-function :before-until (local 'eldoc-documentation-function)
-                #'transpose-keymap-eldoc-function)
-  (set-transient-map transpose-keymap t 'transpose-keymap--deactivate))
-
-(defun transpose-keymap--deactivate ()
-  (interactive)
-  (message "Transpose Lines Deactivated")
-  (remove-function (local 'eldoc-documentation-function)
-                   #'transpose-keymap-eldoc-function))
-
-(global-set-key (kbd "C-x C-t") 'transpose-keymap--activate)
-(define-key transpose-keymap "p" 'move-text-up)
-(define-key transpose-keymap "n" 'move-text-down)
 
 (global-set-key [remap yank-pop] 'consult-yank-pop)
 (custom-set-variables

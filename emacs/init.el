@@ -522,6 +522,9 @@ Keybindings you define here will take precedence."
   (kbd "C-h k")      'helpful-key
   (kbd "C-h p")      'helpful-at-point)
 
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-x C-z"))
+
 ;; I actually want this to be overridden by other modes, like minibuffer modes.
 (global-set-key (kbd "M-o") 'other-window)
 

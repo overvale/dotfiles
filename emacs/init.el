@@ -73,7 +73,7 @@
 ;; These packages, macros, and functions are used throughout the config and
 ;; are required for it to work correctly.
 
-(require 'transient)
+(autoload 'transient-define-prefix "transient" nil t)
 (require 'dash)
 
 (defun define-keys (keymap &rest pairs)

@@ -70,8 +70,8 @@
 
 ;;; Macros & Critical Functions
 
-;; These macros and functions are used throughout the config and are required
-;; for it to work correctly.
+;; These packages, macros, and functions are used throughout the config and
+;; are required for it to work correctly.
 
 (require 'transient)
 (require 'dash)
@@ -97,6 +97,7 @@
   `(lambda ()
      (interactive)
      ,@body))
+
 
 ;;; Preferences
 
@@ -388,16 +389,19 @@ even beep.)"
     (flush-lines regexp rstart rend interactive)))
 
 (defun unfill-paragraph ()
+  "Remove all newlines from paragraph."
   (interactive)
   (let ((fill-column (point-max)))
     (fill-paragraph nil)))
 
 (defun unfill-region ()
+  "Remove all newlines from paragraphs in region."
   (interactive)
   (let ((fill-column (point-max)))
     (fill-paragraph nil t)))
 
 (defun unfill-dwim ()
+  "If there's a region, `unfill-region', otherwise `unfill-paragraph'."
   (interactive)
   (if (use-region-p)
       (unfill-region)
@@ -914,6 +918,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
   (eldoc-message "Navigation Keymap"))
 
 (defun navigation-keymap--activate ()
+  "Make the navigation-keymap transient and add eldoc message."
   (interactive)
   (pulse-line)
   (message "Navigation Keymap Activated")
@@ -922,6 +927,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
   (set-transient-map navigation-keymap t 'navigation-keymap--deactivate))
 
 (defun navigation-keymap--deactivate ()
+  "Remove the navigation-keymap eldoc message."
   (interactive)
   (pulse-line)
   (message "Navigation Keymap Deactivated")

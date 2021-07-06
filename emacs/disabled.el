@@ -1000,6 +1000,8 @@ To be used by `eww-after-render-hook'."
 
 ;;; Elfeed
 
+;; https://github.com/skeeto/.emacs.d/blob/master/etc/feed-setup.el
+
 (use-package elfeed
   :if (string= (system-name) "shadowfax.local")
   :commands elfeed

@@ -4,6 +4,20 @@
 ;; This file contains lisp that I'm not using but don't want to get rid of.
 
 
+;;; Misc
+
+(defun find-emacs-dotfiles ()
+  "Find lisp files in your Emacs dotfiles directory, pass to completing-read."
+  (interactive)
+  (find-file (completing-read "Find Elisp Dotfile: "
+                              (directory-files-recursively oht-dotfiles "\.el$"))))
+
+(defun find-user-init-file ()
+  "Find the user-init-file"
+  (interactive)
+  (find-file user-init-file))
+
+
 ;;; Mac Style Tabs
 
 (defun oht-mac-new-tab ()

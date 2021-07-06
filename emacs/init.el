@@ -303,23 +303,6 @@ already narrowed."
          (TeX-narrow-to-group))
         (t (narrow-to-defun))))
 
-(defun find-emacs-dotfiles ()
-  "Find lisp files in your Emacs dotfiles directory, pass to completing-read."
-  (interactive)
-  (find-file (completing-read "Find Elisp Dotfile: "
-                              (directory-files-recursively oht-dotfiles "\.el$"))))
-
-(defun find-org-files ()
-  "Find org files in your org directory, pass to completing-read."
-  (interactive)
-  (find-file (completing-read "Find Org Files: "
-                              (directory-files-recursively oht-orgfiles "\.org$"))))
-
-(defun find-user-init-file ()
-  "Find the user-init-file"
-  (interactive)
-  (find-file user-init-file))
-
 (defun find-file-recursively ()
   "Find Files Recursively using completing read."
   (interactive)
@@ -1144,6 +1127,12 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
   (when (string= (system-name) "shadowfax.local")
     (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org"))
+
+  (defun find-org-files ()
+    "Find org files in your org directory, pass to completing-read."
+    (interactive)
+    (find-file (completing-read "Find Org Files: "
+                                (directory-files-recursively oht-orgfiles "\.org$"))))
 
   (setq org-agenda-custom-commands
         '(("1" "TODAY: Today's Agenda + Priority Tasks"

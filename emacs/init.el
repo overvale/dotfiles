@@ -101,31 +101,24 @@
 
 ;;; Preferences
 
-;; If on a Mac, use the command key as Super, left-option for Meta, and
-;; right-option for Alt.
 (when (eq system-type 'darwin)
+  (cd "~/home")
+  (defvar oht-dotfiles             "~/home/dot/emacs/")
+  (defvar oht-orgfiles             "~/home/org/")
+  (defvar user-downloads-directory "~/Downloads/")
   (setq mac-command-modifier 'super
         mac-option-modifier 'meta
         mac-right-command-modifier 'meta
         mac-right-option-modifier 'nil))
 
-;; If on Windows, use Windows key as Super
-(when (eq system-type 'windows-nt)
-  (setq w32-pass-lwindow-to-system nil)
-  (setq w32-lwindow-modifier 'super)
-  (w32-register-hot-key [s-]))
-
-(when (eq system-type 'darwin)
-  (cd "~/home")
-  (defvar oht-dotfiles             "~/home/dot/emacs/")
-  (defvar oht-orgfiles             "~/home/org/")
-  (defvar user-downloads-directory "~/Downloads/"))
-
 (when (eq system-type 'windows-nt)
   (cd "~/")
   (defvar oht-dotfiles             "~/.emacs.d/")
   (defvar oht-orgfiles             "~/home/org/")
-  (defvar user-downloads-directory "~/home/Downloads/"))
+  (defvar user-downloads-directory "~/home/Downloads/")
+  (setq w32-pass-lwindow-to-system nil)
+  (setq w32-lwindow-modifier 'super)
+  (w32-register-hot-key [s-]))
 
 ;; Save all interactive customization to a temp file, which is never loaded.
 ;; This means interactive customization is session-local. Only this init file persists sessions.

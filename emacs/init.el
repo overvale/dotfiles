@@ -140,6 +140,8 @@
 (custom-set-variables
  '(inhibit-startup-screen t)
  '(global-auto-revert-mode t)
+ '(ibuffer-auto-mode t)
+ '(dired-hide-details-mode t)
  '(save-place-mode t)
  '(recentf-mode t)
  '(winner-mode t)
@@ -976,6 +978,63 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
   (define-key embark-url-map
     "&" 'browse-url-default-macosx-browser))
 
+(setq search-whitespace-regexp ".*?")
+(setq isearch-lax-whitespace t)
+(setq isearch-lazy-count t)
+
+(defun isearch-exit-at-start ()
+  "Exit search at the beginning of the current match."
+  (when (and isearch-forward
+             (number-or-marker-p isearch-other-end)
+             (not isearch-mode-end-hook-quit))
+    (goto-char isearch-other-end)))
+
+(add-hook 'isearch-mode-end-hook 'isearch-exit-at-start)
+
+;; The package 'isearch-mb' allows you to edit the incremental search in the
+;; minibuffer as you type, rather than having to call `isearch-edit-string'.
+(isearch-mb-mode)
+
+;; Quit isearch when calling occur
+(add-to-list 'isearch-mb--after-exit #'occur)
+
+
+;;; Outline
+
+;; `outline' provides major and minor modes for collapsing sections of a
+;; buffer into an outline-like format. Let's turn that minor mode into a
+;; global minor mode and enable it.
+(define-globalized-minor-mode global-outline-minor-mode
+  outline-minor-mode outline-minor-mode)
+(global-outline-minor-mode +1)
+
+(blackout 'outline-minor-mode)
+
+(define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
+(define-key outline-minor-mode-map (kbd "S-<tab>") 'bicycle-cycle-global)
+
+(transient-define-prefix outline-transient ()
+  "Transient for Outline Minor Mode navigation"
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-stay
+  [["Show/Hide"
+    ("<right>" "Show Subtree" outline-show-subtree)
+    ("<left>" "Hide Subtree" outline-hide-subtree)
+    ("o" "Hide to This Sublevel" outline-hide-sublevels)
+    ("a" "Show All" outline-show-all)]
+   ["Navigate"
+    ("<down>" "Next" outline-next-visible-heading)
+    ("<up>" "Previous" outline-previous-visible-heading)]
+   ["Edit"
+    ("M-<left>"  "Promote" outline-promote)
+    ("M-<right>" "Demote"  outline-demote)
+    ("M-<up>"    "Move Up" outline-move-subtree-up)
+    ("M-<down>"  "Move Down" outline-move-subtree-down)]
+   ["Other"
+    ("C-/" "Undo" undo-fu-only-undo)
+    ("M-/" "Redo" undo-fu-only-redo)
+    ("c" "Consult" consult-outline :transient nil)]])
+
 
 ;;; Miscellaneous
 
@@ -1010,125 +1069,16 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
-
-;;;; Flyspell
-
+(with-eval-after-load 'flyspell
+  (blackout 'flyspell-mode " Spell"))
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
-(with-eval-after-load 'flyspell
-  (blackout 'flyspell-mode " Spell"))
-
-
-;;;; Isearch
-
-(setq search-whitespace-regexp ".*?")
-(setq isearch-lax-whitespace t)
-(setq isearch-lazy-count t)
-
-(defun isearch-exit-at-start ()
-  "Exit search at the beginning of the current match."
-  (when (and isearch-forward
-             (number-or-marker-p isearch-other-end)
-             (not isearch-mode-end-hook-quit))
-    (goto-char isearch-other-end)))
-
-(add-hook 'isearch-mode-end-hook 'isearch-exit-at-start)
-
-;; The package 'isearch-mb' allows you to edit the incremental search in the
-;; minibuffer as you type, rather than having to call `isearch-edit-string'.
-(isearch-mb-mode)
-
-;; Quit isearch when calling occur
-(add-to-list 'isearch-mb--after-exit #'occur)
-
-
-;;;; Outline
-
-;; `outline' provides major and minor modes for collapsing sections of a
-;; buffer into an outline-like format. Let's turn that minor mode into a
-;; global minor mode and enable it.
-(define-globalized-minor-mode global-outline-minor-mode
-  outline-minor-mode outline-minor-mode)
-(global-outline-minor-mode +1)
-
-(blackout 'outline-minor-mode)
-
-(define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
-(define-key outline-minor-mode-map (kbd "S-<tab>") 'bicycle-cycle-global)
-
-
-;;;; Pulse
-
-(defun pulse-line ()
-  "Interactive function to pulse the current line."
-  (interactive)
-  (pulse-momentary-highlight-one-line (point)))
-
-(defadvice other-window (after other-window-pulse activate) (pulse-line))
-(defadvice delete-window (after delete-window-pulse activate) (pulse-line))
-(defadvice recenter-top-bottom (after recenter-top-bottom-pulse activate) (pulse-line))
-
-(defun ct/yank-pulse-advice (orig-fn &rest args)
-  "Pulse line when yanking"
-  ;; From https://christiantietze.de/posts/2020/12/emacs-pulse-highlight-yanked-text/
-  (let (begin end)
-    (setq begin (point))
-    (apply orig-fn args)
-    (setq end (point))
-    (pulse-momentary-highlight-region begin end)))
-
-(advice-add 'yank :around #'ct/yank-pulse-advice)
-
-
-;;;; Remember Mode
-
-(custom-set-variables
- '(remember-data-file (concat oht-orgfiles "remember-notes"))
- '(remember-notes-initial-major-mode 'fundamental-mode)
- '(remember-notes-auto-save-visited-file-name t))
-
-(defun remember-dwim ()
-  "If the region is active, capture with region, otherwise just capture."
-  (interactive)
-  (if (use-region-p)
-      (let ((current-prefix-arg 4)) (call-interactively 'remember))
-    (remember)))
-
-
-;;;; iBuffer
-
-(defun ibuffer-setup ()
-  (hl-line-mode 1)
-  (ibuffer-auto-mode 1))
-
-(add-hook 'ibuffer-mode-hook 'ibuffer-setup)
-
-
-;;;; Dired
-
-(setq dired-use-ls-dired nil) ; no more warning message
-
-(defun dired-open-file ()
-  "In dired, open the file named on this line using the 'open' shell command."
-  (interactive)
-  (let* ((file (dired-get-filename nil t)))
-    (message "Opening %s..." file)
-    (call-process "open" nil 0 nil file)
-    (message "Opening %s done" file)))
-
 (with-eval-after-load 'dired
+  (setq dired-use-ls-dired nil)
   (define-keys dired-mode-map
-    (kbd "O")   'dired-open-file
+    (kbd "O")   'crux-open-with
     (kbd "C-/") 'dired-undo))
-
-(defun dired-mode-setup ()
-  "Settings for dired mode."
-  (dired-hide-details-mode 1)
-  (auto-revert-mode)
-  (hl-line-mode 1))
-
-(add-hook 'dired-mode-hook 'dired-mode-setup)
 
 
 ;;; Org
@@ -1309,6 +1259,7 @@ buffer, and exiting the agenda and releasing all the buffers."
 (transient-define-prefix general-transient ()
   "General-purpose transient."
   [["Actions/Toggles"
+    ("x" "M-x" execute-extended-command)
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
     ("SPC" "Mark..." general-transient--mark)
@@ -1440,28 +1391,6 @@ buffer, and exiting the agenda and releasing all the buffers."
     ("}" "Paragraph" transpose-paragraphs)
     ("s" "Sexps" transpose-sexps)
     ("r" "Regions" transpose-regions)]])
-
-(transient-define-prefix outline-transient ()
-  "Transient for Outline Minor Mode navigation"
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-stay
-  [["Show/Hide"
-    ("<right>" "Show Subtree" outline-show-subtree)
-    ("<left>" "Hide Subtree" outline-hide-subtree)
-    ("o" "Hide to This Sublevel" outline-hide-sublevels)
-    ("a" "Show All" outline-show-all)]
-   ["Navigate"
-    ("<down>" "Next" outline-next-visible-heading)
-    ("<up>" "Previous" outline-previous-visible-heading)]
-   ["Edit"
-    ("M-<left>"  "Promote" outline-promote)
-    ("M-<right>" "Demote"  outline-demote)
-    ("M-<up>"    "Move Up" outline-move-subtree-up)
-    ("M-<down>"  "Move Down" outline-move-subtree-down)]
-   ["Other"
-    ("C-/" "Undo" undo-fu-only-undo)
-    ("M-/" "Redo" undo-fu-only-redo)
-    ("c" "Consult" consult-outline :transient nil)]])
 
 (with-eval-after-load 'flyspell
   (transient-define-prefix flyspell-mode-transient ()

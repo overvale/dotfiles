@@ -1120,7 +1120,45 @@ To be used by `eww-after-render-hook'."
                       (name . "\*Info\*"))))))
 
 (defun ibuffer-setup ()
-  (ibuffer-switch-to-saved-filter-groups "default")
-  )
+  (ibuffer-switch-to-saved-filter-groups "default"))
 
 (add-hook 'ibuffer-mode-hook 'ibuffer-setup)
+
+;;; Pulse
+
+(defun pulse-line ()
+  "Interactive function to pulse the current line."
+  (interactive)
+  (pulse-momentary-highlight-one-line (point)))
+
+(defadvice other-window (after other-window-pulse activate) (pulse-line))
+(defadvice delete-window (after delete-window-pulse activate) (pulse-line))
+(defadvice recenter-top-bottom (after recenter-top-bottom-pulse activate) (pulse-line))
+
+(defun ct/yank-pulse-advice (orig-fn &rest args)
+  "Pulse line when yanking"
+  ;; From https://christiantietze.de/posts/2020/12/emacs-pulse-highlight-yanked-text/
+  (let (begin end)
+    (setq begin (point))
+    (apply orig-fn args)
+    (setq end (point))
+    (pulse-momentary-highlight-region begin end)))
+
+(advice-add 'yank :around #'ct/yank-pulse-advice)
+
+
+;;;; Remember Mode
+
+(custom-set-variables
+ '(remember-data-file (concat oht-orgfiles "remember-notes"))
+ '(remember-notes-initial-major-mode 'fundamental-mode)
+ '(remember-notes-auto-save-visited-file-name t))
+
+(defun remember-dwim ()
+  "If the region is active, capture with region, otherwise just capture."
+  (interactive)
+  (if (use-region-p)
+      (let ((current-prefix-arg 4)) (call-interactively 'remember))
+    (remember)))
+
+

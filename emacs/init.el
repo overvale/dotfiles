@@ -304,6 +304,11 @@ already narrowed."
          (TeX-narrow-to-group))
         (t (narrow-to-defun))))
 
+(defun find-user-init-file ()
+  "Find the user-init-file"
+  (interactive)
+  (find-file user-init-file))
+
 (defun find-file-recursively ()
   "Find Files Recursively using completing read."
   (interactive)

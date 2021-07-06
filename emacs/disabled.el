@@ -12,11 +12,6 @@
   (find-file (completing-read "Find Elisp Dotfile: "
                               (directory-files-recursively oht-dotfiles "\.el$"))))
 
-(defun find-user-init-file ()
-  "Find the user-init-file"
-  (interactive)
-  (find-file user-init-file))
-
 
 ;;; Mac Style Tabs
 

@@ -728,18 +728,16 @@ the fixed-pitch face down to the height defined by
 ;; Emacs's Secondary Selection assumes you only want to interact with it via
 ;; the mouse, however it is perfectly possible to do it via the keyboard, all
 ;; you need is some wrapper functions to make things keybinding-addressable.
+;; I've also included a set of mouse-bindings and a transient to make things
+;; easier still.
 
-;; TODO: overhaul names
-
-;; kill-secondary
-(defun oht/cut-secondary-selection ()
-  "Cut the secondary selection."
+(defun kill-secondary ()
+  "Kill the secondary selection."
   (interactive)
   (mouse-kill-secondary))
 
-;; kill-ring-save-secondary
-(defun oht/copy-secondary-selection ()
-  "Copy the secondary selection."
+(defun kill-ring-save-secondary ()
+  "Save the secondary selection to the kill ring."
   (interactive)
   ;; there isn't a keybinding-addressable function to kill-ring-save
   ;; the 2nd selection so here I've made my own. This is extracted
@@ -749,62 +747,49 @@ the fixed-pitch face down to the height defined by
                      (overlay-end mouse-secondary-overlay))
    t))
 
-;; kill-secondary-yank
-(defun oht/cut-secondary-selection-paste ()
-  "Cut the secondary selection and paste at point."
+(defun kill-secondary-yank ()
+  "Kill the secondary selection and yank at point."
   (interactive)
   (mouse-kill-secondary)
   (yank))
 
-;; kill-ring-save-secondary-yank
-(defun oht/copy-secondary-selection-paste ()
-  "Copy the secondary selection and paste at point."
+(defun kill-ring-save-secondary-yank ()
+  "Save the secondary selection to kill ring and yank at point."
   (interactive)
   (oht/copy-secondary-selection)
   (yank))
 
-;; mark-region-as-secondary
-(defun oht/mark-region-as-secondary-selection ()
-  "Make the region the secondary selection."
+(defun mark-region-as-secondary ()
+  "Mark the region as the secondary selection."
   (interactive)
   (secondary-selection-from-region))
 
-;; mark-secondary
-(defun oht/mark-secondary-selection ()
-  "Mark the Secondary Selection as the region."
+(defun mark-secondary ()
+  "Mark the secondary selection."
   (interactive)
   (secondary-selection-to-region))
 
-;; deactivate-secondary
-(defun oht/delete-secondary-selection ()
-  "Delete the Secondary Selection."
+(defun deactivate-secondary ()
+  "Deactivate the secondary selection."
   (interactive)
   (delete-overlay mouse-secondary-overlay))
 
-;; -- Use C-M-drag-mouse-1 to create secondary selections.
 (global-set-keys [C-M-mouse-1]      'mouse-start-secondary
                  [C-M-drag-mouse-1] 'mouse-set-secondary
                  [C-M-down-mouse-1] 'mouse-drag-secondary)
 
-;; kill-secondary
-;; kill-ring-save-secondary
-;; kill-secondary-yank
-;; kill-ring-save-secondary-yank
-;; mark-region-as-secondary
-;; mark-secondary
-;; deactivate-secondary
 (transient-define-prefix secondary-selection-transient ()
   "Transient for working with the secondary selection"
   [["Cut/Copy"
-    ("xx" "Cut 2nd" oht/cut-secondary-selection)
-    ("cc" "Copy 2nd" oht/copy-secondary-selection)]
+    ("xx" "Cut 2nd" kill-secondary)
+    ("cc" "Copy 2nd" kill-ring-save-secondary)]
    ["& Paste"
-    ("xv" "Cut 2nd & Paste" oht/cut-secondary-selection-paste)
-    ("cv" "Copy 2nd & Paste" oht/copy-secondary-selection-paste)]
+    ("xv" "Cut 2nd & Paste" kill-secondary-yank)
+    ("cv" "Copy 2nd & Paste" kill-ring-save-secondary-yank)]
    ["Mark"
-    ("m"  "Mark Region as 2nd" oht/mark-region-as-secondary-selection)
-    ("g"  "Make 2nd the Region" oht/mark-secondary-selection)
-    ("d"  "Delete 2nd" oht/delete-secondary-selection)]])
+    ("m"  "Mark Region as 2nd" mark-region-as-secondary)
+    ("g"  "Make 2nd the Region" mark-secondary)
+    ("d"  "Delete 2nd" deactivate-secondary)]])
 
 
 ;;; Dedicated Mode

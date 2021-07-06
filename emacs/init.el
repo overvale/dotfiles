@@ -569,9 +569,9 @@ Keybindings you define here will take precedence."
 
 (when (eq system-type 'darwin)
   (custom-set-variables
-   '(facedancer-monospace-family "SF Mono")
-   '(facedancer-variable-family  "New York")
-   '(facedancer-mode-line-family "SF Compact Text")
+   '(facedancer-monospace-family "IBM Plex Mono")
+   '(facedancer-variable-family  "IBM Plex Sans")
+   '(facedancer-mode-line-family "IBM Plex Sans")
    '(facedancer-mode-line-height 13)))
 
 (when (eq system-type 'windows-nt)

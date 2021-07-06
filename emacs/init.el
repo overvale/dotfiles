@@ -1431,7 +1431,7 @@ buffer, and exiting the agenda and releasing all the buffers."
           (info-mode-help-transient))
         (when (derived-mode-p 'dired-mode)
           (dired-mode-help-transient)))
-      nil ; if the above succeeds, do nothing, else...
+      nil ; if the above succeeds, do nothing else, otherwise...
     (message "No transient defined for this mode.")))
 
 (with-eval-after-load 'org

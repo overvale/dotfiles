@@ -446,56 +446,6 @@ With a prefix ARG always prompt for command to use."
           (kill-buffer))))))
 
 
-;;;; Secondary Selection
-
-;; Emacs's Secondary Selection assumes you only want to interact with it via
-;; the mouse, however it is perfectly possible to do it via the keyboard, all
-;; you need is some wrapper functions to make things keybinding-addressable.
-
-(defun oht/cut-secondary-selection ()
-  "Cut the secondary selection."
-  (interactive)
-  (mouse-kill-secondary))
-
-(defun oht/copy-secondary-selection ()
-  "Copy the secondary selection."
-  (interactive)
-  ;; there isn't a keybinding-addressable function to kill-ring-save
-  ;; the 2nd selection so here I've made my own. This is extracted
-  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
-  (kill-new
-   (buffer-substring (overlay-start mouse-secondary-overlay)
-                     (overlay-end mouse-secondary-overlay))
-   t))
-
-(defun oht/cut-secondary-selection-paste ()
-  "Cut the secondary selection and paste at point."
-  (interactive)
-  (mouse-kill-secondary)
-  (yank))
-
-(defun oht/copy-secondary-selection-paste ()
-  "Copy the secondary selection and paste at point."
-  (interactive)
-  (oht/copy-secondary-selection)
-  (yank))
-
-(defun oht/mark-region-as-secondary-selection ()
-  "Make the region the secondary selection."
-  (interactive)
-  (secondary-selection-from-region))
-
-(defun oht/mark-secondary-selection ()
-  "Mark the Secondary Selection as the region."
-  (interactive)
-  (secondary-selection-to-region))
-
-(defun oht/delete-secondary-selection ()
-  "Delete the Secondary Selection."
-  (interactive)
-  (delete-overlay mouse-secondary-overlay))
-
-
 ;;; Personal Keybindings
 
 ;; Minor modes override global bindings, so any bindings you don't want
@@ -583,11 +533,7 @@ Keybindings you define here will take precedence."
                  ;; -- Use M-drag-mouse-1 to create rectangle regions.
                  [M-down-mouse-1] #'mouse-drag-region-rectangle
                  [M-drag-mouse-1] #'ignore
-                 [M-mouse-1]      #'mouse-set-point
-                 ;; -- Use C-M-drag-mouse-1 to create secondary selections.
-                 [C-M-mouse-1]      'mouse-start-secondary
-                 [C-M-drag-mouse-1] 'mouse-set-secondary
-                 [C-M-down-mouse-1] 'mouse-drag-secondary)
+                 [M-mouse-1]      #'mouse-set-point)
 
 
 ;;; Appearance & Mode-Line
@@ -776,6 +722,90 @@ the fixed-pitch face down to the height defined by
       (force-window-update (current-buffer)))))
 
 (add-hook 'buffer-face-mode-hook (lambda () (facedancer-vadjust-mode 'toggle)))
+
+
+;;; Secondary Selection
+
+;; Emacs's Secondary Selection assumes you only want to interact with it via
+;; the mouse, however it is perfectly possible to do it via the keyboard, all
+;; you need is some wrapper functions to make things keybinding-addressable.
+
+;; TODO: overhaul names
+
+;; kill-secondary
+(defun oht/cut-secondary-selection ()
+  "Cut the secondary selection."
+  (interactive)
+  (mouse-kill-secondary))
+
+;; kill-ring-save-secondary
+(defun oht/copy-secondary-selection ()
+  "Copy the secondary selection."
+  (interactive)
+  ;; there isn't a keybinding-addressable function to kill-ring-save
+  ;; the 2nd selection so here I've made my own. This is extracted
+  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
+  (kill-new
+   (buffer-substring (overlay-start mouse-secondary-overlay)
+                     (overlay-end mouse-secondary-overlay))
+   t))
+
+;; kill-secondary-yank
+(defun oht/cut-secondary-selection-paste ()
+  "Cut the secondary selection and paste at point."
+  (interactive)
+  (mouse-kill-secondary)
+  (yank))
+
+;; kill-ring-save-secondary-yank
+(defun oht/copy-secondary-selection-paste ()
+  "Copy the secondary selection and paste at point."
+  (interactive)
+  (oht/copy-secondary-selection)
+  (yank))
+
+;; mark-region-as-secondary
+(defun oht/mark-region-as-secondary-selection ()
+  "Make the region the secondary selection."
+  (interactive)
+  (secondary-selection-from-region))
+
+;; mark-secondary
+(defun oht/mark-secondary-selection ()
+  "Mark the Secondary Selection as the region."
+  (interactive)
+  (secondary-selection-to-region))
+
+;; deactivate-secondary
+(defun oht/delete-secondary-selection ()
+  "Delete the Secondary Selection."
+  (interactive)
+  (delete-overlay mouse-secondary-overlay))
+
+;; -- Use C-M-drag-mouse-1 to create secondary selections.
+(global-set-keys [C-M-mouse-1]      'mouse-start-secondary
+                 [C-M-drag-mouse-1] 'mouse-set-secondary
+                 [C-M-down-mouse-1] 'mouse-drag-secondary)
+
+;; kill-secondary
+;; kill-ring-save-secondary
+;; kill-secondary-yank
+;; kill-ring-save-secondary-yank
+;; mark-region-as-secondary
+;; mark-secondary
+;; deactivate-secondary
+(transient-define-prefix secondary-selection-transient ()
+  "Transient for working with the secondary selection"
+  [["Cut/Copy"
+    ("xx" "Cut 2nd" oht/cut-secondary-selection)
+    ("cc" "Copy 2nd" oht/copy-secondary-selection)]
+   ["& Paste"
+    ("xv" "Cut 2nd & Paste" oht/cut-secondary-selection-paste)
+    ("cv" "Copy 2nd & Paste" oht/copy-secondary-selection-paste)]
+   ["Mark"
+    ("m"  "Mark Region as 2nd" oht/mark-region-as-secondary-selection)
+    ("g"  "Make 2nd the Region" oht/mark-secondary-selection)
+    ("d"  "Delete 2nd" oht/delete-secondary-selection)]])
 
 
 ;;; Dedicated Mode
@@ -1410,19 +1440,6 @@ buffer, and exiting the agenda and releasing all the buffers."
     ("}" "Paragraph" transpose-paragraphs)
     ("s" "Sexps" transpose-sexps)
     ("r" "Regions" transpose-regions)]])
-
-(transient-define-prefix secondary-selection-transient ()
-  "Transient for working with the secondary selection"
-  [["Cut/Copy"
-    ("xx" "Cut 2nd" oht/cut-secondary-selection)
-    ("cc" "Copy 2nd" oht/copy-secondary-selection)]
-   ["& Paste"
-    ("xv" "Cut 2nd & Paste" oht/cut-secondary-selection-paste)
-    ("cv" "Copy 2nd & Paste" oht/copy-secondary-selection-paste)]
-   ["Mark"
-    ("m"  "Mark Region as 2nd" oht/mark-region-as-secondary-selection)
-    ("g"  "Make 2nd the Region" oht/mark-secondary-selection)
-    ("d"  "Delete 2nd" oht/delete-secondary-selection)]])
 
 (transient-define-prefix outline-transient ()
   "Transient for Outline Minor Mode navigation"

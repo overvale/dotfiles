@@ -308,11 +308,14 @@ already narrowed."
   (interactive)
   (find-file user-init-file))
 
-(defun find-file-recursively ()
-  "Find Files Recursively using completing read."
+(defun find-file-recursively (&optional path)
+  "Find Files Recursively using completing read.
+Uses the `default-directory' unless a path is supplied."
   (interactive)
   (find-file (completing-read "Find File Recursively: "
-                              (directory-files-recursively default-directory ".+"))))
+                              (directory-files-recursively (if path path default-directory) ".+"))))
+
+(defalias 'find-files-recursively 'find-file-recursively)
 
 (defun exchange-point-and-mark-dwim ()
   "Respect region active/inactive and swap point and mark.

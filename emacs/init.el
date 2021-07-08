@@ -56,7 +56,7 @@
         embark-consult
         selected
         expand-region
-        helpful
+        ;;helpful
         visual-regexp
         visual-regexp-steroids
         olivetti
@@ -508,11 +508,12 @@ Keybindings you define here will take precedence."
   (kbd "M-7")        'undefined
   (kbd "M-8")        'undefined
   (kbd "M-9")        'undefined
-  (kbd "C-h f")      'helpful-function
-  (kbd "C-h v")      'helpful-variable
-  (kbd "C-h o")      'helpful-symbol
-  (kbd "C-h k")      'helpful-key
-  (kbd "C-h p")      'helpful-at-point)
+  ;; (kbd "C-h f")      'helpful-function
+  ;; (kbd "C-h v")      'helpful-variable
+  ;; (kbd "C-h o")      'helpful-symbol
+  ;; (kbd "C-h k")      'helpful-key
+  ;; (kbd "C-h p")      'helpful-at-point
+  )
 
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))

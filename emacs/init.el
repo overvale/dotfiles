@@ -25,8 +25,11 @@
 (require 'package)
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
-(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
+(setq package-archive-priorities '(("gnu" . 30)
+                                   ("melpa-stable" . 20)
+                                   ("melpa" . 10)))
 
 (setq pkg-ops-map
   (let ((map (make-sparse-keymap "Packages")))
@@ -41,13 +44,15 @@
 
 (global-set-key (kbd "C-c p") pkg-ops-map)
 
+;; Packages marked with <28 are those that can be removed once you upgrade to
+;; version 28 as they (or their functionality) are now built-in.
 (setq package-selected-packages
-      '(dash
-        transient
+      '(transient                       ;<28
+        modus-themes                    ;<28
+        bicycle                         ;<28
+        dash
         blackout
-        modus-themes
         isearch-mb
-        bicycle
         orderless
         vertico
         marginalia
@@ -62,9 +67,7 @@
         olivetti
         fountain-mode
         markdown-mode
-        tron-legacy-theme
-        lua-mode
-        org))
+        lua-mode))
 
 (when (eq system-type 'darwin)
   (add-to-list 'package-selected-packages 'magit t))

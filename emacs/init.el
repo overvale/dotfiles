@@ -194,6 +194,13 @@
    '(display-battery-mode t)
    '(battery-mode-line-format " [%b%p%%]")))
 
+;; Restore garbage collection to a reasonable value.
+;; This is step 2, step one is in early-init.
+;; In my case this saves about .3 seconds in startup time.
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (setq gc-cons-threshold 16777216 ; 16mb
+          gc-cons-percentage 0.1)))
 
 ;;; Misc Functions
 

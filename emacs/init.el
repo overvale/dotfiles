@@ -314,7 +314,7 @@ already narrowed."
         (t (narrow-to-defun))))
 
 (defun find-user-init-file ()
-  "Find the user-init-file"
+  "Find the user-init-file."
   (interactive)
   (find-file user-init-file))
 
@@ -1091,6 +1091,12 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
   (define-keys dired-mode-map
     (kbd "O")   'crux-open-with
     (kbd "C-/") 'dired-undo))
+
+(defun olivertaylor.net ()
+  "Helpful stuff for coding my website."
+  (interactive)
+  (load "~/home/src/olivertaylor/lib/helper.el")
+  (oht-site-transient))
 
 
 ;;; Undo Backport

@@ -832,6 +832,24 @@ FEATURE is name of lisp feature, MODE and REPLACEMENT are as in `blackout'."
   `(with-eval-after-load ',feature
      (blackout ',mode ,replacement)))
 
+;; https://github.com/amno1/emacs-init-generator/blob/main/generator.org
+(defmacro define-keys (mapname &rest body)
+  `(dolist (def '(,@body))
+     (define-key ,mapname
+       (if (vectorp (car def))
+           (car def)
+         (read-kbd-macro (car def)))
+       (cdr def))))
+
+(defmacro global-set-keys (&rest body)
+  `(dolist (def '(,@body))
+     (global-set-key
+       (if (vectorp (car def))
+           (car def)
+         (read-kbd-macro (car def)))
+       (cdr def))))
+
+
 ;;; facedancer-mode
 
 ;; There are a number of built-in functions for dealing with setting

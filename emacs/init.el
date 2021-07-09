@@ -47,27 +47,26 @@
 ;; Packages marked with <28 are those that can be removed once you upgrade to
 ;; version 28 as they (or their functionality) are now built-in.
 (setq package-selected-packages
-      '(transient                       ;<28
-        modus-themes                    ;<28
-        bicycle                         ;<28
-        dash
+      '(bicycle
         blackout
-        isearch-mb
-        orderless
-        vertico
-        marginalia
-        embark
         consult
+        dash
+        embark
         embark-consult
-        selected
         expand-region
-        ;;helpful
+        fountain-mode
+        isearch-mb
+        lua-mode
+        marginalia
+        markdown-mode
+        modus-themes
+        olivetti
+        orderless
+        selected
+        vertico
         visual-regexp
         visual-regexp-steroids
-        olivetti
-        fountain-mode
-        markdown-mode
-        lua-mode))
+        transient))
 
 (when (eq system-type 'darwin)
   (add-to-list 'package-selected-packages 'magit t))

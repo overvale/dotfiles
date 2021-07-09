@@ -72,9 +72,6 @@
 (when (eq system-type 'darwin)
   (add-to-list 'package-selected-packages 'magit t))
 
-(when (string= (system-name) "shadowfax.local")
-  (add-to-list 'package-selected-packages 'oblique t))
-
 
 ;;; Macros & Critical Functions
 

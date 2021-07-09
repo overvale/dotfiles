@@ -86,19 +86,23 @@
 
 (defun define-keys (keymap &rest pairs)
   "Define alternating key-def PAIRS for KEYMAP."
-  ; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
+  ;; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
   (-each
       (-partition 2 pairs)
     (-lambda ((key def))
-      (define-key keymap key def))))
+      (if (stringp key)
+          (define-key keymap (read-kbd-macro key) def)
+        (define-key keymap key def)))))
 
 (defun global-set-keys (&rest pairs)
   "Set alternating key-def PAIRS globally."
-  ; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
+  ;; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
   (-each
       (-partition 2 pairs)
     (-lambda ((key def))
-      (global-set-key key def))))
+      (if (stringp key)
+          (global-set-key (read-kbd-macro key) def)
+        (global-set-key key def)))))
 
 (defmacro λ (&rest body)
   "Shorthand for interactive lambdas."
@@ -478,52 +482,46 @@ Keybindings you define here will take precedence."
 ;; Mac-like bindings
 (when (eq system-type 'darwin)
   (define-keys bosskey-mode-map
-    (kbd "s-q")       'save-buffers-kill-terminal
-    (kbd "s-m")       'iconify-frame
-    (kbd "s-w")       'delete-frame
-    (kbd "s-n")       'make-frame-command
-    (kbd "s-s")       'save-buffer
-    (kbd "s-,")       'find-user-init-file
-    (kbd "s-o")       'find-file
-    (kbd "s-z")       'undo-only
-    (kbd "s-Z")       'undo-redo
-    (kbd "s-x")       'kill-region
-    (kbd "s-c")       'kill-ring-save
-    (kbd "s-v")       'yank
-    (kbd "s-<left>")  'beginning-of-visual-line
-    (kbd "s-<right>") 'end-of-visual-line
-    (kbd "s-<up>")    'beginning-of-buffer
-    (kbd "s-<down>")  'end-of-buffer))
+    "s-q"       'save-buffers-kill-terminal
+    "s-m"       'iconify-frame
+    "s-w"       'delete-frame
+    "s-n"       'make-frame-command
+    "s-s"       'save-buffer
+    "s-,"       'find-user-init-file
+    "s-o"       'find-file
+    "s-z"       'undo-only
+    "s-Z"       'undo-redo
+    "s-x"       'kill-region
+    "s-c"       'kill-ring-save
+    "s-v"       'yank
+    "s-<left>"  'beginning-of-visual-line
+    "s-<right>" 'end-of-visual-line
+    "s-<up>"    'beginning-of-buffer
+    "s-<down>"  'end-of-buffer))
 
 (define-keys bosskey-mode-map
-  (kbd "C-<return>") 'general-transient
-  (kbd "M-]")        'next-buffer
-  (kbd "M-[")        'previous-buffer
-  (kbd "C-M-h")      'mark-line
-  (kbd "M-.")        'embark-act
-  (kbd "M-'")        'my:hippie-expand
-  (kbd "M-\\")       'cycle-spacing
-  (kbd "M-z")        'zap-up-to-char
-  (kbd "C-=")        'er/expand-region
-  (kbd "C-d")        'delete-forward-char
-  (kbd "C-x C-x")    'exchange-point-and-mark-dwim
-  (kbd "C-x k")      'kill-buffer-dwim
-  (kbd "M-0")        'delete-window
-  (kbd "M-1")        'delete-other-windows
-  (kbd "M-2")        'split-window-below
-  (kbd "M-3")        'split-window-right
-  (kbd "M-4")        'undefined
-  (kbd "M-5")        'undefined
-  (kbd "M-6")        'undefined
-  (kbd "M-7")        'undefined
-  (kbd "M-8")        'undefined
-  (kbd "M-9")        'undefined
-  ;; (kbd "C-h f")      'helpful-function
-  ;; (kbd "C-h v")      'helpful-variable
-  ;; (kbd "C-h o")      'helpful-symbol
-  ;; (kbd "C-h k")      'helpful-key
-  ;; (kbd "C-h p")      'helpful-at-point
-  )
+  "C-<return>" 'general-transient
+  "M-]"        'next-buffer
+  "M-["        'previous-buffer
+  "C-M-h"      'mark-line
+  "M-."        'embark-act
+  "M-'"        'my:hippie-expand
+  "M-\\"       'cycle-spacing
+  "M-z"        'zap-up-to-char
+  "C-="        'er/expand-region
+  "C-d"        'delete-forward-char
+  "C-x C-x"    'exchange-point-and-mark-dwim
+  "C-x k"      'kill-buffer-dwim
+  "M-0"        'delete-window
+  "M-1"        'delete-other-windows
+  "M-2"        'split-window-below
+  "M-3"        'split-window-right
+  "M-4"        'undefined
+  "M-5"        'undefined
+  "M-6"        'undefined
+  "M-7"        'undefined
+  "M-8"        'undefined
+  "M-9"        'undefined)
 
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
@@ -1089,8 +1087,8 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (with-eval-after-load 'dired
   (setq dired-use-ls-dired nil)
   (define-keys dired-mode-map
-    (kbd "O")   'crux-open-with
-    (kbd "C-/") 'dired-undo))
+    "O"   'crux-open-with
+    "C-/" 'dired-undo))
 
 (defun olivertaylor.net ()
   "Helpful stuff for coding my website."

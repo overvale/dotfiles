@@ -1051,7 +1051,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
 (global-set-key [remap yank-pop] 'consult-yank-pop)
 (custom-set-variables
- '(consult-preview-key (kbd "C-="))
  '(consult-config
    `((consult-mark :preview-key any))))
 

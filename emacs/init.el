@@ -905,6 +905,8 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (defvar navigation-keymap (make-keymap)
   "Transient keymap for navigating buffers.")
 
+(define-key navigation-keymap [t] 'undefined)
+
 ;; Assign navigation-keys to the map
 (define-navigation-keys navigation-keymap)
 
@@ -1235,6 +1237,7 @@ as an argument limits undo to changes within the current region."
   (while (and (consp undo-list) (eq (car undo-list) nil))
     (setq undo-list (cdr undo-list)))
   (gethash undo-list undo-equiv-table))
+
 
 ;;; Org
 

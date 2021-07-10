@@ -71,6 +71,9 @@
 (when (eq system-type 'darwin)
   (add-to-list 'package-selected-packages 'magit t))
 
+(when (string= (system-name) "shadowfax.local")
+  (add-to-list 'package-selected-packages 'elfeed t))
+
 
 ;;; Macros & Critical Functions
 
@@ -1718,6 +1721,72 @@ buffer, and exiting the agenda and releasing all the buffers."
       ("!"   "Shell command"        dired-do-shell-command)
       ("&"   "Async shell command"  dired-do-async-shell-command)]])
   ) ; End dired config
+
+
+;;; Elfeed
+
+(with-eval-after-load 'elfeed
+
+  (custom-set-variables
+   '(elfeed-use-curl t)
+   '(elfeed-db-directory (concat user-emacs-directory "elfeed/"))
+   '(elfeed-enclosure-default-dir user-downloads-directory))
+
+  (load "~/home/src/rss-feeds.el")
+
+  ;; Why doesn't this exist in show mode?
+  (defalias 'elfeed-show-tag--unread (elfeed-expose #'elfeed-show-tag 'unread)
+    "Mark the current entry unread.")
+  (defalias 'elfeed-show-tag--read (elfeed-expose #'elfeed-show-untag 'unread)
+    "Mark the current entry read.")
+
+  ;; Stars in search mode
+  (defalias 'elfeed-search-tag--star (elfeed-expose #'elfeed-search-tag-all 'star)
+    "Add the 'star' tag to all selected entries")
+  (defalias 'elfeed-search-untag--star (elfeed-expose #'elfeed-search-untag-all 'star)
+    "Remove the 'star' tag to all selected entries")
+
+  ;; Stars in show mode
+  (defalias 'elfeed-show-tag--star (elfeed-expose #'elfeed-show-tag 'star)
+    "Add the 'star' tag to current entry")
+  (defalias 'elfeed-show-tag--unstar (elfeed-expose #'elfeed-show-untag 'star)
+    "Remove the 'star' tag to current entry")
+
+  (defun elfeed-search:emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
+  (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs"))
+  (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
+
+  (defun elfeed-show-youtube-dl ()
+    "In elfeed-show-mode, download a video using youtube-dl."
+    (interactive)
+    (async-shell-command (format "%s -o \"%s%s\" -f mp4 \"%s\""
+                                 youtube-dl-path
+                                 user-downloads-directory
+                                 "%(title)s.%(ext)s"
+                                 (elfeed-entry-link elfeed-show-entry))))
+
+  (add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
+  (add-hook 'elfeed-show-mode-hook   'disable-selected-minor-mode)
+  (add-hook 'elfeed-show-mode-hook   'facedancer-vadjust-mode)
+
+  (define-keys elfeed-search-mode-map
+    "b" 'elfeed-search-browse-url
+    "*" 'elfeed-search-tag--star
+    "8" 'elfeed-search-untag--star
+    "o" 'delete-other-windows
+    "E" 'elfeed-search:emacs
+    "O" 'elfeed-search:other
+    "S" 'elfeed-search:star)
+
+  (define-keys elfeed-show-mode-map
+    "r" 'elfeed-show-tag--read
+    "u" 'elfeed-show-tag--unread
+    "*" 'elfeed-show-tag--star
+    "8" 'elfeed-show-tag--unstar
+    "o" 'delete-other-windows
+    "d" 'elfeed-show-youtube-dl)
+
+  ) ; End elfeed
 
 
 ;;; End of init.el

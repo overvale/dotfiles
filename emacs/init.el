@@ -145,7 +145,6 @@
  '(inhibit-startup-screen t)
  '(global-auto-revert-mode t)
  '(ibuffer-auto-mode t)
- '(dired-hide-details-mode t)
  '(save-place-mode t)
  '(recentf-mode t)
  '(winner-mode t)
@@ -1086,6 +1085,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
 (with-eval-after-load 'dired
   (setq dired-use-ls-dired nil)
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   (define-keys dired-mode-map
     "O"   'crux-open-with
     "C-/" 'dired-undo))

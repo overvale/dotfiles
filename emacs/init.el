@@ -506,6 +506,7 @@ Keybindings you define here will take precedence."
   "M-'"        'my:hippie-expand
   "M-\\"       'cycle-spacing
   "M-z"        'zap-up-to-char
+  "M-<SPC>"    'push-mark-no-activate
   "C-="        'er/expand-region
   "C-d"        'delete-forward-char
   "C-x C-x"    'exchange-point-and-mark-dwim
@@ -957,7 +958,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     "|" 'pipe-region
     "R" 'replace-rectangle
     "E" 'eval-region
-    "q" 'selected-off)
+    "q" 'fill-paragraph)
    (define-navigation-keys selected-keymap)
    (blackout 'selected-minor-mode))
 

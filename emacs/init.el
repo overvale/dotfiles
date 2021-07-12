@@ -329,6 +329,13 @@ Uses the `default-directory' unless a path is supplied."
 
 (defalias 'find-files-recursively 'find-file-recursively)
 
+(when (eq system-type 'darwin)
+  (defun browse-url-macos-background (url)
+    "Open URL with macOS `open'."
+    (interactive)
+    (start-process "open url"
+                   nil "open" "--background" url)))
+
 (defun exchange-point-and-mark-dwim ()
   "Respect region active/inactive and swap point and mark.
 If a region is active, then leave it activated and swap point and mark.
@@ -1768,6 +1775,27 @@ buffer, and exiting the agenda and releasing all the buffers."
   (add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
   (add-hook 'elfeed-show-mode-hook   'disable-selected-minor-mode)
   (add-hook 'elfeed-show-mode-hook   'facedancer-vadjust-mode)
+  (defun elfeed-search-browse-url-background ()
+    "Open current `elfeed' entry (or region entries) in browser without losing focus."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (mapc (lambda (entry)
+              (browse-url-macos-background (elfeed-entry-link entry))
+              (elfeed-untag entry 'unread)
+              (elfeed-search-update-entry entry))
+            entries)
+      (unless (or elfeed-search-remain-on-entry (use-region-p))
+        (forward-line)))))
+
+  (defun elfeed-show-visit-background ()
+    "Visit the current entry in your browser using `browse-url'.
+If there is a prefix argument, visit the current entry in the
+browser defined by `browse-url-generic-program'."
+    (interactive)
+    (let ((link (elfeed-entry-link elfeed-show-entry)))
+      (when link
+        (message "Sent to browser: %s" link)
+        (browse-url-macos-background link))))
 
   (define-keys elfeed-search-mode-map
     "b" 'elfeed-search-browse-url
@@ -1783,6 +1811,7 @@ buffer, and exiting the agenda and releasing all the buffers."
     "u" 'elfeed-show-tag--unread
     "*" 'elfeed-show-tag--star
     "8" 'elfeed-show-tag--unstar
+    "b" 'elfeed-show-visit-background
     "o" 'delete-other-windows
     "d" 'elfeed-show-youtube-dl)
 

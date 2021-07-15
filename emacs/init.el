@@ -554,15 +554,19 @@ Keybindings you define here will take precedence."
 
 ;;; Appearance & Mode-Line
 
-(custom-set-variables
-  '(modus-themes-slanted-constructs t)
-  '(modus-themes-links 'faint-neutral-underline)
-  '(modus-themes-mode-line 'accented)
-  '(modus-themes-region 'bg-only)
-  '(modus-themes-diffs 'desaturated)
-  '(modus-themes-org-blocks 'grayscale)
-  '(modus-themes-syntax 'faint))
+(require 'modus-themes)
 
+(custom-set-variables
+ '(modus-themes-italic-constructs t)
+ '(modus-themes-links '(neutral-underline))
+ '(modus-themes-mode-line '(accented borderless))
+ '(modus-themes-prompts '(bold))
+ '(modus-themes-region '(bg-only))
+ '(modus-themes-diffs '(desaturated))
+ '(modus-themes-org-blocks '(gray-background))
+ '(modus-themes-syntax '(yellow-comments green-strings)))
+
+(modus-themes-load-themes)
 (modus-themes-load-operandi)
 
 (setq tron-legacy-theme-softer-bg t)

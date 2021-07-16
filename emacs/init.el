@@ -1732,6 +1732,10 @@ buffer, and exiting the agenda and releasing all the buffers."
 
 ;;; Elfeed
 
+(add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
+(add-hook 'elfeed-show-mode-hook   'disable-selected-minor-mode)
+(add-hook 'elfeed-show-mode-hook   'facedancer-vadjust-mode)
+
 (with-eval-after-load 'elfeed
 
   (custom-set-variables
@@ -1772,9 +1776,6 @@ buffer, and exiting the agenda and releasing all the buffers."
                                  "%(title)s.%(ext)s"
                                  (elfeed-entry-link elfeed-show-entry))))
 
-  (add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
-  (add-hook 'elfeed-show-mode-hook   'disable-selected-minor-mode)
-  (add-hook 'elfeed-show-mode-hook   'facedancer-vadjust-mode)
   (defun elfeed-search-browse-url-background ()
     "Open current `elfeed' entry (or region entries) in browser without losing focus."
     (interactive)

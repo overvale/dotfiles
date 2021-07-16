@@ -72,6 +72,7 @@
         modus-themes
         olivetti
         orderless
+        org-autolist
         selected
         vertico
         visual-regexp
@@ -1103,6 +1104,8 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
   (interactive)
   (load "~/home/src/olivertaylor/lib/helper.el")
   (oht-site-transient))
+(custom-set-variables
+ '(olivetti-body-width 86))
 
 
 ;;; Undo Backport
@@ -1253,6 +1256,8 @@ as an argument limits undo to changes within the current region."
 
 (autoload 'oht-org-agenda-today-pop-up "org")
 (autoload 'oht-org-agenda-today "org")
+
+(add-hook 'org-mode-hook 'org-autolist-mode)
 
 (with-eval-after-load 'org
 
@@ -1735,6 +1740,10 @@ buffer, and exiting the agenda and releasing all the buffers."
 (add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
 (add-hook 'elfeed-show-mode-hook   'disable-selected-minor-mode)
 (add-hook 'elfeed-show-mode-hook   'facedancer-vadjust-mode)
+
+(setq shr-max-image-proportion 0.5
+      shr-width 80
+      shr-bullet "• ")
 
 (with-eval-after-load 'elfeed
 

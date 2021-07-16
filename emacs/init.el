@@ -56,8 +56,6 @@
 
 (global-set-key (kbd "C-c p") pkg-ops-map)
 
-;; Packages marked with <28 are those that can be removed once you upgrade to
-;; version 28 as they (or their functionality) are now built-in.
 (setq package-selected-packages
       '(bicycle
         blackout
@@ -114,13 +112,6 @@
       (if (stringp key)
           (global-set-key (read-kbd-macro key) def)
         (global-set-key key def)))))
-
-(defmacro λ (&rest body)
-  "Shorthand for interactive lambdas."
-  `(lambda ()
-     (interactive)
-     ,@body))
-
 
 ;;; Preferences
 
@@ -181,7 +172,6 @@
  '(word-wrap t)
  '(truncate-lines t)
  '(delete-by-moving-to-trash t)
- '(trash-directory "~/.Trash")
  '(confirm-kill-processes nil)
  '(save-interprogram-paste-before-kill t)
  '(kill-do-not-save-duplicates t)
@@ -990,8 +980,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (custom-set-variables
  '(enable-recursive-minibuffers t)
  '(savehist-mode t)
- '(completion-show-help nil)
- '(resize-mini-windows t)
+ ;; '(completion-show-help nil)
  '(completion-styles '(orderless))
  '(completion-category-defaults nil)
  '(completion-category-overrides '((file (styles . (partial-completion))))))

@@ -565,6 +565,7 @@ Keybindings you define here will take precedence."
  '(modus-themes-links '(neutral-underline))
  '(modus-themes-mode-line '(accented borderless))
  '(modus-themes-prompts '(bold))
+ '(modus-themes-completions 'opinionated)
  '(modus-themes-region '(bg-only))
  '(modus-themes-diffs '(desaturated))
  '(modus-themes-org-blocks '(gray-background))
@@ -630,6 +631,7 @@ Keybindings you define here will take precedence."
      (concat "Hidden Mode Line Mode enabled.  "
              "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
 
+(defalias 'hide-mode-line-mode 'hidden-mode-line-mode)
 
 
 ;;; Facedancer Mode
@@ -1276,7 +1278,7 @@ as an argument limits undo to changes within the current region."
         org-adapt-indentation nil
         org-catch-invisible-edits 'show-and-error
         org-outline-path-complete-in-steps nil
-        org-refile-targets '((org-agenda-files :maxlevel . 3))
+        org-refile-targets '((org-agenda-files :maxlevel . 2))
         org-hide-emphasis-markers t
         org-ellipsis "..."
         org-insert-heading-respect-content t

@@ -16,6 +16,10 @@
 
 ;;; Preamble
 
+;; It is useful to know the impact of your init file on Emacs startup time so
+;; you can avoid introducing slowdowns. There are many ways to do it, but this
+;; is very simple and does the trick for me.
+
 (defvar before-user-init-time (current-time)
   "Value of `current-time' when Emacs begins loading `user-init-file'.")
 
@@ -113,6 +117,7 @@
       (if (stringp key)
           (global-set-key (read-kbd-macro key) def)
         (global-set-key key def)))))
+
 
 ;;; Preferences
 
@@ -573,8 +578,6 @@ Keybindings you define here will take precedence."
 
 (modus-themes-load-themes)
 (modus-themes-load-operandi)
-
-(setq tron-legacy-theme-softer-bg t)
 
 ;; If on a Mac, assume Mitsuharu Yamamoto’s fork -- check for dark/light mode,
 ;; if dark mode load the dark theme, also add a hook for syncing with the
@@ -1594,6 +1597,7 @@ buffer, and exiting the agenda and releasing all the buffers."
       ("C-/" "Undo" undo-only)
       ("M-/" "Redo" undo-redo)]]))
 
+
 ;;;; Mode Help Transients
 
 ;; Emacs has so many modes. Who can remember all the commands? These
@@ -1833,7 +1837,6 @@ browser defined by `browse-url-generic-program'."
 
 
 ;;; Wrap-up
-
 
 ;; Restore garbage collection to a reasonable value.
 ;; This is step 2, step one is in early-init.

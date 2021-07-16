@@ -458,6 +458,13 @@ With a prefix ARG always prompt for command to use."
           (message "Deleted file %s" filename)
           (kill-buffer))))))
 
+(when (eq system-type 'darwin)
+  (defun olivertaylor.net ()
+    "Helpful stuff for coding my website."
+    (interactive)
+    (load "~/home/src/olivertaylor/lib/helper.el")
+    (oht-site-transient)))
+
 
 ;;; Personal Keybindings
 
@@ -1099,11 +1106,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     "O"   'crux-open-with
     "C-/" 'dired-undo))
 
-(defun olivertaylor.net ()
-  "Helpful stuff for coding my website."
-  (interactive)
-  (load "~/home/src/olivertaylor/lib/helper.el")
-  (oht-site-transient))
 (custom-set-variables
  '(olivetti-body-width 86))
 

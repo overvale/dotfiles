@@ -1785,7 +1785,7 @@ buffer, and exiting the agenda and releasing all the buffers."
               (elfeed-search-update-entry entry))
             entries)
       (unless (or elfeed-search-remain-on-entry (use-region-p))
-        (forward-line)))))
+        (forward-line))))
 
   (defun elfeed-show-visit-background ()
     "Visit the current entry in your browser using `browse-url'.

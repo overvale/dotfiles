@@ -11,7 +11,19 @@
 ;; This file has an outline which can be viewed by looking at comments
 ;; starting with three or more semicolons. `outline-minor-mode' supports this
 ;; convention by default and helps with navigation. You can also create an
-;; occur buffer with the search [^;;;+].
+;; occur buffer with the search /^;;;+/.
+
+
+;;; Preamble
+
+(defvar before-user-init-time (current-time)
+  "Value of `current-time' when Emacs begins loading `user-init-file'.")
+
+(message "Loading Emacs, pre-init...done (%.3fs)"
+         (float-time (time-subtract before-user-init-time
+                                    before-init-time)))
+
+(message "Loading %s..." user-init-file)
 
 
 ;;; Package Management
@@ -200,13 +212,6 @@
    '(display-battery-mode t)
    '(battery-mode-line-format " [%b%p%%]")))
 
-;; Restore garbage collection to a reasonable value.
-;; This is step 2, step one is in early-init.
-;; In my case this saves about .3 seconds in startup time.
-(add-hook 'emacs-startup-hook
-  (lambda ()
-    (setq gc-cons-threshold 16777216 ; 16mb
-          gc-cons-percentage 0.1)))
 
 ;;; Misc Functions
 
@@ -1822,6 +1827,22 @@ browser defined by `browse-url-generic-program'."
     "d" 'elfeed-show-youtube-dl)
 
   ) ; End elfeed
+
+
+;;; Wrap-up
+
+
+;; Restore garbage collection to a reasonable value.
+;; This is step 2, step one is in early-init.
+;; In my case this saves about .3 seconds in startup time.
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (setq gc-cons-threshold 16777216 ; 16mb
+          gc-cons-percentage 0.1)))
+
+(message "Loading init file...done (%.3fs)"
+         (float-time (time-subtract (current-time)
+                                    before-user-init-time)))
 
 
 ;;; End of init.el

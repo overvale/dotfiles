@@ -182,6 +182,7 @@
  '(fill-column 78))
 
 (when (eq system-type 'darwin)
+  (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
   (setq locate-command "mdfind"
         trash-dircetory "~/.Trash"))
 
@@ -1091,7 +1092,8 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
 (with-eval-after-load 'flyspell
-  (blackout 'flyspell-mode " Spell"))
+  (blackout 'flyspell-mode " Spell")
+  (setq ispell-program-name "/usr/local/bin/aspell"))
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 

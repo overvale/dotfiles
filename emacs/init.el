@@ -96,6 +96,8 @@
 ;; are required for it to work correctly.
 
 (autoload 'transient-define-prefix "transient" nil t)
+(autoload 'org-store-link "org" nil t)
+(autoload 'dired-jump "dired-x" nil t)
 (require 'dash)
 
 (defun define-keys (keymap &rest pairs)
@@ -1024,7 +1026,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 ;;; Embark
 
 (with-eval-after-load 'embark
-  (autoload 'dired-jump "dired")
   (define-keys embark-file-map
     "O" 'crux-open-with
     "j" 'dired-jump)
@@ -1519,8 +1520,6 @@ buffer, and exiting the agenda and releasing all the buffers."
 
 ;;; Transient
 
-(autoload 'org-store-link "org")
-(autoload 'dired-jump "dired" nil t)
 (transient-define-prefix general-transient ()
   "General-purpose transient."
   [["Actions/Toggles"

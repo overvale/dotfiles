@@ -1145,11 +1145,14 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 ;;; Miscellaneous
 
 (global-set-key [remap yank-pop] 'consult-yank-pop)
+
 (custom-set-variables
- '(consult-config
-   `((consult-mark :preview-key any))))
+ '(consult-find-command "fd --color=never --full-path ARG OPTS"))
 
 (with-eval-after-load 'consult
+
+  (consult-customize consult-line :preview-key nil)
+
   (with-eval-after-load 'embark
     (require 'embark-consult)))
 

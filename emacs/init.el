@@ -1881,6 +1881,8 @@ buffer, and exiting the agenda and releasing all the buffers."
   (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs"))
   (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
 
+  (setq youtube-dl-path "/usr/local/bin/youtube-dl")
+
   (defun elfeed-show-youtube-dl ()
     "In elfeed-show-mode, download a video using youtube-dl."
     (interactive)

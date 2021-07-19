@@ -589,7 +589,7 @@ Keybindings you define here will take precedence."
 (custom-set-variables
  '(modus-themes-italic-constructs t)
  '(modus-themes-links '(neutral-underline))
- '(modus-themes-mode-line '(accented borderless))
+ '(modus-themes-mode-line '(3d))
  '(modus-themes-prompts '(bold))
  '(modus-themes-completions 'opinionated)
  '(modus-themes-region '(bg-only))
@@ -613,7 +613,7 @@ Keybindings you define here will take precedence."
 (when (eq system-type 'darwin)
   (custom-set-variables
    '(facedancer-monospace-family "IBM Plex Mono")
-   '(facedancer-variable-family  "IBM Plex Sans")
+   '(facedancer-variable-family  "IBM Plex Serif")
    '(facedancer-mode-line-family "IBM Plex Sans")
    '(facedancer-mode-line-height 13)))
 

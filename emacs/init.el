@@ -89,6 +89,25 @@
 (when (string= (system-name) "shadowfax.local")
   (add-to-list 'package-selected-packages 'elfeed t))
 
+(defun package-menu-filter-by-status (status)
+  ;; https://github.com/jcs090218/jcs-emacs/blob/38cce9fc9046ef436c59e13d9942a719dc1e8f2e/.emacs.jcs/jcs-package.el#L582
+  "Filter the *Packages* buffer by STATUS."
+  (interactive
+   (list (completing-read
+          "Status: " '("ALL"
+                       "available"
+                       "built-in"
+                       "dependency"
+                       "incompat"
+                       "installed"
+                       "new"
+                       "obsolete"))))
+  (if (string= status "ALL")
+      (package-list-packages)
+    (package-menu-filter (concat "status:" status))))
+
+(define-key package-menu-mode-map (kbd "/ s") 'package-menu-filter-by-status)
+
 
 ;;; Macros & Critical Functions
 

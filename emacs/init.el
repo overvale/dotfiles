@@ -1000,14 +1000,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
 (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)
 
-(with-eval-after-load 'embark
-  (autoload 'dired-jump "dired")
-  (define-keys embark-file-map
-    "O" 'crux-open-with
-    "j" 'dired-jump)
-  (define-key embark-url-map
-    "&" 'browse-url-default-macosx-browser))
-
 (setq search-whitespace-regexp ".*?")
 (setq isearch-lax-whitespace t)
 (setq isearch-lazy-count t)
@@ -1027,6 +1019,90 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
 ;; Quit isearch when calling occur
 (add-to-list 'isearch-mb--after-exit #'occur)
+
+
+;;; Embark
+
+(with-eval-after-load 'embark
+  (autoload 'dired-jump "dired")
+  (define-keys embark-file-map
+    "O" 'crux-open-with
+    "j" 'dired-jump)
+  (define-key embark-url-map
+    "&" 'browse-url-default-macosx-browser))
+
+;; Embark Action Indicator
+;; Show Embark actions in a pop-up buffer. This should be the default, in my opinion.
+;; https://codeberg.org/jao/elibs/src/branch/main/completion.org
+
+(defvar jao-embark--actions-buffer "*Embark Actions*")
+
+(defvar jao-embark--default-display
+  `((,(regexp-quote jao-embark--actions-buffer)
+     (display-buffer-at-bottom)
+     ;;(window-parameters (mode-line-format . none))
+     (window-height . fit-window-to-buffer))))
+
+(setq jao-embark--excluded
+      '(embark-collect-snapshot embark-collect-live embark-export
+                                embark-keymap-help embark-become embark-isearch nil))
+
+(defun jao-embark--key-str (k)
+  (if (numberp k) (single-key-description k) (key-description k)))
+
+(defun jao-embark--bind-desc (descs x prefix)
+  (let ((k (car x)) (c (cdr x)))
+    (cond ((keymapp c)
+           (let ((cds (jao-embark--keymap-descs c (jao-embark--key-str k))))
+             (cons (max (or (car cds) 0) (or (car descs) 0))
+                   (cons (max (or (cadr cds) 0) (or (cadr descs) 0))
+                         (append (cddr descs) (cddr cds))))))
+          ((memq c jao-embark--excluded) descs)
+          ((symbolp c)
+           (let* ((desc (jao-embark--key-str k))
+                  (desc (format "%s%s" (or prefix "") desc))
+                  (doc (car (split-string
+                             (or (ignore-errors (documentation c)) "")
+                             "\n")))
+                  (fun (symbol-name c)))
+             (cons (max (length desc) (car descs))
+                   (cons (max (length fun) (cadr descs))
+                         (cons (list desc fun doc) (cddr descs))))))
+          (t (message "i've skipped %S" x) descs))))
+
+(defun jao-embark--keymap-descs (k prefix)
+  (seq-reduce `(lambda (descs x) (jao-embark--bind-desc descs x ,prefix))
+              (cdr (keymap-canonicalize k)) '(0 0)))
+
+(defun jao-embark--dstr (d)
+  (let ((s (cadr d))) (if (string-prefix-p "embark" s) "" s)))
+
+(defun jao-embark--show-keymap (keymap &optional target)
+  (with-current-buffer (get-buffer-create jao-embark--actions-buffer)
+    (read-only-mode -1)
+    (setq-local cursor-type nil)
+    (delete-region (point-min) (point-max))
+    (let* ((descs (jao-embark--keymap-descs keymap ""))
+           (fmt (format "%%-%ds  %%-%ds   %%s\n" (cadr descs) (car descs))))
+      (seq-each (lambda (desc)
+                  (insert (format fmt
+                                  (propertize (cadr desc) 'face 'embark-collect-candidate)
+                                  (propertize (car desc) 'face 'embark-keybinding)
+                                  (propertize (caddr desc) 'face 'embark-collect-annotation))))
+                (seq-sort-by 'jao-embark--dstr 'string-greaterp (cddr descs))))
+    (if target (insert (format "\nAction for '%s'" target)) (delete-char -1))
+    (read-only-mode 1)
+    (let ((display-buffer-alist
+           (append display-buffer-alist jao-embark--default-display)))
+      (pop-to-buffer (current-buffer) nil t))
+    (lambda ()
+      (embark-kill-buffer-and-window jao-embark--actions-buffer)
+      (when (or (bound-and-true-p selectrum-is-active)
+                (bound-and-true-p current-minibuffer-command))
+        (select-window (minibuffer-window))))))
+
+(setq embark-action-indicator  #'jao-embark--show-keymap
+      embark-become-indicator embark-action-indicator)
 
 
 ;;; Outline

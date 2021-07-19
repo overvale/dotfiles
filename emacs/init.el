@@ -1366,6 +1366,8 @@ as an argument limits undo to changes within the current region."
 (autoload 'oht-org-agenda-today "org")
 
 (add-hook 'org-mode-hook 'org-autolist-mode)
+(with-eval-after-load 'org-autolist
+  (blackout 'org-autolist-mode))
 
 (with-eval-after-load 'org
 

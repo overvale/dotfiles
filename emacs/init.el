@@ -32,9 +32,9 @@
 
 ;;; Package Management
 
-;; Packages are configured first so that then you open this config one a new
+;; Packages are configured first so that when you open this config on a new
 ;; machine, all the packages needed to make it work are in
-;; `package-selected-packages' and you can quickly install them all with
+;; `package-selected-packages' and you can quickly install them with
 ;; `package-install-selected-packages'. At which point the whole config should
 ;; be ready to rock.
 
@@ -984,6 +984,8 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 ;; When combined with my navigation keymap the two act like a very lightweight
 ;; vim emulation, but in an entirely emacs-y way.
 
+(delete-selection-mode -1)
+
 (selected-global-mode 1)
 
 (defun disable-selected-minor-mode ()
@@ -1627,6 +1629,7 @@ buffer, and exiting the agenda and releasing all the buffers."
     ("r" "Rotate"     toggle-window-split)
     ("F" "Find Other Win" find-file-other-window)]
    ["Window"
+    ;; TODO: https://www.gnu.org/software/emacs/manual/html_node/emacs/Configuration-Registers.html
     ("d" "Dedicate Window" dedicated-mode)
     ("c" "Clone Indirect" clone-indirect-buffer)
     ("t" "Tear Off" tear-off-window)
@@ -1938,7 +1941,7 @@ browser defined by `browse-url-generic-program'."
 ;;; Wrap-up
 
 ;; Restore garbage collection to a reasonable value.
-;; This is step 2, step one is in early-init.
+;; This is step 2, step 1 is in early-init.
 ;; In my case this saves about .3 seconds in startup time.
 (add-hook 'emacs-startup-hook
   (lambda ()

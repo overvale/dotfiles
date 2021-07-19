@@ -1629,6 +1629,7 @@ buffer, and exiting the agenda and releasing all the buffers."
     ("b" "Balance"    balance-windows)
     ("f" "Fit"        fit-window-to-buffer)
     ("r" "Rotate"     toggle-window-split)
+    ("s" "Swap"       rotate-windows)
     ("F" "Find Other Win" find-file-other-window)]
    ["Window"
     ;; TODO: https://www.gnu.org/software/emacs/manual/html_node/emacs/Configuration-Registers.html

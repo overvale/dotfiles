@@ -217,20 +217,6 @@
   (setq locate-command "mdfind"
         trash-dircetory "~/.Trash"))
 
-;; Mode Line
-(custom-set-variables
- '(display-time-format " %Y-%m-%d  %H:%M")
- '(display-time-interval 60)
- '(display-time-default-load-average nil)
- '(column-number-mode t)
- '(display-time-mode t))
-
-;; Include battery in mode-line on laptop
-(when (string= (system-name) "shadowfax.local")
-  (custom-set-variables
-   '(display-battery-mode t)
-   '(battery-mode-line-format " [%b%p%%]")))
-
 
 ;;; Misc Functions
 

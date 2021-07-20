@@ -89,7 +89,8 @@
   (exec-path-from-shell-initialize))
 
 (when (string= (system-name) "shadowfax.local")
-  (add-to-list 'package-selected-packages 'elfeed t))
+  (add-to-list 'package-selected-packages 'elfeed t)
+  (add-to-list 'package-selected-packages 'ytdl t))
 
 (defun package-menu-filter-by-status (status)
   ;; https://github.com/jcs090218/jcs-emacs/blob/38cce9fc9046ef436c59e13d9942a719dc1e8f2e/.emacs.jcs/jcs-package.el#L582
@@ -1051,8 +1052,9 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
   (define-keys embark-file-map
     "O" 'crux-open-with
     "j" 'dired-jump)
-  (define-key embark-url-map
-    "&" 'browse-url-default-macosx-browser))
+  (define-keys embark-url-map
+    "d" 'ytdl-download
+    "b" 'browse-url-default-macosx-browser))
 
 ;; Embark Action Indicator
 ;; Show Embark actions in a pop-up buffer. This should be the default, in my opinion.
@@ -1214,6 +1216,9 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
 (custom-set-variables
  '(olivetti-body-width 86))
+
+(setq ytdl-media-player "open")
+(setq ytdl-always-query-default-filename 'yes-confirm) ; Get filename from server
 
 
 ;;; Undo Backport
@@ -1887,15 +1892,6 @@ buffer, and exiting the agenda and releasing all the buffers."
   (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs"))
   (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
 
-  (defun elfeed-show-youtube-dl ()
-    "In elfeed-show-mode, download a video using youtube-dl."
-    (interactive)
-    (async-shell-command (format "%s -o \"%s%s\" -f mp4 \"%s\""
-                                 youtube-dl-path
-                                 user-downloads-directory
-                                 "%(title)s.%(ext)s"
-                                 (elfeed-entry-link elfeed-show-entry))))
-
   (defun elfeed-search-browse-url-background ()
     "Open current `elfeed' entry (or region entries) in browser without losing focus."
     (interactive)
@@ -1934,7 +1930,7 @@ browser defined by `browse-url-generic-program'."
     "8" 'elfeed-show-tag--unstar
     "b" 'elfeed-show-visit-background
     "o" 'delete-other-windows
-    "d" 'elfeed-show-youtube-dl)
+    "d" 'ytdl-download)
 
   ) ; End elfeed
 

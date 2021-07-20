@@ -84,7 +84,9 @@
         transient))
 
 (when (eq system-type 'darwin)
-  (add-to-list 'package-selected-packages 'magit t))
+  (add-to-list 'package-selected-packages 'magit t)
+  (add-to-list 'package-selected-packages 'exec-path-from-shell t)
+  (exec-path-from-shell-initialize))
 
 (when (string= (system-name) "shadowfax.local")
   (add-to-list 'package-selected-packages 'elfeed t))
@@ -211,7 +213,6 @@
  '(fill-column 78))
 
 (when (eq system-type 'darwin)
-  (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
   (setq locate-command "mdfind"
         trash-dircetory "~/.Trash"))
 
@@ -1200,8 +1201,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
 (with-eval-after-load 'flyspell
-  (blackout 'flyspell-mode " Spell")
-  (setq ispell-program-name "/usr/local/bin/aspell"))
+  (blackout 'flyspell-mode " Spell"))
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
@@ -1886,8 +1886,6 @@ buffer, and exiting the agenda and releasing all the buffers."
   (defun elfeed-search:emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
   (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs"))
   (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
-
-  (setq youtube-dl-path "/usr/local/bin/youtube-dl")
 
   (defun elfeed-show-youtube-dl ()
     "In elfeed-show-mode, download a video using youtube-dl."

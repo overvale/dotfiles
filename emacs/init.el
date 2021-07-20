@@ -583,7 +583,7 @@ Keybindings you define here will take precedence."
  '(modus-themes-region '(bg-only))
  '(modus-themes-diffs '(desaturated))
  '(modus-themes-org-blocks '(gray-background))
- '(modus-themes-syntax '(yellow-comments green-strings)))
+ '(modus-themes-syntax '(faint yellow-comments green-strings)))
 
 (modus-themes-load-themes)
 (modus-themes-load-operandi)
@@ -959,8 +959,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
   (message "Navigation Keymap Deactivated")
   (remove-function (local 'eldoc-documentation-function)
                    #'navigation-keymap-eldoc-function))
-
-(define-key bosskey-mode-map (kbd "s-j") 'navigation-keymap--activate)
 
 
 ;;; Selected
@@ -1901,7 +1899,7 @@ browser defined by `browse-url-generic-program'."
         (browse-url-macos-background link))))
 
   (define-keys elfeed-search-mode-map
-    "b" 'elfeed-search-browse-url
+    "b" 'elfeed-search-browse-url-background
     "*" 'elfeed-search-tag--star
     "8" 'elfeed-search-untag--star
     "o" 'delete-other-windows

@@ -479,6 +479,36 @@ With a prefix ARG always prompt for command to use."
     (load "~/home/src/olivertaylor/lib/helper.el")
     (oht-site-transient)))
 
+;; Web Search Tools
+
+(defun url-search-query (name)
+  "Prompt user for url-search query to be passed to url-search-run."
+  (let ((default (current-word))
+        (enable-recursive-minibuffers t))
+    (read-string (if default
+                     (format "Search %s (default %s): " name default)
+                   (format "Search %s: " name))
+                 nil nil default)))
+
+(defun url-search-run (search-url search-string)
+  "Browse the combined search-url with hexified search-string."
+  (browse-url (concat search-url (url-hexify-string search-string))))
+
+(defun url-search-google (query)
+  "Search google for given string."
+  (interactive (list (url-search-query "google")))
+  (url-search-run "http://www.google.com/search?q=" query))
+
+(defun url-search-wikipedia (query)
+  "Search wikipedia for given string."
+  (interactive (list (url-search-query "wikipedia")))
+  (url-search-run "http://en.wikipedia.org/wiki/Special:Search?go=Go&search=" query))
+
+(defun url-search-github-elisp (query)
+  "Search github for given string as elisp code."
+  (interactive (list (url-search-query "github")))
+  (url-search-run "https://github.com/search?l=Emacs+Lisp&type=Code&q=" query))
+
 
 ;;; Personal Keybindings
 

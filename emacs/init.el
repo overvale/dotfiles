@@ -509,6 +509,14 @@ With a prefix ARG always prompt for command to use."
   (interactive (list (url-search-query "github")))
   (url-search-run "https://github.com/search?l=Emacs+Lisp&type=Code&q=" query))
 
+(defun frames-p-save-buffers-kill-emacs ()
+  "If more than one frame exists, confirm exit of Emacs."
+  (interactive)
+  (if (nth 1 (frame-list))
+      (if (y-or-n-p "More than one frame exists, really quit?")
+          (save-buffers-kill-emacs))
+    (save-buffers-kill-emacs)))
+
 
 ;;; Personal Keybindings
 
@@ -535,7 +543,7 @@ Keybindings you define here will take precedence."
 ;; Mac-like bindings
 (when (eq system-type 'darwin)
   (define-keys bosskey-mode-map
-    "s-q"       'save-buffers-kill-terminal
+    "s-q"       'frames-p-save-buffers-kill-emacs
     "s-m"       'iconify-frame
     "s-w"       'delete-frame
     "s-n"       'make-frame-command

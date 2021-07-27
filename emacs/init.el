@@ -1217,6 +1217,9 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (setq ytdl-media-player "open")
 (setq ytdl-always-query-default-filename 'yes-confirm) ; Get filename from server
 
+(add-to-list 'load-path "~/home/src/lisp/vundo/")
+(require 'vundo)
+
 
 ;;; Org
 

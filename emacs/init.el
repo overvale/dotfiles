@@ -65,12 +65,15 @@
         blackout
         consult
         dash
+        elfeed
         embark
         embark-consult
+        exec-path-from-shell
         expand-region
         fountain-mode
         isearch-mb
         lua-mode
+        magit
         marginalia
         markdown-mode
         modus-themes
@@ -81,16 +84,8 @@
         vertico
         visual-regexp
         visual-regexp-steroids
+        ytdl
         transient))
-
-(when (eq system-type 'darwin)
-  (add-to-list 'package-selected-packages 'magit t)
-  (add-to-list 'package-selected-packages 'exec-path-from-shell t)
-  (exec-path-from-shell-initialize))
-
-(when (string= (system-name) "shadowfax.local")
-  (add-to-list 'package-selected-packages 'elfeed t)
-  (add-to-list 'package-selected-packages 'ytdl t))
 
 (defun package-menu-filter-by-status (status)
   ;; https://github.com/jcs090218/jcs-emacs/blob/38cce9fc9046ef436c59e13d9942a719dc1e8f2e/.emacs.jcs/jcs-package.el#L582
@@ -121,6 +116,7 @@
 (autoload 'org-store-link "org" nil t)
 (autoload 'dired-jump "dired-x" nil t)
 (require 'dash)
+(exec-path-from-shell-initialize)
 
 (defun define-keys (keymap &rest pairs)
   "Define alternating key-def PAIRS for KEYMAP."
@@ -145,24 +141,16 @@
 
 ;;; Preferences
 
-(when (eq system-type 'darwin)
-  (cd "~/home")
-  (defvar oht-dotfiles             "~/home/dot/emacs/")
-  (defvar oht-orgfiles             "~/home/org/")
-  (defvar user-downloads-directory "~/Downloads/")
-  (setq mac-command-modifier 'super
-        mac-option-modifier 'meta
-        mac-right-command-modifier 'meta
-        mac-right-option-modifier 'nil))
+(cd "~/home/")
 
-(when (eq system-type 'windows-nt)
-  (cd "~/")
-  (defvar oht-dotfiles             "~/.emacs.d/")
-  (defvar oht-orgfiles             "~/home/org/")
-  (defvar user-downloads-directory "~/home/Downloads/")
-  (setq w32-pass-lwindow-to-system nil)
-  (setq w32-lwindow-modifier 'super)
-  (w32-register-hot-key [s-]))
+(defvar oht-dotfiles             "~/home/dot/emacs/")
+(defvar oht-orgfiles             "~/home/org/")
+(defvar user-downloads-directory "~/Downloads/")
+
+(setq mac-command-modifier 'super
+      mac-option-modifier 'meta
+      mac-right-command-modifier 'meta
+      mac-right-option-modifier 'nil)
 
 ;; Save all interactive customization to a temp file, which is never loaded.
 ;; This means interactive customization is session-local. Only this init file persists sessions.
@@ -211,11 +199,9 @@
  '(mark-even-if-inactive nil)
  '(tab-width 4)
  '(indent-tabs-mode nil)
- '(fill-column 78))
-
-(when (eq system-type 'darwin)
-  (setq locate-command "mdfind"
-        trash-dircetory "~/.Trash"))
+ '(fill-column 78)
+ '(locate-command "mdfind")
+ '(trash-dircetory "~/.Trash"))
 
 
 ;;; Misc Functions
@@ -340,12 +326,11 @@ Uses the `default-directory' unless a path is supplied."
 
 (defalias 'find-files-recursively 'find-file-recursively)
 
-(when (eq system-type 'darwin)
-  (defun browse-url-macos-background (url)
-    "Open URL with macOS `open'."
-    (interactive)
-    (start-process "open url"
-                   nil "open" "--background" url)))
+(defun browse-url-macos-background (url)
+  "Open URL with macOS `open'."
+  (interactive)
+  (start-process "open url"
+                 nil "open" "--background" url))
 
 (defun exchange-point-and-mark-dwim ()
   "Respect region active/inactive and swap point and mark.
@@ -472,12 +457,11 @@ With a prefix ARG always prompt for command to use."
           (message "Deleted file %s" filename)
           (kill-buffer))))))
 
-(when (eq system-type 'darwin)
-  (defun olivertaylor.net ()
-    "Helpful stuff for coding my website."
-    (interactive)
-    (load "~/home/src/olivertaylor/lib/helper.el")
-    (oht-site-transient)))
+(defun olivertaylor.net ()
+  "Helpful stuff for coding my website."
+  (interactive)
+  (load "~/home/src/olivertaylor/lib/helper.el")
+  (oht-site-transient))
 
 ;; Web Search Tools
 
@@ -541,24 +525,24 @@ Keybindings you define here will take precedence."
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
 ;; Mac-like bindings
-(when (eq system-type 'darwin)
-  (define-keys bosskey-mode-map
-    "s-q"       'frames-p-save-buffers-kill-emacs
-    "s-m"       'iconify-frame
-    "s-w"       'delete-frame
-    "s-n"       'make-frame-command
-    "s-s"       'save-buffer
-    "s-,"       'find-user-init-file
-    "s-o"       'find-file
-    "s-z"       'undo-only
-    "s-Z"       'undo-redo
-    "s-x"       'kill-region
-    "s-c"       'kill-ring-save
-    "s-v"       'yank
-    "s-<left>"  'beginning-of-visual-line
-    "s-<right>" 'end-of-visual-line
-    "s-<up>"    'beginning-of-buffer
-    "s-<down>"  'end-of-buffer))
+(define-keys bosskey-mode-map
+  "s-q"       'frames-p-save-buffers-kill-emacs
+  "s-m"       'iconify-frame
+  "s-w"       'delete-frame
+  "s-n"       'make-frame-command
+  "s-s"       'save-buffer
+  "s-,"       'find-user-init-file
+  "s-o"       'find-file
+  "s-b"       'consult-buffer
+  "s-z"       'undo-only
+  "s-Z"       'undo-redo
+  "s-x"       'kill-region
+  "s-c"       'kill-ring-save
+  "s-v"       'yank
+  "s-<left>"  'beginning-of-visual-line
+  "s-<right>" 'end-of-visual-line
+  "s-<up>"    'beginning-of-buffer
+  "s-<down>"  'end-of-buffer)
 
 (define-keys bosskey-mode-map
   "C-<return>" 'general-transient
@@ -629,28 +613,17 @@ Keybindings you define here will take precedence."
 ;; If on a Mac, assume Mitsuharu Yamamoto’s fork -- check for dark/light mode,
 ;; if dark mode load the dark theme, also add a hook for syncing with the
 ;; system.
-(when (eq system-type 'darwin)
-  (if (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua")
-      (modus-themes-load-vivendi))
-  (add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle))
+(if (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua")
+    (modus-themes-load-vivendi))
+(add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle)
 
 (setq text-scale-mode-step 1.09)
 
-(when (eq system-type 'darwin)
-  (custom-set-variables
-   '(facedancer-monospace-family "IBM Plex Mono")
-   '(facedancer-variable-family  "IBM Plex Serif")
-   '(facedancer-mode-line-family "IBM Plex Sans")
-   '(facedancer-mode-line-height 13)))
-
-(when (eq system-type 'windows-nt)
-  (custom-set-variables
-   '(facedancer-monospace-family "Consolas")
-   '(facedancer-variable-family  "Calibri")
-   '(facedancer-mode-line-family "Calibri")
-   '(facedancer-monospace-height 10)
-   '(facedancer-variable-height 11)
-   '(facedancer-mode-line-height 11)))
+(custom-set-variables
+ '(facedancer-monospace-family "IBM Plex Mono")
+ '(facedancer-variable-family  "IBM Plex Serif")
+ '(facedancer-mode-line-family "IBM Plex Sans")
+ '(facedancer-mode-line-height 13))
 
 (autoload 'blackout "blackout" nil t)
 (blackout 'eldoc-mode)
@@ -1217,12 +1190,11 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (add-to-list 'auto-mode-alist
              '("\\.text" . markdown-mode))
 
-(when (string= (system-name) "shadowfax.local")
-  (add-to-list 'load-path "~/home/src/oblique-strategies/")
-  (autoload 'oblique-strategy "oblique")
-  (setq initial-scratch-message (concat
-                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
-                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
+(add-to-list 'load-path "~/home/src/oblique-strategies/")
+(autoload 'oblique-strategy "oblique")
+(setq initial-scratch-message (concat
+                               ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
+                               ";; Oblique Strategy: " (oblique-strategy) "\n\n"))
 
 (with-eval-after-load 'flyspell
   (blackout 'flyspell-mode " Spell"))
@@ -1443,8 +1415,7 @@ as an argument limits undo to changes within the current region."
 
   (setq org-agenda-files (list oht-orgfiles))
 
-  (when (string= (system-name) "shadowfax.local")
-    (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org"))
+  (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org")
 
   (defun find-org-files ()
     "Find org files in your org directory, pass to completing-read."

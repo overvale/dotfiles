@@ -1193,7 +1193,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (add-to-list 'auto-mode-alist
              '("\\.text" . markdown-mode))
 
-(add-to-list 'load-path "~/home/src/oblique-strategies/")
+(add-to-list 'load-path "~/home/src/lisp/oblique-strategies/")
 (autoload 'oblique-strategy "oblique")
 (setq initial-scratch-message (concat
                                ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
@@ -1723,7 +1723,7 @@ buffer, and exiting the agenda and releasing all the buffers."
    '(elfeed-db-directory (concat user-emacs-directory "elfeed/"))
    '(elfeed-enclosure-default-dir user-downloads-directory))
 
-  (load "~/home/src/rss-feeds.el")
+  (load "~/home/src/lisp/rss-feeds.el")
 
   ;; Why doesn't this exist in show mode?
   (defalias 'elfeed-show-tag--unread (elfeed-expose #'elfeed-show-tag 'unread)

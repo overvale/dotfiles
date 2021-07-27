@@ -1288,6 +1288,10 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     (find-file (completing-read "Find Org Files: "
                                 (directory-files-recursively user-orgfiles-directory "\.org$"))))
 
+  (defun consult-grep-orgfiles ()
+    (interactive)
+    (consult-grep user-orgfiles-directory))
+
   (setq org-agenda-custom-commands
         '(("1" "TODAY: Today's Agenda + Priority Tasks"
            ((agenda "d" ((org-agenda-span 'day)))
@@ -1441,7 +1445,8 @@ buffer, and exiting the agenda and releasing all the buffers."
     ("a" "Agenda..." org-agenda)]
    ["Other"
     ("k" "Capture" org-capture)
-    ("s" "Store Link" org-store-link)]])
+    ("s" "Store Link" org-store-link)
+    ("g" "Grep Orgfiles" consult-grep-orgfiles)]])
 
 (transient-define-prefix general-transient--toggles ()
   :transient-suffix 'transient--do-stay

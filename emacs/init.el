@@ -40,12 +40,15 @@
 
 (require 'package)
 
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("gnu-devel" . "https://elpa.gnu.org/devel/")))
 
 (setq package-archive-priorities '(("gnu" . 30)
                                    ("melpa-stable" . 20)
-                                   ("melpa" . 10)))
+                                   ("melpa" . 10)
+                                   ("gnu-devel" . 0)))
 
 (setq pkg-ops-map
   (let ((map (make-sparse-keymap "Packages")))

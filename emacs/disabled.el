@@ -198,7 +198,6 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
                      embark-candidate-collectors))
 
 
-
 ;;; PDFs
 
 ;; TODO: remove this
@@ -321,6 +320,7 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
   (smtpmail-smtp-server "smtp.gmail.com")
   (smtpmail-smtp-service 587))
 
+
 ;;; Use-Package Autoremove
 
 ;; I want my init file to define all the packages I use, install them, and
@@ -371,10 +371,7 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
 (add-hook 'after-init--hook 'use-package-autoremove)
 
 
-
 ;;; Replacing Package with Straight
-
-;;;; in early-init
 
 ;; Normally, packages are initialized prior to loading a user's init file.
 ;; If you're using straight instead of package this is an unnecessary step,
@@ -401,19 +398,6 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
 ;; Install all declared packages. Can be overridden with `:straight nil'.
 (setq straight-use-package-by-default t)
 
-;;; Garbage Collection
-
-
-;; Stolen from doom-emacs/early-init.el
-(setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
-      gc-cons-percentage 0.6)
-
-;; ...then, in init.el:
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (setq gc-cons-threshold 16777216 ; 16mb
-                  gc-cons-percentage 0.1)
-            (garbage-collect)) t)
 
 ;;; Composition mode
 
@@ -440,6 +424,7 @@ mode-line."
       (variable-pitch-mode -1)
       ;; This shouldn't be needed, but is:
       (toggle-truncate-lines 1))))
+
 
 ;;; Lisp Alternative to Use-Package
 
@@ -482,6 +467,8 @@ mode-line."
    [("u" "Update" helpful-update)
     ("V" "Visit Reference" helpful-visit-reference)
     ("K" "Kill Helpful Buffers" helpful-kill-buffers)]])
+
+
 ;;; Mouse Window Splits
 
 ;; s-click to split windows at that exact spot
@@ -490,6 +477,7 @@ mode-line."
 
 ;; Delete a window with M-s--click
 (global-set-key [M-s-mouse-1] 'mouse-delete-window)
+
 
 ;;; Macros
 
@@ -586,6 +574,7 @@ call that function with a hook, like so:
   (setq-local facedancer-monospace-family "Go Mono")
   (facedancer-mode 'toggle))
 
+
 ;;; Transient Keymaps
 
 (defun test/easy-nav ()
@@ -628,6 +617,7 @@ call that function with a hook, like so:
 (define-key transpose-keymap "p" 'move-text-up)
 (define-key transpose-keymap "n" 'move-text-down)
        map) t))
+
 
 ;;; EWW
 
@@ -810,8 +800,8 @@ To be used by `eww-after-render-hook'."
 
   ) ; End "use-package elfeed"
 
-;;; iBuffer
 
+;;; iBuffer
 
 (setq ibuffer-show-empty-filter-groups nil)
 
@@ -829,6 +819,7 @@ To be used by `eww-after-render-hook'."
   (ibuffer-switch-to-saved-filter-groups "default"))
 
 (add-hook 'ibuffer-mode-hook 'ibuffer-setup)
+
 
 ;;; Pulse
 
@@ -853,7 +844,7 @@ To be used by `eww-after-render-hook'."
 (advice-add 'yank :around #'ct/yank-pulse-advice)
 
 
-;;;; Remember Mode
+;;; Remember Mode
 
 (custom-set-variables
  '(remember-data-file (concat oht-orgfiles "remember-notes"))
@@ -868,3 +859,4 @@ To be used by `eww-after-render-hook'."
     (remember)))
 
 
+;;; disabled.el ends here

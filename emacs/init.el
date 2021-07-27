@@ -497,8 +497,9 @@ With a prefix ARG always prompt for command to use."
   "If more than one frame exists, confirm exit of Emacs."
   (interactive)
   (if (nth 1 (frame-list))
-      (if (y-or-n-p "More than one frame exists, really quit?")
-          (save-buffers-kill-emacs))
+      (if (y-or-n-p "Multiple frames exist; exit anyway?")
+          (save-buffers-kill-emacs)
+        nil)
     (save-buffers-kill-emacs)))
 
 
@@ -1886,7 +1887,7 @@ buffer, and exiting the agenda and releasing all the buffers."
   (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
 
   (defun elfeed-search-browse-url-background ()
-    "Open current `elfeed' entry (or region entries) in browser without losing focus."
+    "Visit the current entry, or region entries, in browser without losing focus."
     (interactive)
     (let ((entries (elfeed-search-selected)))
       (mapc (lambda (entry)

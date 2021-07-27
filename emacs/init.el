@@ -117,6 +117,8 @@
 (defvar user-downloads-directory "~/Downloads/")
 
 (add-to-list 'load-path (concat user-dotemacs-directory "lisp/"))
+(require 'undo-backport)
+(require 'radian-directories)
 
 (setq mac-command-modifier 'super
       mac-option-modifier 'meta
@@ -127,7 +129,6 @@
 (autoload 'org-store-link "org" nil t)
 (autoload 'dired-jump "dired-x" nil t)
 (require 'dash)
-(require 'undo-backport)
 (exec-path-from-shell-initialize)
 
 (defun define-keys (keymap &rest pairs)

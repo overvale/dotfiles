@@ -107,15 +107,27 @@
 (define-key package-menu-mode-map (kbd "/ s") 'package-menu-filter-by-status)
 
 
-;;; Macros & Critical Functions
+;;; Critical Setup
 
-;; These packages, macros, and functions are used throughout the config and
-;; are required for it to work correctly.
+;; These variables, packages, macros, and functions are used throughout the
+;; config --- and are required for it to work correctly.
+
+(defvar user-dotemacs-directory  "~/home/dot/emacs/")
+(defvar user-orgfiles-directory  "~/home/org/")
+(defvar user-downloads-directory "~/Downloads/")
+
+(add-to-list 'load-path (concat user-dotemacs-directory "lisp/"))
+
+(setq mac-command-modifier 'super
+      mac-option-modifier 'meta
+      mac-right-command-modifier 'meta
+      mac-right-option-modifier 'nil)
 
 (autoload 'transient-define-prefix "transient" nil t)
 (autoload 'org-store-link "org" nil t)
 (autoload 'dired-jump "dired-x" nil t)
 (require 'dash)
+(require 'undo-backport)
 (exec-path-from-shell-initialize)
 
 (defun define-keys (keymap &rest pairs)
@@ -139,18 +151,7 @@
         (global-set-key key def)))))
 
 
-;;; Preferences
-
-(cd "~/home/")
-
-(defvar oht-dotfiles             "~/home/dot/emacs/")
-(defvar oht-orgfiles             "~/home/org/")
-(defvar user-downloads-directory "~/Downloads/")
-
-(setq mac-command-modifier 'super
-      mac-option-modifier 'meta
-      mac-right-command-modifier 'meta
-      mac-right-option-modifier 'nil)
+;;; Customizations
 
 ;; Save all interactive customization to a temp file, which is never loaded.
 ;; This means interactive customization is session-local. Only this init file persists sessions.
@@ -1216,150 +1217,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (setq ytdl-always-query-default-filename 'yes-confirm) ; Get filename from server
 
 
-;;; Undo Backport
-
-;; This is a backport of undo functions from Emacs 28, done by u/clemera.
-;; https://old.reddit.com/r/emacs/comments/j0fj7d/what_other_undoxx_packages_exist_besides_undotree/g6tndgw/
-
-;; Further reading:
-;; https://archive.casouri.cat/note/2021/visual-undo-tree/index.html
-;; https://github.com/casouri/vundo
-
-(defun undo-redo (&optional arg)
-  "Undo the last ARG undos."
-  (interactive "*p")
-  (cond
-   ((not (undo--last-change-was-undo-p buffer-undo-list))
-    (user-error "No undo to undo"))
-   (t
-    (let* ((ul buffer-undo-list)
-           (new-ul
-            (let ((undo-in-progress t))
-              (while (and (consp ul) (eq (car ul) nil))
-                (setq ul (cdr ul)))
-              (primitive-undo arg ul)))
-           (new-pul (undo--last-change-was-undo-p new-ul)))
-      (message "Redo%s" (if undo-in-region " in region" ""))
-      (setq this-command 'undo)
-      (setq pending-undo-list new-pul)
-      (setq buffer-undo-list new-ul)))))
-
-(defun undo (&optional arg)
-  "Undo some previous changes.
-Repeat this command to undo more changes.
-A numeric ARG serves as a repeat count.
-
-In Transient Mark mode when the mark is active, undo changes only within
-the current region.  Similarly, when not in Transient Mark mode, just \\[universal-argument]
-as an argument limits undo to changes within the current region."
-  (interactive "*P")
-  ;; Make last-command indicate for the next command that this was an undo.
-  ;; That way, another undo will undo more.
-  ;; If we get to the end of the undo history and get an error,
-  ;; another undo command will find the undo history empty
-  ;; and will get another error.  To begin undoing the undos,
-  ;; you must type some other command.
-  (let* ((modified (buffer-modified-p))
-     ;; For an indirect buffer, look in the base buffer for the
-     ;; auto-save data.
-     (base-buffer (or (buffer-base-buffer) (current-buffer)))
-     (recent-save (with-current-buffer base-buffer
-            (recent-auto-save-p)))
-         ;; Allow certain commands to inhibit an immediately following
-         ;; undo-in-region.
-         (inhibit-region (and (symbolp last-command)
-                              (get last-command 'undo-inhibit-region)))
-     message)
-    ;; If we get an error in undo-start,
-    ;; the next command should not be a "consecutive undo".
-    ;; So set `this-command' to something other than `undo'.
-    (setq this-command 'undo-start)
-
-    (unless (and (eq last-command 'undo)
-         (or (eq pending-undo-list t)
-             ;; If something (a timer or filter?) changed the buffer
-             ;; since the previous command, don't continue the undo seq.
-             (undo--last-change-was-undo-p buffer-undo-list)))
-      (setq undo-in-region
-        (and (or (region-active-p) (and arg (not (numberp arg))))
-                 (not inhibit-region)))
-      (if undo-in-region
-      (undo-start (region-beginning) (region-end))
-    (undo-start))
-      ;; get rid of initial undo boundary
-      (undo-more 1))
-    ;; If we got this far, the next command should be a consecutive undo.
-    (setq this-command 'undo)
-    ;; Check to see whether we're hitting a redo record, and if
-    ;; so, ask the user whether she wants to skip the redo/undo pair.
-    (let ((equiv (gethash pending-undo-list undo-equiv-table)))
-      (or (eq (selected-window) (minibuffer-window))
-      (setq message (format "%s%s"
-                                (if (or undo-no-redo (not equiv))
-                                    "Undo" "Redo")
-                                (if undo-in-region " in region" ""))))
-      (when (and (consp equiv) undo-no-redo)
-    ;; The equiv entry might point to another redo record if we have done
-    ;; undo-redo-undo-redo-... so skip to the very last equiv.
-    (while (let ((next (gethash equiv undo-equiv-table)))
-         (if next (setq equiv next))))
-    (setq pending-undo-list equiv)))
-    (undo-more
-     (if (numberp arg)
-     (prefix-numeric-value arg)
-       1))
-    ;; Record the fact that the just-generated undo records come from an
-    ;; undo operation--that is, they are redo records.
-    ;; In the ordinary case (not within a region), map the redo
-    ;; record to the following undos.
-    ;; I don't know how to do that in the undo-in-region case.
-    (let ((list buffer-undo-list))
-      ;; Strip any leading undo boundaries there might be, like we do
-      ;; above when checking.
-      (while (eq (car list) nil)
-    (setq list (cdr list)))
-      (puthash list
-               ;; Prevent identity mapping.  This can happen if
-               ;; consecutive nils are erroneously in undo list.
-               (if (or undo-in-region (eq list pending-undo-list))
-                   t
-                 pending-undo-list)
-           undo-equiv-table))
-    ;; Don't specify a position in the undo record for the undo command.
-    ;; Instead, undoing this should move point to where the change is.
-    (let ((tail buffer-undo-list)
-      (prev nil))
-      (while (car tail)
-    (when (integerp (car tail))
-      (let ((pos (car tail)))
-        (if prev
-        (setcdr prev (cdr tail))
-          (setq buffer-undo-list (cdr tail)))
-        (setq tail (cdr tail))
-        (while (car tail)
-          (if (eq pos (car tail))
-          (if prev
-              (setcdr prev (cdr tail))
-            (setq buffer-undo-list (cdr tail)))
-        (setq prev tail))
-          (setq tail (cdr tail)))
-        (setq tail nil)))
-    (setq prev tail tail (cdr tail))))
-    ;; Record what the current undo list says,
-    ;; so the next command can tell if the buffer was modified in between.
-    (and modified (not (buffer-modified-p))
-     (with-current-buffer base-buffer
-       (delete-auto-save-file-if-necessary recent-save)))
-    ;; Display a message announcing success.
-    (if message
-        (message "%s" message))))
-
-(defun undo--last-change-was-undo-p (undo-list)
-  (while (and (consp undo-list) (eq (car undo-list) nil))
-    (setq undo-list (cdr undo-list)))
-  (gethash undo-list undo-equiv-table))
-
-
 ;;; Org
 
 (autoload 'oht-org-agenda-today-pop-up "org")
@@ -1414,7 +1271,7 @@ as an argument limits undo to changes within the current region."
                                        (tags priority-down category-keep)
                                        (search category-keep))))
 
-  (setq org-agenda-files (list oht-orgfiles))
+  (setq org-agenda-files (list user-orgfiles-directory))
 
   (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org")
 
@@ -1422,7 +1279,7 @@ as an argument limits undo to changes within the current region."
     "Find org files in your org directory, pass to completing-read."
     (interactive)
     (find-file (completing-read "Find Org Files: "
-                                (directory-files-recursively oht-orgfiles "\.org$"))))
+                                (directory-files-recursively user-orgfiles-directory "\.org$"))))
 
   (setq org-agenda-custom-commands
         '(("1" "TODAY: Today's Agenda + Priority Tasks"
@@ -1445,25 +1302,25 @@ as an argument limits undo to changes within the current region."
   (setq org-capture-templates
         `(("p" "Personal")
           ("pi" "Personal Inbox" entry
-           (file+headline ,(concat oht-orgfiles "life.org") "Inbox")
+           (file+headline ,(concat user-orgfiles-directory "life.org") "Inbox")
            "* %?\n\n" :empty-lines 1)
           ("pl" "Personal Log Entry" entry
-           (file+olp+datetree ,(concat oht-orgfiles "logbook.org"))
+           (file+olp+datetree ,(concat user-orgfiles-directory "logbook.org"))
            "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
           ;; -----------------------------
           ("s" "Scanline")
           ("si" "Scanline Inbox" entry
-           (file+headline ,(concat oht-orgfiles "scanline.org") "Inbox")
+           (file+headline ,(concat user-orgfiles-directory "scanline.org") "Inbox")
            "* %?\n\n" :empty-lines 1)
           ("sl" "Scanline Log Entry" entry
-           (file+olp+datetree ,(concat oht-orgfiles "scanline_logbook.org"))
+           (file+olp+datetree ,(concat user-orgfiles-directory "scanline_logbook.org"))
            "* %^{prompt}\n%T\n\n%?" :empty-lines 1 :tree-type week )
           ;; -----------------------------
           ("e" "Emacs Config" entry
-           (file+headline ,(concat oht-orgfiles "emacs.org") "Emacs Config")
+           (file+headline ,(concat user-orgfiles-directory "emacs.org") "Emacs Config")
            "* TODO %?" :empty-lines 1)
           ("k" "Kiddos Log Entry" entry
-           (file+olp+datetree ,(concat oht-orgfiles "kiddos_logbook.org"))
+           (file+olp+datetree ,(concat user-orgfiles-directory "kiddos_logbook.org"))
            "* %T\n\n%?" :empty-lines 1 :tree-type month )))
 
   ;; Functions for directly calling agenda commands, skipping the prompt.

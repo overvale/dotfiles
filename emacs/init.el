@@ -864,6 +864,45 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
              (buffer-name))))
 
 
+;;; Scratch Buffers
+
+;; It is sometimes useful to quickly create a scratch buffer in markdown- or
+;; org-mode (for editing text you're going to paste into a reddit
+;; comment/post, for example).
+
+(defvar scratch-markdown-initial-message "<!-- Scratch Buffer for Markdown Mode -->\n\n"
+  "Message to be inserted in markdown scratch buffer.")
+
+(defvar scratch-markdown-buffer "*scratch-markdown*"
+  "Name of markdown scratch buffer.")
+
+(defun scratch-buffer-makdown ()
+  "Create a *scratch* buffer in Markdown Mode and switch to it."
+  (interactive)
+  (if (get-buffer scratch-markdown-buffer)
+      (switch-to-buffer scratch-markdown-buffer)
+    (progn
+      (switch-to-buffer scratch-markdown-buffer)
+      (insert scratch-markdown-initial-message)
+      (markdown-mode))))
+
+(defvar scratch-org-initial-message "# Scratch Buffer for Org Mode\n\n"
+  "Message to be inserted in org scratch buffer.")
+
+(defvar scratch-org-buffer "*scratch-org*"
+  "Name of org-mode scratch buffer.")
+
+(defun scratch-buffer-org ()
+  "Create a *scratch* buffer in Org Mode and switch to it."
+  (interactive)
+  (if (get-buffer scratch-org-buffer)
+      (switch-to-buffer scratch-org-buffer)
+    (progn
+      (switch-to-buffer scratch-org-buffer)
+      (insert scratch-org-initial-message)
+      (org-mode))))
+
+
 ;;; Hippie Expand Completion
 
 (setq hippie-expand-try-functions-list

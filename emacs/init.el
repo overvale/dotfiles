@@ -1052,8 +1052,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (require 'embark)
 
 (custom-set-variables
- '(embark-indicator 'embark-verbose-indicator)
- '(embark--verbose-indicator-display-action
+ '(embark-verbose-indicator-display-action
    '(display-buffer-below-selected (window-height . fit-window-to-buffer))))
 
 (set-face-attribute 'embark-verbose-indicator-title nil :height 1.0)

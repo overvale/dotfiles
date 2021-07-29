@@ -1028,17 +1028,19 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
    (blackout 'selected-minor-mode))
 
 
-;;; Minibuffer
+;;; Minibuffer / Embark / Consult
 
 (require 'orderless)
+(require 'embark)
+(require 'embark-consult)
 
 (vertico-mode)
 (marginalia-mode)
+(isearch-mb-mode)
 
 (custom-set-variables
  '(enable-recursive-minibuffers t)
  '(savehist-mode t)
- ;; '(completion-show-help nil)
  '(completion-styles '(orderless))
  '(completion-category-defaults nil)
  '(completion-category-overrides '((file (styles . (partial-completion))))))
@@ -1058,25 +1060,27 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
 (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start)
 
-;; The package 'isearch-mb' allows you to edit the incremental search in the
-;; minibuffer as you type, rather than having to call `isearch-edit-string'.
-(isearch-mb-mode)
-
 ;; Quit isearch when calling occur
 (add-to-list 'isearch-mb--after-exit #'occur)
 
 
-;;; Embark
-
-(require 'embark)
-
 (custom-set-variables
+ '(embark-indicator 'embark-verbose-indicator)
  '(embark-verbose-indicator-display-action
    '(display-buffer-below-selected (window-height . fit-window-to-buffer))))
 
 (set-face-attribute 'embark-verbose-indicator-title nil :height 1.0)
 
 (setq prefix-help-command 'embark-prefix-help-command)
+
+(custom-set-variables
+ '(consult-find-command "fd --color=never --full-path ARG OPTS"))
+
+(consult-customize consult-line
+                   :preview-key nil)
+
+(consult-customize consult-completion-in-region
+                   :cycle-threshold 3)
 
 (define-keys embark-file-map
   "O" 'crux-open-with
@@ -1086,24 +1090,10 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
   "d" 'ytdl-download
   "b" 'browse-url-default-macosx-browser)
 
-
-;;; Miscellaneous
-
 (global-set-key [remap yank-pop] 'consult-yank-pop)
 
-(custom-set-variables
- '(consult-find-command "fd --color=never --full-path ARG OPTS"))
 
-(with-eval-after-load 'consult
-
-  (consult-customize consult-line
-                     :preview-key nil)
-
-  (consult-customize consult-completion-in-region
-                     :cycle-threshold 3)
-
-  (with-eval-after-load 'embark
-    (require 'embark-consult)))
+;;; Miscellaneous
 
 (with-eval-after-load 'visual-regexp
   (with-eval-after-load 'visual-regexp-steroids

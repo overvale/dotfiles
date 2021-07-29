@@ -903,6 +903,43 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
       (org-mode))))
 
 
+;;; Outline
+
+;; `outline' provides major and minor modes for collapsing sections of a
+;; buffer into an outline-like format. Let's turn that minor mode into a
+;; global minor mode and enable it.
+(define-globalized-minor-mode global-outline-minor-mode
+  outline-minor-mode outline-minor-mode)
+(global-outline-minor-mode +1)
+
+(blackout 'outline-minor-mode)
+
+(define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
+(define-key outline-minor-mode-map (kbd "S-<tab>") 'bicycle-cycle-global)
+
+(transient-define-prefix outline-transient ()
+  "Transient for Outline Minor Mode navigation"
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-stay
+  [["Show/Hide"
+    ("<right>" "Show Subtree" outline-show-subtree)
+    ("<left>" "Hide Subtree" outline-hide-subtree)
+    ("o" "Hide to This Sublevel" outline-hide-sublevels)
+    ("a" "Show All" outline-show-all)]
+   ["Navigate"
+    ("<down>" "Next" outline-next-visible-heading)
+    ("<up>" "Previous" outline-previous-visible-heading)]
+   ["Edit"
+    ("M-<left>"  "Promote" outline-promote)
+    ("M-<right>" "Demote"  outline-demote)
+    ("M-<up>"    "Move Up" outline-move-subtree-up)
+    ("M-<down>"  "Move Down" outline-move-subtree-down)]
+   ["Other"
+    ("C-/" "Undo" undo-only)
+    ("M-/" "Redo" undo-redo)
+    ("c" "Consult" consult-outline :transient nil)]])
+
+
 ;;; Navigation Keymap
 
 ;; There are a few keymaps which I think should share common movement
@@ -1048,43 +1085,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (define-keys embark-url-map
   "d" 'ytdl-download
   "b" 'browse-url-default-macosx-browser)
-
-
-;;; Outline
-
-;; `outline' provides major and minor modes for collapsing sections of a
-;; buffer into an outline-like format. Let's turn that minor mode into a
-;; global minor mode and enable it.
-(define-globalized-minor-mode global-outline-minor-mode
-  outline-minor-mode outline-minor-mode)
-(global-outline-minor-mode +1)
-
-(blackout 'outline-minor-mode)
-
-(define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
-(define-key outline-minor-mode-map (kbd "S-<tab>") 'bicycle-cycle-global)
-
-(transient-define-prefix outline-transient ()
-  "Transient for Outline Minor Mode navigation"
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-stay
-  [["Show/Hide"
-    ("<right>" "Show Subtree" outline-show-subtree)
-    ("<left>" "Hide Subtree" outline-hide-subtree)
-    ("o" "Hide to This Sublevel" outline-hide-sublevels)
-    ("a" "Show All" outline-show-all)]
-   ["Navigate"
-    ("<down>" "Next" outline-next-visible-heading)
-    ("<up>" "Previous" outline-previous-visible-heading)]
-   ["Edit"
-    ("M-<left>"  "Promote" outline-promote)
-    ("M-<right>" "Demote"  outline-demote)
-    ("M-<up>"    "Move Up" outline-move-subtree-up)
-    ("M-<down>"  "Move Down" outline-move-subtree-down)]
-   ["Other"
-    ("C-/" "Undo" undo-only)
-    ("M-/" "Redo" undo-redo)
-    ("c" "Consult" consult-outline :transient nil)]])
 
 
 ;;; Miscellaneous

@@ -1359,6 +1359,7 @@ buffer, and exiting the agenda and releasing all the buffers."
    ["Other"
     ("k" "Capture" org-capture)
     ("s" "Store Link" org-store-link)
+    ("f" "Find Heading" consult-org-agenda)
     ("g" "Grep Orgfiles" consult-grep-orgfiles)]])
 
 (transient-define-prefix general-transient--toggles ()
@@ -1505,9 +1506,9 @@ buffer, and exiting the agenda and releasing all the buffers."
     "Transient for Org Mode"
     ["Org Mode"
      ["Navigation"
-      ("o" "Outline" consult-outline)
+      ("o" "Outline" consult-org-heading)
+      ("f" "Find Heading" consult-org-agenda)
       ("n" "Narrow/Widen" narrow-or-widen-dwim)
-      ("g" "Go To" org-goto)
       ("m" "Visible Markup" visible-mode)]
      ["Item"
       ("t" "TODO" org-todo)

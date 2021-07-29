@@ -694,111 +694,89 @@ To be used by `eww-after-render-hook'."
 
 ;;; Elfeed
 
-;; https://github.com/skeeto/.emacs.d/blob/master/etc/feed-setup.el
+(add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
+(add-hook 'elfeed-show-mode-hook   'disable-selected-minor-mode)
+(add-hook 'elfeed-show-mode-hook   'facedancer-vadjust-mode)
 
-(use-package elfeed
-  :if (string= (system-name) "shadowfax.local")
-  :commands elfeed
-  :custom
-  (elfeed-use-curl t)
-  (elfeed-db-directory (concat user-emacs-directory "elfeed/"))
-  (elfeed-enclosure-default-dir user-downloads-directory)
-;;(elfeed-search-clipboard-type 'CLIPBOARD)
-  :bind
-  (:map elfeed-search-mode-map
-        ("b" . elfeed-search-browse-url)
-        ("*" . elfeed-search-tag--star)
-        ("8" . elfeed-search-untag--star)
-        ("o" . delete-other-windows)
-        ("N" . oht-elfeed-unread-news)
-        ("E" . oht-elfeed-unread-emacs)
-        ("O" . oht-elfeed-unread-other)
-        ("S" . oht-elfeed-starred))
-  (:map elfeed-show-mode-map
-        ("&" . oht-elfeed-show-visit-generic)
-        ("r" . elfeed-show-tag--read)
-        ("u" . elfeed-show-tag--unread)
-        ("*" . elfeed-show-tag--star)
-        ("8" . elfeed-show-tag--unstar)
-        ("o" . delete-other-windows)
-        ("d" . oht-elfeed-show-download-video)
-        ("i" . elfeed-inhibit-images-toggle))
-  :config
-  ;; My feed list is stored outside my dotfiles -- not public.
-  (load "~/home/src/rss-feeds.el")
+(setq shr-max-image-proportion 0.5
+      shr-width 80
+      shr-bullet "• ")
 
-  (defun oht-elfeed-show-fonts ()
-    "Apply some customization to fonts in elfeed-show-mode."
-    (facedancer-vadjust-mode)
-    (setq-local line-spacing 3))
+(with-eval-after-load 'elfeed
 
-  ;; Elfeed doesn't have a built-in way of flagging or marking items for later,
-  ;; but it does have tags, which you can use for this. The below is some simple
-  ;; aliases for adding and removing the 'star' tag.
-  (defalias 'elfeed-search-tag--star
-    (elfeed-expose #'elfeed-search-tag-all 'star)
-    "Add the 'star' tag to all selected entries")
-  (defalias 'elfeed-search-untag--star
-    (elfeed-expose #'elfeed-search-untag-all 'star)
-    "Remove the 'star' tag to all selected entries")
-  (defalias 'elfeed-show-tag--star
-    (elfeed-expose #'elfeed-show-tag 'star)
-    "Add the 'star' tag to current entry")
-  (defalias 'elfeed-show-tag--unstar
-    (elfeed-expose #'elfeed-show-untag 'star)
-    "Remove the 'star' tag to current entry")
+  (custom-set-variables
+   '(elfeed-use-curl t)
+   '(elfeed-db-directory (concat user-emacs-directory "elfeed/"))
+   '(elfeed-enclosure-default-dir user-downloads-directory))
 
-  ;; Even though there are bindings for marking items as 'read' and 'unread' in
-  ;; the search-mode, there are no such built-in bindings for show-mode. So we
-  ;; add them here.
-  (defalias 'elfeed-show-tag--unread
-    (elfeed-expose #'elfeed-show-tag 'unread)
+  (load "~/home/src/lisp/rss-feeds.el")
+
+  ;; Why doesn't this exist in show mode?
+  (defalias 'elfeed-show-tag--unread (elfeed-expose #'elfeed-show-tag 'unread)
     "Mark the current entry unread.")
-  (defalias 'elfeed-show-tag--read
-    (elfeed-expose #'elfeed-show-untag 'unread)
+  (defalias 'elfeed-show-tag--read (elfeed-expose #'elfeed-show-untag 'unread)
     "Mark the current entry read.")
 
-  (defun oht-elfeed-unread-news  () (interactive) (elfeed-search-set-filter "+unread +news"))
-  (defun oht-elfeed-unread-emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
-  (defun oht-elfeed-unread-other () (interactive) (elfeed-search-set-filter "+unread -emacs -news"))
-  (defun oht-elfeed-starred      () (interactive) (elfeed-search-set-filter "+star"))
+  ;; Stars in search mode
+  (defalias 'elfeed-search-tag--star (elfeed-expose #'elfeed-search-tag-all 'star)
+    "Add the 'star' tag to all selected entries")
+  (defalias 'elfeed-search-untag--star (elfeed-expose #'elfeed-search-untag-all 'star)
+    "Remove the 'star' tag to all selected entries")
 
-  (defun oht-elfeed-show-visit-generic ()
-    "Wrapper for elfeed-show-visit to use system browser instead of eww"
+  ;; Stars in show mode
+  (defalias 'elfeed-show-tag--star (elfeed-expose #'elfeed-show-tag 'star)
+    "Add the 'star' tag to current entry")
+  (defalias 'elfeed-show-tag--unstar (elfeed-expose #'elfeed-show-untag 'star)
+    "Remove the 'star' tag to current entry")
+
+  (defun elfeed-search:emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
+  (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs"))
+  (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
+
+  (defun elfeed-search-browse-url-background ()
+    "Visit the current entry, or region entries, in browser without losing focus."
     (interactive)
-    (let ((browse-url-generic-program "/usr/bin/open"))
-      (elfeed-show-visit t)))
+    (let ((entries (elfeed-search-selected)))
+      (mapc (lambda (entry)
+              (browse-url-macos-background (elfeed-entry-link entry))
+              (elfeed-untag entry 'unread)
+              (elfeed-search-update-entry entry))
+            entries)
+      (unless (or elfeed-search-remain-on-entry (use-region-p))
+        (forward-line))))
 
-  (make-variable-buffer-local
-   (defvar elfeed-inhibit-images-status nil
-     "Elfeed Inhibit Images Status"))
+  ;; TODO narrow to feed at point (below does not work):
+  ;; (elfeed-feed-id (elfeed-search-selected t))
 
-  (defun elfeed-inhibit-images-toggle ()
-    "Toggle display of images in elfeed-show."
+  (defun elfeed-show-visit-background ()
+    "Visit the current entry in your browser using `browse-url'.
+If there is a prefix argument, visit the current entry in the
+browser defined by `browse-url-generic-program'."
     (interactive)
-    (setq elfeed-inhibit-images-status (not elfeed-inhibit-images-status))
-    (if elfeed-inhibit-images-status
-        (progn
-          (setq-local shr-inhibit-images t)
-          (elfeed-show-refresh))
-      (progn
-        (setq-local shr-inhibit-images nil)
-        (elfeed-show-refresh))))
+    (let ((link (elfeed-entry-link elfeed-show-entry)))
+      (when link
+        (message "Sent to browser: %s" link)
+        (browse-url-macos-background link))))
 
-  (defun oht-elfeed-show-download-video ()
-    "In elfeed-show-mode, download a video using youtube-dl."
-    (interactive)
-    (async-shell-command (format "%s -o \"%s%s\" -f mp4 \"%s\""
-                                 youtube-dl-path
-                                 user-downloads-directory
-                                 "%(title)s.%(ext)s"
-                                 (elfeed-entry-link elfeed-show-entry))))
+  (define-keys elfeed-search-mode-map
+    "b" 'elfeed-search-browse-url-background
+    "*" 'elfeed-search-tag--star
+    "8" 'elfeed-search-untag--star
+    "o" 'delete-other-windows
+    "E" 'elfeed-search:emacs
+    "O" 'elfeed-search:other
+    "S" 'elfeed-search:star)
 
-  :hook ((elfeed-show-mode-hook . oht-elfeed-show-fonts)
-         (elfeed-search-mode-hook . disable-selected-minor-mode)
-         (elfeed-show-mode-hook . disable-selected-minor-mode))
+  (define-keys elfeed-show-mode-map
+    "r" 'elfeed-show-tag--read
+    "u" 'elfeed-show-tag--unread
+    "*" 'elfeed-show-tag--star
+    "8" 'elfeed-show-tag--unstar
+    "b" 'elfeed-show-visit-background
+    "o" 'delete-other-windows
+    "d" 'ytdl-download)
 
-  ) ; End "use-package elfeed"
+  ) ; End elfeed
 
 
 ;;; iBuffer

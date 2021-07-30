@@ -1079,6 +1079,8 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (consult-customize consult-line
                    :preview-key nil)
 
+(setq completion-in-region-function 'consult-completion-in-region)
+
 (consult-customize consult-completion-in-region
                    :cycle-threshold 3)
 

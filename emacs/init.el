@@ -1141,6 +1141,8 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
 (autoload 'oht-org-agenda-today-pop-up "org")
 (autoload 'oht-org-agenda-today "org")
+(autoload 'consult-grep-orgfiles "org")
+(autoload 'find-org-directory "org")
 
 (add-hook 'org-mode-hook 'org-autolist-mode)
 (with-eval-after-load 'org-autolist
@@ -1200,6 +1202,11 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     (interactive)
     (find-file (completing-read "Find Org Files: "
                                 (directory-files-recursively user-orgfiles-directory "\.org$"))))
+
+  (defun find-org-directory ()
+    "Open org directory in dired."
+    (interactive)
+    (find-file user-orgfiles-directory))
 
   (defun consult-grep-orgfiles ()
     (interactive)
@@ -1356,11 +1363,15 @@ buffer, and exiting the agenda and releasing all the buffers."
     ("p" "Today (pop-up)" oht-org-agenda-today-pop-up)
     ("0" "Complete" oht-org-agenda-complete)
     ("a" "Agenda..." org-agenda)]
+   ["Find"
+    ("d" "Find Org Dir" find-org-directory)
+    ("D" "Find Org Files..." find-org-files)
+    ("f" "Find Org Heading" consult-org-agenda)
+    ("g" "Grep Org Files" consult-grep-orgfiles)]
    ["Other"
     ("k" "Capture" org-capture)
     ("s" "Store Link" org-store-link)
-    ("f" "Find Heading" consult-org-agenda)
-    ("g" "Grep Orgfiles" consult-grep-orgfiles)]])
+    ]])
 
 (transient-define-prefix general-transient--toggles ()
   :transient-suffix 'transient--do-stay

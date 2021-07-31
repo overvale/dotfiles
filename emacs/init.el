@@ -468,36 +468,6 @@ With a prefix ARG always prompt for command to use."
   (load "~/home/src/olivertaylor/lib/helper.el")
   (oht-site-transient))
 
-;; Web Search Tools
-
-(defun url-search-query (name)
-  "Prompt user for url-search query to be passed to url-search-run."
-  (let ((default (current-word))
-        (enable-recursive-minibuffers t))
-    (read-string (if default
-                     (format "Search %s (default %s): " name default)
-                   (format "Search %s: " name))
-                 nil nil default)))
-
-(defun url-search-run (search-url search-string)
-  "Browse the combined search-url with hexified search-string."
-  (browse-url (concat search-url (url-hexify-string search-string))))
-
-(defun url-search-google (query)
-  "Search google for given string."
-  (interactive (list (url-search-query "google")))
-  (url-search-run "http://www.google.com/search?q=" query))
-
-(defun url-search-wikipedia (query)
-  "Search wikipedia for given string."
-  (interactive (list (url-search-query "wikipedia")))
-  (url-search-run "http://en.wikipedia.org/wiki/Special:Search?go=Go&search=" query))
-
-(defun url-search-github-elisp (query)
-  "Search github for given string as elisp code."
-  (interactive (list (url-search-query "github")))
-  (url-search-run "https://github.com/search?l=Emacs+Lisp&type=Code&q=" query))
-
 (defun frames-p-save-buffers-kill-emacs ()
   "If more than one frame exists, confirm exit of Emacs."
   (interactive)
@@ -901,6 +871,41 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
       (switch-to-buffer scratch-org-buffer)
       (insert scratch-org-initial-message)
       (org-mode))))
+
+
+;;; Prelude Search
+
+;; https://github.com/bbatsov/prelude/blob/master/core/prelude-core.el
+
+(defun prelude-search (query-url prompt)
+  "Open the search url constructed with the QUERY-URL.
+PROMPT sets the `read-string prompt."
+  (browse-url
+   (concat query-url
+           (url-hexify-string
+            (if mark-active
+                (buffer-substring (region-beginning) (region-end))
+              (read-string prompt))))))
+
+(defmacro prelude-install-search-engine (search-engine-name search-engine-url search-engine-prompt)
+  "Given some information regarding a search engine, install the interactive command to search through them"
+  `(defun ,(intern (format "prelude-%s" search-engine-name)) ()
+       ,(format "Search %s with a query or region if any." search-engine-name)
+       (interactive)
+       (prelude-search ,search-engine-url ,search-engine-prompt)))
+
+(prelude-install-search-engine "google"     "http://www.google.com/search?q="              "Google: ")
+(prelude-install-search-engine "youtube"    "http://www.youtube.com/results?search_query=" "Search YouTube: ")
+(prelude-install-search-engine "github"     "https://github.com/search?q="                 "Search GitHub: ")
+(prelude-install-search-engine "duckduckgo" "https://duckduckgo.com/?t=lm&q="              "Search DuckDuckGo: ")
+
+(prelude-install-search-engine "wikipedia"
+                               "http://en.wikipedia.org/wiki/Special:Search?go=Go&search="
+                               "Search Wikipedia: ")
+
+(prelude-install-search-engine "github-elisp"
+                               "https://github.com/search?l=Emacs+Lisp&type=Code&q="
+                               "Github Elisp: ")
 
 
 ;;; Outline

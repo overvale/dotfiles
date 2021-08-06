@@ -82,7 +82,6 @@
         modus-themes
         olivetti
         orderless
-        org-autolist
         selected
         vertico
         visual-regexp
@@ -1230,10 +1229,6 @@ Emacs 28 or its backported undo functions."
 (autoload 'oht-org-agenda-today "org")
 (autoload 'consult-grep-orgfiles "org")
 (autoload 'find-org-directory "org")
-
-(add-hook 'org-mode-hook 'org-autolist-mode)
-(with-eval-after-load 'org-autolist
-  (blackout 'org-autolist-mode))
 
 (with-eval-after-load 'org
 

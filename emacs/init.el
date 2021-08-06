@@ -154,6 +154,15 @@
           (global-set-key (read-kbd-macro key) def)
         (global-set-key key def)))))
 
+(defmacro elisp-group (name doc &rest body)
+  "Group elisp by wrapping in progn.
+This is a silly macro, all it does is wrap the body in `progn'.
+But it allows you to neatly group small bits of elisp in your
+config and include a docstring. Mildly convenient, but silly."
+  (declare (indent defun)
+           (doc-string 2))
+  `(progn ,@body))
+
 
 ;;; Customizations
 
@@ -586,12 +595,13 @@ Keybindings you define here will take precedence."
 (modus-themes-load-themes)
 (modus-themes-load-operandi)
 
-;; If on a Mac, assume Mitsuharu Yamamoto’s fork -- check for dark/light mode,
-;; if dark mode load the dark theme, also add a hook for syncing with the
-;; system.
-(if (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua")
-    (modus-themes-load-vivendi))
-(add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle)
+(elisp-group light-dark-toggle
+  "If on a Mac, assume Mitsuharu Yamamoto’s fork -- check for dark/light mode,
+  if dark mode load the dark theme, also add a hook for syncing
+  with the system."
+  (if (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua")
+      (modus-themes-load-vivendi))
+  (add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle))
 
 (setq text-scale-mode-step 1.09)
 
@@ -910,12 +920,13 @@ PROMPT sets the `read-string prompt."
 
 ;;; Outline
 
-;; `outline' provides major and minor modes for collapsing sections of a
-;; buffer into an outline-like format. Let's turn that minor mode into a
-;; global minor mode and enable it.
-(define-globalized-minor-mode global-outline-minor-mode
-  outline-minor-mode outline-minor-mode)
-(global-outline-minor-mode +1)
+(elisp-group globalize-outline-minor-mode
+  "outline provides major and minor modes for collapsing sections
+of a buffer into an outline-like format. Let's turn that minor
+mode into a global minor mode and enable it."
+  (define-globalized-minor-mode global-outline-minor-mode
+    outline-minor-mode outline-minor-mode)
+  (global-outline-minor-mode +1))
 
 (blackout 'outline-minor-mode)
 
@@ -1035,69 +1046,78 @@ PROMPT sets the `read-string prompt."
 
 ;;; Minibuffer / Embark / Consult
 
-(require 'orderless)
-(require 'embark)
-(require 'embark-consult)
-
-(vertico-mode)
-(marginalia-mode)
-(isearch-mb-mode)
-
 (custom-set-variables
  '(enable-recursive-minibuffers t)
- '(savehist-mode t)
- '(completion-styles '(orderless))
- '(completion-category-defaults nil)
- '(completion-category-overrides '((file (styles . (partial-completion))))))
+ '(savehist-mode t))
 
-(define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle)
+(elisp-group orderless
+  nil
+  (require 'orderless)
+  (custom-set-variables
+   '(completion-styles '(orderless))
+   '(completion-category-defaults nil)
+   '(completion-category-overrides '((file (styles . (partial-completion)))))))
 
-(setq search-whitespace-regexp ".*?")
-(setq isearch-lax-whitespace t)
-(setq isearch-lazy-count t)
+(vertico-mode)
 
-(defun isearch-exit-at-start ()
-  "Exit search at the beginning of the current match."
-  (when (and isearch-forward
-             (number-or-marker-p isearch-other-end)
-             (not isearch-mode-end-hook-quit))
-    (goto-char isearch-other-end)))
+(elisp-group marginalia
+  nil
+  (marginalia-mode)
+  (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle))
 
-(add-hook 'isearch-mode-end-hook 'isearch-exit-at-start)
+(elisp-group embark
+  nil
+  (require 'embark)
+  (require 'embark-consult)
 
-;; Quit isearch when calling occur
-(add-to-list 'isearch-mb--after-exit #'occur)
+  (custom-set-variables
+   '(embark-indicator 'embark-verbose-indicator)
+   '(embark-verbose-indicator-display-action
+     '(display-buffer-below-selected (window-height . fit-window-to-buffer))))
 
+  (set-face-attribute 'embark-verbose-indicator-title nil :height 1.0)
 
-(custom-set-variables
- '(embark-indicator 'embark-verbose-indicator)
- '(embark-verbose-indicator-display-action
-   '(display-buffer-below-selected (window-height . fit-window-to-buffer))))
+  (setq prefix-help-command 'embark-prefix-help-command)
 
-(set-face-attribute 'embark-verbose-indicator-title nil :height 1.0)
+  (define-keys embark-file-map
+    "O" 'crux-open-with
+    "j" 'dired-jump)
 
-(setq prefix-help-command 'embark-prefix-help-command)
+  (define-keys embark-url-map
+    "d" 'ytdl-download
+    "b" 'browse-url-default-macosx-browser))
 
-(custom-set-variables
- '(consult-find-command "fd --color=never --full-path ARG OPTS"))
+(elisp-group isearch-extras
+  nil
+  (setq search-whitespace-regexp ".*?")
+  (setq isearch-lax-whitespace t)
+  (setq isearch-lazy-count t)
 
-(consult-customize consult-line
-                   :preview-key nil)
+  (defun isearch-exit-at-start ()
+    "Exit search at the beginning of the current match."
+    (when (and isearch-forward
+               (number-or-marker-p isearch-other-end)
+               (not isearch-mode-end-hook-quit))
+      (goto-char isearch-other-end)))
 
-(setq completion-in-region-function 'consult-completion-in-region)
+  (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start)
 
-(consult-customize consult-completion-in-region
-                   :cycle-threshold 3)
+  (isearch-mb-mode)
+  (add-to-list 'isearch-mb--after-exit #'occur))
 
-(define-keys embark-file-map
-  "O" 'crux-open-with
-  "j" 'dired-jump)
+(elisp-group consult
+  nil
+  (custom-set-variables
+   '(consult-find-command "fd --color=never --full-path ARG OPTS"))
 
-(define-keys embark-url-map
-  "d" 'ytdl-download
-  "b" 'browse-url-default-macosx-browser)
+  (consult-customize consult-line
+                     :preview-key nil)
 
-(global-set-key [remap yank-pop] 'consult-yank-pop)
+  (setq completion-in-region-function 'consult-completion-in-region)
+  (consult-customize consult-completion-in-region
+                     :cycle-threshold 3)
+
+  (global-set-key [remap yank-pop] 'consult-yank-pop))
 
 
 ;;; Miscellaneous
@@ -1107,20 +1127,26 @@ PROMPT sets the `read-string prompt."
     (custom-set-variables
      '(vr/engine 'pcre2el))))
 
-(custom-set-variables
- '(fountain-add-continued-dialog nil)
- '(fountain-highlight-elements (quote (section-heading))))
+(elisp-group fountain-mode
+  "Settings for fountain-mode."
+  (custom-set-variables
+   '(fountain-add-continued-dialog nil)
+   '(fountain-highlight-elements (quote (section-heading)))))
 
-(add-to-list 'magic-mode-alist
-             '("%text" . markdown-mode))
-(add-to-list 'auto-mode-alist
-             '("\\.text" . markdown-mode))
+(elisp-group markdown
+  nil
+  (add-to-list 'magic-mode-alist
+               '("%text" . markdown-mode))
+  (add-to-list 'auto-mode-alist
+               '("\\.text" . markdown-mode)))
 
-(add-to-list 'load-path "~/home/src/lisp/oblique-strategies/")
-(autoload 'oblique-strategy "oblique")
-(setq initial-scratch-message (concat
-                               ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
-                               ";; Oblique Strategy: " (oblique-strategy) "\n\n"))
+(elisp-group oblique
+  "Config for oblique package"
+  (add-to-list 'load-path "~/home/src/lisp/oblique-strategies/")
+  (autoload 'oblique-strategy "oblique")
+  (setq initial-scratch-message (concat
+                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
+                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
 (with-eval-after-load 'flyspell
   (blackout 'flyspell-mode " Spell"))
@@ -1140,8 +1166,12 @@ PROMPT sets the `read-string prompt."
 (setq ytdl-media-player "open")
 (setq ytdl-always-query-default-filename 'yes-confirm) ; Get filename from server
 
-(add-to-list 'load-path "~/home/src/lisp/vundo/")
-(require 'vundo)
+(elisp-group vundo
+  "vundo creates a tree-like visualization of your undo history
+using only standard Emacs undo commands and data. Requires either
+Emacs 28 or its backported undo functions."
+  (add-to-list 'load-path "~/home/src/lisp/vundo/")
+  (require 'vundo))
 
 
 ;;; Org

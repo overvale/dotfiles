@@ -844,6 +844,34 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
              (buffer-name))))
 
 
+;;; Confirm Killing Modified Buffers
+
+;; Emacs only prompts the user for confirmation when killing a file-visiting
+;; buffer. Non-file-visiting buffers are killed immediately without
+;; confirmation.
+;;
+;; There is a variable, buffer-offer-save, which will make Emacs prompt the
+;; user to save modified non-file-visiting buffers when exiting Emacs, but no
+;; such option exists for killing buffers.
+;;
+;; The below adds a variable you can set buffer-locally, and adds a function
+;; to the buffer-killing process.
+
+(defvar-local confirm-buffer-kill nil
+  "Flag for if you want confirmation when killing modified buffers.")
+
+(defun confirm-buffer-kill-modified ()
+  "Ask for confirmation before killing modified buffers when `confirm-buffer-kill' is t.
+This function is designed to be called by `kill-buffer-query-functions'."
+  (if (and (buffer-modified-p)
+           confirm-buffer-kill)
+      (yes-or-no-p
+       (format "Buffer %S is modified; kill it? " (buffer-name)))
+    t))
+
+(add-hook 'kill-buffer-query-functions #'confirm-buffer-kill-modified)
+
+
 ;;; Scratch Buffers
 
 ;; It is sometimes useful to quickly create a scratch buffer in markdown- or
@@ -859,12 +887,17 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (defun scratch-buffer-makdown ()
   "Create a *scratch* buffer in Markdown Mode and switch to it."
   (interactive)
-  (if (get-buffer scratch-markdown-buffer)
-      (switch-to-buffer scratch-markdown-buffer)
-    (progn
-      (switch-to-buffer scratch-markdown-buffer)
-      (insert scratch-markdown-initial-message)
-      (markdown-mode))))
+  (let ((buf scratch-markdown-buffer))
+    (if (get-buffer buf)
+        (switch-to-buffer buf)
+      (progn
+        (switch-to-buffer buf)
+        (markdown-mode)
+        (with-current-buffer buf
+          (setq-local confirm-buffer-kill t)
+          (setq-local buffer-offer-save t)
+          (insert scratch-markdown-initial-message)
+          (not-modified))))))
 
 (defvar scratch-org-initial-message "# Scratch Buffer for Org Mode\n\n"
   "Message to be inserted in org scratch buffer.")
@@ -879,8 +912,25 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
       (switch-to-buffer scratch-org-buffer)
     (progn
       (switch-to-buffer scratch-org-buffer)
+      (setq-local buffer-offer-save t)
+      (setq-local confirm-buffer-kill t)
       (insert scratch-org-initial-message)
       (org-mode))))
+
+(defun scratch-buffer-org ()
+  "Create a *scratch* buffer in Org Mode and switch to it."
+  (interactive)
+  (let ((buf scratch-org-buffer))
+    (if (get-buffer buf)
+        (switch-to-buffer buf)
+      (progn
+        (switch-to-buffer buf)
+        (org-mode)
+        (with-current-buffer buf
+          (setq-local confirm-buffer-kill t)
+          (setq-local buffer-offer-save t)
+          (insert scratch-org-initial-message)
+          (not-modified))))))
 
 
 ;;; Prelude Search

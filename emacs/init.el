@@ -939,6 +939,14 @@ This function is designed to be called by `kill-buffer-query-functions'."
           (insert scratch-org-initial-message)
           (not-modified))))))
 
+(defun new-buffer (name)
+  "Create a new untitled buffer."
+  (interactive (list (read-string "Create buffer (default \"untitled\"): " nil nil "untitled")))
+  (let ((buffer (generate-new-buffer name)))
+    (switch-to-buffer buffer)
+    (setq-local buffer-offer-save t)
+    (setq-local confirm-buffer-kill t)))
+
 
 ;;; Prelude Search
 

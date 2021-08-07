@@ -13,6 +13,14 @@
 ;; convention by default and helps with navigation. You can also create an
 ;; occur buffer with the search /^;;;+/.
 
+;; Some inspiration:
+;; https://github.com/oantolin/emacs-config
+;; https://github.com/raxod502/radian
+;; https://github.com/skeeto/.emacs.d
+;; https://github.com/bbatsov/prelude
+;; https://github.com/emacscollective/emacs.g
+;; https://codeberg.org/jao/elibs
+
 
 ;;; Preamble
 
@@ -591,13 +599,11 @@ Keybindings you define here will take precedence."
 (custom-set-variables
  '(modus-themes-italic-constructs t)
  '(modus-themes-links '(neutral-underline))
- '(modus-themes-mode-line '(3d))
+ '(modus-themes-mode-line '(accented))
  '(modus-themes-prompts '(bold))
- '(modus-themes-completions 'opinionated)
+ '(modus-themes-completions 'moderate)
  '(modus-themes-region '(bg-only))
- '(modus-themes-diffs '(desaturated))
- '(modus-themes-org-blocks '(gray-background))
- '(modus-themes-syntax '(faint yellow-comments green-strings)))
+ '(modus-themes-org-blocks '(gray-background)))
 
 (modus-themes-load-themes)
 (modus-themes-load-operandi)
@@ -650,13 +656,13 @@ Keybindings you define here will take precedence."
 (defalias 'hide-mode-line-mode 'hidden-mode-line-mode)
 
 
-;;; Facedancer Mode
+;;; Facedancer
 
 ;; Facedancer defines a group of user options which set various attributes of
 ;; the default, fixed-pitch, and variable-pitch faces. Each option should be
 ;; set either via the `customize' interface or by calling
 ;; `custom-set-variables' in your init file as each option has "setter"
-;; functions and this is the only way to set your fonts.
+;; functions.
 
 (defgroup facedancer ()
   "Options for facedancer."
@@ -1326,8 +1332,6 @@ Emacs 28 or its backported undo functions."
   (setq org-todo-keywords
         '((sequence "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")))
 
-  (setq org-tag-alist '(("mtg1" . ?1) ("mtg2" . ?2) ("mtg3" . ?3)))
-
   (setq org-capture-templates
         `(("p" "Personal")
           ("pi" "Personal Inbox" entry
@@ -1343,7 +1347,7 @@ Emacs 28 or its backported undo functions."
            "* %?\n\n" :empty-lines 1)
           ("sl" "Scanline Log Entry" entry
            (file+olp+datetree ,(concat user-orgfiles-directory "scanline_logbook.org"))
-           "* %^{prompt}\n%T\n\n%?" :empty-lines 1 :tree-type week )
+           "* %?\n%T\n\n" :empty-lines 1 :tree-type week )
           ;; -----------------------------
           ("e" "Emacs Config" entry
            (file+headline ,(concat user-orgfiles-directory "emacs.org") "Emacs Config")

@@ -485,6 +485,13 @@ With a prefix ARG always prompt for command to use."
         nil)
     (save-buffers-kill-emacs)))
 
+(defun ora-move-beginning-of-line ()
+  "Move back to indentation or beginning of line."
+  (interactive)
+  (if (bolp)
+      (back-to-indentation)
+    (beginning-of-line)))
+
 
 ;;; Personal Keybindings
 
@@ -556,8 +563,9 @@ Keybindings you define here will take precedence."
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
 
-;; I actually want this to be overridden by other modes, like minibuffer modes.
+;; These should be overridden when appropriate:
 (global-set-key (kbd "M-o") 'other-window)
+(global-set-key (kbd "C-a") 'ora-move-beginning-of-line)
 
 (global-set-keys [remap query-replace] 'vr/query-replace
                  [remap capitalize-word] 'capitalize-dwim

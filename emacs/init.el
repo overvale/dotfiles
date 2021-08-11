@@ -500,6 +500,11 @@ With a prefix ARG always prompt for command to use."
       (back-to-indentation)
     (beginning-of-line)))
 
+(defun split-window-dwim ()
+  "Interactive wrapper around `split-window-sensibly'."
+  (interactive)
+  (split-window-sensibly))
+
 
 ;;; Personal Keybindings
 
@@ -527,7 +532,7 @@ Keybindings you define here will take precedence."
 (define-keys bosskey-mode-map
   "s-q"       'frames-p-save-buffers-kill-emacs
   "s-m"       'iconify-frame
-  "s-w"       'delete-frame
+  "s-w"       'general-transient--window
   "s-n"       'make-frame-command
   "s-s"       'save-buffer
   "s-,"       'find-user-init-file
@@ -556,17 +561,7 @@ Keybindings you define here will take precedence."
   "C-="        'er/expand-region
   "C-d"        'delete-forward-char
   "C-x C-x"    'exchange-point-and-mark-dwim
-  "C-x k"      'kill-buffer-dwim
-  "M-0"        'delete-window
-  "M-1"        'delete-other-windows
-  "M-2"        'split-window-below
-  "M-3"        'split-window-right
-  "M-4"        'undefined
-  "M-5"        'undefined
-  "M-6"        'undefined
-  "M-7"        'undefined
-  "M-8"        'undefined
-  "M-9"        'undefined)
+  "C-x k"      'kill-buffer-dwim)
 
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
@@ -1519,20 +1514,19 @@ buffer, and exiting the agenda and releasing all the buffers."
 (transient-define-prefix general-transient--window ()
   "Most commonly used window commands"
   [["Splits"
-    ("s" "Horizontal" split-window-below)
-    ("v" "Vertical"   split-window-right)
+    ("s" "Split Sensibly" split-window-dwim)
+    ("H" "Split Horizontal" split-window-below)
+    ("V" "Split Vertical"   split-window-right)
     ("b" "Balance"    balance-windows)
     ("f" "Fit"        fit-window-to-buffer)
     ("r" "Rotate"     toggle-window-split)
-    ("s" "Swap"       rotate-windows)
-    ("F" "Find Other Win" find-file-other-window)]
+    ("R" "Swap"       rotate-windows)]
    ["Window"
     ;; TODO: https://www.gnu.org/software/emacs/manual/html_node/emacs/Configuration-Registers.html
     ("d" "Dedicate Window" dedicated-mode)
     ("c" "Clone Indirect" clone-indirect-buffer)
     ("t" "Tear Off" tear-off-window)
     ("k" "Kill" delete-window)
-    ("K" "Kill Buffer+Win"  kill-buffer-and-window)
     ("o" "Kill Others"  delete-other-windows)
     ("m" "Maximize" maximize-window)]
    ["Navigate"

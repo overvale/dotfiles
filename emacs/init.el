@@ -1154,6 +1154,8 @@ mode into a global minor mode and enable it."
 
   (setq prefix-help-command 'embark-prefix-help-command)
 
+  (define-key bosskey-mode-map (kbd "C-h b") 'embark-bindings)
+
   (define-keys embark-file-map
     "O" 'crux-open-with
     "j" 'dired-jump)

@@ -1420,6 +1420,14 @@ buffer, and exiting the agenda and releasing all the buffers."
       (define-key map "d" '("DONE"     . org-agenda-todo-set-done))
       (define-key map "c" '("CANCELED" . org-agenda-todo-set-canceled))
       map))
+
+  (defun org-agenda-switch-to-other-window ()
+    "Switch to file at point in other window."
+    (interactive)
+    (switch-to-buffer-other-window (current-buffer))
+    (org-agenda-switch-to))
+
+  (define-key org-agenda-mode-map (kbd "o")   'org-agenda-switch-to-other-window)
   (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "C-/") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))

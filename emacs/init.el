@@ -117,6 +117,20 @@
 (define-key package-menu-mode-map (kbd "/ s") 'package-menu-filter-by-status)
 
 
+;;; Mitsuharu Yamamoto Emacs
+
+;; I use Mitsuharu Yamamoto’s fork of Emacs. Here are some modifications specific to that.
+
+;; Setup modifier keys
+(setq mac-command-modifier 'super
+      mac-option-modifier 'meta)
+
+;; Turn off swiping to switch buffers (defined in mac-win.el)
+(global-unset-key [swipe-left])
+(global-unset-key [swipe-right])
+
+
+
 ;;; Critical Setup
 
 ;; These variables, packages, macros, and functions are used throughout the
@@ -129,11 +143,6 @@
 (add-to-list 'load-path (concat user-dotemacs-directory "lisp/"))
 (require 'undo-backport)
 (require 'radian-directories)
-
-(setq mac-command-modifier 'super
-      mac-option-modifier 'meta
-      mac-right-command-modifier 'meta
-      mac-right-option-modifier 'nil)
 
 (autoload 'transient-define-prefix "transient" nil t)
 (autoload 'org-store-link "org" nil t)

@@ -82,6 +82,7 @@
         exec-path-from-shell
         expand-region
         fountain-mode
+        gruvbox-theme
         isearch-mb
         lua-mode
         magit
@@ -598,40 +599,76 @@ Keybindings you define here will take precedence."
 
 ;;; Appearance & Mode-Line
 
-(require 'modus-themes)
+(elisp-group modus-themes-config
+  "Require, cofigure, and load modus-themes."
+  (require 'modus-themes)
+  (custom-set-variables
+   '(modus-themes-italic-constructs t)
+   '(modus-themes-links '(neutral-underline))
+   '(modus-themes-mode-line '(accented))
+   '(modus-themes-prompts '(bold))
+   '(modus-themes-completions 'moderate)
+   '(modus-themes-region '(bg-only))
+   '(modus-themes-org-blocks '(gray-background)))
+  (modus-themes-load-themes))
 
-(custom-set-variables
- '(modus-themes-italic-constructs t)
- '(modus-themes-links '(neutral-underline))
- '(modus-themes-mode-line '(accented))
- '(modus-themes-prompts '(bold))
- '(modus-themes-completions 'moderate)
- '(modus-themes-region '(bg-only))
- '(modus-themes-org-blocks '(gray-background)))
+(defvar light-theme 'modus-operandi
+  "Preferred light-theme.")
 
-(modus-themes-load-themes)
-(modus-themes-load-operandi)
+(defvar dark-theme 'gruvbox
+  "Preferred dark-theme.")
 
-(elisp-group light-dark-toggle
-  "If on a Mac, assume Mitsuharu Yamamoto’s fork -- check for dark/light mode,
-  if dark mode load the dark theme, also add a hook for syncing
-  with the system."
+(defvar default-theme-color 'light
+  "Default theme to load, accepts 'light and 'dark.")
+
+(defvar current-theme-color nil
+  "Is the current theme color light or dark?")
+
+(defun disable-current-themes nil
+  "Disables all currently enabled themes."
+  (mapcar 'disable-theme custom-enabled-themes))
+
+(defun theme-color-toggle nil
+  "Toggle between `light-theme' and `dark-theme'."
+  (interactive)
+  (if (eq current-theme-color 'light)
+      (progn
+        (disable-current-themes)
+        (setq current-theme-color 'dark)
+        (load-theme dark-theme t))
+    (progn
+      (disable-current-themes)
+      (setq current-theme-color 'light)
+      (load-theme light-theme t))))
+
+(elisp-group startup-theme-color
+  "Matches startup theme color to system, based on `light-theme' and `dark-theme'."
   (if (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua")
-      (modus-themes-load-vivendi))
-  (add-hook 'mac-effective-appearance-change-hook 'modus-themes-toggle))
+      (progn
+        (setq current-theme-color 'dark)
+        (load-theme dark-theme t))
+    (if (eq default-theme-color 'light)
+        (progn
+          (setq current-theme-color 'light)
+          (load-theme light-theme t))
+      (progn
+        (setq current-theme-color 'dark)
+        (load-theme dark-theme t))))
+  (add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle))
 
 (setq text-scale-mode-step 1.09)
 
 (custom-set-variables
- '(facedancer-monospace-family "IBM Plex Mono")
- '(facedancer-variable-family  "IBM Plex Serif")
- '(facedancer-mode-line-family "IBM Plex Sans")
+ '(facedancer-monospace-family "Hack")
+ '(facedancer-monospace-height 12)
+ '(facedancer-variable-family  "Open Sans")
+ '(facedancer-variable-height  13)
+ '(facedancer-mode-line-family "Open Sans")
  '(facedancer-mode-line-height 13))
 
-(autoload 'blackout "blackout" nil t)
-(blackout 'eldoc-mode)
-(blackout 'emacs-lisp-mode "Elisp")
-(blackout 'auto-fill-function " Fill")
+(delight 'eldoc-mode nil "eldoc")
+(delight 'emacs-lisp-mode "Elisp" "elisp-mode")
+(delight 'auto-fill-function " Fill" "simple")
 
 (defvar-local hidden-mode-line-mode nil)
 
@@ -1528,7 +1565,7 @@ buffer, and exiting the agenda and releasing all the buffers."
     ("-" "Smaller" text-scale-decrease)]
    ["Other"
     ("s" "Line Spacing" line-spacing-interactive)
-    ("m" "Modus Toggle" modus-themes-toggle)]])
+    ("m" "Theme Color Toggle" theme-color-toggle)]])
 
 (transient-define-prefix general-transient--window ()
   "Most commonly used window commands"

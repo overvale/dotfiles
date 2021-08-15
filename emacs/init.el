@@ -73,10 +73,10 @@
 
 (setq package-selected-packages
       '(bicycle
-        blackout
         consult
         dash
         elfeed
+        delight
         embark
         embark-consult
         exec-path-from-shell
@@ -1040,7 +1040,7 @@ mode into a global minor mode and enable it."
     outline-minor-mode outline-minor-mode)
   (global-outline-minor-mode +1))
 
-(blackout 'outline-minor-mode)
+(delight 'outline-minor-mode nil "outline")
 
 (define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
 (define-key outline-minor-mode-map (kbd "S-<tab>") 'bicycle-cycle-global)
@@ -1153,7 +1153,7 @@ mode into a global minor mode and enable it."
     "E" 'eval-region
     "q" 'fill-paragraph)
    (define-navigation-keys selected-keymap)
-   (blackout 'selected-minor-mode))
+   (delight 'selected-minor-mode nil "selected"))
 
 
 ;;; Minibuffer / Embark / Consult
@@ -1263,7 +1263,7 @@ mode into a global minor mode and enable it."
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
 (with-eval-after-load 'flyspell
-  (blackout 'flyspell-mode " Spell"))
+  (delight 'flyspell-mode " Spell" "flyspell"))
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 

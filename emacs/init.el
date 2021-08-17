@@ -1275,6 +1275,22 @@ Emacs 28 or its backported undo functions."
 
 ;;; Org
 
+(defun find-org-files ()
+  "Find org files in your org directory, pass to completing-read."
+  (interactive)
+  (find-file (completing-read "Find Org Files: "
+                              (directory-files-recursively user-orgfiles-directory "\.org$"))))
+
+(defun find-org-directory ()
+  "Open org directory in dired."
+  (interactive)
+  (find-file user-orgfiles-directory))
+
+(defun consult-grep-orgfiles ()
+  (interactive)
+  (consult-grep user-orgfiles-directory))
+
+
 (autoload 'oht-org-agenda-today-pop-up "org")
 (autoload 'oht-org-agenda-today "org")
 (autoload 'consult-grep-orgfiles "org")
@@ -1296,6 +1312,8 @@ Emacs 28 or its backported undo functions."
         org-catch-invisible-edits 'show-and-error
         org-outline-path-complete-in-steps nil
         org-refile-targets '((org-agenda-files :maxlevel . 2))
+        org-startup-with-inline-images t
+        org-image-actual-width '(600)
         org-hide-emphasis-markers t
         org-ellipsis "..."
         org-insert-heading-respect-content t
@@ -1328,21 +1346,6 @@ Emacs 28 or its backported undo functions."
   (setq org-agenda-files (list user-orgfiles-directory))
 
   (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org")
-
-  (defun find-org-files ()
-    "Find org files in your org directory, pass to completing-read."
-    (interactive)
-    (find-file (completing-read "Find Org Files: "
-                                (directory-files-recursively user-orgfiles-directory "\.org$"))))
-
-  (defun find-org-directory ()
-    "Open org directory in dired."
-    (interactive)
-    (find-file user-orgfiles-directory))
-
-  (defun consult-grep-orgfiles ()
-    (interactive)
-    (consult-grep user-orgfiles-directory))
 
   (setq org-agenda-custom-commands
         '(("1" "TODAY: Today's Agenda + Priority Tasks"

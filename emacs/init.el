@@ -1523,7 +1523,7 @@ buffer, and exiting the agenda and releasing all the buffers."
     ("." "Repeat Command" repeat-complex-command)
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("b" "Switch Buffer" switch-to-buffer)
-    ("C-b" "iBuffer" ibuffer)]
+    ("s-b" "iBuffer" ibuffer)]
    ["Transients"
     ("o" "Org..." general-transient--org)
     ("t" "Toggle..." general-transient--toggles)
@@ -1564,6 +1564,7 @@ buffer, and exiting the agenda and releasing all the buffers."
     ("t" "Truncate" toggle-truncate-lines)
     ("W" "Whitespace" whitespace-mode)]
    ["Action"
+    ("<return>" "Quit" transient-quit-all)
     ("q" "Quit" transient-quit-all)]])
 
 (transient-define-prefix general-transient--consult ()

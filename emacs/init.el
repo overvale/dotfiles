@@ -594,25 +594,16 @@ Keybindings you define here will take precedence."
                  [M-mouse-1]      #'mouse-set-point)
 
 
-;;; Appearance & Mode-Line
+;;; Light/Dark Themes
 
-(elisp-group modus-themes-config
-  "Require, cofigure, and load modus-themes."
-  (require 'modus-themes)
-  (custom-set-variables
-   '(modus-themes-italic-constructs t)
-   '(modus-themes-links '(neutral-underline))
-   '(modus-themes-mode-line '(accented))
-   '(modus-themes-prompts '(bold))
-   '(modus-themes-completions 'moderate)
-   '(modus-themes-region '(bg-only))
-   '(modus-themes-org-blocks '(gray-background)))
-  (modus-themes-load-themes))
+;; By default I use a light theme, but sometimes (when all the lights are off)
+;; I use a dark theme. The below are some functions that allow me to quickly
+;; switch between light and dark themes.
 
-(defvar light-theme 'modus-operandi
+(defvar light-theme nil
   "Preferred light-theme.")
 
-(defvar dark-theme 'gruvbox
+(defvar dark-theme nil
   "Preferred dark-theme.")
 
 (defvar default-theme-color 'light
@@ -624,6 +615,22 @@ Keybindings you define here will take precedence."
 (defun disable-current-themes nil
   "Disables all currently enabled themes."
   (mapcar 'disable-theme custom-enabled-themes))
+
+(defun load-theme-color (color)
+  "Load theme based on `dark-theme' and `light-theme'."
+  (interactive
+   (list (completing-read
+          "Theme Color: " '("dark" "light" "toggle"))))
+  (disable-current-themes)
+  (if (string= color "dark")
+      (progn
+        (setq current-theme-color 'dark)
+        (load-theme dark-theme t))
+    (if (string= color "light")
+        (progn
+          (setq current-theme-color 'light)
+          (load-theme light-theme t))
+      (theme-color-toggle))))
 
 (defun theme-color-toggle nil
   "Toggle between `light-theme' and `dark-theme'."
@@ -638,20 +645,39 @@ Keybindings you define here will take precedence."
       (setq current-theme-color 'light)
       (load-theme light-theme t))))
 
-(elisp-group startup-theme-color
-  "Matches startup theme color to system, based on `light-theme' and `dark-theme'."
-  (if (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua")
-      (progn
-        (setq current-theme-color 'dark)
-        (load-theme dark-theme t))
+(defun macos-appearance-dark nil
+  "Return color of macOS appearance, t is dark, nil is light."
+  (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
+
+(add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
+
+
+;;; Appearance & Mode-Line
+
+(setq light-theme 'modus-operandi)
+(setq dark-theme  'gruvbox)
+(setq default-theme-color 'light)
+
+(elisp-group modus-themes-config
+  "Require, cofigure, and load modus-themes."
+  (require 'modus-themes)
+  (custom-set-variables
+   '(modus-themes-italic-constructs t)
+   '(modus-themes-links '(neutral-underline))
+   '(modus-themes-mode-line '(accented))
+   '(modus-themes-prompts '(bold))
+   '(modus-themes-completions 'moderate)
+   '(modus-themes-region '(bg-only))
+   '(modus-themes-org-blocks '(gray-background)))
+  (modus-themes-load-themes))
+
+(elisp-group set-theme-on-startup
+  "If system is in dark mode, load dark theme, otherwise load user preference."
+  (if (macos-appearance-dark)
+      (load-theme-color 'dark)
     (if (eq default-theme-color 'light)
-        (progn
-          (setq current-theme-color 'light)
-          (load-theme light-theme t))
-      (progn
-        (setq current-theme-color 'dark)
-        (load-theme dark-theme t))))
-  (add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle))
+        (load-theme-color 'light)
+      (load-theme-color 'dark))))
 
 (setq text-scale-mode-step 1.09)
 

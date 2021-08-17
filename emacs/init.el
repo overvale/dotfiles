@@ -90,6 +90,7 @@
         modus-themes
         olivetti
         orderless
+        org
         selected
         vertico
         visual-regexp

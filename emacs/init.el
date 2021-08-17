@@ -519,7 +519,7 @@ With a prefix ARG always prompt for command to use."
 ;; overridden should be placed in a minor mode. I stole this technique from
 ;; the `bind-key' package.
 
-(defvar bosskey-mode-map (make-keymap))
+(defvar bosskey-mode-map (make-sparse-keymap))
 
 (define-minor-mode bosskey-mode
   "Minor mode for my personal keybindings, which override others.
@@ -1124,7 +1124,7 @@ mode into a global minor mode and enable it."
   (define-key map (kbd "x") 'exchange-point-and-mark)
   (define-key map (kbd "SPC") 'rectangle-mark-mode))
 
-(defvar navigation-keymap (make-keymap)
+(defvar navigation-keymap (make-sparse-keymap)
   "Transient keymap for navigating buffers.")
 
 (define-key navigation-keymap [t] 'undefined)

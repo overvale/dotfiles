@@ -119,7 +119,8 @@
 
 ;;; Mitsuharu Yamamoto Emacs
 
-;; I use Mitsuharu Yamamoto’s fork of Emacs. Here are some modifications specific to that.
+;; I use Mitsuharu Yamamoto’s fork of Emacs. Here are some modifications
+;; specific to that.
 
 ;; Setup modifier keys
 (setq mac-command-modifier 'super
@@ -128,7 +129,6 @@
 ;; Turn off swiping to switch buffers (defined in mac-win.el)
 (global-unset-key [swipe-left])
 (global-unset-key [swipe-right])
-
 
 
 ;;; Critical Setup
@@ -170,9 +170,10 @@
 
 (defmacro elisp-group (name doc &rest body)
   "Group elisp by wrapping in progn.
+
 This is a silly macro, all it does is wrap the body in `progn'.
 But it allows you to neatly group small bits of elisp in your
-config and include a docstring. Mildly convenient, but silly."
+config and include a docstring. Mildly convenient."
   (declare (indent defun)
            (doc-string 2))
   `(progn ,@body))
@@ -1165,6 +1166,7 @@ mode into a global minor mode and enable it."
 (selected-global-mode 1)
 
 (defun disable-selected-minor-mode ()
+  "Disabled the selected minor mode."
   (selected-minor-mode -1))
 
 (with-eval-after-load 'selected

@@ -72,8 +72,7 @@
 (global-set-key (kbd "C-c p") pkg-ops-map)
 
 (setq package-selected-packages
-      '(bicycle
-        consult
+      '(consult
         dash
         delight
         embark
@@ -1060,20 +1059,28 @@ PROMPT sets the `read-string prompt."
 
 ;;; Outline
 
-(elisp-group globalize-outline-minor-mode
-  "outline provides major and minor modes for collapsing sections
-of a buffer into an outline-like format. Let's turn that minor
-mode into a global minor mode and enable it."
-  (define-globalized-minor-mode global-outline-minor-mode
-    outline-minor-mode outline-minor-mode)
-  (global-outline-minor-mode +1))
+(add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
 
-(delight 'outline-minor-mode nil "outline")
+(delight 'outline-minor-mode " Out" "outline")
 
-;; don't place these in a minor mode or they won't be overridden by org
+(defun outline-up-transient--hide nil
+  "Move to parent heading, hide to that level, and enter outlined-transient."
+  (interactive)
+  (when (not (outline-on-heading-p))
+    (outline-up-heading 1 nil))
+  (outline-hide-sublevels (outline-level))
+  (outline-transient))
+
+(defun outline-transient-dwim nil
+  "Move to parent heading, if not on heading, and enter outline-transient."
+  (interactive)
+  (when (not (outline-on-heading-p))
+    (outline-up-heading 1 nil))
+  (outline-transient))
+
 (with-eval-after-load 'outline
-  (global-set-key (kbd "C-<tab>") 'bicycle-cycle)
-  (global-set-key (kbd "S-<tab>") 'bicycle-cycle-global))
+  (define-key outline-minor-mode-map (kbd "S-<tab>") 'outline-up-transient--hide)
+  (define-key outline-minor-mode-map (kbd "C-<tab>") 'outline-transient-dwim))
 
 (transient-define-prefix outline-transient ()
   "Transient for Outline Minor Mode navigation"
@@ -1085,16 +1092,16 @@ mode into a global minor mode and enable it."
     ("o" "Hide to This Sublevel" outline-hide-sublevels)
     ("a" "Show All" outline-show-all)]
    ["Navigate"
-    ("<down>" "Next" outline-next-visible-heading)
-    ("<up>" "Previous" outline-previous-visible-heading)]
+    ("<down>" "Next" outline-forward-same-level)
+    ("<up>" "Previous" outline-backward-same-level)]
    ["Edit"
     ("M-<left>"  "Promote" outline-promote)
     ("M-<right>" "Demote"  outline-demote)
     ("M-<up>"    "Move Up" outline-move-subtree-up)
     ("M-<down>"  "Move Down" outline-move-subtree-down)]
    ["Other"
-    ("C-/" "Undo" undo-only)
-    ("M-/" "Redo" undo-redo)
+    ("s-z" "Undo" undo-only)
+    ("s-Z" "Redo" undo-redo)
     ("c" "Consult" consult-outline :transient nil)]])
 
 

@@ -75,7 +75,6 @@
       '(bicycle
         consult
         dash
-        elfeed
         delight
         embark
         embark-consult
@@ -146,8 +145,6 @@
 (require 'radian-directories)
 
 (autoload 'transient-define-prefix "transient" nil t)
-(autoload 'org-store-link "org" nil t)
-(autoload 'dired-jump "dired-x" nil t)
 (require 'dash)
 (exec-path-from-shell-initialize)
 
@@ -962,18 +959,6 @@ This function is designed to be called by `kill-buffer-query-functions'."
 (defun scratch-buffer-org ()
   "Create a *scratch* buffer in Org Mode and switch to it."
   (interactive)
-  (if (get-buffer scratch-org-buffer)
-      (switch-to-buffer scratch-org-buffer)
-    (progn
-      (switch-to-buffer scratch-org-buffer)
-      (setq-local buffer-offer-save t)
-      (setq-local confirm-buffer-kill t)
-      (insert scratch-org-initial-message)
-      (org-mode))))
-
-(defun scratch-buffer-org ()
-  "Create a *scratch* buffer in Org Mode and switch to it."
-  (interactive)
   (let ((buf scratch-org-buffer))
     (if (get-buffer buf)
         (switch-to-buffer buf)
@@ -1469,13 +1454,6 @@ buffer, and exiting the agenda and releasing all the buffers."
       (define-key map "c" '("CANCELED" . org-agenda-todo-set-canceled))
       map))
 
-  (defun org-agenda-switch-to-other-window ()
-    "Switch to file at point in other window."
-    (interactive)
-    (switch-to-buffer-other-window (current-buffer))
-    (org-agenda-switch-to))
-
-  (define-key org-agenda-mode-map (kbd "o")   'org-agenda-switch-to-other-window)
   (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "C-/") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))

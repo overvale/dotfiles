@@ -908,19 +908,19 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 ;; The below adds a variable you can set buffer-locally, and adds a function
 ;; to the buffer-killing process.
 
-(defvar-local confirm-buffer-kill nil
+(defvar-local buffer-confirm-kill nil
   "Flag for if you want confirmation when killing modified buffers.")
 
-(defun confirm-buffer-kill-modified ()
-  "Ask for confirmation before killing modified buffers when `confirm-buffer-kill' is t.
+(defun buffer-confirm-kill-p ()
+  "Ask for confirmation before killing modified buffers when `buffer-confirm-kill' is t.
 This function is designed to be called by `kill-buffer-query-functions'."
   (if (and (buffer-modified-p)
-           confirm-buffer-kill)
+           buffer-confirm-kill)
       (yes-or-no-p
        (format "Buffer %S is modified; kill it? " (buffer-name)))
     t))
 
-(add-hook 'kill-buffer-query-functions #'confirm-buffer-kill-modified)
+(add-hook 'kill-buffer-query-functions #'buffer-confirm-kill-p)
 
 
 ;;; Scratch Buffers
@@ -929,13 +929,18 @@ This function is designed to be called by `kill-buffer-query-functions'."
 ;; org-mode (for editing text you're going to paste into a reddit
 ;; comment/post, for example).
 
-(defvar scratch-markdown-initial-message "<!-- Scratch Buffer for Markdown Mode -->\n\n"
+(defvar scratch-markdown-initial-message nil
   "Message to be inserted in markdown scratch buffer.")
+
+;; Add date/time to scratch-org-buffer message
+(setq scratch-markdown-initial-message
+      (concat "<!-- Scratch Buffer for Markdown Mode"
+              " -- " (format-time-string "%Y-%m-%d %a %H:%M -->\n\n")))
 
 (defvar scratch-markdown-buffer "*scratch-markdown*"
   "Name of markdown scratch buffer.")
 
-(defun scratch-buffer-makdown ()
+(defun scratch-buffer-markdown ()
   "Create a *scratch* buffer in Markdown Mode and switch to it."
   (interactive)
   (let ((buf scratch-markdown-buffer))
@@ -945,13 +950,18 @@ This function is designed to be called by `kill-buffer-query-functions'."
         (switch-to-buffer buf)
         (markdown-mode)
         (with-current-buffer buf
-          (setq-local confirm-buffer-kill t)
+          (setq-local buffer-confirm-kill t)
           (setq-local buffer-offer-save t)
           (insert scratch-markdown-initial-message)
           (not-modified))))))
 
-(defvar scratch-org-initial-message "# Scratch Buffer for Org Mode\n\n"
+(defvar scratch-org-initial-message nil
   "Message to be inserted in org scratch buffer.")
+
+;; Add date/time to scratch-org-buffer message
+(setq scratch-org-initial-message
+      (concat "# Scratch Buffer for Org Mode\n"
+              "# " (format-time-string "[%Y-%m-%d %a %H:%M]\n\n")))
 
 (defvar scratch-org-buffer "*scratch-org*"
   "Name of org-mode scratch buffer.")
@@ -966,7 +976,7 @@ This function is designed to be called by `kill-buffer-query-functions'."
         (switch-to-buffer buf)
         (org-mode)
         (with-current-buffer buf
-          (setq-local confirm-buffer-kill t)
+          (setq-local buffer-confirm-kill t)
           (setq-local buffer-offer-save t)
           (insert scratch-org-initial-message)
           (not-modified))))))
@@ -977,7 +987,7 @@ This function is designed to be called by `kill-buffer-query-functions'."
   (let ((buffer (generate-new-buffer name)))
     (switch-to-buffer buffer)
     (setq-local buffer-offer-save t)
-    (setq-local confirm-buffer-kill t)))
+    (setq-local buffer-confirm-kill t)))
 
 
 ;;; Prelude Search

@@ -539,12 +539,10 @@ Keybindings you define here will take precedence."
 (define-keys bosskey-mode-map
   "s-q"       'frames-p-save-buffers-kill-emacs
   "s-m"       'iconify-frame
-  "s-w"       'general-transient--window
-  "s-n"       'make-frame-command
+  "s-n"       'new-buffer
+  "s-N"       'make-frame-command
   "s-s"       'save-buffer
   "s-,"       'find-user-init-file
-  "s-o"       'find-file
-  "s-b"       'consult-buffer
   "s-z"       'undo-only
   "s-Z"       'undo-redo
   "s-x"       'kill-region
@@ -555,10 +553,17 @@ Keybindings you define here will take precedence."
   "s-<up>"    'beginning-of-buffer
   "s-<down>"  'end-of-buffer)
 
+;; Emacs keybinding tweaks
 (define-keys bosskey-mode-map
-  "C-<return>" 'general-transient
-  "M-]"        'next-buffer
-  "M-["        'previous-buffer
+  "s-<return>" 'general-transient
+  "s-S-<return>" 'call-mode-help-transient
+  "s-]"        'next-buffer
+  "s-["        'previous-buffer
+  "s-w"        'general-transient--window
+  "s-f"        'find-file
+  "s-F"        'find-file-other-window
+  "s-b"        'consult-buffer
+  "s-B"        'consult-buffer-other-window
   "C-M-h"      'mark-line
   "M-."        'embark-act
   "M-'"        'completion-at-point
@@ -574,7 +579,7 @@ Keybindings you define here will take precedence."
 (global-unset-key (kbd "C-x C-z"))
 
 ;; These should be overridden when appropriate:
-(global-set-key (kbd "M-o") 'other-window)
+(global-set-key (kbd "s-o") 'other-window)
 (global-set-key (kbd "C-a") 'ora-move-beginning-of-line)
 
 (global-set-keys [remap query-replace] 'vr/query-replace

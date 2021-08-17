@@ -1069,8 +1069,10 @@ mode into a global minor mode and enable it."
 
 (delight 'outline-minor-mode nil "outline")
 
-(define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
-(define-key outline-minor-mode-map (kbd "S-<tab>") 'bicycle-cycle-global)
+;; don't place these in a minor mode or they won't be overridden by org
+(with-eval-after-load 'outline
+  (global-set-key (kbd "C-<tab>") 'bicycle-cycle)
+  (global-set-key (kbd "S-<tab>") 'bicycle-cycle-global))
 
 (transient-define-prefix outline-transient ()
   "Transient for Outline Minor Mode navigation"

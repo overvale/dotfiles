@@ -654,7 +654,8 @@ Keybindings you define here will take precedence."
 
 (defun macos-appearance-dark nil
   "Return color of macOS appearance, t is dark, nil is light."
-  (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
+  (ignore-errors
+   (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua")))
 
 (add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
 

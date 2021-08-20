@@ -1208,6 +1208,7 @@ PROMPT sets the `read-string prompt."
 ;;; Minibuffer / Embark / Consult
 
 (custom-set-variables
+ '(completion-cycle-threshold nil)
  '(enable-recursive-minibuffers t)
  '(savehist-mode t))
 

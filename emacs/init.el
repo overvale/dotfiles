@@ -561,6 +561,7 @@ Keybindings you define here will take precedence."
   "s-]"        'next-buffer
   "s-["        'previous-buffer
   "s-w"        'general-transient--window
+  "s-k"        'org-capture
   "s-f"        'find-file
   "s-F"        'find-file-other-window
   "s-b"        'consult-buffer
@@ -1391,8 +1392,8 @@ Emacs 28 or its backported undo functions."
         org-agenda-todo-ignore-deadlines 'near
         org-agenda-skip-scheduled-if-done t
         org-agenda-skip-deadline-if-done t
-        org-agenda-sorting-strategy '(((agenda habit-down time-up priority-down category-up)
-                                       (todo category-up priority-down)
+        org-agenda-sorting-strategy '(((agenda habit-down time-up category-up priority-down)
+                                       (todo priority-down category-up)
                                        (tags priority-down category-keep)
                                        (search category-keep))))
 
@@ -1428,6 +1429,12 @@ Emacs 28 or its backported undo functions."
           ("s" "Scanline")
           ("si" "Scanline Inbox" entry
            (file+headline ,(concat user-orgfiles-directory "scanline.org") "Inbox")
+           "* %?\n\n" :empty-lines 1)
+          ("sf" "Scanline FRANK Inbox" entry
+           (file+headline ,(concat user-orgfiles-directory "scanline.org") "FRANK Inbox")
+           "* %?\n\n" :empty-lines 1)
+          ("sz" "Scanline ZERO Inbox" entry
+           (file+headline ,(concat user-orgfiles-directory "scanline.org") "ZERO Inbox")
            "* %?\n\n" :empty-lines 1)
           ("sl" "Scanline Log Entry" entry
            (file+olp+datetree ,(concat user-orgfiles-directory "scanline_logbook.org"))
@@ -1510,6 +1517,7 @@ buffer, and exiting the agenda and releasing all the buffers."
       (define-key map "c" '("CANCELED" . org-agenda-todo-set-canceled))
       map))
 
+  (define-key org-agenda-mode-map (kbd "S") 'org-agenda-schedule)
   (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "C-/") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))

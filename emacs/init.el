@@ -660,7 +660,7 @@ Keybindings you define here will take precedence."
 (add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
 
 
-;;; Appearance & Mode-Line
+;;; Theme and Fonts Config
 
 (setq light-theme 'modus-operandi)
 (setq dark-theme  'gruvbox)
@@ -690,12 +690,15 @@ Keybindings you define here will take precedence."
 (setq text-scale-mode-step 1.09)
 
 (custom-set-variables
- '(facedancer-monospace-family "Hack")
+ '(facedancer-monospace-family "SF Mono")
  '(facedancer-monospace-height 12)
- '(facedancer-variable-family  "Open Sans")
+ '(facedancer-variable-family  "SF Pro Text")
  '(facedancer-variable-height  13)
- '(facedancer-mode-line-family "Open Sans")
- '(facedancer-mode-line-height 13))
+ '(facedancer-mode-line-family "SF Compact Text")
+ '(facedancer-mode-line-height 14))
+
+
+;;; Mode-Line
 
 (delight 'eldoc-mode nil "eldoc")
 (delight 'emacs-lisp-mode "Elisp" "elisp-mode")

@@ -1144,23 +1144,28 @@ PROMPT sets the `read-string prompt."
 ;; Assign navigation-keys to the map
 (define-navigation-keys navigation-keymap)
 
-(defun navigation-keymap-eldoc-function ()
-  (eldoc-message "Navigation Keymap"))
+(defvar nagivation-keymap-header-text
+  (propertize " ** Navigation Keymap ACTIVE **" 'face 'warning)
+  "Text to display in the buffer's header line when navigation keymap is active.")
+
+(defun navigation-keymap-set-header nil
+  (setq-local og-header-line-format header-line-format)
+  (setq-local header-line-format (concat nagivation-keymap-header-text og-header-line-format)))
 
 (defun navigation-keymap--activate ()
-  "Make the navigation-keymap transient and add eldoc message."
+  "Activate the navigation-keymap transiently and add modify header-line."
   (interactive)
+  (navigation-keymap-set-header)
+  (scroll-up-line)
   (message "Navigation Keymap Activated")
-  (add-function :before-until (local 'eldoc-documentation-function)
-                #'navigation-keymap-eldoc-function)
   (set-transient-map navigation-keymap t 'navigation-keymap--deactivate))
 
 (defun navigation-keymap--deactivate ()
-  "Remove the navigation-keymap eldoc message."
+  "Deactivate the navigation-keymap transiently and restore header-line."
   (interactive)
-  (message "Navigation Keymap Deactivated")
-  (remove-function (local 'eldoc-documentation-function)
-                   #'navigation-keymap-eldoc-function))
+  (setq-local header-line-format og-header-line-format)
+  (scroll-down-line)
+  (message "Navigation Keymap Deactivated"))
 
 
 ;;; Selected

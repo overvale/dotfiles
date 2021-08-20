@@ -619,6 +619,28 @@ call that function with a hook, like so:
        map) t))
 
 
+;;; Eldoc Message
+
+(defun navigation-keymap-eldoc-function ()
+  (eldoc-message "Navigation Keymap"))
+
+(defun navigation-keymap--activate ()
+  "Make the navigation-keymap transient and add eldoc message."
+  (interactive)
+  (message "Navigation Keymap Activated")
+  (add-function :before-until (local 'eldoc-documentation-function)
+                #'navigation-keymap-eldoc-function)
+  (set-transient-map navigation-keymap t 'navigation-keymap--deactivate))
+
+(defun navigation-keymap--deactivate ()
+  "Remove the navigation-keymap eldoc message."
+  (interactive)
+  (message "Navigation Keymap Deactivated")
+  (remove-function (local 'eldoc-documentation-function)
+                   #'navigation-keymap-eldoc-function))
+
+
+
 ;;; EWW
 
 (setq shr-max-image-proportion 0.5)

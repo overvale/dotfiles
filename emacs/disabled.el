@@ -859,4 +859,15 @@ browser defined by `browse-url-generic-program'."
     (remember)))
 
 
+;;; Outline
+
+(elisp-group globalize-outline-minor-mode
+  "outline provides major and minor modes for collapsing sections
+of a buffer into an outline-like format. Let's turn that minor
+mode into a global minor mode and enable it."
+  (define-globalized-minor-mode global-outline-minor-mode
+    outline-minor-mode outline-minor-mode)
+  (global-outline-minor-mode +1))
+
+
 ;;; disabled.el ends here

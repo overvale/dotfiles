@@ -942,15 +942,16 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 ;; to the buffer-killing process.
 
 (defvar-local buffer-confirm-kill nil
-  "Flag for if you want confirmation when killing modified buffers.")
+  "Non-nil means confirm killing buffer when modified.
+Variable is checked by `buffer-confirm-kill-p'.")
 
 (defun buffer-confirm-kill-p ()
-  "Ask for confirmation before killing modified buffers when `buffer-confirm-kill' is t.
-This function is designed to be called by `kill-buffer-query-functions'."
+  "Return nil if buffer is modified and `buffer-confirm-kill' is t.
+This function is designed to be called from `kill-buffer-query-functions'."
   (if (and (buffer-modified-p)
            buffer-confirm-kill)
       (yes-or-no-p
-       (format "Buffer %S is modified; kill it? " (buffer-name)))
+       (format "Buffer %S is modified; kill anyway? " (buffer-name)))
     t))
 
 (add-hook 'kill-buffer-query-functions #'buffer-confirm-kill-p)

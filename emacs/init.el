@@ -1402,13 +1402,14 @@ Emacs 28 or its backported undo functions."
         org-agenda-restore-windows-after-quit t
         org-agenda-start-with-log-mode t
         org-agenda-use-time-grid nil
-        org-deadline-warning-days 5
+        org-deadline-warning-days 7
         org-agenda-todo-ignore-scheduled 'all
         org-agenda-todo-ignore-deadlines 'near
         org-agenda-skip-scheduled-if-done t
         org-agenda-skip-deadline-if-done t
+        org-agenda-skip-deadline-prewarning-if-scheduled t
         org-agenda-sorting-strategy '(((agenda habit-down time-up category-up priority-down)
-                                       (todo priority-down category-up)
+                                       (todo todo-state-up priority-down category-up)
                                        (tags priority-down category-keep)
                                        (search category-keep))))
 

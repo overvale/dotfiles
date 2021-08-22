@@ -18,8 +18,6 @@
 ;; https://github.com/raxod502/radian
 ;; https://github.com/skeeto/.emacs.d
 ;; https://github.com/bbatsov/prelude
-;; https://github.com/emacscollective/emacs.g
-;; https://codeberg.org/jao/elibs
 
 
 ;;; Preamble
@@ -933,16 +931,15 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
 ;;; Confirm Killing Modified Buffers
 
-;; Emacs only prompts the user for confirmation when killing a file-visiting
-;; buffer. Non-file-visiting buffers are killed immediately without
-;; confirmation.
+;; Emacs asks for confirmation when killing modified file-visiting buffers,
+;; but does not do so for non-file-visiting buffers.
 ;;
-;; There is a variable, buffer-offer-save, which will make Emacs prompt the
-;; user to save modified non-file-visiting buffers when exiting Emacs, but no
-;; such option exists for killing buffers.
+;; The option `buffer-offer-save' tells Emacs to prompt to you save modified
+;; non-file-visiting buffers when EXITING Emacs, but no such option exists for
+;; killing buffers (as described in the docstring for `buffer-offer-save').
 ;;
-;; The below adds a variable you can set buffer-locally, and adds a function
-;; to the buffer-killing process.
+;; The below create a buffer-local variable and function for
+;; `kill-buffer-query-functions' that provides this functionality.
 
 (defvar-local buffer-confirm-kill nil
   "Non-nil means confirm killing buffer when modified.
@@ -1149,7 +1146,7 @@ PROMPT sets the `read-string prompt."
 (define-navigation-keys navigation-keymap)
 
 (defvar nagivation-keymap-header-text
-  (propertize " ** Navigation Keymap ACTIVE **" 'face 'warning)
+  (propertize " ** Navigation Keymap ACTIVE ** " 'face 'warning)
   "Text to display in the buffer's header line when navigation keymap is active.")
 
 (defun navigation-keymap-set-header nil

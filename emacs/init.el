@@ -1196,6 +1196,7 @@ PROMPT sets the `read-string prompt."
 (with-eval-after-load 'selected
   ;; Careful not to bind - or = as they may collide with `expand-region'.
   (define-keys selected-keymap
+    "." 'embark-act
     "u" 'upcase-dwim
     "d" 'downcase-dwim
     "c" 'capitalize-dwim

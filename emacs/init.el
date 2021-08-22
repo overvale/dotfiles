@@ -230,6 +230,13 @@ config and include a docstring. Mildly convenient."
  '(locate-command "mdfind")
  '(trash-dircetory "~/.Trash"))
 
+(defalias 'world-clock 'display-time-world)
+(setq display-time-world-time-format "%Z%t%R%t%F"
+      zoneinfo-style-world-list
+      '(("America/Los_Angeles" "Los Angeles")
+        ("America/Chicago" "Chicago")
+        ("America/Montreal" "Montreal")))
+
 
 ;;; Misc Functions
 

@@ -654,8 +654,7 @@ Keybindings you define here will take precedence."
 
 (defun macos-appearance-dark nil
   "Return color of macOS appearance, t is dark, nil is light."
-  (ignore-errors
-   (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua")))
+   (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
 
 (add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
 
@@ -680,8 +679,8 @@ Keybindings you define here will take precedence."
   (modus-themes-load-themes))
 
 (elisp-group set-theme-on-startup
-  "If system is in dark mode, load dark theme, otherwise load user preference."
-  (if (macos-appearance-dark)
+  "On startup, try to match system color, otherwise load user preference."
+  (if (ignore-errors (macos-appearance-dark))
       (load-theme-color 'dark)
     (if (eq default-theme-color 'light)
         (load-theme-color 'light)

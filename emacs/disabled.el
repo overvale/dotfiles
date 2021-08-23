@@ -515,6 +515,157 @@ FEATURE is name of lisp feature, MODE and REPLACEMENT are as in `blackout'."
        (cdr def))))
 
 
+;;; Facedancer
+
+(custom-set-variables
+ '(facedancer-monospace-family "SF Mono")
+ '(facedancer-monospace-height 12)
+ '(facedancer-variable-family  "SF Pro Text")
+ '(facedancer-variable-height  13)
+ '(facedancer-mode-line-family "SF Compact Text"))
+
+;; Facedancer defines a group of user options which set various attributes of
+;; the default, fixed-pitch, and variable-pitch faces. Each option should be
+;; set either via the `customize' interface or by calling
+;; `custom-set-variables' in your init file as each option has "setter"
+;; functions.
+
+(defgroup facedancer ()
+  "Options for facedancer."
+  :group 'faces
+  :prefix "facedancer-")
+
+(defcustom facedancer-monospace-family nil
+  "Monospace font family of the default and fixed-pitch faces."
+  :group 'facedancer
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (set-face-attribute 'default nil     :family value)
+         (set-face-attribute 'fixed-pitch nil :family value)))
+
+(defcustom facedancer-monospace-height 12
+  "Font size, as an integer, for the default and fixed-pitch sizes."
+  :group 'facedancer
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (set-face-attribute 'default nil     :height (* value 10))
+         (set-face-attribute 'fixed-pitch nil :height 1.0)))
+
+(defcustom facedancer-monospace-weight 'normal
+  "Weight of both the default and fixed-pitch faces."
+  :group 'facedancer
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (set-face-attribute 'default nil     :weight value)
+         (set-face-attribute 'fixed-pitch nil :weight value)))
+
+(defcustom facedancer-monospace-width 'normal
+  "Width of both the default and fixed-pitch faces."
+  :group 'facedancer
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (set-face-attribute 'default nil     :width value)
+         (set-face-attribute 'fixed-pitch nil :width value)))
+
+(defcustom facedancer-variable-family nil
+  "Variable font family of the variable-pitch face."
+  :group 'facedancer
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (set-face-attribute 'variable-pitch nil :family value)))
+
+(defcustom facedancer-variable-height 14
+  "Font point size, as an integer, for the variable-pitch size."
+  :group 'facedancer
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (set-face-attribute 'variable-pitch nil :height 1.0)))
+
+(defcustom facedancer-variable-weight 'normal
+  "Weight of the variable-pitch face."
+  :group 'facedancer
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (set-face-attribute 'variable-pitch nil :weight value)))
+
+(defcustom facedancer-variable-width 'normal
+  "Width of the variable-pitch face."
+  :group 'facedancer
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (set-face-attribute 'variable-pitch nil :width value)))
+
+(defcustom facedancer-mode-line-family nil
+  "Font family of both the active and inactive mode-lines."
+  :group 'facedancer
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (set-face-attribute 'mode-line nil          :family value)
+         (set-face-attribute 'mode-line-inactive nil :family value)))
+
+(defcustom facedancer-mode-line-height 12
+  "Font point size, as an integer, for the active and inactive mode-lines."
+  :group 'facedancer
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (set-face-attribute 'mode-line nil          :height (* value 10))
+         (set-face-attribute 'mode-line-inactive nil :height (* value 10))))
+
+(define-minor-mode facedancer-vadjust-mode
+  "Minor mode to adjust the variable-pitch face height buffer-locally.
+A minor mode to scale (in the current buffer) the variable-pitch
+face up to the height defined by ‘facedancer-variable-height’ and
+the fixed-pitch face down to the height defined by
+‘facedancer-monospace-height’."
+  :init-value nil
+  :lighter " V+"
+  (if facedancer-vadjust-mode
+      (progn
+        (setq-local variable-pitch-remapping
+                    (face-remap-add-relative 'variable-pitch
+                                             :height (/ (float facedancer-variable-height)
+                                                        (float facedancer-monospace-height))))
+        (setq-local fixed-pitch-remapping
+                    (face-remap-add-relative 'fixed-pitch
+                                             :height (/ (float facedancer-monospace-height)
+                                                        (float facedancer-variable-height))))
+        (force-window-update (current-buffer)))
+    (progn
+      (face-remap-remove-relative variable-pitch-remapping)
+      (face-remap-remove-relative fixed-pitch-remapping)
+      (force-window-update (current-buffer)))))
+
+(add-hook 'buffer-face-mode-hook (lambda () (facedancer-vadjust-mode 'toggle)))
+
+ 
+
+(define-minor-mode facedancer-vadjust-mode
+  "Minor mode to adjust the variable-pitch face height buffer-locally.
+A minor mode to scale (in the current buffer) the variable-pitch
+face up to the height defined by ‘facedancer-variable-height’ and
+the fixed-pitch face down to the height defined by
+‘facedancer-monospace-height’."
+  :init-value nil
+  :lighter " V+"
+  (if facedancer-vadjust-mode
+      (progn
+        (setq-local variable-pitch-remapping
+                    (face-remap-add-relative 'variable-pitch
+                                             :height (/ (float facedancer-variable-height)
+                                                        (float facedancer-monospace-height))))
+        (setq-local fixed-pitch-remapping
+                    (face-remap-add-relative 'fixed-pitch
+                                             :height (/ (float facedancer-monospace-height)
+                                                        (float facedancer-variable-height))))
+        (force-window-update (current-buffer)))
+    (progn
+      (face-remap-remove-relative variable-pitch-remapping)
+      (face-remap-remove-relative fixed-pitch-remapping)
+      (force-window-update (current-buffer)))))
+
+(add-hook 'buffer-face-mode-hook (lambda () (facedancer-vadjust-mode 'toggle)))
+
+
 ;;; facedancer-mode
 
 ;; There are a number of built-in functions for dealing with setting

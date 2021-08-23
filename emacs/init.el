@@ -606,7 +606,7 @@ Keybindings you define here will take precedence."
                  [M-mouse-1]      #'mouse-set-point)
 
 
-;;; Light/Dark Themes
+;;; Themes
 
 ;; By default I use a light theme, but sometimes (when all the lights are off)
 ;; I use a dark theme. The below are some functions that allow me to quickly
@@ -663,13 +663,6 @@ Keybindings you define here will take precedence."
 
 (add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
 
-
-;;; Theme and Fonts Config
-
-(setq light-theme 'modus-operandi)
-(setq dark-theme  'gruvbox)
-(setq default-theme-color 'light)
-
 (elisp-group modus-themes-config
   "Require, cofigure, and load modus-themes."
   (require 'modus-themes)
@@ -682,6 +675,10 @@ Keybindings you define here will take precedence."
    '(modus-themes-region '(bg-only))
    '(modus-themes-org-blocks '(gray-background)))
   (modus-themes-load-themes))
+
+(setq light-theme 'modus-operandi)
+(setq dark-theme  'gruvbox)
+(setq default-theme-color 'light)
 
 (elisp-group set-theme-on-startup
   "On startup, try to match system color, otherwise load user preference."

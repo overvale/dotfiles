@@ -1317,7 +1317,7 @@ Emacs 28 or its backported undo functions."
   (setq org-agenda-custom-commands
         '(("1" "TODAY: Today's Agenda + Priority Tasks"
            ((agenda "d" ((org-agenda-span 'day)))
-            (todo "TODO"
+            (todo "TODO|DELG"
                   ((org-agenda-sorting-strategy '(todo-state-up))
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
           ("0" "COMPLETE: Week Agenda + All Tasks"
@@ -1328,7 +1328,7 @@ Emacs 28 or its backported undo functions."
                   )))))
 
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")))
+        '((sequence "TODO(t)" "DELG(g)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")))
 
   (setq org-capture-templates
         `(("p" "Personal")
@@ -1371,6 +1371,8 @@ Emacs 28 or its backported undo functions."
   ;; Useful when paired with transient.
   (defun org-todo-set-todo () (interactive) (org-todo "TODO"))
   (defun org-agenda-todo-set-todo () (interactive) (org-agenda-todo "TODO"))
+  (defun org-todo-set-delegated () (interactive) (org-todo "DELG"))
+  (defun org-agenda-todo-set-delegated () (interactive) (org-agenda-todo "DELG"))
   (defun org-todo-set-later () (interactive) (org-todo "LATER"))
   (defun org-agenda-todo-set-later () (interactive) (org-agenda-todo "LATER"))
   (defun org-todo-set-done () (interactive) (org-todo "DONE"))
@@ -1400,6 +1402,7 @@ buffer, and exiting the agenda and releasing all the buffers."
   (setq org-todo-map
     (let ((map (make-sparse-keymap "Org TODO")))
       (define-key map "t" '("TODO"     . org-todo-set-todo))
+      (define-key map "g" '("DELG"     . org-todo-set-delegated))
       (define-key map "l" '("LATER"    . org-todo-set-later))
       (define-key map "d" '("DONE"     . org-todo-set-done))
       (define-key map "c" '("CANCELED" . org-todo-set-canceled))
@@ -1425,6 +1428,7 @@ buffer, and exiting the agenda and releasing all the buffers."
   (setq org-agenda-todo-map
     (let ((map (make-sparse-keymap "Org Agenda TODO")))
       (define-key map "t" '("TODO"     . org-agenda-todo-set-todo))
+      (define-key map "g" '("DELG"     . org-agenda-todo-set-delegated))
       (define-key map "l" '("LATER"    . org-agenda-todo-set-later))
       (define-key map "d" '("DONE"     . org-agenda-todo-set-done))
       (define-key map "c" '("CANCELED" . org-agenda-todo-set-canceled))

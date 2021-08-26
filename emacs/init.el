@@ -3,7 +3,7 @@
 ;; Copyright (C) 2021 Oliver Taylor
 
 ;; Author: Oliver Taylor
-;; Homepage: https://github.com/olivertaylor/dotfiles
+;; URL: https://github.com/olivertaylor/dotfiles
 
 
 ;;; Commentary:
@@ -13,7 +13,20 @@
 ;; convention by default and helps with navigation. You can also create an
 ;; occur buffer with the search /^;;;+/.
 
-;; Some inspiration:
+;; Every Emacs configuration is unique to the person who created it, to their
+;; needs and their taste. This one takes the following approach:
+;;
+;;   + It is NOT modular, so if you don't have all the listed packages
+;;     installed large parts of the config won't work.
+;;   + I prefer to write my own code instead of installing packages.
+;;   + The config is a single file (with exceptions for large libraries
+;;     which I never edit and didn't author).
+;;   + I use package.el and don't use Use-Package.
+;;   + I make heavy use of transient for interacting with Emacs.
+;;   + I'm a heavy Org user for my job and life.
+
+;; If you like this config I would recommend reading these as well:
+;;
 ;; https://github.com/oantolin/emacs-config
 ;; https://github.com/raxod502/radian
 ;; https://github.com/skeeto/.emacs.d
@@ -24,7 +37,8 @@
 
 ;; It is useful to know the impact of your init file on Emacs startup time so
 ;; you can avoid introducing slowdowns. There are many ways to do it, but this
-;; is very simple and does the trick for me.
+;; is very simple and does the trick for me. This prints a message at the very
+;; start of loading this config, then another at the end.
 
 (defvar before-user-init-time (current-time)
   "Value of `current-time' when Emacs begins loading `user-init-file'.")
@@ -259,6 +273,7 @@ it marks the next ARG lines after the ones already marked."
 (defalias 'mark-sentence 'mark-end-of-sentence)
 
 (defun toggle-window-split ()
+  ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/window-extras.el
   "Toggle window split from vertical to horizontal."
   (interactive)
   (if (> (length (window-list)) 2)
@@ -694,8 +709,7 @@ Keybindings you define here will take precedence."
 (setq text-scale-mode-step 1.09)
 
 (elisp-group fontface-setup
-  "My unique font setup.
-
+  "Set fonts and their sizes.
 The variable-pitch and fixed-pitch faces have a default height of 1.0,
 which I don't want to mess with because that's what's required to make
 `text-scale-adjust' work correctly. The default height needs to be set,
@@ -1256,7 +1270,6 @@ Emacs 28 or its backported undo functions."
   (interactive)
   (consult-grep user-orgfiles-directory))
 
-
 (autoload 'oht-org-agenda-today-pop-up "org")
 (autoload 'oht-org-agenda-today "org")
 (autoload 'consult-grep-orgfiles "org")
@@ -1711,6 +1724,7 @@ buffer, and exiting the agenda and releasing all the buffers."
       ("n"   "dired-narrow"         ignore)]]
     [["Marks"
       ("m" "Marks..." dired-mode-help-transient--marks)]])
+
   (transient-define-prefix dired-mode-help-transient--marks ()
     "Sub-transient for dired marks"
     ["Dired Mode -> Marks"

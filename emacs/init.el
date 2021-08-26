@@ -130,20 +130,6 @@
 (define-key package-menu-mode-map (kbd "/ s") 'package-menu-filter-by-status)
 
 
-;;; Mitsuharu Yamamoto Emacs
-
-;; I use Mitsuharu Yamamoto’s fork of Emacs. Here are some modifications
-;; specific to that.
-
-;; Setup modifier keys
-(setq mac-command-modifier 'super
-      mac-option-modifier 'meta)
-
-;; Turn off swiping to switch buffers (defined in mac-win.el)
-(global-unset-key [swipe-left])
-(global-unset-key [swipe-right])
-
-
 ;;; Critical Setup
 
 ;; These variables, packages, macros, and functions are used throughout the
@@ -156,6 +142,12 @@
 (add-to-list 'load-path (concat user-dotemacs-directory "lisp/"))
 (require 'undo-backport)
 (require 'radian-directories)
+
+;; vundo creates a tree-like visualization of your undo history
+;; using only standard Emacs undo commands and data. Requires either
+;; Emacs 28 or its backported undo functions.
+(add-to-list 'load-path "~/home/src/lisp/vundo/")
+(require 'vundo)
 
 (autoload 'transient-define-prefix "transient" nil t)
 (require 'dash)
@@ -530,6 +522,9 @@ With a prefix ARG always prompt for command to use."
 
 ;;; Personal Keybindings
 
+(setq mac-command-modifier 'super
+      mac-option-modifier 'meta)
+
 ;; Minor modes override global bindings, so any bindings you don't want
 ;; overridden should be placed in a minor mode. I stole this technique from
 ;; the `bind-key' package.
@@ -597,6 +592,10 @@ Keybindings you define here will take precedence."
 ;; These should be overridden when appropriate:
 (global-set-key (kbd "s-o") 'other-window)
 (global-set-key (kbd "C-a") 'ora-move-beginning-of-line)
+
+;; Turn off swiping to switch buffers (defined in mac-win.el)
+(global-unset-key [swipe-left])
+(global-unset-key [swipe-right])
 
 (global-set-keys [remap query-replace] 'vr/query-replace
                  [remap capitalize-word] 'capitalize-dwim
@@ -1248,12 +1247,6 @@ PROMPT sets the `read-string prompt."
 (setq ytdl-media-player "open")
 (setq ytdl-always-query-default-filename 'yes-confirm) ; Get filename from server
 
-(elisp-group vundo
-  "vundo creates a tree-like visualization of your undo history
-using only standard Emacs undo commands and data. Requires either
-Emacs 28 or its backported undo functions."
-  (add-to-list 'load-path "~/home/src/lisp/vundo/")
-  (require 'vundo))
 
 (elisp-group world-clock
   "Emacs has a world clock!"

@@ -519,6 +519,11 @@ With a prefix ARG always prompt for command to use."
   (interactive)
   (split-window-sensibly))
 
+(defun backward-kill-line nil
+  "Kill backward to the start of line."
+  (interactive)
+  (kill-line 0))
+
 
 ;;; Personal Keybindings
 
@@ -558,6 +563,7 @@ Keybindings you define here will take precedence."
   "s-x"       'kill-region
   "s-c"       'kill-ring-save
   "s-v"       'yank
+  "s-<backspace>" 'backward-kill-line
   "s-<left>"  'beginning-of-visual-line
   "s-<right>" 'end-of-visual-line
   "s-<up>"    'beginning-of-buffer

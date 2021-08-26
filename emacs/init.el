@@ -1350,13 +1350,11 @@ Emacs 28 or its backported undo functions."
         '(("1" "TODAY: Today's Agenda + Priority Tasks"
            ((agenda "d" ((org-agenda-span 'day)))
             (todo "TODO|DELG"
-                  ((org-agenda-sorting-strategy '(todo-state-up))
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))))
+                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))))))
           ("0" "COMPLETE: Week Agenda + All Tasks"
            ((agenda "w" ((org-agenda-span 'week)))
             (todo "TODO|LATER"
-                  ((org-agenda-sorting-strategy '(todo-state-up))
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled)))
+                  ((org-agenda-sorting-strategy '(todo-state-up priority-down)))
                   )))))
 
   (setq org-todo-keywords

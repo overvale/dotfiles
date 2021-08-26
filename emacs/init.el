@@ -110,6 +110,9 @@
         ytdl
         transient))
 
+(setq package-pinned-packages
+      '((embark . "melpa")))
+
 (defun package-menu-filter-by-status (status)
   ;; https://github.com/jcs090218/jcs-emacs/blob/38cce9fc9046ef436c59e13d9942a719dc1e8f2e/.emacs.jcs/jcs-package.el#L582
   "Filter the *Packages* buffer by STATUS."
@@ -1176,11 +1179,11 @@ PROMPT sets the `read-string prompt."
   (require 'embark-consult)
 
   (custom-set-variables
-   '(embark-indicator 'embark-verbose-indicator)
+   '(embark-indicators '(embark-verbose-indicator
+                         embark-highlight-indicator
+                         embark-isearch-highlight-indicator))
    '(embark-verbose-indicator-display-action
-     '(display-buffer-below-selected (window-height . fit-window-to-buffer))))
-
-  (set-face-attribute 'embark-verbose-indicator-title nil :height 1.0)
+     '(display-buffer-at-bottom (window-height . fit-window-to-buffer))))
 
   (setq prefix-help-command 'embark-prefix-help-command)
 

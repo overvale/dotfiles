@@ -1279,6 +1279,21 @@ Emacs 28 or its backported undo functions."
 (autoload 'consult-grep-orgfiles "org")
 (autoload 'find-org-directory "org")
 
+;; calling capture templates directly
+(defun org-capture-scanline-log   () (interactive) (org-capture nil "sl"))
+(defun org-capture-scanline-frank () (interactive) (org-capture nil "sf"))
+(defun org-capture-scanline-zero  () (interactive) (org-capture nil "sz"))
+
+(setq org-quick-capture-map
+      (let ((map (make-sparse-keymap "Scanline Capture")))
+        (define-key map "l" '("logbook" . org-capture-scanline-log))
+        (define-key map "f" '("frank"   . org-capture-scanline-frank))
+        (define-key map "z" '("zero"    . org-capture-scanline-zero))
+        map))
+
+(define-key bosskey-mode-map (kbd "s-K") org-quick-capture-map)
+
+
 (with-eval-after-load 'org
 
   (custom-set-variables
@@ -1655,7 +1670,8 @@ buffer, and exiting the agenda and releasing all the buffers."
       ("n" "Narrow/Widen" narrow-or-widen-dwim)
       ("m" "Visible Markup" visible-mode)]
      ["Item"
-      ("t" "TODO" org-todo)
+      ("t" "TODO" org-todo-set-todo)
+      ("T" "Set Tags" org-set-tags-command)
       ("I" "Clock In" org-clock-in)
       ("O" "Clock Out" org-clock-out)
       ("a" "Archive Subtree" org-archive-subtree)

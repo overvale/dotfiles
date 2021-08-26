@@ -640,6 +640,7 @@ Keybindings you define here will take precedence."
 
 (defun disable-current-themes nil
   "Disables all currently enabled themes."
+  (interactive)
   (mapcar 'disable-theme custom-enabled-themes))
 
 (defun load-theme-color (color)

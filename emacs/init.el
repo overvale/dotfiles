@@ -1345,7 +1345,7 @@ Emacs 28 or its backported undo functions."
                   )))))
 
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "DELG(g)" "LATER(l)" "|" "DONE(d)" "CANCELED(c)")))
+        '((sequence "TODO(t)" "DELG(g)" "LATER(l)" "|" "DONE(d)" "MOVED(m)" "CANCELED(c)")))
 
   (setq org-capture-templates
         `(("p" "Personal")
@@ -1396,6 +1396,8 @@ Emacs 28 or its backported undo functions."
   (defun org-agenda-todo-set-done () (interactive) (org-agenda-todo "DONE"))
   (defun org-agenda-todo-set-canceled () (interactive) (org-agenda-todo "CANCELED"))
   (defun org-todo-set-canceled () (interactive) (org-todo "CANCELED"))
+  (defun org-agenda-todo-set-moved () (interactive) (org-agenda-todo "MOVED"))
+  (defun org-todo-set-moved () (interactive) (org-todo "MOVED"))
 
   (defun oht-org-agenda-exit-delete-window ()
     "Wrapper around org-agenda-exit & delete-window."
@@ -1417,13 +1419,14 @@ buffer, and exiting the agenda and releasing all the buffers."
     (local-set-key (kbd "q") 'delete-window))
 
   (setq org-todo-map
-    (let ((map (make-sparse-keymap "Org TODO")))
-      (define-key map "t" '("TODO"     . org-todo-set-todo))
-      (define-key map "g" '("DELG"     . org-todo-set-delegated))
-      (define-key map "l" '("LATER"    . org-todo-set-later))
-      (define-key map "d" '("DONE"     . org-todo-set-done))
-      (define-key map "c" '("CANCELED" . org-todo-set-canceled))
-      map))
+        (let ((map (make-sparse-keymap "Org TODO")))
+          (define-key map "t" '("TODO"     . org-todo-set-todo))
+          (define-key map "g" '("DELG"     . org-todo-set-delegated))
+          (define-key map "l" '("LATER"    . org-todo-set-later))
+          (define-key map "d" '("DONE"     . org-todo-set-done))
+          (define-key map "m" '("MOVED"    . org-todo-set-moved))
+          (define-key map "c" '("CANCELED" . org-todo-set-canceled))
+          map))
 
   ;; replace the regular binding with the above map
   (define-key org-mode-map (kbd "C-c C-t") org-todo-map)
@@ -1448,6 +1451,7 @@ buffer, and exiting the agenda and releasing all the buffers."
       (define-key map "g" '("DELG"     . org-agenda-todo-set-delegated))
       (define-key map "l" '("LATER"    . org-agenda-todo-set-later))
       (define-key map "d" '("DONE"     . org-agenda-todo-set-done))
+      (define-key map "m" '("MOVED"    . org-agenda-todo-set-moved))
       (define-key map "c" '("CANCELED" . org-agenda-todo-set-canceled))
       map))
 

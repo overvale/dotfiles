@@ -84,7 +84,8 @@
 (global-set-key (kbd "C-c p") pkg-ops-map)
 
 (setq package-selected-packages
-      '(consult
+      '(bicycle
+        consult
         dash
         delight
         embark
@@ -999,8 +1000,11 @@ PROMPT sets the `read-string prompt."
   (outline-transient))
 
 (with-eval-after-load 'outline
-  (define-key outline-minor-mode-map (kbd "S-<tab>") 'outline-up-transient--hide)
-  (define-key outline-minor-mode-map (kbd "C-<tab>") 'outline-transient-dwim))
+  ;; If you instead bind these in `outline-minor-mode' they might not be
+  ;; properly overridden by other minor modes, like org-mode. So a global
+  ;; binding is safer.
+  (global-set-key (kbd "C-<tab>") 'bicycle-cycle)
+  (global-set-key (kbd "S-<tab>") 'bicycle-cycle-global))
 
 (transient-define-prefix outline-transient ()
   "Transient for Outline Minor Mode navigation"

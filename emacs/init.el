@@ -357,7 +357,7 @@ already narrowed."
 Uses the `default-directory' unless a path is supplied."
   (interactive)
   (find-file (completing-read "Find File Recursively: "
-                              (directory-files-recursively (if path path default-directory) ".+"))))
+                              (directory-files-recursively (if path path default-directory) ".+" t))))
 
 (defalias 'find-files-recursively 'find-file-recursively)
 

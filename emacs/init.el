@@ -1189,6 +1189,19 @@ PROMPT sets the `read-string prompt."
 
   (define-key bosskey-mode-map (kbd "C-h b") 'embark-bindings)
 
+  (defun embark-describe-keymap (keymap)
+    ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/help-extras.el
+    "Prompt for KEYMAP and show its bindings using `completing-read'."
+    (interactive
+     (list
+      (completing-read "Keymap: "
+                       (cl-loop for x being the symbols
+                                if (and (boundp x) (keymapp (symbol-value x)))
+                                collect (symbol-name x))
+                       nil t nil 'variable-name-history)))
+    (require 'embark)
+    (embark-completing-read-prompter (symbol-value (intern keymap)) nil))
+
   (define-keys embark-file-map
     "O" 'crux-open-with
     "j" 'dired-jump)

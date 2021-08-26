@@ -245,13 +245,6 @@ config and include a docstring. Mildly convenient."
  '(locate-command "mdfind")
  '(trash-dircetory "~/.Trash"))
 
-(defalias 'world-clock 'display-time-world)
-(setq display-time-world-time-format "%Z%t%R%t%F"
-      zoneinfo-style-world-list
-      '(("America/Los_Angeles" "Los Angeles")
-        ("America/Chicago" "Chicago")
-        ("America/Montreal" "Montreal")))
-
 
 ;;; Misc Functions
 
@@ -730,6 +723,12 @@ and I want the mode-line to be a fixed height, so I set those."
 
 
 ;;; Mode-Line
+
+(setq display-time-default-load-average nil)
+(setq display-time-format "  [%F]  %R")
+(display-time-mode)
+(setq battery-mode-line-format "  %b%p%%")
+(display-battery-mode)
 
 (delight 'eldoc-mode nil "eldoc")
 (delight 'emacs-lisp-mode "Elisp" "elisp-mode")
@@ -1255,6 +1254,15 @@ using only standard Emacs undo commands and data. Requires either
 Emacs 28 or its backported undo functions."
   (add-to-list 'load-path "~/home/src/lisp/vundo/")
   (require 'vundo))
+
+(elisp-group world-clock
+  "Emacs has a world clock!"
+  (defalias 'world-clock 'display-time-world)
+  (setq display-time-world-time-format "%Z%t%R%t%F"
+        zoneinfo-style-world-list
+        '(("America/Los_Angeles" "Los Angeles")
+          ("America/Chicago" "Chicago")
+          ("America/Montreal" "Montreal"))))
 
 
 ;;; Org

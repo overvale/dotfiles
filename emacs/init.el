@@ -173,15 +173,32 @@
           (global-set-key (read-kbd-macro key) def)
         (global-set-key key def)))))
 
+;; I use 3 macros to control how/when code and packages are loaded. I don't
+;; use use-package, which is designed as a comprehensive way of dealing with
+;; this problem, so I need a few little tools of my own.
+;;
+;; 1. `with-eval-after-load' -- which evaluates the code after the library is loaded.
+;; 2. elisp-group -- this is simply a "group" of lines of code. It provides no
+;;    functional benefit, only a VISUAL one.
+;; 3. config-package -- this evaluates the contained lisp only if the named package
+;;    is installed.
+
 (defmacro elisp-group (name doc &rest body)
   "Group elisp by wrapping in progn.
-
-This is a silly macro, all it does is wrap the body in `progn'.
-But it allows you to neatly group small bits of elisp in your
-config and include a docstring. Mildly convenient."
-  (declare (indent defun)
-           (doc-string 2))
+Is this a useless macro? Maybe. But it helps keep my init file tidy."
+  (declare (indent defun) (doc-string 2))
   `(progn ,@body))
+
+(defmacro config-package (package doc &rest body)
+  "Eval BODY only if PACKAGE is installed."
+  (declare (indent defun) (doc-string 2))
+  ;; this could also be an argument, t to select the package, nil to not
+  ;;(add-to-list 'package-selected-packages ,package)
+  `(if (package-installed-p ,package)
+       (progn ,@body)
+     (message (concat "Package \'"
+                      (symbol-name ,package)
+                      "\' is not installed... skipping config."))))
 
 
 ;;; Customizations
@@ -678,7 +695,7 @@ Keybindings you define here will take precedence."
 
 (add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
 
-(elisp-group modus-themes-config
+(config-package 'modus-themes
   "Require, cofigure, and load modus-themes."
   (require 'modus-themes)
   (custom-set-variables
@@ -1105,28 +1122,28 @@ PROMPT sets the `read-string prompt."
 ;; When combined with my navigation keymap the two act like a very lightweight
 ;; vim emulation, but in an entirely emacs-y way.
 
-(delete-selection-mode -1)
+(config-package 'selected
+  (selected-global-mode 1)
+  (delete-selection-mode -1)
 
-(selected-global-mode 1)
+  (defun disable-selected-minor-mode ()
+    "Disabled the selected minor mode."
+    (selected-minor-mode -1))
 
-(defun disable-selected-minor-mode ()
-  "Disabled the selected minor mode."
-  (selected-minor-mode -1))
-
-(with-eval-after-load 'selected
-  ;; Careful not to bind - or = as they may collide with `expand-region'.
-  (define-keys selected-keymap
-    "." 'embark-act
-    "u" 'upcase-dwim
-    "d" 'downcase-dwim
-    "c" 'capitalize-dwim
-    "w" 'kill-ring-save
-    "|" 'pipe-region
-    "R" 'replace-rectangle
-    "E" 'eval-region
-    "q" 'fill-paragraph)
-   (define-navigation-keys selected-keymap)
-   (delight 'selected-minor-mode nil "selected"))
+  (with-eval-after-load 'selected
+    ;; Careful not to bind - or = as they may collide with `expand-region'.
+    (define-keys selected-keymap
+      "." 'embark-act
+      "u" 'upcase-dwim
+      "d" 'downcase-dwim
+      "c" 'capitalize-dwim
+      "w" 'kill-ring-save
+      "|" 'pipe-region
+      "R" 'replace-rectangle
+      "E" 'eval-region
+      "q" 'fill-paragraph)
+    (define-navigation-keys selected-keymap)
+    (delight 'selected-minor-mode nil "selected")))
 
 
 ;;; Minibuffer / Embark / Consult
@@ -1136,7 +1153,7 @@ PROMPT sets the `read-string prompt."
  '(enable-recursive-minibuffers t)
  '(savehist-mode t))
 
-(elisp-group orderless
+(config-package 'orderless
   nil
   (require 'orderless)
   (custom-set-variables
@@ -1144,14 +1161,16 @@ PROMPT sets the `read-string prompt."
    '(completion-category-defaults nil)
    '(completion-category-overrides '((file (styles . (partial-completion)))))))
 
-(vertico-mode)
+(config-package 'vertico
+  nil
+  (vertico-mode))
 
-(elisp-group marginalia
+(config-package 'marginalia
   nil
   (marginalia-mode)
   (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle))
 
-(elisp-group embark
+(config-package 'embark
   nil
   (require 'embark)
   (require 'embark-consult)
@@ -1188,12 +1207,14 @@ PROMPT sets the `read-string prompt."
                (not isearch-mode-end-hook-quit))
       (goto-char isearch-other-end)))
 
-  (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start)
+  (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start))
 
+(config-package 'isearch-mb
+  nil
   (isearch-mb-mode)
   (add-to-list 'isearch-mb--after-exit #'occur))
 
-(elisp-group consult
+(config-package 'consult
   nil
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
@@ -1215,20 +1236,20 @@ PROMPT sets the `read-string prompt."
     (custom-set-variables
      '(vr/engine 'pcre2el))))
 
-(elisp-group fountain-mode
+(config-package 'fountain-mode
   "Settings for fountain-mode."
   (custom-set-variables
    '(fountain-add-continued-dialog nil)
    '(fountain-highlight-elements (quote (section-heading)))))
 
-(elisp-group markdown
+(config-package 'markdown-mode
   nil
   (add-to-list 'magic-mode-alist
                '("%text" . markdown-mode))
   (add-to-list 'auto-mode-alist
                '("\\.text" . markdown-mode)))
 
-(elisp-group oblique
+(config-package 'oblique
   "Config for oblique package"
   (add-to-list 'load-path "~/home/src/lisp/oblique-strategies/")
   (autoload 'oblique-strategy "oblique")
@@ -1248,12 +1269,15 @@ PROMPT sets the `read-string prompt."
     "O"   'crux-open-with
     "C-/" 'dired-undo))
 
-(custom-set-variables
- '(olivetti-body-width 86))
+(config-package 'olivetti
+  nil
+  (custom-set-variables
+   '(olivetti-body-width 86)))
 
-(setq ytdl-media-player "open")
-(setq ytdl-always-query-default-filename 'yes-confirm) ; Get filename from server
-
+(config-package 'ytdl
+  nil
+  (setq ytdl-media-player "open")
+  (setq ytdl-always-query-default-filename 'yes-confirm))
 
 (elisp-group world-clock
   "Emacs has a world clock!"

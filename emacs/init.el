@@ -133,6 +133,89 @@
 (define-key package-menu-mode-map (kbd "/ s") 'package-menu-filter-by-status)
 
 
+;;; Customizations
+
+;; Save all interactive customization to a temp file, which is never loaded.
+;; This means interactive customization is session-local. Only this init file persists sessions.
+(setq custom-file (make-temp-file "emacs-custom-"))
+
+;; For most of my "settings" I use custom-set-variables, which does a bunch of neat stuff.
+;; First, it calls a variable's "setter" function, if it has one.
+;; Second, it can activate modes as well as set variables.
+;; Third, it takes care of setting the default for buffer-local variables correctly.
+;; https://with-emacs.com/posts/tutorials/almost-all-you-need-to-know-about-variables/#_user_options
+;; https://old.reddit.com/r/emacs/comments/exnxha/withemacs_almost_all_you_need_to_know_about/fgadihl/
+(custom-set-variables
+ '(inhibit-startup-screen t)
+ '(global-auto-revert-mode t)
+ '(ibuffer-auto-mode t)
+ '(save-place-mode t)
+ '(recentf-mode t)
+ '(winner-mode t)
+ '(show-paren-mode t)
+ '(blink-cursor-mode t)
+ '(cursor-type 'box)
+ '(cursor-in-non-selected-windows 'hollow)
+ '(scroll-bar-mode nil)
+ '(tool-bar-mode nil)
+ '(minibuffer-depth-indicate-mode t)
+ '(ring-bell-function 'ignore)
+ '(set-language-environment "UTF-8")
+ '(frame-title-format '("%b"))
+ '(uniquify-buffer-name-style 'forward)
+ '(vc-follow-symlinks t)
+ '(find-file-visit-truename t)
+ '(create-lockfiles nil)
+ '(make-backup-files nil)
+ '(load-prefer-newer t)
+ '(bookmark-save-flag 1)
+ ;;'(bookmark-menu-confirm-deletion t) ; Emacs 28
+ '(word-wrap t)
+ '(truncate-lines t)
+ '(delete-by-moving-to-trash t)
+ '(confirm-kill-processes nil)
+ '(save-interprogram-paste-before-kill t)
+ '(kill-do-not-save-duplicates t)
+ '(split-window-keep-point nil)
+ '(sentence-end-double-space nil)
+ '(set-mark-command-repeat-pop t)
+ '(mark-even-if-inactive nil)
+ '(tab-width 4)
+ '(indent-tabs-mode nil)
+ '(fill-column 78)
+ '(locate-command "mdfind")
+ '(trash-dircetory "~/.Trash"))
+
+(setq mac-command-modifier 'super
+      mac-option-modifier 'meta)
+
+(defun find-user-init-file ()
+  "Find the user-init-file."
+  (interactive)
+  (find-file user-init-file))
+
+;; If I break my init file it almost always happens after this point in the
+;; config. So I keep. up here, a basic set of critical keybindings that are
+;; useful when troubleshooting a broken init file.
+(global-set-key (kbd "s-q") 'save-buffers-kill-emacs)
+(global-set-key (kbd "s-N") 'make-frame-command)
+(global-set-key (kbd "s-m") 'iconify-frame)
+(global-set-key (kbd "s-b") 'switch-to-buffer)
+(global-set-key (kbd "s-s") 'save-buffer)
+(global-set-key (kbd "s-f") 'find-file)
+(global-set-key (kbd "s-F") 'find-file-other-window)
+(global-set-key (kbd "s-o") 'other-window)
+(global-set-key (kbd "s-,") 'find-user-init-file)
+(global-set-key (kbd "s-z") 'undo)
+(global-set-key (kbd "s-x") 'kill-region)
+(global-set-key (kbd "s-c") 'kill-ring-save)
+(global-set-key (kbd "s-v") 'yank)
+(global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
+(global-set-key (kbd "s-<right>") 'end-of-visual-line)
+(global-set-key (kbd "s-<up>") 'beginning-of-buffer)
+(global-set-key (kbd "s-<down>") 'end-of-buffer)
+
+
 ;;; Critical Setup
 
 ;; These variables, packages, macros, and functions are used throughout the
@@ -202,60 +285,6 @@ Is this a useless macro? Maybe. But it helps keep my init file tidy."
      (message (concat "Package \'"
                       (symbol-name ,package)
                       "\' is not installed... skipping config."))))
-
-
-;;; Customizations
-
-;; Save all interactive customization to a temp file, which is never loaded.
-;; This means interactive customization is session-local. Only this init file persists sessions.
-(setq custom-file (make-temp-file "emacs-custom-"))
-
-;; For most of my "settings" I use custom-set-variables, which does a bunch of neat stuff.
-;; First, it calls a variable's "setter" function, if it has one.
-;; Second, it can activate modes as well as set variables.
-;; Third, it takes care of setting the default for buffer-local variables correctly.
-;; https://with-emacs.com/posts/tutorials/almost-all-you-need-to-know-about-variables/#_user_options
-;; https://old.reddit.com/r/emacs/comments/exnxha/withemacs_almost_all_you_need_to_know_about/fgadihl/
-(custom-set-variables
- '(inhibit-startup-screen t)
- '(global-auto-revert-mode t)
- '(ibuffer-auto-mode t)
- '(save-place-mode t)
- '(recentf-mode t)
- '(winner-mode t)
- '(show-paren-mode t)
- '(blink-cursor-mode t)
- '(cursor-type 'box)
- '(cursor-in-non-selected-windows 'hollow)
- '(scroll-bar-mode nil)
- '(tool-bar-mode nil)
- '(minibuffer-depth-indicate-mode t)
- '(ring-bell-function 'ignore)
- '(set-language-environment "UTF-8")
- '(frame-title-format '("%b"))
- '(uniquify-buffer-name-style 'forward)
- '(vc-follow-symlinks t)
- '(find-file-visit-truename t)
- '(create-lockfiles nil)
- '(make-backup-files nil)
- '(load-prefer-newer t)
- '(bookmark-save-flag 1)
- ;;'(bookmark-menu-confirm-deletion t) ; Emacs 28
- '(word-wrap t)
- '(truncate-lines t)
- '(delete-by-moving-to-trash t)
- '(confirm-kill-processes nil)
- '(save-interprogram-paste-before-kill t)
- '(kill-do-not-save-duplicates t)
- '(split-window-keep-point nil)
- '(sentence-end-double-space nil)
- '(set-mark-command-repeat-pop t)
- '(mark-even-if-inactive nil)
- '(tab-width 4)
- '(indent-tabs-mode nil)
- '(fill-column 78)
- '(locate-command "mdfind")
- '(trash-dircetory "~/.Trash"))
 
 
 ;;; Misc Functions
@@ -366,11 +395,6 @@ already narrowed."
         ((derived-mode-p 'tex-mode)
          (TeX-narrow-to-group))
         (t (narrow-to-defun))))
-
-(defun find-user-init-file ()
-  "Find the user-init-file."
-  (interactive)
-  (find-file user-init-file))
 
 (defun find-file-recursively (&optional path)
   "Find Files Recursively using completing read.
@@ -558,9 +582,6 @@ With a prefix ARG always prompt for command to use."
 
 ;;; Personal Keybindings
 
-(setq mac-command-modifier 'super
-      mac-option-modifier 'meta)
-
 ;; Minor modes override global bindings, so any bindings you don't want
 ;; overridden should be placed in a minor mode. I stole this technique from
 ;; the `bind-key' package.
@@ -631,7 +652,6 @@ Keybindings you define here will take precedence."
 (global-unset-key (kbd "C-x C-z"))
 
 ;; These should be overridden when appropriate:
-(global-set-key (kbd "s-o") 'other-window)
 (global-set-key (kbd "C-a") 'ora-move-beginning-of-line)
 
 ;; Turn off swiping to switch buffers (defined in mac-win.el)

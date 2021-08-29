@@ -37,7 +37,7 @@
 
 ;; It is useful to know the impact of your init file on Emacs startup time so
 ;; you can avoid introducing slowdowns. There are many ways to do it, but this
-;; is very simple and does the trick for me. This prints a message at the very
+;; is very simple and does the trick for me. This prints a message at the
 ;; start of loading this config, then another at the end.
 
 (defvar before-user-init-time (current-time)
@@ -743,7 +743,11 @@ Keybindings you define here will take precedence."
    '(modus-themes-prompts '(bold))
    '(modus-themes-completions 'moderate)
    '(modus-themes-region '(bg-only))
-   '(modus-themes-org-blocks '(gray-background)))
+   '(modus-themes-org-blocks '(gray-background))
+   '(modus-themes-org-agenda
+     '((header-block . (variable-pitch scale-title))
+       (header-date . (bold-today))
+       (scheduled . rainbow))))
   (modus-themes-load-themes))
 
 (setq light-theme 'modus-operandi)
@@ -770,7 +774,7 @@ which I don't want to mess with because that's what's required to make
 `text-scale-adjust' work correctly. The default height needs to be set,
 and I want the mode-line to be a fixed height, so I set those."
   (let ((mono "SF Mono")
-        (vari "New York")
+        (vari "Inter")
         (mode "SF Compact Text")
         (mono-height 120)
         (ml-height 140))
@@ -1417,8 +1421,8 @@ PROMPT sets the `read-string prompt."
         org-deadline-warning-days 7
         org-agenda-todo-ignore-scheduled 'all
         org-agenda-todo-ignore-deadlines 'near
-        org-agenda-skip-scheduled-if-done t
-        org-agenda-skip-deadline-if-done t
+        org-agenda-skip-scheduled-if-done nil
+        org-agenda-skip-deadline-if-done nil
         org-agenda-skip-deadline-prewarning-if-scheduled t
         org-agenda-sorting-strategy '(((agenda habit-down time-up category-up priority-down)
                                        (todo todo-state-up priority-down category-up)
@@ -1562,12 +1566,10 @@ buffer, and exiting the agenda and releasing all the buffers."
 (transient-define-prefix general-transient ()
   "General-purpose transient."
   [["Actions/Toggles"
-    ("x" "M-x" execute-extended-command)
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
     ("SPC" "Mark..." general-transient--mark)
-    ("n" "Navigation..." navigation-keymap--activate)
-    ("m" "Mode Transient..." call-mode-help-transient)]
+    ("n" "Navigation..." navigation-keymap--activate)]
    [""
     ("." "Repeat Command" repeat-complex-command)
     ("k" "Kill Buffer" kill-buffer-dwim)

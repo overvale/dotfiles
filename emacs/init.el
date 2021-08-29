@@ -267,7 +267,7 @@
 ;; 2. elisp-group -- this is simply a "group" of lines of code. It provides no
 ;;    functional benefit, only a VISUAL one.
 ;; 3. config-package -- this evaluates the contained lisp only if the named package
-;;    is installed.
+;;    is installed, and optionally adds it to `package-selected-packages'.
 
 (defmacro elisp-group (name doc &rest body)
   "Group elisp by wrapping in progn.
@@ -1157,14 +1157,14 @@ PROMPT sets the `read-string prompt."
 
 ;;; Selected
 
-;; One of the more sublime packages I've stumbled across, `selected' creates a
-;; keymap that is active any time (and only when) the region is active.
-;; Wonderful for quickly acting on the active region.
-;;
-;; When combined with my navigation keymap the two act like a very lightweight
-;; vim emulation, but in an entirely emacs-y way.
-
 (config-package 'selected
+  "A keymap which activates when the region is active.
+One of the more sublime packages I've stumbled across, `selected' creates a
+keymap that is active any time (and only when) the region is active.
+Wonderful for quickly acting on the active region.
+
+When combined with my navigation keymap the two act like a very lightweight
+vim emulation, but in an entirely emacs-y way."
   (selected-global-mode 1)
   (delete-selection-mode -1)
 
@@ -1196,7 +1196,9 @@ PROMPT sets the `read-string prompt."
  '(savehist-mode t))
 
 (config-package 'orderless
-  nil
+  "I would love Emacs less if it weren't for orderless.
+It needs to be required because so many commands rely on the
+completion framework."
   (require 'orderless)
   (custom-set-variables
    '(completion-styles '(orderless))
@@ -1213,7 +1215,10 @@ PROMPT sets the `read-string prompt."
   (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle))
 
 (config-package 'embark
-  nil
+  "embark and embark-consult are two separate packages, but I
+configure them here in a single group. Embark is being very
+heavily developed at the moment, and the embark-indicators are
+only present in the most reason versions."
   (require 'embark)
   (require 'embark-consult)
 
@@ -1250,7 +1255,12 @@ PROMPT sets the `read-string prompt."
     "b" 'browse-url-default-macosx-browser))
 
 (elisp-group isearch-extras
-  nil
+  "This does two things, makes the matching fuzzy
+per-line (though not orderless, use consult-lines for that), and
+makes exits exit at the beginning of the match. I think this is a
+more vim-like behavior, which I prefer because it makes it easier
+to set the mark, and search to expand the region to the desired
+spot."
   (setq search-whitespace-regexp ".*?")
   (setq isearch-lax-whitespace t)
   (setq isearch-lazy-count t)
@@ -1298,7 +1308,10 @@ PROMPT sets the `read-string prompt."
    '(fountain-highlight-elements (quote (section-heading)))))
 
 (config-package 'markdown-mode
-  nil
+  "It seems everyone wants me to use the extension 'mdown' for
+markdown documents, which for some reason I hate. I have no idea
+why. I prefer 'text'. I probably got the idea here:
+https://daringfireball.net/linked/2014/01/08/markdown-extension"
   (add-to-list 'magic-mode-alist
                '("%text" . markdown-mode))
   (add-to-list 'auto-mode-alist
@@ -1330,7 +1343,7 @@ PROMPT sets the `read-string prompt."
    '(olivetti-body-width 86)))
 
 (config-package 'ytdl
-  nil
+  "YouTube Download"
   (setq ytdl-media-player "open")
   (setq ytdl-always-query-default-filename 'yes-confirm))
 

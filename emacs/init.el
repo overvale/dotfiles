@@ -690,7 +690,7 @@ Keybindings you define here will take precedence."
 (defvar default-theme-color 'light
   "Default theme to load, accepts 'light and 'dark.")
 
-(defvar current-theme-color nil
+(defvar current-theme-color default-theme-color
   "Is the current theme color light or dark?")
 
 (defun disable-current-themes nil
@@ -698,21 +698,33 @@ Keybindings you define here will take precedence."
   (interactive)
   (mapcar 'disable-theme custom-enabled-themes))
 
-(defun load-theme-color (color)
-  "Load theme based on `dark-theme' and `light-theme'."
+(defun macos-appearance-dark-p nil
+  "Return t if macOS appearance is dark."
+   (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
+
+(defun load-theme-dwim (&optional color)
+  "Load users preferred theme, based on macOS appearance, or arguments.
+
+Disables all current themes, then if COLOR is \"light\", load the
+`light-theme', if COLOR is \"dark\" load the `dark-theme', if COLOR
+is \"system\" check macOS's appearance state and match it with
+either the light or dark theme. If called without an argument
+toggle between light and dark themes."
   (interactive
-   (list (completing-read
-          "Theme Color: " '("dark" "light" "toggle"))))
+   (list (completing-read "Load Theme Color: " '("dark" "light" "system"))))
   (disable-current-themes)
-  (if (string= color "dark")
-      (progn
-        (setq current-theme-color 'dark)
-        (load-theme dark-theme t))
-    (if (string= color "light")
-        (progn
-          (setq current-theme-color 'light)
-          (load-theme light-theme t))
-      (theme-color-toggle))))
+  (cond ((string= color "light")
+         (setq current-theme-color 'light)
+         (load-theme light-theme t))
+        ((string= color "dark")
+         (setq current-theme-color 'dark)
+         (load-theme dark-theme t))
+        ((string= color "system")
+         (if (macos-appearance-dark-p)
+             (load-theme-dwim 'dark)
+           (load-theme-dwim 'light)))
+        ((eq color nil)
+         (theme-color-toggle))))
 
 (defun theme-color-toggle nil
   "Toggle between `light-theme' and `dark-theme'."
@@ -726,10 +738,6 @@ Keybindings you define here will take precedence."
       (disable-current-themes)
       (setq current-theme-color 'light)
       (load-theme light-theme t))))
-
-(defun macos-appearance-dark nil
-  "Return color of macOS appearance, t is dark, nil is light."
-   (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
 
 (add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
 
@@ -755,12 +763,12 @@ Keybindings you define here will take precedence."
 (setq default-theme-color 'light)
 
 (elisp-group set-theme-on-startup
-  "On startup, try to match system color, otherwise load user preference."
-  (if (ignore-errors (macos-appearance-dark))
-      (load-theme-color 'dark)
+  "On startup, try to match system color, otherwise load `default-color-theme'."
+  (if (ignore-errors (macos-appearance-dark-p))
+      (load-theme-dwim 'dark)
     (if (eq default-theme-color 'light)
-        (load-theme-color 'light)
-      (load-theme-color 'dark))))
+        (load-theme-dwim 'light)
+      (load-theme-dwim 'dark))))
 
 
 ;;; Fonts

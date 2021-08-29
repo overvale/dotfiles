@@ -404,6 +404,17 @@ If no region is active, then just swap point and mark."
   (push-mark (point) t nil)
   (message "Pushed mark to ring"))
 
+(defun unpop-to-mark-command ()
+  "Unpop off mark ring. Does nothing if mark ring is empty."
+  ;; https://stackoverflow.com/a/14539202
+  (interactive)
+      (when mark-ring
+        (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
+        (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
+        (when (null (mark t)) (ding))
+        (setq mark-ring (nbutlast mark-ring))
+        (goto-char (marker-position (car (last mark-ring))))))
+
 (defun org-insert-date-today ()
   "Insert today's date using standard org formatting."
   (interactive)
@@ -595,12 +606,16 @@ Keybindings you define here will take precedence."
   "s-S-<return>" 'call-mode-help-transient
   "s-]"        'next-buffer
   "s-["        'previous-buffer
+  "s-="        'ibuffer
+  "s-{"        'pop-to-mark-command
+  "s-}"        'unpop-to-mark-command
+  "s-+"        'consult-mark
+  "s-b"        'consult-buffer
+  "s-B"        'consult-buffer-other-window
   "s-w"        'general-transient--window
   "s-k"        'org-capture
   "s-f"        'find-file
   "s-F"        'find-file-other-window
-  "s-b"        'consult-buffer
-  "s-B"        'consult-buffer-other-window
   "C-M-h"      'mark-line
   "M-."        'embark-act
   "M-'"        'completion-at-point
@@ -1536,8 +1551,7 @@ buffer, and exiting the agenda and releasing all the buffers."
    [""
     ("." "Repeat Command" repeat-complex-command)
     ("k" "Kill Buffer" kill-buffer-dwim)
-    ("b" "Switch Buffer" switch-to-buffer)
-    ("s-b" "iBuffer" ibuffer)]
+    ("b" "Switch Buffer" switch-to-buffer)]
    ["Transients"
     ("o" "Org..." general-transient--org)
     ("t" "Toggle..." general-transient--toggles)

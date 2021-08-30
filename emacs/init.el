@@ -197,23 +197,24 @@
 ;; If I break my init file it almost always happens after this point in the
 ;; config. So I keep. up here, a basic set of critical keybindings that are
 ;; useful when troubleshooting a broken init file.
-(global-set-key (kbd "s-q") 'save-buffers-kill-emacs)
-(global-set-key (kbd "s-N") 'make-frame-command)
-(global-set-key (kbd "s-m") 'iconify-frame)
-(global-set-key (kbd "s-b") 'switch-to-buffer)
-(global-set-key (kbd "s-s") 'save-buffer)
-(global-set-key (kbd "s-f") 'find-file)
-(global-set-key (kbd "s-F") 'find-file-other-window)
-(global-set-key (kbd "s-o") 'other-window)
-(global-set-key (kbd "s-,") 'find-user-init-file)
-(global-set-key (kbd "s-z") 'undo)
-(global-set-key (kbd "s-x") 'kill-region)
-(global-set-key (kbd "s-c") 'kill-ring-save)
-(global-set-key (kbd "s-v") 'yank)
-(global-set-key (kbd "s-<left>") 'beginning-of-visual-line)
-(global-set-key (kbd "s-<right>") 'end-of-visual-line)
-(global-set-key (kbd "s-<up>") 'beginning-of-buffer)
-(global-set-key (kbd "s-<down>") 'end-of-buffer)
+(let ((map global-map))
+  (define-key map (kbd "s-q") 'save-buffers-kill-emacs)
+  (define-key map (kbd "s-N") 'make-frame-command)
+  (define-key map (kbd "s-m") 'iconify-frame)
+  (define-key map (kbd "s-b") 'switch-to-buffer)
+  (define-key map (kbd "s-s") 'save-buffer)
+  (define-key map (kbd "s-f") 'find-file)
+  (define-key map (kbd "s-F") 'find-file-other-window)
+  (define-key map (kbd "s-o") 'other-window)
+  (define-key map (kbd "s-,") 'find-user-init-file)
+  (define-key map (kbd "s-z") 'undo)
+  (define-key map (kbd "s-x") 'kill-region)
+  (define-key map (kbd "s-c") 'kill-ring-save)
+  (define-key map (kbd "s-v") 'yank)
+  (define-key map (kbd "s-<left>") 'beginning-of-visual-line)
+  (define-key map (kbd "s-<right>") 'end-of-visual-line)
+  (define-key map (kbd "s-<up>") 'beginning-of-buffer)
+  (define-key map (kbd "s-<down>") 'end-of-buffer))
 
 
 ;;; Critical Setup
@@ -238,26 +239,6 @@
 (autoload 'transient-define-prefix "transient" nil t)
 (require 'dash)
 (exec-path-from-shell-initialize)
-
-(defun define-keys (keymap &rest pairs)
-  "Define alternating key-def PAIRS for KEYMAP."
-  ;; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
-  (-each
-      (-partition 2 pairs)
-    (-lambda ((key def))
-      (if (stringp key)
-          (define-key keymap (read-kbd-macro key) def)
-        (define-key keymap key def)))))
-
-(defun global-set-keys (&rest pairs)
-  "Set alternating key-def PAIRS globally."
-  ;; https://github.com/RioZRon/dotspace/blob/master/layers/macros/local/macros/macros.el
-  (-each
-      (-partition 2 pairs)
-    (-lambda ((key def))
-      (if (stringp key)
-          (global-set-key (read-kbd-macro key) def)
-        (global-set-key key def)))))
 
 ;; I use 3 macros to control how/when code and packages are loaded. I don't
 ;; use use-package, which is designed as a comprehensive way of dealing with
@@ -602,51 +583,50 @@ Keybindings you define here will take precedence."
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
-;; Mac-like bindings
-(define-keys bosskey-mode-map
-  "s-q"       'frames-p-save-buffers-kill-emacs
-  "s-m"       'iconify-frame
-  "s-n"       'new-buffer
-  "s-N"       'make-frame-command
-  "s-s"       'save-buffer
-  "s-,"       'find-user-init-file
-  "s-z"       'undo-only
-  "s-Z"       'undo-redo
-  "s-x"       'kill-region
-  "s-c"       'kill-ring-save
-  "s-v"       'yank
-  "s-<backspace>" 'backward-kill-line
-  "s-<left>"  'beginning-of-visual-line
-  "s-<right>" 'end-of-visual-line
-  "s-<up>"    'beginning-of-buffer
-  "s-<down>"  'end-of-buffer)
-
-;; Emacs keybinding tweaks
-(define-keys bosskey-mode-map
-  "s-<return>" 'general-transient
-  "s-S-<return>" 'call-mode-help-transient
-  "s-]"        'next-buffer
-  "s-["        'previous-buffer
-  "s-="        'ibuffer
-  "s-{"        'pop-to-mark-command
-  "s-}"        'unpop-to-mark-command
-  "s-+"        'consult-mark
-  "s-b"        'consult-buffer
-  "s-B"        'consult-buffer-other-window
-  "s-w"        'general-transient--window
-  "s-k"        'org-capture
-  "s-f"        'find-file
-  "s-F"        'find-file-other-window
-  "C-M-h"      'mark-line
-  "M-."        'embark-act
-  "M-'"        'completion-at-point
-  "M-\\"       'cycle-spacing
-  "M-z"        'zap-up-to-char
-  "M-<SPC>"    'push-mark-no-activate
-  "C-="        'er/expand-region
-  "C-d"        'delete-forward-char
-  "C-x C-x"    'exchange-point-and-mark-dwim
-  "C-x k"      'kill-buffer-dwim)
+(let ((map bosskey-mode-map))
+  ;; Mac-like bindings
+  (define-key map (kbd "s-q") 'frames-p-save-buffers-kill-emacs)
+  (define-key map (kbd "s-m") 'iconify-frame)
+  (define-key map (kbd "s-n") 'new-buffer)
+  (define-key map (kbd "s-N") 'make-frame-command)
+  (define-key map (kbd "s-s") 'save-buffer)
+  (define-key map (kbd "s-,") 'find-user-init-file)
+  (define-key map (kbd "s-z") 'undo-only)
+  (define-key map (kbd "s-Z") 'undo-redo)
+  (define-key map (kbd "s-x") 'kill-region)
+  (define-key map (kbd "s-c") 'kill-ring-save)
+  (define-key map (kbd "s-v") 'yank)
+  (define-key map (kbd "s-<backspace>") 'backward-kill-line)
+  (define-key map (kbd "s-<left>") 'beginning-of-visual-line)
+  (define-key map (kbd "s-<right>") 'end-of-visual-line)
+  (define-key map (kbd "s-<up>") 'beginning-of-buffer)
+  (define-key map (kbd "s-<down>") 'end-of-buffer)
+  ;; Emacs keybinding tweaks
+  (define-key map (kbd "s-<return>") 'general-transient)
+  (define-key map (kbd "s-S-<return>") 'call-mode-help-transient)
+  (define-key map (kbd "s-]") 'next-buffer)
+  (define-key map (kbd "s-[") 'previous-buffer)
+  (define-key map (kbd "s-=") 'ibuffer)
+  (define-key map (kbd "s-{") 'pop-to-mark-command)
+  (define-key map (kbd "s-}") 'unpop-to-mark-command)
+  (define-key map (kbd "s-+") 'consult-mark)
+  (define-key map (kbd "s-b") 'consult-buffer)
+  (define-key map (kbd "s-B") 'consult-buffer-other-window)
+  (define-key map (kbd "s-w") 'general-transient--window)
+  (define-key map (kbd "s-k") 'org-capture)
+  (define-key map (kbd "s-f") 'find-file)
+  (define-key map (kbd "s-F") 'find-file-other-window)
+  (define-key map (kbd "C-M-h") 'mark-line)
+  (define-key map (kbd "M-.") 'embark-act)
+  (define-key map (kbd "M-'") 'completion-at-point)
+  (define-key map (kbd "M-\\") 'cycle-spacing)
+  (define-key map (kbd "M-z") 'zap-up-to-char)
+  (define-key map (kbd "M-<SPC>") 'push-mark-no-activate)
+  (define-key map (kbd "C-=") 'er/expand-region)
+  (define-key map (kbd "C-d") 'delete-forward-char)
+  (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
+  (define-key map (kbd "C-x k") 'kill-buffer-dwim))
+  
 
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
@@ -658,21 +638,22 @@ Keybindings you define here will take precedence."
 (global-unset-key [swipe-left])
 (global-unset-key [swipe-right])
 
-(global-set-keys [remap query-replace] 'vr/query-replace
-                 [remap capitalize-word] 'capitalize-dwim
-                 [remap downcase-word]   'downcase-dwim
-                 [remap upcase-word]     'upcase-dwim
-                 ;; -- Mouse + Mode Line Magic
-                 [mode-line S-mouse-1] 'mouse-delete-other-windows
-                 [mode-line M-mouse-1] 'mouse-delete-window
-                 [mode-line C-mouse-1] 'mouse-split-window-horizontally
-                 ;; -- Make shift-click extend the region.
-                 [S-down-mouse-1] 'ignore
-                 [S-mouse-1] 'mouse-save-then-kill
-                 ;; -- Use M-drag-mouse-1 to create rectangle regions.
-                 [M-down-mouse-1] #'mouse-drag-region-rectangle
-                 [M-drag-mouse-1] #'ignore
-                 [M-mouse-1]      #'mouse-set-point)
+(let ((map global-map))
+  (define-key map [remap query-replace] 'vr/query-replace)
+  (define-key map [remap capitalize-word] 'capitalize-dwim)
+  (define-key map [remap downcase-word]   'downcase-dwim)
+  (define-key map [remap upcase-word]     'upcase-dwim)
+  ;; Mouse + Mode Line Magic
+  (define-key map [mode-line S-mouse-1] 'mouse-delete-other-windows)
+  (define-key map [mode-line M-mouse-1] 'mouse-delete-window)
+  (define-key map [mode-line C-mouse-1] 'mouse-split-window-horizontally)
+  ;; Make shift-click extend the region.
+  (define-key map [S-down-mouse-1] 'ignore)
+  (define-key map [S-mouse-1] 'mouse-save-then-kill)
+  ;; Use M-drag-mouse-1 to create rectangle regions.
+  (define-key map [M-down-mouse-1] #'mouse-drag-region-rectangle)
+  (define-key map [M-drag-mouse-1] #'ignore)
+  (define-key map [M-mouse-1]      #'mouse-set-point))
 
 
 ;;; Themes
@@ -886,9 +867,10 @@ and I want the mode-line to be a fixed height, so I set those."
   (interactive)
   (delete-overlay mouse-secondary-overlay))
 
-(global-set-keys [C-M-mouse-1]      'mouse-start-secondary
-                 [C-M-drag-mouse-1] 'mouse-set-secondary
-                 [C-M-down-mouse-1] 'mouse-drag-secondary)
+(let ((map global-map))
+  (define-key map [C-M-mouse-1] 'mouse-start-secondary)
+  (define-key map [C-M-drag-mouse-1] 'mouse-set-secondary)
+  (define-key map [C-M-down-mouse-1] 'mouse-drag-secondary))
 
 (transient-define-prefix secondary-selection-transient ()
   "Transient for working with the secondary selection"
@@ -1182,16 +1164,16 @@ vim emulation, but in an entirely emacs-y way."
 
   (with-eval-after-load 'selected
     ;; Careful not to bind - or = as they may collide with `expand-region'.
-    (define-keys selected-keymap
-      "." 'embark-act
-      "u" 'upcase-dwim
-      "d" 'downcase-dwim
-      "c" 'capitalize-dwim
-      "w" 'kill-ring-save
-      "|" 'pipe-region
-      "R" 'replace-rectangle
-      "E" 'eval-region
-      "q" 'fill-paragraph)
+    (let ((map selected-keymap))
+      (define-key map (kbd ".") 'embark-act)
+      (define-key map (kbd "u") 'upcase-dwim)
+      (define-key map (kbd "d") 'downcase-dwim)
+      (define-key map (kbd "c") 'capitalize-dwim)
+      (define-key map (kbd "w") 'kill-ring-save)
+      (define-key map (kbd "|") 'pipe-region)
+      (define-key map (kbd "R") 'replace-rectangle)
+      (define-key map (kbd "E") 'eval-region)
+      (define-key map (kbd "q") 'fill-paragraph))
     (define-navigation-keys selected-keymap)
     (delight 'selected-minor-mode nil "selected")))
 
@@ -1254,13 +1236,13 @@ only present in the most reason versions."
     (require 'embark)
     (embark-completing-read-prompter (symbol-value (intern keymap)) nil))
 
-  (define-keys embark-file-map
-    "O" 'crux-open-with
-    "j" 'dired-jump)
+  (let ((map embark-file-map))
+    (define-key map (kbd "O") 'crux-open-with)
+    (define-key map (kbd "j") 'dired-jump))
 
-  (define-keys embark-url-map
-    "d" 'ytdl-download
-    "b" 'browse-url-default-macosx-browser))
+  (let ((map embark-url-map))
+    (define-key map (kbd "d") 'ytdl-download)
+    (define-key map (kbd "b") 'browse-url-default-macosx-browser)))
 
 (elisp-group isearch-extras
   "This does two things, makes the matching fuzzy
@@ -1341,9 +1323,9 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 (with-eval-after-load 'dired
   (setq dired-use-ls-dired nil)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-  (define-keys dired-mode-map
-    "O"   'crux-open-with
-    "C-/" 'dired-undo))
+  (let ((map dired-mode-map))
+    (define-key map (kbd "O") 'crux-open-with)
+    (define-key map (kbd "C-/") 'dired-undo)))
 
 (config-package 'olivetti
   nil

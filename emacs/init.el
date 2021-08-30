@@ -685,13 +685,15 @@ Keybindings you define here will take precedence."
    (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
 
 (defun load-theme-dwim (&optional color)
-  "Load users preferred theme, based on macOS appearance, or arguments.
+  "Load users preferred theme, based on ARG or macOS appearance.
 
-Disables all current themes, then if COLOR is \"light\", load the
-`light-theme', if COLOR is \"dark\" load the `dark-theme', if COLOR
-is \"system\" check macOS's appearance state and match it with
-either the light or dark theme. If called without an argument
-toggle between light and dark themes."
+Disables all current themes, then:
+
+- if COLOR is \"light\", load the `light-theme'.
+- if COLOR is \"dark\" load the `dark-theme'
+- if COLOR is \"system\" check macOS's appearance state and match it with
+  either the light or dark theme.
+- If called without an argument toggle between light and dark themes."
   (interactive
    (list (completing-read "Load Theme Color: " '("dark" "light" "system"))))
   (disable-current-themes)
@@ -906,7 +908,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 ;;; Confirm Killing Modified Buffers
 
 ;; Emacs asks for confirmation when killing modified file-visiting buffers,
-;; but does not do so for non-file-visiting buffers.
+;; but does not ask for non-file-visiting buffers.
 ;;
 ;; The option `buffer-offer-save' tells Emacs to prompt to you save modified
 ;; non-file-visiting buffers when EXITING Emacs, but no such option exists for
@@ -1245,7 +1247,7 @@ only present in the most reason versions."
     (define-key map (kbd "d") 'ytdl-download)
     (define-key map (kbd "b") 'browse-url-default-macosx-browser)))
 
-(elisp-group isearch-extras
+(elisp-group isearch-config
   "This does two things, makes the matching fuzzy
 per-line (though not orderless, use consult-lines for that), and
 makes exits exit at the beginning of the match. I think this is a

@@ -86,7 +86,6 @@
 (setq package-selected-packages
       '(bicycle
         consult
-        dash
         delight
         embark
         embark-consult

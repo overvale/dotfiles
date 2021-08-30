@@ -559,6 +559,10 @@ With a prefix ARG always prompt for command to use."
   (interactive)
   (kill-line 0))
 
+(defun describe-symbol-at-point ()
+  "Run `describe-symbol' for the `symbol-at-point."
+  (interactive)
+  (describe-symbol (symbol-at-point)))
 
 ;;; Personal Keybindings
 
@@ -653,6 +657,8 @@ Keybindings you define here will take precedence."
   (define-key map [M-down-mouse-1] #'mouse-drag-region-rectangle)
   (define-key map [M-drag-mouse-1] #'ignore)
   (define-key map [M-mouse-1]      #'mouse-set-point))
+
+(define-key help-map "s" 'describe-symbol-at-point)
 
 
 ;;; Themes

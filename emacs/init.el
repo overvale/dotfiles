@@ -564,7 +564,7 @@ With a prefix ARG always prompt for command to use."
   (interactive)
   (describe-symbol (symbol-at-point)))
 
-;;; Personal Keybindings
+;;; Keybindings
 
 ;; Minor modes override global bindings, so any bindings you don't want
 ;; overridden should be placed in a minor mode. I stole this technique from
@@ -585,6 +585,11 @@ Keybindings you define here will take precedence."
 
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-x C-z"))
+(global-unset-key [swipe-left])
+(global-unset-key [swipe-right])
 
 (let ((map bosskey-mode-map))
   ;; Mac-like bindings
@@ -629,19 +634,10 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "C-d") 'delete-forward-char)
   (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
   (define-key map (kbd "C-x k") 'kill-buffer-dwim))
-  
-
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "C-x C-z"))
-
-;; These should be overridden when appropriate:
-(global-set-key (kbd "C-a") 'ora-move-beginning-of-line)
-
-;; Turn off swiping to switch buffers (defined in mac-win.el)
-(global-unset-key [swipe-left])
-(global-unset-key [swipe-right])
 
 (let ((map global-map))
+  (define-key map (kbd "C-a") 'ora-move-beginning-of-line)
+  ;; replace mappings
   (define-key map [remap query-replace] 'vr/query-replace)
   (define-key map [remap capitalize-word] 'capitalize-dwim)
   (define-key map [remap downcase-word]   'downcase-dwim)

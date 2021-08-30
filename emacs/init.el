@@ -1277,7 +1277,6 @@ spot."
   (consult-customize consult-line
                      :preview-key nil)
 
-  (setq completion-in-region-function 'consult-completion-in-region)
   (consult-customize consult-completion-in-region
                      :cycle-threshold 3)
 

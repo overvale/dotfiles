@@ -826,6 +826,32 @@ and I want the mode-line to be a fixed height, so I set those."
  '(split-window-keep-point nil)
  '(even-window-sizes nil))
 
+;; This introduces a fundamental change to how Emacs works. Normally, when
+;; Emacs displays a new buffer, it tries to intelligently select the best
+;; window for that buffer. Sometimes this is a new window (split), sometimes
+;; it is the current window, sometimes it re-uses an existing window. The
+;; below code makes it so the default window is always the current one. The
+;; advantage of this is that your window layouts are never changed for you.
+;; https://github.com/nex3/perspective-el#some-musings-on-emacs-window-layouts
+
+(customize-set-variable 'display-buffer-base-action
+                        '((display-buffer-reuse-window display-buffer-same-window)
+                          (reusable-frames . t)))
+
+;; Since the default is to always reuse the same window, you need to declare
+;; any exceptions to that. Though there are some windows that do their own
+;; thing anyway; *Completions*, *Org Select*.
+(setq display-buffer-alist
+      '(("\\*Calendar.*"
+         (display-buffer-in-side-window)
+         (side . bottom)
+         (slot . 0)
+         (window-parameters . ((no-other-window . nil)))
+         (window-height . fit-window-to-buffer))
+        ("\\*wclock.*"
+         (display-buffer-at-bottom)
+         (window-parameters . ((select . t))))))
+
 (define-minor-mode dedicated-mode
   "Minor mode for dedicating windows.
 This minor mode dedicates the current window to the current buffer.

@@ -18,6 +18,8 @@
 ;;
 ;;   + It is NOT modular, so if you don't have all the listed packages
 ;;     installed large parts of the config won't work.
+;;   + Symbol names are not prefixed (for the most part) so take care to
+;;     to avoid collisions if you copy them into your own config.
 ;;   + I prefer to write my own code instead of installing packages.
 ;;   + The config is a single file (with exceptions for large libraries
 ;;     which I never edit and didn't author).
@@ -37,8 +39,7 @@
 
 ;; It is useful to know the impact of your init file on Emacs startup time so
 ;; you can avoid introducing slowdowns. There are many ways to do it, but this
-;; is very simple and does the trick for me. This prints a message at the
-;; start of loading this config, then another at the end.
+;; is very simple and does the trick for me.
 
 (defvar before-user-init-time (current-time)
   "Value of `current-time' when Emacs begins loading `user-init-file'.")
@@ -562,6 +563,7 @@ With a prefix ARG always prompt for command to use."
   (interactive)
   (describe-symbol (symbol-at-point)))
 
+
 ;;; Keybindings
 
 ;; Minor modes override global bindings, so any bindings you don't want
@@ -734,10 +736,9 @@ Disables all current themes, then:
    '(modus-themes-completions 'moderate)
    '(modus-themes-region '(bg-only))
    '(modus-themes-org-blocks '(gray-background))
-   '(modus-themes-org-agenda
-     '((header-block . (variable-pitch scale-title))
-       (header-date . (bold-today))
-       (scheduled . rainbow))))
+   '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
+                               (header-date . (bold-today))
+                               (scheduled . rainbow))))
   (modus-themes-load-themes))
 
 (setq light-theme 'modus-operandi)
@@ -773,8 +774,7 @@ and I want the mode-line to be a fixed height, so I set those."
      `(fixed-pitch ((t :family ,mono)))
      `(variable-pitch ((t :family ,vari)))
      `(mode-line ((t :family ,mode :height ,ml-height)))
-     `(mode-line-inactive ((t :family ,mode :height ,ml-height)))
-     )))
+     `(mode-line-inactive ((t :family ,mode :height ,ml-height))))))
 
 
 ;;; Mode-Line
@@ -1480,8 +1480,7 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
           ("0" "COMPLETE: Week Agenda + All Tasks"
            ((agenda "w" ((org-agenda-span 'week)))
             (todo "TODO|LATER"
-                  ((org-agenda-sorting-strategy '(todo-state-up priority-down)))
-                  )))))
+                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))))))))
 
   (setq org-todo-keywords
         '((sequence "TODO(t)" "DELG(g)" "LATER(l)" "|" "DONE(d)" "MOVED(m)" "CANCELED(c)")))

@@ -1338,8 +1338,6 @@ spot."
 markdown documents, which for some reason I hate. I have no idea
 why. I prefer 'text'. I probably got the idea here:
 https://daringfireball.net/linked/2014/01/08/markdown-extension"
-  (add-to-list 'magic-mode-alist
-               '("%text" . markdown-mode))
   (add-to-list 'auto-mode-alist
                '("\\.text" . markdown-mode)))
 

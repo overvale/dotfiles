@@ -1461,8 +1461,9 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
         org-deadline-warning-days 7
         org-agenda-todo-ignore-scheduled 'all
         org-agenda-todo-ignore-deadlines 'near
-        org-agenda-skip-scheduled-if-done nil
-        org-agenda-skip-deadline-if-done nil
+        ;; if you're using log-mode you don't need these 2:
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-if-done t
         org-agenda-skip-deadline-prewarning-if-scheduled t
         org-agenda-sorting-strategy '(((agenda habit-down time-up category-up priority-down)
                                        (todo todo-state-up priority-down category-up)

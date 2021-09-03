@@ -1538,25 +1538,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   (defun org-agenda-todo-set-moved () (interactive) (org-agenda-todo "MOVED"))
   (defun org-todo-set-moved () (interactive) (org-todo "MOVED"))
 
-  (defun oht-org-agenda-exit-delete-window ()
-    "Wrapper around org-agenda-exit & delete-window."
-    (interactive)
-    (org-agenda-exit)
-    (delete-window))
-
-  (defun oht-org-agenda-today-pop-up ()
-    "Displays oht-org-agenda-today in a small window.
-Also provides bindings for deleting the window, thus burying the
-buffer, and exiting the agenda and releasing all the buffers."
-    (interactive)
-    (split-window-below)
-    (other-window 1)
-    (oht-org-agenda-today)
-    (fit-window-to-buffer)
-    (use-local-map (copy-keymap org-agenda-mode-map))
-    (local-set-key (kbd "x") 'oht-org-agenda-exit-delete-window)
-    (local-set-key (kbd "q") 'delete-window))
-
   (setq org-todo-map
         (let ((map (make-sparse-keymap "Org TODO")))
           (define-key map "t" '("TODO"     . org-todo-set-todo))
@@ -1629,7 +1610,6 @@ buffer, and exiting the agenda and releasing all the buffers."
   ["Org Mode"
    ["Agenda Commands"
     ("t" "Today" oht-org-agenda-today)
-    ("p" "Today (pop-up)" oht-org-agenda-today-pop-up)
     ("0" "Complete" oht-org-agenda-complete)
     ("a" "Agenda..." org-agenda)]
    ["Find"

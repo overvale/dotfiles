@@ -1404,6 +1404,7 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 (autoload 'oht-org-agenda-today "org")
 (autoload 'consult-grep-orgfiles "org")
 (autoload 'find-org-directory "org")
+(autoload 'org-export-dispatch "org")
 
 ;; calling capture templates directly
 (defun org-capture-scanline-log   () (interactive) (org-capture nil "sl"))

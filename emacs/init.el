@@ -764,9 +764,9 @@ The variable-pitch and fixed-pitch faces have a default height of 1.0,
 which I don't want to mess with because that's what's required to make
 `text-scale-adjust' work correctly. The default height needs to be set,
 and I want the mode-line to be a fixed height, so I set those."
-  (let ((mono "SF Mono")
-        (vari "Inter")
-        (mode "SF Compact Text")
+  (let ((mono "Roboto Mono")
+        (vari "Roboto Slab")
+        (mode "Roboto")
         (mono-height 120)
         (ml-height 140))
     (custom-set-faces

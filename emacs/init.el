@@ -150,7 +150,6 @@
  '(ibuffer-auto-mode t)
  '(save-place-mode t)
  '(recentf-mode t)
- '(winner-mode t)
  '(show-paren-mode t)
  '(blink-cursor-mode t)
  '(cursor-type 'box)
@@ -175,7 +174,6 @@
  '(confirm-kill-processes nil)
  '(save-interprogram-paste-before-kill t)
  '(kill-do-not-save-duplicates t)
- '(split-window-keep-point nil)
  '(sentence-end-double-space nil)
  '(set-mark-command-repeat-pop t)
  '(mark-even-if-inactive nil)
@@ -330,6 +328,11 @@ argument makes the windows rotate backwards."
                (set-window-start w1 s2)
                (set-window-start w2 s1)
                (setq i next-i)))))))
+
+(defun split-window-dwim ()
+  "Interactive wrapper around `split-window-sensibly'."
+  (interactive)
+  (split-window-sensibly))
 
 (defun pipe-region (start end command)
   ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/text-extras.el
@@ -549,11 +552,6 @@ With a prefix ARG always prompt for command to use."
       (back-to-indentation)
     (beginning-of-line)))
 
-(defun split-window-dwim ()
-  "Interactive wrapper around `split-window-sensibly'."
-  (interactive)
-  (split-window-sensibly))
-
 (defun backward-kill-line nil
   "Kill backward to the start of line."
   (interactive)
@@ -620,7 +618,7 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "s-+") 'consult-mark)
   (define-key map (kbd "s-b") 'consult-buffer)
   (define-key map (kbd "s-B") 'consult-buffer-other-window)
-  (define-key map (kbd "s-w") 'general-transient--window)
+  (define-key map (kbd "s-w") 'window-transient)
   (define-key map (kbd "s-k") 'org-capture)
   (define-key map (kbd "s-f") 'find-file)
   (define-key map (kbd "s-F") 'find-file-other-window)
@@ -819,6 +817,58 @@ and I want the mode-line to be a fixed height, so I set those."
 
 
 
+;;; Windows
+
+;; Settings for how Emacs displays windows, splits, etc.
+
+(custom-set-variables
+ '(winner-mode t)
+ '(split-window-keep-point nil)
+ '(even-window-sizes nil))
+
+(define-minor-mode dedicated-mode
+  "Minor mode for dedicating windows.
+This minor mode dedicates the current window to the current buffer.
+The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp/extras.el"
+  :init-value nil
+  :lighter " [D]"
+  (let* ((window (selected-window))
+         (dedicated (window-dedicated-p window)))
+    (set-window-dedicated-p window (not dedicated))
+    (message "Window %sdedicated to %s"
+             (if dedicated "no longer " "")
+             (buffer-name))))
+
+(transient-define-prefix window-transient ()
+  "Most commonly used window commands"
+  [["Splits"
+    ("s" "Split Sensibly" split-window-dwim)
+    ("H" "Split Horizontal" split-window-below)
+    ("V" "Split Vertical"   split-window-right)
+    ("b" "Balance"    balance-windows)
+    ("f" "Fit"        fit-window-to-buffer)
+    ("r" "Rotate"     toggle-window-split)
+    ("R" "Swap"       rotate-windows)]
+   ["Window"
+    ;; TODO: https://www.gnu.org/software/emacs/manual/html_node/emacs/Configuration-Registers.html
+    ("d" "Dedicate Window" dedicated-mode)
+    ("c" "Clone Indirect" clone-indirect-buffer)
+    ("t" "Tear Off" tear-off-window)
+    ("k" "Kill" delete-window)
+    ("o" "Kill Others"  delete-other-windows)
+    ("m" "Maximize" maximize-window)]
+   ["Navigate"
+    ("<left>"  "←" windmove-left  :transient t)
+    ("<right>" "→" windmove-right :transient t)
+    ("<up>"    "↑" windmove-up    :transient t)
+    ("<down>"  "↓" windmove-down  :transient t)]
+   ["Undo/Redo"
+    ("C-/" "Winner Undo" winner-undo :transient t)
+    ("M-/" "Winner Redo" winner-redo :transient t)]
+   ["Exit"
+    ("q" "Quit" transient-quit-all)]])
+
+
 ;;; Secondary Selection
 
 ;; Emacs's Secondary Selection assumes you only want to interact with it via
@@ -887,22 +937,6 @@ and I want the mode-line to be a fixed height, so I set those."
     ("m"  "Mark Region as 2nd" mark-region-as-secondary)
     ("g"  "Make 2nd the Region" mark-secondary)
     ("d"  "Delete 2nd" deactivate-secondary)]])
-
-
-;;; Dedicated Mode
-
-(define-minor-mode dedicated-mode
-  "Minor mode for dedicating windows.
-This minor mode dedicates the current window to the current buffer.
-The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp/extras.el"
-  :init-value nil
-  :lighter " [D]"
-  (let* ((window (selected-window))
-         (dedicated (window-dedicated-p window)))
-    (set-window-dedicated-p window (not dedicated))
-    (message "Window %sdedicated to %s"
-             (if dedicated "no longer " "")
-             (buffer-name))))
 
 
 ;;; Confirm Killing Modified Buffers
@@ -1582,7 +1616,7 @@ buffer, and exiting the agenda and releasing all the buffers."
    ["Transients"
     ("o" "Org..." general-transient--org)
     ("t" "Toggle..." general-transient--toggles)
-    ("w" "Windows..." general-transient--window)
+    ("w" "Windows..." window-transient)
     ("c" "Consult..." general-transient--consult)]
    [""
     ("0" "Outline..." outline-transient)
@@ -1649,35 +1683,6 @@ buffer, and exiting the agenda and releasing all the buffers."
    ["Other"
     ("s" "Line Spacing" line-spacing-interactive)
     ("m" "Theme Color Toggle" theme-color-toggle)]])
-
-(transient-define-prefix general-transient--window ()
-  "Most commonly used window commands"
-  [["Splits"
-    ("s" "Split Sensibly" split-window-dwim)
-    ("H" "Split Horizontal" split-window-below)
-    ("V" "Split Vertical"   split-window-right)
-    ("b" "Balance"    balance-windows)
-    ("f" "Fit"        fit-window-to-buffer)
-    ("r" "Rotate"     toggle-window-split)
-    ("R" "Swap"       rotate-windows)]
-   ["Window"
-    ;; TODO: https://www.gnu.org/software/emacs/manual/html_node/emacs/Configuration-Registers.html
-    ("d" "Dedicate Window" dedicated-mode)
-    ("c" "Clone Indirect" clone-indirect-buffer)
-    ("t" "Tear Off" tear-off-window)
-    ("k" "Kill" delete-window)
-    ("o" "Kill Others"  delete-other-windows)
-    ("m" "Maximize" maximize-window)]
-   ["Navigate"
-    ("<left>"  "←" windmove-left  :transient t)
-    ("<right>" "→" windmove-right :transient t)
-    ("<up>"    "↑" windmove-up    :transient t)
-    ("<down>"  "↓" windmove-down  :transient t)]
-   ["Undo/Redo"
-    ("C-/" "Winner Undo" winner-undo :transient t)
-    ("M-/" "Winner Redo" winner-redo :transient t)]
-   ["Exit"
-    ("q" "Quit" transient-quit-all)]])
 
 (transient-define-prefix general-transient--mark ()
   "Transient for setting the mark."

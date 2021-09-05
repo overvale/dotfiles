@@ -514,6 +514,18 @@ FEATURE is name of lisp feature, MODE and REPLACEMENT are as in `blackout'."
          (read-kbd-macro (car def)))
        (cdr def))))
 
+(defmacro define-key-lambda (map key &rest body)
+  `(define-key ,map ,key (lambda () (interactive) ,@body)))
+
+(defmacro define-funkey (map key name &rest body)
+  `(define-key ,map ,key (defun ,name nil (interactive) ,@body)))
+
+(define-key-lambda global-map (kbd "s-1")
+  (message "works"))
+
+(define-funkey global-map (kbd "s-1") my:test2
+  (message "test2"))
+
 
 ;;; Facedancer
 

@@ -224,6 +224,9 @@
 
 ;;; Critical Setup
 
+;; Start in my home directory
+(cd "~/home/")
+
 ;; These variables, packages, macros, and functions are used throughout the
 ;; config --- and are required for it to work correctly.
 

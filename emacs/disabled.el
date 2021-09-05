@@ -1021,4 +1021,27 @@ mode into a global minor mode and enable it."
   (global-outline-minor-mode +1))
 
 
+;;; Org
+
+;; Org Agenda pop-up window
+
+(defun oht-org-agenda-exit-delete-window ()
+  "Wrapper around org-agenda-exit & delete-window."
+  (interactive)
+  (org-agenda-exit)
+  (delete-window))
+
+(defun oht-org-agenda-today-pop-up ()
+  "Displays oht-org-agenda-today in a small window.
+Also provides bindings for deleting the window, thus burying the
+buffer, and exiting the agenda and releasing all the buffers."
+  (interactive)
+  (select-window (split-window-below))
+  (oht-org-agenda-today)
+  (fit-window-to-buffer)
+  (use-local-map (copy-keymap org-agenda-mode-map))
+  (local-set-key (kbd "x") 'oht-org-agenda-exit-delete-window)
+  (local-set-key (kbd "q") 'delete-window))
+
+
 ;;; disabled.el ends here

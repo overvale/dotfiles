@@ -185,6 +185,12 @@
  '(locate-command "mdfind")
  '(trash-dircetory "~/.Trash"))
 
+(defun prog-mode-hook-config nil
+  (setq-local comment-auto-fill-only-comments t)
+  (auto-fill-mode))
+
+(add-hook 'prog-mode-hook 'prog-mode-hook-config)
+
 (setq mac-command-modifier 'super
       mac-option-modifier 'meta)
 

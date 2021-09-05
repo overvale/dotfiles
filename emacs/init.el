@@ -3,6 +3,7 @@
 ;; Copyright (C) 2021 Oliver Taylor
 
 ;; Author: Oliver Taylor
+;; URL: https://olivertaylor.net
 ;; URL: https://github.com/olivertaylor/dotfiles
 
 
@@ -16,16 +17,16 @@
 ;; Every Emacs configuration is unique to the person who created it, to their
 ;; needs and their taste. This one takes the following approach:
 ;;
+;;   + I prefer to write my own code instead of installing packages.
+;;   + I use package.el and don't use Use-Package.
+;;   + The config is a single file (with exceptions for large libraries
+;;     which I never edit and didn't author).
+;;   + I make heavy use of transient for interacting with Emacs.
+;;   + I'm a heavy Org user for my job and life.
 ;;   + It is NOT modular, so if you don't have all the listed packages
 ;;     installed large parts of the config won't work.
 ;;   + Symbol names are not prefixed (for the most part) so take care to
 ;;     to avoid collisions if you copy them into your own config.
-;;   + I prefer to write my own code instead of installing packages.
-;;   + The config is a single file (with exceptions for large libraries
-;;     which I never edit and didn't author).
-;;   + I use package.el and don't use Use-Package.
-;;   + I make heavy use of transient for interacting with Emacs.
-;;   + I'm a heavy Org user for my job and life.
 
 ;; If you like this config I would recommend reading these as well:
 ;;
@@ -224,6 +225,9 @@
 (defvar user-orgfiles-directory  "~/home/org/")
 (defvar user-downloads-directory "~/Downloads/")
 
+;; I've taken these 2 large pieces of code from other configurations and load
+;; them as-is. There's nothing to configure, they provide no interactive
+;; commands, they just improve Emacs a bit.
 (add-to-list 'load-path (concat user-dotemacs-directory "lisp/"))
 (require 'undo-backport)
 (require 'radian-directories)
@@ -1052,8 +1056,11 @@ This function is designed to be called from `kill-buffer-query-functions'."
           (not-modified))))))
 
 (defun new-buffer (name)
-  "Create a new untitled buffer."
-  (interactive (list (read-string "Create buffer (default \"untitled\"): " nil nil "untitled")))
+  "Create a new buffer, prompting for NAME."
+  (interactive
+   (list (read-string
+          "Create buffer (default \"untitled\"): "
+          nil nil "untitled")))
   (let ((buffer (generate-new-buffer name)))
     (switch-to-buffer buffer)
     (setq-local buffer-offer-save t)

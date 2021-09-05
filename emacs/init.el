@@ -248,7 +248,6 @@
 (require 'vundo)
 
 (autoload 'transient-define-prefix "transient" nil t)
-(require 'dash)
 (exec-path-from-shell-initialize)
 
 ;; I use 3 macros to control how/when code and packages are loaded. I don't

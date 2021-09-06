@@ -185,6 +185,10 @@
  '(locate-command "mdfind")
  '(trash-dircetory "~/.Trash"))
 
+(dolist (cmd '(upcase-region
+               downcase-region))
+  (put cmd 'disabled nil))
+
 (defun prog-mode-hook-config nil
   (setq-local comment-auto-fill-only-comments t)
   (auto-fill-mode))
@@ -1161,7 +1165,21 @@ PROMPT sets the `read-string prompt."
     ("c" "Consult" consult-outline :transient nil)]])
 
 
-;;; Navigation Keymap
+;;; Navigation And Selection
+
+;; Emacs is littered with what I call "navigation modes", ones in which
+;; typing 'n' is a shortcut for 'C-n', or '<' is a shortcut for 'M-<'.
+;; These modes assume you don't want to insert text and instead want to move
+;; around the buffer. I wanted to generalize this idea into a minor mode I
+;; could enable at any time.
+
+;; I also use (and love) the package `selected', which provides a keymap that
+;; is active only then the region is active. By applying the same movement
+;; bindings to selected I can easily refine the active region with convenient
+;; bindings.
+
+
+;;;; Common Navigation Keys
 
 ;; There are a few keymaps which I think should share common movement
 ;; bindings. To facilitate this I've made a command which you can pass a
@@ -1172,12 +1190,13 @@ PROMPT sets the `read-string prompt."
 (defun define-navigation-keys (map)
   "Defines navigation keys for a map supplied by argument."
   (interactive "S")
+  (define-key map (kbd ".") 'embark-act)
   (define-key map (kbd "n") 'next-line)
   (define-key map (kbd "p") 'previous-line)
-  (define-key map (kbd "f") 'forward-char)
-  (define-key map (kbd "b") 'backward-char)
-  (define-key map (kbd "M-f") 'forward-word)
-  (define-key map (kbd "M-b") 'backward-word)
+  (define-key map (kbd "<right>") 'forward-char)
+  (define-key map (kbd "<left>") 'backward-char)
+  (define-key map (kbd "f") 'forward-word)
+  (define-key map (kbd "b") 'backward-word)
   (define-key map (kbd "a") 'beginning-of-line)
   (define-key map (kbd "e") 'end-of-line)
   (define-key map (kbd "{") 'backward-paragraph)
@@ -1188,42 +1207,48 @@ PROMPT sets the `read-string prompt."
   (define-key map (kbd "r") 'isearch-backward)
   (define-key map (kbd "[") 'scroll-down-line)
   (define-key map (kbd "]") 'scroll-up-line)
-  (define-key map (kbd "x") 'exchange-point-and-mark)
-  (define-key map (kbd "SPC") 'rectangle-mark-mode))
+  (define-key map (kbd "x") 'exchange-point-and-mark))
 
-(defvar navigation-keymap (make-sparse-keymap)
-  "Transient keymap for navigating buffers.")
 
-(define-key navigation-keymap [t] 'undefined)
+;;;; Navigation Mode
 
-;; Assign navigation-keys to the map
-(define-navigation-keys navigation-keymap)
+(defvar navigation-mode-map (make-sparse-keymap)
+  "Keymap for `navigation-mode'.")
 
-(defvar nagivation-keymap-header-text
-  (propertize " ** Navigation Keymap ACTIVE ** " 'face 'warning)
-  "Text to display in the buffer's header line when navigation keymap is active.")
+(defun navigation-mode-eldoc-function ()
+  (eldoc-message "** Navigation Mode Active **"))
 
-(defun navigation-keymap-set-header nil
-  (setq-local og-header-line-format header-line-format)
-  (setq-local header-line-format (concat nagivation-keymap-header-text og-header-line-format)))
+(define-minor-mode navigation-mode
+  "Minor mode for nagivating buffers."
+  :init-value nil
+  :lighter " NΛV"
+  :keymap navigation-mode-map
+  (if navigation-mode
+      (add-function :before-until
+                    (local 'eldoc-documentation-function)
+                    #'navigation-mode-eldoc-function)
+    (remove-function (local 'eldoc-documentation-function)
+                   #'navigation-mode-eldoc-function)))
 
-(defun navigation-keymap--activate ()
-  "Activate the navigation-keymap transiently and add modify header-line."
+(defun navigation-mode-exit-and-mark ()
+  "Exit `navigation-mode' and set the mark."
   (interactive)
-  (navigation-keymap-set-header)
-  (scroll-up-line)
-  (message "Navigation Keymap Activated")
-  (set-transient-map navigation-keymap t 'navigation-keymap--deactivate))
+  (navigation-mode -1)
+  (set-mark-command nil))
 
-(defun navigation-keymap--deactivate ()
-  "Deactivate the navigation-keymap transiently and restore header-line."
-  (interactive)
-  (setq-local header-line-format og-header-line-format)
-  (scroll-down-line)
-  (message "Navigation Keymap Deactivated"))
+(define-key global-map (kbd "s-j") 'navigation-mode)
+
+(let ((map navigation-mode-map))
+  ;; Any key that is not specifically bound should be ignored:
+  (define-key map [t] 'undefined)
+  ;; Apply common navigation keys:
+  (define-navigation-keys map)
+  ;; If you want to override them, just redefine below...
+  (define-key map (kbd "SPC") 'navigation-mode-exit-and-mark)
+  (define-key map (kbd "q")   'navigation-mode))
 
 
-;;; Selected
+;;;; Selected Mode
 
 (config-package 'selected
   "A keymap which activates when the region is active.
@@ -1241,19 +1266,24 @@ vim emulation, but in an entirely emacs-y way."
     (selected-minor-mode -1))
 
   (with-eval-after-load 'selected
+    (delight 'selected-minor-mode nil "selected")
     ;; Careful not to bind - or = as they may collide with `expand-region'.
     (let ((map selected-keymap))
+      (define-navigation-keys map)
       (define-key map (kbd ".") 'embark-act)
-      (define-key map (kbd "u") 'upcase-dwim)
-      (define-key map (kbd "d") 'downcase-dwim)
-      (define-key map (kbd "c") 'capitalize-dwim)
-      (define-key map (kbd "w") 'kill-ring-save)
+      (define-key map (kbd "u") 'upcase-region)
+      (define-key map (kbd "d") 'downcase-region)
+      (define-key map (kbd "c") 'capitalize-region)
       (define-key map (kbd "|") 'pipe-region)
       (define-key map (kbd "R") 'replace-rectangle)
-      (define-key map (kbd "E") 'eval-region)
-      (define-key map (kbd "q") 'fill-paragraph))
-    (define-navigation-keys selected-keymap)
-    (delight 'selected-minor-mode nil "selected")))
+      (define-key map (kbd "e") 'eval-region)
+      (define-key map (kbd "q") 'fill-paragraph)
+      ;; In selected mode, move the mark instead of the point:
+      (define-key map (kbd "M-f") 'mark-word)
+      (define-key map (kbd "C-n") 'mark-line)
+      (define-key map (kbd "M-e") 'mark-sentence)
+      (define-key map (kbd "M-}") 'mark-paragraph)
+      (define-key map (kbd "C-M-f") 'mark-sexp))))
 
 
 ;;; Minibuffer / Embark / Consult
@@ -1627,9 +1657,7 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   "General-purpose transient."
   [["Actions/Toggles"
     ("a" "AutoFill" auto-fill-mode)
-    ("j" "Dired Jump" dired-jump)
-    ("SPC" "Mark..." general-transient--mark)
-    ("n" "Navigation..." navigation-keymap--activate)]
+    ("j" "Dired Jump" dired-jump)]
    [""
     ("." "Repeat Command" repeat-complex-command)
     ("k" "Kill Buffer" kill-buffer-dwim)
@@ -1703,22 +1731,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
    ["Other"
     ("s" "Line Spacing" line-spacing-interactive)
     ("m" "Theme Color Toggle" theme-color-toggle)]])
-
-(transient-define-prefix general-transient--mark ()
-  "Transient for setting the mark."
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-exit
-  ["Mark"
-   [("w" "Word" mark-word)
-    ("s" "Sexp" mark-sexp)
-    ("d" "Defun" mark-defun)]
-   [("n" "Line" mark-line)
-    (")" "Sentence" mark-sentence)
-    ("}" "Paragraph" mark-paragraph)]
-   [("<" "Beginning of Buffer" mark-beginning-of-buffer)
-    (">" "End of Buffer" mark-end-of-buffer)]
-   [("x" "Exchange Point/Mark" exchange-point-and-mark :transient nil)
-    ("q" "Quit" transient-quit-all)]])
 
 (transient-define-prefix transpose-transient ()
   "Transient for transpose commands."

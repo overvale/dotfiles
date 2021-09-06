@@ -108,7 +108,6 @@
         vertico
         visual-regexp
         visual-regexp-steroids
-        ytdl
         transient))
 
 (setq package-pinned-packages
@@ -1349,7 +1348,6 @@ only present in the most recent versions."
     (define-key map (kbd "j") 'dired-jump))
 
   (let ((map embark-url-map))
-    (define-key map (kbd "d") 'ytdl-download)
     (define-key map (kbd "b") 'browse-url-default-macosx-browser)))
 
 (elisp-group isearch-config
@@ -1436,11 +1434,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   nil
   (custom-set-variables
    '(olivetti-body-width 86)))
-
-(config-package 'ytdl
-  "YouTube Download"
-  (setq ytdl-media-player "open")
-  (setq ytdl-always-query-default-filename 'yes-confirm))
 
 (elisp-group world-clock
   "Emacs has a world clock!"

@@ -92,7 +92,6 @@
         embark
         embark-consult
         exec-path-from-shell
-        expand-region
         fountain-mode
         gruvbox-theme
         isearch-mb
@@ -645,7 +644,6 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "M-\\") 'cycle-spacing)
   (define-key map (kbd "M-z") 'zap-up-to-char)
   (define-key map (kbd "M-<SPC>") 'push-mark-no-activate)
-  (define-key map (kbd "C-=") 'er/expand-region)
   (define-key map (kbd "C-d") 'delete-forward-char)
   (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
   (define-key map (kbd "C-x k") 'kill-buffer-dwim))
@@ -1266,7 +1264,6 @@ vim emulation, but in an entirely emacs-y way."
 
   (with-eval-after-load 'selected
     (delight 'selected-minor-mode nil "selected")
-    ;; Careful not to bind - or = as they may collide with `expand-region'.
     (let ((map selected-keymap))
       (define-navigation-keys map)
       (define-key map (kbd ".") 'embark-act)

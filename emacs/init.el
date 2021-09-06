@@ -560,13 +560,6 @@ With a prefix ARG always prompt for command to use."
         nil)
     (save-buffers-kill-emacs)))
 
-(defun ora-move-beginning-of-line ()
-  "Move back to indentation or beginning of line."
-  (interactive)
-  (if (bolp)
-      (back-to-indentation)
-    (beginning-of-line)))
-
 (defun backward-kill-line nil
   "Kill backward to the start of line."
   (interactive)
@@ -638,7 +631,6 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "s-k") 'org-capture)
   (define-key map (kbd "s-f") 'find-file)
   (define-key map (kbd "s-F") 'find-file-other-window)
-  (define-key map (kbd "C-M-h") 'mark-line)
   (define-key map (kbd "M-.") 'embark-act)
   (define-key map (kbd "M-'") 'completion-at-point)
   (define-key map (kbd "M-\\") 'cycle-spacing)
@@ -649,16 +641,11 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "C-x k") 'kill-buffer-dwim))
 
 (let ((map global-map))
-  (define-key map (kbd "C-a") 'ora-move-beginning-of-line)
   ;; replace mappings
   (define-key map [remap query-replace] 'vr/query-replace)
   (define-key map [remap capitalize-word] 'capitalize-dwim)
   (define-key map [remap downcase-word]   'downcase-dwim)
   (define-key map [remap upcase-word]     'upcase-dwim)
-  ;; Mouse + Mode Line Magic
-  (define-key map [mode-line S-mouse-1] 'mouse-delete-other-windows)
-  (define-key map [mode-line M-mouse-1] 'mouse-delete-window)
-  (define-key map [mode-line C-mouse-1] 'mouse-split-window-horizontally)
   ;; Make shift-click extend the region.
   (define-key map [S-down-mouse-1] 'ignore)
   (define-key map [S-mouse-1] 'mouse-save-then-kill)
@@ -1427,21 +1414,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 (autoload 'consult-grep-orgfiles "org")
 (autoload 'find-org-directory "org")
 (autoload 'org-export-dispatch "org")
-
-;; calling capture templates directly
-(defun org-capture-scanline-log   () (interactive) (org-capture nil "sl"))
-(defun org-capture-scanline-frank () (interactive) (org-capture nil "sf"))
-(defun org-capture-scanline-zero  () (interactive) (org-capture nil "sz"))
-
-(setq org-quick-capture-map
-      (let ((map (make-sparse-keymap "Scanline Capture")))
-        (define-key map "l" '("logbook" . org-capture-scanline-log))
-        (define-key map "f" '("frank"   . org-capture-scanline-frank))
-        (define-key map "z" '("zero"    . org-capture-scanline-zero))
-        map))
-
-(define-key bosskey-mode-map (kbd "s-K") org-quick-capture-map)
-
 
 (with-eval-after-load 'org
 

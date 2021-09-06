@@ -1117,49 +1117,12 @@ PROMPT sets the `read-string prompt."
 
 (delight 'outline-minor-mode " Out" "outline")
 
-(defun outline-up-transient--hide nil
-  "Move to parent heading, hide to that level, and enter outlined-transient."
-  (interactive)
-  (when (not (outline-on-heading-p))
-    (outline-up-heading 1 nil))
-  (outline-hide-sublevels (outline-level))
-  (outline-transient))
-
-(defun outline-transient-dwim nil
-  "Move to parent heading, if not on heading, and enter outline-transient."
-  (interactive)
-  (when (not (outline-on-heading-p))
-    (outline-up-heading 1 nil))
-  (outline-transient))
-
 (with-eval-after-load 'outline
   ;; If you instead bind these in `outline-minor-mode' they might not be
   ;; properly overridden by other minor modes, like org-mode. So a global
   ;; binding is safer.
   (global-set-key (kbd "C-<tab>") 'bicycle-cycle)
   (global-set-key (kbd "S-<tab>") 'bicycle-cycle-global))
-
-(transient-define-prefix outline-transient ()
-  "Transient for Outline Minor Mode navigation"
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-stay
-  [["Show/Hide"
-    ("<right>" "Show Subtree" outline-show-subtree)
-    ("<left>" "Hide Subtree" outline-hide-subtree)
-    ("o" "Hide to This Sublevel" outline-hide-sublevels)
-    ("a" "Show All" outline-show-all)]
-   ["Navigate"
-    ("<down>" "Next" outline-forward-same-level)
-    ("<up>" "Previous" outline-backward-same-level)]
-   ["Edit"
-    ("M-<left>"  "Promote" outline-promote)
-    ("M-<right>" "Demote"  outline-demote)
-    ("M-<up>"    "Move Up" outline-move-subtree-up)
-    ("M-<down>"  "Move Down" outline-move-subtree-down)]
-   ["Other"
-    ("s-z" "Undo" undo-only)
-    ("s-Z" "Redo" undo-redo)
-    ("c" "Consult" consult-outline :transient nil)]])
 
 
 ;;; Navigation And Selection
@@ -1647,20 +1610,17 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   "General-purpose transient."
   [["Actions/Toggles"
     ("a" "AutoFill" auto-fill-mode)
-    ("j" "Dired Jump" dired-jump)]
+    ("j" "Dired Jump" dired-jump)
+    ("." "Repeat Command" repeat-complex-command)]
    [""
-    ("." "Repeat Command" repeat-complex-command)
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("b" "Switch Buffer" switch-to-buffer)]
    ["Transients"
     ("o" "Org..." general-transient--org)
-    ("t" "Toggle..." general-transient--toggles)
-    ("w" "Windows..." window-transient)
     ("c" "Consult..." general-transient--consult)]
    [""
     ("0" "Outline..." outline-transient)
     ("2" "Secondary..." secondary-selection-transient)
-    ("f" "Fonts..." general-transient--fonts)
     ("s" "Spelling..." flyspell-mode-transient)]])
 
 (transient-define-prefix general-transient--org ()
@@ -1680,20 +1640,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
     ("s" "Store Link" org-store-link)
     ]])
 
-(transient-define-prefix general-transient--toggles ()
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  [["Toggle"
-    ("h" "Highlight Line" hl-line-mode)
-    ("l" "Line Numbers" global-display-line-numbers-mode)
-    ("g" "Fill Column" global-display-fill-column-indicator-mode)
-    ("w" "Wrap" visual-line-mode)
-    ("t" "Truncate" toggle-truncate-lines)
-    ("W" "Whitespace" whitespace-mode)]
-   ["Action"
-    ("<return>" "Quit" transient-quit-all)
-    ("q" "Quit" transient-quit-all)]])
-
 (transient-define-prefix general-transient--consult ()
   ["Consult"
    ("l" "Line" consult-line)
@@ -1703,38 +1649,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
    ("a" "Apropos" consult-apropos)
    ("m" "Marks" consult-mark)
    ("M" "Minor Modes" consult-minor-mode-menu)])
-
-(transient-define-prefix general-transient--fonts ()
-  "Set Font Properties"
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  [["Modes"
-    ("v" "Var Mode" variable-pitch-mode)
-    ("V" "V+ Mode" facedancer-vadjust-mode)
-    ("o" "Olivetti" olivetti-mode)
-    ("w" "Wrap" visual-line-mode)]
-   ["Size"
-    ("0" "Reset Size" text-scale-mode)
-    ("=" "Larger" text-scale-increase)
-    ("+" "Larger" text-scale-increase)
-    ("-" "Smaller" text-scale-decrease)]
-   ["Other"
-    ("s" "Line Spacing" line-spacing-interactive)
-    ("m" "Theme Color Toggle" theme-color-toggle)]])
-
-(transient-define-prefix transpose-transient ()
-  "Transient for transpose commands."
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-exit
-  ["Transpose"
-   ["Forward"
-    ("f" "Char" transpose-chars)
-    ("@" "Word" transpose-words)
-    ("n" "Line" transpose-lines)
-    (")" "Sentence" transpose-sentences)
-    ("}" "Paragraph" transpose-paragraphs)
-    ("s" "Sexps" transpose-sexps)
-    ("r" "Regions" transpose-regions)]])
 
 (with-eval-after-load 'flyspell
   (transient-define-prefix flyspell-mode-transient ()

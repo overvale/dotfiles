@@ -984,11 +984,11 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 ;;; Confirm Killing Modified Buffers
 
 ;; Emacs asks for confirmation when killing modified file-visiting buffers,
-;; but does not ask for non-file-visiting buffers.
+;; but does not ask for regular buffers.
 ;;
 ;; The option `buffer-offer-save' tells Emacs to prompt to you save modified
-;; non-file-visiting buffers when EXITING Emacs, but no such option exists for
-;; killing buffers (as described in the docstring for `buffer-offer-save').
+;; regular buffers when EXITING Emacs, but no such option exists for killing
+;; regular buffers (as described in the docstring for `buffer-offer-save').
 ;;
 ;; The below create a buffer-local variable and function for
 ;; `kill-buffer-query-functions' that provides this functionality.
@@ -1184,8 +1184,8 @@ PROMPT sets the `read-string prompt."
 ;; There are a few keymaps which I think should share common movement
 ;; bindings. To facilitate this I've made a command which you can pass a
 ;; keymap and those common bindings will be set in the keymap. In my case,
-;; this allows me to share a common set of bindings between a custom
-;; navigation keymap and the `selected' package.
+;; this allows me to share a common set of bindings between `navigation-mode'
+;; and the `selected' package.
 
 (defun define-navigation-keys (map)
   "Defines navigation keys for a map supplied by argument."
@@ -1316,7 +1316,7 @@ completion framework."
   "embark and embark-consult are two separate packages, but I
 configure them here in a single group. Embark is being very
 heavily developed at the moment, and the embark-indicators are
-only present in the most reason versions."
+only present in the most recent versions."
   (require 'embark)
   (require 'embark-consult)
 

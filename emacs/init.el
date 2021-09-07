@@ -549,6 +549,16 @@ With a prefix ARG always prompt for command to use."
   (interactive)
   (describe-symbol (symbol-at-point)))
 
+(defun switch-mark-command ()
+  "If region, switch to rect, if rect deactivate, otherwise set mark."
+  ;; https://github.com/leotaku/.emacs.d/blob/aadd2f797184eab0dd3cb6ca80bda3c3ae2dc958/lisp/helpers.el#L68
+  (interactive)
+  (if (region-active-p)
+      (if (null rectangle-mark-mode)
+          (rectangle-mark-mode)
+        (deactivate-mark))
+    (set-mark-command nil)))
+
 
 ;;; Keybindings
 

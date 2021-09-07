@@ -19,10 +19,7 @@
 ;;
 ;;   + I prefer to write my own code instead of installing packages.
 ;;   + I use package.el and don't use Use-Package.
-;;   + The config is a single file (with exceptions for large libraries
-;;     which I never edit and didn't author).
-;;   + I make heavy use of transient for interacting with Emacs.
-;;   + I'm a heavy Org user for my job and life.
+;;   + The config is a single file.
 ;;   + It is NOT modular, so if you don't have all the listed packages
 ;;     installed large parts of the config won't work.
 ;;   + Symbol names are not prefixed (for the most part) so take care to
@@ -186,7 +183,7 @@
   (find-file user-init-file))
 
 ;; If I break my init file it almost always happens after this point in the
-;; config. So I keep. up here, a basic set of critical keybindings that are
+;; config. So I keep, up here, a basic set of critical keybindings that are
 ;; useful when troubleshooting a broken init file.
 (let ((map global-map))
   (define-key map (kbd "s-q") 'save-buffers-kill-emacs)
@@ -726,13 +723,13 @@ and I want the mode-line to be a fixed height, so I set those."
         (vari "Roboto Slab")
         (mode "Roboto")
         (mono-height 120)
-        (ml-height 140))
+        (mode-height 140))
     (custom-set-faces
      `(default ((t :family ,mono :height ,mono-height)))
      `(fixed-pitch ((t :family ,mono)))
      `(variable-pitch ((t :family ,vari)))
-     `(mode-line ((t :family ,mode :height ,ml-height)))
-     `(mode-line-inactive ((t :family ,mode :height ,ml-height))))))
+     `(mode-line ((t :family ,mode :height ,mode-height)))
+     `(mode-line-inactive ((t :family ,mode :height ,mode-height))))))
 
 
 ;;; Mode-Line

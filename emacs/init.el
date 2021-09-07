@@ -154,8 +154,6 @@
  ;;'(bookmark-menu-confirm-deletion t) ; Emacs 28
  '(word-wrap t)
  '(truncate-lines t)
- '(delete-by-moving-to-trash t)
- '(confirm-kill-processes nil)
  '(save-interprogram-paste-before-kill t)
  '(kill-do-not-save-duplicates t)
  '(sentence-end-double-space nil)
@@ -165,6 +163,7 @@
  '(indent-tabs-mode nil)
  '(fill-column 78)
  '(locate-command "mdfind")
+ '(delete-by-moving-to-trash t)
  '(trash-dircetory "~/.Trash"))
 
 (dolist (cmd '(upcase-region
@@ -220,17 +219,13 @@
 (defvar user-orgfiles-directory  "~/home/org/")
 (defvar user-downloads-directory "~/Downloads/")
 
-;; I've taken these 2 large pieces of code from other configurations and load
-;; them as-is. There's nothing to configure, they provide no interactive
-;; commands, they just improve Emacs a bit.
 (add-to-list 'load-path (concat user-dotemacs-directory "lisp/"))
-(require 'undo-backport)
-(require 'radian-directories)
 
 ;; vundo creates a tree-like visualization of your undo history
 ;; using only standard Emacs undo commands and data. Requires either
 ;; Emacs 28 or its backported undo functions.
 (add-to-list 'load-path "~/home/src/lisp/vundo/")
+(require 'undo-backport) ; from Emacs 28
 (require 'vundo)
 
 (autoload 'transient-define-prefix "transient" nil t)
@@ -1283,13 +1278,8 @@ spot."
   nil
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
-
   (consult-customize consult-line
                      :preview-key nil)
-
-  (consult-customize consult-completion-in-region
-                     :cycle-threshold 3)
-
   (global-set-key [remap yank-pop] 'consult-yank-pop))
 
 
@@ -1332,7 +1322,7 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   (let ((map dired-mode-map))
     (define-key map (kbd "O") 'crux-open-with)
-    (define-key map (kbd "C-/") 'dired-undo)))
+    (define-key map (kbd "s-z") 'dired-undo)))
 
 (config-package 'olivetti
   nil
@@ -1529,7 +1519,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 
   (define-key org-agenda-mode-map (kbd "S") 'org-agenda-schedule)
   (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
-  (define-key org-agenda-mode-map (kbd "C-/") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))
 
 
@@ -1548,7 +1537,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
     ("o" "Org..." general-transient--org)
     ("c" "Consult..." general-transient--consult)]
    [""
-    ("0" "Outline..." outline-transient)
     ("2" "Secondary..." secondary-selection-transient)
     ("s" "Spelling..." flyspell-mode-transient)]])
 
@@ -1565,7 +1553,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
     ("f" "Find Org Heading" consult-org-agenda)
     ("g" "Grep Org Files" consult-grep-orgfiles)]
    ["Other"
-    ("k" "Capture" org-capture)
     ("s" "Store Link" org-store-link)
     ]])
 

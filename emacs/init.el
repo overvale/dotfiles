@@ -1045,28 +1045,11 @@ PROMPT sets the `read-string prompt."
 
 ;;; Navigation And Selection
 
-;; Emacs is littered with what I call "navigation modes", ones in which
-;; typing 'n' is a shortcut for 'C-n', or '<' is a shortcut for 'M-<'.
-;; These modes assume you don't want to insert text and instead want to move
-;; around the buffer. I wanted to generalize this idea into a minor mode I
-;; could enable at any time.
-
-;; I also use (and love) the package `selected', which provides a keymap that
-;; is active only then the region is active. By applying the same movement
-;; bindings to selected I can easily refine the active region with convenient
-;; bindings.
-
-
-;;;; Common Navigation Keys
-
-;; There are a few keymaps which I think should share common movement
-;; bindings. To facilitate this I've made a command which you can pass a
-;; keymap and those common bindings will be set in the keymap. In my case,
-;; this allows me to share a common set of bindings between `navigation-mode'
-;; and the `selected' package.
+;; This is a function so you can apply these bindings to any keymap by
+;; calling the function and providing the keymap as an argument.
 
 (defun define-navigation-keys (map)
-  "Defines navigation keys for a map supplied by argument."
+  "Defines navigation keys for MAP supplied by argument."
   (interactive "S")
   (define-key map (kbd ".") 'embark-act)
   (define-key map (kbd "n") 'next-line)
@@ -1077,6 +1060,8 @@ PROMPT sets the `read-string prompt."
   (define-key map (kbd "b") 'backward-word)
   (define-key map (kbd "a") 'beginning-of-line)
   (define-key map (kbd "e") 'end-of-line)
+  (define-key map (kbd "<") 'beginning-of-buffer)
+  (define-key map (kbd ">") 'end-of-buffer)
   (define-key map (kbd "{") 'backward-paragraph)
   (define-key map (kbd "}") 'forward-paragraph)
   (define-key map (kbd "(") 'backward-sentence)
@@ -1088,18 +1073,21 @@ PROMPT sets the `read-string prompt."
   (define-key map (kbd "x") 'exchange-point-and-mark))
 
 
-;;;; Navigation Mode
+;; Navigation Mode
 
 (defvar navigation-mode-map (make-sparse-keymap)
   "Keymap for `navigation-mode'.")
 
+(defvar navigation-mode-eldoc-message "** Navigation Mode Active **"
+  "Message to be displayed when `navigation-mode' is active.")
+
 (defun navigation-mode-eldoc-function ()
-  (eldoc-message "** Navigation Mode Active **"))
+  (eldoc-message navigation-mode-eldoc-message))
 
 (define-minor-mode navigation-mode
   "Minor mode for nagivating buffers."
   :init-value nil
-  :lighter " NΛV"
+  :lighter " =NΛV="
   :keymap navigation-mode-map
   (if navigation-mode
       (add-function :before-until
@@ -1114,16 +1102,15 @@ PROMPT sets the `read-string prompt."
   (navigation-mode -1)
   (set-mark-command nil))
 
-(define-key global-map (kbd "s-j") 'navigation-mode)
-
 (let ((map navigation-mode-map))
-  ;; Any key that is not specifically bound should be ignored:
-  (define-key map [t] 'undefined)
   ;; Apply common navigation keys:
   (define-navigation-keys map)
   ;; If you want to override them, just redefine below...
   (define-key map (kbd "SPC") 'navigation-mode-exit-and-mark)
+  (define-key map (kbd "C-SPC") 'navigation-mode-exit-and-mark)
   (define-key map (kbd "q")   'navigation-mode))
+
+(define-key global-map (kbd "s-j") 'navigation-mode)
 
 
 ;;;; Selected Mode
@@ -1140,28 +1127,16 @@ vim emulation, but in an entirely emacs-y way."
   (delete-selection-mode -1)
 
   (defun disable-selected-minor-mode ()
-    "Disabled the selected minor mode."
+    "Disable the selected minor mode.
+Useful for mode hooks where you don't want selected to be active."
     (selected-minor-mode -1))
 
   (with-eval-after-load 'selected
     (delight 'selected-minor-mode nil "selected")
     (let ((map selected-keymap))
       (define-navigation-keys map)
-      (define-key map (kbd ".") 'embark-act)
-      (define-key map (kbd "u") 'upcase-region)
-      (define-key map (kbd "d") 'downcase-region)
-      (define-key map (kbd "c") 'capitalize-region)
-      (define-key map (kbd "|") 'pipe-region)
-      (define-key map (kbd "R") 'replace-rectangle)
-      (define-key map (kbd "e") 'eval-region)
-      (define-key map (kbd "q") 'fill-paragraph)
-      ;; In selected mode, move the mark instead of the point:
-      (define-key map (kbd "M-f") 'mark-word)
-      (define-key map (kbd "C-n") 'mark-line)
-      (define-key map (kbd "M-e") 'mark-sentence)
-      (define-key map (kbd "M-}") 'mark-paragraph)
-      (define-key map (kbd "C-M-f") 'mark-sexp))))
-
+      (define-key map (kbd "r") 'rectangle-mark-mode)
+      (define-key map (kbd "R") 'replace-rectangle))))
 
 ;;; Minibuffer / Embark / Consult
 
@@ -1220,6 +1195,9 @@ only present in the most recent versions."
                        nil t nil 'variable-name-history)))
     (require 'embark)
     (embark-completing-read-prompter (symbol-value (intern keymap)) nil))
+
+  (let ((map embark-region-map))
+    (define-key map (kbd "q") 'fill-region))
 
   (let ((map embark-file-map))
     (define-key map (kbd "O") 'crux-open-with)

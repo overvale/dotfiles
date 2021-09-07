@@ -640,7 +640,8 @@ Keybindings you define here will take precedence."
 
 ;; By default I use a light theme, but sometimes (when all the lights are off)
 ;; I use a dark theme. The below are some functions that allow me to quickly
-;; switch between light and dark themes.
+;; switch between light and dark themes. The main entry point is
+;; `load-theme-dwim'.
 
 (defvar light-theme nil
   "Preferred light-theme.")
@@ -663,13 +664,23 @@ Keybindings you define here will take precedence."
   "Return t if macOS appearance is dark."
    (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
 
+(defun theme-color-toggle nil
+  "Toggle between `light-theme' and `dark-theme'."
+  (interactive)
+  (if (eq current-theme-color 'light)
+      (progn
+        (disable-current-themes)
+        (setq current-theme-color 'dark)
+        (load-theme dark-theme t))
+    (progn
+      (disable-current-themes)
+      (setq current-theme-color 'light)
+      (load-theme light-theme t))))
+
 (defun load-theme-dwim (&optional color)
   "Load users preferred theme, based on ARG or macOS appearance.
-
 Disables all current themes, then:
-
-- if COLOR is \"light\", load the `light-theme'.
-- if COLOR is \"dark\" load the `dark-theme'
+- if COLOR is \"light\" or \"dark\", load the `light-theme' or `dark-theme'.
 - if COLOR is \"system\" check macOS's appearance state and match it with
   either the light or dark theme.
 - If called without an argument toggle between light and dark themes."
@@ -688,19 +699,6 @@ Disables all current themes, then:
            (load-theme-dwim 'light)))
         ((eq color nil)
          (theme-color-toggle))))
-
-(defun theme-color-toggle nil
-  "Toggle between `light-theme' and `dark-theme'."
-  (interactive)
-  (if (eq current-theme-color 'light)
-      (progn
-        (disable-current-themes)
-        (setq current-theme-color 'dark)
-        (load-theme dark-theme t))
-    (progn
-      (disable-current-themes)
-      (setq current-theme-color 'light)
-      (load-theme light-theme t))))
 
 (add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
 

@@ -329,26 +329,6 @@ argument makes the windows rotate backwards."
   (interactive)
   (split-window-sensibly))
 
-(defun pipe-region (start end command)
-  ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/text-extras.el
-  "Pipe region/buffer through shell command."
-  (interactive (append
-                (if (use-region-p)
-                    (list (region-beginning) (region-end))
-                  (list (point-min) (point-max)))
-                (list (read-shell-command "Pipe through: "))))
-  (let ((exit-status (call-shell-region start end command t t)))
-    (unless (equal 0 exit-status)
-      (let ((error-msg (string-trim-right (buffer-substring (mark) (point)))))
-        (undo)
-        (cond
-         ((null exit-status)
-          (message "Unknown error"))
-         ((stringp exit-status)
-          (message "Signal %s" exit-status))
-         (t
-          (message "[%d] %s" exit-status error-msg)))))))
-
 (defun narrow-or-widen-dwim (p)
   ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/narrow-extras.el
   "Widen if buffer is narrowed, narrow-dwim otherwise.
@@ -549,16 +529,6 @@ With a prefix ARG always prompt for command to use."
   "Run `describe-symbol' for the `symbol-at-point."
   (interactive)
   (describe-symbol (symbol-at-point)))
-
-(defun switch-mark-command ()
-  "If region, switch to rect, if rect deactivate, otherwise set mark."
-  ;; https://github.com/leotaku/.emacs.d/blob/aadd2f797184eab0dd3cb6ca80bda3c3ae2dc958/lisp/helpers.el#L68
-  (interactive)
-  (if (region-active-p)
-      (if (null rectangle-mark-mode)
-          (rectangle-mark-mode)
-        (deactivate-mark))
-    (set-mark-command nil)))
 
 
 ;;; Keybindings

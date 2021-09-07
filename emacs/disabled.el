@@ -1055,5 +1055,147 @@ buffer, and exiting the agenda and releasing all the buffers."
   (local-set-key (kbd "x") 'oht-org-agenda-exit-delete-window)
   (local-set-key (kbd "q") 'delete-window))
 
+;;; Startup Time Messages
+
+;; Preamble
+
+;; It is useful to know the impact of your init file on Emacs startup time so
+;; you can avoid introducing slowdowns. There are many ways to do it, but this
+;; is very simple and does the trick for me.
+
+(defvar before-user-init-time (current-time)
+  "Value of `current-time' when Emacs begins loading `user-init-file'.")
+
+(message "Loading Emacs, pre-init...done (%.3fs)"
+         (float-time (time-subtract before-user-init-time
+                                    before-init-time)))
+
+(message "Loading %s..." user-init-file)
+
+;; Wrap-up
+
+;; Restore garbage collection to a reasonable value.
+;; This is step 2, step 1 is in early-init.
+;; In my case this saves about .3 seconds in startup time.
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (setq gc-cons-threshold 16777216 ; 16mb
+          gc-cons-percentage 0.1)))
+
+(message "Loading init file...done (%.3fs)"
+         (float-time (time-subtract (current-time)
+                                    before-user-init-time)))
+
+;;; Hidden Mode Line
+
+(defvar-local hidden-mode-line-mode nil)
+
+(define-minor-mode hidden-mode-line-mode
+  "Minor mode to hide the mode-line in the current buffer."
+  :init-value nil
+  :global t
+  :variable hidden-mode-line-mode
+  :group 'editing-basics
+  (if hidden-mode-line-mode
+      (setq hide-mode-line mode-line-format
+            mode-line-format nil)
+    (setq mode-line-format hide-mode-line
+          hide-mode-line nil))
+  (force-mode-line-update)
+  ;; Apparently force-mode-line-update is not always enough to
+  ;; redisplay the mode-line
+  (redraw-display)
+  (when (and (called-interactively-p 'interactive)
+             hidden-mode-line-mode)
+    (run-with-idle-timer
+     0 nil 'message
+     (concat "Hidden Mode Line Mode enabled.  "
+             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
+
+(defalias 'hide-mode-line-mode 'hidden-mode-line-mode)
+
+
+;;; Dired Transients
+
+(with-eval-after-load 'dired
+  (transient-define-prefix dired-mode-help-transient ()
+    "Transient for dired commands"
+    ["Dired Mode"
+     ["Action"
+      ("RET" "Open file"            dired-find-file)
+      ("o" "  Open in other window" dired-find-file-other-window)
+      ("C-o" "Open in other window (No select)" dired-display-file)
+      ("v" "  Open file (View mode)"dired-view-file)
+      ("=" "  Diff"                 dired-diff)
+      ("w" "  Copy filename"        dired-copy-filename-as-kill)
+      ("W" "  Open in browser"      browse-url-of-dired-file)
+      ("y" "  Show file type"       dired-show-file-type)]
+     ["Attribute"
+      ("R"   "Rename"               dired-do-rename)
+      ("G"   "Group"                dired-do-chgrp)
+      ("M"   "Mode"                 dired-do-chmod)
+      ("O"   "Owner"                dired-do-chown)
+      ("T"   "Timestamp"            dired-do-touch)]
+     ["Navigation"
+      ("j" "  Goto file"            dired-goto-file)
+      ("+" "  Create directory"     dired-create-directory)
+      ("<" "  Jump prev directory"  dired-prev-dirline)
+      (">" "  Jump next directory"  dired-next-dirline)
+      ("^" "  Move up directory"    dired-up-directory)]
+     ["Display"
+      ("g" "  Refresh buffer"       revert-buffer)
+      ("l" "  Refresh file"         dired-do-redisplay)
+      ("k" "  Remove line"          dired-do-kill-lines)
+      ("s" "  Sort"                 dired-sort-toggle-or-edit)
+      ("(" "  Toggle detail info"   dired-hide-details-mode)
+      ("i" "  Insert subdir"        dired-maybe-insert-subdir)
+      ("$" "  Hide subdir"          dired-hide-subdir)
+      ("M-$" "Hide subdir all"      dired-hide-subdir)]
+     ["Extension"
+      ("e"   "wdired"               wdired-change-to-wdired-mode)
+      ("/"   "dired-filter"         ignore)
+      ("n"   "dired-narrow"         ignore)]]
+    [["Marks"
+      ("m" "Marks..." dired-mode-help-transient--marks)]])
+
+  (transient-define-prefix dired-mode-help-transient--marks ()
+    "Sub-transient for dired marks"
+    ["Dired Mode -> Marks"
+     ["Toggles"
+      ("mm"  "Mark"                 dired-mark)
+      ("mM"  "Mark all"             dired-mark-subdir-files)
+      ("mu"  "Unmark"               dired-unmark)
+      ("mU"  "Unmark all"           dired-unmark-all-marks)
+      ("mc"  "Change mark"          dired-change-marks)
+      ("mt"  "Toggle mark"          dired-toggle-marks)]
+     ["Type"
+      ("m*"  "Executables"          dired-mark-executables)
+      ("m/"  "Directories"          dired-mark-directories)
+      ("m@"  "Symlinks"             dired-mark-symlinks)
+      ("m&"  "Garbage files"        dired-flag-garbage-files)
+      ("m#"  "Auto save files"      dired-flag-auto-save-files)
+      ("m~"  "backup files"         dired-flag-backup-files)
+      ("m."  "Numerical backups"    dired-clean-directory)]
+     ["Search"
+      ("m%"  "Regexp"               dired-mark-files-regexp)
+      ("mg"  "Regexp file contents" dired-mark-files-containing-regexp)]]
+    [["Act on Marked"
+      ("x"   "Do action"            dired-do-flagged-delete)
+      ("C"   "Copy"                 dired-do-copy)
+      ("D"   "Delete"               dired-do-delete)
+      ("S"   "Symlink"              dired-do-symlink)
+      ("H"   "Hardlink"             dired-do-hardlink)
+      ("P"   "Print"                dired-do-print)
+      ("A"   "Find"                 dired-do-find-regexp)
+      ("Q"   "Replace"              dired-do-find-regexp-and-replace)
+      ("B"   "Elisp bytecompile"    dired-do-byte-compile)
+      ("L"   "Elisp load"           dired-do-load)
+      ("X"   "Shell command"        dired-do-shell-command)
+      ("Z"   "Compress"             dired-do-compress)
+      ("z"   "Compress to"          dired-do-compress-to)
+      ("!"   "Shell command"        dired-do-shell-command)
+      ("&"   "Async shell command"  dired-do-async-shell-command)]])
+  ) ; End dired config
+
 
 ;;; disabled.el ends here

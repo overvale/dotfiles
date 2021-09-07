@@ -171,6 +171,7 @@
   (put cmd 'disabled nil))
 
 (defun prog-mode-hook-config nil
+  (setq-local show-trailing-whitespace t)
   (setq-local comment-auto-fill-only-comments t)
   (auto-fill-mode))
 

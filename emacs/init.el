@@ -596,6 +596,7 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "s-B") 'consult-buffer-other-window)
   (define-key map (kbd "s-w") 'window-transient)
   (define-key map (kbd "s-k") 'org-capture)
+  (define-key map (kbd "s-a") 'org-agenda)
   (define-key map (kbd "s-f") 'find-file)
   (define-key map (kbd "s-F") 'find-file-other-window)
   (define-key map (kbd "M-.") 'embark-act)
@@ -1373,13 +1374,13 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
         org-agenda-start-with-log-mode t
         org-agenda-use-time-grid nil
         org-deadline-warning-days 7
-        org-agenda-todo-ignore-scheduled 'all
-        org-agenda-todo-ignore-deadlines 'near
-        ;; if you're using log-mode you don't need these 2:
-        org-agenda-skip-scheduled-if-done t
-        org-agenda-skip-deadline-if-done t
+        org-agenda-todo-ignore-scheduled nil
+        org-agenda-todo-ignore-deadlines nil
+        ;; ;; if you're using log-mode you don't need these 2:
+        ;; org-agenda-skip-scheduled-if-done t
+        ;; org-agenda-skip-deadline-if-done t
         org-agenda-skip-deadline-prewarning-if-scheduled t
-        org-agenda-sorting-strategy '(((agenda habit-down time-up category-up priority-down)
+        org-agenda-sorting-strategy '(((agenda habit-down time-up todo-state-up ccategory-up priority-down)
                                        (todo todo-state-up priority-down category-up)
                                        (tags priority-down category-keep)
                                        (search category-keep))))
@@ -1389,14 +1390,12 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org")
 
   (setq org-agenda-custom-commands
-        '(("1" "TODAY: Today's Agenda + Priority Tasks"
-           ((agenda "d" ((org-agenda-span 'day)))
-            (todo "TODO|DELG"
-                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))))))
-          ("0" "COMPLETE: Week Agenda + All Tasks"
-           ((agenda "w" ((org-agenda-span 'week)))
-            (todo "TODO|LATER"
-                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))))))))
+        '(("1" "Priority Tasks"
+           ((todo "TODO|DELG"
+                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                   (org-agenda-overriding-header "Active, not scheduled, Tasks: ")
+                   ))))))
 
   (setq org-todo-keywords
         '((sequence "TODO(t)" "DELG(g)" "LATER(l)" "|" "DONE(d)" "MOVED(m)" "CANCELED(c)")))
@@ -1411,14 +1410,14 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
            "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
           ;; -----------------------------
           ("s" "Scanline")
-          ("si" "Scanline Inbox" entry
+          ("si" "Scanline OPS Inbox" entry
            (file+headline ,(concat user-orgfiles-directory "scanline.org") "Inbox")
            "* %?\n\n" :empty-lines 1)
           ("sf" "Scanline FRANK Inbox" entry
-           (file+headline ,(concat user-orgfiles-directory "scanline.org") "FRANK Inbox")
+           (file+headline ,(concat user-orgfiles-directory "scanline_frank.org") "FRANK Inbox")
            "* %?\n\n" :empty-lines 1)
           ("sz" "Scanline ZERO Inbox" entry
-           (file+headline ,(concat user-orgfiles-directory "scanline.org") "ZERO Inbox")
+           (file+headline ,(concat user-orgfiles-directory "scanline_zero.org") "ZERO Inbox")
            "* %?\n\n" :empty-lines 1)
           ("sl" "Scanline Log Entry" entry
            (file+olp+datetree ,(concat user-orgfiles-directory "scanline_logbook.org"))
@@ -1431,26 +1430,11 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
            (file+olp+datetree ,(concat user-orgfiles-directory "kiddos_logbook.org"))
            "* %T\n\n%?" :empty-lines 1 :tree-type month )))
 
-  ;; Functions for directly calling agenda commands, skipping the prompt.
-  ;; Useful when paired with transient.
-  (defun oht-org-agenda-today () (interactive) (org-agenda nil "1"))
-  (defun oht-org-agenda-complete () (interactive) (org-agenda nil "0"))
-  (defun oht-org-agenda-agenda () (interactive) (org-agenda nil "a"))
-  (defun oht-org-agenda-todos () (interactive) (org-agenda nil "t"))
-
-  ;; Functions for directly setting todo status, skipping the prompt.
-  ;; Useful when paired with transient.
   (defun org-todo-set-todo () (interactive) (org-todo "TODO"))
-  (defun org-agenda-todo-set-todo () (interactive) (org-agenda-todo "TODO"))
   (defun org-todo-set-delegated () (interactive) (org-todo "DELG"))
-  (defun org-agenda-todo-set-delegated () (interactive) (org-agenda-todo "DELG"))
   (defun org-todo-set-later () (interactive) (org-todo "LATER"))
-  (defun org-agenda-todo-set-later () (interactive) (org-agenda-todo "LATER"))
   (defun org-todo-set-done () (interactive) (org-todo "DONE"))
-  (defun org-agenda-todo-set-done () (interactive) (org-agenda-todo "DONE"))
-  (defun org-agenda-todo-set-canceled () (interactive) (org-agenda-todo "CANCELED"))
   (defun org-todo-set-canceled () (interactive) (org-todo "CANCELED"))
-  (defun org-agenda-todo-set-moved () (interactive) (org-agenda-todo "MOVED"))
   (defun org-todo-set-moved () (interactive) (org-todo "MOVED"))
 
   (setq org-todo-map
@@ -1480,6 +1464,14 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 (add-hook 'org-agenda-mode-hook 'hl-line-mode)
 
 (with-eval-after-load 'org-agenda
+
+  (defun org-agenda-todo-set-todo () (interactive) (org-agenda-todo "TODO"))
+  (defun org-agenda-todo-set-delegated () (interactive) (org-agenda-todo "DELG"))
+  (defun org-agenda-todo-set-later () (interactive) (org-agenda-todo "LATER"))
+  (defun org-agenda-todo-set-done () (interactive) (org-agenda-todo "DONE"))
+  (defun org-agenda-todo-set-canceled () (interactive) (org-agenda-todo "CANCELED"))
+  (defun org-agenda-todo-set-moved () (interactive) (org-agenda-todo "MOVED"))
+
   (setq org-agenda-todo-map
     (let ((map (make-sparse-keymap "Org Agenda TODO")))
       (define-key map "t" '("TODO"     . org-agenda-todo-set-todo))
@@ -1491,6 +1483,7 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
       map))
 
   (define-key org-agenda-mode-map (kbd "S") 'org-agenda-schedule)
+  (define-key org-agenda-mode-map (kbd "D") 'org-agenda-deadline)
   (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))
 
@@ -1516,10 +1509,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 (transient-define-prefix general-transient--org ()
   "Transient for Org commands useful outside org mode."
   ["Org Mode"
-   ["Agenda Commands"
-    ("t" "Today" oht-org-agenda-today)
-    ("0" "Complete" oht-org-agenda-complete)
-    ("a" "Agenda..." org-agenda)]
    ["Find"
     ("d" "Find Org Dir" find-org-directory)
     ("D" "Find Org Files..." find-org-files)

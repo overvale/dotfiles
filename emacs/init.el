@@ -1310,7 +1310,8 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
         zoneinfo-style-world-list
         '(("America/Los_Angeles" "Los Angeles")
           ("America/Chicago" "Chicago")
-          ("America/Montreal" "Montreal"))))
+          ("America/Montreal" "Montreal")
+          ("Europe/London" "London"))))
 
 
 ;;; Org

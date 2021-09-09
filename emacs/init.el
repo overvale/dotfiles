@@ -527,6 +527,16 @@ With a prefix ARG always prompt for command to use."
   (interactive)
   (describe-symbol (symbol-at-point)))
 
+(defun pop-to-buffer-same-mode (&rest modes)
+  "Pop to a buffer with a mode among MODES, or the current one if not given."
+  ;; https://jao.io/blog/2021-09-08-high-signal-to-noise-emacs-command.html
+  (interactive)
+  (let* ((modes (or modes (list major-mode)))
+         (pred (lambda (b)
+                 (let ((b (get-buffer (if (consp b) (car b) b))))
+                   (member (buffer-local-value 'major-mode b) modes)))))
+    (pop-to-buffer (read-buffer "Buffer: " nil t pred))))
+
 
 ;;; Keybindings
 
@@ -679,6 +689,15 @@ Disables all current themes, then:
          (theme-color-toggle))))
 
 (add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
+
+(defun load-theme-cleanly (theme)
+  "Disable active themes, then load theme."
+  (interactive
+   (list (intern
+          (completing-read "Load Theme: "
+                           (mapcar 'symbol-name (custom-available-themes))))))
+  (disable-current-themes)
+  (load-theme theme t))
 
 (config-package 'modus-themes
   "Require, cofigure, and load modus-themes."

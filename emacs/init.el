@@ -1496,10 +1496,8 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   [["Actions/Toggles"
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
-    ("." "Repeat Command" repeat-complex-command)]
-   [""
-    ("k" "Kill Buffer" kill-buffer-dwim)
-    ("b" "Switch Buffer" switch-to-buffer)]
+    ("." "Repeat Command" repeat-complex-command)
+    ("k" "Kill Buffer" kill-buffer-dwim)]
    ["Transients"
     ("o" "Org..." general-transient--org)
     ("c" "Consult..." general-transient--consult)]

@@ -207,17 +207,9 @@
 
 ;;; Critical Setup
 
-;; Start in my home directory
 (cd "~/home/")
-
-;; These variables, packages, macros, and functions are used throughout the
-;; config --- and are required for it to work correctly.
-
-(defvar user-dotemacs-directory  "~/home/dot/emacs/")
-(defvar user-orgfiles-directory  "~/home/org/")
-(defvar user-downloads-directory "~/Downloads/")
-
-(add-to-list 'load-path (concat user-dotemacs-directory "lisp/"))
+(setq org-directory "~/home/org/")
+(add-to-list 'load-path "~/home/dot/emacs/lisp/")
 
 ;; vundo creates a tree-like visualization of your undo history
 ;; using only standard Emacs undo commands and data. Requires either
@@ -1320,16 +1312,16 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   "Find org files in your org directory, pass to completing-read."
   (interactive)
   (find-file (completing-read "Find Org Files: "
-                              (directory-files-recursively user-orgfiles-directory "\.org$"))))
+                              (directory-files-recursively org-directory "\.org$"))))
 
 (defun find-org-directory ()
   "Open org directory in dired."
   (interactive)
-  (find-file user-orgfiles-directory))
+  (find-file org-directory))
 
 (defun consult-grep-orgfiles ()
   (interactive)
-  (consult-grep user-orgfiles-directory))
+  (consult-grep org-directory))
 
 (autoload 'org-export-dispatch "org")
 
@@ -1393,31 +1385,28 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   (setq org-capture-templates
         `(("p" "Personal")
           ("pi" "Personal Inbox" entry
-           (file+headline ,(concat user-orgfiles-directory "life.org") "Inbox")
+           (file+headline ,(concat org-directory "life.org") "Inbox")
            "* %?\n\n" :empty-lines 1)
           ("pl" "Personal Log Entry" entry
-           (file+olp+datetree ,(concat user-orgfiles-directory "logbook.org"))
+           (file+olp+datetree ,(concat org-directory "logbook.org"))
            "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
           ;; -----------------------------
           ("s" "Scanline")
           ("si" "Scanline OPS Inbox" entry
-           (file+headline ,(concat user-orgfiles-directory "scanline.org") "Inbox")
+           (file+headline ,(concat org-directory "scanline.org") "Inbox")
            "* %?\n\n" :empty-lines 1)
           ("sf" "Scanline FRANK Inbox" entry
-           (file+headline ,(concat user-orgfiles-directory "scanline_frank.org") "FRANK Inbox")
-           "* %?\n\n" :empty-lines 1)
-          ("sz" "Scanline ZERO Inbox" entry
-           (file+headline ,(concat user-orgfiles-directory "scanline_zero.org") "ZERO Inbox")
+           (file+headline ,(concat org-directory "scanline_frank.org") "FRANK Inbox")
            "* %?\n\n" :empty-lines 1)
           ("sl" "Scanline Log Entry" entry
-           (file+olp+datetree ,(concat user-orgfiles-directory "scanline_logbook.org"))
+           (file+olp+datetree ,(concat org-directory "scanline_logbook.org"))
            "* %?\n%T\n\n" :empty-lines 1 :tree-type week )
           ;; -----------------------------
           ("e" "Emacs Config" entry
-           (file+headline ,(concat user-orgfiles-directory "emacs.org") "Emacs Config")
+           (file+headline ,(concat org-directory "emacs.org") "Emacs Config")
            "* TODO %?" :empty-lines 1)
           ("k" "Kiddos Log Entry" entry
-           (file+olp+datetree ,(concat user-orgfiles-directory "kiddos_logbook.org"))
+           (file+olp+datetree ,(concat org-directory "kiddos_logbook.org"))
            "* %T\n\n%?" :empty-lines 1 :tree-type month )))
 
   (defun org-todo-set-todo () (interactive) (org-todo "TODO"))

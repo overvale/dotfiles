@@ -1331,75 +1331,64 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   (interactive)
   (consult-grep user-orgfiles-directory))
 
-(autoload 'oht-org-agenda-today-pop-up "org")
-(autoload 'oht-org-agenda-today "org")
-(autoload 'consult-grep-orgfiles "org")
-(autoload 'find-org-directory "org")
 (autoload 'org-export-dispatch "org")
 
 (with-eval-after-load 'org
 
   (custom-set-variables
    '(org-list-allow-alphabetical t)
-   '(org-enforce-todo-dependencies t)
-   '(org-enforce-todo-checkbox-dependencies t)
    '(org-log-done 'time)
-   '(org-log-into-drawer t))
+   '(org-log-into-drawer t)
+   '(org-special-ctrl-a/e t)
+   '(org-special-ctrl-k t)
+   '(org-return-follows-link t)
+   '(org-adapt-indentation nil)
+   '(org-catch-invisible-edits 'show-and-error)
+   '(org-outline-path-complete-in-steps nil)
+   '(org-refile-targets '((org-agenda-files :maxlevel . 2)))
+   '(org-startup-with-inline-images t)
+   '(org-image-actual-width '(600))
+   '(org-hide-emphasis-markers t)
+   '(org-ellipsis "...")
+   '(org-insert-heading-respect-content t)
+   '(org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+")))
+   '(org-list-indent-offset 2)
+   ;; src blocks
+   '(org-src-fontify-natively t)
+   '(org-fontify-quote-and-verse-blocks t)
+   '(org-src-tab-acts-natively t)
+   '(org-edit-src-content-indentation 0)
+   ;; Agenda Settings
+   '(org-agenda-window-setup 'current-window)
+   '(org-agenda-restore-windows-after-quit t)
+   '(org-agenda-start-with-log-mode t)
+   '(org-agenda-log-mode-items '(closed clock state))
+   '(org-agenda-use-time-grid nil)
+   '(org-deadline-warning-days 7)
+   '(org-agenda-todo-ignore-scheduled nil)
+   '(org-agenda-todo-ignore-deadlines nil)
+   '(org-agenda-skip-deadline-if-done t)
+   '(org-agenda-skip-deadline-prewarning-if-scheduled t))
 
-  (setq org-special-ctrl-a/e t
-        org-special-ctrl-k t
-        org-return-follows-link t
-        org-adapt-indentation nil
-        org-catch-invisible-edits 'show-and-error
-        org-outline-path-complete-in-steps nil
-        org-refile-targets '((org-agenda-files :maxlevel . 2))
-        org-startup-with-inline-images t
-        org-image-actual-width '(600)
-        org-hide-emphasis-markers t
-        org-ellipsis "..."
-        org-insert-heading-respect-content t
-        org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+"))
-        org-list-indent-offset 2)
+  (setq org-agenda-files (list org-directory))
+  (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org")
 
-  ;; src blocks
-  (setq org-src-fontify-natively t
-        org-fontify-quote-and-verse-blocks t
-        org-src-tab-acts-natively t
-        org-edit-src-content-indentation 0)
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
-
-  ;; Agenda Settings
-  (setq org-agenda-window-setup 'current-window
-        org-agenda-restore-windows-after-quit t
-        org-agenda-start-with-log-mode t
-        org-agenda-use-time-grid nil
-        org-deadline-warning-days 7
-        org-agenda-todo-ignore-scheduled nil
-        org-agenda-todo-ignore-deadlines nil
-        ;; ;; if you're using log-mode you don't need these 2:
-        ;; org-agenda-skip-scheduled-if-done t
-        ;; org-agenda-skip-deadline-if-done t
-        org-agenda-skip-deadline-prewarning-if-scheduled t
-        org-agenda-sorting-strategy '(((agenda habit-down time-up todo-state-up ccategory-up priority-down)
-                                       (todo todo-state-up priority-down category-up)
-                                       (tags priority-down category-keep)
-                                       (search category-keep))))
-
-  (setq org-agenda-files (list user-orgfiles-directory))
-
-  (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org")
 
   (setq org-agenda-custom-commands
         '(("1" "Priority Tasks"
            ((todo "TODO|DELG"
                   ((org-agenda-sorting-strategy '(todo-state-up priority-down))
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-                   (org-agenda-overriding-header "Active, not scheduled, Tasks: ")
-                   ))))))
+                   (org-agenda-overriding-header "Active, not scheduled, Tasks: ")))))))
 
   (setq org-todo-keywords
         '((sequence "TODO(t)" "DELG(g)" "LATER(l)" "|" "DONE(d)" "MOVED(m)" "CANCELED(c)")))
+
+  (setq org-todo-keyword-faces
+        '(("DELG" . org-scheduled-previously)
+          ("LATER" . org-scheduled-previously)))
 
   (setq org-capture-templates
         `(("p" "Personal")
@@ -1460,6 +1449,11 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 
   (add-hook 'org-mode-hook #'echo-area-tooltips)
 
+  (defun org-toggle-checkbox-presence ()
+    (interactive)
+    (let ((current-prefix-arg '(4)))
+      (call-interactively 'org-toggle-checkbox)))
+
   ) ; End org config
 
 (add-hook 'org-agenda-mode-hook 'hl-line-mode)
@@ -1508,14 +1502,12 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 (transient-define-prefix general-transient--org ()
   "Transient for Org commands useful outside org mode."
   ["Org Mode"
-   ["Find"
-    ("d" "Find Org Dir" find-org-directory)
-    ("D" "Find Org Files..." find-org-files)
-    ("f" "Find Org Heading" consult-org-agenda)
-    ("g" "Grep Org Files" consult-grep-orgfiles)]
-   ["Other"
-    ("s" "Store Link" org-store-link)
-    ]])
+   [("s" "Store Link" org-store-link)
+    ("g" "Go to Last Capture" org-capture-goto-last-stored)]
+   [("D" "Find Org Dir" find-org-directory)
+    ("F" "Find Org Files..." find-org-files)
+    ("H" "Find Org Heading" consult-org-agenda)
+    ("G" "Grep Org Files" consult-grep-orgfiles)]])
 
 (transient-define-prefix general-transient--consult ()
   ["Consult"
@@ -1570,19 +1562,18 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
      ["Navigation"
       ("o" "Outline" consult-org-heading)
       ("f" "Find Heading" consult-org-agenda)
+      ("c" "Go To Calendar" org-goto-calendar)
       ("n" "Narrow/Widen" narrow-or-widen-dwim)
-      ("m" "Visible Markup" visible-mode)]
+      ("v" "Visible Markup" visible-mode)]
      ["Item"
-      ("t" "TODO" org-todo-set-todo)
-      ("T" "Set Tags" org-set-tags-command)
-      ("I" "Clock In" org-clock-in)
-      ("O" "Clock Out" org-clock-out)
+      (":" "Set Tags" org-set-tags-command)
       ("a" "Archive Subtree" org-archive-subtree)
       ("r" "Refile" org-refile)
-      ("c" "Checkbox" org-toggle-checkbox)]
+      ("x" "Checkbox State" org-toggle-checkbox)
+      ("X" "Checkbox Presence" org-toggle-checkbox-presence)]
      ["Insert"
-      ("." "Insert Date, Active" org-insert-date-today)
-      (">" "Insert Date, Inactive" org-insert-date-today-inactive)
+      ("." "Insert Date, Active" org-time-stamp)
+      ("!" "Insert Date, Inactive" org-time-stamp-inactive)
       ("<" "Structure Template" org-insert-structure-template)]
      ["Links"
       ("s" "Store Link" org-store-link)

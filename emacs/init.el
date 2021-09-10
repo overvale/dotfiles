@@ -1445,6 +1445,20 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 
 (add-hook 'org-agenda-mode-hook 'hl-line-mode)
 
+(defun org-calendar-capture (&optional with-time)
+  "Call `org-capture' with the date at point.
+With a `C-1' prefix, use the HH:MM value at point, if any, or the
+current HH:MM time."
+  (interactive "P")
+  (if (not (eq major-mode 'calendar-mode))
+      (user-error "You cannot do this outside of calendar buffers")
+    (progn
+      (require 'org)
+      (let ((org-overriding-default-time
+	         (org-get-cursor-date (equal with-time 1))))
+        (delete-window)
+        (call-interactively 'org-capture)))))
+
 (with-eval-after-load 'org-agenda
 
   (defun org-agenda-todo-set-todo () (interactive) (org-agenda-todo "TODO"))
@@ -1468,6 +1482,9 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   (define-key org-agenda-mode-map (kbd "D") 'org-agenda-deadline)
   (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
   (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))
+
+(with-eval-after-load 'calendar
+  (define-key calendar-mode-map "k" 'org-calendar-capture))
 
 
 ;;; Transient

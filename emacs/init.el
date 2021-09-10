@@ -269,9 +269,9 @@ it marks the next ARG lines after the ones already marked."
 
 (defalias 'mark-sentence 'mark-end-of-sentence)
 
-(defun toggle-window-split ()
+(defun rotate-window-split ()
   ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/window-extras.el
-  "Toggle window split from vertical to horizontal."
+  "Rotate window split from vertical to horizontal."
   (interactive)
   (if (> (length (window-list)) 2)
       (error "Can't toggle with more than 2 windows.")
@@ -284,8 +284,8 @@ it marks the next ARG lines after the ones already marked."
         (other-window 1)
         (switch-to-buffer (other-buffer))))))
 
-(defun rotate-windows (count)
-  "Rotate your windows.
+(defun swap-windows (count)
+  "Swap your windows.
 Dedicated windows are left untouched. Giving a negative prefix
 argument makes the windows rotate backwards."
   (interactive "p")
@@ -580,10 +580,8 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "s-S-<return>") 'call-mode-help-transient)
   (define-key map (kbd "s-]") 'next-buffer)
   (define-key map (kbd "s-[") 'previous-buffer)
-  (define-key map (kbd "s-=") 'ibuffer)
   (define-key map (kbd "s-{") 'pop-to-mark-command)
   (define-key map (kbd "s-}") 'unpop-to-mark-command)
-  (define-key map (kbd "s-+") 'consult-mark)
   (define-key map (kbd "s-b") 'consult-buffer)
   (define-key map (kbd "s-B") 'consult-buffer-other-window)
   (define-key map (kbd "s-w") 'window-transient)
@@ -809,12 +807,12 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
   "Most commonly used window commands"
   [["Splits"
     ("s" "Split Sensibly" split-window-dwim)
-    ("H" "Split Horizontal" split-window-below)
-    ("V" "Split Vertical"   split-window-right)
+    ("h" "Split Horizontal" split-window-below)
+    ("v" "Split Vertical"   split-window-right)
     ("b" "Balance"    balance-windows)
     ("f" "Fit"        fit-window-to-buffer)
-    ("r" "Rotate"     toggle-window-split)
-    ("R" "Swap"       rotate-windows)]
+    ("r" "Rotate Split" rotate-window-split)
+    ("R" "Swap Windows" swap-windows)]
    ["Window"
     ;; TODO: https://www.gnu.org/software/emacs/manual/html_node/emacs/Configuration-Registers.html
     ("d" "Dedicate Window" dedicated-mode)
@@ -1480,13 +1478,19 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
     ("." "Repeat Command" repeat-complex-command)
-    ("k" "Kill Buffer" kill-buffer-dwim)]
+    ("k" "Kill Buffer" kill-buffer-dwim)
+    ("b" "iBuffer" ibuffer)
+    ("p" "Pop to Mode" pop-to-buffer-same-mode)]
    ["Transients"
     ("o" "Org..." general-transient--org)
-    ("c" "Consult..." general-transient--consult)]
-   [""
+    ("c" "Consult..." general-transient--consult)
     ("2" "Secondary..." secondary-selection-transient)
-    ("s" "Spelling..." flyspell-mode-transient)]])
+    ("S" "Spelling..." flyspell-mode-transient)]
+   ["Other"
+    ("t" "Load Theme" load-theme-cleanly)
+    ("w" "World Clock" world-clock)
+    ("s o" "*scratch-org*" scratch-buffer-org)
+    ("s m" "*scratch-markdown*" scratch-buffer-markdown)]])
 
 (transient-define-prefix general-transient--org ()
   "Transient for Org commands useful outside org mode."

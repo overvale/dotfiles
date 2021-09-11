@@ -1332,7 +1332,7 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
    '(org-special-ctrl-a/e t)
    '(org-special-ctrl-k t)
    '(org-return-follows-link t)
-   '(org-adapt-indentation nil)
+   '(org-adapt-indentation t)
    '(org-catch-invisible-edits 'show-and-error)
    '(org-outline-path-complete-in-steps nil)
    '(org-refile-targets '((org-agenda-files :maxlevel . 2)))
@@ -1351,6 +1351,7 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
    ;; Agenda Settings
    '(org-agenda-window-setup 'current-window)
    '(org-agenda-restore-windows-after-quit t)
+   '(org-agenda-span 'day)
    '(org-agenda-start-with-log-mode t)
    '(org-agenda-log-mode-items '(closed clock state))
    '(org-agenda-use-time-grid nil)
@@ -1371,6 +1372,12 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
            ((todo "TODO|DELG"
                   ((org-agenda-sorting-strategy '(todo-state-up priority-down))
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                   (org-agenda-overriding-header "Active, not scheduled, Tasks: ")))))
+          ("!" "Today + Priority Tasks"
+           ((agenda 'day)
+            (todo "TODO|DELG"
+                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
                    (org-agenda-overriding-header "Active, not scheduled, Tasks: ")))))))
 
   (setq org-todo-keywords

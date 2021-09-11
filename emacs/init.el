@@ -746,9 +746,23 @@ and I want the mode-line to be a fixed height, so I set those."
 
 (setq display-time-default-load-average nil)
 (setq display-time-format "  [%F]  %R")
-(display-time-mode)
 (setq battery-mode-line-format "  %b%p%%")
-(display-battery-mode)
+
+(defvar date-time-battery nil
+  "Used by `toggle-date-time-battery' for displaying date, time, battery, in mode-line.")
+
+(defun toggle-date-time-battery nil
+  "Toggle `display-time-mode' & `display-battery-mode' based on `date-time-battery'."
+  (interactive)
+  (if (eq date-time-battery nil)
+      (progn
+        (setq date-time-battery t)
+        (display-time-mode 1)
+        (display-battery-mode 1))
+    (progn
+      (setq date-time-battery nil)
+      (display-time-mode -1)
+      (display-battery-mode -1))))
 
 (delight 'eldoc-mode nil "eldoc")
 (delight 'emacs-lisp-mode "Elisp" "elisp-mode")
@@ -1512,6 +1526,7 @@ current HH:MM time."
     ("S" "Spelling..." flyspell-mode-transient)]
    ["Other"
     ("t" "Load Theme" load-theme-cleanly)
+    ("d" "Date/Time mode-line" toggle-date-time-battery)
     ("w" "World Clock" world-clock)
     ("s o" "*scratch-org*" scratch-buffer-org)
     ("s m" "*scratch-markdown*" scratch-buffer-markdown)]])

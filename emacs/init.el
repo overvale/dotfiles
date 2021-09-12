@@ -70,6 +70,7 @@
       '(bicycle
         consult
         delight
+        elfeed
         embark
         embark-consult
         exec-path-from-shell
@@ -88,6 +89,7 @@
         vertico
         visual-regexp
         visual-regexp-steroids
+        ytdl
         transient))
 
 (setq package-pinned-packages
@@ -209,6 +211,7 @@
 
 (cd "~/home/")
 (setq org-directory "~/home/org/")
+(defvar user-downloads-directory "~/Downloads/")
 (add-to-list 'load-path "~/home/dot/emacs/lisp/")
 
 ;; vundo creates a tree-like visualization of your undo history
@@ -219,6 +222,9 @@
 (require 'vundo)
 
 (autoload 'transient-define-prefix "transient" nil t)
+(setq transient-show-popup 1)
+(setq transient-detect-key-conflicts t)
+
 (exec-path-from-shell-initialize)
 
 ;; I use 3 macros to control how/when code and packages are loaded. I don't
@@ -1225,6 +1231,7 @@ only present in the most recent versions."
     (define-key map (kbd "j") 'dired-jump))
 
   (let ((map embark-url-map))
+    (define-key map (kbd "d") 'ytdl-download)
     (define-key map (kbd "b") 'browse-url-default-macosx-browser)))
 
 (elisp-group isearch-config
@@ -1306,6 +1313,12 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   nil
   (custom-set-variables
    '(olivetti-body-width 86)))
+
+(config-package 'ytdl
+  "YouTube Download"
+  (setq ytdl-download-folder user-downloads-directory)
+  (setq ytdl-media-player "open")
+  (setq ytdl-always-query-default-filename 'yes-confirm))
 
 (elisp-group world-clock
   "Emacs has a world clock!"
@@ -1641,5 +1654,91 @@ current HH:MM time."
       (">" "Final Node" Info-final-node)
       ("[" "Forward Node" Info-backward-node)
       ("]" "Backward Node" Info-forward-node)]]))
+
+;;; Elfeed
+
+(add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
+(add-hook 'elfeed-show-mode-hook   'disable-selected-minor-mode)
+
+(setq shr-max-image-proportion 0.5
+      shr-width 80
+      shr-bullet "• ")
+
+(with-eval-after-load 'elfeed
+
+  (custom-set-variables
+   '(elfeed-use-curl t)
+   '(elfeed-db-directory (concat user-emacs-directory "elfeed/"))
+   '(elfeed-enclosure-default-dir user-downloads-directory))
+
+  (load "~/home/src/lisp/rss-feeds.el")
+
+  ;; Why doesn't this exist in show mode?
+  (defalias 'elfeed-show-tag--unread (elfeed-expose #'elfeed-show-tag 'unread)
+    "Mark the current entry unread.")
+  (defalias 'elfeed-show-tag--read (elfeed-expose #'elfeed-show-untag 'unread)
+    "Mark the current entry read.")
+
+  ;; Stars in search mode
+  (defalias 'elfeed-search-tag--star (elfeed-expose #'elfeed-search-tag-all 'star)
+    "Add the 'star' tag to all selected entries")
+  (defalias 'elfeed-search-untag--star (elfeed-expose #'elfeed-search-untag-all 'star)
+    "Remove the 'star' tag to all selected entries")
+
+  ;; Stars in show mode
+  (defalias 'elfeed-show-tag--star (elfeed-expose #'elfeed-show-tag 'star)
+    "Add the 'star' tag to current entry")
+  (defalias 'elfeed-show-tag--unstar (elfeed-expose #'elfeed-show-untag 'star)
+    "Remove the 'star' tag to current entry")
+
+  (defun elfeed-search:emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
+  (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs"))
+  (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
+
+  (defun elfeed-search-browse-url-background ()
+    "Visit the current entry, or region entries, in browser without losing focus."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (mapc (lambda (entry)
+              (browse-url-macos-background (elfeed-entry-link entry))
+              (elfeed-untag entry 'unread)
+              (elfeed-search-update-entry entry))
+            entries)
+      (unless (or elfeed-search-remain-on-entry (use-region-p))
+        (forward-line))))
+
+  ;; TODO narrow to feed at point (below does not work):
+  ;; (elfeed-feed-id (elfeed-search-selected t))
+
+  (defun elfeed-show-visit-background ()
+    "Visit the current entry in your browser using `browse-url'.
+If there is a prefix argument, visit the current entry in the
+browser defined by `browse-url-generic-program'."
+    (interactive)
+    (let ((link (elfeed-entry-link elfeed-show-entry)))
+      (when link
+        (message "Sent to browser: %s" link)
+        (browse-url-macos-background link))))
+
+  (let ((map elfeed-search-mode-map))
+    (define-key map (kbd "b") 'elfeed-search-browse-url-background)
+    (define-key map (kbd "*") 'elfeed-search-tag--star)
+    (define-key map (kbd "8") 'elfeed-search-untag--star)
+    (define-key map (kbd "o") 'delete-other-windows)
+    (define-key map (kbd "E") 'elfeed-search:emacs)
+    (define-key map (kbd "O") 'elfeed-search:other)
+    (define-key map (kbd "S") 'elfeed-search:star))
+
+  (let ((map elfeed-show-mode-map))
+    (define-key map (kbd "r") 'elfeed-show-tag--read)
+    (define-key map (kbd "u") 'elfeed-show-tag--unread)
+    (define-key map (kbd "*") 'elfeed-show-tag--star)
+    (define-key map (kbd "8") 'elfeed-show-tag--unstar)
+    (define-key map (kbd "b") 'elfeed-show-visit-background)
+    (define-key map (kbd "o") 'delete-other-windows)
+    (define-key map (kbd "d") 'ytdl-download))
+
+  ) ; End elfeed
+
 
 ;;; End of init.el

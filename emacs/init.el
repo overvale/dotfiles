@@ -70,12 +70,12 @@
       '(bicycle
         consult
         delight
+        doom-themes
         elfeed
         embark
         embark-consult
         exec-path-from-shell
         fountain-mode
-        gruvbox-theme
         isearch-mb
         lua-mode
         magit
@@ -713,7 +713,7 @@ Disables all current themes, then:
   (modus-themes-load-themes))
 
 (setq light-theme 'modus-operandi)
-(setq dark-theme  'gruvbox)
+(setq dark-theme  'doom-one)
 (setq default-theme-color 'light)
 
 (elisp-group set-theme-on-startup

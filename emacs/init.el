@@ -1336,6 +1336,10 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   (consult-grep org-directory))
 
 (autoload 'org-export-dispatch "org")
+(autoload 'org-store-link "org")
+
+
+;;;; Org Configuration
 
 (with-eval-after-load 'org
 
@@ -1353,6 +1357,7 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
    '(org-startup-with-inline-images t)
    '(org-image-actual-width '(600))
    '(org-hide-emphasis-markers t)
+   '(org-hide-leading-stars t)
    '(org-ellipsis "...")
    '(org-insert-heading-respect-content t)
    '(org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+")))
@@ -1380,19 +1385,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
-
-  (setq org-agenda-custom-commands
-        '(("1" "Priority Tasks"
-           ((todo "TODO|DELG"
-                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-                   (org-agenda-overriding-header "Active, not scheduled, Tasks: ")))))
-          ("!" "Today + Priority Tasks"
-           ((agenda 'day)
-            (todo "TODO|DELG"
-                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
-                   (org-agenda-overriding-header "Active, not scheduled, Tasks: ")))))))
 
   (setq org-todo-keywords
         '((sequence "TODO(t)" "DELG(g)" "LATER(l)" "|" "DONE(d)" "MOVED(m)" "CANCELED(c)")))
@@ -1428,26 +1420,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
            (file+olp+datetree ,(concat org-directory "kiddos_logbook.org"))
            "* %T\n\n%?" :empty-lines 1 :tree-type month )))
 
-  (defun org-todo-set-todo () (interactive) (org-todo "TODO"))
-  (defun org-todo-set-delegated () (interactive) (org-todo "DELG"))
-  (defun org-todo-set-later () (interactive) (org-todo "LATER"))
-  (defun org-todo-set-done () (interactive) (org-todo "DONE"))
-  (defun org-todo-set-canceled () (interactive) (org-todo "CANCELED"))
-  (defun org-todo-set-moved () (interactive) (org-todo "MOVED"))
-
-  (setq org-todo-map
-        (let ((map (make-sparse-keymap "Org TODO")))
-          (define-key map "t" '("TODO"     . org-todo-set-todo))
-          (define-key map "g" '("DELG"     . org-todo-set-delegated))
-          (define-key map "l" '("LATER"    . org-todo-set-later))
-          (define-key map "d" '("DONE"     . org-todo-set-done))
-          (define-key map "m" '("MOVED"    . org-todo-set-moved))
-          (define-key map "c" '("CANCELED" . org-todo-set-canceled))
-          map))
-
-  ;; replace the regular binding with the above map
-  (define-key org-mode-map (kbd "C-c C-t") org-todo-map)
-
   (defun echo-area-tooltips ()
     "Show tooltips in the echo area automatically for current buffer."
     (setq-local help-at-pt-display-when-idle t
@@ -1464,7 +1436,31 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 
   ) ; End org config
 
+
+;;;; Org Agenda
+
 (add-hook 'org-agenda-mode-hook 'hl-line-mode)
+
+(with-eval-after-load 'org-agenda
+  (setq org-agenda-custom-commands
+        '(("1" "Priority Tasks"
+           ((todo "TODO|DELG"
+                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                   (org-agenda-overriding-header "Active, not scheduled, Tasks: ")))))
+          ("!" "Today + Priority Tasks"
+           ((agenda 'day)
+            (todo "TODO|DELG"
+                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
+                   (org-agenda-overriding-header "Active, not scheduled, Tasks: ")))))))
+
+  (define-key org-agenda-mode-map (kbd "S") 'org-agenda-schedule)
+  (define-key org-agenda-mode-map (kbd "D") 'org-agenda-deadline)
+  (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo))
+
+
+;;;; Calendar <--> Org Integration
 
 (defun org-calendar-capture (&optional with-time)
   "Call `org-capture' with the date at point.
@@ -1480,32 +1476,44 @@ current HH:MM time."
         (delete-window)
         (call-interactively 'org-capture)))))
 
-(with-eval-after-load 'org-agenda
-
-  (defun org-agenda-todo-set-todo () (interactive) (org-agenda-todo "TODO"))
-  (defun org-agenda-todo-set-delegated () (interactive) (org-agenda-todo "DELG"))
-  (defun org-agenda-todo-set-later () (interactive) (org-agenda-todo "LATER"))
-  (defun org-agenda-todo-set-done () (interactive) (org-agenda-todo "DONE"))
-  (defun org-agenda-todo-set-canceled () (interactive) (org-agenda-todo "CANCELED"))
-  (defun org-agenda-todo-set-moved () (interactive) (org-agenda-todo "MOVED"))
-
-  (setq org-agenda-todo-map
-    (let ((map (make-sparse-keymap "Org Agenda TODO")))
-      (define-key map "t" '("TODO"     . org-agenda-todo-set-todo))
-      (define-key map "g" '("DELG"     . org-agenda-todo-set-delegated))
-      (define-key map "l" '("LATER"    . org-agenda-todo-set-later))
-      (define-key map "d" '("DONE"     . org-agenda-todo-set-done))
-      (define-key map "m" '("MOVED"    . org-agenda-todo-set-moved))
-      (define-key map "c" '("CANCELED" . org-agenda-todo-set-canceled))
-      map))
-
-  (define-key org-agenda-mode-map (kbd "S") 'org-agenda-schedule)
-  (define-key org-agenda-mode-map (kbd "D") 'org-agenda-deadline)
-  (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo)
-  (define-key org-agenda-mode-map (kbd "t") org-agenda-todo-map))
-
 (with-eval-after-load 'calendar
   (define-key calendar-mode-map "k" 'org-calendar-capture))
+
+
+;;;; Fixing `org-todo' and `org-agenda-todo'
+
+;; Org has an absolutely infuriating habit of destroying window layouts to
+;; display the various pop-up windows used to control Org. These two
+;; transients help me retain a small dose of my sanity. I really wish this
+;; wasn't necessary.
+;; Also see: https://emacs.stackexchange.com/a/14818
+
+(define-transient-command org-todo-transient ()
+  [["Org TODO Status"
+    ("t" "TODO"     (lambda () (interactive) (org-todo "TODO")))
+    ("g" "DELG"     (lambda () (interactive) (org-todo "DELG")))
+    ("l" "LATER"    (lambda () (interactive) (org-todo "LATER")))
+    ("d" "DONE"     (lambda () (interactive) (org-todo "DONE")))
+    ("c" "CANCELED" (lambda () (interactive) (org-todo "CANCELED")))
+    ("m" "MOVED"    (lambda () (interactive) (org-todo "MOVED")))
+    ]])
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c C-t") 'org-todo-transient))
+
+
+(define-transient-command org-agenda-todo-transient ()
+  [["Org TODO Status"
+    ("t" "TODO"     (lambda () (interactive) (org-agenda-todo "TODO")))
+    ("g" "DELG"     (lambda () (interactive) (org-agenda-todo "DELG")))
+    ("l" "LATER"    (lambda () (interactive) (org-agenda-todo "LATER")))
+    ("d" "DONE"     (lambda () (interactive) (org-agenda-todo "DONE")))
+    ("c" "CANCELED" (lambda () (interactive) (org-agenda-todo "CANCELED")))
+    ("m" "MOVED"    (lambda () (interactive) (org-agenda-todo "MOVED")))
+    ]])
+
+(with-eval-after-load 'org-agenda
+  (define-key org-agenda-mode-map (kbd "t") 'org-agenda-todo-transient))
 
 
 ;;; Transient

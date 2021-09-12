@@ -1289,7 +1289,7 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
   (add-to-list 'auto-mode-alist
                '("\\.text" . markdown-mode)))
 
-(config-package 'oblique
+(elisp-group 'oblique
   "Config for oblique package"
   (add-to-list 'load-path "~/home/src/lisp/oblique-strategies/")
   (autoload 'oblique-strategy "oblique")

@@ -649,6 +649,11 @@ Keybindings you define here will take precedence."
   "Return t if macOS appearance is dark."
    (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
 
+(defun macos-toggle-system-appearance nil
+  "Toggle macOS's system appearance between dark and light modes."
+  (interactive)
+  (shell-command-to-string "osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"))
+
 (defun theme-color-toggle nil
   "Toggle between `light-theme' and `dark-theme'."
   (interactive)
@@ -1546,6 +1551,7 @@ current HH:MM time."
     ("2" "Secondary..." secondary-selection-transient)
     ("S" "Spelling..." flyspell-mode-transient)]
    ["Other"
+    ("T" "Toggle macOS Apperance" macos-toggle-system-appearance)
     ("t" "Load Theme" load-theme-cleanly)
     ("d" "Date/Time mode-line" toggle-date-time-battery)
     ("w" "World Clock" world-clock)

@@ -553,9 +553,21 @@ With a prefix ARG always prompt for command to use."
 
 ;;; Keybindings
 
-;; Minor modes override global bindings, so any bindings you don't want
-;; overridden should be placed in a minor mode. I stole this technique from
-;; the `bind-key' package.
+;; Emacs Keymap Lookup Order:
+;; 1. overriding-terminal-local-map
+;; 2. overriding-local-map
+;; 3. text property's 'keymap property
+;; 4. emulation-mode-map-alists
+;; 5. minor-mode-overriding-map-alist
+;; 6. minor-mode-map-alist (Minor Mode)
+;; 7. text property's 'local-map property
+;; 8. (current-local-map) (Major Mode)
+;; 9. (current-global-map) (Global Map)
+
+;; The technique below is taken from the bind-key package. It places all the
+;; bindings I don't want overridden into a minor mode which is inserted into
+;; the `emulation-mode-map-alists' (number 4 on the list above), so only very
+;; few things can override them.
 
 (defvar bosskey-mode-map (make-sparse-keymap))
 
@@ -720,7 +732,7 @@ Disables all current themes, then:
   (load-theme theme t))
 
 (config-package 'modus-themes
-  "Require, cofigure, and load modus-themes."
+  "Require and cofigure the modus-themes."
   (require 'modus-themes)
   (custom-set-variables
    '(modus-themes-italic-constructs t)
@@ -814,14 +826,14 @@ and I want the mode-line to be a fixed height, so I set those."
 ;; below code makes it so the default window is always the current one. The
 ;; advantage of this is that your window layouts are never changed for you.
 ;; https://github.com/nex3/perspective-el#some-musings-on-emacs-window-layouts
-
 (customize-set-variable 'display-buffer-base-action
                         '((display-buffer-reuse-window display-buffer-same-window)
                           (reusable-frames . t)))
 
 ;; Since the default is to always reuse the same window, you need to declare
 ;; any exceptions to that. Though there are some windows that do their own
-;; thing anyway; *Completions*, *Org Select*.
+;; thing anyway, *Completions*, for example. Also, Org Mode seems to do
+;; whatever the hell it wants.
 (setq display-buffer-alist
       '(("\\*Calendar.*"
          (display-buffer-in-side-window)
@@ -847,7 +859,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
              (buffer-name))))
 
 (transient-define-prefix window-transient ()
-  "Most commonly used window commands"
+  "Most commonly used window commands."
   [["Splits"
     ("s" "Split Sensibly" split-window-dwim)
     ("h" "Split Horizontal" split-window-below)
@@ -949,13 +961,13 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 ;;; Confirm Killing Modified Buffers
 
 ;; Emacs asks for confirmation when killing modified file-visiting buffers,
-;; but does not ask for regular buffers.
+;; but does not request confirmation for regular buffers.
 ;;
 ;; The option `buffer-offer-save' tells Emacs to prompt to you save modified
-;; regular buffers when EXITING Emacs, but no such option exists for killing
+;; regular buffers when EXITING Emacs, but no such option exists for KILLING
 ;; regular buffers (as described in the docstring for `buffer-offer-save').
 ;;
-;; The below create a buffer-local variable and function for
+;; The below creates a buffer-local variable and function for
 ;; `kill-buffer-query-functions' that provides this functionality.
 
 (defvar-local buffer-confirm-kill nil
@@ -1032,6 +1044,8 @@ This function is designed to be called from `kill-buffer-query-functions'."
           (insert scratch-org-initial-message)
           (not-modified))))))
 
+;; Aside from creating markdown and org-mode buffers, sometimes it is nice to
+;; just have a quick place to work with text.
 (defun new-buffer (name)
   "Create a new buffer, prompting for NAME."
   (interactive
@@ -1095,9 +1109,13 @@ PROMPT sets the `read-string prompt."
 
 ;;; Navigation And Selection
 
-;; This is a function so you can apply these bindings to any keymap by
-;; calling the function and providing the keymap as an argument.
 
+;;;; Navigation Bindings
+
+;; These are bindings I think should be available in a few different modes.
+;; They are defined inside a function so you can apply these bindings to any
+;; keymap you want simply by calling this function and passing the keymap as
+;; an argument.
 (defun define-navigation-keys (map)
   "Defines navigation keys for MAP supplied by argument."
   (interactive "S")
@@ -1123,7 +1141,7 @@ PROMPT sets the `read-string prompt."
   (define-key map (kbd "x") 'exchange-point-and-mark))
 
 
-;; Navigation Mode
+;;;; Navigation Mode
 
 (defvar navigation-mode-map (make-sparse-keymap)
   "Keymap for `navigation-mode'.")
@@ -1187,6 +1205,7 @@ Useful for mode hooks where you don't want selected to be active."
       (define-navigation-keys map)
       (define-key map (kbd "r") 'rectangle-mark-mode)
       (define-key map (kbd "R") 'replace-rectangle))))
+
 
 ;;; Minibuffer / Embark / Consult
 
@@ -1498,6 +1517,9 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 
 ;;;; Calendar <--> Org Integration
 
+;; You can jump to org's agenda from the calendar, and capture from any date
+;; in the agenda, why now capture from the calendar as well?
+
 (defun org-calendar-capture (&optional with-time)
   "Call `org-capture' with the date at point.
 With a `C-1' prefix, use the HH:MM value at point, if any, or the
@@ -1519,9 +1541,8 @@ current HH:MM time."
 ;;;; Fixing `org-todo' and `org-agenda-todo'
 
 ;; Org has an absolutely infuriating habit of destroying window layouts to
-;; display the various pop-up windows used to control Org. These two
-;; transients help me retain a small dose of my sanity. I really wish this
-;; wasn't necessary.
+;; display its various pop-up windows. These two transients help me retain a
+;; small dose of my sanity. I really wish this wasn't necessary.
 ;; Also see: https://emacs.stackexchange.com/a/14818
 
 (define-transient-command org-todo-transient ()
@@ -1678,6 +1699,7 @@ current HH:MM time."
       (">" "Final Node" Info-final-node)
       ("[" "Forward Node" Info-backward-node)
       ("]" "Backward Node" Info-forward-node)]]))
+
 
 ;;; Elfeed
 

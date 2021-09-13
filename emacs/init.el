@@ -209,33 +209,16 @@
 
 ;;; Critical Setup
 
-(cd "~/home/")
-(setq org-directory "~/home/org/")
-(defvar user-downloads-directory "~/Downloads/")
-(add-to-list 'load-path "~/home/dot/emacs/lisp/")
-
-;; vundo creates a tree-like visualization of your undo history
-;; using only standard Emacs undo commands and data. Requires either
-;; Emacs 28 or its backported undo functions.
-(add-to-list 'load-path "~/home/src/lisp/vundo/")
-(require 'undo-backport) ; from Emacs 28
-(require 'vundo)
-
-(autoload 'transient-define-prefix "transient" nil t)
-(setq transient-show-popup 1)
-(setq transient-detect-key-conflicts t)
-
-(exec-path-from-shell-initialize)
-
 ;; I use 3 macros to control how/when code and packages are loaded. I don't
 ;; use use-package, which is designed as a comprehensive way of dealing with
 ;; this problem, so I need a few little tools of my own.
 ;;
-;; 1. `with-eval-after-load' -- which evaluates the code after the library is loaded.
-;; 2. elisp-group -- this is simply a "group" of lines of code. It provides no
+;; 1. `with-eval-after-load' (built-in) -- which evaluates the code after the
+;;    library is loaded.
+;; 2. `elisp-group' -- this is simply a "group" of lines of code. It provides no
 ;;    functional benefit, only a VISUAL one.
-;; 3. config-package -- this evaluates the contained lisp only if the named package
-;;    is installed, and optionally adds it to `package-selected-packages'.
+;; 3. `config-package' -- this evaluates the contained lisp only if the named package
+;;    is installed.
 
 (defmacro elisp-group (name doc &rest body)
   "Group elisp by wrapping in progn.
@@ -253,6 +236,38 @@ Is this a useless macro? Maybe. But it helps keep my init file tidy."
      (message (concat "Package \'"
                       (symbol-name ,package)
                       "\' is not installed... skipping config."))))
+
+;; Now that those macros are setup, let's setup some important things that are
+;; required for the rest of this config to work correctly.
+
+(elisp-group environment
+  "Important paths for this setup to work."
+  (cd "~/home/") ; Start in my personal home directory
+  (setq org-directory "~/home/org/")
+  (defvar user-downloads-directory "~/Downloads/")
+  (add-to-list 'load-path "~/home/dot/emacs/lisp/"))
+
+(elisp-group undo/redo
+  "I think Emacs's undo/redo could be simpler. Emacs 28 provides
+everything I need, but I'm still on 27, so I've included a
+backport of those functions, and a handy package (which is not on
+MELPA) for visualizing the undo tree."
+  (require 'undo-backport) ; from Emacs 28
+  ;; vundo creates a tree-like visualization of your undo history
+  ;; using only standard Emacs undo commands and data. Requires either
+  ;; Emacs 28 or its backported undo functions.
+  (add-to-list 'load-path "~/home/src/lisp/vundo/")
+  (require 'vundo))
+
+(elisp-group transient
+  "I use a lot of transients in this config, so I need to make sure it is
+loaded and configured before those are declared below."
+  (autoload 'transient-define-prefix "transient" nil t)
+  (setq transient-show-popup 1)
+  (setq transient-detect-key-conflicts t))
+
+(config-package 'exec-path-from-shell
+  (exec-path-from-shell-initialize))
 
 
 ;;; Misc Functions
@@ -555,14 +570,6 @@ Keybindings you define here will take precedence."
 (add-to-list 'emulation-mode-map-alists
              `((bosskey-mode . ,bosskey-mode-map)))
 
-;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
-(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "C-x C-z"))
-(global-unset-key [swipe-left])
-(global-unset-key [swipe-right])
-
 (let ((map bosskey-mode-map))
   ;; Mac-like bindings
   (define-key map (kbd "s-q") 'frames-p-save-buffers-kill-emacs)
@@ -603,6 +610,17 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "C-d") 'delete-forward-char)
   (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
   (define-key map (kbd "C-x k") 'kill-buffer-dwim))
+
+;; For bindings that I do want to be overriden by minor modes and the like, I
+;; use the built-in `global-map' and all the standard tools. Nothing fancy.
+
+;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
+(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-x C-z"))
+(global-unset-key [swipe-left])
+(global-unset-key [swipe-right])
 
 (let ((map global-map))
   ;; replace mappings

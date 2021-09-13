@@ -748,7 +748,7 @@ Disables all current themes, then:
   (modus-themes-load-themes))
 
 (setq light-theme 'modus-operandi)
-(setq dark-theme  'doom-one)
+(setq dark-theme  'modus-vivendi)
 (setq default-theme-color 'light)
 
 (elisp-group set-theme-on-startup
@@ -770,6 +770,7 @@ The variable-pitch and fixed-pitch faces have a default height of 1.0,
 which I don't want to mess with because that's what's required to make
 `text-scale-adjust' work correctly. The default height needs to be set,
 and I want the mode-line to be a fixed height, so I set those."
+  (setq line-spacing nil)
   (let ((mono "IBM Plex Mono")
         (vari "IBM Plex Serif")
         (mode "IBM Plex Sans")

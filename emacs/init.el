@@ -54,15 +54,15 @@
                                    ("gnu-devel" . 0)))
 
 (setq pkg-ops-map
-  (let ((map (make-sparse-keymap "Packages")))
-    (define-key map "h" '("describe" . describe-package))
-    (define-key map "a" '("autoremove" . package-autoremove))
-    (define-key map "d" '("delete" . package-delete))
-    (define-key map "i" '("install" . package-install))
-    (define-key map "s" '("selected" . package-install-selected-packages))
-    (define-key map "r" '("refresh" . package-refresh-contents))
-    (define-key map "l" '("list" . list-packages))
-    map))
+      (let ((map (make-sparse-keymap "Packages")))
+        (define-key map "h" '("describe" . describe-package))
+        (define-key map "a" '("autoremove" . package-autoremove))
+        (define-key map "d" '("delete" . package-delete))
+        (define-key map "i" '("install" . package-install))
+        (define-key map "s" '("selected" . package-install-selected-packages))
+        (define-key map "r" '("refresh" . package-refresh-contents))
+        (define-key map "l" '("list" . list-packages))
+        map))
 
 (global-set-key (kbd "C-c p") pkg-ops-map)
 
@@ -283,7 +283,7 @@ it marks the next ARG lines after the ones already marked."
   (push-mark
    (save-excursion
      (if (and (eq last-command this-command) (mark t))
-	 (goto-char (mark)))
+	     (goto-char (mark)))
      (forward-line arg)
      (point))
    nil t))
@@ -400,12 +400,12 @@ If no region is active, then just swap point and mark."
   "Unpop off mark ring. Does nothing if mark ring is empty."
   ;; https://stackoverflow.com/a/14539202
   (interactive)
-      (when mark-ring
-        (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
-        (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
-        (when (null (mark t)) (ding))
-        (setq mark-ring (nbutlast mark-ring))
-        (goto-char (marker-position (car (last mark-ring))))))
+  (when mark-ring
+    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
+    (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
+    (when (null (mark t)) (ding))
+    (setq mark-ring (nbutlast mark-ring))
+    (goto-char (marker-position (car (last mark-ring))))))
 
 (defun org-insert-date-today ()
   "Insert today's date using standard org formatting."
@@ -677,7 +677,7 @@ Keybindings you define here will take precedence."
 
 (defun macos-appearance-dark-p nil
   "Return t if macOS appearance is dark."
-   (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
+  (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
 
 (defun macos-toggle-system-appearance nil
   "Toggle macOS's system appearance between dark and light modes."
@@ -1076,9 +1076,9 @@ PROMPT sets the `read-string prompt."
 (defmacro prelude-install-search-engine (search-engine-name search-engine-url search-engine-prompt)
   "Given some information regarding a search engine, install the interactive command to search through them"
   `(defun ,(intern (format "prelude-%s" search-engine-name)) ()
-       ,(format "Search %s with a query or region if any." search-engine-name)
-       (interactive)
-       (prelude-search ,search-engine-url ,search-engine-prompt)))
+     ,(format "Search %s with a query or region if any." search-engine-name)
+     (interactive)
+     (prelude-search ,search-engine-url ,search-engine-prompt)))
 
 (prelude-install-search-engine "google"     "http://www.google.com/search?q="              "Google: ")
 (prelude-install-search-engine "youtube"    "http://www.youtube.com/results?search_query=" "Search YouTube: ")
@@ -1163,7 +1163,7 @@ PROMPT sets the `read-string prompt."
                     (local 'eldoc-documentation-function)
                     #'navigation-mode-eldoc-function)
     (remove-function (local 'eldoc-documentation-function)
-                   #'navigation-mode-eldoc-function)))
+                     #'navigation-mode-eldoc-function)))
 
 (defun navigation-mode-exit-and-mark ()
   "Exit `navigation-mode' and set the mark."

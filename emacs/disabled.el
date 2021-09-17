@@ -127,17 +127,6 @@ For example you might want to do something like:
 (define-key minibuffer-local-must-match-map          (kbd "<return>") 'exit-with-top-completion)
 (define-key minibuffer-local-filename-completion-map (kbd "<return>") 'exit-with-top-completion)
 
-;; Embark by default uses embark-minibuffer-candidates which does not sort the
-;; completion candidates at all, this means that exit-with-top-completion
-;; won't always pick the first one listed! If you want to ensure
-;; exit-with-top-completion picks the first completion in the embark collect
-;; buffer, you should configure Embark to use
-;; embark-sorted-minibuffer-candidates instead. This can be done as follows:
-(setq embark-candidate-collectors
-      (cl-substitute 'embark-sorted-minibuffer-candidates
-                     'embark-minibuffer-candidates
-                     embark-candidate-collectors))
-
 
 ;;; PDFs
 

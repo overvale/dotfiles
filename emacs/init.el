@@ -1318,22 +1318,15 @@ spot."
 ;; doing that I get a live-updating window (importantly) above the minibuffer.
 
 ;; Make the list one line per item:
-(setq embark-collect-initial-view-alist
-      '((file . list)
-        (buffer . list)
-        (symbol . list)
-        (t . list)))
+(setq embark-collect-initial-view-alist '((t . list)))
 
-(defun fit-window-to-buffer-max-40% (&optional window)
-  "Resize current window to fit buffer or 40% of the frame height."
-  ;; https://github.com/oantolin/emacs-config/blob/5e33f9ec97fdd9d70d2b6204cc754399eaa69662/my-lisp/window-extras.el
-  (fit-window-to-buffer
-   (or window
-       (let ((win (selected-window)))
-         (if (window-minibuffer-p win) minibuffer-scroll-window win)))
-   (floor (* 0.4 (frame-height))) 1))
+;; Sort embark candidates
+(setq embark-candidate-collectors
+      (cl-substitute 'embark-sorted-minibuffer-candidates
+                     'embark-minibuffer-candidates
+                     embark-candidate-collectors))
 
-(defun switch-to-completions-or-other-window ()
+(defun switch-to-embark-completions-maybe ()
   "Switch to the completions window, if it exists, or another window."
   (interactive)
   (if (get-buffer-window "*Embark Collect Completions*")
@@ -1355,6 +1348,15 @@ completions if invoked from inside the minibuffer."
     (when mini
       (select-window mini))))
 
+(defun fit-window-to-buffer-max-40% (&optional window)
+  "Resize current window to fit buffer or 40% of the frame height."
+  ;; https://github.com/oantolin/emacs-config/blob/5e33f9ec97fdd9d70d2b6204cc754399eaa69662/my-lisp/window-extras.el
+  (fit-window-to-buffer
+   (or window
+       (let ((win (selected-window)))
+         (if (window-minibuffer-p win) minibuffer-scroll-window win)))
+   (floor (* 0.4 (frame-height))) 1))
+
 (defun quit-window-exit-minibuffer nil
   "Quit the window and then exit the minibuffer.
 Designed to be bound in `embark-collect-mode-map' to cleanly exit
@@ -1363,6 +1365,29 @@ the completions window and connected minibuffer."
   (quit-window)
   (switch-to-minibuffer)
   (minibuffer-keyboard-quit))
+
+(defun embark-minibuffer-completion-help (_start _end)
+  "Embark alternative to minibuffer-completion-help.
+This means you hit TAB to trigger the completions list.
+Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/"
+  (unless embark-collect-linked-buffer
+    (embark-collect-completions)))
+
+(defun exit-with-top-completion ()
+  "Exit minibuffer with top completion candidate."
+  (interactive)
+  (let ((content (minibuffer-contents-no-properties)))
+    (unless (let (completion-ignore-case)
+              (test-completion content
+                               minibuffer-completion-table
+                               minibuffer-completion-predicate))
+      (when-let ((completions (completion-all-sorted-completions)))
+        (delete-minibuffer-contents)
+        (insert
+         (concat
+          (substring content 0 (or (cdr (last completions)) 0))
+          (car completions)))))
+    (exit-minibuffer)))
 
 (defun apply-completion-bindings (map)
   "A common set of bindings to use in completion buffers."
@@ -1378,16 +1403,14 @@ the completions window and connected minibuffer."
   (define-key map (kbd "C-g") 'quit-window-exit-minibuffer)
   (define-key map (kbd ".") 'embark-act))
 
-(define-key minibuffer-local-completion-map (kbd "M-v") 'switch-to-completions-or-other-window)
-(define-key minibuffer-local-completion-map (kbd "C-n") 'switch-to-completions-or-other-window)
-(define-key minibuffer-local-completion-map (kbd "C-p") 'switch-to-completions-or-other-window)
+(let ((map minibuffer-local-completion-map))
+  (define-key map (kbd "M-v") 'switch-to-embark-completions-maybe)
+  (define-key map (kbd "C-n") 'switch-to-embark-completions-maybe)
+  (define-key map (kbd "C-p") 'switch-to-embark-completions-maybe))
 
-(defun embark-minibuffer-completion-help (_start _end)
-  "Embark alternative to minibuffer-completion-help.
-This means you hit TAB to trigger the completions list.
-Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/"
-  (unless embark-collect-linked-buffer
-    (embark-collect-completions)))
+(define-key minibuffer-local-completion-map (kbd "RET") 'exit-with-top-completion)
+(define-key minibuffer-local-must-match-map (kbd "RET") 'exit-with-top-completion)
+(define-key minibuffer-local-filename-completion-map (kbd "RET") 'exit-with-top-completion)
 
 ;; Show completion candidates after typing <tab>:
 (advice-add 'minibuffer-completion-help

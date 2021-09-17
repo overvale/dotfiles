@@ -842,6 +842,9 @@ and I want the mode-line to be a fixed height, so I set those."
          (slot . 0)
          (window-parameters . ((no-other-window . nil)))
          (window-height . fit-window-to-buffer))
+        ("\\`\\*Embark Collect Completions\\*"
+         nil
+         (window-parameters (mode-line-format . none)))
         ("\\*wclock.*"
          (display-buffer-at-bottom)
          (window-parameters . ((select . t))))))
@@ -1225,57 +1228,10 @@ completion framework."
    '(completion-category-defaults nil)
    '(completion-category-overrides '((file (styles . (partial-completion)))))))
 
-(config-package 'vertico
-  nil
-  (vertico-mode))
-
 (config-package 'marginalia
   nil
   (marginalia-mode)
   (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle))
-
-(config-package 'embark
-  "embark and embark-consult are two separate packages, but I
-configure them here in a single group. Embark is being very
-heavily developed at the moment, and the embark-indicators are
-only present in the most recent versions."
-  (require 'embark)
-  (require 'embark-consult)
-
-  (custom-set-variables
-   '(embark-indicators '(embark-verbose-indicator
-                         embark-highlight-indicator
-                         embark-isearch-highlight-indicator))
-   '(embark-verbose-indicator-display-action
-     '(display-buffer-at-bottom (window-height . fit-window-to-buffer))))
-
-  (setq prefix-help-command 'embark-prefix-help-command)
-
-  (define-key bosskey-mode-map (kbd "C-h b") 'embark-bindings)
-
-  (defun embark-describe-keymap (keymap)
-    ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/help-extras.el
-    "Prompt for KEYMAP and show its bindings using `completing-read'."
-    (interactive
-     (list
-      (completing-read "Keymap: "
-                       (cl-loop for x being the symbols
-                                if (and (boundp x) (keymapp (symbol-value x)))
-                                collect (symbol-name x))
-                       nil t nil 'variable-name-history)))
-    (require 'embark)
-    (embark-completing-read-prompter (symbol-value (intern keymap)) nil))
-
-  (let ((map embark-region-map))
-    (define-key map (kbd "q") 'fill-region))
-
-  (let ((map embark-file-map))
-    (define-key map (kbd "O") 'crux-open-with)
-    (define-key map (kbd "j") 'dired-jump))
-
-  (let ((map embark-url-map))
-    (define-key map (kbd "d") 'ytdl-download)
-    (define-key map (kbd "b") 'browse-url-default-macosx-browser)))
 
 (elisp-group isearch-config
   "This does two things, makes the matching fuzzy
@@ -1305,10 +1261,147 @@ spot."
 (config-package 'consult
   nil
   (custom-set-variables
-   '(consult-find-command "fd --color=never --full-path ARG OPTS"))
-  (consult-customize consult-line
-                     :preview-key nil)
+   '(consult-find-command "fd --color=never --full-path ARG OPTS")
+   '(consult-preview-key nil))
   (global-set-key [remap yank-pop] 'consult-yank-pop))
+
+
+;;; Embark
+
+(require 'embark)
+(require 'embark-consult)
+
+(custom-set-variables
+ '(embark-indicators '(embark-verbose-indicator
+                       embark-highlight-indicator
+                       embark-isearch-highlight-indicator))
+ '(embark-verbose-indicator-display-action
+   '(display-buffer-at-bottom (window-height . fit-window-to-buffer))))
+
+(setq prefix-help-command 'embark-prefix-help-command)
+
+(define-key bosskey-mode-map (kbd "C-h b") 'embark-bindings)
+
+(defun embark-describe-keymap (keymap)
+  ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/help-extras.el
+  "Prompt for KEYMAP and show its bindings using `completing-read'."
+  (interactive
+   (list
+    (completing-read "Keymap: "
+                     (cl-loop for x being the symbols
+                              if (and (boundp x) (keymapp (symbol-value x)))
+                              collect (symbol-name x))
+                     nil t nil 'variable-name-history)))
+  (require 'embark)
+  (embark-completing-read-prompter (symbol-value (intern keymap)) nil))
+
+(let ((map embark-region-map))
+  (define-key map (kbd "q") 'fill-region))
+
+(let ((map embark-file-map))
+  (define-key map (kbd "O") 'crux-open-with)
+  (define-key map (kbd "j") 'dired-jump))
+
+(let ((map embark-url-map))
+  (define-key map (kbd "d") 'ytdl-download)
+  (define-key map (kbd "b") 'browse-url-default-macosx-browser))
+
+
+;;; Embark as Completion Framework
+
+;; The following will allow you to use an embark live collection as your
+;; completion framework. I will freely admit that this is ridiculous. I mean,
+;; who in their right mind would do all this when they could just use
+;; `vertico'? But all of the below allows me to do two important things:
+;; completions are not shown at all until I request them with <TAB>, and upon
+;; doing that I get a live-updating window (importantly) above the minibuffer.
+
+;; Make the list one line per item:
+(setq embark-collect-initial-view-alist
+      '((file . list)
+        (buffer . list)
+        (symbol . list)
+        (t . list)))
+
+(defun fit-window-to-buffer-max-40% (&optional window)
+  "Resize current window to fit buffer or 40% of the frame height."
+  ;; https://github.com/oantolin/emacs-config/blob/5e33f9ec97fdd9d70d2b6204cc754399eaa69662/my-lisp/window-extras.el
+  (fit-window-to-buffer
+   (or window
+       (let ((win (selected-window)))
+         (if (window-minibuffer-p win) minibuffer-scroll-window win)))
+   (floor (* 0.4 (frame-height))) 1))
+
+(defun switch-to-completions-or-other-window ()
+  "Switch to the completions window, if it exists, or another window."
+  (interactive)
+  (if (get-buffer-window "*Embark Collect Completions*")
+      (select-window (get-buffer-window "*Embark Collect Completions*"))
+    (if (get-buffer-window "*Completions*")
+        (progn
+          (select-window (get-buffer-window "*Completions*"))
+          (when (bobp) (next-completion 1)))
+      (message "No completions window"))))
+
+(defun switch-to-minibuffer ()
+  "Focus the active minibuffer.
+Bind this to `completion-list-mode-map' to M-v to easily jump
+between the list of candidates present in the \\*Completions\\*
+buffer and the minibuffer (because by default M-v switches to the
+completions if invoked from inside the minibuffer."
+  (interactive)
+  (let ((mini (active-minibuffer-window)))
+    (when mini
+      (select-window mini))))
+
+(defun quit-window-exit-minibuffer nil
+  "Quit the window and then exit the minibuffer.
+Designed to be bound in `embark-collect-mode-map' to cleanly exit
+the completions window and connected minibuffer."
+  (interactive)
+  (quit-window)
+  (switch-to-minibuffer)
+  (minibuffer-keyboard-quit))
+
+(defun apply-completion-bindings (map)
+  "A common set of bindings to use in completion buffers."
+  (define-key map (kbd "n") 'next-completion)
+  (define-key map (kbd "p") 'previous-completion)
+  (define-key map (kbd "M-v") 'switch-to-minibuffer))
+
+(apply-completion-bindings completion-list-mode-map)
+
+(let ((map embark-collect-mode-map))
+  (apply-completion-bindings map)
+  (define-key map (kbd "q") 'quit-window-exit-minibuffer)
+  (define-key map (kbd "C-g") 'quit-window-exit-minibuffer)
+  (define-key map (kbd ".") 'embark-act))
+
+(define-key minibuffer-local-completion-map (kbd "M-v") 'switch-to-completions-or-other-window)
+(define-key minibuffer-local-completion-map (kbd "C-n") 'switch-to-completions-or-other-window)
+(define-key minibuffer-local-completion-map (kbd "C-p") 'switch-to-completions-or-other-window)
+
+(defun embark-minibuffer-completion-help (_start _end)
+  "Embark alternative to minibuffer-completion-help.
+This means you hit TAB to trigger the completions list.
+Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/"
+  (unless embark-collect-linked-buffer
+    (embark-collect-completions)))
+
+;; Show completion candidates after typing <tab>:
+(advice-add 'minibuffer-completion-help
+            :override #'embark-minibuffer-completion-help)
+
+;; Automatically show candidates after typing
+;; (add-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
+
+;; resize Embark Collect buffer to fit contents
+(add-hook 'embark-collect-post-revert-hook 'fit-window-to-buffer-max-40%)
+
+;; Highlight line in Embark Collect Completions window:
+(add-hook 'embark-collect-mode-hook
+          (lambda () (interactive)
+            (hl-line-mode 1)))
 
 
 ;;; Miscellaneous

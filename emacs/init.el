@@ -677,6 +677,8 @@ Keybindings you define here will take precedence."
 
 (defun macos-appearance-dark-p nil
   "Return t if macOS appearance is dark."
+  ;; Another option that doesn't require the mac-port:
+  ;; defaults read -g AppleInterfaceStyle
   (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
 
 (defun macos-toggle-system-appearance nil
@@ -873,7 +875,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("r" "Rotate Split" rotate-window-split)
     ("R" "Swap Windows" swap-windows)]
    ["Window"
-    ;; TODO: https://www.gnu.org/software/emacs/manual/html_node/emacs/Configuration-Registers.html
     ("d" "Dedicate Window" dedicated-mode)
     ("c" "Clone Indirect" clone-indirect-buffer)
     ("t" "Tear Off" tear-off-window)
@@ -1849,9 +1850,6 @@ current HH:MM time."
             entries)
       (unless (or elfeed-search-remain-on-entry (use-region-p))
         (forward-line))))
-
-  ;; TODO narrow to feed at point (below does not work):
-  ;; (elfeed-feed-id (elfeed-search-selected t))
 
   (defun elfeed-show-visit-background ()
     "Visit the current entry in your browser using `browse-url'.

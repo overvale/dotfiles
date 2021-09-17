@@ -1439,6 +1439,8 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
+(setq ispell-program-name "/usr/local/bin/aspell")
+
 (with-eval-after-load 'dired
   (setq dired-use-ls-dired nil)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)

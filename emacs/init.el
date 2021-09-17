@@ -244,7 +244,7 @@ Is this a useless macro? Maybe. But it helps keep my init file tidy."
   "Important paths for this setup to work."
   (cd "~/home/") ; Start in my personal home directory
   (setq org-directory "~/home/org/")
-  (defvar user-downloads-directory "~/Downloads/")
+  (defvar user-downloads-directory "~/Desktop/")
   (add-to-list 'load-path "~/home/dot/emacs/lisp/"))
 
 (elisp-group undo/redo

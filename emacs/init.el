@@ -1394,7 +1394,6 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
 (autoload 'org-export-dispatch "org")
 (autoload 'org-store-link "org")
 
-
 ;;;; Org Configuration
 
 (with-eval-after-load 'org
@@ -1434,6 +1433,7 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
    '(org-agenda-todo-ignore-scheduled nil)
    '(org-agenda-todo-ignore-deadlines nil)
    '(org-agenda-skip-deadline-if-done t)
+   '(org-agenda-skip-scheduled-if-done t)
    '(org-agenda-skip-deadline-prewarning-if-scheduled t))
 
   (setq org-agenda-files (list org-directory))
@@ -1511,9 +1511,12 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
                    (org-agenda-overriding-header "Active, not scheduled, Tasks: ")))))))
 
-  (define-key org-agenda-mode-map (kbd "S") 'org-agenda-schedule)
-  (define-key org-agenda-mode-map (kbd "D") 'org-agenda-deadline)
-  (define-key org-agenda-mode-map (kbd "s-z") 'org-agenda-undo))
+  (let ((map org-agenda-mode-map))
+    (define-key map (kbd "k") 'org-capture)
+    (define-key map (kbd "K") 'org-agenda-capture)
+    (define-key map (kbd "S") 'org-agenda-schedule)
+    (define-key map (kbd "D") 'org-agenda-deadline)
+    (define-key map (kbd "s-z") 'org-agenda-undo)))
 
 
 ;;;; Calendar <--> Org Integration
@@ -1601,8 +1604,7 @@ current HH:MM time."
 (transient-define-prefix general-transient--org ()
   "Transient for Org commands useful outside org mode."
   ["Org Mode"
-   [("s" "Store Link" org-store-link)
-    ("g" "Go to Last Capture" org-capture-goto-last-stored)]
+   [("s" "Store Link" org-store-link)]
    [("D" "Find Org Dir" find-org-directory)
     ("F" "Find Org Files..." find-org-files)
     ("H" "Find Org Heading" consult-org-agenda)
@@ -1665,6 +1667,7 @@ current HH:MM time."
       ("n" "Narrow/Widen" narrow-or-widen-dwim)
       ("v" "Visible Markup" visible-mode)]
      ["Item"
+      ("t" "TODO State" org-todo-transient)
       (":" "Set Tags" org-set-tags-command)
       ("a" "Archive Subtree" org-archive-subtree)
       ("r" "Refile" org-refile)

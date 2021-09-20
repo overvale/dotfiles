@@ -21,14 +21,17 @@
 ;;   + I use package.el and don't use Use-Package.
 ;;   + The config is a single file.
 ;;   + It is NOT modular, so if you don't have all the listed packages
-;;     installed large parts of the config won't work.
+;;     installed large parts of the config won't work. It is also (largely)
+;;     grouped by topic and not by package, so a package's keybindings might
+;;     be in a few different places.
 ;;   + Symbol names are not prefixed (for the most part) so take care to
 ;;     to avoid collisions if you copy them into your own config.
 
 ;; If you like this config I would recommend reading these as well:
 ;;
-;; https://github.com/oantolin/emacs-config
+;; https://svn.red-bean.com/repos/kfogel/trunk/.emacs
 ;; https://github.com/raxod502/radian
+;; https://github.com/oantolin/emacs-config
 ;; https://github.com/skeeto/.emacs.d
 ;; https://github.com/bbatsov/prelude
 
@@ -1527,9 +1530,10 @@ current HH:MM time."
 ;;;; Fixing `org-todo' and `org-agenda-todo'
 
 ;; Org has an absolutely infuriating habit of destroying window layouts to
-;; display its various pop-up windows. These two transients help me retain a
-;; small dose of my sanity. I really wish this wasn't necessary.
-;; Also see: https://emacs.stackexchange.com/a/14818
+;; display its various pop-up windows (though, to be fair, it is good about
+;; restoring them). These two transients help me retain a small dose of my
+;; sanity. I really wish this wasn't necessary. Also see:
+;; https://emacs.stackexchange.com/a/14818
 
 (define-transient-command org-todo-transient ()
   [["Org TODO Status"

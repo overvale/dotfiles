@@ -1213,7 +1213,7 @@ Useful for mode hooks where you don't want selected to be active."
       (define-key map (kbd "R") 'replace-rectangle))))
 
 
-;;; Minibuffer / Embark / Consult
+;;; Minibuffer
 
 (custom-set-variables
  '(completion-cycle-threshold nil)
@@ -1234,6 +1234,8 @@ Useful for mode hooks where you don't want selected to be active."
   (marginalia-mode)
   (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle))
 
+(elpa-package 'vertico
+  (vertico-mode))
 
 
 ;;; Embark
@@ -1277,124 +1279,6 @@ Useful for mode hooks where you don't want selected to be active."
   (define-key map (kbd "b") 'browse-url-default-macosx-browser))
 
 
-;;; Embark as Completion Framework
-
-;; The following will allow you to use an embark live collection as your
-;; completion framework. I will freely admit that this is ridiculous. I mean,
-;; who in their right mind would do all this when they could just use
-;; `vertico'? But all of the below allows me to do two important things:
-;; completions are not shown at all until I request them with <TAB>, and upon
-;; doing that I get a live-updating window (importantly) above the minibuffer.
-
-;; Make the list one line per item:
-(setq embark-collect-initial-view-alist '((t . list)))
-
-;; Sort embark candidates
-(setq embark-candidate-collectors
-      (cl-substitute 'embark-sorted-minibuffer-candidates
-                     'embark-minibuffer-candidates
-                     embark-candidate-collectors))
-
-(defun switch-to-embark-completions-maybe ()
-  "Switch to the completions window, if it exists, or another window."
-  (interactive)
-  (if (get-buffer-window "*Embark Collect Completions*")
-      (select-window (get-buffer-window "*Embark Collect Completions*"))
-    (if (get-buffer-window "*Completions*")
-        (progn
-          (select-window (get-buffer-window "*Completions*"))
-          (when (bobp) (next-completion 1)))
-      (message "No completions window"))))
-
-(defun switch-to-minibuffer ()
-  "Focus the active minibuffer.
-Bind this to `completion-list-mode-map' to M-v to easily jump
-between the list of candidates present in the \\*Completions\\*
-buffer and the minibuffer (because by default M-v switches to the
-completions if invoked from inside the minibuffer."
-  (interactive)
-  (let ((mini (active-minibuffer-window)))
-    (when mini
-      (select-window mini))))
-
-(defun fit-window-to-buffer-max-40% (&optional window)
-  "Resize current window to fit buffer or 40% of the frame height."
-  ;; https://github.com/oantolin/emacs-config/blob/5e33f9ec97fdd9d70d2b6204cc754399eaa69662/my-lisp/window-extras.el
-  (fit-window-to-buffer
-   (or window
-       (let ((win (selected-window)))
-         (if (window-minibuffer-p win) minibuffer-scroll-window win)))
-   (floor (* 0.4 (frame-height))) 1))
-
-(defun quit-window-exit-minibuffer nil
-  "Quit the window and then exit the minibuffer.
-Designed to be bound in `embark-collect-mode-map' to cleanly exit
-the completions window and connected minibuffer."
-  (interactive)
-  (quit-window)
-  (switch-to-minibuffer)
-  (minibuffer-keyboard-quit))
-
-(defun embark-minibuffer-completion-help (_start _end)
-  "Embark alternative to minibuffer-completion-help.
-This means you hit TAB to trigger the completions list.
-Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/"
-  (unless embark-collect-linked-buffer
-    (embark-collect-completions)))
-
-(defun exit-with-top-completion ()
-  "Exit minibuffer with top completion candidate."
-  (interactive)
-  (let ((content (minibuffer-contents-no-properties)))
-    (unless (let (completion-ignore-case)
-              (test-completion content
-                               minibuffer-completion-table
-                               minibuffer-completion-predicate))
-      (when-let ((completions (completion-all-sorted-completions)))
-        (delete-minibuffer-contents)
-        (insert
-         (concat
-          (substring content 0 (or (cdr (last completions)) 0))
-          (car completions)))))
-    (exit-minibuffer)))
-
-(defun apply-completion-bindings (map)
-  "A common set of bindings to use in completion buffers."
-  (define-key map (kbd "n") 'next-completion)
-  (define-key map (kbd "p") 'previous-completion)
-  (define-key map (kbd "M-v") 'switch-to-minibuffer))
-
-(apply-completion-bindings completion-list-mode-map)
-
-(let ((map embark-collect-mode-map))
-  (apply-completion-bindings map)
-  (define-key map (kbd "q") 'quit-window-exit-minibuffer)
-  (define-key map (kbd "C-g") 'quit-window-exit-minibuffer)
-  (define-key map (kbd ".") 'embark-act))
-
-(let ((map minibuffer-local-completion-map))
-  (define-key map (kbd "M-v") 'switch-to-embark-completions-maybe)
-  (define-key map (kbd "C-n") 'switch-to-embark-completions-maybe)
-  (define-key map (kbd "C-p") 'switch-to-embark-completions-maybe))
-
-(define-key minibuffer-local-completion-map (kbd "RET") 'exit-with-top-completion)
-(define-key minibuffer-local-must-match-map (kbd "RET") 'exit-with-top-completion)
-(define-key minibuffer-local-filename-completion-map (kbd "RET") 'exit-with-top-completion)
-
-;; Show completion candidates after typing <tab>:
-(advice-add 'minibuffer-completion-help
-            :override #'embark-minibuffer-completion-help)
-
-;; Automatically show candidates after typing
-;; (add-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
-
-;; resize Embark Collect buffer to fit contents
-(add-hook 'embark-collect-post-revert-hook 'fit-window-to-buffer-max-40%)
-
-;; Highlight line in Embark Collect Completions window:
-(add-hook 'embark-collect-mode-hook
-          (lambda () (interactive)
-            (hl-line-mode 1)))
 ;;; Miscellaneous
 
 (elpa-package 'consult

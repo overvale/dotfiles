@@ -1539,7 +1539,7 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
    '(org-agenda-window-setup 'current-window)
    '(org-agenda-restore-windows-after-quit t)
    '(org-agenda-span 'day)
-   '(org-agenda-start-with-log-mode t)
+   '(org-agenda-start-with-log-mode nil)
    '(org-agenda-log-mode-items '(closed clock state))
    '(org-agenda-use-time-grid nil)
    '(org-deadline-warning-days 7)

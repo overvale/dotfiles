@@ -1880,6 +1880,12 @@ browser defined by `browse-url-generic-program'."
         (message "Sent to browser: %s" link)
         (browse-url-macos-background link))))
 
+  (defun elfeed-ytdl-download ()
+    "Jump to next link (always entry link) and call `ytdl-download'."
+    (interactive)
+    (shr-next-link)
+    (ytdl-download))
+
   (let ((map elfeed-search-mode-map))
     (define-key map (kbd "b") 'elfeed-search-browse-url-background)
     (define-key map (kbd "*") 'elfeed-search-tag--star)
@@ -1896,7 +1902,7 @@ browser defined by `browse-url-generic-program'."
     (define-key map (kbd "8") 'elfeed-show-tag--unstar)
     (define-key map (kbd "b") 'elfeed-show-visit-background)
     (define-key map (kbd "o") 'delete-other-windows)
-    (define-key map (kbd "d") 'ytdl-download))
+    (define-key map (kbd "d") 'elfeed-ytdl-download))
 
   ) ; End elfeed
 

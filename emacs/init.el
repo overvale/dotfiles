@@ -1562,7 +1562,7 @@ current HH:MM time."
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
     ("." "Repeat Command" repeat-complex-command)
-    ("k" "Kill Buffer" kill-buffer-dwim)
+    ("k" "Bury Buffer" bury-buffer)
     ("b" "iBuffer" ibuffer)
     ("p" "Pop to Mode" pop-to-buffer-same-mode)]
    ["Macros"

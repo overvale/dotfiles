@@ -69,6 +69,7 @@
 (setq package-selected-packages
       '(bicycle
         consult
+        ctrlf
         delight
         doom-themes
         elfeed
@@ -93,7 +94,9 @@
         transient))
 
 (setq package-pinned-packages
-      '((embark . "melpa")))
+      '((embark . "melpa")
+        (vertico . "melpa")
+        (ctrlf . "melpa")))
 
 (defun package-menu-filter-by-status (status)
   ;; https://github.com/jcs090218/jcs-emacs/blob/38cce9fc9046ef436c59e13d9942a719dc1e8f2e/.emacs.jcs/jcs-package.el#L582

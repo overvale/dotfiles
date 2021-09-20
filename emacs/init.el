@@ -1565,6 +1565,11 @@ current HH:MM time."
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("b" "iBuffer" ibuffer)
     ("p" "Pop to Mode" pop-to-buffer-same-mode)]
+   ["Macros"
+    ("m s" "Start" start-kbd-macro)
+    ("m e" "End" end-kbd-macro)
+    ("m c" "Call" call-last-kbd-macro)
+    ("m r" "" apply-macro-to-region-lines)]
    ["Transients"
     ("o" "Org..." general-transient--org)
     ("c" "Consult..." general-transient--consult)

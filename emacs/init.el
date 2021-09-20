@@ -1234,31 +1234,6 @@ Useful for mode hooks where you don't want selected to be active."
   (marginalia-mode)
   (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle))
 
-(elisp-group isearch-config
-  "This does two things, makes the matching fuzzy
-per-line (though not orderless, use consult-lines for that), and
-makes exits exit at the beginning of the match. I think this is a
-more vim-like behavior, which I prefer because it makes it easier
-to set the mark, and search to expand the region to the desired
-spot."
-  (setq search-whitespace-regexp ".*?")
-  (setq isearch-lax-whitespace t)
-  (setq isearch-lazy-count t)
-
-  (defun isearch-exit-at-start ()
-    "Exit search at the beginning of the current match."
-    (when (and isearch-forward
-               (number-or-marker-p isearch-other-end)
-               (not isearch-mode-end-hook-quit))
-      (goto-char isearch-other-end)))
-
-  (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start))
-
-(config-package 'isearch-mb
-  nil
-  (isearch-mb-mode)
-  (add-to-list 'isearch-mb--after-exit #'occur))
-
 
 
 ;;; Embark
@@ -1427,6 +1402,11 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
   (global-set-key [remap yank-pop] 'consult-yank-pop))
 
+(elpa-package 'ctrlf
+  ;; Enabling the mode remaps iSearch bindings, so no need to set your own.
+  (ctrlf-mode +1)
+  (setq ctrlf-go-to-end-of-match nil
+        ctrlf-default-search-style 'fuzzy))
 
 (with-eval-after-load 'visual-regexp
   (with-eval-after-load 'visual-regexp-steroids

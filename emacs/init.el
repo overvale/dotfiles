@@ -209,64 +209,66 @@
 
 ;;; Critical Setup
 
-;; I use 3 macros to control how/when code and packages are loaded. I don't
-;; use use-package, which is designed as a comprehensive way of dealing with
-;; this problem, so I need a few little tools of my own.
-;;
-;; 1. `with-eval-after-load' (built-in) -- which evaluates the code after the
-;;    library is loaded.
-;; 2. `elisp-group' -- this is simply a "group" of lines of code. It provides no
-;;    functional benefit, only a VISUAL one.
-;; 3. `config-package' -- this evaluates the contained lisp only if the named package
-;;    is installed.
+;; There are 3 ways I install packages/lisp. The lisp folder in my dotfiles
+;; directory, ELPA, and in a "local-package" directory (basically, a dir where
+;; I can git clone interesting packages). For dotfiles/lisp I add the path to
+;; `load-path' and simply require (or autoload) those things. For ELPA
+;; packages I use package.el. For local packages I add that "local packages"
+;; directory to the load-path and require (or autoload them).
 
-(defmacro elisp-group (name doc &rest body)
-  "Group elisp by wrapping in progn.
-Is this a useless macro? Maybe. But it helps keep my init file tidy."
-  (declare (indent defun) (doc-string 2))
-  `(progn ,@body))
-
-(defmacro config-package (package doc &rest body)
+(defmacro elpa-package (package &rest body)
   "Eval BODY only if PACKAGE is installed."
-  (declare (indent defun) (doc-string 2))
-  ;; this could also be an argument, t to select the package, nil to not
-  ;;(add-to-list 'package-selected-packages ,package)
+  (declare (indent defun))
   `(if (package-installed-p ,package)
        (progn ,@body)
      (message (concat "Package \'"
                       (symbol-name ,package)
                       "\' is not installed... skipping config."))))
 
-;; Now that those macros are setup, let's setup some important things that are
-;; required for the rest of this config to work correctly.
+(defvar local-package-dir "~/home/src/lisp/"
+  "Directory containing lisp files which not in dotfiles or an ELPA package.")
 
-(elisp-group environment
-  "Important paths for this setup to work."
+(defmacro local-package (package dir &rest body)
+  "Eval BODY if PACKAGE exists in DIR of `local-package-dir'."
+  (declare (indent defun))
+  `(let* ((package-path (concat local-package-dir ,dir)))
+     (if (file-exists-p package-path)
+         (progn
+           (add-to-list 'load-path package-path)
+           ,@body)
+       (message (concat "Package "
+                        (symbol-name ,package)
+                        " cannot be found at \'"
+                        package-path
+                        "\'... skipping config.")))))
+
+(prog1 "environment"
+  ;; Important paths for this setup to work.
   (cd "~/home/") ; Start in my personal home directory
   (setq org-directory "~/home/org/")
   (defvar user-downloads-directory "~/Desktop/")
   (add-to-list 'load-path "~/home/dot/emacs/lisp/"))
 
-(elisp-group undo/redo
-  "I think Emacs's undo/redo could be simpler. Emacs 28 provides
-everything I need, but I'm still on 27, so I've included a
-backport of those functions, and a handy package (which is not on
-MELPA) for visualizing the undo tree."
-  (require 'undo-backport) ; from Emacs 28
-  ;; vundo creates a tree-like visualization of your undo history
+;; I think Emacs's undo/redo could be simpler. Emacs 28 provides
+;; everything I need, but I'm still on 27, so I've included a
+;; backport of those functions, and a handy package (which is not on
+;; MELPA) for visualizing the undo tree.
+(require 'undo-backport)
+
+(local-package 'vundo "vundo"
+  ;; Vundo creates a tree-like visualization of your undo history
   ;; using only standard Emacs undo commands and data. Requires either
   ;; Emacs 28 or its backported undo functions.
-  (add-to-list 'load-path "~/home/src/lisp/vundo/")
   (require 'vundo))
 
-(elisp-group transient
-  "I use a lot of transients in this config, so I need to make sure it is
-loaded and configured before those are declared below."
+(prog1 "transient"
+  ;; I use a lot of transients in this config, so I need to make sure it is
+  ;; loaded and configured before those are declared below.
   (autoload 'transient-define-prefix "transient" nil t)
   (setq transient-show-popup 1)
   (setq transient-detect-key-conflicts t))
 
-(config-package 'exec-path-from-shell
+(elpa-package 'exec-path-from-shell
   (exec-path-from-shell-initialize))
 
 
@@ -733,8 +735,8 @@ Disables all current themes, then:
   (disable-current-themes)
   (load-theme theme t))
 
-(config-package 'modus-themes
-  "Require and cofigure the modus-themes."
+(elpa-package 'modus-themes
+  ;; Require and cofigure the modus-themes.
   (require 'modus-themes)
   (custom-set-variables
    '(modus-themes-italic-constructs t)
@@ -753,8 +755,8 @@ Disables all current themes, then:
 (setq dark-theme  'modus-vivendi)
 (setq default-theme-color 'light)
 
-(elisp-group set-theme-on-startup
-  "On startup, try to match system color, otherwise load `default-color-theme'."
+(prog1 "set-theme-on-startup"
+  ;; On startup, try to match system color, otherwise load `default-color-theme'.
   (if (ignore-errors (macos-appearance-dark-p))
       (load-theme-dwim 'dark)
     (if (eq default-theme-color 'light)
@@ -766,12 +768,12 @@ Disables all current themes, then:
 
 (setq text-scale-mode-step 1.09)
 
-(elisp-group fontface-setup
-  "Set fonts and their sizes.
-The variable-pitch and fixed-pitch faces have a default height of 1.0,
-which I don't want to mess with because that's what's required to make
-`text-scale-adjust' work correctly. The default height needs to be set,
-and I want the mode-line to be a fixed height, so I set those."
+(prog1 "fontface-setup"
+  ;; Set fonts and their sizes.
+  ;; The variable-pitch and fixed-pitch faces have a default height of 1.0,
+  ;; which I don't want to mess with because that's what's required to make
+  ;; `text-scale-adjust' work correctly. The default height needs to be set,
+  ;; and I want the mode-line to be a fixed height, so I set those.
   (setq line-spacing nil)
   (let ((mono "IBM Plex Mono")
         (vari "IBM Plex Serif")
@@ -1188,14 +1190,13 @@ PROMPT sets the `read-string prompt."
 
 ;;;; Selected Mode
 
-(config-package 'selected
-  "A keymap which activates when the region is active.
-One of the more sublime packages I've stumbled across, `selected' creates a
-keymap that is active any time (and only when) the region is active.
-Wonderful for quickly acting on the active region.
-
-When combined with my navigation keymap the two act like a very lightweight
-vim emulation, but in an entirely emacs-y way."
+(elpa-package 'selected
+  ;; A keymap which activates when the region is active.
+  ;; One of the more sublime packages I've stumbled across, `selected' creates a
+  ;; keymap that is active any time (and only when) the region is active.
+  ;; Wonderful for quickly acting on the active region.
+  ;; When combined with my navigation keymap the two act like a very lightweight
+  ;; vim emulation, but in an entirely emacs-y way.
   (selected-global-mode 1)
   (delete-selection-mode -1)
 
@@ -1219,18 +1220,17 @@ Useful for mode hooks where you don't want selected to be active."
  '(enable-recursive-minibuffers t)
  '(savehist-mode t))
 
-(config-package 'orderless
-  "I would love Emacs less if it weren't for orderless.
-It needs to be required because so many commands rely on the
-completion framework."
+(elpa-package 'orderless
+  ;; I would love Emacs less if it weren't for orderless.
+  ;; It needs to be required because so many commands rely on the
+  ;; completion framework.
   (require 'orderless)
   (custom-set-variables
    '(completion-styles '(orderless))
    '(completion-category-defaults nil)
    '(completion-category-overrides '((file (styles . (partial-completion)))))))
 
-(config-package 'marginalia
-  nil
+(elpa-package 'marginalia
   (marginalia-mode)
   (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle))
 
@@ -1259,12 +1259,6 @@ spot."
   (isearch-mb-mode)
   (add-to-list 'isearch-mb--after-exit #'occur))
 
-(config-package 'consult
-  nil
-  (custom-set-variables
-   '(consult-find-command "fd --color=never --full-path ARG OPTS")
-   '(consult-preview-key nil))
-  (global-set-key [remap yank-pop] 'consult-yank-pop))
 
 
 ;;; Embark
@@ -1426,43 +1420,46 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
 (add-hook 'embark-collect-mode-hook
           (lambda () (interactive)
             (hl-line-mode 1)))
-
-
 ;;; Miscellaneous
+
+(elpa-package 'consult
+  (custom-set-variables
+   '(consult-find-command "fd --color=never --full-path ARG OPTS"))
+  (global-set-key [remap yank-pop] 'consult-yank-pop))
+
 
 (with-eval-after-load 'visual-regexp
   (with-eval-after-load 'visual-regexp-steroids
     (custom-set-variables
      '(vr/engine 'pcre2el))))
 
-(config-package 'fountain-mode
-  "Settings for fountain-mode."
+(elpa-package 'fountain-mode
   (custom-set-variables
    '(fountain-add-continued-dialog nil)
    '(fountain-highlight-elements (quote (section-heading)))))
 
-(config-package 'markdown-mode
-  "It seems everyone wants me to use the extension 'mdown' for
-markdown documents, which for some reason I hate. I have no idea
-why. I prefer 'text'. I probably got the idea here:
-https://daringfireball.net/linked/2014/01/08/markdown-extension"
+(elpa-package 'markdown-mode
+  ;; It seems everyone wants me to use the extension 'mdown' for
+  ;; markdown documents, which for some reason I hate. I have no idea
+  ;; why. I prefer 'text'. I probably got the idea here:
+  ;; https://daringfireball.net/linked/2014/01/08/markdown-extension
   (add-to-list 'auto-mode-alist
                '("\\.text" . markdown-mode)))
 
-(elisp-group 'oblique
-  "Config for oblique package"
-  (add-to-list 'load-path "~/home/src/lisp/oblique-strategies/")
+(local-package 'oblique "oblique-strategies"
   (autoload 'oblique-strategy "oblique")
   (setq initial-scratch-message (concat
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
-(with-eval-after-load 'flyspell
-  (delight 'flyspell-mode " Spell" "flyspell"))
-(add-hook 'text-mode-hook 'turn-on-flyspell)
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+(prog1 "flyspell"
+  (with-eval-after-load 'flyspell
+    (delight 'flyspell-mode " Spell" "flyspell"))
 
-(setq ispell-program-name "/usr/local/bin/aspell")
+  (add-hook 'text-mode-hook 'turn-on-flyspell)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+  (setq ispell-program-name "/usr/local/bin/aspell"))
 
 (with-eval-after-load 'dired
   (setq dired-use-ls-dired nil)
@@ -1471,19 +1468,16 @@ https://daringfireball.net/linked/2014/01/08/markdown-extension"
     (define-key map (kbd "O") 'crux-open-with)
     (define-key map (kbd "s-z") 'dired-undo)))
 
-(config-package 'olivetti
-  nil
+(elpa-package 'olivetti
   (custom-set-variables
    '(olivetti-body-width 86)))
 
-(config-package 'ytdl
-  "YouTube Download"
+(elpa-package 'ytdl
   (setq ytdl-download-folder user-downloads-directory)
   (setq ytdl-media-player "open")
   (setq ytdl-always-query-default-filename 'yes-confirm))
 
-(elisp-group world-clock
-  "Emacs has a world clock!"
+(prog1 "world-clock"
   (defalias 'world-clock 'display-time-world)
   (setq display-time-world-time-format "%Z%t%R%t%F"
         zoneinfo-style-world-list

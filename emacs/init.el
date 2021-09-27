@@ -176,9 +176,6 @@
 
 (add-hook 'prog-mode-hook 'prog-mode-hook-config)
 
-(setq mac-command-modifier 'super
-      mac-option-modifier 'meta)
-
 (defun find-user-init-file ()
   "Find the user-init-file."
   (interactive)
@@ -187,24 +184,27 @@
 ;; If I break my init file it almost always happens after this point in the
 ;; config. So I keep, up here, a basic set of critical keybindings that are
 ;; useful when troubleshooting a broken init file.
-(let ((map global-map))
-  (define-key map (kbd "s-q") 'save-buffers-kill-emacs)
-  (define-key map (kbd "s-N") 'make-frame-command)
-  (define-key map (kbd "s-m") 'iconify-frame)
-  (define-key map (kbd "s-b") 'switch-to-buffer)
-  (define-key map (kbd "s-s") 'save-buffer)
-  (define-key map (kbd "s-f") 'find-file)
-  (define-key map (kbd "s-F") 'find-file-other-window)
-  (define-key map (kbd "s-o") 'other-window)
-  (define-key map (kbd "s-,") 'find-user-init-file)
-  (define-key map (kbd "s-z") 'undo)
-  (define-key map (kbd "s-x") 'kill-region)
-  (define-key map (kbd "s-c") 'kill-ring-save)
-  (define-key map (kbd "s-v") 'yank)
-  (define-key map (kbd "s-<left>") 'beginning-of-visual-line)
-  (define-key map (kbd "s-<right>") 'end-of-visual-line)
-  (define-key map (kbd "s-<up>") 'beginning-of-buffer)
-  (define-key map (kbd "s-<down>") 'end-of-buffer))
+(when (string= system-type "darwin")
+  (setq mac-command-modifier 'super
+        mac-option-modifier 'meta)
+  (let ((map global-map))
+    (define-key map (kbd "s-q") 'save-buffers-kill-emacs)
+    (define-key map (kbd "s-N") 'make-frame-command)
+    (define-key map (kbd "s-m") 'iconify-frame)
+    (define-key map (kbd "s-b") 'switch-to-buffer)
+    (define-key map (kbd "s-s") 'save-buffer)
+    (define-key map (kbd "s-f") 'find-file)
+    (define-key map (kbd "s-F") 'find-file-other-window)
+    (define-key map (kbd "s-o") 'other-window)
+    (define-key map (kbd "s-,") 'find-user-init-file)
+    (define-key map (kbd "s-z") 'undo)
+    (define-key map (kbd "s-x") 'kill-region)
+    (define-key map (kbd "s-c") 'kill-ring-save)
+    (define-key map (kbd "s-v") 'yank)
+    (define-key map (kbd "s-<left>") 'beginning-of-visual-line)
+    (define-key map (kbd "s-<right>") 'end-of-visual-line)
+    (define-key map (kbd "s-<up>") 'beginning-of-buffer)
+    (define-key map (kbd "s-<down>") 'end-of-buffer)))
 
 
 ;;; Critical Setup

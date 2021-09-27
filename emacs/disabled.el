@@ -1041,4 +1041,103 @@ buffer, and exiting the agenda and releasing all the buffers."
   ) ; End dired config
 
 
+;;; Navigation And Selection
+
+
+;;;; Navigation Bindings
+
+;; These are bindings I think should be available in a few different modes.
+;; They are defined inside a function so you can apply these bindings to any
+;; keymap you want simply by calling this function and passing the keymap as
+;; an argument.
+(defun define-navigation-keys (map)
+  "Defines navigation keys for MAP supplied by argument."
+  (interactive "S")
+  (define-key map (kbd ".") 'embark-act)
+  (define-key map (kbd "n") 'next-line)
+  (define-key map (kbd "p") 'previous-line)
+  (define-key map (kbd "<right>") 'forward-char)
+  (define-key map (kbd "<left>") 'backward-char)
+  (define-key map (kbd "f") 'forward-word)
+  (define-key map (kbd "b") 'backward-word)
+  (define-key map (kbd "a") 'beginning-of-line)
+  (define-key map (kbd "e") 'end-of-line)
+  (define-key map (kbd "<") 'beginning-of-buffer)
+  (define-key map (kbd ">") 'end-of-buffer)
+  (define-key map (kbd "{") 'backward-paragraph)
+  (define-key map (kbd "}") 'forward-paragraph)
+  (define-key map (kbd "(") 'backward-sentence)
+  (define-key map (kbd ")") 'forward-sentence)
+  (define-key map (kbd "s") 'isearch-forward)
+  (define-key map (kbd "r") 'isearch-backward)
+  (define-key map (kbd "[") 'scroll-down-line)
+  (define-key map (kbd "]") 'scroll-up-line)
+  (define-key map (kbd "x") 'exchange-point-and-mark))
+
+
+;;;; Navigation Mode
+
+(defvar navigation-mode-map (make-sparse-keymap)
+  "Keymap for `navigation-mode'.")
+
+(defvar navigation-mode-eldoc-message "** Navigation Mode Active **"
+  "Message to be displayed when `navigation-mode' is active.")
+
+(defun navigation-mode-eldoc-function ()
+  (eldoc-message navigation-mode-eldoc-message))
+
+(define-minor-mode navigation-mode
+  "Minor mode for nagivating buffers."
+  :init-value nil
+  :lighter " =NΛV="
+  :keymap navigation-mode-map
+  (if navigation-mode
+      (add-function :before-until
+                    (local 'eldoc-documentation-function)
+                    #'navigation-mode-eldoc-function)
+    (remove-function (local 'eldoc-documentation-function)
+                     #'navigation-mode-eldoc-function)))
+
+(defun navigation-mode-exit-and-mark ()
+  "Exit `navigation-mode' and set the mark."
+  (interactive)
+  (navigation-mode -1)
+  (set-mark-command nil))
+
+(let ((map navigation-mode-map))
+  ;; Apply common navigation keys:
+  (define-navigation-keys map)
+  ;; If you want to override them, just redefine below...
+  (define-key map (kbd "SPC") 'navigation-mode-exit-and-mark)
+  (define-key map (kbd "C-SPC") 'navigation-mode-exit-and-mark)
+  (define-key map (kbd "q")   'navigation-mode))
+
+(define-key global-map (kbd "s-j") 'navigation-mode)
+
+
+;;;; Selected Mode
+
+(elpa-package 'selected
+  ;; A keymap which activates when the region is active.
+  ;; One of the more sublime packages I've stumbled across, `selected' creates a
+  ;; keymap that is active any time (and only when) the region is active.
+  ;; Wonderful for quickly acting on the active region.
+  ;; When combined with my navigation keymap the two act like a very lightweight
+  ;; vim emulation, but in an entirely emacs-y way.
+  (selected-global-mode 1)
+  (delete-selection-mode -1)
+
+  (defun disable-selected-minor-mode ()
+    "Disable the selected minor mode.
+Useful for mode hooks where you don't want selected to be active."
+    (selected-minor-mode -1))
+
+  (with-eval-after-load 'selected
+    (delight 'selected-minor-mode nil "selected")
+    (let ((map selected-keymap))
+      (define-navigation-keys map)
+      (define-key map (kbd "r") 'rectangle-mark-mode)
+      (define-key map (kbd "R") 'replace-rectangle))))
+
+
 ;;; disabled.el ends here

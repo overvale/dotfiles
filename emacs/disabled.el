@@ -6,6 +6,11 @@
 
 ;;; Misc
 
+;; FIXME: Stole this technique from https://svn.red-bean.com/repos/kfogel/trunk/.emacs
+(mapcar (lambda (k) (define-key global-map (car k) (car (cdr k))))
+        (list (list (kbd "s-1") 'switch-to-buffer)
+              (list (kbd "s-2") pkg-ops-map)))
+
 (defun find-emacs-dotfiles ()
   "Find lisp files in your Emacs dotfiles directory, pass to completing-read."
   (interactive)
@@ -104,6 +109,126 @@ For example you might want to do something like:
 
 ;; Finally, add a hook to set the make-record-function
 (add-hook 'eww-mode-hook 'oht-eww-set-bookmark-handler)
+
+
+;;; Embark as Completion Framework
+
+;; The following will allow you to use an embark live collection as your
+;; completion framework. I will freely admit that this is ridiculous. I mean,
+;; who in their right mind would do all this when they could just use
+;; `vertico'? But all of the below allows me to do two important things:
+;; completions are not shown at all until I request them with <TAB>, and upon
+;; doing that I get a live-updating window (importantly) above the minibuffer.
+
+;; Make the list one line per item:
+(setq embark-collect-initial-view-alist '((t . list)))
+
+;; Sort embark candidates
+(setq embark-candidate-collectors
+      (cl-substitute 'embark-sorted-minibuffer-candidates
+                     'embark-minibuffer-candidates
+                     embark-candidate-collectors))
+
+(defun switch-to-embark-completions-maybe ()
+  "Switch to the completions window, if it exists, or another window."
+  (interactive)
+  (if (get-buffer-window "*Embark Collect Completions*")
+      (select-window (get-buffer-window "*Embark Collect Completions*"))
+    (if (get-buffer-window "*Completions*")
+        (progn
+          (select-window (get-buffer-window "*Completions*"))
+          (when (bobp) (next-completion 1)))
+      (message "No completions window"))))
+
+(defun switch-to-minibuffer ()
+  "Focus the active minibuffer.
+Bind this to `completion-list-mode-map' to M-v to easily jump
+between the list of candidates present in the \\*Completions\\*
+buffer and the minibuffer (because by default M-v switches to the
+completions if invoked from inside the minibuffer."
+  (interactive)
+  (let ((mini (active-minibuffer-window)))
+    (when mini
+      (select-window mini))))
+
+(defun fit-window-to-buffer-max-40% (&optional window)
+  "Resize current window to fit buffer or 40% of the frame height."
+  ;; https://github.com/oantolin/emacs-config/blob/5e33f9ec97fdd9d70d2b6204cc754399eaa69662/my-lisp/window-extras.el
+  (fit-window-to-buffer
+   (or window
+       (let ((win (selected-window)))
+         (if (window-minibuffer-p win) minibuffer-scroll-window win)))
+   (floor (* 0.4 (frame-height))) 1))
+
+(defun quit-window-exit-minibuffer nil
+  "Quit the window and then exit the minibuffer.
+Designed to be bound in `embark-collect-mode-map' to cleanly exit
+the completions window and connected minibuffer."
+  (interactive)
+  (quit-window)
+  (switch-to-minibuffer)
+  (minibuffer-keyboard-quit))
+
+(defun embark-minibuffer-completion-help (_start _end)
+  "Embark alternative to minibuffer-completion-help.
+This means you hit TAB to trigger the completions list.
+Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_default_minibuffer/gz5tdeg/"
+  (unless embark-collect-linked-buffer
+    (embark-collect-completions)))
+
+(defun exit-with-top-completion ()
+  "Exit minibuffer with top completion candidate."
+  (interactive)
+  (let ((content (minibuffer-contents-no-properties)))
+    (unless (let (completion-ignore-case)
+              (test-completion content
+                               minibuffer-completion-table
+                               minibuffer-completion-predicate))
+      (when-let ((completions (completion-all-sorted-completions)))
+        (delete-minibuffer-contents)
+        (insert
+         (concat
+          (substring content 0 (or (cdr (last completions)) 0))
+          (car completions)))))
+    (exit-minibuffer)))
+
+(defun apply-completion-bindings (map)
+  "A common set of bindings to use in completion buffers."
+  (define-key map (kbd "n") 'next-completion)
+  (define-key map (kbd "p") 'previous-completion)
+  (define-key map (kbd "M-v") 'switch-to-minibuffer))
+
+(apply-completion-bindings completion-list-mode-map)
+
+(let ((map embark-collect-mode-map))
+  (apply-completion-bindings map)
+  (define-key map (kbd "q") 'quit-window-exit-minibuffer)
+  (define-key map (kbd "C-g") 'quit-window-exit-minibuffer)
+  (define-key map (kbd ".") 'embark-act))
+
+(let ((map minibuffer-local-completion-map))
+  (define-key map (kbd "M-v") 'switch-to-embark-completions-maybe)
+  (define-key map (kbd "C-n") 'switch-to-embark-completions-maybe)
+  (define-key map (kbd "C-p") 'switch-to-embark-completions-maybe))
+
+(define-key minibuffer-local-completion-map (kbd "RET") 'exit-with-top-completion)
+(define-key minibuffer-local-must-match-map (kbd "RET") 'exit-with-top-completion)
+(define-key minibuffer-local-filename-completion-map (kbd "RET") 'exit-with-top-completion)
+
+;; Show completion candidates after typing <tab>:
+(advice-add 'minibuffer-completion-help
+            :override #'embark-minibuffer-completion-help)
+
+;; Automatically show candidates after typing
+;; (add-hook 'minibuffer-setup-hook 'embark-collect-completions-after-input)
+
+;; resize Embark Collect buffer to fit contents
+(add-hook 'embark-collect-post-revert-hook 'fit-window-to-buffer-max-40%)
+
+;; Highlight line in Embark Collect Completions window:
+(add-hook 'embark-collect-mode-hook
+          (lambda () (interactive)
+            (hl-line-mode 1)))
 
 
 ;;; Embark Exit With Top Candidate
@@ -827,6 +952,34 @@ To be used by `eww-after-render-hook'."
 (add-hook 'ibuffer-mode-hook 'ibuffer-setup)
 
 
+;;; iSearch
+
+(elisp-group isearch-config
+  "This does two things, makes the matching fuzzy
+per-line (though not orderless, use consult-lines for that), and
+makes exits exit at the beginning of the match. I think this is a
+more vim-like behavior, which I prefer because it makes it easier
+to set the mark, and search to expand the region to the desired
+spot."
+  (setq search-whitespace-regexp ".*?")
+  (setq isearch-lax-whitespace t)
+  (setq isearch-lazy-count t)
+
+  (defun isearch-exit-at-start ()
+    "Exit search at the beginning of the current match."
+    (when (and isearch-forward
+               (number-or-marker-p isearch-other-end)
+               (not isearch-mode-end-hook-quit))
+      (goto-char isearch-other-end)))
+
+  (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start))
+
+(elpa-package 'isearch-mb
+  nil
+  (isearch-mb-mode)
+  (add-to-list 'isearch-mb--after-exit #'occur))
+
+
 ;;; Pulse
 
 (defun pulse-line ()
@@ -1138,6 +1291,103 @@ Useful for mode hooks where you don't want selected to be active."
       (define-navigation-keys map)
       (define-key map (kbd "r") 'rectangle-mark-mode)
       (define-key map (kbd "R") 'replace-rectangle))))
+
+
+;;; Elfeed
+
+(add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
+(add-hook 'elfeed-show-mode-hook   'disable-selected-minor-mode)
+
+(setq shr-max-image-proportion 0.5
+      shr-width 80
+      shr-bullet "• ")
+
+(with-eval-after-load 'elfeed
+
+  (custom-set-variables
+   '(elfeed-use-curl t)
+   '(elfeed-db-directory (concat user-emacs-directory "elfeed/"))
+   '(elfeed-enclosure-default-dir user-downloads-directory))
+
+  (load "~/home/src/lisp/rss-feeds.el")
+
+  ;; Why doesn't this exist in show mode?
+  (defalias 'elfeed-show-tag--unread (elfeed-expose #'elfeed-show-tag 'unread)
+    "Mark the current entry unread.")
+  (defalias 'elfeed-show-tag--read (elfeed-expose #'elfeed-show-untag 'unread)
+    "Mark the current entry read.")
+
+  ;; Stars in search mode
+  (defalias 'elfeed-search-tag--star (elfeed-expose #'elfeed-search-tag-all 'star)
+    "Add the 'star' tag to all selected entries")
+  (defalias 'elfeed-search-untag--star (elfeed-expose #'elfeed-search-untag-all 'star)
+    "Remove the 'star' tag to all selected entries")
+
+  ;; Stars in show mode
+  (defalias 'elfeed-show-tag--star (elfeed-expose #'elfeed-show-tag 'star)
+    "Add the 'star' tag to current entry")
+  (defalias 'elfeed-show-tag--unstar (elfeed-expose #'elfeed-show-untag 'star)
+    "Remove the 'star' tag to current entry")
+
+  (defun elfeed-search:emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
+  (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs"))
+  (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
+
+  (defun elfeed-search-browse-url-background ()
+    "Visit the current entry, or region entries, in browser without losing focus."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (mapc (lambda (entry)
+              (browse-url-macos-background (elfeed-entry-link entry))
+              (elfeed-untag entry 'unread)
+              (elfeed-search-update-entry entry))
+            entries)
+      (unless (or elfeed-search-remain-on-entry (use-region-p))
+        (forward-line))))
+
+  (defun elfeed-show-visit-background ()
+    "Visit the current entry in your browser using `browse-url'.
+If there is a prefix argument, visit the current entry in the
+browser defined by `browse-url-generic-program'."
+    (interactive)
+    (let ((link (elfeed-entry-link elfeed-show-entry)))
+      (when link
+        (message "Sent to browser: %s" link)
+        (browse-url-macos-background link))))
+
+  (defun elfeed-ytdl-download ()
+    "Jump to next link (always entry link) and call `ytdl-download'."
+    (interactive)
+    (shr-next-link)
+    (ytdl-download))
+
+  (let ((map elfeed-search-mode-map))
+    (define-key map (kbd "b") 'elfeed-search-browse-url-background)
+    (define-key map (kbd "*") 'elfeed-search-tag--star)
+    (define-key map (kbd "8") 'elfeed-search-untag--star)
+    (define-key map (kbd "o") 'delete-other-windows)
+    (define-key map (kbd "E") 'elfeed-search:emacs)
+    (define-key map (kbd "O") 'elfeed-search:other)
+    (define-key map (kbd "S") 'elfeed-search:star))
+
+  (let ((map elfeed-show-mode-map))
+    (define-key map (kbd "r") 'elfeed-show-tag--read)
+    (define-key map (kbd "u") 'elfeed-show-tag--unread)
+    (define-key map (kbd "*") 'elfeed-show-tag--star)
+    (define-key map (kbd "8") 'elfeed-show-tag--unstar)
+    (define-key map (kbd "b") 'elfeed-show-visit-background)
+    (define-key map (kbd "o") 'delete-other-windows)
+    (define-key map (kbd "d") 'elfeed-ytdl-download))
+
+  ) ; End elfeed
+
+
+;;; YTDL
+
+(elpa-package 'ytdl
+  (setq ytdl-download-folder user-downloads-directory)
+  (setq ytdl-media-player "open")
+  (setq ytdl-always-query-default-filename 'yes-confirm))
 
 
 ;;; disabled.el ends here

@@ -168,6 +168,7 @@
  '(tab-width 4)
  '(indent-tabs-mode nil)
  '(fill-column 78)
+ '(completions-format 'vertical)
  '(locate-command "mdfind")
  '(delete-by-moving-to-trash t)
  '(trash-dircetory "~/.Trash"))

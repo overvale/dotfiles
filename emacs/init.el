@@ -80,7 +80,6 @@
         embark-consult
         exec-path-from-shell
         fountain-mode
-        isearch-mb
         lua-mode
         magit
         marginalia

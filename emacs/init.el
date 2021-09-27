@@ -683,16 +683,18 @@ Keybindings you define here will take precedence."
   (interactive)
   (mapcar 'disable-theme custom-enabled-themes))
 
-(defun macos-appearance-dark-p nil
+(defun macos-dark-p ()
   "Return t if macOS appearance is dark."
-  ;; Another option that doesn't require the mac-port:
-  ;; defaults read -g AppleInterfaceStyle
-  (string= (plist-get (mac-application-state) :appearance) "NSAppearanceNameDarkAqua"))
+  (interactive)
+  (string= (shell-command-to-string "defaults read -g AppleInterfaceStyle")
+           "Dark\n"))
 
 (defun macos-toggle-system-appearance nil
   "Toggle macOS's system appearance between dark and light modes."
   (interactive)
   (shell-command-to-string "osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"))
+
+(add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
 
 (defun theme-color-toggle nil
   "Toggle between `light-theme' and `dark-theme'."
@@ -724,13 +726,11 @@ Disables all current themes, then:
          (setq current-theme-color 'dark)
          (load-theme dark-theme t))
         ((string= color "system")
-         (if (macos-appearance-dark-p)
+         (if (macos-dark-p)
              (load-theme-dwim 'dark)
            (load-theme-dwim 'light)))
         ((eq color nil)
          (theme-color-toggle))))
-
-(add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
 
 (defun load-theme-cleanly (theme)
   "Disable active themes, then load theme."
@@ -763,7 +763,7 @@ Disables all current themes, then:
 
 (prog1 "set-theme-on-startup"
   ;; On startup, try to match system color, otherwise load `default-color-theme'.
-  (if (ignore-errors (macos-appearance-dark-p))
+  (if (macos-dark-p)
       (load-theme-dwim 'dark)
     (if (eq default-theme-color 'light)
         (load-theme-dwim 'light)

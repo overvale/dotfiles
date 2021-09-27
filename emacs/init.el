@@ -644,7 +644,6 @@ Keybindings you define here will take precedence."
 
 (let ((map global-map))
   ;; replace mappings
-  (define-key map [remap query-replace] 'vr/query-replace)
   (define-key map [remap capitalize-word] 'capitalize-dwim)
   (define-key map [remap downcase-word]   'downcase-dwim)
   (define-key map [remap upcase-word]     'upcase-dwim)
@@ -1201,10 +1200,13 @@ PROMPT sets the `read-string prompt."
   (setq ctrlf-go-to-end-of-match nil
         ctrlf-default-search-style 'fuzzy))
 
-(with-eval-after-load 'visual-regexp
-  (with-eval-after-load 'visual-regexp-steroids
-    (custom-set-variables
-     '(vr/engine 'pcre2el))))
+(elpa-package 'visual-regexp
+  ;; A reasonable regex engine? Live preview of search and replacement? Yes please!
+  (define-key global-map [remap query-replace] 'vr/query-replace)
+  (with-eval-after-load 'visual-regexp
+    (with-eval-after-load 'visual-regexp-steroids
+      (custom-set-variables
+       '(vr/engine 'pcre2el)))))
 
 (elpa-package 'fountain-mode
   (custom-set-variables

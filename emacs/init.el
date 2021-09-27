@@ -73,7 +73,6 @@
       '(consult
         ctrlf
         delight
-        doom-themes
         embark
         embark-consult
         exec-path-from-shell
@@ -169,10 +168,6 @@
  '(locate-command "mdfind")
  '(delete-by-moving-to-trash t)
  '(trash-dircetory "~/.Trash"))
-
-(dolist (cmd '(upcase-region
-               downcase-region))
-  (put cmd 'disabled nil))
 
 (defun prog-mode-hook-config nil
   (setq-local show-trailing-whitespace t)
@@ -623,9 +618,8 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "s-F") 'find-file-other-window)
   (define-key map (kbd "M-.") 'embark-act)
   (define-key map (kbd "M-'") 'completion-at-point)
-  (define-key map (kbd "M-\\") 'cycle-spacing)
+  (define-key map (kbd "M-<SPC>") 'cycle-spacing)
   (define-key map (kbd "M-z") 'zap-up-to-char)
-  (define-key map (kbd "M-<SPC>") 'push-mark-no-activate)
   (define-key map (kbd "C-d") 'delete-forward-char)
   (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
   (define-key map (kbd "C-x k") 'kill-buffer-dwim))
@@ -850,9 +844,6 @@ Disables all current themes, then:
          (slot . 0)
          (window-parameters . ((no-other-window . nil)))
          (window-height . fit-window-to-buffer))
-        ("\\`\\*Embark Collect Completions\\*"
-         nil
-         (window-parameters (mode-line-format . none)))
         ("\\*wclock.*"
          (display-buffer-at-bottom)
          (window-parameters . ((select . t))))))
@@ -1174,16 +1165,9 @@ PROMPT sets the `read-string prompt."
   (require 'embark)
   (embark-completing-read-prompter (symbol-value (intern keymap)) nil))
 
-(let ((map embark-region-map))
-  (define-key map (kbd "q") 'fill-region))
-
 (let ((map embark-file-map))
   (define-key map (kbd "O") 'crux-open-with)
   (define-key map (kbd "j") 'dired-jump))
-
-(let ((map embark-url-map))
-  (define-key map (kbd "d") 'ytdl-download)
-  (define-key map (kbd "b") 'browse-url-default-macosx-browser))
 
 
 ;;; Miscellaneous
@@ -1332,25 +1316,12 @@ PROMPT sets the `read-string prompt."
           ("LATER" . org-scheduled-previously)))
 
   (setq org-capture-templates
-        `(("p" "Personal")
-          ("pi" "Personal Inbox" entry
+        `(("i" "Personal Inbox" entry
            (file+headline ,(concat org-directory "life.org") "Inbox")
            "* %?\n\n" :empty-lines 1)
-          ("pl" "Personal Log Entry" entry
+          ("l" "Personal Log Entry" entry
            (file+olp+datetree ,(concat org-directory "logbook.org"))
            "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
-          ;; -----------------------------
-          ("s" "Scanline")
-          ("si" "Scanline OPS Inbox" entry
-           (file+headline ,(concat org-directory "scanline.org") "Inbox")
-           "* %?\n\n" :empty-lines 1)
-          ("sf" "Scanline FRANK Inbox" entry
-           (file+headline ,(concat org-directory "scanline_frank.org") "FRANK Inbox")
-           "* %?\n\n" :empty-lines 1)
-          ("sl" "Scanline Log Entry" entry
-           (file+olp+datetree ,(concat org-directory "scanline_logbook.org"))
-           "* %?\n%T\n\n" :empty-lines 1 :tree-type week )
-          ;; -----------------------------
           ("e" "Emacs Config" entry
            (file+headline ,(concat org-directory "emacs.org") "Emacs Config")
            "* TODO %?" :empty-lines 1)
@@ -1466,11 +1437,7 @@ current HH:MM time."
   "General-purpose transient."
   [["Actions/Toggles"
     ("a" "AutoFill" auto-fill-mode)
-    ("j" "Dired Jump" dired-jump)
-    ("." "Repeat Command" repeat-complex-command)
-    ("k" "Bury Buffer" bury-buffer)
-    ("b" "iBuffer" ibuffer)
-    ("p" "Pop to Mode" pop-to-buffer-same-mode)]
+    ("j" "Dired Jump" dired-jump)]
    ["Macros"
     ("m s" "Start" start-kbd-macro)
     ("m e" "End" end-kbd-macro)
@@ -1482,10 +1449,10 @@ current HH:MM time."
     ("2" "Secondary..." secondary-selection-transient)
     ("S" "Spelling..." flyspell-mode-transient)]
    ["Other"
-    ("T" "Toggle macOS Apperance" macos-toggle-system-appearance)
-    ("t" "Load Theme" load-theme-cleanly)
+    ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
     ("d" "Date/Time mode-line" toggle-date-time-battery)
-    ("w" "World Clock" world-clock)
+    ("C" "Calendar" calendar)
+    ("W" "World Clock" world-clock)
     ("s o" "*scratch-org*" scratch-buffer-org)
     ("s m" "*scratch-markdown*" scratch-buffer-markdown)]])
 

@@ -17,18 +17,21 @@
 ;; Every Emacs configuration is unique to the person who created it, to their
 ;; needs and their taste. This one takes the following approach:
 ;;
-;;   + I prefer to write my own code instead of installing packages.
-;;   + I use package.el and don't use Use-Package.
-;;   + The config is a single file.
+;;   + I prefer to write my own code instead of installing packages, because
+;;     I love pain and hate sleep.
+;;   + I use package.el and don't use Use-Package. Get out your pitchfork,
+;;     I'll be waiting for you at the castle.
 ;;   + It is NOT modular, so if you don't have all the listed packages
 ;;     installed large parts of the config won't work. It is also (largely)
 ;;     grouped by topic and not by package, so a package's keybindings might
-;;     be in a few different places.
+;;     be in a few different places. If this drives you crazy simply accept
+;;     that the world is an insane and unfair place and have an ice cream,
+;;     you'll soon feel better.
 ;;   + Symbol names are not prefixed (for the most part) so take care to
-;;     to avoid collisions if you copy them into your own config.
+;;     to avoid collisions if you copy something into your own config. This
+;;     is probably not one of my good ideas.
 
-;; If you like this config I would recommend reading these as well:
-;;
+;; If you like this config I would recommend reading these:
 ;; https://svn.red-bean.com/repos/kfogel/trunk/.emacs
 ;; https://github.com/raxod502/radian
 ;; https://github.com/oantolin/emacs-config
@@ -251,8 +254,7 @@
 
 ;; I think Emacs's undo/redo could be simpler. Emacs 28 provides
 ;; everything I need, but I'm still on 27, so I've included a
-;; backport of those functions, and a handy package (which is not on
-;; MELPA) for visualizing the undo tree.
+;; backport of those functions and...
 (require 'undo-backport)
 
 (local-package 'vundo "vundo"
@@ -734,7 +736,6 @@ Disables all current themes, then:
   (load-theme theme t))
 
 (elpa-package 'modus-themes
-  ;; Require and cofigure the modus-themes.
   (require 'modus-themes)
   (custom-set-variables
    '(modus-themes-italic-constructs t)

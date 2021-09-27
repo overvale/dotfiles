@@ -179,36 +179,6 @@
 
 (add-hook 'prog-mode-hook 'prog-mode-hook-config)
 
-(defun find-user-init-file ()
-  "Find the user-init-file."
-  (interactive)
-  (find-file user-init-file))
-
-;; If I break my init file it almost always happens after this point in the
-;; config. So I keep, up here, a basic set of critical keybindings that are
-;; useful when troubleshooting a broken init file.
-(when (string= system-type "darwin")
-  (setq mac-command-modifier 'super
-        mac-option-modifier 'meta)
-  (let ((map global-map))
-    (define-key map (kbd "s-q") 'save-buffers-kill-emacs)
-    (define-key map (kbd "s-N") 'make-frame-command)
-    (define-key map (kbd "s-m") 'iconify-frame)
-    (define-key map (kbd "s-b") 'switch-to-buffer)
-    (define-key map (kbd "s-s") 'save-buffer)
-    (define-key map (kbd "s-f") 'find-file)
-    (define-key map (kbd "s-F") 'find-file-other-window)
-    (define-key map (kbd "s-o") 'other-window)
-    (define-key map (kbd "s-,") 'find-user-init-file)
-    (define-key map (kbd "s-z") 'undo)
-    (define-key map (kbd "s-x") 'kill-region)
-    (define-key map (kbd "s-c") 'kill-ring-save)
-    (define-key map (kbd "s-v") 'yank)
-    (define-key map (kbd "s-<left>") 'beginning-of-visual-line)
-    (define-key map (kbd "s-<right>") 'end-of-visual-line)
-    (define-key map (kbd "s-<up>") 'beginning-of-buffer)
-    (define-key map (kbd "s-<down>") 'end-of-buffer)))
-
 
 ;;; Critical Setup
 
@@ -278,6 +248,11 @@
 
 ;; Some of these functions I wrote myself, many of them I copied (and perhaps
 ;; modified) from other people's configs.
+
+(defun find-user-init-file ()
+  "Find the user-init-file."
+  (interactive)
+  (find-file user-init-file))
 
 (defun mark-line (arg)
   "Put mark at end of line.
@@ -557,6 +532,10 @@ With a prefix ARG always prompt for command to use."
 
 ;;; Keybindings
 
+(when (string= system-type "darwin")
+  (setq mac-command-modifier 'super
+        mac-option-modifier 'meta))
+
 ;; Emacs Keymap Lookup Order:
 ;; 1. overriding-terminal-local-map
 ;; 2. overriding-local-map
@@ -567,6 +546,11 @@ With a prefix ARG always prompt for command to use."
 ;; 7. text property's 'local-map property
 ;; 8. (current-local-map) (Major Mode)
 ;; 9. (current-global-map) (Global Map)
+
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-x C-z"))
+(global-unset-key [swipe-left])
+(global-unset-key [swipe-right])
 
 ;; The technique below is taken from the bind-key package. It places all the
 ;; bindings I don't want overridden into a minor mode which is inserted into
@@ -588,36 +572,23 @@ Keybindings you define here will take precedence."
 
 (let ((map bosskey-mode-map))
   ;; Mac-like bindings
-  (define-key map (kbd "s-q") 'frames-p-save-buffers-kill-emacs)
-  (define-key map (kbd "s-m") 'iconify-frame)
-  (define-key map (kbd "s-n") 'new-buffer)
-  (define-key map (kbd "s-N") 'make-frame-command)
-  (define-key map (kbd "s-s") 'save-buffer)
-  (define-key map (kbd "s-,") 'find-user-init-file)
-  (define-key map (kbd "s-z") 'undo-only)
-  (define-key map (kbd "s-Z") 'undo-redo)
-  (define-key map (kbd "s-x") 'kill-region)
-  (define-key map (kbd "s-c") 'kill-ring-save)
-  (define-key map (kbd "s-v") 'yank)
-  (define-key map (kbd "s-<backspace>") 'backward-kill-line)
-  (define-key map (kbd "s-<left>") 'beginning-of-visual-line)
-  (define-key map (kbd "s-<right>") 'end-of-visual-line)
-  (define-key map (kbd "s-<up>") 'beginning-of-buffer)
-  (define-key map (kbd "s-<down>") 'end-of-buffer)
-  ;; Emacs keybinding tweaks
-  (define-key map (kbd "s-<return>") 'general-transient)
-  (define-key map (kbd "s-S-<return>") 'call-mode-help-transient)
-  (define-key map (kbd "s-]") 'next-buffer)
-  (define-key map (kbd "s-[") 'previous-buffer)
-  (define-key map (kbd "s-{") 'pop-to-mark-command)
-  (define-key map (kbd "s-}") 'unpop-to-mark-command)
-  (define-key map (kbd "s-b") 'consult-buffer)
-  (define-key map (kbd "s-B") 'consult-buffer-other-window)
-  (define-key map (kbd "s-w") 'window-transient)
-  (define-key map (kbd "s-k") 'org-capture)
-  (define-key map (kbd "s-a") 'org-agenda)
-  (define-key map (kbd "s-f") 'find-file)
-  (define-key map (kbd "s-F") 'find-file-other-window)
+  (define-key map (kbd "C-x c") 'frames-p-save-buffers-kill-emacs)
+  (define-key map (kbd "C-x C-n") 'new-buffer)
+  (define-key map (kbd "C-x n") 'make-frame-command)
+  (define-key map (kbd "C-/") 'undo-only)
+  (define-key map (kbd "M-/") 'undo-redo)
+  (define-key map (kbd "M-o") 'other-window)
+  (define-key map (kbd "M-<SPC>") 'general-transient)
+  (define-key map (kbd "M-S-<SPC>") 'call-mode-help-transient)
+  (define-key map (kbd "C-M-]") 'next-buffer)
+  (define-key map (kbd "C-M-[") 'previous-buffer)
+  (define-key map (kbd "C-M-{") 'pop-to-mark-command)
+  (define-key map (kbd "C-M-}") 'unpop-to-mark-command)
+  (define-key map (kbd "C-x C-b") 'consult-buffer)
+  (define-key map (kbd "C-x b") 'consult-buffer-other-window)
+  (define-key map (kbd "C-x C-f") 'find-file)
+  (define-key map (kbd "C-x f") 'find-file-other-window)
+  (define-key map (kbd "M-1") 'window-transient)
   (define-key map (kbd "M-.") 'embark-act)
   (define-key map (kbd "M-'") 'completion-at-point)
   (define-key map (kbd "M-<SPC>") 'cycle-spacing)
@@ -626,16 +597,15 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
   (define-key map (kbd "C-x k") 'kill-buffer-dwim))
 
-;; For bindings that I do want to be overriden by minor modes and the like, I
-;; use the built-in `global-map' and all the standard tools. Nothing fancy.
-
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "C-x C-z"))
-(global-unset-key [swipe-left])
-(global-unset-key [swipe-right])
+(when (string= system-type "darwin")
+  (define-key bosskey-mode-map (kbd "s-m") 'iconify-frame)
+  (define-key bosskey-mode-map (kbd "s-,") 'find-user-init-file))
+
+;; For bindings that I do want to be overriden by minor modes and the like, I
+;; use the built-in `global-map' and all the standard tools. Nothing fancy.
 
 (let ((map global-map))
   ;; replace mappings

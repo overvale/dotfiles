@@ -1174,6 +1174,7 @@ PROMPT sets the `read-string prompt."
 ;;; Miscellaneous
 
 (elpa-package 'consult
+  (consult-customize consult-buffer :preview-key nil)
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
   (global-set-key [remap yank-pop] 'consult-yank-pop))

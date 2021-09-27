@@ -1233,7 +1233,7 @@ PROMPT sets the `read-string prompt."
 (prog1 "world-clock"
   (defalias 'world-clock 'display-time-world)
   (setq display-time-world-time-format "%Z%t%R%t%F"
-        zoneinfo-style-world-list
+        display-time-world-list
         '(("America/Los_Angeles" "Los Angeles")
           ("America/Chicago" "Chicago")
           ("America/Montreal" "Montreal")
@@ -1403,7 +1403,7 @@ current HH:MM time."
 ;; sanity. I really wish this wasn't necessary. Also see:
 ;; https://emacs.stackexchange.com/a/14818
 
-(define-transient-command org-todo-transient ()
+(transient-define-prefix org-todo-transient ()
   [["Org TODO Status"
     ("t" "TODO"     (lambda () (interactive) (org-todo "TODO")))
     ("g" "DELG"     (lambda () (interactive) (org-todo "DELG")))
@@ -1417,7 +1417,7 @@ current HH:MM time."
   (define-key org-mode-map (kbd "C-c C-t") 'org-todo-transient))
 
 
-(define-transient-command org-agenda-todo-transient ()
+(transient-define-prefix org-agenda-todo-transient ()
   [["Org TODO Status"
     ("t" "TODO"     (lambda () (interactive) (org-agenda-todo "TODO")))
     ("g" "DELG"     (lambda () (interactive) (org-agenda-todo "DELG")))

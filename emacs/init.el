@@ -56,18 +56,18 @@
                                    ("melpa" . 10)
                                    ("gnu-devel" . 0)))
 
-(setq pkg-ops-map
-      (let ((map (make-sparse-keymap "Packages")))
-        (define-key map "h" '("describe" . describe-package))
-        (define-key map "a" '("autoremove" . package-autoremove))
-        (define-key map "d" '("delete" . package-delete))
-        (define-key map "i" '("install" . package-install))
-        (define-key map "s" '("selected" . package-install-selected-packages))
-        (define-key map "r" '("refresh" . package-refresh-contents))
-        (define-key map "l" '("list" . list-packages))
-        map))
+(define-prefix-command 'pkg-ops-map nil "Packages")
 
-(global-set-key (kbd "C-c p") pkg-ops-map)
+(let ((map pkg-ops-map))
+  (define-key map "h" '("describe" . describe-package))
+  (define-key map "a" '("autoremove" . package-autoremove))
+  (define-key map "d" '("delete" . package-delete))
+  (define-key map "i" '("install" . package-install))
+  (define-key map "s" '("selected" . package-install-selected-packages))
+  (define-key map "r" '("refresh" . package-refresh-contents))
+  (define-key map "l" '("list" . list-packages)))
+
+(global-set-key (kbd "C-c p") 'pkg-ops-map)
 
 (setq package-selected-packages
       '(bicycle

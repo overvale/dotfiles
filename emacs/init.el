@@ -70,8 +70,7 @@
 (global-set-key (kbd "C-c p") 'pkg-ops-map)
 
 (setq package-selected-packages
-      '(bicycle
-        consult
+      '(consult
         ctrlf
         delight
         doom-themes
@@ -1112,13 +1111,13 @@ PROMPT sets the `read-string prompt."
 (delight 'outline-minor-mode " Out" "outline")
 
 (with-eval-after-load 'outline
-  ;; If you instead bind these in `outline-minor-mode' they might not be
-  ;; properly overridden by other minor modes, like org-mode. So a global
-  ;; binding is safer.
-  (global-set-key (kbd "C-<tab>") 'bicycle-cycle)
-  (global-set-key (kbd "S-<tab>") 'bicycle-cycle-global))
-
-
+  (require 'outline-cycle-backport)
+  (let ((map outline-minor-mode-map))
+    (define-key map (kbd "TAB")
+      `(menu-item "" outline-cycle
+                  :filter ,(lambda (cmd)
+                             (when (outline-on-heading-p) cmd))))
+    (define-key map (kbd "<backtab>") #'outline-cycle-buffer)))
 
 
 ;;; Minibuffer

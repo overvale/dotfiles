@@ -870,13 +870,8 @@ This function is designed to be called from `kill-buffer-query-functions'."
 ;; org-mode (for editing text you're going to paste into a reddit
 ;; comment/post, for example).
 
-(defvar scratch-markdown-initial-message nil
+(defvar scratch-markdown-initial-message "<!-- Scratch Buffer for Markdown Mode -->\n\n"
   "Message to be inserted in markdown scratch buffer.")
-
-;; Add date/time to scratch-org-buffer message
-(setq scratch-markdown-initial-message
-      (concat "<!-- Scratch Buffer for Markdown Mode"
-              " -- " (format-time-string "%Y-%m-%d %a %H:%M -->\n\n")))
 
 (defvar scratch-markdown-buffer "*scratch-markdown*"
   "Name of markdown scratch buffer.")
@@ -896,13 +891,8 @@ This function is designed to be called from `kill-buffer-query-functions'."
           (insert scratch-markdown-initial-message)
           (not-modified))))))
 
-(defvar scratch-org-initial-message nil
+(defvar scratch-org-initial-message "# Scratch Buffer for Org Mode\n\n"
   "Message to be inserted in org scratch buffer.")
-
-;; Add date/time to scratch-org-buffer message
-(setq scratch-org-initial-message
-      (concat "# Scratch Buffer for Org Mode\n"
-              "# " (format-time-string "[%Y-%m-%d %a %H:%M]\n\n")))
 
 (defvar scratch-org-buffer "*scratch-org*"
   "Name of org-mode scratch buffer.")

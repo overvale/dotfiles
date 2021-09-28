@@ -546,7 +546,6 @@ Keybindings you define here will take precedence."
              `((bosskey-mode . ,bosskey-mode-map)))
 
 (let ((map bosskey-mode-map))
-  ;; Mac-like bindings
   (define-key map (kbd "C-x c") 'frames-p-save-buffers-kill-emacs)
   (define-key map (kbd "C-x C-n") 'new-buffer)
   (define-key map (kbd "C-x n") 'make-frame-command)
@@ -566,7 +565,6 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "M-1") 'window-transient)
   (define-key map (kbd "M-.") 'embark-act)
   (define-key map (kbd "M-'") 'completion-at-point)
-  (define-key map (kbd "M-<SPC>") 'cycle-spacing)
   (define-key map (kbd "M-z") 'zap-up-to-char)
   (define-key map (kbd "C-d") 'delete-forward-char)
   (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
@@ -1091,7 +1089,7 @@ PROMPT sets the `read-string prompt."
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   (let ((map dired-mode-map))
     (define-key map (kbd "O") 'crux-open-with)
-    (define-key map (kbd "s-z") 'dired-undo)))
+    (define-key map (kbd "C-/") 'dired-undo)))
 
 (elpa-package 'olivetti
   (custom-set-variables
@@ -1236,7 +1234,7 @@ PROMPT sets the `read-string prompt."
     (define-key map (kbd "K") 'org-agenda-capture)
     (define-key map (kbd "S") 'org-agenda-schedule)
     (define-key map (kbd "D") 'org-agenda-deadline)
-    (define-key map (kbd "s-z") 'org-agenda-undo)))
+    (define-key map (kbd "C-/") 'org-agenda-undo)))
 
 
 ;;;; Calendar <--> Org Integration

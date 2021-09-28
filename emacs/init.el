@@ -925,41 +925,21 @@ PROMPT sets the `read-string prompt."
   (vertico-mode))
 
 
-;;; Embark
-
-(require 'embark)
-(require 'embark-consult)
-
-(custom-set-variables
- '(embark-indicators '(embark-verbose-indicator
-                       embark-highlight-indicator
-                       embark-isearch-highlight-indicator))
- '(embark-verbose-indicator-display-action
-   '(display-buffer-at-bottom (window-height . fit-window-to-buffer))))
-
-(setq prefix-help-command 'embark-prefix-help-command)
-
-(define-key bosskey-mode-map (kbd "C-h b") 'embark-bindings)
-
-(defun embark-describe-keymap (keymap)
-  ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/help-extras.el
-  "Prompt for KEYMAP and show its bindings using `completing-read'."
-  (interactive
-   (list
-    (completing-read "Keymap: "
-                     (cl-loop for x being the symbols
-                              if (and (boundp x) (keymapp (symbol-value x)))
-                              collect (symbol-name x))
-                     nil t nil 'variable-name-history)))
-  (require 'embark)
-  (embark-completing-read-prompter (symbol-value (intern keymap)) nil))
-
-(let ((map embark-file-map))
-  (define-key map (kbd "O") 'crux-open-with)
-  (define-key map (kbd "j") 'dired-jump))
-
-
 ;;; Miscellaneous
+
+(elpa-package 'embark
+  (custom-set-variables
+   '(prefix-help-command 'embark-prefix-help-command)
+   '(embark-indicators '(embark-verbose-indicator
+                         embark-highlight-indicator
+                         embark-isearch-highlight-indicator))
+   '(embark-verbose-indicator-display-action
+     '(display-buffer-at-bottom (window-height . fit-window-to-buffer))))
+
+  (with-eval-after-load 'embark
+    (let ((map embark-file-map))
+      (define-key map (kbd "O") 'crux-open-with)
+      (define-key map (kbd "j") 'dired-jump))))
 
 (elpa-package 'consult
   (consult-customize consult-buffer :preview-key nil)

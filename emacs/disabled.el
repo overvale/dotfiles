@@ -17,6 +17,30 @@
   (find-file (completing-read "Find Elisp Dotfile: "
                               (directory-files-recursively oht-dotfiles "\.el$"))))
 
+(defun package-menu-filter-by-status (status)
+  ;; https://github.com/jcs090218/jcs-emacs/blob/38cce9fc9046ef436c59e13d9942a719dc1e8f2e/.emacs.jcs/jcs-package.el#L582
+  "Filter the *Packages* buffer by STATUS."
+  (interactive
+   (list (completing-read
+          "Status: " '("ALL"
+                       "available"
+                       "built-in"
+                       "dependency"
+                       "incompat"
+                       "installed"
+                       "new"
+                       "obsolete"))))
+  (if (string= status "ALL")
+      (package-list-packages)
+    (package-menu-filter (concat "status:" status))))
+
+(define-key package-menu-mode-map (kbd "/ s") 'package-menu-filter-by-status)
+
+(defun browse-url-macos-background (url)
+  "Open URL with macOS `open'."
+  (interactive)
+  (start-process "open url"
+                 nil "open" "--background" url))
 
 ;;; Mac Style Tabs
 
@@ -1388,6 +1412,76 @@ browser defined by `browse-url-generic-program'."
   (setq ytdl-download-folder user-downloads-directory)
   (setq ytdl-media-player "open")
   (setq ytdl-always-query-default-filename 'yes-confirm))
+
+
+;;; Secondary Selection
+
+;; Emacs's Secondary Selection assumes you only want to interact with it via
+;; the mouse, however it is perfectly possible to do it via the keyboard, all
+;; you need is some wrapper functions to make things keybinding-addressable.
+;; I've also included a set of mouse-bindings and a transient to make things
+;; easier still.
+
+(defun kill-secondary ()
+  "Kill the secondary selection."
+  (interactive)
+  (mouse-kill-secondary))
+
+(defun kill-ring-save-secondary ()
+  "Save the secondary selection to the kill ring."
+  (interactive)
+  ;; there isn't a keybinding-addressable function to kill-ring-save
+  ;; the 2nd selection so here I've made my own. This is extracted
+  ;; directly from 'mouse.el:mouse-secondary-save-then-kill'
+  (kill-new
+   (buffer-substring (overlay-start mouse-secondary-overlay)
+                     (overlay-end mouse-secondary-overlay))
+   t))
+
+(defun kill-secondary-yank ()
+  "Kill the secondary selection and yank at point."
+  (interactive)
+  (mouse-kill-secondary)
+  (yank))
+
+(defun kill-ring-save-secondary-yank ()
+  "Save the secondary selection to kill ring and yank at point."
+  (interactive)
+  (oht/copy-secondary-selection)
+  (yank))
+
+(defun mark-region-as-secondary ()
+  "Mark the region as the secondary selection."
+  (interactive)
+  (secondary-selection-from-region))
+
+(defun mark-secondary ()
+  "Mark the secondary selection."
+  (interactive)
+  (secondary-selection-to-region))
+
+(defun deactivate-secondary ()
+  "Deactivate the secondary selection."
+  (interactive)
+  (delete-overlay mouse-secondary-overlay))
+
+(let ((map global-map))
+  (define-key map [C-M-mouse-1] 'mouse-start-secondary)
+  (define-key map [C-M-drag-mouse-1] 'mouse-set-secondary)
+  (define-key map [C-M-down-mouse-1] 'mouse-drag-secondary))
+
+(transient-define-prefix secondary-selection-transient ()
+  "Transient for working with the secondary selection"
+  [["Cut/Copy"
+    ("xx" "Cut 2nd" kill-secondary)
+    ("cc" "Copy 2nd" kill-ring-save-secondary)]
+   ["& Paste"
+    ("xv" "Cut 2nd & Paste" kill-secondary-yank)
+    ("cv" "Copy 2nd & Paste" kill-ring-save-secondary-yank)]
+   ["Mark"
+    ("m"  "Mark Region as 2nd" mark-region-as-secondary)
+    ("g"  "Make 2nd the Region" mark-secondary)
+    ("d"  "Delete 2nd" deactivate-secondary)]])
 
 
 ;;; disabled.el ends here

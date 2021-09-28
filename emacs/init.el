@@ -299,31 +299,6 @@ argument makes the windows rotate backwards."
   (interactive)
   (split-window-sensibly))
 
-(defun narrow-or-widen-dwim (p)
-  ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/narrow-extras.el
-  "Widen if buffer is narrowed, narrow-dwim otherwise.
-Dwim means: region, org-src-block, org-subtree, or defun,
-whichever applies first. Narrowing to org-src-block actually
-calls `org-edit-src-code'.
-With prefix P, don't widen, just narrow even if buffer is
-already narrowed."
-  (interactive "P")
-  (declare (interactive-only))
-  (cond ((and (buffer-narrowed-p) (not p)) (widen))
-        ((and (bound-and-true-p org-src-mode) (not p))
-         (org-edit-src-exit))
-        ((region-active-p)
-         (narrow-to-region (region-beginning) (region-end)))
-        ((derived-mode-p 'org-mode)
-         (or (ignore-errors (org-edit-src-code))
-             (ignore-errors (org-narrow-to-block))
-             (org-narrow-to-subtree)))
-        ((derived-mode-p 'latex-mode)
-         (LaTeX-narrow-to-environment))
-        ((derived-mode-p 'tex-mode)
-         (TeX-narrow-to-group))
-        (t (narrow-to-defun))))
-
 (defun find-file-recursively (&optional path)
   "Find Files Recursively using completing read.
 Uses the `default-directory' unless a path is supplied."
@@ -343,13 +318,6 @@ If no region is active, then just swap point and mark."
     (exchange-point-and-mark)
     (deactivate-mark nil)))
 
-(defun push-mark-no-activate ()
-  "Pushes `point' to `mark-ring' and does not activate the region
-   Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled"
-  (interactive)
-  (push-mark (point) t nil)
-  (message "Pushed mark to ring"))
-
 (defun unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
   ;; https://stackoverflow.com/a/14539202
@@ -361,50 +329,12 @@ If no region is active, then just swap point and mark."
     (setq mark-ring (nbutlast mark-ring))
     (goto-char (marker-position (car (last mark-ring))))))
 
-(defun org-insert-date-today ()
-  "Insert today's date using standard org formatting."
-  (interactive)
-  (insert (format-time-string "<%Y-%m-%d %a>")))
-
-(defun org-insert-date-today-inactive ()
-  "Inserts today's date in org inactive format."
-  (interactive)
-  (insert (format-time-string "\[%Y-%m-%d %a\]")))
-
 (defun kill-buffer-dwim (&optional u-arg)
   "Call kill-current-buffer, with C-u: call kill-buffer."
   (interactive "P")
   (if u-arg
       (call-interactively 'kill-buffer)
     (call-interactively 'kill-current-buffer)))
-
-(defun line-spacing-interactive (&optional arg)
-  "Locally sets the `line-spacing' variable. Takes an argument, 0 by default."
-  (interactive "P")
-  (setq-local line-spacing arg))
-
-(defun kill-matching-lines (regexp &optional rstart rend interactive)
-  "Kill lines containing matches for REGEXP.
-
-See `flush-lines' or `keep-lines' for behavior of this command.
-
-If the buffer is read-only, Emacs will beep and refrain from deleting
-the line, but put the line in the kill ring anyway.  This means that
-you can use this command to copy text from a read-only buffer.
-\(If the variable `kill-read-only-ok' is non-nil, then this won't
-even beep.)"
-  (interactive
-   (keep-lines-read-args "Kill lines containing match for regexp"))
-  (let ((buffer-file-name nil)) ;; HACK for `clone-buffer'
-    (with-current-buffer (clone-buffer nil nil)
-      (let ((inhibit-read-only t))
-        (keep-lines regexp rstart rend interactive)
-        (kill-region (or rstart (line-beginning-position))
-                     (or rend (point-max))))
-      (kill-buffer)))
-  (unless (and buffer-read-only kill-read-only-ok)
-    ;; Delete lines or make the "Buffer is read-only" error.
-    (flush-lines regexp rstart rend interactive)))
 
 (defun unfill-paragraph ()
   "Remove all newlines from paragraph."
@@ -457,17 +387,13 @@ With a prefix ARG always prompt for command to use."
           (rename-file filename new-name t)
           (set-visited-file-name new-name t t)))))))
 
-(defun crux-delete-file-and-buffer ()
-  "Kill the current buffer and deletes the file it is visiting."
+(defun kf-make-file-executable ()
+  "Make current buffer's file have permissions 755 \(rwxr-xr-x)\.
+This will save the buffer if it is not currently saved."
   (interactive)
-  (let ((filename (buffer-file-name)))
-    (when filename
-      (if (vc-backend filename)
-          (vc-delete-file filename)
-        (when (y-or-n-p (format "Are you sure you want to delete %s? " filename))
-          (delete-file filename delete-by-moving-to-trash)
-          (message "Deleted file %s" filename)
-          (kill-buffer))))))
+  (set-buffer-modified-p t)
+  (save-buffer)
+  (chmod (buffer-file-name) 493))
 
 (defun olivertaylor.net ()
   "Helpful stuff for coding my website."
@@ -484,25 +410,27 @@ With a prefix ARG always prompt for command to use."
         nil)
     (save-buffers-kill-emacs)))
 
-(defun backward-kill-line nil
-  "Kill backward to the start of line."
-  (interactive)
-  (kill-line 0))
-
 (defun describe-symbol-at-point ()
-  "Run `describe-symbol' for the `symbol-at-point."
+  "Run `describe-symbol' for the `symbol-at-point'."
   (interactive)
   (describe-symbol (symbol-at-point)))
 
-(defun pop-to-buffer-same-mode (&rest modes)
-  "Pop to a buffer with a mode among MODES, or the current one if not given."
-  ;; https://jao.io/blog/2021-09-08-high-signal-to-noise-emacs-command.html
-  (interactive)
-  (let* ((modes (or modes (list major-mode)))
-         (pred (lambda (b)
-                 (let ((b (get-buffer (if (consp b) (car b) b))))
-                   (member (buffer-local-value 'major-mode b) modes)))))
-    (pop-to-buffer (read-buffer "Buffer: " nil t pred))))
+(defun kf-insert-arrow (type)
+  "Insert an arrow of TYPE, where type is a single letter:
+    - \"[u]p\"
+    - \"[d]own\"
+    - \"[l]eft\"
+    - \"[r]ight\"
+    - \"[h]orizontal double arrow\"
+    - \"[v]ertical double arrow\""
+  (interactive
+   "cArrow type ([u]p, [d]own, [l]eft, [r]ight, [h]oriz, [v]ert): ")
+    (insert (cdr (assoc type '((?u . ?↑)
+                               (?d . ?↓)
+                               (?l . ?←)
+                               (?r . ?→)
+                               (?h . ?↔)
+                               (?v . ?↕))))))
 
 
 ;;; Keybindings
@@ -827,9 +755,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("<right>" "→" windmove-right :transient t)
     ("<up>"    "↑" windmove-up    :transient t)
     ("<down>"  "↓" windmove-down  :transient t)]
-   ["Undo/Redo"
-    ("C-/" "Winner Undo" winner-undo :transient t)
-    ("M-/" "Winner Redo" winner-redo :transient t)]
    ["Exit"
     ("q" "Quit" transient-quit-all)]])
 
@@ -1296,23 +1221,21 @@ current HH:MM time."
   (define-key org-agenda-mode-map (kbd "t") 'org-agenda-todo-transient))
 
 
-;;; Transient
+;;; Transients
 
 (transient-define-prefix general-transient ()
   "General-purpose transient."
   [["Actions/Toggles"
     ("a" "AutoFill" auto-fill-mode)
-    ("j" "Dired Jump" dired-jump)]
+    ("j" "Dired Jump" dired-jump)
+    ("c l" "Line" consult-line)
+    ("c o" "Outline" consult-outline)
+    ("c g" "Grep" consult-grep)]
    ["Macros"
     ("m s" "Start" start-kbd-macro)
     ("m e" "End" end-kbd-macro)
     ("m c" "Call" call-last-kbd-macro)
     ("m r" "" apply-macro-to-region-lines)]
-   ["Transients"
-    ("o" "Org..." general-transient--org)
-    ("c" "Consult..." general-transient--consult)
-    ("2" "Secondary..." secondary-selection-transient)
-    ("S" "Spelling..." flyspell-mode-transient)]
    ["Other"
     ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
     ("d" "Date/Time mode-line" toggle-date-time-battery)
@@ -1321,46 +1244,6 @@ current HH:MM time."
     ("s o" "*scratch-org*" scratch-buffer-org)
     ("s m" "*scratch-markdown*" scratch-buffer-markdown)]])
 
-(transient-define-prefix general-transient--org ()
-  "Transient for Org commands useful outside org mode."
-  ["Org Mode"
-   [("s" "Store Link" org-store-link)]
-   [("D" "Find Org Dir" find-org-directory)
-    ("F" "Find Org Files..." find-org-files)
-    ("H" "Find Org Heading" consult-org-agenda)
-    ("G" "Grep Org Files" consult-grep-orgfiles)]])
-
-(transient-define-prefix general-transient--consult ()
-  ["Consult"
-   ("l" "Line" consult-line)
-   ("o" "Outline" consult-outline)
-   ("g" "Grep" consult-grep)
-   ("b" "Buffer" consult-buffer)
-   ("a" "Apropos" consult-apropos)
-   ("m" "Marks" consult-mark)
-   ("M" "Minor Modes" consult-minor-mode-menu)])
-
-(with-eval-after-load 'flyspell
-  (transient-define-prefix flyspell-mode-transient ()
-    "Transient for a spelling interface"
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    [["Toggle Modes"
-      ("m" "Flyspell" flyspell-mode)
-      ("M" "Prog Flyspell" flyspell-prog-mode)]
-     ["Check"
-      ("b" "Buffer" flyspell-buffer)
-      ("r" "Region" flyspell-region)]
-     ["Correction"
-      ("n" "Next" flyspell-goto-next-error)
-      ("<return>" "Fix" ispell-word)
-      ("<SPC>" "Auto Fix" flyspell-auto-correct-word)
-      ("<DEL>" "Delete Word" kill-word)
-      ("C-/" "Undo" undo-only)
-      ("M-/" "Redo" undo-redo)]]))
-
-
-;;;; Mode Help Transients
 
 ;; Emacs has so many modes. Who can remember all the commands? These
 ;; mode-specific transients are designed to help with that.
@@ -1423,8 +1306,6 @@ current HH:MM time."
       (">" "Final Node" Info-final-node)
       ("[" "Forward Node" Info-backward-node)
       ("]" "Backward Node" Info-forward-node)]]))
-
-
 
 
 ;;; End of init.el

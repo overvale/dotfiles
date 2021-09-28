@@ -42,6 +42,105 @@
   (start-process "open url"
                  nil "open" "--background" url))
 
+
+(defun narrow-or-widen-dwim (p)
+  ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/narrow-extras.el
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or defun,
+whichever applies first. Narrowing to org-src-block actually
+calls `org-edit-src-code'.
+With prefix P, don't widen, just narrow even if buffer is
+already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((and (bound-and-true-p org-src-mode) (not p))
+         (org-edit-src-exit))
+        ((region-active-p)
+         (narrow-to-region (region-beginning) (region-end)))
+        ((derived-mode-p 'org-mode)
+         (or (ignore-errors (org-edit-src-code))
+             (ignore-errors (org-narrow-to-block))
+             (org-narrow-to-subtree)))
+        ((derived-mode-p 'latex-mode)
+         (LaTeX-narrow-to-environment))
+        ((derived-mode-p 'tex-mode)
+         (TeX-narrow-to-group))
+        (t (narrow-to-defun))))
+
+(defun push-mark-no-activate ()
+  "Pushes `point' to `mark-ring' and does not activate the region
+   Equivalent to \\[set-mark-command] when \\[transient-mark-mode] is disabled"
+  (interactive)
+  (push-mark (point) t nil)
+  (message "Pushed mark to ring"))
+
+(defun org-insert-date-today ()
+  "Insert today's date using standard org formatting."
+  (interactive)
+  (insert (format-time-string "<%Y-%m-%d %a>")))
+
+(defun org-insert-date-today-inactive ()
+  "Inserts today's date in org inactive format."
+  (interactive)
+  (insert (format-time-string "\[%Y-%m-%d %a\]")))
+
+(defun line-spacing-interactive (&optional arg)
+  "Locally sets the `line-spacing' variable. Takes an argument, 0 by default."
+  (interactive "P")
+  (setq-local line-spacing arg))
+
+(defun kill-matching-lines (regexp &optional rstart rend interactive)
+  "Kill lines containing matches for REGEXP.
+
+See `flush-lines' or `keep-lines' for behavior of this command.
+
+If the buffer is read-only, Emacs will beep and refrain from deleting
+the line, but put the line in the kill ring anyway.  This means that
+you can use this command to copy text from a read-only buffer.
+\(If the variable `kill-read-only-ok' is non-nil, then this won't
+even beep.)"
+  (interactive
+   (keep-lines-read-args "Kill lines containing match for regexp"))
+  (let ((buffer-file-name nil)) ;; HACK for `clone-buffer'
+    (with-current-buffer (clone-buffer nil nil)
+      (let ((inhibit-read-only t))
+        (keep-lines regexp rstart rend interactive)
+        (kill-region (or rstart (line-beginning-position))
+                     (or rend (point-max))))
+      (kill-buffer)))
+  (unless (and buffer-read-only kill-read-only-ok)
+    ;; Delete lines or make the "Buffer is read-only" error.
+    (flush-lines regexp rstart rend interactive)))
+
+(defun crux-delete-file-and-buffer ()
+  "Kill the current buffer and deletes the file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (when filename
+      (if (vc-backend filename)
+          (vc-delete-file filename)
+        (when (y-or-n-p (format "Are you sure you want to delete %s? " filename))
+          (delete-file filename delete-by-moving-to-trash)
+          (message "Deleted file %s" filename)
+          (kill-buffer))))))
+
+(defun backward-kill-line nil
+  "Kill backward to the start of line."
+  (interactive)
+  (kill-line 0))
+
+(defun pop-to-buffer-same-mode (&rest modes)
+  "Pop to a buffer with a mode among MODES, or the current one if not given."
+  ;; https://jao.io/blog/2021-09-08-high-signal-to-noise-emacs-command.html
+  (interactive)
+  (let* ((modes (or modes (list major-mode)))
+         (pred (lambda (b)
+                 (let ((b (get-buffer (if (consp b) (car b) b))))
+                   (member (buffer-local-value 'major-mode b) modes)))))
+    (pop-to-buffer (read-buffer "Buffer: " nil t pred))))
+
+
 ;;; Mac Style Tabs
 
 (defun oht-mac-new-tab ()
@@ -1055,6 +1154,15 @@ mode into a global minor mode and enable it."
 
 ;;; Org
 
+(defun echo-area-tooltips ()
+  "Show tooltips in the echo area automatically for current buffer."
+  (setq-local help-at-pt-display-when-idle t
+              help-at-pt-timer-delay 0)
+  (help-at-pt-cancel-timer)
+  (help-at-pt-set-timer))
+
+(add-hook 'org-mode-hook #'echo-area-tooltips)
+
 ;; Org Agenda pop-up window
 
 (defun oht-org-agenda-exit-delete-window ()
@@ -1106,7 +1214,11 @@ buffer, and exiting the agenda and releasing all the buffers."
          (float-time (time-subtract (current-time)
                                     before-user-init-time)))
 
-;;; Hidden Mode Line
+;;; Mode Line
+
+;; Match mode-line border to mode-line background. Huge mode-line anyone?
+(set-face-attribute 'mode-line nil :box `(:line-width 3 :color ,(face-attribute 'mode-line :background)))
+(set-face-attribute 'mode-line-inactive nil :box `(:line-width 3 :color ,(face-attribute 'mode-line-inactive :background)))
 
 (defvar-local hidden-mode-line-mode nil)
 

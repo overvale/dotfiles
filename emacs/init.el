@@ -1047,13 +1047,15 @@ PROMPT sets the `read-string prompt."
   (interactive)
   (consult-grep org-directory))
 
+(defun org-toggle-checkbox-presence ()
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (call-interactively 'org-toggle-checkbox)))
+
 (autoload 'org-export-dispatch "org")
 (autoload 'org-store-link "org")
 
-;;;; Org Configuration
-
 (with-eval-after-load 'org
-
   (custom-set-variables
    '(org-list-allow-alphabetical t)
    '(org-log-done 'time)
@@ -1093,54 +1095,42 @@ PROMPT sets the `read-string prompt."
    '(org-agenda-skip-deadline-prewarning-if-scheduled t))
 
   (setq org-agenda-files (list org-directory))
-  (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org")
+
+  (when (string= system-name "shadowfax.local")
+    (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org"))
 
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
 
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "DELG(g)" "LATER(l)" "|" "DONE(d)" "MOVED(m)" "CANCELED(c)")))
+        '((sequence "TODO" "DELG" "LATER" "|" "DONE" "MOVED" "CANCELED")))
 
   (setq org-todo-keyword-faces
         '(("DELG" . org-scheduled-previously)
           ("LATER" . org-scheduled-previously)))
 
-  (setq org-capture-templates
-        `(("i" "Personal Inbox" entry
-           (file+headline ,(concat org-directory "life.org") "Inbox")
-           "* %?\n\n" :empty-lines 1)
-          ("l" "Personal Log Entry" entry
-           (file+olp+datetree ,(concat org-directory "logbook.org"))
-           "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
-          ("e" "Emacs Config" entry
-           (file+headline ,(concat org-directory "emacs.org") "Emacs Config")
-           "* TODO %?" :empty-lines 1)
-          ("k" "Kiddos Log Entry" entry
-           (file+olp+datetree ,(concat org-directory "kiddos_logbook.org"))
-           "* %T\n\n%?" :empty-lines 1 :tree-type month )))
-
-  (defun echo-area-tooltips ()
-    "Show tooltips in the echo area automatically for current buffer."
-    (setq-local help-at-pt-display-when-idle t
-                help-at-pt-timer-delay 0)
-    (help-at-pt-cancel-timer)
-    (help-at-pt-set-timer))
-
-  (add-hook 'org-mode-hook #'echo-area-tooltips)
-
-  (defun org-toggle-checkbox-presence ()
-    (interactive)
-    (let ((current-prefix-arg '(4)))
-      (call-interactively 'org-toggle-checkbox)))
-
-  ) ; End org config
-
+  (when (string= system-name "shadowfax.local")
+    (setq org-capture-templates
+          `(("i" "Personal Inbox" entry
+             (file+headline ,(concat org-directory "life.org") "Inbox")
+             "* %?\n\n" :empty-lines 1)
+            ("l" "Personal Log Entry" entry
+             (file+olp+datetree ,(concat org-directory "logbook.org"))
+             "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
+            ("e" "Emacs Config" entry
+             (file+headline ,(concat org-directory "emacs.org") "Emacs Config")
+             "* TODO %?" :empty-lines 1)
+            ("k" "Kiddos Log Entry" entry
+             (file+olp+datetree ,(concat org-directory "kiddos_logbook.org"))
+             "* %T\n\n%?" :empty-lines 1 :tree-type month ))))
+  ) ; End Org
 
 ;;;; Org Agenda
 
-(add-hook 'org-agenda-mode-hook 'hl-line-mode)
-
 (with-eval-after-load 'org-agenda
+
+  (add-hook 'org-agenda-mode-hook 'hl-line-mode)
+
   (setq org-agenda-custom-commands
         '(("1" "Priority Tasks"
            ((todo "TODO|DELG"
@@ -1159,8 +1149,9 @@ PROMPT sets the `read-string prompt."
     (define-key map (kbd "K") 'org-agenda-capture)
     (define-key map (kbd "S") 'org-agenda-schedule)
     (define-key map (kbd "D") 'org-agenda-deadline)
-    (define-key map (kbd "C-/") 'org-agenda-undo)))
+    (define-key map (kbd "C-/") 'org-agenda-undo))
 
+  ) ; End Org Agenda
 
 ;;;; Calendar <--> Org Integration
 

@@ -218,7 +218,6 @@
   ;; I use a lot of transients in this config, so I need to make sure it is
   ;; loaded and configured before those are declared below.
   (autoload 'transient-define-prefix "transient" nil t)
-  (setq transient-show-popup 1)
   (setq transient-detect-key-conflicts t))
 
 (elpa-package 'exec-path-from-shell
@@ -884,22 +883,6 @@ PROMPT sets the `read-string prompt."
                                "Github Elisp: ")
 
 
-;;; Outline
-
-(add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
-
-(delight 'outline-minor-mode " Out" "outline")
-
-(with-eval-after-load 'outline
-  (require 'outline-cycle-backport)
-  (let ((map outline-minor-mode-map))
-    (define-key map (kbd "TAB")
-      `(menu-item "" outline-cycle
-                  :filter ,(lambda (cmd)
-                             (when (outline-on-heading-p) cmd))))
-    (define-key map (kbd "<backtab>") #'outline-cycle-buffer)))
-
-
 ;;; Minibuffer
 
 (custom-set-variables
@@ -942,7 +925,8 @@ PROMPT sets the `read-string prompt."
       (define-key map (kbd "j") 'dired-jump))))
 
 (elpa-package 'consult
-  (consult-customize consult-buffer :preview-key nil)
+  (with-eval-after-load 'consult
+    (consult-customize consult-buffer :preview-key nil))
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
   (global-set-key [remap yank-pop] 'consult-yank-pop))
@@ -974,19 +958,21 @@ PROMPT sets the `read-string prompt."
   (add-to-list 'auto-mode-alist
                '("\\.text" . markdown-mode)))
 
+(elpa-package 'olivetti
+  (custom-set-variables
+   '(olivetti-body-width 86)))
+
 (local-package 'oblique "oblique-strategies"
   (autoload 'oblique-strategy "oblique")
   (setq initial-scratch-message (concat
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
-(prog1 "flyspell"
+(when (string= system-type "darwin")
   (with-eval-after-load 'flyspell
     (delight 'flyspell-mode " Spell" "flyspell"))
-
   (add-hook 'text-mode-hook 'turn-on-flyspell)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
   (setq ispell-program-name "/usr/local/bin/aspell"))
 
 (with-eval-after-load 'dired
@@ -996,9 +982,19 @@ PROMPT sets the `read-string prompt."
     (define-key map (kbd "O") 'crux-open-with)
     (define-key map (kbd "C-/") 'dired-undo)))
 
-(elpa-package 'olivetti
-  (custom-set-variables
-   '(olivetti-body-width 86)))
+(prog1 "outline"
+  (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
+
+  (delight 'outline-minor-mode " Out" "outline")
+
+  (with-eval-after-load 'outline
+    (require 'outline-cycle-backport)
+    (let ((map outline-minor-mode-map))
+      (define-key map (kbd "TAB")
+        `(menu-item "" outline-cycle
+                    :filter ,(lambda (cmd)
+                               (when (outline-on-heading-p) cmd))))
+      (define-key map (kbd "<backtab>") #'outline-cycle-buffer))))
 
 (prog1 "world-clock"
   (defalias 'world-clock 'display-time-world)

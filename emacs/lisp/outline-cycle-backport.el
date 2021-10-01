@@ -61,6 +61,7 @@ Return either 'hide-all, 'headings-only, or 'show-all."
 (defvar-local outline--cycle-buffer-state 'show-all
   "Internal variable used for tracking buffer cycle state.")
 
+;; This function differs from the Emacs 28 code. See inline comments below:
 (defun outline-cycle-buffer ()
   "Cycle the whole buffer like in `outline-cycle'."
   (interactive)
@@ -69,13 +70,13 @@ Return either 'hide-all, 'headings-only, or 'show-all."
       (goto-char (point-min))
       (while (not (or has-top-level (eobp)))
         (when (outline-on-heading-p t)
-          (when (= (funcall outline-level) 1)
+          (when (= (funcall outline-level) 5) ; Changed to level 5
             (setq has-top-level t)))
         (outline-next-heading)))
     (cond
      ((and (eq outline--cycle-buffer-state 'show-all)
            has-top-level)
-      (outline-hide-sublevels 1)
+      (outline-hide-sublevels 5)        ; Changed to level 5
       (setq outline--cycle-buffer-state 'top-level)
       (message "Top level headings"))
      ((or (eq outline--cycle-buffer-state 'show-all)

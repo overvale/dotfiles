@@ -904,8 +904,32 @@ PROMPT sets the `read-string prompt."
   (marginalia-mode)
   (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle))
 
-(elpa-package 'vertico
-  (vertico-mode))
+;; (elpa-package 'vertico
+;;   (vertico-mode))
+
+;; https://github.com/oantolin/live-completions
+(local-package 'live-completions "live-completions"
+  (require 'live-completions)
+  (setq live-completions-columns 'single
+        live-completions-sort-order 'cycle)
+
+  ;; Limit size of *Completions* buffer:
+  (defvar old-max-height-function temp-buffer-max-height)
+  (defun max-completions-height (buffer)
+    (if (string= (buffer-name buffer) "*Completions*")
+        (/ (frame-height) 3) ; 1/3 of the frame-height
+      (funcall old-max-height-function temp-buffer-max-height)))
+  (setq temp-buffer-max-height #'max-completions-height)
+  (temp-buffer-resize-mode)
+
+  (let ((minibuffer minibuffer-local-completion-map)
+        (list completion-list-mode-map))
+    (define-key minibuffer (kbd "M-TAB") 'minibuffer-force-complete)
+    (define-key minibuffer (kbd "C-n") 'switch-to-completions)
+    (define-key list (kbd "n") 'next-completion)
+    (define-key list (kbd "p") 'previous-completion))
+
+  (live-completions-mode 1))
 
 
 ;;; Miscellaneous

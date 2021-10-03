@@ -434,10 +434,6 @@ This will save the buffer if it is not currently saved."
 
 ;;; Keybindings
 
-(when (string= system-type "darwin")
-  (setq mac-command-modifier 'super
-        mac-option-modifier 'meta))
-
 ;; Emacs Keymap Lookup Order:
 ;; 1. overriding-terminal-local-map
 ;; 2. overriding-local-map
@@ -500,7 +496,19 @@ Keybindings you define here will take precedence."
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
+;; I do value consistency, and I do use Emacs on a Windows machine where the
+;; below is not available, but I just can't give them up on my Mac.
 (when (string= system-type "darwin")
+  (setq mac-command-modifier 'super
+        mac-option-modifier 'meta)
+  (define-key bosskey-mode-map (kbd "s-z") 'undo-only)
+  (define-key bosskey-mode-map (kbd "s-Z") 'undo-redo)
+  (define-key bosskey-mode-map (kbd "s-x") 'kill-region)
+  (define-key bosskey-mode-map (kbd "s-c") 'kill-ring-save)
+  (define-key bosskey-mode-map (kbd "s-v") 'yank)
+  (define-key bosskey-mode-map (kbd "s-q") 'frames-p-save-buffers-kill-emacs)
+  (define-key bosskey-mode-map (kbd "s-n") 'new-buffer)
+  (define-key bosskey-mode-map (kbd "s-s") 'save-buffer)
   (define-key bosskey-mode-map (kbd "s-m") 'iconify-frame)
   (define-key bosskey-mode-map (kbd "s-,") 'find-user-init-file))
 

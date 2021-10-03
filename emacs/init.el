@@ -98,6 +98,8 @@
         (vertico . "melpa")
         (ctrlf . "melpa")))
 
+(add-hook 'package-menu-mode-hook 'hl-line-mode)
+
 
 ;;; Customizations
 
@@ -616,12 +618,15 @@ Disables all current themes, then:
 (elpa-package 'modus-themes
   (require 'modus-themes)
   (custom-set-variables
-   '(modus-themes-italic-constructs t)
+   ;;'(modus-themes-italic-constructs t)
    '(modus-themes-links '(neutral-underline))
    '(modus-themes-mode-line '(accented))
-   '(modus-themes-prompts '(bold))
-   '(modus-themes-completions 'moderate)
+   ;;'(modus-themes-prompts '(bold))
+   ;;'(modus-themes-completions 'moderate)
    '(modus-themes-region '(bg-only))
+   '(modus-themes-vivendi-color-overrides '((bg-main . "#1D1F21")
+                                            ;;(bg-main . "#100b17")
+                                            ))
    '(modus-themes-org-blocks '(gray-background))
    '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
                                (header-date . (bold-today))

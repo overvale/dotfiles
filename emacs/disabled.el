@@ -234,6 +234,92 @@ For example you might want to do something like:
 (add-hook 'eww-mode-hook 'oht-eww-set-bookmark-handler)
 
 
+;;; Prot Minibuffer Adaptation
+
+;; https://gitlab.com/protesilaos/dotfiles/-/blob/master/emacs/.emacs.d/prot-lisp/prot-minibuffer.el
+
+;; This section only does 1 thing: it makes it so that C-n and C-p cycles
+;; through the list of completion candidates and the minibuffer.
+
+(defun prot-common-number-negative (n)
+  "Make N negative."
+  (if (and (numberp n) (> n 0))
+      (* -1 n)
+    (error "%s is not a valid positive number" n)))
+
+(defun prot-minibuffer-focus-minibuffer ()
+  "Focus the active minibuffer."
+  (interactive)
+  (when-let ((mini (active-minibuffer-window)))
+    (select-window mini)))
+
+(defun prot-minibuffer-switch-to-completions-top ()
+  "Switch to the top of the completions' buffer.
+Meant to be bound in `minibuffer-local-completion-map'."
+  (interactive)
+  (switch-to-completions)
+  (goto-char (point-min))
+  (next-completion 1))
+
+(defun prot-minibuffer-switch-to-completions-bottom ()
+  "Switch to the bottom of the completions' buffer.
+Meant to be bound in `minibuffer-local-completion-map'."
+  (interactive)
+  (switch-to-completions)
+  (goto-char (point-max))
+  (next-completion -1)
+  (goto-char (point-at-bol))
+  (recenter
+   (- -1
+      (min (max 0 scroll-margin)
+           (truncate (/ (window-body-height) 4.0))))
+   t))
+
+(defun prot-minibuffer-next-completion-or-mini (&optional arg)
+  "Move to the next completion or switch to the minibuffer.
+This performs a regular motion for optional ARG lines, but when
+point can no longer move in that direction it switches to the
+minibuffer."
+  (interactive "p")
+  (if (or (eobp)
+          (eq (point-max)
+              (save-excursion (forward-line 1) (point))))
+      (prot-minibuffer-focus-minibuffer)
+    (next-completion (or arg 1)))
+  (setq this-command 'next-line))
+
+(defun prot-minibuffer-previous-completion-or-mini (&optional arg)
+  "Move to the next completion or switch to the minibuffer.
+This performs a regular motion for optional ARG lines, but when
+point can no longer move in that direction it switches to the
+minibuffer."
+  (interactive "p")
+  (let ((num (prot-common-number-negative arg)))
+    (if (or (bobp)
+            (and (save-excursion ; NOTE 2021-07-23: This `and' is for Emacs28 group titles
+                   (next-completion -1)
+                   (eq (line-number-at-pos) 1))
+                 (not
+                  (save-excursion
+                    (next-completion -1)
+                    (get-text-property (point) 'completion--string))))
+            (eq (point) (1+ (point-min)))) ; see hack in `prot-minibuffer--clean-completions'
+        (prot-minibuffer-focus-minibuffer)
+      (next-completion (or num 1)))))
+
+(let ((map minibuffer-local-completion-map))
+  (define-key map (kbd "C-n") #'prot-minibuffer-switch-to-completions-top)
+  (define-key map (kbd "<down>") #'prot-minibuffer-switch-to-completions-top)
+  (define-key map (kbd "C-p") #'prot-minibuffer-switch-to-completions-bottom)
+  (define-key map (kbd "<up>") #'prot-minibuffer-switch-to-completions-bottom))
+
+(let ((map completion-list-mode-map))
+  (define-key map (kbd "C-n") #'prot-minibuffer-next-completion-or-mini)
+  (define-key map (kbd "<down>") #'prot-minibuffer-next-completion-or-mini)
+  (define-key map (kbd "C-p") #'prot-minibuffer-previous-completion-or-mini)
+  (define-key map (kbd "<up>") #'prot-minibuffer-previous-completion-or-mini))
+
+
 ;;; Embark as Completion Framework
 
 ;; The following will allow you to use an embark live collection as your

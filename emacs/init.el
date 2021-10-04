@@ -624,9 +624,8 @@ Disables all current themes, then:
    ;;'(modus-themes-prompts '(bold))
    ;;'(modus-themes-completions 'moderate)
    '(modus-themes-region '(bg-only))
-   '(modus-themes-vivendi-color-overrides '((bg-main . "#1D1F21")
-                                            ;;(bg-main . "#100b17")
-                                            ))
+   '(modus-themes-vivendi-color-overrides '((bg-main . "#111111")
+                                            (fg-main . "#eeeeee")))
    '(modus-themes-org-blocks '(gray-background))
    '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
                                (header-date . (bold-today))
@@ -930,6 +929,10 @@ PROMPT sets the `read-string prompt."
   (require 'live-completions)
   (setq live-completions-columns 'single
         live-completions-sort-order 'cycle)
+  (custom-set-faces
+   '(live-completions-forceable-candidate ((t (:inherit 'modus-themes-mark-sel)))))
+
+  (define-key minibuffer-local-completion-map (kbd "M-q") 'live-completions-set-columns)
 
   ;; Limit size of *Completions* buffer:
   (defvar old-max-height-function temp-buffer-max-height)
@@ -954,6 +957,9 @@ PROMPT sets the `read-string prompt."
    '(embark-verbose-indicator-display-action
      '(display-buffer-at-bottom (window-height . fit-window-to-buffer))))
 
+  (custom-set-faces
+   '(embark-verbose-indicator-title ((t (:inherit 'modus-themes-heading-1)))))
+
   (with-eval-after-load 'embark
     (let ((map embark-file-map))
       (define-key map (kbd "O") 'crux-open-with)
@@ -970,7 +976,10 @@ PROMPT sets the `read-string prompt."
   ;; Enabling the mode remaps iSearch bindings, so no need to set your own.
   (ctrlf-mode +1)
   (setq ctrlf-go-to-end-of-match nil
-        ctrlf-default-search-style 'fuzzy))
+        ctrlf-default-search-style 'fuzzy)
+  (custom-set-faces
+   '(ctrlf-highlight-active  ((t (:inherit 'modus-themes-search-success))))
+   '(ctrlf-highlight-passive ((t (:inherit 'modus-themes-search-success-lazy))))))
 
 (elpa-package 'visual-regexp
   ;; A reasonable regex engine? Live preview of search and replacement? Yes please!

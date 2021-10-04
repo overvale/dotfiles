@@ -1249,7 +1249,7 @@ current HH:MM time."
     ("m s" "Start" start-kbd-macro)
     ("m e" "End" end-kbd-macro)
     ("m c" "Call" call-last-kbd-macro)
-    ("m r" "" apply-macro-to-region-lines)]
+    ("m r" "Region Lines" apply-macro-to-region-lines)]
    ["Other"
     ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
     ("d" "Date/Time mode-line" toggle-date-time-battery)

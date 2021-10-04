@@ -909,9 +909,7 @@ PROMPT sets the `read-string prompt."
   ;; completion framework.
   (require 'orderless)
   (custom-set-variables
-   '(completion-styles '(orderless))
-   '(completion-category-defaults nil)
-   '(completion-category-overrides '((file (styles . (partial-completion)))))))
+   '(completion-styles '(orderless))))
 
 (elpa-package 'marginalia
   (marginalia-mode)

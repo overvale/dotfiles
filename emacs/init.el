@@ -903,6 +903,13 @@ PROMPT sets the `read-string prompt."
  '(enable-recursive-minibuffers t)
  '(savehist-mode t))
 
+(let ((minibuffer minibuffer-local-completion-map)
+      (list completion-list-mode-map))
+  (define-key minibuffer (kbd "C-n") 'switch-to-completions)
+  (define-key minibuffer (kbd "M-TAB") 'minibuffer-force-complete)
+  (define-key list (kbd "n") 'next-completion)
+  (define-key list (kbd "p") 'previous-completion))
+
 (elpa-package 'orderless
   ;; I would love Emacs less if it weren't for orderless.
   ;; It needs to be required because so many commands rely on the
@@ -932,13 +939,6 @@ PROMPT sets the `read-string prompt."
       (funcall old-max-height-function temp-buffer-max-height)))
   (setq temp-buffer-max-height #'max-completions-height)
   (temp-buffer-resize-mode)
-
-  (let ((minibuffer minibuffer-local-completion-map)
-        (list completion-list-mode-map))
-    (define-key minibuffer (kbd "M-TAB") 'minibuffer-force-complete)
-    (define-key minibuffer (kbd "C-n") 'switch-to-completions)
-    (define-key list (kbd "n") 'next-completion)
-    (define-key list (kbd "p") 'previous-completion))
 
   (live-completions-mode 1))
 

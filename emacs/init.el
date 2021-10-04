@@ -902,17 +902,19 @@ PROMPT sets the `read-string prompt."
  '(enable-recursive-minibuffers t)
  '(savehist-mode t))
 
+(defun select-minibuffer ()
+  "Select the active minibuffer."
+  (interactive)
+  (when-let ((mini (active-minibuffer-window)))
+    (select-window mini)))
+
 (let ((minibuffer minibuffer-local-completion-map)
       (list completion-list-mode-map))
   (define-key minibuffer (kbd "C-n") 'switch-to-completions)
-  (define-key minibuffer (kbd "M-TAB") 'minibuffer-force-complete)
   (define-key list (kbd "n") 'next-completion)
   (define-key list (kbd "p") 'previous-completion))
 
 (elpa-package 'orderless
-  ;; I would love Emacs less if it weren't for orderless.
-  ;; It needs to be required because so many commands rely on the
-  ;; completion framework.
   (require 'orderless)
   (custom-set-variables
    '(completion-styles '(orderless))))
@@ -921,18 +923,19 @@ PROMPT sets the `read-string prompt."
   (marginalia-mode)
   (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle))
 
-;; (elpa-package 'vertico
-;;   (vertico-mode))
-
-;; https://github.com/oantolin/live-completions
 (local-package 'live-completions "live-completions"
+  ;; https://github.com/oantolin/live-completions
   (require 'live-completions)
+
   (setq live-completions-columns 'single
         live-completions-sort-order 'cycle)
+
   (custom-set-faces
    '(live-completions-forceable-candidate ((t (:inherit 'modus-themes-mark-sel)))))
 
-  (define-key minibuffer-local-completion-map (kbd "M-q") 'live-completions-set-columns)
+  (let ((minibuffer minibuffer-local-completion-map))
+    (define-key minibuffer (kbd "TAB") 'minibuffer-force-complete)
+    (define-key minibuffer (kbd "M-q") 'live-completions-set-columns))
 
   ;; Limit size of *Completions* buffer:
   (defvar old-max-height-function temp-buffer-max-height)

@@ -914,6 +914,19 @@ PROMPT sets the `read-string prompt."
   (define-key list (kbd "n") 'next-completion)
   (define-key list (kbd "p") 'previous-completion))
 
+(prog1 "completion buffer size"
+  ;; This is taken from the live-completions README. It limits the height of
+  ;; the *Completions* buffer to 1/3 of the frame height.
+  (defvar old-max-height-function temp-buffer-max-height)
+
+  (defun max-completions-height (buffer)
+    (if (string= (buffer-name buffer) "*Completions*")
+        (/ (frame-height) 3) ; 1/3 of the frame-height
+      (funcall old-max-height-function temp-buffer-max-height)))
+
+  (setq temp-buffer-max-height #'max-completions-height)
+  (temp-buffer-resize-mode))
+
 (elpa-package 'orderless
   (require 'orderless)
   (custom-set-variables
@@ -924,7 +937,6 @@ PROMPT sets the `read-string prompt."
   (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle))
 
 (local-package 'live-completions "live-completions"
-  ;; https://github.com/oantolin/live-completions
   (require 'live-completions)
 
   (setq live-completions-columns 'single
@@ -935,16 +947,7 @@ PROMPT sets the `read-string prompt."
 
   (let ((minibuffer minibuffer-local-completion-map))
     (define-key minibuffer (kbd "TAB") 'minibuffer-force-complete)
-    (define-key minibuffer (kbd "M-q") 'live-completions-set-columns))
-
-  ;; Limit size of *Completions* buffer:
-  (defvar old-max-height-function temp-buffer-max-height)
-  (defun max-completions-height (buffer)
-    (if (string= (buffer-name buffer) "*Completions*")
-        (/ (frame-height) 3) ; 1/3 of the frame-height
-      (funcall old-max-height-function temp-buffer-max-height)))
-  (setq temp-buffer-max-height #'max-completions-height)
-  (temp-buffer-resize-mode)
+    (define-key minibuffer (kbd "<return>") 'minibuffer-force-complete-and-exit))
 
   (live-completions-mode 1))
 

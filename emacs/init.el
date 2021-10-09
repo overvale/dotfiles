@@ -225,6 +225,8 @@
 (elpa-package 'exec-path-from-shell
   (exec-path-from-shell-initialize))
 
+(autoload 'dired-jump "dired-x")
+
 
 ;;; Misc Functions
 

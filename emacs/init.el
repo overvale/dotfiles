@@ -620,14 +620,12 @@ Disables all current themes, then:
 (elpa-package 'modus-themes
   (require 'modus-themes)
   (custom-set-variables
-   ;;'(modus-themes-italic-constructs t)
+   '(modus-themes-italic-constructs t)
    '(modus-themes-links '(neutral-underline))
-   '(modus-themes-mode-line '(accented))
-   ;;'(modus-themes-prompts '(bold))
-   ;;'(modus-themes-completions 'moderate)
+   '(modus-themes-mode-line '(accented 3d))
    '(modus-themes-region '(bg-only))
-   '(modus-themes-vivendi-color-overrides '((bg-main . "#111111")
-                                            (fg-main . "#eeeeee")))
+   '(modus-themes-vivendi-color-overrides '((bg-main . "#1c1c1c")
+                                            (fg-main . "#d5d5d5")))
    '(modus-themes-org-blocks '(gray-background))
    '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
                                (header-date . (bold-today))
@@ -662,7 +660,7 @@ Disables all current themes, then:
         (vari "IBM Plex Serif")
         (mode "IBM Plex Sans")
         (mono-height 120)
-        (mode-height 140))
+        (mode-height 130))
     (custom-set-faces
      `(default ((t :family ,mono :height ,mono-height)))
      `(fixed-pitch ((t :family ,mono)))

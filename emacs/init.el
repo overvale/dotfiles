@@ -225,8 +225,6 @@
 (elpa-package 'exec-path-from-shell
   (exec-path-from-shell-initialize))
 
-(autoload 'dired-jump "dired-x")
-
 
 ;;; Misc Functions
 
@@ -1262,11 +1260,27 @@ current HH:MM time."
 
 ;;; Transients
 
+(autoload 'dired-jump "dired-x")
+
 (transient-define-prefix general-transient ()
   "General-purpose transient."
   [["Actions/Toggles"
+    ("," "Find Init" find-user-init-file)
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
+   "Other"
+    ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
+    ("d" "Date/Time mode-line" toggle-date-time-battery)
+    ("C" "Calendar" calendar)
+    ("W" "World Clock" world-clock)
+    ("s o" "*scratch-org*" scratch-buffer-org)
+    ("s m" "*scratch-markdown*" scratch-buffer-markdown)]
+   ["Org"
+    ("o a" "Org Agenda" org-agenda)
+    ("o k" "Org Capture" org-capture)
+    ("o s" "Store Link" org-store-link)
+    ("o i" "Insert Link" org-insert-link)
+    "Consult"
     ("c l" "Line" consult-line)
     ("c o" "Outline" consult-outline)
     ("c g" "Grep" consult-grep)]
@@ -1275,13 +1289,7 @@ current HH:MM time."
     ("m e" "End" end-kbd-macro)
     ("m c" "Call" call-last-kbd-macro)
     ("m r" "Region Lines" apply-macro-to-region-lines)]
-   ["Other"
-    ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
-    ("d" "Date/Time mode-line" toggle-date-time-battery)
-    ("C" "Calendar" calendar)
-    ("W" "World Clock" world-clock)
-    ("s o" "*scratch-org*" scratch-buffer-org)
-    ("s m" "*scratch-markdown*" scratch-buffer-markdown)]])
+    ])
 
 
 ;; Emacs has so many modes. Who can remember all the commands? These
@@ -1306,7 +1314,6 @@ current HH:MM time."
       ("o" "Outline" consult-org-heading)
       ("f" "Find Heading" consult-org-agenda)
       ("c" "Go To Calendar" org-goto-calendar)
-      ("n" "Narrow/Widen" narrow-or-widen-dwim)
       ("v" "Visible Markup" visible-mode)]
      ["Item"
       ("t" "TODO State" org-todo-transient)

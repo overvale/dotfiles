@@ -493,6 +493,7 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "M-.") 'embark-act)
   (define-key map (kbd "M-'") 'completion-at-point)
   (define-key map (kbd "M-z") 'zap-up-to-char)
+  (define-key map (kbd "C-M-h") 'mark-line)
   (define-key map (kbd "C-d") 'delete-forward-char)
   (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
   (define-key map (kbd "C-x k") 'kill-buffer-dwim))

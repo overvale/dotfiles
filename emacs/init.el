@@ -984,7 +984,7 @@ PROMPT sets the `read-string prompt."
 
 (elpa-package 'consult
   (with-eval-after-load 'consult
-    (consult-customize consult-buffer :preview-key nil))
+    (consult-customize consult-buffer consult-buffer-other-window :preview-key nil))
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
   (global-set-key [remap yank-pop] 'consult-yank-pop))

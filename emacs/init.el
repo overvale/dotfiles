@@ -477,7 +477,7 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "C-x C-n") 'new-buffer)
   (define-key map (kbd "C-x n") 'make-frame-command)
   (define-key map (kbd "C-/") 'undo-only)
-  (define-key map (kbd "M-/") 'undo-redo)
+  (define-key map (kbd "C-?") 'undo-redo)
   (define-key map (kbd "M-o") 'other-window)
   (define-key map (kbd "M-<SPC>") 'general-transient)
   (define-key map (kbd "M-S-<SPC>") 'call-mode-help-transient)

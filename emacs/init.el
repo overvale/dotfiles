@@ -721,9 +721,7 @@ Disables all current themes, then:
 ;; whatever the hell it wants.
 (setq display-buffer-alist
       '(("\\*Calendar.*"
-         (display-buffer-in-side-window)
-         (side . bottom)
-         (slot . 0)
+         (display-buffer-at-bottom)
          (window-parameters . ((no-other-window . nil)))
          (window-height . fit-window-to-buffer))
         ("\\*wclock.*"

@@ -1103,6 +1103,7 @@ PROMPT sets the `read-string prompt."
    '(org-adapt-indentation t)
    '(org-catch-invisible-edits 'show-and-error)
    '(org-outline-path-complete-in-steps nil)
+   '(org-refile-use-outline-path t)
    '(org-refile-targets '((org-agenda-files :maxlevel . 2)))
    '(org-startup-with-inline-images t)
    '(org-image-actual-width '(600))
@@ -1160,6 +1161,16 @@ PROMPT sets the `read-string prompt."
             ("k" "Kiddos Log Entry" entry
              (file+olp+datetree ,(concat org-directory "kiddos_logbook.org"))
              "* %T\n\n%?" :empty-lines 1 :tree-type month ))))
+
+  (defun my/org-refile-preserve-collapsed-parent ()
+    (org-up-heading-safe)
+    (when (save-excursion
+            (end-of-line)
+            (org-invisible-p))
+      (outline-hide-subtree)))
+
+  (add-hook 'org-after-refile-insert-hook #'my/org-refile-preserve-collapsed-parent)
+
   ) ; End Org
 
 ;;;; Org Agenda

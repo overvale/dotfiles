@@ -898,6 +898,7 @@ PROMPT sets the `read-string prompt."
 ;;; Minibuffer
 
 (custom-set-variables
+ '(completion-show-help nil)
  '(completion-cycle-threshold nil)
  '(enable-recursive-minibuffers t)
  '(savehist-mode t))
@@ -908,9 +909,16 @@ PROMPT sets the `read-string prompt."
   (when-let ((mini (active-minibuffer-window)))
     (select-window mini)))
 
+(defun switch-to-completions-bottom ()
+  (interactive)
+  (switch-to-completions)
+  (move-to-window-line -1))
+
 (let ((minibuffer minibuffer-local-completion-map)
       (list completion-list-mode-map))
   (define-key minibuffer (kbd "C-n") 'switch-to-completions)
+  (define-key minibuffer (kbd "C-p") 'switch-to-completions-bottom)
+  (define-key list [remap other-window] 'select-minibuffer)
   (define-key list (kbd "n") 'next-completion)
   (define-key list (kbd "p") 'previous-completion))
 
@@ -934,7 +942,7 @@ PROMPT sets the `read-string prompt."
 
 (elpa-package 'marginalia
   (marginalia-mode)
-  (define-key minibuffer-local-map (kbd "M-A") 'marginalia-cycle))
+  (define-key minibuffer-local-map (kbd "M-q") 'marginalia-cycle))
 
 (local-package 'live-completions "live-completions"
   (require 'live-completions)
@@ -943,11 +951,13 @@ PROMPT sets the `read-string prompt."
         live-completions-sort-order 'cycle)
 
   (custom-set-faces
-   '(live-completions-forceable-candidate ((t (:inherit 'modus-themes-mark-sel)))))
+   '(live-completions-forceable-candidate ((t (:inherit 'modus-themes-special-mild)))))
 
   (let ((minibuffer minibuffer-local-completion-map))
     (define-key minibuffer (kbd "TAB") 'minibuffer-force-complete)
     (define-key minibuffer (kbd "<return>") 'minibuffer-force-complete-and-exit))
+
+  (add-hook 'completion-list-mode-hook 'hl-line-mode)
 
   (live-completions-mode 1))
 

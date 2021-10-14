@@ -40,84 +40,100 @@
 
 ;;; Settings
 
-;; Discovering the exact behavior of these settings is left as an exercise for
-;; the reader. Documentation can be found with "C-h o <symbol>".
+;; There are 2 ways to customize Emacs, one is to edit your init file, which
+;; is what this file is, and the other is to customize the settings
+;; interactively (like any other program). Interactive customization is saved
+;; to your `custom-file'. I, however, don't want any interactive
+;; customization to be saved. This is because I want this init file to be the
+;; single source of truth for how Emacs behaves. The below makes Emacs save
+;; interactive customization in a temp file.
+(setq custom-file (make-temp-file "emacs-custom-"))
 
-;; Keep in mind that there are two kinds of variables, global ones, and
-;; buffer-local ones.
-;;
-;; 'setq' simply sets the value of a variable, so if the variable is global it
-;; sets its value globally, and if the variable is buffer local it sets the
-;; value locally.
-;;
-;; 'setq-local' takes a global variable and makes a buffer local "copy" that
-;; doesn't effect the global value.
-;;
-;; 'setq-default' takes a local variable and sets a new default value for all new
-;; buffers, but doesn't change it in existing buffers or the default.
-
-(delete-selection-mode t)
-(global-visual-line-mode t)
-(setq-default truncate-lines t)
-(global-auto-revert-mode t)
-(set-language-environment "UTF-8")
-(setq uniquify-buffer-name-style 'forward)
-(setq save-interprogram-paste-before-kill t)
-(setq mark-even-if-inactive nil)
+;; Discovering the exact behavior of the below settings is left as an exercise
+;; for the reader. Documentation can be found with "C-h o <symbol>".
+;; `custom-set-variables' is a good general purpose tool for both setting the
+;; value of variables and activating modes.
+(custom-set-variables
+ '(delete-selection-mode t)
+ '(mark-even-if-inactive nil)
+ '(ring-bell-function 'ignore)
+ '(set-language-environment "UTF-8")
+ '(create-lockfiles nil)
+ '(make-backup-files nil)
+ '(word-wrap t)
+ '(truncate-lines t)
+ '(global-auto-revert-mode t)
+ '(uniquify-buffer-name-style 'forward)
+ '(save-interprogram-paste-before-kill t))
 
 
-;;; Keyboard modifiers setup
+;;; Package Management
 
-;; When on a Mac, do this...
-(when (eq system-type 'darwin)
-  ;; This makes your command key the 'super' key, which you can bind with "s-a",
-  ;; keep in mind that shift is "S-a".
-  (setq mac-command-modifier 'super)
-  ;; This makes the left option META and right one OPTION.
-  (setq mac-option-modifier 'meta)
-  (setq mac-right-option-modifier 'nil))
+(require 'package)
+(package-initialize)
+
+;; By default, the only source of packages is elpa.gnu.org, but there are tons
+;; of great packages on MELPA (a repository of packages). To be able to
+;; install those we add the URL to the following variable:
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+;; A list of all packages you'd like to install. Install packages with
+;; `package-install-selected-packages' Remove packages, once removed from this
+;; list, with `package-autoremove'.
+(setq package-selected-packages
+      '(modus-themes
+        orderless
+        transient
+        undo-fu
+        vertico
+        visual-regexp
+        visual-regexp-steroids))
+
+;; I use a lot of transients in this config, so I need to make sure it is
+;; loaded and configured before those are declared below.
+(autoload 'transient-define-prefix "transient" nil t)
+(setq transient-detect-key-conflicts t)
+
+;; Orderless allows for "fuzzy matching" when filtering lists of commands,
+;; variables, and functions. This is extremely useful since it is not always
+;; easy to predict how those symbols are named.
+(setq completion-styles '(orderless))
+
+;; Vertico creates a useful interface for picking things from a list, which
+;; is something you do all the time in Emacs.
+(vertico-mode)
+
+;; Marginalia displays useful information about completion candidates in
+;; Vertico.
+(marginalia-mode)
+
+;; My preferred theme.
+(modus-themes-load-operandi)
+
+;; Visual Regexp, and Visual Regexp on Steroids, provides a sensible and
+;; predictable search/replace interface using a regular expression engine that
+;; you're already familiar with.
+(define-key global-map [remap query-replace] 'vr/query-replace)
+(with-eval-after-load 'visual-regexp
+  (with-eval-after-load 'visual-regexp-steroids
+    (custom-set-variables
+     '(vr/engine 'pcre2el))))
+
+
+;;; Functions
+
+(defun find-user-init-file ()
+  "Find the user-init-file."
+  (interactive)
+  (find-file user-init-file))
 
 
 ;;; Keybindings
-
-;; To decide what to do, Emacs looks at keymaps in this order: (1) Minor Mode,
-;; (2) Major Mode, (3) Global. So if you find yourself with a binding that
-;; just doesn't work, it is likely because of an active minor mode binding.
-
-;; <Control>-modified key bindings are case-insensitive. So 'C-A' is identical to
-;; 'C-a'. You can bind shifted <Control> keystrokes with 'C-S-a'. All other
-;; modifiers are case-sensitive.
 
 ;; In the old days ESC was used as a prefix key, but I want ESC to act like it
 ;; does everywhere else on my system and, you know, escape from things. So
 ;; I've remapped ESC to `keyboard-quit'.
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-
-;; I recommend leaving all of these bindings here and not relying on external
-;; pacakges, even if you rebind them later in the config, that way if something
-;; gets messed up in your package declarations all of these bindings still work.
-
-;; Mac-like bindings
-(global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
-(global-set-key (kbd "s-m") 'iconify-frame)
-(global-set-key (kbd "s-n") 'make-frame-command)
-(global-set-key (kbd "s-s") 'save-buffer)
-(global-set-key (kbd "s-a") 'mark-whole-buffer)
-(global-set-key (kbd "s-z") 'undo)
-(global-set-key (kbd "s-x") 'kill-region)
-(global-set-key (kbd "s-c") 'kill-ring-save)
-(global-set-key (kbd "s-v") 'yank)
-
-;; Emacs SUPER!
-(global-set-key (kbd "s-b") 'switch-to-buffer)
-(global-set-key (kbd "s-B") 'ibuffer)
-(global-set-key (kbd "s-o") 'other-window)
-(global-set-key (kbd "s-O") 'find-file)
-
-;; Emacs Misc
-(global-set-key (kbd "M-c") 'capitalize-dwim)
-(global-set-key (kbd "M-l") 'downcase-dwim)
-(global-set-key (kbd "M-u") 'upcase-dwim)
 
 ;; Make shift-click extend the selection (region)
 (global-set-key [S-down-mouse-1] 'ignore)
@@ -128,94 +144,47 @@
 (global-set-key [M-drag-mouse-1] #'ignore)
 (global-set-key [M-mouse-1]      #'mouse-set-point)
 
-;; My approach to commonly used shortcuts is to place them all behind a
-;; single prefix.
-(global-set-key (kbd "s-<return> x") 'execute-extended-command)
-(global-set-key (kbd "s-<return> w") 'visual-line-mode)
-(global-set-key (kbd "s-<return> h") 'hl-line-mode)
-(global-set-key (kbd "s-<return> l") 'display-line-numbers-mode)
-(global-set-key (kbd "s-<return> a") 'auto-fill-mode)
+;; I am of the opinion that you shouldn't need to learn Emacs's archaic
+;; keybindings to use Emacs. You will probably need to eventually but until
+;; then there should be an easier way to get around. To me this means
+;; interacting with Emacs using responsive visual menus. Below is a 'Main
+;; Menu' that offers the primary commands you'll need to get around.
 
-;; These let you manage windows (splits)
-(global-set-key (kbd "s-w s") 'split-window-below)
-(global-set-key (kbd "s-w v") 'split-window-right)
-(global-set-key (kbd "s-w k") 'delete-window)
-(global-set-key (kbd "s-w o") 'delete-other-windows)
-(global-set-key (kbd "s-w b") 'balance-windows)
+(transient-define-prefix main-menu-transient ()
+  "A 'Main Menu' for Emacs."
+  ["Main Menu -- Press ESC to exit"
+   ["Emacs"
+    ("q" "Quit Emacs" save-buffers-kill-terminal)
+    ("n" "New Frame" make-frame-command)
+    ("o" "Open File" find-file)
+    ("s" "Save" save-buffer)
+    ("," "Settings" find-user-init-file)]
+   ["Commands"
+    ("z" "Undo" undo-fu-only-undo :transient t)
+    ("Z" "Redo" undo-fu-only-redo :transient t)
+    ("x" "M-x" execute-extended-command)
+    ("h" "Help For..." describe-symbol)
+    ("f" "Find" isearch-forward)
+    ("r" "Replace" vr/query-replace)]
+   ["Buffers"
+    ("k" "Kill This Buffer" kill-current-buffer)
+    ("b" "Switch to Buffer" switch-to-buffer)
+    ("l" "List Buffers" ibuffer)
+    "Toggle"
+    ("t w" "Wrap Lines" visual-line-mode)
+    ("t l" "Line Numbers" display-line-numbers-mode)
+    ("t a" "Auto Wrap Lines" auto-fill-mode)]
+   ["Windows"
+    ("w h" "Split Horizontal" split-window-below)
+    ("w v" "Split Vertical"   split-window-right)
+    ("w b" "Balance"    balance-windows)
+    ("w k" "Kill" delete-window)
+    ("w o" "Kill Others"  delete-other-windows)
+    ("w c" "Clone Window" clone-indirect-buffer)
+    ("w t" "Tear Off" tear-off-window)]])
 
-
-;;; Package Management
-
-;; `package' is used to install/update packages.
-
-;; By default, the only source of packages is elpa.gnu.org, but there are tons
-;; of great packages on MELBA, to be able to install those we add the URL to
-;; the following variable:
-(add-to-list 'package-archives'("melpa" . "https://melpa.org/packages/") t)
-
-;; Prefer ELPA over MELPA
-(setq package-archive-priorities '(("gnu" . 20)("melpa" . 10)))
-
-;; A list of all packages you'd like to install.
-;; Install packages with (package-install-selected-packages)
-;; Remove packages, once removed from this list, with (package-autoremove)
-(setq package-selected-packages
-      '(use-package
-        undo-fu
-        which-key
-        orderless
-        vertico
-        marginalia
-        modus-themes))
-
-;; Use Package is for configuring packages.
-(require 'use-package)
-
-
-;;; Packages
-
-;; Packages come last in the config because, in my experience, they are the
-;; most common source of breakage, so if something goes wrong below all of the
-;; above settings are still loaded.
-
-(use-package undo-fu
-  ;; Undo in Emacs is confusing, for example there's no redo command and you can
-  ;; undo an undo. That's fine if you're an Emacs wizard, but this package
-  ;; simplifies things so Emacs behaves like you might expect.
-  :bind
-  ("s-z" . undo-fu-only-undo)
-  ("s-Z" . undo-fu-only-redo))
-
-(use-package which-key
-  ;; Displays useful pop-ups for when you type an incomplete binding.
-  :init
-  (which-key-mode 1))
-
-(use-package orderless
-  ;; orderless allows for "fuzzy matching" when filtering lists of commands,
-  ;; variables, and functions. This is extremely useful since it is not always
-  ;; easy to predict how those symbols are named.
-  :demand
-  :init
-  (setq completion-styles '(orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion))))))
-
-(use-package vertico
-  ;; Vertico creates a useful interface for picking things from a list, which
-  ;; is something you do all the time in Emacs.
-  :init
-  (vertico-mode))
-
-(use-package marginalia
-  ;; Display useful information about the selection candidates.
-  :init
-  (marginalia-mode))
-
-(use-package modus-themes
-  ;; My preferred theme.
-  :init
-  (modus-themes-load-operandi))
+;; If you use the Main Menu you'll only ever need to learn one keybinding:
+(define-key global-map (kbd "C-<return>") 'main-menu-transient)
 
 
 ;;; End of Config --- Good luck out there!

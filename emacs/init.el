@@ -49,15 +49,12 @@
 
 (require 'package)
 
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")
-                         ("gnu-devel" . "https://elpa.gnu.org/devel/")))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
 (setq package-archive-priorities '(("gnu" . 30)
                                    ("melpa-stable" . 20)
-                                   ("melpa" . 10)
-                                   ("gnu-devel" . 0)))
+                                   ("melpa" . 10)))
 
 (define-prefix-command 'pkg-ops-map nil "Packages")
 
@@ -200,7 +197,7 @@
 
 (prog1 "environment"
   ;; Important paths for this setup to work.
-  (cd "~/home/") ; Start in my personal home directory
+  (setq-default default-directory "~/home/")
   (setq org-directory "~/home/org/")
   (defvar user-downloads-directory "~/Desktop/")
   (add-to-list 'load-path "~/home/dot/emacs/lisp/"))
@@ -621,7 +618,6 @@ Disables all current themes, then:
   (custom-set-variables
    '(modus-themes-italic-constructs t)
    '(modus-themes-links '(neutral-underline))
-   '(modus-themes-mode-line '(accented 3d))
    '(modus-themes-region '(bg-only))
    '(modus-themes-vivendi-color-overrides '((bg-main . "#1c1c1c")
                                             (fg-main . "#d5d5d5")))
@@ -1054,7 +1050,6 @@ PROMPT sets the `read-string prompt."
       (define-key map (kbd "<backtab>") #'outline-cycle-buffer))))
 
 (prog1 "world-clock"
-  (defalias 'world-clock 'display-time-world)
   (setq display-time-world-time-format "%Z%t%R%t%F"
         display-time-world-list
         '(("America/Los_Angeles" "Los Angeles")
@@ -1197,6 +1192,7 @@ PROMPT sets the `read-string prompt."
 
   ) ; End Org Agenda
 
+
 ;;;; Calendar <--> Org Integration
 
 ;; You can jump to org's agenda from the calendar, and capture from any date
@@ -1270,7 +1266,7 @@ current HH:MM time."
     ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
     ("d" "Date/Time mode-line" toggle-date-time-battery)
     ("C" "Calendar" calendar)
-    ("W" "World Clock" world-clock)
+    ("W" "World Clock" display-time-world)
     ("s o" "*scratch-org*" scratch-buffer-org)
     ("s m" "*scratch-markdown*" scratch-buffer-markdown)]
    ["Org"

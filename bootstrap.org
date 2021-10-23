@@ -103,7 +103,7 @@ specific workflow. Lucky you.
 ** Utilities
 
 - Install command-line dev tools with =xcode-select --install=.
-- Install [[https://1blocker.com][1Blocker]]
+- Install Magic Lasso (ad-blocker)
 - Install [[https://underpassapp.com/StopTheMadness/][StopTheMadness]]
 - Install [[https://oblador.github.io/hush/][Hush]]
 - Install [[https://www.princexml.com][princeXML]]

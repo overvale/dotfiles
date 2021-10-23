@@ -70,7 +70,6 @@
 ;;; Package Management
 
 (require 'package)
-(package-initialize)
 
 ;; By default, the only source of packages is elpa.gnu.org, but there are tons
 ;; of great packages on MELPA (a repository of packages). To be able to

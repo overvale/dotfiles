@@ -951,7 +951,6 @@ PROMPT sets the `read-string prompt."
   (delight 'outline-minor-mode " Out" "outline")
 
   (with-eval-after-load 'outline
-    (require 'outline-cycle-backport)
     (let ((map outline-minor-mode-map))
       (define-key map (kbd "TAB")
         `(menu-item "" outline-cycle

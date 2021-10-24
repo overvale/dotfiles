@@ -234,6 +234,60 @@ For example you might want to do something like:
 (add-hook 'eww-mode-hook 'oht-eww-set-bookmark-handler)
 
 
+;;; Minibuffer
+
+;; This is what I used, and was quite happy with, until mct.el came along.
+
+(defun select-minibuffer ()
+  "Select the active minibuffer."
+  (interactive)
+  (when-let ((mini (active-minibuffer-window)))
+    (select-window mini)))
+
+(defun switch-to-completions-bottom ()
+  (interactive)
+  (switch-to-completions)
+  (move-to-window-line -1))
+
+(let ((minibuffer minibuffer-local-completion-map)
+      (list completion-list-mode-map))
+  (define-key minibuffer (kbd "C-n") 'switch-to-completions)
+  (define-key minibuffer (kbd "C-p") 'switch-to-completions-bottom)
+  (define-key list [remap other-window] 'select-minibuffer)
+  (define-key list (kbd "n") 'next-completion)
+  (define-key list (kbd "p") 'previous-completion))
+
+(prog1 "completion buffer size"
+  ;; This is taken from the live-completions README. It limits the height of
+  ;; the *Completions* buffer to 1/3 of the frame height.
+  (defvar old-max-height-function temp-buffer-max-height)
+
+  (defun max-completions-height (buffer)
+    (if (string= (buffer-name buffer) "*Completions*")
+        (/ (frame-height) 3) ; 1/3 of the frame-height
+      (funcall old-max-height-function temp-buffer-max-height)))
+
+  (setq temp-buffer-max-height #'max-completions-height)
+  (temp-buffer-resize-mode))
+
+(local-package 'live-completions "live-completions"
+  (require 'live-completions)
+
+  (setq live-completions-columns 'single
+        live-completions-sort-order 'cycle)
+
+  (custom-set-faces
+   '(live-completions-forceable-candidate ((t (:inherit 'modus-themes-special-mild)))))
+
+  (let ((minibuffer minibuffer-local-completion-map))
+    (define-key minibuffer (kbd "TAB") 'minibuffer-force-complete)
+    (define-key minibuffer (kbd "<return>") 'minibuffer-force-complete-and-exit))
+
+  (add-hook 'completion-list-mode-hook 'hl-line-mode)
+
+  (live-completions-mode 1))
+
+
 ;;; Prot Minibuffer Adaptation
 
 ;; https://gitlab.com/protesilaos/dotfiles/-/blob/master/emacs/.emacs.d/prot-lisp/prot-minibuffer.el

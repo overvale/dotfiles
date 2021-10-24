@@ -6,6 +6,8 @@
 ;; URL: https://olivertaylor.net
 ;; URL: https://github.com/olivertaylor/dotfiles
 
+;; This config targets Emacs 28.1
+
 
 ;;; Commentary:
 
@@ -85,15 +87,8 @@
         olivetti
         orderless
         org
-        vertico
         visual-regexp
-        visual-regexp-steroids
-        transient))
-
-(setq package-pinned-packages
-      '((embark . "melpa")
-        (vertico . "melpa")
-        (ctrlf . "melpa")))
+        visual-regexp-steroids))
 
 (add-hook 'package-menu-mode-hook 'hl-line-mode)
 
@@ -133,7 +128,7 @@
  '(make-backup-files nil)
  '(load-prefer-newer t)
  '(bookmark-save-flag 1)
- ;;'(bookmark-menu-confirm-deletion t) ; Emacs 28
+ '(bookmark-menu-confirm-deletion t)
  '(word-wrap t)
  '(truncate-lines t)
  '(save-interprogram-paste-before-kill t)
@@ -201,11 +196,6 @@
   (setq org-directory "~/home/org/")
   (defvar user-downloads-directory "~/Desktop/")
   (add-to-list 'load-path "~/home/dot/emacs/lisp/"))
-
-;; I think Emacs's undo/redo could be simpler. Emacs 28 provides
-;; everything I need, but I'm still on 27, so I've included a
-;; backport of those functions and...
-(require 'undo-backport)
 
 (local-package 'vundo "vundo"
   ;; Vundo creates a tree-like visualization of your undo history
@@ -894,65 +884,22 @@ PROMPT sets the `read-string prompt."
  '(completion-show-help nil)
  '(completion-cycle-threshold nil)
  '(enable-recursive-minibuffers t)
- '(savehist-mode t))
+ '(savehist-mode t)
+ '(completions-format 'one-column)
+ '(completions-detailed t)
+ '(minibuffer-eldef-shorten-default t)
+ '(file-name-shadow-mode 1)
+ '(minibuffer-depth-indicate-mode 1)
+ '(minibuffer-electric-default-mode 1))
 
-(defun select-minibuffer ()
-  "Select the active minibuffer."
-  (interactive)
-  (when-let ((mini (active-minibuffer-window)))
-    (select-window mini)))
-
-(defun switch-to-completions-bottom ()
-  (interactive)
-  (switch-to-completions)
-  (move-to-window-line -1))
-
-(let ((minibuffer minibuffer-local-completion-map)
-      (list completion-list-mode-map))
-  (define-key minibuffer (kbd "C-n") 'switch-to-completions)
-  (define-key minibuffer (kbd "C-p") 'switch-to-completions-bottom)
-  (define-key list [remap other-window] 'select-minibuffer)
-  (define-key list (kbd "n") 'next-completion)
-  (define-key list (kbd "p") 'previous-completion))
-
-(prog1 "completion buffer size"
-  ;; This is taken from the live-completions README. It limits the height of
-  ;; the *Completions* buffer to 1/3 of the frame height.
-  (defvar old-max-height-function temp-buffer-max-height)
-
-  (defun max-completions-height (buffer)
-    (if (string= (buffer-name buffer) "*Completions*")
-        (/ (frame-height) 3) ; 1/3 of the frame-height
-      (funcall old-max-height-function temp-buffer-max-height)))
-
-  (setq temp-buffer-max-height #'max-completions-height)
-  (temp-buffer-resize-mode))
+(local-package 'mct "mct"
+  (require 'mct)
+  (mct-mode 1))
 
 (elpa-package 'orderless
   (require 'orderless)
   (custom-set-variables
    '(completion-styles '(orderless))))
-
-(elpa-package 'marginalia
-  (marginalia-mode)
-  (define-key minibuffer-local-map (kbd "M-q") 'marginalia-cycle))
-
-(local-package 'live-completions "live-completions"
-  (require 'live-completions)
-
-  (setq live-completions-columns 'single
-        live-completions-sort-order 'cycle)
-
-  (custom-set-faces
-   '(live-completions-forceable-candidate ((t (:inherit 'modus-themes-special-mild)))))
-
-  (let ((minibuffer minibuffer-local-completion-map))
-    (define-key minibuffer (kbd "TAB") 'minibuffer-force-complete)
-    (define-key minibuffer (kbd "<return>") 'minibuffer-force-complete-and-exit))
-
-  (add-hook 'completion-list-mode-hook 'hl-line-mode)
-
-  (live-completions-mode 1))
 
 
 ;;; Miscellaneous

@@ -726,6 +726,22 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("q" "Quit" transient-quit-all)]])
 
 
+;;; Repeat Mode
+
+(custom-set-variables
+ '(repeat-mode 1))
+
+(defvar buffer-navigation-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "n") 'next-buffer)
+    (define-key map (kbd "p") 'previous-buffer)
+    (define-key map (kbd "<left>") 'next-buffer)
+    (define-key map (kbd "<right>") 'previous-buffer)
+    map)
+  "Keymap to repeat buffer navigation commands. Used in `repeat-mode'.")
+(put 'next-buffer 'repeat-map 'buffer-navigation-repeat-map)
+(put 'previous-buffer 'repeat-map 'buffer-navigation-repeat-map)
+
 ;;; Confirm Killing Modified Buffers
 
 ;; Emacs asks for confirmation when killing modified file-visiting buffers,

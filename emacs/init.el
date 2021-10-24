@@ -58,19 +58,6 @@
                                    ("melpa-stable" . 20)
                                    ("melpa" . 10)))
 
-(define-prefix-command 'pkg-ops-map nil "Packages")
-
-(let ((map pkg-ops-map))
-  (define-key map "h" '("describe" . describe-package))
-  (define-key map "a" '("autoremove" . package-autoremove))
-  (define-key map "d" '("delete" . package-delete))
-  (define-key map "i" '("install" . package-install))
-  (define-key map "s" '("selected" . package-install-selected-packages))
-  (define-key map "r" '("refresh" . package-refresh-contents))
-  (define-key map "l" '("list" . list-packages)))
-
-(global-set-key (kbd "C-c p") 'pkg-ops-map)
-
 (setq package-selected-packages
       '(consult
         delight
@@ -80,7 +67,6 @@
         fountain-mode
         lua-mode
         magit
-        marginalia
         markdown-mode
         modus-themes
         olivetti
@@ -415,6 +401,9 @@ This will save the buffer if it is not currently saved."
 
 ;;; Bindings
 
+
+;;;; Bosskey Mode
+
 ;; The technique below is taken from the bind-key package. It places all the
 ;; bindings I don't want overridden into a minor mode which is inserted into
 ;; the `emulation-mode-map-alists' (number 4 on the list above), so only very
@@ -433,29 +422,56 @@ Keybindings you define here will take precedence."
 (add-to-list 'emulation-mode-map-alists
              `((bosskey-mode . ,bosskey-mode-map)))
 
+
+;;;; Emacsen Improvements
+
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
+;; Replace standard functions with my improved versions:
 (let ((map bosskey-mode-map))
   (define-key map (kbd "C-x c") 'frames-p-save-buffers-kill-emacs)
-  (define-key map (kbd "M-o") 'other-window)
-  (define-key map (kbd "M-O") (lambda () (interactive) (other-window -1)))
-  (define-key map (kbd "<C-return>") 'universal-transient)
   (define-key map (kbd "C-x C-n") 'next-buffer)
   (define-key map (kbd "C-x C-p") 'previous-buffer)
-  (define-key map (kbd "M-,") 'pop-to-mark-command)
-  (define-key map (kbd "M-.") 'unpop-to-mark-command)
   (define-key map (kbd "C-x C-b") 'switch-to-buffer)
   (define-key map (kbd "C-x b") 'switch-to-buffer-other-window)
   (define-key map (kbd "C-x C-f") 'find-file)
   (define-key map (kbd "C-x f") 'find-file-other-window)
-  (define-key map (kbd "C-'") 'embark-act)
-  (define-key map (kbd "M-'") 'completion-at-point)
+  (define-key map (kbd "M-/") 'completion-at-point)
   (define-key map (kbd "M-z") 'zap-up-to-char)
   (define-key map (kbd "C-M-h") 'mark-line)
   (define-key map (kbd "C-d") 'delete-forward-char)
   (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
   (define-key map (kbd "C-x k") 'kill-buffer-dwim))
+
+;; Emacsen extensions:
+(let ((map bosskey-mode-map))
+  (define-key map (kbd "M-o") 'other-window)
+  (define-key map (kbd "M-O") (lambda () (interactive) (other-window -1)))
+  (define-key map (kbd "M-[") 'pop-to-mark-command)
+  (define-key map (kbd "M-]") 'unpop-to-mark-command)
+  (define-key map (kbd "<C-return>") 'universal-transient)
+  (define-key map (kbd "C-.") 'embark-act))
+
+;; For bindings that I do want to be overriden by minor modes and the like, I
+;; use the built-in `global-map' and all the standard tools. Nothing fancy.
+(let ((map global-map))
+  ;; replace mappings
+  (define-key map [remap capitalize-word] 'capitalize-dwim)
+  (define-key map [remap downcase-word]   'downcase-dwim)
+  (define-key map [remap upcase-word]     'upcase-dwim)
+  ;; Make shift-click extend the region.
+  (define-key map [S-down-mouse-1] 'ignore)
+  (define-key map [S-mouse-1] 'mouse-save-then-kill)
+  ;; Use M-drag-mouse-1 to create rectangle regions.
+  (define-key map [M-down-mouse-1] #'mouse-drag-region-rectangle) ; down
+  (define-key map [M-drag-mouse-1] #'ignore)                      ; drag
+  (define-key map [M-mouse-1]      #'mouse-set-point))            ; up
+
+(define-key help-map "s" 'describe-symbol-at-point)
+
+
+;;;; MacOS
 
 ;; I do value consistency, and I do use Emacs on a Windows machine where the
 ;; below is not available, but I just can't give them up on my Mac.
@@ -474,23 +490,20 @@ Keybindings you define here will take precedence."
     (define-key map (kbd "s-q") 'frames-p-save-buffers-kill-emacs)))
 
 
-;; For bindings that I do want to be overriden by minor modes and the like, I
-;; use the built-in `global-map' and all the standard tools. Nothing fancy.
-(let ((map global-map))
-  ;; replace mappings
-  (define-key map [remap capitalize-word] 'capitalize-dwim)
-  (define-key map [remap downcase-word]   'downcase-dwim)
-  (define-key map [remap upcase-word]     'upcase-dwim)
-  ;; Make shift-click extend the region.
-  (define-key map [S-down-mouse-1] 'ignore)
-  (define-key map [S-mouse-1] 'mouse-save-then-kill)
-  ;; Use M-drag-mouse-1 to create rectangle regions.
-  (define-key map [M-down-mouse-1] #'mouse-drag-region-rectangle)
-  (define-key map [M-drag-mouse-1] #'ignore)
-  (define-key map [M-mouse-1]      #'mouse-set-point))
+;;;; Packages
 
-(define-key help-map "s" 'describe-symbol-at-point)
+(define-prefix-command 'pkg-ops-map nil "Packages")
 
+(let ((map pkg-ops-map))
+  (define-key map "h" '("describe" . describe-package))
+  (define-key map "a" '("autoremove" . package-autoremove))
+  (define-key map "d" '("delete" . package-delete))
+  (define-key map "i" '("install" . package-install))
+  (define-key map "s" '("selected" . package-install-selected-packages))
+  (define-key map "r" '("refresh" . package-refresh-contents))
+  (define-key map "l" '("list" . list-packages)))
+
+(global-set-key (kbd "C-c p") 'pkg-ops-map)
 
 
 
@@ -1194,6 +1207,7 @@ current HH:MM time."
     ("," "Find Init" find-user-init-file)
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
+    ("w" "Windows..." window-transient)
     "Other"
     ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
     ("d" "Date/Time mode-line" toggle-date-time-battery)
@@ -1212,18 +1226,11 @@ current HH:MM time."
     ("c l" "Line" consult-line)
     ("c o" "Outline" consult-outline)
     ("c g" "Grep" consult-grep)]
-   ["Windows"
-    ("w h" "Split Horizonal" split-window-below)
-    ("w v" "Split Vertically" split-window-right)
-    ("w d" "Delete Window" delete-window)
-    ("w o" "Only Window" delete-other-windows)
-    ("w t" "Window Transient" window-transient)
-    "Macros"
+   ["Macros"
     ("m s" "Start" start-kbd-macro)
     ("m e" "End" end-kbd-macro)
     ("m c" "Call" call-last-kbd-macro)
-    ("m r" "Region Lines" apply-macro-to-region-lines)]
-    ])
+    ("m r" "Region Lines" apply-macro-to-region-lines)]])
 
 
 ;; Emacs has so many modes. Who can remember all the commands? These

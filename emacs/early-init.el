@@ -16,13 +16,6 @@
  '(scroll-bar-mode nil)
  '(menu-bar-mode t))
 
-(setq default-frame-alist
-      (append (list
-               ;; pixels
-               '(internal-border-width . 1) ; pixels
-               ;; characters
-               '(width . 80) '(height . 50))))
-
 ;; Switch off garbage collection (will be switched on later).
 ;; This is step 1 of 2. Step 2 is in init.
 ;; Taken from Doom Emacs.

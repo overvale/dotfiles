@@ -73,7 +73,6 @@
 
 (setq package-selected-packages
       '(consult
-        ctrlf
         delight
         embark
         embark-consult
@@ -93,7 +92,7 @@
 (add-hook 'package-menu-mode-hook 'hl-line-mode)
 
 
-;;; Customizations
+;;; Settings
 
 ;; Save all interactive customization to a temp file, which is never loaded.
 ;; This means interactive customization is session-local. Only this init file persists sessions.
@@ -146,13 +145,6 @@
  '(locate-command "mdfind")
  '(delete-by-moving-to-trash t)
  '(trash-dircetory "~/.Trash"))
-
-(defun prog-mode-hook-config nil
-  (setq-local show-trailing-whitespace t)
-  (setq-local comment-auto-fill-only-comments t)
-  (auto-fill-mode))
-
-(add-hook 'prog-mode-hook 'prog-mode-hook-config)
 
 
 ;;; Critical Setup
@@ -213,7 +205,7 @@
   (exec-path-from-shell-initialize))
 
 
-;;; Misc Functions
+;;; Functions
 
 ;; Some of these functions I wrote myself, many of them I copied (and perhaps
 ;; modified) from other people's configs.
@@ -403,41 +395,25 @@ This will save the buffer if it is not currently saved."
   (interactive)
   (describe-symbol (symbol-at-point)))
 
-(defun kf-insert-arrow (type)
-  "Insert an arrow of TYPE, where type is a single letter:
-    - \"[u]p\"
-    - \"[d]own\"
-    - \"[l]eft\"
-    - \"[r]ight\"
-    - \"[h]orizontal double arrow\"
-    - \"[v]ertical double arrow\""
-  (interactive
-   "cArrow type ([u]p, [d]own, [l]eft, [r]ight, [h]oriz, [v]ert): ")
-    (insert (cdr (assoc type '((?u . ?↑)
-                               (?d . ?↓)
-                               (?l . ?←)
-                               (?r . ?→)
-                               (?h . ?↔)
-                               (?v . ?↕))))))
+(defun prog-mode-hook-config nil
+  (setq-local show-trailing-whitespace t)
+  (setq-local comment-auto-fill-only-comments t)
+  (auto-fill-mode))
+
+(add-hook 'prog-mode-hook 'prog-mode-hook-config)
+
+(defun split-window-below-select nil
+  "Split window below and select it."
+  (interactive)
+  (select-window (split-window-below)))
+
+(defun split-window-right-select nil
+  "Split window to the right and select it."
+  (interactive)
+  (select-window (split-window-right)))
 
 
-;;; Keybindings
-
-;; Emacs Keymap Lookup Order:
-;; 1. overriding-terminal-local-map
-;; 2. overriding-local-map
-;; 3. text property's 'keymap property
-;; 4. emulation-mode-map-alists
-;; 5. minor-mode-overriding-map-alist
-;; 6. minor-mode-map-alist (Minor Mode)
-;; 7. text property's 'local-map property
-;; 8. (current-local-map) (Major Mode)
-;; 9. (current-global-map) (Global Map)
-
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "C-x C-z"))
-(global-unset-key [swipe-left])
-(global-unset-key [swipe-right])
+;;; Bindings
 
 ;; The technique below is taken from the bind-key package. It places all the
 ;; bindings I don't want overridden into a minor mode which is inserted into
@@ -457,25 +433,23 @@ Keybindings you define here will take precedence."
 (add-to-list 'emulation-mode-map-alists
              `((bosskey-mode . ,bosskey-mode-map)))
 
+;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
+(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+
 (let ((map bosskey-mode-map))
   (define-key map (kbd "C-x c") 'frames-p-save-buffers-kill-emacs)
-  (define-key map (kbd "C-x C-n") 'new-buffer)
-  (define-key map (kbd "C-x n") 'make-frame-command)
-  (define-key map (kbd "C-/") 'undo-only)
-  (define-key map (kbd "C-?") 'undo-redo)
   (define-key map (kbd "M-o") 'other-window)
-  (define-key map (kbd "M-<SPC>") 'general-transient)
-  (define-key map (kbd "M-S-<SPC>") 'call-mode-help-transient)
-  (define-key map (kbd "C-M-]") 'next-buffer)
-  (define-key map (kbd "C-M-[") 'previous-buffer)
-  (define-key map (kbd "C-M-{") 'pop-to-mark-command)
-  (define-key map (kbd "C-M-}") 'unpop-to-mark-command)
-  (define-key map (kbd "C-x C-b") 'consult-buffer)
-  (define-key map (kbd "C-x b") 'consult-buffer-other-window)
+  (define-key map (kbd "M-O") (lambda () (interactive) (other-window -1)))
+  (define-key map (kbd "<C-return>") 'universal-transient)
+  (define-key map (kbd "C-x C-n") 'next-buffer)
+  (define-key map (kbd "C-x C-p") 'previous-buffer)
+  (define-key map (kbd "M-,") 'pop-to-mark-command)
+  (define-key map (kbd "M-.") 'unpop-to-mark-command)
+  (define-key map (kbd "C-x C-b") 'switch-to-buffer)
+  (define-key map (kbd "C-x b") 'switch-to-buffer-other-window)
   (define-key map (kbd "C-x C-f") 'find-file)
   (define-key map (kbd "C-x f") 'find-file-other-window)
-  (define-key map (kbd "M-1") 'window-transient)
-  (define-key map (kbd "M-.") 'embark-act)
+  (define-key map (kbd "C-'") 'embark-act)
   (define-key map (kbd "M-'") 'completion-at-point)
   (define-key map (kbd "M-z") 'zap-up-to-char)
   (define-key map (kbd "C-M-h") 'mark-line)
@@ -483,28 +457,25 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
   (define-key map (kbd "C-x k") 'kill-buffer-dwim))
 
-;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
-(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-
 ;; I do value consistency, and I do use Emacs on a Windows machine where the
 ;; below is not available, but I just can't give them up on my Mac.
 (when (string= system-type "darwin")
   (setq mac-command-modifier 'super
         mac-option-modifier 'meta)
-  (define-key bosskey-mode-map (kbd "s-z") 'undo-only)
-  (define-key bosskey-mode-map (kbd "s-Z") 'undo-redo)
-  (define-key bosskey-mode-map (kbd "s-x") 'kill-region)
-  (define-key bosskey-mode-map (kbd "s-c") 'kill-ring-save)
-  (define-key bosskey-mode-map (kbd "s-v") 'yank)
-  (define-key bosskey-mode-map (kbd "s-q") 'frames-p-save-buffers-kill-emacs)
-  (define-key bosskey-mode-map (kbd "s-n") 'new-buffer)
-  (define-key bosskey-mode-map (kbd "s-s") 'save-buffer)
-  (define-key bosskey-mode-map (kbd "s-m") 'iconify-frame)
-  (define-key bosskey-mode-map (kbd "s-,") 'find-user-init-file))
+  (let ((map global-map))
+    (define-key map (kbd "s-z") 'undo-only)
+    (define-key map (kbd "s-Z") 'undo-redo)
+    (define-key map (kbd "s-x") 'kill-region)
+    (define-key map (kbd "s-c") 'kill-ring-save)
+    (define-key map (kbd "s-v") 'yank)
+    (define-key map (kbd "s-s") 'save-buffer)
+    (define-key map (kbd "s-m") 'iconify-frame)
+    (define-key map (kbd "s-,") 'find-user-init-file)
+    (define-key map (kbd "s-q") 'frames-p-save-buffers-kill-emacs)))
+
 
 ;; For bindings that I do want to be overriden by minor modes and the like, I
 ;; use the built-in `global-map' and all the standard tools. Nothing fancy.
-
 (let ((map global-map))
   ;; replace mappings
   (define-key map [remap capitalize-word] 'capitalize-dwim)
@@ -519,6 +490,8 @@ Keybindings you define here will take precedence."
   (define-key map [M-mouse-1]      #'mouse-set-point))
 
 (define-key help-map "s" 'describe-symbol-at-point)
+
+
 
 
 ;;; Themes
@@ -731,8 +704,8 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
   "Most commonly used window commands."
   [["Splits"
     ("s" "Split Sensibly" split-window-dwim)
-    ("h" "Split Horizontal" split-window-below)
-    ("v" "Split Vertical"   split-window-right)
+    ("h" "Split Horizontal" split-window-below-select)
+    ("v" "Split Vertical"   split-window-right-select)
     ("b" "Balance"    balance-windows)
     ("f" "Fit"        fit-window-to-buffer)
     ("r" "Rotate Split" rotate-window-split)
@@ -877,7 +850,6 @@ PROMPT sets the `read-string prompt."
                                "https://github.com/search?l=Emacs+Lisp&type=Code&q="
                                "Github Elisp: ")
 
-
 ;;; Minibuffer
 
 (custom-set-variables
@@ -927,15 +899,6 @@ PROMPT sets the `read-string prompt."
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
   (global-set-key [remap yank-pop] 'consult-yank-pop))
-
-(elpa-package 'ctrlf
-  ;; Enabling the mode remaps iSearch bindings, so no need to set your own.
-  (ctrlf-mode +1)
-  (setq ctrlf-go-to-end-of-match nil
-        ctrlf-default-search-style 'fuzzy)
-  (custom-set-faces
-   '(ctrlf-highlight-active  ((t (:inherit 'modus-themes-search-success))))
-   '(ctrlf-highlight-passive ((t (:inherit 'modus-themes-search-success-lazy))))))
 
 (elpa-package 'visual-regexp
   ;; A reasonable regex engine? Live preview of search and replacement? Yes please!
@@ -1003,7 +966,6 @@ PROMPT sets the `read-string prompt."
           ("America/Chicago" "Chicago")
           ("America/Montreal" "Montreal")
           ("Europe/London" "London"))))
-
 
 ;;; Org
 
@@ -1111,6 +1073,7 @@ PROMPT sets the `read-string prompt."
 
   ) ; End Org
 
+
 ;;;; Org Agenda
 
 (with-eval-after-load 'org-agenda
@@ -1203,29 +1166,44 @@ current HH:MM time."
 
 (autoload 'dired-jump "dired-x")
 
+(defun universal-transient ()
+  "If ARG is nil, display the `general-transient', otherwise `call-mode-help-transient'."
+  (interactive)
+  (if (equal current-prefix-arg nil)
+      (general-transient)
+    (call-mode-help-transient)))
+
 (transient-define-prefix general-transient ()
   "General-purpose transient."
   [["Actions/Toggles"
     ("," "Find Init" find-user-init-file)
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
-   "Other"
+    "Other"
     ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
     ("d" "Date/Time mode-line" toggle-date-time-battery)
     ("C" "Calendar" calendar)
     ("W" "World Clock" display-time-world)
-    ("s o" "*scratch-org*" scratch-buffer-org)
-    ("s m" "*scratch-markdown*" scratch-buffer-markdown)]
+    ("x o" "*scratch-org*" scratch-buffer-org)
+    ("x m" "*scratch-markdown*" scratch-buffer-markdown)]
    ["Org"
     ("o a" "Org Agenda" org-agenda)
     ("o k" "Org Capture" org-capture)
     ("o s" "Store Link" org-store-link)
     ("o i" "Insert Link" org-insert-link)
     "Consult"
+    ("c b" "Buffer" consult-buffer)
+    ("c B" "Buffer Other Window" consult-buffer-other-window)
     ("c l" "Line" consult-line)
     ("c o" "Outline" consult-outline)
     ("c g" "Grep" consult-grep)]
-   ["Macros"
+   ["Windows"
+    ("w h" "Split Horizonal" split-window-below)
+    ("w v" "Split Vertically" split-window-right)
+    ("w d" "Delete Window" delete-window)
+    ("w o" "Only Window" delete-other-windows)
+    ("w t" "Window Transient" window-transient)
+    "Macros"
     ("m s" "Start" start-kbd-macro)
     ("m e" "End" end-kbd-macro)
     ("m c" "Call" call-last-kbd-macro)
@@ -1338,7 +1316,6 @@ This is helpful text.")
   (define-key map "p" '("Prod Agenda" . qh--prod-agenda)))
 
 (global-set-key (kbd "C-c h") 'quick-help-prompt)
-
 
 
 ;;; End of init.el

@@ -595,8 +595,9 @@ Disables all current themes, then:
    '(modus-themes-italic-constructs t)
    '(modus-themes-links '(neutral-underline))
    '(modus-themes-region '(bg-only))
+   '(modus-themes-mode-line nil)
    '(modus-themes-vivendi-color-overrides '((bg-main . "#1c1c1c")
-                                            (fg-main . "#d5d5d5")))
+                                            (fg-main . "#e5e5e5")))
    '(modus-themes-org-blocks '(gray-background))
    '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
                                (header-date . (bold-today))
@@ -629,7 +630,7 @@ Disables all current themes, then:
   (setq line-spacing nil)
   (let ((mono "IBM Plex Mono")
         (vari "IBM Plex Serif")
-        (mode "IBM Plex Sans")
+        (mode "Inter")
         (mono-height 120)
         (mode-height 130))
     (custom-set-faces
@@ -693,7 +694,7 @@ Disables all current themes, then:
 ;; whatever the hell it wants.
 (setq display-buffer-alist
       '(("\\*Calendar.*"
-         (display-buffer-at-bottom)
+         (display-buffer-below-selected)
          (window-parameters . ((no-other-window . nil)))
          (window-height . fit-window-to-buffer))
         ("\\*wclock.*"
@@ -722,7 +723,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("b" "Balance"    balance-windows)
     ("f" "Fit"        fit-window-to-buffer)
     ("r" "Rotate Split" rotate-window-split)
-    ("R" "Swap Windows" swap-windows)]
+    ("S" "Swap Windows" swap-windows)]
    ["Window"
     ("d" "Dedicate Window" dedicated-mode)
     ("c" "Clone Indirect" clone-indirect-buffer)

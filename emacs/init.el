@@ -55,6 +55,7 @@
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
 (setq package-archive-priorities '(("gnu" . 30)
+                                   ("nongnu" . 25)
                                    ("melpa-stable" . 20)
                                    ("melpa" . 10)))
 
@@ -75,8 +76,6 @@
         visual-regexp
         visual-regexp-steroids))
 
-(add-hook 'package-menu-mode-hook 'hl-line-mode)
-
 
 ;;; Settings
 
@@ -92,17 +91,12 @@
 ;; https://old.reddit.com/r/emacs/comments/exnxha/withemacs_almost_all_you_need_to_know_about/fgadihl/
 (custom-set-variables
  '(inhibit-startup-screen t)
+ '(repeat-mode 1)
  '(global-auto-revert-mode t)
- '(ibuffer-auto-mode t)
  '(save-place-mode t)
  '(recentf-mode t)
- '(show-paren-mode t)
- '(blink-cursor-mode t)
- '(cursor-type 'box)
- '(cursor-in-non-selected-windows 'hollow)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
- '(minibuffer-depth-indicate-mode t)
  '(ring-bell-function 'ignore)
  '(set-language-environment "UTF-8")
  '(frame-title-format '("%b"))
@@ -111,9 +105,9 @@
  '(find-file-visit-truename t)
  '(create-lockfiles nil)
  '(make-backup-files nil)
- '(load-prefer-newer t)
  '(bookmark-save-flag 1)
  '(bookmark-menu-confirm-deletion t)
+ '(describe-bindings-outline t)
  '(word-wrap t)
  '(truncate-lines t)
  '(save-interprogram-paste-before-kill t)
@@ -127,10 +121,8 @@
  '(tab-width 4)
  '(indent-tabs-mode nil)
  '(fill-column 78)
- '(completions-format 'vertical)
- '(locate-command "mdfind")
  '(delete-by-moving-to-trash t)
- '(trash-dircetory "~/.Trash"))
+ '(trash-directory "~/.Trash"))
 
 
 ;;; Critical Setup
@@ -471,23 +463,16 @@ Keybindings you define here will take precedence."
 (define-key help-map "s" 'describe-symbol-at-point)
 
 
-;;;; MacOS
+;;;; Repeat Mode
 
-;; I do value consistency, and I do use Emacs on a Windows machine where the
-;; below is not available, but I just can't give them up on my Mac.
-(when (string= system-type "darwin")
-  (setq mac-command-modifier 'super
-        mac-option-modifier 'meta)
-  (let ((map global-map))
-    (define-key map (kbd "s-z") 'undo-only)
-    (define-key map (kbd "s-Z") 'undo-redo)
-    (define-key map (kbd "s-x") 'kill-region)
-    (define-key map (kbd "s-c") 'kill-ring-save)
-    (define-key map (kbd "s-v") 'yank)
-    (define-key map (kbd "s-s") 'save-buffer)
-    (define-key map (kbd "s-m") 'iconify-frame)
-    (define-key map (kbd "s-,") 'find-user-init-file)
-    (define-key map (kbd "s-q") 'frames-p-save-buffers-kill-emacs)))
+(defvar buffer-navigation-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "<left>") 'next-buffer)
+    (define-key map (kbd "<right>") 'previous-buffer)
+    map)
+  "Keymap to repeat buffer navigation commands. Used in `repeat-mode'.")
+(put 'next-buffer 'repeat-map 'buffer-navigation-repeat-map)
+(put 'previous-buffer 'repeat-map 'buffer-navigation-repeat-map)
 
 
 ;;;; Packages
@@ -505,6 +490,24 @@ Keybindings you define here will take precedence."
 
 (global-set-key (kbd "C-c p") 'pkg-ops-map)
 
+
+;;;; MacOS
+
+;; I do value consistency, and I do use Emacs on a Windows machine where the
+;; below is not available, but I just can't give them up on my Mac.
+(when (string= system-type "darwin")
+  (setq mac-command-modifier 'super
+        mac-option-modifier 'meta)
+  (let ((map global-map))
+    (define-key map (kbd "s-z") 'undo-only)
+    (define-key map (kbd "s-Z") 'undo-redo)
+    (define-key map (kbd "s-x") 'kill-region)
+    (define-key map (kbd "s-c") 'kill-ring-save)
+    (define-key map (kbd "s-v") 'yank)
+    (define-key map (kbd "s-s") 'save-buffer)
+    (define-key map (kbd "s-m") 'iconify-frame)
+    (define-key map (kbd "s-,") 'find-user-init-file)
+    (define-key map (kbd "s-q") 'frames-p-save-buffers-kill-emacs)))
 
 
 ;;; Themes
@@ -740,22 +743,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("q" "Quit" transient-quit-all)]])
 
 
-;;; Repeat Mode
-
-(custom-set-variables
- '(repeat-mode 1))
-
-(defvar buffer-navigation-repeat-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "n") 'next-buffer)
-    (define-key map (kbd "p") 'previous-buffer)
-    (define-key map (kbd "<left>") 'next-buffer)
-    (define-key map (kbd "<right>") 'previous-buffer)
-    map)
-  "Keymap to repeat buffer navigation commands. Used in `repeat-mode'.")
-(put 'next-buffer 'repeat-map 'buffer-navigation-repeat-map)
-(put 'previous-buffer 'repeat-map 'buffer-navigation-repeat-map)
-
 ;;; Confirm Killing Modified Buffers
 
 ;; Emacs asks for confirmation when killing modified file-visiting buffers,
@@ -883,19 +870,26 @@ PROMPT sets the `read-string prompt."
 ;;; Minibuffer
 
 (custom-set-variables
+ '(completions-format 'one-column)
+ '(completions-detailed t)
  '(completion-show-help nil)
  '(completion-cycle-threshold nil)
  '(enable-recursive-minibuffers t)
  '(savehist-mode t)
- '(completions-format 'one-column)
- '(completions-detailed t)
  '(minibuffer-eldef-shorten-default t)
+ '(minibuffer-depth-indicate-mode t)
  '(file-name-shadow-mode 1)
  '(minibuffer-depth-indicate-mode 1)
  '(minibuffer-electric-default-mode 1))
 
 (local-package 'mct "mct"
   (require 'mct)
+  (setq mct-live-update-delay 0.6)
+  (setq mct-completion-passlist
+      '(imenu
+        Info-goto-node
+        Info-index
+        Info-menu))
   (mct-mode 1))
 
 (elpa-package 'orderless
@@ -989,8 +983,8 @@ PROMPT sets the `read-string prompt."
       (define-key map (kbd "<backtab>") #'outline-cycle-buffer))))
 
 (prog1 "world-clock"
-  (setq display-time-world-time-format "%Z%t%R%t%F"
-        display-time-world-list
+  (setq world-clock-time-format "%Z%t%R%t%F"
+        world-clocko-list
         '(("America/Los_Angeles" "Los Angeles")
           ("America/Chicago" "Chicago")
           ("America/Montreal" "Montreal")
@@ -1193,7 +1187,7 @@ current HH:MM time."
 
 ;;; Transients
 
-(autoload 'dired-jump "dired-x")
+;;(autoload 'dired-jump "dired-x")
 
 (defun universal-transient ()
   "If ARG is nil, display the `general-transient', otherwise `call-mode-help-transient'."
@@ -1335,7 +1329,7 @@ This is helpful text.")
 (define-prefix-command 'quick-help-prompt nil "Quick Help")
 
 (let ((map quick-help-prompt))
-  (define-key map "p" '("Prod Agenda" . qh--prod-agenda)))
+  (define-key map "p" '("Help Test" . qh--help-test)))
 
 (global-set-key (kbd "C-c h") 'quick-help-prompt)
 

@@ -1239,12 +1239,11 @@ current HH:MM time."
 (defun call-mode-help-transient ()
   "Call a helpful transient based on the mode you're in."
   (interactive)
-  (if (progn
-        (when (derived-mode-p 'org-mode)
+  (unless
+      (cond ((derived-mode-p 'org-mode)
           (org-mode-help-transient))
-        (when (derived-mode-p 'Info-mode)
+            ((derived-mode-p 'Info-mode)
           (info-mode-help-transient)))
-      nil ; if the above succeeds, do nothing else, otherwise...
     (message "No transient defined for this mode.")))
 
 (with-eval-after-load 'org

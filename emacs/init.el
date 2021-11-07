@@ -61,6 +61,7 @@
 
 (setq package-selected-packages
       '(consult
+        corfu
         delight
         embark
         embark-consult
@@ -878,6 +879,9 @@ PROMPT sets the `read-string prompt."
 
 
 ;;; Packages
+
+(elpa-package 'corfu
+  (corfu-global-mode 1))
 
 (local-package 'vundo "vundo"
   ;; Vundo creates a tree-like visualization of your undo history

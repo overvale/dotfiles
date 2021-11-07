@@ -73,6 +73,7 @@
         olivetti
         orderless
         org
+        vertico
         visual-regexp
         visual-regexp-steroids))
 
@@ -866,15 +867,9 @@ PROMPT sets the `read-string prompt."
  '(minibuffer-depth-indicate-mode 1)
  '(minibuffer-electric-default-mode 1))
 
-(local-package 'mct "mct"
-  (require 'mct)
-  (setq mct-live-update-delay 0.6)
-  (setq mct-completion-passlist
-      '(imenu
-        Info-goto-node
-        Info-index
-        Info-menu))
-  (mct-mode 1))
+(elpa-package 'vertico
+  (setq vertico-count 15)
+  (vertico-mode 1))
 
 (elpa-package 'orderless
   (require 'orderless)

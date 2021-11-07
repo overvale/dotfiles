@@ -245,6 +245,11 @@ argument makes the windows rotate backwards."
                (set-window-start w2 s1)
                (setq i next-i)))))))
 
+(defun other-window-previous nil
+  "Select previous window."
+  (interactive)
+  (other-window -1))
+
 (defun split-window-dwim ()
   "Interactive wrapper around `split-window-sensibly'."
   (interactive)
@@ -425,7 +430,7 @@ Keybindings you define here will take precedence."
 ;; Emacsen extensions:
 (let ((map bosskey-mode-map))
   (define-key map (kbd "M-o") 'other-window)
-  (define-key map (kbd "M-O") (lambda () (interactive) (other-window -1)))
+  (define-key map (kbd "M-O") 'other-window-previous)
   (define-key map (kbd "M-[") 'pop-to-mark-command)
   (define-key map (kbd "M-]") 'unpop-to-mark-command)
   (define-key map (kbd "<C-return>") 'universal-transient)
@@ -1203,6 +1208,7 @@ current HH:MM time."
     ("," "Find Init" find-user-init-file)
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
+    ("l" "List Buffers" ibuffer)
     ("w" "Windows..." window-transient)
     "Other"
     ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)

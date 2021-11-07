@@ -167,20 +167,11 @@
   (defvar user-downloads-directory "~/Desktop/")
   (add-to-list 'load-path "~/home/dot/emacs/lisp/"))
 
-(local-package 'vundo "vundo"
-  ;; Vundo creates a tree-like visualization of your undo history
-  ;; using only standard Emacs undo commands and data. Requires either
-  ;; Emacs 28 or its backported undo functions.
-  (require 'vundo))
-
 (prog1 "transient"
   ;; I use a lot of transients in this config, so I need to make sure it is
   ;; loaded and configured before those are declared below.
   (autoload 'transient-define-prefix "transient" nil t)
   (setq transient-detect-key-conflicts t))
-
-(elpa-package 'exec-path-from-shell
-  (exec-path-from-shell-initialize))
 
 
 ;;; Functions
@@ -372,13 +363,6 @@ This will save the buffer if it is not currently saved."
   "Run `describe-symbol' for the `symbol-at-point'."
   (interactive)
   (describe-symbol (symbol-at-point)))
-
-(defun prog-mode-hook-config nil
-  (setq-local show-trailing-whitespace t)
-  (setq-local comment-auto-fill-only-comments t)
-  (auto-fill-mode))
-
-(add-hook 'prog-mode-hook 'prog-mode-hook-config)
 
 (defun split-window-below-select nil
   "Split window below and select it."
@@ -898,7 +882,16 @@ PROMPT sets the `read-string prompt."
    '(completion-styles '(orderless))))
 
 
-;;; Miscellaneous
+;;; Packages
+
+(local-package 'vundo "vundo"
+  ;; Vundo creates a tree-like visualization of your undo history
+  ;; using only standard Emacs undo commands and data. Requires either
+  ;; Emacs 28 or its backported undo functions.
+  (require 'vundo))
+
+(elpa-package 'exec-path-from-shell
+  (exec-path-from-shell-initialize))
 
 (elpa-package 'embark
   (custom-set-variables
@@ -955,7 +948,10 @@ PROMPT sets the `read-string prompt."
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
-(when (string= system-type "darwin")
+
+;;; Libraries
+
+(prog1 "spelling"
   (with-eval-after-load 'flyspell
     (delight 'flyspell-mode " Spell" "flyspell"))
   (add-hook 'text-mode-hook 'turn-on-flyspell)
@@ -969,11 +965,16 @@ PROMPT sets the `read-string prompt."
     (define-key map (kbd "O") 'crux-open-with)
     (define-key map (kbd "C-/") 'dired-undo)))
 
+(prog1 "prog-mode"
+  (defun prog-mode-hook-config nil
+    (setq-local show-trailing-whitespace t)
+    (setq-local comment-auto-fill-only-comments t)
+    (auto-fill-mode))
+  (add-hook 'prog-mode-hook 'prog-mode-hook-config))
+
 (prog1 "outline"
   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
-
   (delight 'outline-minor-mode " Out" "outline")
-
   (with-eval-after-load 'outline
     (let ((map outline-minor-mode-map))
       (define-key map (kbd "TAB")
@@ -989,6 +990,7 @@ PROMPT sets the `read-string prompt."
           ("America/Chicago" "Chicago")
           ("America/Montreal" "Montreal")
           ("Europe/London" "London"))))
+
 
 ;;; Org
 

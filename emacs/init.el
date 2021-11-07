@@ -43,11 +43,11 @@
 
 ;;; Package Management
 
-;; Packages are configured first so that when you open this config on a new
-;; machine, all the packages needed to make it work are in
-;; `package-selected-packages' and you can quickly install them with
-;; `package-install-selected-packages'. At which point the whole config should
-;; be ready to rock.
+;; The very first thing I do is setup the packages I need. I do this so that
+;; when I open this config on a new machine, all the packages needed to make
+;; it work are specified in `package-selected-packages', with that one you can
+;; install them with `package-install-selected-packages'. At which point the
+;; whole config should be ready to rock.
 
 (require 'package)
 
@@ -129,12 +129,16 @@
 
 ;;; Critical Setup
 
-;; There are 3 ways I install packages/lisp. The lisp folder in my dotfiles
-;; directory, ELPA, and in a "local-package" directory (basically, a dir where
-;; I can git clone interesting packages). For dotfiles/lisp I add the path to
-;; `load-path' and simply require (or autoload) those things. For ELPA
-;; packages I use package.el. For local packages I add that "local packages"
-;; directory to the load-path and require (or autoload them).
+;; There are 3 ways I install packages/lisp:
+;; 1. The lisp folder in my dotfiles directory,
+;; 2. an ELPA,
+;; 3. in a "local-package" directory (basically, a directory where
+;;    I can git clone interesting packages).
+
+;; For dotfiles/lisp I add the path to `load-path' and simply require (or
+;; autoload) those things. For ELPA packages I use package.el. For local
+;; packages I add that "local packages" directory to the load-path and require
+;; (or autoload them).
 
 (defmacro elpa-package (package &rest body)
   "Eval BODY only if PACKAGE is installed."
@@ -384,7 +388,6 @@ This will save the buffer if it is not currently saved."
 
 ;;; Bindings
 
-
 ;;;; Bosskey Mode
 
 ;; The technique below is taken from the bind-key package. It places all the
@@ -466,7 +469,7 @@ Keybindings you define here will take precedence."
 (put 'previous-buffer 'repeat-map 'buffer-navigation-repeat-map)
 
 
-;;;; Packages
+;;;; Package Operations
 
 (define-prefix-command 'pkg-ops-map nil "Packages")
 

@@ -1032,7 +1032,6 @@ PROMPT sets the `read-string prompt."
    '(org-special-ctrl-a/e t)
    '(org-special-ctrl-k t)
    '(org-return-follows-link t)
-   '(org-adapt-indentation t)
    '(org-catch-invisible-edits 'show-and-error)
    '(org-outline-path-complete-in-steps nil)
    '(org-refile-use-outline-path t)
@@ -1040,7 +1039,8 @@ PROMPT sets the `read-string prompt."
    '(org-startup-with-inline-images t)
    '(org-image-actual-width '(600))
    '(org-hide-emphasis-markers t)
-   '(org-hide-leading-stars t)
+   '(org-hide-leading-stars nil)
+   '(org-adapt-indentation t)
    '(org-ellipsis "...")
    '(org-insert-heading-respect-content t)
    '(org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+")))
@@ -1089,10 +1089,7 @@ PROMPT sets the `read-string prompt."
              "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
             ("e" "Emacs Config" entry
              (file+headline ,(concat org-directory "emacs.org") "Emacs Config")
-             "* TODO %?" :empty-lines 1)
-            ("k" "Kiddos Log Entry" entry
-             (file+olp+datetree ,(concat org-directory "kiddos_logbook.org"))
-             "* %T\n\n%?" :empty-lines 1 :tree-type month ))))
+             "* TODO %?" :empty-lines 1))))
 
   (defun my/org-refile-preserve-collapsed-parent ()
     (org-up-heading-safe)

@@ -592,10 +592,10 @@ Disables all current themes, then:
    '(modus-themes-italic-constructs t)
    '(modus-themes-links '(neutral-underline))
    '(modus-themes-region '(bg-only))
-   '(modus-themes-mode-line nil)
+   '(modus-themes-mode-line '(accented))
    '(modus-themes-vivendi-color-overrides '((bg-main . "#1c1c1c")
                                             (fg-main . "#e5e5e5")))
-   '(modus-themes-org-blocks '(gray-background))
+   '(modus-themes-org-blocks '(tinted-background))
    '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
                                (header-date . (bold-today))
                                (scheduled . rainbow))))
@@ -625,8 +625,8 @@ Disables all current themes, then:
   ;; `text-scale-adjust' work correctly. The default height needs to be set,
   ;; and I want the mode-line to be a fixed height, so I set those.
   (setq line-spacing nil)
-  (let ((mono "IBM Plex Mono")
-        (vari "IBM Plex Serif")
+  (let ((mono "SF Mono")
+        (vari "New York")
         (mode "Inter")
         (mono-height 120)
         (mode-height 130))

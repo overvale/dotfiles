@@ -1,6 +1,7 @@
 ;;; init.el --- Oliver Taylor's Emacs Config -*- lexical-binding: t -*-
 
-;; Copyright (C) 2021 Oliver Taylor
+;; Copyright (C) 2020-2021 Oliver Taylor
+;; Learning Emacs was my COVID pandemic project, now I cannot escape.
 
 ;; Author: Oliver Taylor
 ;; URL: https://olivertaylor.net

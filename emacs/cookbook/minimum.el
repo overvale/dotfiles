@@ -3,39 +3,14 @@
 ;; Homepage: https://github.com/olivertaylor/dotfiles
 
 
-;;; Commentary:
+;;; Commentary
 
 ;; There are many "Emacs starter kits" out there, this one is mine. It is
 ;; designed to be exceedingly simple. Just copy this one file to
-;; ~/.emacs/init.el and open Emacs. then innstall the below packages by
-;; calling `package-install-selected-packages'.
-
-
-;;; Goals and Philosophy
-
-;; 1. Don't bother learning the Emacs key bindings you don't want to. Once you
-;;    learn how to configure Emacs you can create whatever bindings make
-;;    sense to you.
+;; ~/.emacs/init.el and open Emacs. Then install the required packages by
+;; typing "M-x package-install-selected-packages".
 ;;
-;; 2. I'm a Mac user, so this config targets Mac users and sets some of the
-;;    most common shortcuts, as well as making the modifier keys behave in a
-;;    slightly more predictable way.
-;;
-;; 3. I use the built-in `package' to install packages and the package
-;;    `use-package' to configure them. Along with the code below, this allows
-;;    you use your init file as a single "source of truth" for your
-;;    configuration. Much of the confusion a beginner experiences (in my
-;;    opinion) is rooted in Emacs's ability to be customized both by an init
-;;    file and interactively (which saves to an init file).
-;;
-;; 4. I highly recommend the combination of the packages `vertico',
-;;    `orderless', and `marginalia'. These tools make it easier to explore
-;;    Emacs and discover capabilities. You may eventually decide they're not
-;;    for you, but I think they're a great place to start.
-;;
-;; 5. Provides some convenience bindings for my most used Emacs features.
-
-;; ---------------------------------------------------------------------------
+;; This config targets Emacs 27.1
 
 
 ;;; Settings
@@ -85,6 +60,7 @@
         transient
         undo-fu
         vertico
+        marginalia
         visual-regexp
         visual-regexp-steroids))
 
@@ -172,7 +148,7 @@
     "Toggle"
     ("t w" "Wrap Lines" visual-line-mode)
     ("t l" "Line Numbers" display-line-numbers-mode)
-    ("t a" "Auto Wrap Lines" auto-fill-mode)]
+    ("t a" "Auto Hard-Wrap Lines" auto-fill-mode)]
    ["Windows"
     ("w h" "Split Horizontal" split-window-below)
     ("w v" "Split Vertical"   split-window-right)

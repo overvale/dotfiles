@@ -1196,8 +1196,6 @@ current HH:MM time."
 
 ;;; Transients
 
-;;(autoload 'dired-jump "dired-x")
-
 (defun universal-transient ()
   "If ARG is nil, display the `general-transient', otherwise `call-mode-help-transient'."
   (interactive)

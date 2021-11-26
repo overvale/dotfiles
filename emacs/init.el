@@ -415,24 +415,13 @@ Keybindings you define here will take precedence."
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
-;; Replace standard functions with my improved versions:
 (let ((map bosskey-mode-map))
-  (define-key map (kbd "C-x c") 'frames-p-save-buffers-kill-emacs)
-  (define-key map (kbd "C-x C-n") 'next-buffer)
-  (define-key map (kbd "C-x C-p") 'previous-buffer)
-  (define-key map (kbd "C-x C-b") 'switch-to-buffer)
-  (define-key map (kbd "C-x b") 'switch-to-buffer-other-window)
-  (define-key map (kbd "C-x C-f") 'find-file)
-  (define-key map (kbd "C-x f") 'find-file-other-window)
   (define-key map (kbd "M-/") 'completion-at-point)
+  (define-key map (kbd "M-\\") 'cycle-spacing)
   (define-key map (kbd "M-z") 'zap-up-to-char)
   (define-key map (kbd "C-M-h") 'mark-line)
   (define-key map (kbd "C-d") 'delete-forward-char)
   (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
-  (define-key map (kbd "C-x k") 'kill-buffer-dwim))
-
-;; Emacsen extensions:
-(let ((map bosskey-mode-map))
   (define-key map (kbd "M-o") 'other-window)
   (define-key map (kbd "M-O") 'other-window-previous)
   (define-key map (kbd "M-[") 'pop-to-mark-command)
@@ -502,7 +491,7 @@ Keybindings you define here will take precedence."
     (define-key map (kbd "s-s") 'save-buffer)
     (define-key map (kbd "s-m") 'iconify-frame)
     (define-key map (kbd "s-,") 'find-user-init-file)
-    (define-key map (kbd "s-q") 'frames-p-save-buffers-kill-emacs)))
+    (define-key map (kbd "s-q") 'save-buffers-kill-emacs)))
 
 
 ;;; Themes
@@ -1226,18 +1215,17 @@ current HH:MM time."
 (transient-define-prefix general-transient ()
   "General-purpose transient."
   [["Actions/Toggles"
+    ("O" "Other Frame Prefix..." other-frame-prefix)
     ("," "Find Init" find-user-init-file)
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
+    ("f" "Find File" find-file)
+    ("F" "Find File (other)" find-file-other-window)
+    ("b" "Switch to Buffer" switch-to-buffer)
+    ("B" "Switch to Buffer (other)" switch-to-buffer-other-window)
     ("l" "List Buffers" ibuffer)
-    ("w" "Windows..." window-transient)
-    "Other"
-    ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
-    ("d" "Date/Time mode-line" toggle-date-time-battery)
-    ("C" "Calendar" calendar)
-    ("W" "World Clock" display-time-world)
-    ("x o" "*scratch-org*" scratch-buffer-org)
-    ("x m" "*scratch-markdown*" scratch-buffer-markdown)]
+    ("k" "Kill Buffer" kill-buffer-dwim)
+    ("w" "Windows..." window-transient)]
    ["Org"
     ("o a" "Org Agenda" org-agenda)
     ("o k" "Org Capture" org-capture)
@@ -1249,6 +1237,13 @@ current HH:MM time."
     ("c l" "Line" consult-line)
     ("c o" "Outline" consult-outline)
     ("c g" "Grep" consult-grep)]
+   ["Other"
+    ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
+    ("d" "Date/Time mode-line" toggle-date-time-battery)
+    ("C" "Calendar" calendar)
+    ("W" "World Clock" world-clock)
+    ("x o" "*scratch-org*" scratch-buffer-org)
+    ("x m" "*scratch-markdown*" scratch-buffer-markdown)]
    ["Macros"
     ("m s" "Start" start-kbd-macro)
     ("m e" "End" end-kbd-macro)

@@ -582,7 +582,7 @@ Disables all current themes, then:
    '(modus-themes-italic-constructs t)
    '(modus-themes-links '(neutral-underline))
    '(modus-themes-region '(bg-only))
-   '(modus-themes-mode-line '(accented))
+   '(modus-themes-mode-line '(3d))
    '(modus-themes-vivendi-color-overrides '((bg-main . "#1c1c1c")
                                             (fg-main . "#e5e5e5")))
    '(modus-themes-org-blocks '(tinted-background))
@@ -617,7 +617,7 @@ Disables all current themes, then:
   (setq line-spacing nil)
   (let ((mono "SF Mono")
         (vari "New York")
-        (mode "Inter")
+        (mode "SF Compact Text")
         (mono-height 120)
         (mode-height 130))
     (custom-set-faces

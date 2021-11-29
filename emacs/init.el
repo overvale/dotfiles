@@ -1335,6 +1335,7 @@ Where NAME is name of function, BUFFER is name of buffer, and TEXT is displayed.
            (goto-char (point-min))
            (not-modified)
            (read-only-mode)
+           (special-mode)
            (local-set-key (kbd "C-g") (lambda () (interactive) (other-window -1)))
            (local-set-key (kbd "q") 'kill-buffer-and-window))
          (pop-to-buffer qh-buff '((display-buffer-below-selected)
@@ -1342,17 +1343,36 @@ Where NAME is name of function, BUFFER is name of buffer, and TEXT is displayed.
                                   (window-height . fit-window-to-buffer)))
          (message "C-g - Previous Window, q - Remove Window")))))
 
-;; And now the help you need...
+(quick-help qh--it-hotline
+  "IT Hotline"
+  "IT HOTLINE: 855-555-5555")
 
-(quick-help qh--help-test
-  "Help Test"
+(quick-help qh--departments
+  "Departments"
   "\
-This is helpful text.")
+| Department | Manager     | Extension | Time Zone |
+|------------+-------------+-----------+-----------|
+| Sales      | Dave F      |        16 | LA        |
+| IT         | Sydney R    |       198 | NY        |
+| Support    | Ellie T     |        29 | DEN       |
+| Shipping   | Shaun D     |       345 | ATL       |
+| Recieving  | Brian C     |       876 | NY        |
+| Marketing  | Elizabeth W |        12 | LA        |
+| Coffee     | Donna F     |        34 | NY        |")
+
+(quick-help qh--wheather
+  "Weather Whether Wether"
+  "\
+The climate is made up of “WEATHER”;
+WHETHER it is nice out depends on whether it is raining or not.
+A WETHER is just a castrated sheep.")
 
 (define-prefix-command 'quick-help-prompt nil "Quick Help")
 
 (let ((map quick-help-prompt))
-  (define-key map "p" '("Help Test" . qh--help-test)))
+  (define-key map "i" '("IT Hotline" . qh--it-hotline))
+  (define-key map "d" '("Departments" . qh--departments))
+  (define-key map "w" '("Weather Whether Wether" . qh--wheather)))
 
 (global-set-key (kbd "C-c h") 'quick-help-prompt)
 

@@ -577,6 +577,18 @@ Disables all current themes, then:
   (disable-current-themes)
   (load-theme theme t))
 
+(defun load-system-color-theme nil
+  "On startup, try to match system color, otherwise load `default-color-theme'."
+  (if (macos-dark-p)
+      (load-theme-dwim 'dark)
+    (if (eq default-theme-color 'light)
+        (load-theme-dwim 'light)
+      (load-theme-dwim 'dark))))
+
+(setq light-theme 'modus-operandi)
+(setq dark-theme  'modus-vivendi)
+(setq default-theme-color 'light)
+
 (elpa-package 'modus-themes
   (require 'modus-themes)
   (custom-set-variables
@@ -590,19 +602,9 @@ Disables all current themes, then:
    '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
                                (header-date . (bold-today))
                                (scheduled . rainbow))))
-  (modus-themes-load-themes))
+  (modus-themes-load-themes)
+  (load-system-color-theme))
 
-(setq light-theme 'modus-operandi)
-(setq dark-theme  'modus-vivendi)
-(setq default-theme-color 'light)
-
-(prog1 "set-theme-on-startup"
-  ;; On startup, try to match system color, otherwise load `default-color-theme'.
-  (if (macos-dark-p)
-      (load-theme-dwim 'dark)
-    (if (eq default-theme-color 'light)
-        (load-theme-dwim 'light)
-      (load-theme-dwim 'dark))))
 
 
 ;;; Fonts

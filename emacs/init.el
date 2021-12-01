@@ -688,14 +688,14 @@ Disables all current themes, then:
          (window-parameters . ((no-other-window . nil)))
          (window-height . fit-window-to-buffer))
         ("\\*Org Select\\*"
-           (display-buffer-in-side-window)
-           (dedicated . t)
-           (side . bottom)
-           (slot . 0)
-           (window-parameters . ((mode-line-format . none))))
+         (display-buffer-in-side-window)
+         (dedicated . t)
+         (side . bottom)
+         (slot . 0)
+         (window-parameters . ((mode-line-format . none))))
         ("\\*\\(.* # Help.*\\|Help\\)\\*"
-           (display-buffer-reuse-window display-buffer-same-window)
-           (reusable-frames . t))
+         (display-buffer-reuse-window display-buffer-same-window)
+         (reusable-frames . t))
         ("\\*wclock.*"
          (display-buffer-at-bottom)
          (window-parameters . ((select . t))))))
@@ -1273,9 +1273,9 @@ current HH:MM time."
   (interactive)
   (unless
       (cond ((derived-mode-p 'org-mode)
-          (org-mode-help-transient))
+             (org-mode-help-transient))
             ((derived-mode-p 'Info-mode)
-          (info-mode-help-transient)))
+             (info-mode-help-transient)))
     (message "No transient defined for this mode.")))
 
 (with-eval-after-load 'org

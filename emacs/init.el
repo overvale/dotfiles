@@ -946,7 +946,8 @@ PROMPT sets the `read-string prompt."
     (consult-customize consult-buffer consult-buffer-other-window :preview-key nil))
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
-  (global-set-key [remap yank-pop] 'consult-yank-pop))
+  (global-set-key [remap yank-pop] 'consult-yank-pop)
+  (global-set-key [remap repeat-complex-command] #'consult-complex-command))
 
 (elpa-package 'visual-regexp
   ;; A reasonable regex engine? Live preview of search and replacement? Yes please!

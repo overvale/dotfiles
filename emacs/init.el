@@ -68,6 +68,7 @@
         embark-consult
         exec-path-from-shell
         fountain-mode
+        hide-mode-line
         lua-mode
         magit
         markdown-mode
@@ -959,7 +960,7 @@ PROMPT sets the `read-string prompt."
 
 (elpa-package 'olivetti
   (custom-set-variables
-   '(olivetti-body-width 86)))
+   '(olivetti-body-width 100)))
 
 (local-package 'oblique "oblique-strategies"
   (autoload 'oblique-strategy "oblique")
@@ -1238,6 +1239,7 @@ current HH:MM time."
     ("c o" "Outline" consult-outline)
     ("c g" "Grep" consult-grep)]
    ["Other"
+    ("T" "Toggle Modus" modus-themes-toggle)
     ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
     ("d" "Date/Time mode-line" toggle-date-time-battery)
     ("C" "Calendar" calendar)

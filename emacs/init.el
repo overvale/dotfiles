@@ -687,6 +687,15 @@ Disables all current themes, then:
          (display-buffer-below-selected)
          (window-parameters . ((no-other-window . nil)))
          (window-height . fit-window-to-buffer))
+        ("\\*Org Select\\*"
+           (display-buffer-in-side-window)
+           (dedicated . t)
+           (side . bottom)
+           (slot . 0)
+           (window-parameters . ((mode-line-format . none))))
+        ("\\*\\(.* # Help.*\\|Help\\)\\*"
+           (display-buffer-reuse-window display-buffer-same-window)
+           (reusable-frames . t))
         ("\\*wclock.*"
          (display-buffer-at-bottom)
          (window-parameters . ((select . t))))))

@@ -618,9 +618,9 @@ Disables all current themes, then:
   ;; `text-scale-adjust' work correctly. The default height needs to be set,
   ;; and I want the mode-line to be a fixed height, so I set those.
   (setq line-spacing nil)
-  (let ((mono "SF Mono")
-        (vari "New York")
-        (mode "SF Compact Text")
+  (let ((mono "IBM Plex Mono")
+        (vari "IBM Plex Serif")
+        (mode "IBM Plex Sans")
         (mono-height 120)
         (mode-height 130))
     (custom-set-faces

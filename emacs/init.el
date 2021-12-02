@@ -417,6 +417,10 @@ Keybindings you define here will take precedence."
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
 (let ((map bosskey-mode-map))
+  (define-key map (kbd "C-x C-f") 'find-file)
+  (define-key map (kbd "C-x f")   'find-file-other-window)
+  (define-key map (kbd "C-x C-b") 'switch-to-buffer)
+  (define-key map (kbd "C-x b")   'switch-to-buffer-other-window)
   (define-key map (kbd "M-/") 'completion-at-point)
   (define-key map (kbd "M-\\") 'cycle-spacing)
   (define-key map (kbd "M-z") 'zap-up-to-char)
@@ -458,6 +462,15 @@ Keybindings you define here will take precedence."
   "Keymap to repeat buffer navigation commands. Used in `repeat-mode'.")
 (put 'next-buffer 'repeat-map 'buffer-navigation-repeat-map)
 (put 'previous-buffer 'repeat-map 'buffer-navigation-repeat-map)
+
+(defvar winner-mode-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "<left>") 'winner-undo)
+    (define-key map (kbd "<right>") 'winner-redo)
+    map)
+  "Keymap to repeat winner-undo/redo. Used in `repeat-mode'.")
+(put 'winner-undo 'repeat-map 'winner-mode-repeat-map)
+(put 'winner-redo 'repeat-map 'winner-mode-repeat-map)
 
 
 ;;;; Package Operations
@@ -1228,14 +1241,11 @@ current HH:MM time."
 (transient-define-prefix general-transient ()
   "General-purpose transient."
   [["Actions/Toggles"
-    ("O" "Other Frame Prefix..." other-frame-prefix)
+    ("o f" "Other Frame Prefix..." other-frame-prefix)
+    ("o w" "Other Window Prefix..." other-window-prefix)
     ("," "Find Init" find-user-init-file)
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
-    ("f" "Find File" find-file)
-    ("F" "Find File (other)" find-file-other-window)
-    ("b" "Switch to Buffer" switch-to-buffer)
-    ("B" "Switch to Buffer (other)" switch-to-buffer-other-window)
     ("l" "List Buffers" ibuffer)
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("w" "Windows..." window-transient)]

@@ -435,6 +435,10 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "<C-return>") 'universal-transient)
   (define-key map (kbd "C-.") 'embark-act))
 
+(with-eval-after-load 'magit
+  ;; Magit overrides `bosskey-mode-map', so I need to override this here:
+  (define-key magit-file-section-map (kbd "<C-return>") 'universal-transient))
+
 ;; For bindings that I do want to be overriden by minor/major modes, I use the
 ;; built-in `global-map'.
 (let ((map global-map))

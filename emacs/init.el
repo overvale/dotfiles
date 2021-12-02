@@ -1081,7 +1081,7 @@ PROMPT sets the `read-string prompt."
    '(org-return-follows-link t)
    '(org-catch-invisible-edits 'show-and-error)
    '(org-outline-path-complete-in-steps nil)
-   '(org-refile-use-outline-path t)
+   '(org-refile-use-outline-path 'file)
    '(org-refile-targets '((org-agenda-files :maxlevel . 2)))
    '(org-startup-with-inline-images t)
    '(org-image-actual-width '(600))

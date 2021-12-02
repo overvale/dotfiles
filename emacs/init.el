@@ -394,8 +394,7 @@ This will save the buffer if it is not currently saved."
 
 ;; The technique below is taken from the bind-key package. It places all the
 ;; bindings I don't want overridden into a minor mode which is inserted into
-;; the `emulation-mode-map-alists' (number 4 on the list above), so only very
-;; few things can override them.
+;; the `emulation-mode-map-alists', so only very few things can override them.
 
 (defvar bosskey-mode-map (make-sparse-keymap))
 
@@ -416,6 +415,8 @@ Keybindings you define here will take precedence."
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
+;; Because they're in `bosskey-mode-map' these bindings will never be
+;; overridden by minor modes.
 (let ((map bosskey-mode-map))
   (define-key map (kbd "C-x C-f") 'find-file)
   (define-key map (kbd "C-x f")   'find-file-other-window)
@@ -434,8 +435,8 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "<C-return>") 'universal-transient)
   (define-key map (kbd "C-.") 'embark-act))
 
-;; For bindings that I do want to be overriden by minor modes and the like, I
-;; use the built-in `global-map' and all the standard tools. Nothing fancy.
+;; For bindings that I do want to be overriden by minor/major modes, I use the
+;; built-in `global-map'.
 (let ((map global-map))
   ;; replace mappings
   (define-key map [remap capitalize-word] 'capitalize-dwim)

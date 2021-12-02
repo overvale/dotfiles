@@ -679,7 +679,8 @@ Disables all current themes, then:
 (custom-set-variables
  '(winner-mode t)
  '(split-window-keep-point nil)
- '(even-window-sizes nil))
+ '(even-window-sizes nil)
+ '(switch-to-buffer-obey-display-actions t))
 
 ;; This introduces a fundamental change to how Emacs works. Normally, when
 ;; Emacs displays a new buffer, it tries to intelligently select the best
@@ -688,31 +689,34 @@ Disables all current themes, then:
 ;; below code makes it so the default window is always the current one. The
 ;; advantage of this is that your window layouts are never changed for you.
 ;; https://github.com/nex3/perspective-el#some-musings-on-emacs-window-layouts
-(customize-set-variable 'display-buffer-base-action
-                        '((display-buffer-reuse-window display-buffer-same-window)
-                          (reusable-frames . t)))
+;; (customize-set-variable 'display-buffer-base-action
+;;                         '((display-buffer-reuse-window display-buffer-same-window)
+;;                           (reusable-frames . t)))
 
-;; Since the default is to always reuse the same window, you need to declare
-;; any exceptions to that. Though there are some windows that do their own
-;; thing anyway, *Completions*, for example. Also, Org Mode seems to do
-;; whatever the hell it wants.
-(setq display-buffer-alist
-      '(("\\*Calendar.*"
-         (display-buffer-below-selected)
-         (window-parameters . ((no-other-window . nil)))
-         (window-height . fit-window-to-buffer))
-        ("\\*Org Select\\*"
-         (display-buffer-in-side-window)
-         (dedicated . t)
-         (side . bottom)
-         (slot . 0)
-         (window-parameters . ((mode-line-format . none))))
-        ("\\*\\(.* # Help.*\\|Help\\)\\*"
-         (display-buffer-reuse-window display-buffer-same-window)
-         (reusable-frames . t))
-        ("\\*wclock.*"
-         (display-buffer-at-bottom)
-         (window-parameters . ((select . t))))))
+(add-to-list 'display-buffer-alist
+             '("\\*Calendar.*"
+               (display-buffer-below-selected)
+               (window-parameters . ((no-other-window . nil)))
+               (window-height . fit-window-to-buffer)))
+
+(add-to-list 'display-buffer-alist
+             '("\\*Org Select\\*"
+               (display-buffer-in-side-window)
+               (dedicated . t)
+               (side . bottom)
+               (slot . 0)
+               (window-parameters . ((mode-line-format . none)))))
+
+(add-to-list 'display-buffer-alist
+             '("\\*\\(.* # Help.*\\|Help\\)\\*"
+               (display-buffer-reuse-window display-buffer-same-window)
+               (reusable-frames . t)))
+
+(add-to-list 'display-buffer-alist
+             '("\\*wclock.*"
+               (display-buffer-below-selected)
+               (window-height . fit-window-to-buffer)
+               (window-parameters . ((select . t)))))
 
 (define-minor-mode dedicated-mode
   "Minor mode for dedicating windows.

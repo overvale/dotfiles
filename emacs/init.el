@@ -457,6 +457,29 @@ Keybindings you define here will take precedence."
 
 (define-key help-map "s" 'describe-symbol-at-point)
 
+;; I find the default mark-setting bindings to be difficult to remember. Who
+;; the heck can remember all these esoteric bindings? Much better to make
+;; these a simple transient dispatcher and give it a nice binding.
+
+(transient-define-prefix set-mark-transient ()
+  "Transient dispatcher for marking commands."
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-exit
+  ["Set/Extend Mark To..."
+   [("b" "Whole Buffer" mark-whole-buffer)
+    ("<" "Beginning of Buffer" mark-beginning-of-buffer)
+    (">" "End of Buffer" mark-end-of-buffer)]
+   [("w" "Word" mark-word)
+    ("l" "Line" mark-line)
+    ("p" "Paragraph" mark-paragraph)
+    ("s" "Sentence" mark-sentence)
+    ("P" "Page" mark-page)]
+   [("S" "Sexp" mark-sexp)
+    ("D" "Defun" mark-defun)]])
+
+(define-key global-map (kbd "C-S-SPC") 'set-mark-transient)
+
+
 
 ;;;; Repeat Mode
 

@@ -611,6 +611,7 @@ Disables all current themes, then:
 (elpa-package 'modus-themes
   (require 'modus-themes)
   (custom-set-variables
+   '(modus-themes-mixed-fonts t)
    '(modus-themes-italic-constructs t)
    '(modus-themes-links '(neutral-underline))
    '(modus-themes-region '(bg-only))

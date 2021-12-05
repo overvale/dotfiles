@@ -422,6 +422,7 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "C-x f")   'find-file-other-window)
   (define-key map (kbd "C-x C-b") 'switch-to-buffer)
   (define-key map (kbd "C-x b")   'switch-to-buffer-other-window)
+  (define-key map (kbd "C-x k")   'kill-buffer-dwim)
   (define-key map (kbd "M-/") 'completion-at-point)
   (define-key map (kbd "M-\\") 'cycle-spacing)
   (define-key map (kbd "M-z") 'zap-up-to-char)
@@ -750,6 +751,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("c" "Clone Indirect" clone-indirect-buffer)
     ("t" "Tear Off" tear-off-window)
     ("k" "Kill" delete-window)
+    ("K" "Kill Buffer & Window" kill-buffer-and-window)
     ("o" "Kill Others"  delete-other-windows)
     ("m" "Maximize" maximize-window)]
    ["Navigate"
@@ -1257,6 +1259,7 @@ current HH:MM time."
     ("j" "Dired Jump" dired-jump)
     ("l" "List Buffers" ibuffer)
     ("k" "Kill Buffer" kill-buffer-dwim)
+    ("n" "Make Frame" make-frame)
     ("w" "Windows..." window-transient)]
    ["Org"
     ("o a" "Org Agenda" org-agenda)

@@ -1047,6 +1047,15 @@ PROMPT sets the `read-string prompt."
           ("America/Montreal" "Montreal")
           ("Europe/London" "London"))))
 
+(prog1 "isearch"
+  (defun isearch-exit-at-start ()
+    "Exit search at the beginning of the current match."
+    (when (and isearch-forward
+               (number-or-marker-p isearch-other-end)
+               (not isearch-mode-end-hook-quit))
+      (goto-char isearch-other-end)))
+  (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start))
+
 
 ;;; Org
 

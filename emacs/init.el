@@ -652,28 +652,12 @@ Disables all current themes, then:
 
 ;;; Fonts
 
-(setq text-scale-mode-step 1.09)
+(defvar variable-pitch-adjust-height nil
+  "Used by `variable-pitch-adjust-mode' to determine the
+variable-pitch scaling amount in that mode.")
 
-(prog1 "fontface-setup"
-  ;; Set fonts and their sizes.
-  ;; The variable-pitch and fixed-pitch faces have a default height of 1.0,
-  ;; which I don't want to mess with because that's what's required to make
-  ;; `text-scale-adjust' work correctly. The default height needs to be set,
-  ;; and I want the mode-line to be a fixed height, so I set those.
-  (setq line-spacing nil)
-  (let ((mono "PragmataPro")
-        (vari "IBM Plex Sans")
-        (mode "SF Compact Text")
-        (mono-height 140)
-        (mode-height 140))
-    (custom-set-faces
-     `(default ((t :family ,mono :height ,mono-height)))
-     `(fixed-pitch ((t :family ,mono)))
-     `(variable-pitch ((t :family ,vari)))
-     `(mode-line ((t :family ,mode :height ,mode-height)))
-     `(mode-line-inactive ((t :family ,mode :height ,mode-height))))))
-
-(setq variable-pitch-adjust-height 150)
+(defvar fontface-setup-alist nil
+  "An alist of font properties used by `set-fontface-setup'.")
 
 (define-minor-mode variable-pitch-adjust-mode
   "Minor mode to adjust only the variable-pitch face height buffer-locally.
@@ -681,7 +665,7 @@ Scales the variable-pitch height up to the height defined by
 ‘variable-pitch-adjust-height’ and the fixed-pitch face down to
 match the default face height. Thus, in mixed-font settings you
 can scale the variable-pitch height independently of the
-fixed-pitch height."
+fixed-pitch and default face heights."
   :init-value nil
   :lighter " V+"
   (if variable-pitch-adjust-mode
@@ -701,6 +685,63 @@ fixed-pitch height."
       (force-window-update (current-buffer)))))
 
 (add-hook 'buffer-face-mode-hook (lambda () (variable-pitch-adjust-mode 'toggle)))
+
+;; This makes it so text-scale adjustments operate exactly one point size at a
+;; time. The original value is 1.2, which jumps point-sizes when stepping
+;; up/down.
+(setq text-scale-mode-step 1.09)
+
+;; Set the different font-pairings (and settings for them) you want to be able
+;; to switch between.
+(setq fontface-setup-alist
+      '((apple . ( :monospace-family "SF Mono"
+                   :variable-pitch-family "New York"
+                   :mode-line-family "SF Compact Text"
+                   :monospace-line-spacing 1
+                   :monospace-height 120
+                   :mode-line-height 140
+                   :varible-pitch-adjust-height 140))
+        (IBM . ( :monospace-family "IBM Plex Mono"
+                 :variable-pitch-family "IBM Plex Serif"
+                 :mode-line-family "IBM Plex Sans"
+                 :monospace-line-spacing nil
+                 :monospace-height 120
+                 :mode-line-height 140
+                 :varible-pitch-adjust-height 140))
+        (Go . ( :monospace-family "Go Mono"
+                :variable-pitch-family "Go"
+                :mode-line-family "Go"
+                :monospace-line-spacing 1
+                :monospace-height 120
+                :mode-line-height 130
+                :varible-pitch-adjust-height 140))))
+
+(defun set-fontface-setup (font-pairs)
+  "Prompt user for FONT-PAIRS from `fontface-setup-alist' and set those fonts."
+  (interactive
+   (list (completing-read
+          "Select font pairings: "
+          (mapcar #'car fontface-setup-alist))))
+  (let* ((fonts (intern font-pairs))
+         (properties (alist-get fonts fontface-setup-alist))
+         (mono (plist-get properties :monospace-family))
+         (vari (plist-get properties :variable-pitch-family))
+         (mode (plist-get properties :mode-line-family))
+         (line (plist-get properties :monospace-line-spacing))
+         (mono-height (plist-get properties :monospace-height))
+         (mode-height (plist-get properties :mode-line-height))
+         (vari-height (plist-get properties :varible-pitch-adjust-height)))
+    (setq line-spacing line
+          variable-pitch-adjust-height vari-height)
+    (custom-set-faces
+     `(default ((t :family ,mono :height ,mono-height)))
+     `(fixed-pitch ((t :family ,mono)))
+     `(variable-pitch ((t :family ,vari)))
+     `(mode-line ((t :family ,mode :height ,mode-height)))
+     `(mode-line-inactive ((t :family ,mode :height ,mode-height))))))
+
+;; On startup, use this font-pairing:
+(set-fontface-setup "apple")
 
 
 ;;; Mode-Line

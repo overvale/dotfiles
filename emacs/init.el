@@ -656,9 +656,6 @@ Disables all current themes, then:
   "Used by `variable-pitch-adjust-mode' to determine the
 variable-pitch scaling amount in that mode.")
 
-(defvar fontface-setup-alist nil
-  "An alist of font properties used by `set-fontface-setup'.")
-
 (define-minor-mode variable-pitch-adjust-mode
   "Minor mode to adjust only the variable-pitch face height buffer-locally.
 Scales the variable-pitch height up to the height defined by
@@ -686,58 +683,25 @@ fixed-pitch and default face heights."
 
 (add-hook 'buffer-face-mode-hook (lambda () (variable-pitch-adjust-mode 'toggle)))
 
-;; This makes it so text-scale adjustments operate exactly one point size at a
-;; time. The original value is 1.2, which jumps point-sizes when stepping
-;; up/down.
-(setq text-scale-mode-step 1.09)
 
-;; Set the different font-pairings (and settings for them) you want to be able
-;; to switch between.
-(setq fontface-setup-alist
-      '((Apple . ( :monospace-family "SF Mono"
-                   :variable-pitch-family "New York"
-                   :mode-line-family "SF Compact Text"
-                   :monospace-line-spacing nil
-                   :monospace-height 120
-                   :mode-line-height 140
-                   :varible-pitch-adjust-height 140))
-        (IBM . ( :monospace-family "IBM Plex Mono"
-                 :variable-pitch-family "IBM Plex Serif"
-                 :mode-line-family "IBM Plex Sans"
-                 :monospace-line-spacing nil
-                 :monospace-height 120
-                 :mode-line-height 140
-                 :varible-pitch-adjust-height 140))
-        (Go . ( :monospace-family "Go Mono"
-                :variable-pitch-family "Go"
-                :mode-line-family "Go"
-                :monospace-line-spacing nil
-                :monospace-height 120
-                :mode-line-height 130
-                :varible-pitch-adjust-height 130))
-        (Pragmata . ( :monospace-family "PragmataPro"
-                :variable-pitch-family "Fira Sans"
-                :mode-line-family "Fira Sans"
-                :monospace-line-spacing 2
-                :monospace-height 120
-                :mode-line-height 130
-                :varible-pitch-adjust-height 130))))
+(defvar fontface-setup-alist nil
+  "An alist of font properties used by `set-fontface-pairings'.")
 
-(defun set-fontface-setup (font-pairs)
-  "Prompt user for FONT-PAIRS from `fontface-setup-alist' and set those fonts."
+(defun set-fontface-pairings (font-pairs)
+  "Prompt user and set fonts according to selection from `fontface-setup-alist'."
   (interactive
    (list (completing-read
-          "Select font pairings: "
+          "Select default font pairings: "
           (mapcar #'car fontface-setup-alist))))
   (let* ((fonts (intern font-pairs))
          (properties (alist-get fonts fontface-setup-alist))
-         (mono (plist-get properties :monospace-family))
-         (vari (plist-get properties :variable-pitch-family))
-         (mode (plist-get properties :mode-line-family))
-         (line (plist-get properties :monospace-line-spacing))
-         (mono-height (plist-get properties :monospace-height))
-         (mode-height (plist-get properties :mode-line-height))
-         (vari-height (plist-get properties :varible-pitch-adjust-height)))
+         (mono (plist-get properties :mono))
+         (vari (plist-get properties :vari))
+         (mode (plist-get properties :mode))
+         (line (plist-get properties :line))
+         (mono-height (plist-get properties :mono-height))
+         (mode-height (plist-get properties :mode-height))
+         (vari-height (plist-get properties :vari-height)))
     (setq line-spacing line
           variable-pitch-adjust-height vari-height)
     (custom-set-faces
@@ -747,8 +711,86 @@ fixed-pitch and default face heights."
      `(mode-line ((t :family ,mode :height ,mode-height)))
      `(mode-line-inactive ((t :family ,mode :height ,mode-height))))))
 
+;; Cookies used for `buffer-remap-faces-mode'.
+(defvar-local buffer-remap-faces-default-cookie nil)
+(defvar-local buffer-remap-faces-fixed-pitch-cookie nil)
+(defvar-local buffer-remap-faces-variable-pitch-cookie nil)
+
+(defun buffer-remap-faces--clear nil
+  "In the current buffer, remove all buffer-remap-faces cookies."
+  (interactive)
+  (face-remap-remove-relative buffer-remap-faces-default-cookie)
+  (face-remap-remove-relative buffer-remap-faces-fixed-pitch-cookie)
+  (face-remap-remove-relative buffer-remap-faces-variable-pitch-cookie)
+  (setq-local buffer-remap-faces-default-cookie nil)
+  (setq-local buffer-remap-faces-fixed-pitch-cookie nil)
+  (setq-local buffer-remap-faces-variable-pitch-cookie nil)
+  (force-window-update (current-buffer)))
+
+(defun buffer-remap-faces--set (font-pairs)
+  "Prompt user and set fonts for the current buffer according to selection from `fontface-setup-alist'.
+It should probably be a mode instead."
+  (interactive
+   (list (completing-read
+          "Select font pairings for Buffer: "
+          (mapcar #'car fontface-setup-alist))))
+  (let* ((fonts (intern font-pairs))
+         (properties (alist-get fonts fontface-setup-alist))
+         (mono (plist-get properties :mono))
+         (vari (plist-get properties :vari))
+         (mono-height (plist-get properties :mono-height)))
+    (buffer-remap-faces--clear)
+    (setq-local buffer-remap-faces-default-cookie
+                (face-remap-add-relative 'default
+                                         :family mono
+                                         :height mono-height))
+    (setq-local buffer-remap-faces-variable-pitch-cookie
+                (face-remap-add-relative 'fixed-pitch
+                                         :family mono))
+    (setq-local buffer-remap-faces-fixed-pitch-cookie
+                (face-remap-add-relative 'variable-pitch
+                                         :family vari))
+    (force-window-update (current-buffer))))
+
+;; This makes it so text-scale adjustments operate exactly one point size at a
+;; time. The original value is 1.2, which jumps point-sizes when stepping
+;; up/down.
+(setq text-scale-mode-step 1.09)
+
+;; Set the different font-pairings (and settings for them) you want to be able
+;; to switch between.
+(setq fontface-setup-alist
+      '((Apple . ( :mono "SF Mono"
+                   :vari "New York"
+                   :mode "SF Compact Text"
+                   :line nil
+                   :mono-height 120
+                   :mode-height 140
+                   :vari-height 140))
+        (IBM . ( :mono "IBM Plex Mono"
+                 :vari "IBM Plex Serif"
+                 :mode "IBM Plex Sans"
+                 :line nil
+                 :mono-height 120
+                 :mode-height 140
+                 :vari-height 140))
+        (Go . ( :mono "Go Mono"
+                :vari "Go"
+                :mode "Go"
+                :line nil
+                :mono-height 120
+                :mode-height 130
+                :vari-height 130))
+        (Pragmata . ( :mono "PragmataPro"
+                      :vari "Fira Sans"
+                      :mode "Fira Sans"
+                      :line 2
+                      :mono-height 120
+                      :mode-height 130
+                      :vari-height 130))))
+
 ;; On startup, use this font-pairing:
-(set-fontface-setup "Apple")
+(set-fontface-pairings "Apple")
 
 
 ;;; Mode-Line
@@ -1383,7 +1425,7 @@ current HH:MM time."
     ("c o" "Outline" consult-outline)
     ("c g" "Grep" consult-grep)]
    ["Other"
-    ("f" "Set Fonts" set-fontface-setup)
+    ("f" "Set Fonts" set-fontface-pairings)
     ("T" "Toggle Modus" modus-themes-toggle :transient t)
     ("t" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
     ("d" "Date/Time mode-line" toggle-date-time-battery)

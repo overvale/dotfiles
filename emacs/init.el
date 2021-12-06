@@ -694,10 +694,10 @@ fixed-pitch and default face heights."
 ;; Set the different font-pairings (and settings for them) you want to be able
 ;; to switch between.
 (setq fontface-setup-alist
-      '((apple . ( :monospace-family "SF Mono"
+      '((Apple . ( :monospace-family "SF Mono"
                    :variable-pitch-family "New York"
                    :mode-line-family "SF Compact Text"
-                   :monospace-line-spacing 1
+                   :monospace-line-spacing nil
                    :monospace-height 120
                    :mode-line-height 140
                    :varible-pitch-adjust-height 140))
@@ -711,10 +711,17 @@ fixed-pitch and default face heights."
         (Go . ( :monospace-family "Go Mono"
                 :variable-pitch-family "Go"
                 :mode-line-family "Go"
-                :monospace-line-spacing 1
+                :monospace-line-spacing nil
                 :monospace-height 120
                 :mode-line-height 130
-                :varible-pitch-adjust-height 140))))
+                :varible-pitch-adjust-height 130))
+        (Pragmata . ( :monospace-family "PragmataPro"
+                :variable-pitch-family "Fira Sans"
+                :mode-line-family "Fira Sans"
+                :monospace-line-spacing 2
+                :monospace-height 120
+                :mode-line-height 130
+                :varible-pitch-adjust-height 130))))
 
 (defun set-fontface-setup (font-pairs)
   "Prompt user for FONT-PAIRS from `fontface-setup-alist' and set those fonts."
@@ -741,7 +748,7 @@ fixed-pitch and default face heights."
      `(mode-line-inactive ((t :family ,mode :height ,mode-height))))))
 
 ;; On startup, use this font-pairing:
-(set-fontface-setup "apple")
+(set-fontface-setup "Apple")
 
 
 ;;; Mode-Line
@@ -1376,8 +1383,9 @@ current HH:MM time."
     ("c o" "Outline" consult-outline)
     ("c g" "Grep" consult-grep)]
    ["Other"
-    ("T" "Toggle Modus" modus-themes-toggle)
-    ("t" "Toggle macOS Apperance" macos-toggle-system-appearance)
+    ("f" "Set Fonts" set-fontface-setup)
+    ("T" "Toggle Modus" modus-themes-toggle :transient t)
+    ("t" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
     ("d" "Date/Time mode-line" toggle-date-time-battery)
     ("C" "Calendar" calendar)
     ("W" "World Clock" world-clock)

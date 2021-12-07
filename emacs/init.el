@@ -1198,7 +1198,7 @@ PROMPT sets the `read-string prompt."
 
 (prog1 "world-clock"
   (setq world-clock-time-format "%Z%t%R%t%F"
-        world-clocko-list
+        world-clock-list
         '(("America/Los_Angeles" "Los Angeles")
           ("America/Chicago" "Chicago")
           ("America/Montreal" "Montreal")

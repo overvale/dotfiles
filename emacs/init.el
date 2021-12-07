@@ -645,8 +645,7 @@ Disables all current themes, then:
    '(modus-themes-links '(neutral-underline))
    '(modus-themes-region '(bg-only))
    '(modus-themes-mode-line '(3d))
-   '(modus-themes-vivendi-color-overrides '((bg-main . "#1c1c1c")
-                                            (fg-main . "#e5e5e5")))
+   '(modus-themes-vivendi-color-overrides '((fg-main . "#dddddd")))
    '(modus-themes-org-blocks '(tinted-background))
    '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
                                (header-date . (bold-today))
@@ -1114,9 +1113,10 @@ PROMPT sets the `read-string prompt."
 (elpa-package 'embark
   (custom-set-variables
    '(prefix-help-command 'embark-prefix-help-command)
-   '(embark-indicators '(embark-verbose-indicator
+   '(embark-indicators '(embark-mixed-indicator
                          embark-highlight-indicator
                          embark-isearch-highlight-indicator))
+   '(embark-mixed-indicator-delay 1)
    '(embark-verbose-indicator-display-action
      '(display-buffer-at-bottom (window-height . fit-window-to-buffer))))
 
@@ -1175,6 +1175,8 @@ PROMPT sets the `read-string prompt."
     (delight 'flyspell-mode " Spell" "flyspell"))
   (add-hook 'text-mode-hook 'turn-on-flyspell)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  (setq flyspell-issue-message-flag nil)
+  (setq flyspell-issue-welcome-flag nil)
   (setq ispell-program-name "/usr/local/bin/aspell"))
 
 (with-eval-after-load 'dired
@@ -1196,6 +1198,12 @@ PROMPT sets the `read-string prompt."
   (delight 'outline-minor-mode " Out" "outline")
   (setq outline-minor-mode-cycle t))
 
+(prog1 "calendar"
+  (require 'solar)
+  (setq calendar-latitude 34.157
+        calendar-longitude -118.324))
+
+
 (prog1 "world-clock"
   (setq world-clock-time-format "%Z%t%R%t%F"
         world-clock-list
@@ -1205,6 +1213,8 @@ PROMPT sets the `read-string prompt."
           ("Europe/London" "London"))))
 
 (prog1 "isearch"
+  (setq isearch-lazy-count t)
+  (setq isearch-repeat-on-direction-change t)
   (defun isearch-exit-at-start ()
     "Exit search at the beginning of the current match."
     (when (and isearch-forward
@@ -1440,8 +1450,8 @@ current HH:MM time."
     ("c g" "Grep" consult-grep)]
    ["Other"
     ("f" "Set Fonts" set-custom-fonts)
-    ("T" "Toggle Modus" modus-themes-toggle :transient t)
-    ("t" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
+    ("t" "Toggle Modus" modus-themes-toggle :transient t)
+    ("T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
     ("d" "Date/Time mode-line" toggle-date-time-battery)
     ("C" "Calendar" calendar)
     ("W" "World Clock" world-clock)

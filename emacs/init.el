@@ -384,6 +384,11 @@ This will save the buffer if it is not currently saved."
   (interactive)
   (select-window (split-window-right)))
 
+(defun backward-kill-line nil
+  "Kill from point to beginning of line."
+  (interactive)
+  (kill-line 0))
+
 
 ;;; Bindings
 
@@ -531,6 +536,7 @@ Keybindings you define here will take precedence."
     (define-key map (kbd "s-x") 'kill-region)
     (define-key map (kbd "s-c") 'kill-ring-save)
     (define-key map (kbd "s-v") 'yank)
+    (define-key map (kbd "s-<backspace>") 'backward-kill-line)
     (define-key map (kbd "s-s") 'save-buffer)
     (define-key map (kbd "s-m") 'iconify-frame)
     (define-key map (kbd "s-,") 'find-user-init-file)

@@ -1194,13 +1194,7 @@ PROMPT sets the `read-string prompt."
 (prog1 "outline"
   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
   (delight 'outline-minor-mode " Out" "outline")
-  (with-eval-after-load 'outline
-    (let ((map outline-minor-mode-map))
-      (define-key map (kbd "TAB")
-        `(menu-item "" outline-cycle
-                    :filter ,(lambda (cmd)
-                               (when (outline-on-heading-p) cmd))))
-      (define-key map (kbd "<backtab>") #'outline-cycle-buffer))))
+  (setq outline-minor-mode-cycle t))
 
 (prog1 "world-clock"
   (setq world-clock-time-format "%Z%t%R%t%F"

@@ -1079,6 +1079,7 @@ PROMPT sets the `read-string prompt."
   (corfu-global-mode 1))
 
 (elpa-package 'cape
+  (require 'cape)
   (transient-define-prefix cape-transient ()
     "Transient for cape commands."
     [[("/" "capf" completion-at-point) ;; capf
@@ -1091,14 +1092,15 @@ PROMPT sets the `read-string prompt."
       ("i" "ispell" cape-ispell)
       ;;("w" "dictionary" cape-dict)
       ]])
-  (define-key bosskey-mode-map (kbd "C-M-/") 'cape-transient)
-  (add-to-list 'completion-at-point-functions #'cape-file-capf)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev-capf)
-  (add-to-list 'completion-at-point-functions #'cape-keyword-capf)
-  (add-to-list 'completion-at-point-functions #'cape-abbrev-capf)
-  (add-to-list 'completion-at-point-functions #'cape-ispell-capf)
-  ;;(add-to-list 'completion-at-point-functions #'cape-dict-capf)
-  )
+    (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-ispell)
+  (add-to-list 'completion-at-point-functions #'cape-dict)
+  (add-to-list 'completion-at-point-functions #'cape-symbol)
+  (add-to-list 'completion-at-point-functions #'cape-line)
+  (define-key bosskey-mode-map (kbd "C-M-/") 'cape-transient))
 
 (local-package 'vundo "vundo"
   ;; Vundo creates a tree-like visualization of your undo history

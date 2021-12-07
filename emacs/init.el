@@ -684,17 +684,17 @@ fixed-pitch and default face heights."
 (add-hook 'buffer-face-mode-hook (lambda () (variable-pitch-adjust-mode 'toggle)))
 
 
-(defvar fontface-setup-alist nil
-  "An alist of font properties used by `set-fontface-pairings'.")
+(defvar custom-fonts-alist nil
+  "An alist of font properties used by `set-custom-fonts'.")
 
-(defun set-fontface-pairings (font-pairs)
-  "Prompt user and set fonts according to selection from `fontface-setup-alist'."
+(defun set-custom-fonts (font-settings)
+  "Prompt user and set fonts according to selection from `custom-fonts-alist'."
   (interactive
    (list (completing-read
           "Select default font pairings: "
-          (mapcar #'car fontface-setup-alist))))
-  (let* ((fonts (intern font-pairs))
-         (properties (alist-get fonts fontface-setup-alist))
+          (mapcar #'car custom-fonts-alist))))
+  (let* ((fonts (intern font-settings))
+         (properties (alist-get fonts custom-fonts-alist))
          (mono (plist-get properties :mono))
          (vari (plist-get properties :vari))
          (mode (plist-get properties :mode))
@@ -727,15 +727,15 @@ fixed-pitch and default face heights."
   (setq-local buffer-remap-faces-variable-pitch-cookie nil)
   (force-window-update (current-buffer)))
 
-(defun buffer-remap-faces--set (font-pairs)
-  "Prompt user and set fonts for the current buffer according to selection from `fontface-setup-alist'.
+(defun buffer-remap-faces (font-settings)
+  "Prompt user and set fonts for the current buffer according to selection from `custom-fonts-alist'.
 It should probably be a mode instead."
   (interactive
    (list (completing-read
           "Select font pairings for Buffer: "
-          (mapcar #'car fontface-setup-alist))))
-  (let* ((fonts (intern font-pairs))
-         (properties (alist-get fonts fontface-setup-alist))
+          (mapcar #'car custom-fonts-alist))))
+  (let* ((fonts (intern font-settings))
+         (properties (alist-get fonts custom-fonts-alist))
          (mono (plist-get properties :mono))
          (vari (plist-get properties :vari))
          (mono-height (plist-get properties :mono-height)))
@@ -759,7 +759,7 @@ It should probably be a mode instead."
 
 ;; Set the different font-pairings (and settings for them) you want to be able
 ;; to switch between.
-(setq fontface-setup-alist
+(setq custom-fonts-alist
       '((Apple . ( :mono "SF Mono"
                    :vari "New York"
                    :mode "SF Compact Text"
@@ -789,8 +789,8 @@ It should probably be a mode instead."
                       :mode-height 130
                       :vari-height 130))))
 
-;; On startup, use this font-pairing:
-(set-fontface-pairings "Apple")
+;; On startup, use this set of fonts:
+(set-custom-fonts "Apple")
 
 
 ;;; Mode-Line
@@ -1425,7 +1425,7 @@ current HH:MM time."
     ("c o" "Outline" consult-outline)
     ("c g" "Grep" consult-grep)]
    ["Other"
-    ("f" "Set Fonts" set-fontface-pairings)
+    ("f" "Set Fonts" set-custom-fonts)
     ("T" "Toggle Modus" modus-themes-toggle :transient t)
     ("t" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
     ("d" "Date/Time mode-line" toggle-date-time-battery)

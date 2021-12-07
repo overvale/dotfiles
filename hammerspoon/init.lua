@@ -36,7 +36,7 @@ hs.urlevent.bind("success", genericSuccess)
 local anycomplete = require "anycomplete"
 anycomplete.registerDefaultBindings()
 
-require('quick_menu')
+-- require('quick_menu')
 
 if (hostname == "shadowfax") then
    require('backup_menu')

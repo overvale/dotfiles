@@ -44,11 +44,11 @@
 
 ;;; Package Management
 
-;; The very first thing I do is setup the packages I need. I do this so that
-;; when I open this config on a new machine, all the packages needed to make
-;; it work are specified in `package-selected-packages', with that one you can
-;; install them with `package-install-selected-packages'. At which point the
-;; whole config should be ready to rock.
+;; The very first thing in the config should be setting up the packages I
+;; need. This is done because when Emacs encounters an error in the init file
+;; (which can happen when packages are missing) Emacs stops loading that init
+;; file. Setting up packages first thing ensures that at a minimum Emacs will
+;; load the settings required for installing the packages this config needs.
 
 (require 'package)
 
@@ -131,16 +131,13 @@
 
 ;;; Critical Setup
 
-;; There are 3 ways I install packages/lisp:
-;; 1. The lisp folder in my dotfiles directory,
-;; 2. an ELPA,
-;; 3. in a "local-package" directory (basically, a directory where
-;;    I can git clone interesting packages).
-
-;; For dotfiles/lisp I add the path to `load-path' and simply require (or
-;; autoload) those things. For ELPA packages I use package.el. For local
-;; packages I add that "local packages" directory to the load-path and require
-;; (or autoload them).
+;; There are 2 ways I install packages/lisp that aren't a part of this file:
+;; 1. Using `package-install-selected-packages',
+;; 2. in a "local-package" directory that contains cloned git repositories
+;;    that I can't install from a package archive such as elpa.gnu.org.
+;;
+;; I configure those packages using the `elpa-package' and `local-package'
+;; macros, which do some sanity checks and ensure the packages are loaded.
 
 (defmacro elpa-package (package &rest body)
   "Eval BODY only if PACKAGE is installed."
@@ -412,6 +409,9 @@ Keybindings you define here will take precedence."
 
 ;;;; Emacsen Improvements
 
+;; These bindings are basically replacements or improvements on Emacs's
+;; default bindings. No, nothing fancy, just some improvements.
+
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
@@ -521,7 +521,7 @@ Keybindings you define here will take precedence."
 ;;;; MacOS
 
 ;; I do value consistency, and I do use Emacs on a Windows machine where the
-;; below is not available, but I just can't give them up on my Mac.
+;; below is not available, but I just can't give up these bindings on a Mac.
 (when (string= system-type "darwin")
   (setq mac-command-modifier 'super
         mac-option-modifier 'meta)

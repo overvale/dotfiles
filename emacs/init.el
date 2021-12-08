@@ -102,6 +102,7 @@
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(ring-bell-function 'ignore)
+ '(pixel-scroll-precision-mode 1)
  '(set-language-environment "UTF-8")
  '(frame-title-format '("%b"))
  '(uniquify-buffer-name-style 'forward)

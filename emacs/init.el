@@ -645,8 +645,7 @@ Disables all current themes, then:
    '(modus-themes-italic-constructs t)
    '(modus-themes-links '(neutral-underline))
    '(modus-themes-region '(bg-only))
-   '(modus-themes-mode-line '(borderless padded accented))
-   '(modus-themes-mode-line-padding 2)
+   '(modus-themes-mode-line '(accented 3d))
    '(modus-themes-vivendi-color-overrides '((fg-main . "#dddddd")))
    '(modus-themes-org-blocks '(tinted-background))
    '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
@@ -791,7 +790,7 @@ It should probably be a mode instead."
         (Pragmata . ( :mono "PragmataPro"
                       :vari "Fira Sans"
                       :mode "Fira Sans"
-                      :line 2
+                      :line 1
                       :mono-height 120
                       :mode-height 130
                       :vari-height 130))))

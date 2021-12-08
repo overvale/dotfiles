@@ -149,19 +149,18 @@
                       (symbol-name ,package)
                       "\' is not installed... skipping config."))))
 
-(defvar local-package-dir "~/home/src/lisp/"
-  "Directory containing lisp files which not in dotfiles or an ELPA package.")
+(defvar local-package-dir nil
+  "Directory containing lisp files which are not in dotfiles or an ELPA package.")
 
-(defmacro local-package (package dir &rest body)
-  "Eval BODY if PACKAGE exists in DIR of `local-package-dir'."
+(defmacro local-package (package-dir &rest body)
+  "Eval BODY if PACKAGE-DIR exists in `local-package-dir'."
   (declare (indent defun))
-  `(let* ((package-path (concat local-package-dir ,dir)))
+  `(let* ((package-path (concat local-package-dir ,package-dir)))
      (if (file-exists-p package-path)
          (progn
            (add-to-list 'load-path package-path)
            ,@body)
-       (message (concat "Package "
-                        (symbol-name ,package)
+       (message (concat "\'" ,package-dir "\'"
                         " cannot be found at \'"
                         package-path
                         "\'... skipping config.")))))
@@ -171,6 +170,7 @@
   (setq-default default-directory "~/home/")
   (setq org-directory "~/home/org/")
   (defvar user-downloads-directory "~/Desktop/")
+  (setq local-package-dir "~/home/src/lisp/")
   (add-to-list 'load-path "~/home/dot/emacs/lisp/"))
 
 (prog1 "transient"
@@ -1108,7 +1108,7 @@ PROMPT sets the `read-string prompt."
   (add-to-list 'completion-at-point-functions #'cape-line)
   (define-key bosskey-mode-map (kbd "C-M-/") 'cape-transient))
 
-(local-package 'vundo "vundo"
+(local-package "vundo"
   ;; Vundo creates a tree-like visualization of your undo history
   ;; using only standard Emacs undo commands and data. Requires either
   ;; Emacs 28 or its backported undo functions.
@@ -1168,7 +1168,7 @@ PROMPT sets the `read-string prompt."
   (custom-set-variables
    '(olivetti-body-width 100)))
 
-(local-package 'oblique "oblique-strategies"
+(local-package "oblique-strategies"
   (autoload 'oblique-strategy "oblique")
   (setq initial-scratch-message (concat
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"

@@ -1203,7 +1203,9 @@ PROMPT sets the `read-string prompt."
 (prog1 "outline"
   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
   (delight 'outline-minor-mode " Out" "outline")
-  (setq outline-minor-mode-cycle t))
+  (setq outline-minor-mode-cycle t)
+  (with-eval-after-load 'outline
+    (define-key outline-minor-mode-map (kbd "<backtab>") 'outline-cycle-buffer)))
 
 (prog1 "calendar"
   (require 'solar)

@@ -645,7 +645,8 @@ Disables all current themes, then:
    '(modus-themes-italic-constructs t)
    '(modus-themes-links '(neutral-underline))
    '(modus-themes-region '(bg-only))
-   '(modus-themes-mode-line '(3d))
+   '(modus-themes-mode-line '(borderless padded accented))
+   '(modus-themes-mode-line-padding 2)
    '(modus-themes-vivendi-color-overrides '((fg-main . "#dddddd")))
    '(modus-themes-org-blocks '(tinted-background))
    '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
@@ -771,7 +772,7 @@ It should probably be a mode instead."
                    :mode "SF Compact Text"
                    :line nil
                    :mono-height 120
-                   :mode-height 140
+                   :mode-height 130
                    :vari-height 140))
         (IBM . ( :mono "IBM Plex Mono"
                  :vari "IBM Plex Serif"
@@ -824,6 +825,67 @@ It should probably be a mode instead."
 (delight 'eldoc-mode nil "eldoc")
 (delight 'emacs-lisp-mode "Elisp" "elisp-mode")
 (delight 'auto-fill-function " Fill" "simple")
+
+
+;;;; Radian Mode line
+
+;; https://github.com/raxod502/radian/blob/a8bb096c80d2daf34d380331fb23fa338ac1bb17/emacs/radian.el#L5168
+;; The following code customizes the mode line to something like:
+;; [*] radian.el   18% (18,0)     [radian:develop*]  (Emacs-Lisp)
+
+(defun radian-mode-line-buffer-modified-status ()
+  "Return a mode line construct indicating buffer modification status.
+This is [*] if the buffer has been modified and whitespace
+otherwise. (Non-file-visiting buffers are never considered to be
+modified.) It is shown in the same color as the buffer name, i.e.
+`mode-line-buffer-id'."
+  (propertize
+   (if (and (buffer-modified-p)
+            (buffer-file-name))
+       "●")
+   'face 'mode-line-buffer-id))
+
+;; Normally the buffer name is right-padded with whitespace until it
+;; is at least 12 characters. This is a waste of space, so we
+;; eliminate the padding here. Check the docstrings for more
+;; information.
+(setq-default mode-line-buffer-identification
+              (propertized-buffer-identification "%b"))
+
+;; https://emacs.stackexchange.com/a/7542/12534
+(defun radian--mode-line-align (left right)
+  "Render a left/right aligned string for the mode line.
+LEFT and RIGHT are strings, and the return value is a string that
+displays them left- and right-aligned respectively, separated by
+spaces."
+  (let ((width (- (window-total-width) (length left))))
+    (format (format "%%s%%%ds" width) left right)))
+
+(defcustom radian-mode-line-left
+  '(;; Show [*] if the buffer is modified.
+    (:eval (radian-mode-line-buffer-modified-status))
+    ;; Show the name of the current buffer.
+    "   " mode-line-buffer-identification
+    ;; Show the row and column of point.
+    "   " mode-line-position
+    ;; Show the active major and minor modes.
+    "   " mode-line-modes)
+  "Composite mode line construct to be shown left-aligned."
+  :type 'sexp)
+
+(defcustom radian-mode-line-right mode-line-misc-info
+    "Composite mode line construct to be shown right-aligned."
+    :type 'sexp)
+
+;; Actually reset the mode line format to show all the things we just
+;; defined.
+(setq-default mode-line-format
+              '(:eval (replace-regexp-in-string
+                       "%" "%%"
+                       (radian--mode-line-align
+                        (format-mode-line radian-mode-line-left)
+                        (format-mode-line radian-mode-line-right))
+                       'fixedcase 'literal)))
 
 
 ;;; Windows

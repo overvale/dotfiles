@@ -878,15 +878,6 @@ It should probably be a mode instead."
                (window-parameters . ((select . t))))
              t)
 
-;; Make iBuffer more like `bs-show'
-(add-to-list 'display-buffer-alist
-             '("\\*Ibuffer.*"
-               (display-buffer-below-selected)
-               (window-height . fit-window-to-buffer)
-               (window-parameters . ((select . t))))
-             t)
-
-
 (define-minor-mode dedicated-mode
   "Minor mode for dedicating windows.
 This minor mode dedicates the current window to the current buffer.
@@ -1452,7 +1443,7 @@ current HH:MM time."
     ("," "Find Init" find-user-init-file)
     ("a" "AutoFill" auto-fill-mode)
     ("j" "Dired Jump" dired-jump)
-    ("l" "List Buffers" ibuffer)
+    ("l" "List Buffers" bs-show)
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("n" "Make Frame" make-frame)
     ("w" "Windows..." window-transient)]

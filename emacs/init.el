@@ -878,6 +878,15 @@ It should probably be a mode instead."
                (window-parameters . ((select . t))))
              t)
 
+;; Make iBuffer more like `bs-show'
+(add-to-list 'display-buffer-alist
+             '("\\*Ibuffer.*"
+               (display-buffer-below-selected)
+               (window-height . fit-window-to-buffer)
+               (window-parameters . ((select . t))))
+             t)
+
+
 (define-minor-mode dedicated-mode
   "Minor mode for dedicating windows.
 This minor mode dedicates the current window to the current buffer.
@@ -1229,6 +1238,9 @@ PROMPT sets the `read-string prompt."
                (not isearch-mode-end-hook-quit))
       (goto-char isearch-other-end)))
   (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start))
+
+(prog1 "ibuffer"
+  (setq ibuffer-display-summary nil))
 
 
 ;;; Org

@@ -846,11 +846,14 @@ It should probably be a mode instead."
 ;;                         '((display-buffer-reuse-window display-buffer-same-window)
 ;;                           (reusable-frames . t)))
 
+;; The order of the below items matter. The first one that matches is applied.
+;; That's why all these add-to-list items have the APPEND flag.
 (add-to-list 'display-buffer-alist
              '("\\*Calendar.*"
                (display-buffer-below-selected)
                (window-parameters . ((no-other-window . nil)))
-               (window-height . fit-window-to-buffer)))
+               (window-height . fit-window-to-buffer))
+             t)
 
 (add-to-list 'display-buffer-alist
              '("\\*Org Select\\*"
@@ -858,18 +861,21 @@ It should probably be a mode instead."
                (dedicated . t)
                (side . bottom)
                (slot . 0)
-               (window-parameters . ((mode-line-format . none)))))
+               (window-parameters . ((mode-line-format . none))))
+             t)
 
 (add-to-list 'display-buffer-alist
              '("\\*\\(.* # Help.*\\|Help\\)\\*"
                (display-buffer-reuse-window display-buffer-same-window)
-               (reusable-frames . t)))
+               (reusable-frames . t))
+             t)
 
 (add-to-list 'display-buffer-alist
              '("\\*wclock.*"
                (display-buffer-below-selected)
                (window-height . fit-window-to-buffer)
-               (window-parameters . ((select . t)))))
+               (window-parameters . ((select . t))))
+             t)
 
 (define-minor-mode dedicated-mode
   "Minor mode for dedicating windows.
@@ -1091,7 +1097,7 @@ PROMPT sets the `read-string prompt."
       ("i" "ispell" cape-ispell)
       ;;("w" "dictionary" cape-dict)
       ]])
-    (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)

@@ -659,37 +659,31 @@ Disables all current themes, then:
 
 ;;; Fonts
 
-(defvar variable-pitch-adjust-height nil
-  "Used by `variable-pitch-adjust-mode' to determine the
-variable-pitch scaling amount in that mode.")
+(defvar variable-pitch-text-height 1.1
+  "The height of the `variable-pitch-text' face, must be relative.")
 
-(define-minor-mode variable-pitch-adjust-mode
-  "Minor mode to adjust only the variable-pitch face height buffer-locally.
-Scales the variable-pitch height up to the height defined by
-‘variable-pitch-adjust-height’ and the fixed-pitch face down to
-match the default face height. Thus, in mixed-font settings you
-can scale the variable-pitch height independently of the
-fixed-pitch and default face heights."
-  :init-value nil
-  :lighter " V+"
-  (if variable-pitch-adjust-mode
-      (progn
-        (setq-local variable-pitch-remapping
-                    (face-remap-add-relative 'variable-pitch
-                                             :height (/ variable-pitch-adjust-height
-                                                        (float (face-attribute 'default :height)))))
-        (setq-local fixed-pitch-remapping
-                    (face-remap-add-relative 'fixed-pitch
-                                             :height (/ (float (face-attribute 'default :height))
-                                                        variable-pitch-adjust-height)))
-        (force-window-update (current-buffer)))
-    (progn
-      (face-remap-remove-relative variable-pitch-remapping)
-      (face-remap-remove-relative fixed-pitch-remapping)
-      (force-window-update (current-buffer)))))
+(defun set-variable-pitch-text-height (height)
+  "Sets `variable-pitch-text-height' by converting HEIGHT.
+Converts an absolute HEIGHT (140) to a relative value (1.1) based
+on the default face."
+  (setq variable-pitch-text-height (/ height
+                                      (float (face-attribute 'default :height)))))
 
-(add-hook 'buffer-face-mode-hook (lambda () (variable-pitch-adjust-mode 'toggle)))
+(defface variable-pitch-text
+  `((t :inherit variable-pitch
+       :height ,(symbol-value 'variable-pitch-text-height)))
+  "The proportional face used for longer texts.
+This is like the `variable-pitch' face, but is slightly bigger."
+  :group 'basic-faces)
 
+(defun variable-pitch-text-mode (&optional arg)
+  "Swaps the default face for the variable-pitch-text face.
+An interface to `buffer-face-mode' which uses the `variable-pitch-text' face.
+Besides the choice of face, it is the same as `buffer-face-mode'."
+  (interactive (list (or current-prefix-arg 'toggle)))
+  (autoload 'buffer-face-mode-invoke "face-remap")
+  (buffer-face-mode-invoke 'variable-pitch-text (or arg t)
+			   (called-interactively-p 'interactive)))
 
 (defvar custom-fonts-alist nil
   "An alist of font properties used by `set-custom-fonts'.")
@@ -709,8 +703,8 @@ fixed-pitch and default face heights."
          (mono-height (plist-get properties :mono-height))
          (mode-height (plist-get properties :mode-height))
          (vari-height (plist-get properties :vari-height)))
-    (setq line-spacing line
-          variable-pitch-adjust-height vari-height)
+    (set-variable-pitch-text-height vari-height)
+    (setq line-spacing line)
     (custom-set-faces
      `(default ((t :family ,mono :height ,mono-height)))
      `(fixed-pitch ((t :family ,mono)))

@@ -967,33 +967,32 @@ the fixed-pitch face down to the height defined by
 
 (add-hook 'buffer-face-mode-hook (lambda () (facedancer-vadjust-mode 'toggle)))
 
- 
-
-(define-minor-mode facedancer-vadjust-mode
-  "Minor mode to adjust the variable-pitch face height buffer-locally.
-A minor mode to scale (in the current buffer) the variable-pitch
-face up to the height defined by ‘facedancer-variable-height’ and
-the fixed-pitch face down to the height defined by
-‘facedancer-monospace-height’."
+(define-minor-mode variable-pitch-adjust-mode
+  "Minor mode to adjust only the variable-pitch face height buffer-locally.
+Scales the variable-pitch height up to the height defined by
+‘variable-pitch-adjust-height’ and the fixed-pitch face down to
+match the default face height. Thus, in mixed-font settings you
+can scale the variable-pitch height independently of the
+fixed-pitch and default face heights."
   :init-value nil
   :lighter " V+"
-  (if facedancer-vadjust-mode
+  (if variable-pitch-adjust-mode
       (progn
         (setq-local variable-pitch-remapping
                     (face-remap-add-relative 'variable-pitch
-                                             :height (/ (float facedancer-variable-height)
-                                                        (float facedancer-monospace-height))))
+                                             :height (/ variable-pitch-adjust-height
+                                                        (float (face-attribute 'default :height)))))
         (setq-local fixed-pitch-remapping
                     (face-remap-add-relative 'fixed-pitch
-                                             :height (/ (float facedancer-monospace-height)
-                                                        (float facedancer-variable-height))))
+                                             :height (/ (float (face-attribute 'default :height))
+                                                        variable-pitch-adjust-height)))
         (force-window-update (current-buffer)))
     (progn
       (face-remap-remove-relative variable-pitch-remapping)
       (face-remap-remove-relative fixed-pitch-remapping)
       (force-window-update (current-buffer)))))
 
-(add-hook 'buffer-face-mode-hook (lambda () (facedancer-vadjust-mode 'toggle)))
+(add-hook 'buffer-face-mode-hook (lambda () (variable-pitch-adjust-mode 'toggle)))
 
 
 ;;; facedancer-mode

@@ -432,6 +432,7 @@ Keybindings you define here will take precedence."
   (define-key map (kbd "M-/") 'completion-at-point)
   (define-key map (kbd "M-\\") 'cycle-spacing)
   (define-key map (kbd "M-z") 'zap-up-to-char)
+  (define-key map (kbd "M-i") 'imenu)
   (define-key map (kbd "C-M-h") 'mark-line)
   (define-key map (kbd "C-d") 'delete-forward-char)
   (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
@@ -1225,6 +1226,7 @@ PROMPT sets the `read-string prompt."
     (consult-customize consult-buffer consult-buffer-other-window :preview-key nil))
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
+  (global-set-key [remap imenu] 'consult-imenu)
   (global-set-key [remap yank-pop] 'consult-yank-pop)
   (global-set-key [remap repeat-complex-command] #'consult-complex-command))
 

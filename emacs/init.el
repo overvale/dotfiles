@@ -838,11 +838,20 @@ This is [*] if the buffer has been modified and whitespace
 otherwise. (Non-file-visiting buffers are never considered to be
 modified.) It is shown in the same color as the buffer name, i.e.
 `mode-line-buffer-id'."
-  (propertize
    (if (and (buffer-modified-p)
             (buffer-file-name))
-       "●")
-   'face 'mode-line-buffer-id))
+       "  ●"))
+
+(defun radian-mode-line-buffer-read-only-status ()
+  "Return a mode-line construct indicating buffer read-only status."
+  (if buffer-read-only
+      "  -RO-"))
+
+(defun radian-mode-line-buffer-confirm-kill-status ()
+  "Return a mode-line construct indicating `buffer-confirm-kill' status."
+  (if (and buffer-confirm-kill
+           (buffer-modified-p))
+      "  -CK-"))
 
 ;; Normally the buffer name is right-padded with whitespace until it
 ;; is at least 12 characters. This is a waste of space, so we
@@ -861,10 +870,14 @@ spaces."
     (format (format "%%s%%%ds" width) left right)))
 
 (defcustom radian-mode-line-left
-  '(;; Show [*] if the buffer is modified.
+  '(;; Show indicator if the buffer is modified.
     (:eval (radian-mode-line-buffer-modified-status))
     ;; Show the name of the current buffer.
     "   " mode-line-buffer-identification
+    ;; Show indicator if buffer is protected by `buffer-confirm-kill'.
+    (:eval (radian-mode-line-buffer-confirm-kill-status))
+    ;; Show indicator if buffer is read-only.
+    (:eval (radian-mode-line-buffer-read-only-status))
     ;; Show the row and column of point.
     "   " mode-line-position
     ;; Show the active major and minor modes.
@@ -1017,6 +1030,17 @@ This function is designed to be called from `kill-buffer-query-functions'."
     t))
 
 (add-hook 'kill-buffer-query-functions #'buffer-confirm-kill-p)
+
+(defun toggle-buffer-confirm-kill nil
+  "Sets the buffer-local variable `buffer-confirm-kill' to t."
+  (interactive)
+  (if buffer-confirm-kill
+      (progn
+        (setq-local buffer-confirm-kill nil)
+        (message "'buffer-confirm-kill' set to 'nil'"))
+    (progn
+        (setq-local buffer-confirm-kill t)
+        (message "'buffer-confirm-kill' set to 't'"))))
 
 
 ;;; Scratch Buffers

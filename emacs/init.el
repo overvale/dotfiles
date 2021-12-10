@@ -1,4 +1,4 @@
-;;; init.el --- Oliver Taylor's Emacs Config -*- lexical-binding: t -*-
+;; init.el --- Oliver Taylor's Emacs Config -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2020-2021 Oliver Taylor
 ;; Learning Emacs was my COVID pandemic project, now I cannot escape.
@@ -9,13 +9,13 @@
 
 ;; This config targets Emacs 28.1
 
-
-;;; Commentary:
-
 ;; This file has an outline which can be viewed by looking at comments
 ;; starting with three or more semicolons. `outline-minor-mode' supports this
 ;; convention by default and helps with navigation. You can also create an
 ;; occur buffer with the search /^;;;+/.
+
+
+;;; Commentary:
 
 ;; Every Emacs configuration is unique to the person who created it, to their
 ;; needs and their taste. This one takes the following approach:
@@ -644,10 +644,12 @@ Disables all current themes, then:
   (custom-set-variables
    '(modus-themes-mixed-fonts t)
    '(modus-themes-italic-constructs t)
+   '(modus-themes-syntax '(yellow-comments green-strings))
    '(modus-themes-links '(neutral-underline))
    '(modus-themes-region '(bg-only))
    '(modus-themes-mode-line '(accented 3d))
-   '(modus-themes-vivendi-color-overrides '((fg-main . "#dddddd")))
+   '(modus-themes-mode-line-padding 2)
+   '(modus-themes-vivendi-color-overrides '((fg-main . "#d5d5d5")))
    '(modus-themes-org-blocks '(tinted-background))
    '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
                                (header-date . (bold-today))
@@ -686,10 +688,6 @@ Disables all current themes, then:
      `(mode-line ((t :family ,mode :height ,mode-height)))
      `(mode-line-inactive ((t :family ,mode :height ,mode-height))))))
 
-;; Cookies used for `buffer-remap-faces-mode'.
-(defvar-local buffer-remap-faces-default-cookie nil)
-(defvar-local buffer-remap-faces-fixed-pitch-cookie nil)
-(defvar-local buffer-remap-faces-variable-pitch-cookie nil)
 (defvar variable-pitch-adjust-height nil
   "Used by `variable-pitch-adjust-mode' to determine the
 variable-pitch scaling amount in that mode.")
@@ -720,6 +718,13 @@ fixed-pitch and default face heights."
       (force-window-update (current-buffer)))))
 
 (add-hook 'buffer-face-mode-hook (lambda () (variable-pitch-adjust-mode 'toggle)))
+
+(defvar-local buffer-remap-faces-default-cookie nil
+  "Cookie used for `buffer-remap-faces'.")
+(defvar-local buffer-remap-faces-fixed-pitch-cookie nil
+  "Cookie used for `buffer-remap-faces'.")
+(defvar-local buffer-remap-faces-variable-pitch-cookie nil
+  "Cookie used for `buffer-remap-faces'.")
 
 (defun buffer-remap-faces--clear nil
   "In the current buffer, remove all buffer-remap-faces cookies."
@@ -778,7 +783,7 @@ It should probably be a mode instead."
                  :line nil
                  :mono-height 120
                  :mode-height 140
-                 :vari-height 140))
+                 :vari-height 130))
         (Go . ( :mono "Go Mono"
                 :vari "Go"
                 :mode "Go"
@@ -788,14 +793,14 @@ It should probably be a mode instead."
                 :vari-height 130))
         (Pragmata . ( :mono "PragmataPro"
                       :vari "Fira Sans"
-                      :mode "Fira Sans"
+                      :mode "PragmataPro"
                       :line 1
                       :mono-height 120
-                      :mode-height 130
+                      :mode-height 120
                       :vari-height 130))))
 
 ;; On startup, use this set of fonts:
-(set-custom-fonts "Apple")
+(set-custom-fonts "IBM")
 
 
 ;;; Mode-Line

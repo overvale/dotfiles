@@ -64,6 +64,7 @@
 (setq package-selected-packages
       '(consult
         corfu
+        cape
         delight
         embark
         embark-consult

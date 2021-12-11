@@ -527,22 +527,20 @@ Keybindings you define here will take precedence."
 
 ;;;; MacOS
 
-;; I do value consistency, and I do use Emacs on a Windows machine where the
-;; below is not available, but I just can't give up these bindings on a Mac.
-(when (string= system-type "darwin")
-  (setq mac-command-modifier 'super
-        mac-option-modifier 'meta)
-  (let ((map global-map))
-    (define-key map (kbd "s-z") 'undo-only)
-    (define-key map (kbd "s-Z") 'undo-redo)
-    (define-key map (kbd "s-x") 'kill-region)
-    (define-key map (kbd "s-c") 'kill-ring-save)
-    (define-key map (kbd "s-v") 'yank)
-    (define-key map (kbd "s-<backspace>") 'backward-kill-line)
-    (define-key map (kbd "s-s") 'save-buffer)
-    (define-key map (kbd "s-m") 'iconify-frame)
-    (define-key map (kbd "s-,") 'find-user-init-file)
-    (define-key map (kbd "s-q") 'save-buffers-kill-emacs)))
+(setq mac-command-modifier 'super
+      mac-option-modifier 'meta)
+
+(let ((map global-map))
+  (define-key map (kbd "s-z") 'undo-only)
+  (define-key map (kbd "s-Z") 'undo-redo)
+  (define-key map (kbd "s-x") 'kill-region)
+  (define-key map (kbd "s-c") 'kill-ring-save)
+  (define-key map (kbd "s-v") 'yank)
+  (define-key map (kbd "s-<backspace>") 'backward-kill-line)
+  (define-key map (kbd "s-s") 'save-buffer)
+  (define-key map (kbd "s-m") 'iconify-frame)
+  (define-key map (kbd "s-,") 'find-user-init-file)
+  (define-key map (kbd "s-q") 'save-buffers-kill-emacs))
 
 
 ;;; Themes
@@ -1406,9 +1404,7 @@ PROMPT sets the `read-string prompt."
    '(org-agenda-skip-deadline-prewarning-if-scheduled t))
 
   (setq org-agenda-files (list org-directory))
-
-  (when (string= system-name "shadowfax.local")
-    (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org"))
+  (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org")
 
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
@@ -1420,17 +1416,16 @@ PROMPT sets the `read-string prompt."
         '(("DELG" . org-scheduled-previously)
           ("LATER" . org-scheduled-previously)))
 
-  (when (string= system-name "shadowfax.local")
-    (setq org-capture-templates
-          `(("i" "Personal Inbox" entry
-             (file+headline ,(concat org-directory "life.org") "Inbox")
-             "* %?\n\n" :empty-lines 1)
-            ("l" "Personal Log Entry" entry
-             (file+olp+datetree ,(concat org-directory "logbook.org"))
-             "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
-            ("e" "Emacs Config" entry
-             (file+headline ,(concat org-directory "emacs.org") "Emacs Config")
-             "* TODO %?" :empty-lines 1))))
+  (setq org-capture-templates
+        `(("i" "Personal Inbox" entry
+           (file+headline ,(concat org-directory "life.org") "Inbox")
+           "* %?\n\n" :empty-lines 1)
+          ("l" "Personal Log Entry" entry
+           (file+olp+datetree ,(concat org-directory "logbook.org"))
+           "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
+          ("e" "Emacs Config" entry
+           (file+headline ,(concat org-directory "emacs.org") "Emacs Config")
+           "* TODO %?" :empty-lines 1)))
 
   (defun my/org-refile-preserve-collapsed-parent ()
     (org-up-heading-safe)

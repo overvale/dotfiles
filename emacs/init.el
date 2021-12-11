@@ -844,10 +844,6 @@ It should probably be a mode instead."
       (display-time-mode -1)
       (display-battery-mode -1))))
 
-(delight 'eldoc-mode nil "eldoc")
-(delight 'emacs-lisp-mode "Elisp" "elisp-mode")
-(delight 'auto-fill-function " Fill" "simple")
-
 
 ;;;; Radian Mode line
 
@@ -1262,6 +1258,13 @@ PROMPT sets the `read-string prompt."
       (custom-set-variables
        '(vr/engine 'pcre2el)))))
 
+(elpa-package 'delight
+  (with-eval-after-load 'flyspell (delight 'flyspell-mode " Spell" "flyspell"))
+  (delight 'outline-minor-mode " Out" "outline")
+  (delight 'eldoc-mode nil "eldoc")
+  (delight 'emacs-lisp-mode "Elisp" "elisp-mode")
+  (delight 'auto-fill-function " Fill" "simple"))
+
 (elpa-package 'fountain-mode
   (custom-set-variables
    '(fountain-add-continued-dialog nil)
@@ -1289,8 +1292,6 @@ PROMPT sets the `read-string prompt."
 ;;; Libraries
 
 (prog1 "spelling"
-  (with-eval-after-load 'flyspell
-    (delight 'flyspell-mode " Spell" "flyspell"))
   (add-hook 'text-mode-hook 'turn-on-flyspell)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
   (setq flyspell-issue-message-flag nil)
@@ -1313,7 +1314,6 @@ PROMPT sets the `read-string prompt."
 
 (prog1 "outline"
   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
-  (delight 'outline-minor-mode " Out" "outline")
   (setq outline-minor-mode-cycle t)
   (with-eval-after-load 'outline
     (define-key outline-minor-mode-map (kbd "<backtab>") 'outline-cycle-buffer)))

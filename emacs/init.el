@@ -1002,26 +1002,19 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("k" "Kill" delete-window)
     ("K" "Kill Buffer & Window" kill-buffer-and-window)
     ("o" "Kill Others"  delete-other-windows)
-    ("m" "Maximize" maximize-window)]
-   ["Navigate"
-    ("<left>"  "←" windmove-left  :transient t)
-    ("<right>" "→" windmove-right :transient t)
-    ("<up>"    "↑" windmove-up    :transient t)
-    ("<down>"  "↓" windmove-down  :transient t)]
-   ["Exit"
-    ("q" "Quit" transient-quit-all)]])
+    ("m" "Maximize" maximize-window)]])
 
 (prog1 "windmove"
   (setq windmove-create-window t)
   (let ((map global-map))
-    (define-key map (kbd "C-M-<up>") #'windmove-up)
-    (define-key map (kbd "C-M-<right>") #'windmove-right)
-    (define-key map (kbd "C-M-<down>") #'windmove-down)
-    (define-key map (kbd "C-M-<left>") #'windmove-left)
-    (define-key map (kbd "C-M-S-<up>") #'windmove-swap-states-up)
-    (define-key map (kbd "C-M-S-<right>") #'windmove-swap-states-right)
-    (define-key map (kbd "C-M-S-<down>") #'windmove-swap-states-down)
-    (define-key map (kbd "C-M-S-<left>") #'windmove-swap-states-left)))
+    (define-key map (kbd "S-<up>") #'windmove-up)
+    (define-key map (kbd "S-<right>") #'windmove-right)
+    (define-key map (kbd "S-<down>") #'windmove-down)
+    (define-key map (kbd "S-<left>") #'windmove-left)
+    (define-key map (kbd "M-S-<up>") #'windmove-swap-states-up)
+    (define-key map (kbd "M-S-<right>") #'windmove-swap-states-right)
+    (define-key map (kbd "M-S-<down>") #'windmove-swap-states-down)
+    (define-key map (kbd "M-S-<left>") #'windmove-swap-states-left)))
 
 
 ;;; Confirm Killing Modified Buffers

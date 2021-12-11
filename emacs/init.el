@@ -46,9 +46,10 @@
 
 ;; The very first thing in the config should be setting up the packages I
 ;; need. This is done because when Emacs encounters an error in the init file
-;; (which can happen when packages are missing) Emacs stops loading that init
-;; file. Setting up packages first thing ensures that at a minimum Emacs will
-;; load the settings required for installing the packages this config needs.
+;; (which can happen when packages are missing) Emacs stops loading the init
+;; file altogether. Setting up packages first thing ensures that at a minimum
+;; Emacs will load the settings required for installing the packages this
+;; config needs.
 
 (require 'package)
 
@@ -487,7 +488,6 @@ Keybindings you define here will take precedence."
 (define-key global-map (kbd "C-S-SPC") 'set-mark-transient)
 
 
-
 ;;;; Repeat Mode
 
 (defvar buffer-navigation-repeat-map
@@ -658,14 +658,31 @@ Disables all current themes, then:
   (load-system-color-theme))
 
 
-
 ;;; Fonts
 
+;; The below code provides the following features:
+
+;; 1. A way to define sets of fonts and font sizes, which you can load as the
+;;    default for all frames or per-buffer.
+;; 2. A mode for scaling only the variable-pitch face up to the exact size of
+;;    your choosing so that mixed-font buffers look great.
+
 (defvar custom-fonts-alist nil
-  "An alist of font properties used by `set-custom-fonts'.")
+  "An alist of font properties used by `set-custom-fonts'.
+The alist should be formatted thus:
+
+(setq custom-fonts-alist
+      '((Apple . ( :mono \"SF Mono\"
+                   :vari \"New York\"
+                   :mode \"SF Compact Text\"
+                   :line nil
+                   :mono-height 120
+                   :mode-height 130
+                   :vari-height 140))))")
 
 (defun set-custom-fonts (font-settings)
-  "Prompt user and set fonts according to selection from `custom-fonts-alist'."
+  "Prompt user and set fonts according to selection from `custom-fonts-alist'.
+FONT-SETTINGS should be a string."
   (interactive
    (list (completing-read
           "Select default font pairings: "
@@ -805,6 +822,8 @@ It should probably be a mode instead."
 
 ;;; Mode-Line
 
+;;;; Display Battery/Time in mode-line
+
 (setq display-time-default-load-average nil)
 (setq display-time-format "  [%F]  %R")
 (setq battery-mode-line-format "  %b%p%%")
@@ -832,8 +851,9 @@ It should probably be a mode instead."
 
 ;;;; Radian Mode line
 
+;; The following code is a modified version of the code found here:
 ;; https://github.com/raxod502/radian/blob/a8bb096c80d2daf34d380331fb23fa338ac1bb17/emacs/radian.el#L5168
-;; The following code customizes the mode line to something like:
+;; It customizes the mode line to something like:
 ;; [*] radian.el   18% (18,0)     [radian:develop*]  (Emacs-Lisp)
 
 (defun radian-mode-line-buffer-modified-status ()
@@ -1142,6 +1162,7 @@ PROMPT sets the `read-string prompt."
 (prelude-install-search-engine "github-elisp"
                                "https://github.com/search?l=Emacs+Lisp&type=Code&q="
                                "Github Elisp: ")
+
 
 ;;; Minibuffer
 

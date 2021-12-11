@@ -97,7 +97,6 @@
 ;; https://old.reddit.com/r/emacs/comments/exnxha/withemacs_almost_all_you_need_to_know_about/fgadihl/
 (custom-set-variables
  '(inhibit-startup-screen t)
- '(repeat-mode 1)
  '(global-auto-revert-mode t)
  '(save-place-mode t)
  '(recentf-mode t)
@@ -490,6 +489,8 @@ Keybindings you define here will take precedence."
 
 
 ;;;; Repeat Mode
+
+(repeat-mode 1)
 
 (defvar buffer-navigation-repeat-map
   (let ((map (make-sparse-keymap)))

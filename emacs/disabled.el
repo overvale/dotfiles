@@ -744,49 +744,6 @@ mode-line."
       (toggle-truncate-lines 1))))
 
 
-;;; Lisp Alternative to Use-Package
-
-(add-to-list package-selected-packages 'olivetti)
-
-(custom-set-variables
- '(olivetti-body-width 84))
-
-(autoload 'olivetti-mode "olivetti")
-
-(eval-after-load 'olivetti
-  '(blackout 'olivetti-mode " Olvti"))
-
-
-;;; Misc Transients
-
-(transient-define-prefix oht-transient-tabs ()
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
-  ["General -> Tabs"
-   [("t" "Tab Bar Mode" tab-bar-mode)
-    ("n" "New" tab-bar-new-tab)
-    ("k" "Kill" tab-bar-close-tab)
-    ("z" "Undo Kill" tab-bar-undo-close-tab)
-    ("]" "Next" tab-bar-switch-to-next-tab)
-    ("[" "Previous" tab-bar-switch-to-prev-tab)]])
-
-(transient-define-prefix oht-transient-help ()
-  "Transient for Helpful commands"
-  ["General -> Helpful Commands"
-   [("p" "At Point" helpful-at-point)]
-   [("c" "Callable" helpful-callable)
-    ("f" "Function" helpful-function)
-    ("C" "Command" helpful-command)
-    ("v" "Variable" helpful-variable)
-    ("s" "Symbol" helpful-symbol)
-    ("M" "Macro" helpful-macro)
-    ("k" "Key" helpful-key)
-    ("m" "Mode" helpful-mode)]
-   [("u" "Update" helpful-update)
-    ("V" "Visit Reference" helpful-visit-reference)
-    ("K" "Kill Helpful Buffers" helpful-kill-buffers)]])
-
-
 ;;; Mouse Window Splits
 
 ;; s-click to split windows at that exact spot
@@ -1218,34 +1175,6 @@ To be used by `eww-after-render-hook'."
 (add-hook 'ibuffer-mode-hook 'ibuffer-setup)
 
 
-;;; iSearch
-
-(elisp-group isearch-config
-  "This does two things, makes the matching fuzzy
-per-line (though not orderless, use consult-lines for that), and
-makes exits exit at the beginning of the match. I think this is a
-more vim-like behavior, which I prefer because it makes it easier
-to set the mark, and search to expand the region to the desired
-spot."
-  (setq search-whitespace-regexp ".*?")
-  (setq isearch-lax-whitespace t)
-  (setq isearch-lazy-count t)
-
-  (defun isearch-exit-at-start ()
-    "Exit search at the beginning of the current match."
-    (when (and isearch-forward
-               (number-or-marker-p isearch-other-end)
-               (not isearch-mode-end-hook-quit))
-      (goto-char isearch-other-end)))
-
-  (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start))
-
-(elpa-package 'isearch-mb
-  nil
-  (isearch-mb-mode)
-  (add-to-list 'isearch-mb--after-exit #'occur))
-
-
 ;;; Pulse
 
 (defun pulse-line ()
@@ -1269,44 +1198,7 @@ spot."
 (advice-add 'yank :around #'ct/yank-pulse-advice)
 
 
-;;; Remember Mode
-
-(custom-set-variables
- '(remember-data-file (concat oht-orgfiles "remember-notes"))
- '(remember-notes-initial-major-mode 'fundamental-mode)
- '(remember-notes-auto-save-visited-file-name t))
-
-(defun remember-dwim ()
-  "If the region is active, capture with region, otherwise just capture."
-  (interactive)
-  (if (use-region-p)
-      (let ((current-prefix-arg 4)) (call-interactively 'remember))
-    (remember)))
-
-
-;;; Outline
-
-(elisp-group globalize-outline-minor-mode
-  "outline provides major and minor modes for collapsing sections
-of a buffer into an outline-like format. Let's turn that minor
-mode into a global minor mode and enable it."
-  (define-globalized-minor-mode global-outline-minor-mode
-    outline-minor-mode outline-minor-mode)
-  (global-outline-minor-mode +1))
-
-
 ;;; Org
-
-(defun echo-area-tooltips ()
-  "Show tooltips in the echo area automatically for current buffer."
-  (setq-local help-at-pt-display-when-idle t
-              help-at-pt-timer-delay 0)
-  (help-at-pt-cancel-timer)
-  (help-at-pt-set-timer))
-
-(add-hook 'org-mode-hook #'echo-area-tooltips)
-
-;; Org Agenda pop-up window
 
 (defun oht-org-agenda-exit-delete-window ()
   "Wrapper around org-agenda-exit & delete-window."
@@ -1326,69 +1218,11 @@ buffer, and exiting the agenda and releasing all the buffers."
   (local-set-key (kbd "x") 'oht-org-agenda-exit-delete-window)
   (local-set-key (kbd "q") 'delete-window))
 
-;;; Startup Time Messages
-
-;; Preamble
-
-;; It is useful to know the impact of your init file on Emacs startup time so
-;; you can avoid introducing slowdowns. There are many ways to do it, but this
-;; is very simple and does the trick for me.
-
-(defvar before-user-init-time (current-time)
-  "Value of `current-time' when Emacs begins loading `user-init-file'.")
-
-(message "Loading Emacs, pre-init...done (%.3fs)"
-         (float-time (time-subtract before-user-init-time
-                                    before-init-time)))
-
-(message "Loading %s..." user-init-file)
-
-;; Wrap-up
-
-;; Restore garbage collection to a reasonable value.
-;; This is step 2, step 1 is in early-init.
-;; In my case this saves about .3 seconds in startup time.
-(add-hook 'emacs-startup-hook
-  (lambda ()
-    (setq gc-cons-threshold 16777216 ; 16mb
-          gc-cons-percentage 0.1)))
-
-(message "Loading init file...done (%.3fs)"
-         (float-time (time-subtract (current-time)
-                                    before-user-init-time)))
-
 ;;; Mode Line
 
 ;; Match mode-line border to mode-line background. Huge mode-line anyone?
 (set-face-attribute 'mode-line nil :box `(:line-width 3 :color ,(face-attribute 'mode-line :background)))
 (set-face-attribute 'mode-line-inactive nil :box `(:line-width 3 :color ,(face-attribute 'mode-line-inactive :background)))
-
-(defvar-local hidden-mode-line-mode nil)
-
-(define-minor-mode hidden-mode-line-mode
-  "Minor mode to hide the mode-line in the current buffer."
-  :init-value nil
-  :global t
-  :variable hidden-mode-line-mode
-  :group 'editing-basics
-  (if hidden-mode-line-mode
-      (setq hide-mode-line mode-line-format
-            mode-line-format nil)
-    (setq mode-line-format hide-mode-line
-          hide-mode-line nil))
-  (force-mode-line-update)
-  ;; Apparently force-mode-line-update is not always enough to
-  ;; redisplay the mode-line
-  (redraw-display)
-  (when (and (called-interactively-p 'interactive)
-             hidden-mode-line-mode)
-    (run-with-idle-timer
-     0 nil 'message
-     (concat "Hidden Mode Line Mode enabled.  "
-             "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
-
-(defalias 'hide-mode-line-mode 'hidden-mode-line-mode)
-
 
 ;;; Dired Transients
 
@@ -1659,14 +1493,6 @@ browser defined by `browse-url-generic-program'."
     (define-key map (kbd "d") 'elfeed-ytdl-download))
 
   ) ; End elfeed
-
-
-;;; YTDL
-
-(elpa-package 'ytdl
-  (setq ytdl-download-folder user-downloads-directory)
-  (setq ytdl-media-player "open")
-  (setq ytdl-always-query-default-filename 'yes-confirm))
 
 
 ;;; Secondary Selection

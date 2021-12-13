@@ -1177,6 +1177,37 @@ PROMPT sets the `read-string prompt."
   (custom-set-variables
    '(completion-styles '(orderless))))
 
+(defun switch-to-completions-bottom ()
+  "Switch to the *Completions* buffer, at the bottom."
+  (interactive)
+  (switch-to-completions)
+  (move-to-window-line -1))
+
+(defun completion-quit ()
+  "Close the completion buffer and return to the minibuffer."
+  (interactive)
+  (quit-window)
+  (switch-to-minibuffer))
+
+(defun completion-kill-buffer ()
+  "Close the completion buffer and return to the minibuffer."
+  (interactive)
+  (kill-buffer "*Completions*")
+  (switch-to-minibuffer))
+
+(let ((minibuffer minibuffer-local-completion-map)
+      (list completion-list-mode-map))
+  (define-key minibuffer (kbd "C-n") 'switch-to-completions)
+  (define-key minibuffer (kbd "C-p") 'switch-to-completions-bottom)
+  (define-key list [remap other-window] 'switch-to-minibuffer)
+  (define-key list "z" #'completion-kill-buffer)
+  (define-key list [remap keyboard-quit] #'completion-quit)
+  (define-key list [remap quit-window] #'switch-to-minibuffer)
+  (define-key list (kbd "n") 'next-completion)
+  (define-key list (kbd "p") 'previous-completion))
+
+(add-hook 'completion-list-mode-hook 'hl-line-mode)
+
 
 ;;; Packages
 

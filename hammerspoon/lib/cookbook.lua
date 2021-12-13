@@ -5,19 +5,6 @@ Not all the code here actually works.
 
 ]]
 
--- window hints
-hs.hotkey.bind(hyper, 'i', hs.hints.windowHints)
-
--- window grid
-hs.grid.setGrid('6x4', nil, nil)
-hs.grid.setMargins({0, 0})
-hs.hotkey.bind(hyper, ';', hs.grid.show)
-
--- Quarters
-hs.hotkey.bind(hyper, '1', function() hs.window.focusedWindow():moveToUnit({0, 0, .5, .5}) end)
-hs.hotkey.bind(hyper, '2', function() hs.window.focusedWindow():moveToUnit({.5, 0, 1, .5}) end)
-hs.hotkey.bind(hyper, '3', function() hs.window.focusedWindow():moveToUnit({0, .5, .5, 1}) end)
-hs.hotkey.bind(hyper, '4', function() hs.window.focusedWindow():moveToUnit({.5, .5, 1, 1}) end)
 
 -- App-Specific Bindings
 -- -----------------------------------------------
@@ -29,32 +16,33 @@ end)
 
 -- Excel
 local excelDown = hs.hotkey.new({"ctrl"}, "n", function()
-   hs.eventtap.event.newKeyEvent({}, "down", true):post()
-   hs.eventtap.event.newKeyEvent({}, "down", false):post()
+      hs.eventtap.event.newKeyEvent({}, "down", true):post()
+      hs.eventtap.event.newKeyEvent({}, "down", false):post()
 end)
 local excelUp = hs.hotkey.new({"ctrl"}, "p", function()
-   hs.eventtap.event.newKeyEvent({}, "up", true):post()
-   hs.eventtap.event.newKeyEvent({}, "up", false):post()
+      hs.eventtap.event.newKeyEvent({}, "up", true):post()
+      hs.eventtap.event.newKeyEvent({}, "up", false):post()
 end)
 
 msrdDisable:disable()
 excelDown:disable()
 excelUp:disable()
 
-   if appName == "Microsoft Remote Desktop" then
-      if eventType == hs.application.watcher.activated then
-         msrdDisable:enable()
-      elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
-         msrdDisable:disable()
-      end
-   elseif appName == "Microsoft Excel" then
-      if eventType == hs.application.watcher.activated then
-         excelUp:enable()
-         excelDown:enable()
-      elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
-         excelUp:disable()
-         excelDown:disable()
-      end
+if appName == "Microsoft Remote Desktop" then
+   if eventType == hs.application.watcher.activated then
+      msrdDisable:enable()
+   elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
+      msrdDisable:disable()
+   end
+elseif appName == "Microsoft Excel" then
+   if eventType == hs.application.watcher.activated then
+      excelUp:enable()
+      excelDown:enable()
+   elseif eventType == hs.application.watcher.deactivated or eventType == hs.application.watcher.terminated then
+      excelUp:disable()
+      excelDown:disable()
+   end
+end
 
 
 
@@ -270,46 +258,6 @@ end
 hs.urlevent.bind("ramentime", startRamenTimer)
 
 
--- Toggle dark mode from menu bar
--- ----------------------------------------------
-
-local function systemSetDm(state)
-  return hs.osascript.javascript(
-    string.format(
-      "Application('System Events').appearancePreferences.darkMode.set(%s)",
-      state
-    )
-  )
-end
-
-local function dmIsOn()
-  local _, darkModeState = hs.osascript.javascript(
-    'Application("System Events").appearancePreferences.darkMode()'
-  )
-  return darkModeState
-end
-
-function setDm(state)
-	systemSetDm(state)
-    if state then
-        darkmode:setTitle("☾")
-    else
-        darkmode:setTitle("☀")
-    end
-end
-
-function darkmodeClicked()
-    setDm(not dmIsOn())
-end
-
-darkmode = hs.menubar.new()
-if darkmode then
-    darkmode:setClickCallback(darkmodeClicked)
-    setDm(dmIsOn())
-end
-
-
-
 -- Custom clock in menubar
 -- -----------------------------------------------
 local clockMenu = hs.menubar.new()
@@ -323,55 +271,21 @@ displayClock(clockMenu)
 hs.timer.doEvery(60, function() displayClock(clockMenu) end)
 
 
-
--- BACKUP MENU
+-- Automatic Reload Config
 -- -----------------------------------------------
 
--- This places icons in your menubar that indicate the status of your backups.
--- The icons are updated by your backup script.
--- If the backup is successful the backup script opens 'hammerspoon://backup_success'
--- which when displays an icon in your menubar.
-
--- Create the menubar item
-local backupMenu = hs.menubar.new()
-
--- Define functions for displaying icons, and behavior
-function backup_openLogs()
-   os.execute( "open ~/Library/" )
+function reloadConfig(files)
+   doReload = false
+   for _,file in pairs(files) do
+      if file:sub(-4) == ".lua" then
+	 doReload = true
+      end
+   end
+   if doReload then
+      hs.reload()
+   end
 end
-function backup_running()
-   backupMenu:setTitle("🚂")
-   hs.timer.doAfter(1, backup_success)
-end
-function backup_success()
-   backupMenu:setTitle("🏆")
-   hs.timer.doAfter(1, backup_next)
-end
-function backup_next()
-   local menuTable = {
-      { title = "Backup Now", fn = backup_running },
-      { title = "Open Logs", fn = backup_openLogs },
-   }
-   backupMenu:setTitle("😎")
-   backupMenu:setMenu(menuTable)
-end
-function backup_fail()
-   local menuTable = {
-      { title = "Retry Backup", fn = backup_running },
-      { title = "Open Logs", fn = backup_openLogs },
-   }
-   backupMenu:setTitle("⚠️")
-   backupMenu:setMenu(menuTable)
-end
-
--- Run a function to place an item in the menubar
-backup_next()
-
--- Register URLs and bind them to the above functions
-hs.urlevent.bind("backup_running", backup_running)
-hs.urlevent.bind("backup_success", backup_success)
-hs.urlevent.bind("backup_next", backup_next)
-hs.urlevent.bind("backup_fail", backup_fail)
+configWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
 
 
 -- Click on any menu item

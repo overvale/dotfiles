@@ -204,6 +204,52 @@ end
 hs.hotkey.bind(hyper, "d", toggleDarkMode)
 
 
+-- My Hammerspoon Menubar Item
+-- ----------------------------------------------
+
+-- Name the menubar item
+local myHammerMenu = hs.menubar.new()
+
+-- Build the actual menubar item drop-down
+function myHammerMenuItem()
+   local snippetMenu = {
+      { title = "waving hands around", fn = snipWave },
+      { title = " ¯\\_(ツ)_/¯", fn = snipShrug },
+      { title = "[Org Mode Date]", fn = snipOrgDate },
+      { title = "[YYYY-MM-DD]", fn = snipISODate },
+   }
+   local menuTable = {
+      { title = "Dark/Light Mode", fn = toggleDarkMode },
+      { title = "Snippets", menu = snippetMenu },
+      { title = "-" },
+      { title = "Copy Mail Message URL", fn = copyMailURL},
+      { title = "New Mail Message", fn = newMailMessage },
+      { title = "-" },
+      { title = "Available Tools:", disabled = true },
+      { title = "Any Complete", disabled = true },
+      { title = "Snap Window", disabled = true  },
+      { title = "Resize Window", disabled = true  },
+      { title = "App Launcher", disabled = true  },
+
+   }
+   myHammerMenu:setMenu(menuTable)
+end
+
+function copyMailURL() os.execute( "~/home/dot/bin/getMailURL | pbcopy | open hammerspoon://success" ) end
+function newMailMessage() os.execute("open mailto:") end
+
+hs.hotkey.bind(hyper, "m", newMailMessage)
+
+function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end
+function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
+function snipOrgDate() hs.eventtap.keyStrokes(os.date("<%Y-%m-%d %a>")) end
+function snipISODate() hs.eventtap.keyStrokes(os.date("%Y-%m-%d")) end
+
+-- Add the menubar item to the menubar
+myHammerMenuItem()
+
+-- What do you want the menubar item to display?
+myHammerMenu:setTitle("H")
 
 
 -- Reload Notification

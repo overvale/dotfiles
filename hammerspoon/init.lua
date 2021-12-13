@@ -176,6 +176,32 @@ for key, app in pairs(applicationHotkeys) do
 end
 
 
+-- Toggle Dark Mode
+-- ----------------------------------------------
+
+function darkModeStatus()
+  local _, darkModeState = hs.osascript.javascript(
+    'Application("System Events").appearancePreferences.darkMode()'
+  )
+  return darkModeState
+end
+
+function setDarkMode(state)
+  return hs.osascript.javascript(
+    string.format(
+      "Application('System Events').appearancePreferences.darkMode.set(%s)", state
+    ))
+end
+
+function toggleDarkMode()
+   if darkModeStatus() then
+      setDarkMode(false)
+   else
+      setDarkMode(true)
+   end
+end
+
+hs.hotkey.bind(hyper, "d", toggleDarkMode)
 
 
 

@@ -36,11 +36,12 @@ hs.urlevent.bind("success", genericSuccess)
 local anycomplete = require "anycomplete"
 anycomplete.registerDefaultBindings()
 
--- require('quick_menu')
 
-if (hostname == "shadowfax") then
-   require('backup_menu')
-end
+-- This is a custom spoon I make that interacts with the command-line backup
+-- tool 'restic' and some launchd scripts I run on my Mac. It's really great,
+-- but not public at the moment. Maybe one day I'll package it up so people
+-- can see it.
+require('backup_menu')
 
 
 -- Window Control

@@ -1339,6 +1339,18 @@ PROMPT sets the `read-string prompt."
 (prog1 "ibuffer"
   (setq ibuffer-display-summary nil))
 
+(prog1 "remember"
+  (custom-set-variables
+   '(remember-data-file (concat org-directory "remember-notes"))
+   '(remember-notes-initial-major-mode 'fundamental-mode)
+   '(remember-notes-auto-save-visited-file-name t))
+  (defun remember-dwim ()
+    "If the region is active, capture with region, otherwise just capture."
+    (interactive)
+    (if (use-region-p)
+        (let ((current-prefix-arg 4)) (call-interactively 'remember))
+      (remember))))
+
 
 ;;; Org
 

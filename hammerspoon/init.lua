@@ -94,6 +94,15 @@ hs.hotkey.bind(hyper, 'l', function() hs.window.focusedWindow():moveToUnit({2/3,
 
 -- Full Screen
 hs.hotkey.bind(hyper, 'f', function() hs.window.focusedWindow():moveToUnit({0, 0, 1, 1}) end)
+hs.hotkey.bind(hyper, 'up', function() hs.window.focusedWindow():moveToUnit({0, 0, 1, 1}) end)
+
+-- window hints
+hs.hotkey.bind(hyper, 'i', hs.hints.windowHints)
+
+-- window grid
+hs.grid.setGrid('8x4', nil, nil)
+hs.grid.setMargins({0, 0})
+hs.hotkey.bind(hyper, ';', hs.grid.show)
 
 
 -- Resize/Move Windows with Mouse
@@ -166,18 +175,15 @@ flags_event:start()
 
 local applicationHotkeys = {
    m = 'Mail',
-   n = 'NetNewsWire',
    c = 'Calendar',
    e = 'Emacs',
    s = 'Safari',
    a = 'Music',
-   o = 'Tot',
-   b = 'BBEdit',
    t = 'Terminal',
 }
 
 for key, app in pairs(applicationHotkeys) do
-   hs.hotkey.bind({'ctrl', 'cmd'}, key, function()
+   hs.hotkey.bind(omega, key, function()
 	 hs.application.launchOrFocus(app)
    end)
 end

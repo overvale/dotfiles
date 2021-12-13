@@ -21,21 +21,29 @@ local omega = {"ctrl", "cmd"}
 local hyper = {"ctrl", "alt", "cmd"}
 local super = {"ctrl", "alt", "cmd", "shift"}
 
-
 -- Capture the hostname, so we can make this config behave differently across my Macs
 hostname = hs.host.localizedName()
 
 function genericSuccess()
+   -- Function for creating a notification saying "Success!"
+   -- This is useful when testing new Hammerspoon stuff.
    hs.notify.new({title='Hammerspoon', informativeText='Success!'}):send()
 end
+
+-- With the below you can run `open hammerspoon:///success` in your terminal
+-- and you'll run the 'genericSuccess' function.
 hs.urlevent.bind("success", genericSuccess)
+
 
 -- Spoons
 -- -----------------------------------------------
 
+-- Anycomplete lets you insert text by using use Google search's autocomplete.
+-- So incredibly handy for words you don't know how to spell.
 local anycomplete = require "anycomplete"
-anycomplete.registerDefaultBindings()
 
+-- The default binding for anycomplete is hyper-g
+anycomplete.registerDefaultBindings()
 
 -- This is a custom spoon I make that interacts with the command-line backup
 -- tool 'restic' and some launchd scripts I run on my Mac. It's really great,
@@ -46,15 +54,13 @@ require('backup_menu')
 
 -- Window Control
 -- -----------------------------------------------
--- All these shortcuts use the hyper key
 
+-- Reposition the current window to the left, right, top, or bottom of screen.
 function snap_window(dir)
    local thiswindow = hs.window.frontmostWindow()
    local loc = thiswindow:frame()
-   
    local thisscreen = thiswindow:screen()
    local screenrect = thisscreen:frame()
-   
    if dir == 'left' then
       loc.x = 0
    elseif dir == 'right' then
@@ -76,17 +82,17 @@ hs.hotkey.bind(hyper, "=", function() hs.window.focusedWindow():centerOnScreen()
 hs.hotkey.bind(super, "[",  function() hs.window.focusedWindow():moveOneScreenWest(noResize, ensureInScreenBounds) end)
 hs.hotkey.bind(super, "]",  function() hs.window.focusedWindow():moveOneScreenEast(noResize, ensureInScreenBounds)  end)
 
--- Resize and Move Windows
--- ------------------------------------------------
--- LEFT, TOP, RIGHT, BOTTOM
--- Halves
+-- Half Screen
 hs.hotkey.bind(hyper, 'left',   function() hs.window.focusedWindow():moveToUnit({0, 0, 1/2, 1}) end)
 hs.hotkey.bind(hyper, 'right',  function() hs.window.focusedWindow():moveToUnit({1/2, 0, 1/2, 1}) end)
--- Thirds
+
+-- Thirds of Screen
 hs.hotkey.bind(hyper, 'h', function() hs.window.focusedWindow():moveToUnit({0, 0, 1/3, 1}) end)
 hs.hotkey.bind(hyper, 'j', function() hs.window.focusedWindow():moveToUnit({0, 0, 2/3, 1}) end)
 hs.hotkey.bind(hyper, 'k', function() hs.window.focusedWindow():moveToUnit({1/3, 0, 2/3, 1}) end)
 hs.hotkey.bind(hyper, 'l', function() hs.window.focusedWindow():moveToUnit({2/3, 0, 1/3, 1}) end)
+
+-- Full Screen
 hs.hotkey.bind(hyper, 'f', function() hs.window.focusedWindow():moveToUnit({0, 0, 1, 1}) end)
 
 
@@ -263,5 +269,5 @@ hs.notify.new({title='Hammerspoon', informativeText='🤘 Ready to Rock! 🤘'})
 hs.hotkey.bind(omega, 'r', hs.reload)
 
 
--- END --
+-- END HAMMERSPOON CONFIG --
 

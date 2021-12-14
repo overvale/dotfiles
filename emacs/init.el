@@ -868,6 +868,10 @@ If SPACING is nil, set line-spacing to nil."
     (define-key map (kbd "+") 'buffer-line-spacing-increase)
     (define-key map (kbd "-") 'buffer-line-spacing-decrease)
     (define-key map (kbd "0") 'set-buffer-line-spacing)
+    (define-key map (kbd "C-=") 'buffer-line-spacing-increase)
+    (define-key map (kbd "C-+") 'buffer-line-spacing-increase)
+    (define-key map (kbd "C--") 'buffer-line-spacing-decrease)
+    (define-key map (kbd "C-0") 'set-buffer-line-spacing)
     map)
   "Keymap to repeat buffer line-spacing commands. Used in `repeat-mode'.")
 (put 'buffer-line-spacing-increase 'repeat-map 'line-spacing-repeat-map)
@@ -915,7 +919,7 @@ modified.) It is shown in the same color as the buffer name, i.e.
 `mode-line-buffer-id'."
    (if (and (buffer-modified-p)
             (buffer-file-name))
-       "  ●"))
+       "  -MD-"))
 
 (defun radian-mode-line-buffer-read-only-status ()
   "Return a mode-line construct indicating buffer read-only status."
@@ -927,6 +931,11 @@ modified.) It is shown in the same color as the buffer name, i.e.
   (if (and buffer-confirm-kill
            (buffer-modified-p))
       "  -CK-"))
+
+(defun radian-mode-line-buffer-line-spacing-status ()
+  "Return a mode-line-construct indicating the buffer's `line-spacing' value."
+  (if line-spacing
+      (concat "  LS+" (number-to-string line-spacing))))
 
 ;; Normally the buffer name is right-padded with whitespace until it
 ;; is at least 12 characters. This is a waste of space, so we
@@ -956,7 +965,10 @@ spaces."
     ;; Show the row and column of point.
     "   " mode-line-position
     ;; Show the active major and minor modes.
-    "   " mode-line-modes)
+    "   " mode-line-modes
+    ;; Show buffer's line-spacing value.
+    (:eval (radian-mode-line-buffer-line-spacing-status))
+    )
   "Composite mode line construct to be shown left-aligned."
   :type 'sexp)
 

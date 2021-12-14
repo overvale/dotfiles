@@ -820,6 +820,49 @@ It should probably be a mode instead."
 (set-custom-fonts "IBM")
 
 
+;;; Buffer Line-Spacing
+
+;; In a manner similar to `text-scale-adjust'.
+
+(defun set-buffer-line-spacing (&optional spacing)
+  "Set the buffer's line-spacing to SPACING.
+If SPACING is nil, set line-spacing to nil."
+  (interactive "P")
+  (setq-local line-spacing (if (integerp spacing)
+                               spacing
+                             nil)))
+
+(defun buffer-line-spacing-increase ()
+  "Increase the buffer's line-spacing by 1."
+  (interactive)
+  (setq-local line-spacing (+ (or line-spacing 0) 1)))
+
+(defun buffer-line-spacing-decrease ()
+  "Decrease the buffer's line-spacing by 1."
+  (interactive)
+  (if (or (null line-spacing)
+          (<= line-spacing 0))
+      (message "Line-spacing is nil")
+    (setq-local line-spacing (- line-spacing 1))))
+
+(define-key global-map (kbd "C-c C-=") 'buffer-line-spacing-increase)
+(define-key global-map (kbd "C-c C-+") 'buffer-line-spacing-increase)
+(define-key global-map (kbd "C-c C--") 'buffer-line-spacing-decrease)
+(define-key global-map (kbd "C-c C-0") 'set-buffer-line-spacing)
+
+(defvar line-spacing-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "=") 'buffer-line-spacing-increase)
+    (define-key map (kbd "+") 'buffer-line-spacing-increase)
+    (define-key map (kbd "-") 'buffer-line-spacing-decrease)
+    (define-key map (kbd "0") 'set-buffer-line-spacing)
+    map)
+  "Keymap to repeat buffer line-spacing commands. Used in `repeat-mode'.")
+(put 'buffer-line-spacing-increase 'repeat-map 'line-spacing-repeat-map)
+(put 'buffer-line-spacing-decrease 'repeat-map 'line-spacing-repeat-map)
+(put 'set-buffer-line-spacing 'repeat-map 'line-spacing-repeat-map)
+
+
 ;;; Mode-Line
 
 ;;;; Display Battery/Time in mode-line

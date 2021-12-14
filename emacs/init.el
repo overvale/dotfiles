@@ -647,7 +647,7 @@ Disables all current themes, then:
    '(modus-themes-syntax '(yellow-comments green-strings))
    '(modus-themes-links '(neutral-underline))
    '(modus-themes-region '(bg-only))
-   '(modus-themes-mode-line '(accented 3d))
+   '(modus-themes-mode-line '(3d))
    '(modus-themes-mode-line-padding 2)
    '(modus-themes-vivendi-color-overrides '((fg-main . "#d5d5d5")))
    '(modus-themes-org-blocks '(tinted-background))
@@ -655,7 +655,12 @@ Disables all current themes, then:
                                (header-date . (bold-today))
                                (scheduled . rainbow))))
   (modus-themes-load-themes)
-  (load-system-color-theme))
+  (load-system-color-theme)
+  (setq-default cursor-type '(bar . 3)
+                cursor-in-non-selected-windows 'hollow
+                blink-cursor-blinks 10
+                blink-cursor-interval 0.5
+                blink-cursor-delay 0.2))
 
 
 ;;; Fonts
@@ -801,6 +806,13 @@ It should probably be a mode instead."
                  :mono-height 120
                  :mode-height 140
                  :vari-height 130))
+        (iAWriter . ( :mono "IBM Plex Mono"
+                      :vari "iA Writer Duospace"
+                      :mode "IBM Plex Sans"
+                      :line nil
+                      :mono-height 120
+                      :mode-height 130
+                      :vari-height 120))
         (Go . ( :mono "Go Mono"
                 :vari "Go"
                 :mode "Go"

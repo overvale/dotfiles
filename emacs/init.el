@@ -644,13 +644,27 @@ Disables all current themes, then:
   (custom-set-variables
    '(modus-themes-mixed-fonts t)
    '(modus-themes-italic-constructs t)
-   '(modus-themes-syntax '(yellow-comments green-strings))
+   '(modus-themes-bold-constructs t)
+   '(modus-themes-region nil)
+   '(modus-themes-syntax '(yellow-comments))
    '(modus-themes-links '(neutral-underline))
-   '(modus-themes-region '(bg-only))
-   '(modus-themes-mode-line '(3d))
-   '(modus-themes-mode-line-padding 2)
-   '(modus-themes-vivendi-color-overrides '((fg-main . "#d5d5d5")))
-   '(modus-themes-org-blocks '(tinted-background))
+   '(modus-themes-mode-line '(accented borderless))
+   ;; These colors are inspired by:
+   ;; https://github.com/rakr/vim-two-firewatch
+   ;; https://simurai.com/projects/2016/01/01/duotone-themes
+   '(modus-themes-operandi-color-overrides '((fg-main . "#2a200a")
+                                             (bg-main . "#faf8f5")
+                                            ;; bg-inactive and bg-hl-line
+                                            ;; should be the same value
+                                             (bg-inactive . "#e6e4e1")
+                                             (bg-hl-line . "#e6e4e1")))
+   '(modus-themes-vivendi-color-overrides '((fg-main . "#fdf3ec")
+                                            (bg-main . "#24242d")
+                                            ;; bg-inactive and bg-hl-line
+                                            ;; should be the same value
+                                            (bg-inactive . "#2f2f3b")
+                                            (bg-hl-line . "#2f2f3b")
+                                            (bg-)))
    '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
                                (header-date . (bold-today))
                                (scheduled . rainbow))))
@@ -659,8 +673,10 @@ Disables all current themes, then:
   (setq-default cursor-type '(bar . 3)
                 cursor-in-non-selected-windows 'hollow
                 blink-cursor-blinks 10
-                blink-cursor-interval 0.5
-                blink-cursor-delay 0.2))
+                blink-cursor-interval 0.35
+                blink-cursor-delay 0.5))
+
+
 
 
 ;;; Fonts
@@ -806,7 +822,7 @@ It should probably be a mode instead."
                  :mono-height 120
                  :mode-height 140
                  :vari-height 130))
-        (iAWriter . ( :mono "IBM Plex Mono"
+        (iAWriter . ( :mono "iA Writer Duospace"
                       :vari "iA Writer Duospace"
                       :mode "IBM Plex Sans"
                       :line nil
@@ -822,14 +838,21 @@ It should probably be a mode instead."
                 :vari-height 130))
         (Pragmata . ( :mono "PragmataPro"
                       :vari "Fira Sans"
-                      :mode "PragmataPro"
-                      :line 1
+                      :mode "SF Compact Text"
+                      :line nil
+                      :mono-height 130
+                      :mode-height 140
+                      :vari-height 140))
+        (Cascadia . ( :mono "Cascadia Code"
+                      :vari "Fira Sans"
+                      :mode "Fira Sans"
+                      :line nil
                       :mono-height 120
-                      :mode-height 120
-                      :vari-height 130))))
+                      :vari-height 130
+                      :mode-height 130))))
 
 ;; On startup, use this set of fonts:
-(set-custom-fonts "IBM")
+(set-custom-fonts "Pragmata")
 
 
 ;;; Buffer Line-Spacing
@@ -1437,6 +1460,9 @@ PROMPT sets the `read-string prompt."
 (prog1 "ibuffer"
   (setq ibuffer-display-summary nil))
 
+(prog1 "bs"
+  (add-hook 'bs-mode-hook 'hl-line-mode))
+
 (prog1 "remember"
   (custom-set-variables
    '(remember-data-file (concat org-directory "remember-notes"))
@@ -1655,6 +1681,7 @@ current HH:MM time."
     ("o w" "Other Window Prefix..." other-window-prefix)
     ("," "Find Init" find-user-init-file)
     ("a" "AutoFill" auto-fill-mode)
+    ("h" "Line Highlight" hl-line-mode)
     ("j" "Dired Jump" dired-jump)
     ("l" "List Buffers" bs-show)
     ("k" "Kill Buffer" kill-buffer-dwim)

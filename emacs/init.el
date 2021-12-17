@@ -636,7 +636,6 @@ Disables all current themes, then:
   (custom-set-variables
    '(modus-themes-mixed-fonts t)
    '(modus-themes-italic-constructs t)
-   '(modus-themes-bold-constructs t)
    '(modus-themes-region nil)
    '(modus-themes-syntax '(yellow-comments))
    '(modus-themes-links '(neutral-underline))
@@ -644,16 +643,18 @@ Disables all current themes, then:
    ;; These colors are inspired by:
    ;; https://github.com/rakr/vim-two-firewatch
    ;; https://simurai.com/projects/2016/01/01/duotone-themes
-   '(modus-themes-operandi-color-overrides '((fg-main . "#2a200a")
+   '(modus-themes-operandi-color-overrides '((fg-main . "#000000")
                                              (bg-main . "#faf8f5")
-                                            ;; bg-inactive and bg-hl-line
-                                            ;; should be the same value
+                                             ;; bg-inactive and bg-hl-line
+                                             ;; should be the same value
+                                             (bg-region . "#efdfff")
                                              (bg-inactive . "#e6e4e1")
                                              (bg-hl-line . "#e6e4e1")))
    '(modus-themes-vivendi-color-overrides '((fg-main . "#fdf3ec")
                                             (bg-main . "#24242d")
                                             ;; bg-inactive and bg-hl-line
                                             ;; should be the same value
+                                            (bg-region . "#4f3d88")
                                             (bg-inactive . "#2f2f3b")
                                             (bg-hl-line . "#2f2f3b")
                                             (bg-)))
@@ -828,7 +829,7 @@ It should probably be a mode instead."
                       :mode "IBM Plex Sans"
                       :line nil
                       :mono-height 120
-                      :mode-height 130
+                      :mode-height 120
                       :vari-height 120))
         (Go . ( :mono "Go Mono"
                 :vari "Go"
@@ -1398,7 +1399,7 @@ PROMPT sets the `read-string prompt."
 
 (elpa-package 'olivetti
   (custom-set-variables
-   '(olivetti-body-width 100)))
+   '(olivetti-body-width 72)))
 
 (local-package "oblique-strategies"
   (autoload 'oblique-strategy "oblique")

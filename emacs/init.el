@@ -166,6 +166,24 @@
                         package-path
                         "\'... skipping config.")))))
 
+;; The key binding technique below is taken from the bind-key package. It
+;; places all the bindings I don't want overridden into a minor mode which is
+;; inserted into the `emulation-mode-map-alists', so only very few things can
+;; override them.
+
+(defvar bosskey-mode-map (make-sparse-keymap))
+
+(define-minor-mode bosskey-mode
+  "Minor mode for my personal keybindings, which override others.
+The only purpose of this minor mode is to override global keybindings.
+Keybindings you define here will take precedence."
+  :init-value t
+  :global t
+  :keymap bosskey-mode-map)
+
+(add-to-list 'emulation-mode-map-alists
+             `((bosskey-mode . ,bosskey-mode-map)))
+
 (prog1 "environment"
   ;; Important paths for this setup to work.
   (setq-default default-directory "~/home/")
@@ -394,30 +412,6 @@ This will save the buffer if it is not currently saved."
 
 ;;; Bindings
 
-;;;; Bosskey Mode
-
-;; The technique below is taken from the bind-key package. It places all the
-;; bindings I don't want overridden into a minor mode which is inserted into
-;; the `emulation-mode-map-alists', so only very few things can override them.
-
-(defvar bosskey-mode-map (make-sparse-keymap))
-
-(define-minor-mode bosskey-mode
-  "Minor mode for my personal keybindings, which override others.
-The only purpose of this minor mode is to override global keybindings.
-Keybindings you define here will take precedence."
-  :init-value t
-  :global t
-  :keymap bosskey-mode-map)
-
-(add-to-list 'emulation-mode-map-alists
-             `((bosskey-mode . ,bosskey-mode-map)))
-
-
-;;;; Emacsen Improvements
-
-;; These bindings are basically replacements or improvements on Emacs's
-;; default bindings. No, nothing fancy, just some improvements.
 
 ;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))

@@ -186,11 +186,12 @@ Keybindings you define here will take precedence."
 
 (prog1 "environment"
   ;; Important paths for this setup to work.
-  (setq-default default-directory "~/home/")
-  (setq org-directory "~/home/org/")
+  (defvar user-home-dir "~/home/")
   (defvar user-downloads-directory "~/Desktop/")
-  (setq local-package-dir "~/home/src/lisp/")
-  (add-to-list 'load-path "~/home/dot/emacs/lisp/"))
+  (defvar local-package-dir (concat user-home-dir "src/lisp/"))
+  (setq-default default-directory user-home-dir)
+  (setq org-directory (concat user-home-dir "org/"))
+  (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/")))
 
 (prog1 "transient"
   ;; I use a lot of transients in this config, so I need to make sure it is

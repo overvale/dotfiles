@@ -1784,4 +1784,50 @@ current HH:MM time."
       ("]" "Backward Node" Info-forward-node)]]))
 
 
+;;; Quick Help
+
+(defmacro quick-help (name buffer text)
+  "Macro for creating callable functions that display help.
+Where NAME is name of function, BUFFER is name of buffer, and TEXT is displayed."
+  (declare (indent defun))
+  `(progn
+     (defun ,name nil
+       ,buffer
+       (interactive)
+       (let ((qh-buff (concat "*Quick Help: " ,buffer "*"))
+             (qh-text ,text))
+         (get-buffer-create qh-buff)
+         (with-current-buffer qh-buff
+           (insert qh-text)
+           (goto-char (point-min))
+           (not-modified)
+           (read-only-mode)
+           (local-set-key (kbd "C-g") (lambda () (interactive) (other-window -1)))
+           (local-set-key (kbd "q") 'kill-buffer-and-window))
+         (pop-to-buffer qh-buff '((display-buffer-below-selected)
+                                  (window-parameters . ((no-other-window . nil)))
+                                  (window-height . fit-window-to-buffer)))
+         (message "C-g - Previous Window, q - Remove Window")))))
+
+(quick-help qh--wheather
+  "Weather Whether Wether"
+  "The climate is made up of \"WEATHER\";
+WHETHER it is nice out depends on whether it is raining or not.
+A WETHER is just a castrated sheep.")
+
+(quick-help qh--lying
+  "Lying"
+  "\
+Lie (recline)   lay   lain  lying
+Lay (put down)  laid  laid  laying
+Lie (false)     lied  lied  lying   lies")
+
+(define-prefix-command 'quick-help-prompt nil "Quick Help")
+
+(let ((map quick-help-prompt))
+  (define-key map "w" '("Weather" . qh--wheather))
+  (define-key map "l" '("Lay" . qh--lying)))
+
+(global-set-key (kbd "C-c h") 'quick-help-prompt)
+
 ;;; End of init.el

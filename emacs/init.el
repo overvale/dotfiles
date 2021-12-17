@@ -758,14 +758,14 @@ fixed-pitch and default face heights."
 (add-hook 'buffer-face-mode-hook (lambda () (variable-pitch-adjust-mode 'toggle)))
 
 (defvar-local buffer-remap-faces-default-cookie nil
-  "Cookie used for `buffer-remap-faces'.")
+  "Cookie used for `buffer-remap-faces--set'.")
 (defvar-local buffer-remap-faces-fixed-pitch-cookie nil
-  "Cookie used for `buffer-remap-faces'.")
+  "Cookie used for `buffer-remap-faces--set'.")
 (defvar-local buffer-remap-faces-variable-pitch-cookie nil
-  "Cookie used for `buffer-remap-faces'.")
+  "Cookie used for `buffer-remap-faces--set'.")
 
 (defun buffer-remap-faces--clear nil
-  "In the current buffer, remove all buffer-remap-faces cookies."
+  "In the current buffer, remove all buffer-remap-faces--set cookies."
   (interactive)
   (face-remap-remove-relative buffer-remap-faces-default-cookie)
   (face-remap-remove-relative buffer-remap-faces-fixed-pitch-cookie)
@@ -775,7 +775,7 @@ fixed-pitch and default face heights."
   (setq-local buffer-remap-faces-variable-pitch-cookie nil)
   (force-window-update (current-buffer)))
 
-(defun buffer-remap-faces (font-settings)
+(defun buffer-remap-faces--set (font-settings)
   "Prompt user and set fonts for the current buffer according to selection from `custom-fonts-alist'.
 It should probably be a mode instead."
   (interactive
@@ -799,6 +799,15 @@ It should probably be a mode instead."
                 (face-remap-add-relative 'variable-pitch
                                          :family vari))
     (force-window-update (current-buffer))))
+
+(define-minor-mode buffer-remap-faces
+  "Minor mode to set buffer-local fonts."
+  :lighter " BufferFaces"
+  :init-value nil
+  :global nil
+  (if buffer-remap-faces
+      (call-interactively 'buffer-remap-faces--set)
+    (buffer-remap-faces--clear)))
 
 ;; This makes it so text-scale adjustments operate exactly one point size at a
 ;; time. The original value is 1.2, which jumps point-sizes when stepping

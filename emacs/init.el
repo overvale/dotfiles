@@ -412,12 +412,10 @@ This will save the buffer if it is not currently saved."
 
 ;;; Bindings
 
-
-;; https://www.reddit.com/r/emacs/comments/67rlfr/esc_vs_cg/dgsozkc/
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
-;; Because they're in `bosskey-mode-map' these bindings will never be
-;; overridden by minor modes.
+;; Because they're in the `bosskey-mode-map' these bindings won't be
+;; overridden by minor modes and the like.
 (let ((map bosskey-mode-map))
   (define-key map (kbd "C-x C-f") 'find-file)
   (define-key map (kbd "C-x f")   'find-file-other-window)
@@ -482,7 +480,7 @@ This will save the buffer if it is not currently saved."
 (define-key global-map (kbd "C-S-SPC") 'set-mark-transient)
 
 
-;;;; Repeat Mode
+;; Repeat Mode
 
 (repeat-mode 1)
 
@@ -505,7 +503,7 @@ This will save the buffer if it is not currently saved."
 (put 'winner-redo 'repeat-map 'winner-mode-repeat-map)
 
 
-;;;; Package Operations
+;; Package Operations
 
 (define-prefix-command 'pkg-ops-map nil "Packages")
 
@@ -521,7 +519,7 @@ This will save the buffer if it is not currently saved."
 (global-set-key (kbd "C-c p") 'pkg-ops-map)
 
 
-;;;; MacOS
+;; MacOS-like bindings
 
 (setq mac-command-modifier 'super
       mac-option-modifier 'meta)
@@ -1269,6 +1267,9 @@ PROMPT sets the `read-string prompt."
   (require 'orderless)
   (custom-set-variables
    '(completion-styles '(orderless))))
+
+;; The below code introduces some improvements to the default completion
+;; experience. I took these ideas from the emacs-devel mailing list.
 
 (defun switch-to-completions-bottom ()
   "Switch to the *Completions* buffer, at the bottom."

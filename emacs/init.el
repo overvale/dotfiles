@@ -907,8 +907,6 @@ If SPACING is nil, set line-spacing to nil."
 
 ;;; Mode-Line
 
-;;;; Display Battery/Time in mode-line
-
 (setq display-time-default-load-average nil)
 (setq display-time-format "  [%F]  %R")
 (setq battery-mode-line-format "  %b%p%%")
@@ -929,39 +927,37 @@ If SPACING is nil, set line-spacing to nil."
       (display-time-mode -1)
       (display-battery-mode -1))))
 
+(define-minor-mode buffer-position
+  "Minor mode to display position of point in mode-line."
+  :init-value nil
+  :global nil)
 
-;;;; Radian Mode line
-
-;; The following code is a modified version of the code found here:
-;; https://github.com/raxod502/radian/blob/a8bb096c80d2daf34d380331fb23fa338ac1bb17/emacs/radian.el#L5168
-;; It customizes the mode line to something like:
-;; [*] radian.el   18% (18,0)     [radian:develop*]  (Emacs-Lisp)
-
-(defun radian-mode-line-buffer-modified-status ()
-  "Return a mode line construct indicating buffer modification status.
-This is [*] if the buffer has been modified and whitespace
-otherwise. (Non-file-visiting buffers are never considered to be
-modified.) It is shown in the same color as the buffer name, i.e.
-`mode-line-buffer-id'."
+(defun mode-line-buffer-modified-status ()
+  "Return a string indicating buffer modification status."
    (if (and (buffer-modified-p)
             (buffer-file-name))
-       "  -MD-"))
+       (propertize "  -MD-"
+                   'help-echo "Buffer is modified.")))
 
-(defun radian-mode-line-buffer-read-only-status ()
-  "Return a mode-line construct indicating buffer read-only status."
+(defun mode-line-buffer-read-only-status ()
+  "Return a string indicating buffer read-only status."
   (if buffer-read-only
-      "  -RO-"))
+      (propertize "  -RO-"
+                  'help-echo "Buffer is read-only!")))
 
-(defun radian-mode-line-buffer-confirm-kill-status ()
-  "Return a mode-line construct indicating `buffer-confirm-kill' status."
+(defun mode-line-buffer-confirm-kill-status ()
+  "Return a string indicating `buffer-confirm-kill' status."
   (if (and buffer-confirm-kill
            (buffer-modified-p))
-      "  -CK-"))
+      (propertize "  -CK-"
+                  'help-echo "You must confirm killing this buffer.")))
 
-(defun radian-mode-line-buffer-line-spacing-status ()
-  "Return a mode-line-construct indicating the buffer's `line-spacing' value."
+(defun mode-line-buffer-line-spacing-status ()
+  "Return a string indicating the buffer's `line-spacing' value."
   (if line-spacing
-      (concat "  LS+" (number-to-string line-spacing))))
+      (propertize
+       (concat "  LS+" (number-to-string line-spacing))
+       'help-echo "Buffer's line-spacing has been modified.")))
 
 ;; Normally the buffer name is right-padded with whitespace until it
 ;; is at least 12 characters. This is a waste of space, so we
@@ -970,47 +966,28 @@ modified.) It is shown in the same color as the buffer name, i.e.
 (setq-default mode-line-buffer-identification
               (propertized-buffer-identification "%b"))
 
-;; https://emacs.stackexchange.com/a/7542/12534
-(defun radian--mode-line-align (left right)
-  "Render a left/right aligned string for the mode line.
-LEFT and RIGHT are strings, and the return value is a string that
-displays them left- and right-aligned respectively, separated by
-spaces."
-  (let ((width (- (window-total-width) (length left))))
-    (format (format "%%s%%%ds" width) left right)))
+(defun mode-line-fill (reserve)
+  ;; https://emacs.stackexchange.com/a/45788/31142
+  "Return empty space using FACE and leaving RESERVE space on the right."
+  (when
+    (and window-system (eq 'right (get-scroll-bar-mode)))
+    (setq reserve (- reserve 3)))
+  (propertize " "
+    'display
+    `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))))
 
-(defcustom radian-mode-line-left
-  '(;; Show indicator if the buffer is modified.
-    (:eval (radian-mode-line-buffer-modified-status))
-    ;; Show the name of the current buffer.
-    "   " mode-line-buffer-identification
-    ;; Show indicator if buffer is protected by `buffer-confirm-kill'.
-    (:eval (radian-mode-line-buffer-confirm-kill-status))
-    ;; Show indicator if buffer is read-only.
-    (:eval (radian-mode-line-buffer-read-only-status))
-    ;; Show the row and column of point.
-    "   " mode-line-position
-    ;; Show the active major and minor modes.
-    "   " mode-line-modes
-    ;; Show buffer's line-spacing value.
-    (:eval (radian-mode-line-buffer-line-spacing-status))
-    )
-  "Composite mode line construct to be shown left-aligned."
-  :type 'sexp)
-
-(defcustom radian-mode-line-right mode-line-misc-info
-    "Composite mode line construct to be shown right-aligned."
-    :type 'sexp)
-
-;; Actually reset the mode line format to show all the things we just
-;; defined.
 (setq-default mode-line-format
-              '(:eval (replace-regexp-in-string
-                       "%" "%%"
-                       (radian--mode-line-align
-                        (format-mode-line radian-mode-line-left)
-                        (format-mode-line radian-mode-line-right))
-                       'fixedcase 'literal)))
+              '((:eval (mode-line-buffer-modified-status))
+                "   " mode-line-buffer-identification
+                (:eval (mode-line-buffer-read-only-status))
+                (:eval (mode-line-buffer-confirm-kill-status))
+                "   " mode-line-modes
+                (:eval (mode-line-buffer-line-spacing-status))
+                " " (vc-mode vc-mode)
+                mode-line-misc-info
+                ;; right align
+                (:eval (mode-line-fill (if column-number-mode 15 11)))
+                (:eval (if (eq buffer-position t) mode-line-position " "))))
 
 
 ;;; Windows

@@ -525,6 +525,7 @@ This will save the buffer if it is not currently saved."
 (setq mac-command-modifier 'super
       mac-option-modifier 'meta)
 
+;; The Minimum set
 (let ((map global-map))
   (define-key map (kbd "s-z") 'undo-only)
   (define-key map (kbd "s-Z") 'undo-redo)
@@ -536,6 +537,13 @@ This will save the buffer if it is not currently saved."
   (define-key map (kbd "s-m") 'iconify-frame)
   (define-key map (kbd "s-,") 'find-user-init-file)
   (define-key map (kbd "s-q") 'save-buffers-kill-emacs))
+
+;; Making things easier
+(let ((map global-map))
+  (define-key map (kbd "s-b") 'consult-buffer)
+  (define-key map (kbd "s-f") 'consult-line)
+  (define-key map (kbd "s-o") 'find-file)
+  (define-key map (kbd "s-w") 'window-transient))
 
 
 ;;; Themes

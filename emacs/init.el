@@ -68,6 +68,7 @@
         delight
         embark
         embark-consult
+        expand-region
         exec-path-from-shell
         fountain-mode
         hide-mode-line
@@ -1392,6 +1393,9 @@ PROMPT sets the `read-string prompt."
   (setq initial-scratch-message (concat
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
+
+(elpa-package 'expand-region
+  (global-set-key (kbd "C-=") 'er/expand-region))
 
 
 ;;; Libraries

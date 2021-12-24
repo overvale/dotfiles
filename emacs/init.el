@@ -82,6 +82,7 @@
         org
         paren-face
         vertico
+        visible-mark
         visual-regexp
         visual-regexp-steroids))
 
@@ -123,10 +124,6 @@
  '(kill-do-not-save-duplicates t)
  '(kill-ring-max 512)
  '(sentence-end-double-space nil)
- '(set-mark-command-repeat-pop t)
- '(mark-even-if-inactive nil)
- '(delete-selection-mode t)
- '(mark-ring-max 512)
  '(tab-width 4)
  '(indent-tabs-mode nil)
  '(fill-column 78)
@@ -213,21 +210,6 @@ Keybindings you define here will take precedence."
   (interactive)
   (find-file user-init-file))
 
-(defun mark-line (arg)
-  "Put mark at end of line.
-ARG works as in `forward-line'.  If this command is repeated,
-it marks the next ARG lines after the ones already marked."
-  (interactive "p")
-  (push-mark
-   (save-excursion
-     (if (and (eq last-command this-command) (mark t))
-	     (goto-char (mark)))
-     (forward-line arg)
-     (point))
-   nil t))
-
-(defalias 'mark-sentence 'mark-end-of-sentence)
-
 (defun rotate-window-split ()
   ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/window-extras.el
   "Rotate window split from vertical to horizontal."
@@ -290,27 +272,6 @@ Uses the `default-directory' unless a path is supplied."
                               (directory-files-recursively (if path path default-directory) ".+" t))))
 
 (defalias 'find-files-recursively 'find-file-recursively)
-
-(defun exchange-point-and-mark-dwim ()
-  "Respect region active/inactive and swap point and mark.
-If a region is active, then leave it activated and swap point and mark.
-If no region is active, then just swap point and mark."
-  (interactive)
-  (if (use-region-p)
-      (exchange-point-and-mark)
-    (exchange-point-and-mark)
-    (deactivate-mark nil)))
-
-(defun unpop-to-mark-command ()
-  "Unpop off mark ring. Does nothing if mark ring is empty."
-  ;; https://stackoverflow.com/a/14539202
-  (interactive)
-  (when mark-ring
-    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
-    (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
-    (when (null (mark t)) (ding))
-    (setq mark-ring (nbutlast mark-ring))
-    (goto-char (marker-position (car (last mark-ring))))))
 
 (defun kill-buffer-dwim (&optional u-arg)
   "Call kill-current-buffer, with C-u: call kill-buffer."
@@ -430,13 +391,9 @@ This will save the buffer if it is not currently saved."
   (define-key map (kbd "M-\\") 'cycle-spacing)
   (define-key map (kbd "M-z") 'zap-up-to-char)
   (define-key map (kbd "M-i") 'imenu)
-  (define-key map (kbd "C-M-h") 'mark-line)
   (define-key map (kbd "C-d") 'delete-forward-char)
-  (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim)
   (define-key map (kbd "M-o") 'other-window)
   (define-key map (kbd "M-O") 'other-window-previous)
-  (define-key map (kbd "M-[") 'pop-to-mark-command)
-  (define-key map (kbd "M-]") 'unpop-to-mark-command)
   (define-key map (kbd "<C-return>") 'universal-transient)
   (define-key map (kbd "C-.") 'embark-act))
 
@@ -460,28 +417,6 @@ This will save the buffer if it is not currently saved."
   (define-key map [M-mouse-1]      #'mouse-set-point))            ; up
 
 (define-key help-map "s" 'describe-symbol-at-point)
-
-;; I find the default mark-setting bindings to be difficult to remember. Who
-;; the heck can remember all these esoteric bindings? Much better to make
-;; these a simple transient dispatcher and give it a nice binding.
-
-(transient-define-prefix set-mark-transient ()
-  "Transient dispatcher for marking commands."
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-exit
-  ["Set/Extend Mark To..."
-   [("b" "Whole Buffer" mark-whole-buffer)
-    ("<" "Beginning of Buffer" mark-beginning-of-buffer)
-    (">" "End of Buffer" mark-end-of-buffer)]
-   [("w" "Word" mark-word)
-    ("l" "Line" mark-line)
-    ("p" "Paragraph" mark-paragraph)
-    ("s" "Sentence" mark-sentence)
-    ("P" "Page" mark-page)]
-   [("S" "Sexp" mark-sexp)
-    ("D" "Defun" mark-defun)]])
-
-(define-key global-map (kbd "C-S-SPC") 'set-mark-transient)
 
 
 ;; Repeat Mode
@@ -999,6 +934,106 @@ If SPACING is nil, set line-spacing to nil."
                 ;; right align
                 (:eval (mode-line-fill (if column-number-mode 15 11)))
                 (:eval (if (eq buffer-position t) mode-line-position " "))))
+
+
+;;; The Mark
+
+(custom-set-variables
+ '(set-mark-command-repeat-pop t)
+ '(mark-even-if-inactive nil)
+ '(delete-selection-mode t)
+ '(mark-ring-max 512))
+
+(defun mark-line (arg)
+  "Put mark at end of line.
+ARG works as in `forward-line'.  If this command is repeated,
+it marks the next ARG lines after the ones already marked."
+  (interactive "p")
+  (push-mark
+   (save-excursion
+     (if (and (eq last-command this-command) (mark t))
+	     (goto-char (mark)))
+     (forward-line arg)
+     (point))
+   nil t))
+
+(defalias 'mark-sentence 'mark-end-of-sentence)
+
+(defun unpop-to-mark-command ()
+  "Unpop off mark ring. Does nothing if mark ring is empty."
+  ;; https://stackoverflow.com/a/14539202
+  (interactive)
+  (when mark-ring
+    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
+    (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
+    (when (null (mark t)) (ding))
+    (setq mark-ring (nbutlast mark-ring))
+    (goto-char (marker-position (car (last mark-ring))))))
+
+(defun exchange-point-and-mark-dwim ()
+  "Respect region active/inactive and swap point and mark.
+If a region is active, then leave it activated and swap point and mark.
+If no region is active, then just swap point and mark."
+  (interactive)
+  (if (use-region-p)
+      (exchange-point-and-mark)
+    (exchange-point-and-mark)
+    (deactivate-mark nil)))
+
+(defun activate-the-mark (&optional arg)
+  "Interactive wrapper for `activate-mark'."
+  (interactive)
+  (activate-mark arg))
+
+(defun deactivate-the-mark (&optional arg)
+  "Interactive wrapper for `deactivate-mark'."
+  (interactive)
+  (deactivate-mark arg))
+
+(defun toggle-the-mark nil
+  "Toggles active state of mark.
+Does not pass arguments to underlying functions."
+  (interactive)
+  (if mark-active (deactivate-the-mark) (activate-the-mark)))
+
+;; For some reason these two commands don't act like any other marking
+;; commands, they don't activate the mark. I suspect that whoever wrote these
+;; commands did so before `transient-mark-mode' was a thing.
+(advice-add 'mark-beginning-of-buffer :after 'activate-mark)
+(advice-add 'mark-end-of-buffer :after 'activate-mark)
+
+;; I find the default mark-setting bindings to be difficult to remember. Who
+;; the heck can remember all these esoteric bindings? Much better to make
+;; these a simple transient dispatcher and give it a nice binding.
+(transient-define-prefix set-mark-transient ()
+  "Transient dispatcher for marking commands."
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-warn
+  [["Navigate:"
+    ("c" "Consult Mark" consult-mark :transient nil)
+    ("," "Back" pop-to-mark-command)
+    ("." "Forward" unpop-to-mark-command)]
+   ["Set/Extend Mark To..."
+    ("b" "Whole Buffer" mark-whole-buffer)
+    ("<" "Beginning of Buffer" mark-beginning-of-buffer)
+    (">" "End of Buffer" mark-end-of-buffer)]
+   [("w" "Word" mark-word)
+    ("l" "Line" mark-line)
+    ("p" "Paragraph" mark-paragraph)
+    ("s" "Sentence" mark-sentence)
+    ("P" "Page" mark-page)]
+   [("S" "Sexp" mark-sexp)
+    ("D" "Defun" mark-defun)]
+   [("SPC" "Activate Mark" activate-the-mark)]])
+
+(let ((map bosskey-mode-map))
+  (define-key map (kbd "C-z") 'set-mark-transient)
+  (define-key map (kbd "C-M-h") 'mark-line)
+  (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim))
+
+(elpa-package 'visible-mark
+  (setq visible-mark-faces `(highlight))
+  (global-visible-mark-mode 1))
 
 
 ;;; Windows

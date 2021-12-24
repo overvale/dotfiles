@@ -1318,7 +1318,8 @@ PROMPT sets the `read-string prompt."
 (defun completion-kill-buffer ()
   "Close the completion buffer and return to the minibuffer."
   (interactive)
-  (kill-buffer "*Completions*")
+  (let ((win (get-buffer-window "*Completions*")))
+    (when win (quit-window t win)))
   (switch-to-minibuffer))
 
 (let ((minibuffer minibuffer-local-completion-map)
@@ -1327,8 +1328,8 @@ PROMPT sets the `read-string prompt."
   (define-key minibuffer (kbd "C-p") 'switch-to-completions-bottom)
   (define-key list [remap other-window] 'switch-to-minibuffer)
   (define-key list "z" #'completion-kill-buffer)
-  (define-key list [remap keyboard-quit] #'completion-quit)
-  (define-key list [remap quit-window] #'switch-to-minibuffer)
+  (define-key list [remap keyboard-quit] #'delete-completion-window)
+  (define-key list [remap quit-window] #'completion-quit)
   (define-key list (kbd "n") 'next-completion)
   (define-key list (kbd "p") 'previous-completion))
 

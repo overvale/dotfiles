@@ -75,6 +75,7 @@
         lua-mode
         magit
         markdown-mode
+        marginalia
         modus-themes
         olivetti
         orderless
@@ -1328,6 +1329,9 @@ PROMPT sets the `read-string prompt."
 
 (elpa-package 'exec-path-from-shell
   (exec-path-from-shell-initialize))
+
+(elpa-package 'marginalia
+  (marginalia-mode 1))
 
 (elpa-package 'embark
   (custom-set-variables

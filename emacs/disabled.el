@@ -234,7 +234,8 @@ For example you might want to do something like:
 (add-hook 'eww-mode-hook 'oht-eww-set-bookmark-handler)
 
 
-;;; Minibuffer
+;;; Minibuffer and Completions
+;;;; Minibuffer
 
 ;; This is what I used, and was quite happy with, until mct.el came along.
 
@@ -288,7 +289,7 @@ For example you might want to do something like:
   (live-completions-mode 1))
 
 
-;;; Prot Minibuffer Adaptation
+;;;; Prot Minibuffer Adaptation
 
 ;; https://gitlab.com/protesilaos/dotfiles/-/blob/master/emacs/.emacs.d/prot-lisp/prot-minibuffer.el
 
@@ -374,7 +375,7 @@ minibuffer."
   (define-key map (kbd "<up>") #'prot-minibuffer-previous-completion-or-mini))
 
 
-;;; Embark as Completion Framework
+;;;; Embark as Completion Framework
 
 ;; The following will allow you to use an embark live collection as your
 ;; completion framework. I will freely admit that this is ridiculous. I mean,
@@ -494,7 +495,7 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
             (hl-line-mode 1)))
 
 
-;;; Embark Exit With Top Candidate
+;;;; Embark Exit With Top Candidate
 
 (defun exit-with-top-completion ()
   "Exit minibuffer with top completion candidate."
@@ -689,61 +690,6 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
 (add-hook 'after-init--hook 'use-package-autoremove)
 
 
-;;; Replacing Package with Straight
-
-;; Normally, packages are initialized prior to loading a user's init file.
-;; If you're using straight instead of package this is an unnecessary step,
-;; and you can prevent Emacs from doing this by placing this in early-init.el:
-(setq package-enable-at-startup nil)
-
-;; Ensure straight is installed. This is boilerplate from the straight documentation.
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-
-;; Ensure use-package is installed.
-(straight-use-package 'use-package)
-
-;; Install all declared packages. Can be overridden with `:straight nil'.
-(setq straight-use-package-by-default t)
-
-
-;;; Composition mode
-
-(define-minor-mode composition-mode
-  "A tiny minor-mode to toggle some settings I like when writing.
-This is really just a wrapper around some extant features I toggle on/off
-when I'm writing. I've wrapped them in a minor mode to make it easy to
-toggle them on/off. It also allows me to define a lighter for the
-mode-line."
-  :init-value nil
-  :lighter " Comp"
-  (if composition-mode
-      (progn
-        (visual-line-mode t)
-        (setq-local line-spacing 2)
-        (olivetti-mode t)
-        (text-scale-increase 1)
-        (variable-pitch-mode 1))
-    (progn
-      (visual-line-mode -1)
-      (setq-local line-spacing 0)
-      (olivetti-mode -1)
-      (text-scale-increase 0)
-      (variable-pitch-mode -1)
-      ;; This shouldn't be needed, but is:
-      (toggle-truncate-lines 1))))
-
-
 ;;; Mouse Window Splits
 
 ;; s-click to split windows at that exact spot
@@ -897,123 +843,6 @@ FEATURE is name of lisp feature, MODE and REPLACEMENT are as in `blackout'."
          (set-default symbol value)
          (set-face-attribute 'mode-line nil          :height (* value 10))
          (set-face-attribute 'mode-line-inactive nil :height (* value 10))))
-
-(define-minor-mode facedancer-vadjust-mode
-  "Minor mode to adjust the variable-pitch face height buffer-locally.
-A minor mode to scale (in the current buffer) the variable-pitch
-face up to the height defined by ‘facedancer-variable-height’ and
-the fixed-pitch face down to the height defined by
-‘facedancer-monospace-height’."
-  :init-value nil
-  :lighter " V+"
-  (if facedancer-vadjust-mode
-      (progn
-        (setq-local variable-pitch-remapping
-                    (face-remap-add-relative 'variable-pitch
-                                             :height (/ (float facedancer-variable-height)
-                                                        (float facedancer-monospace-height))))
-        (setq-local fixed-pitch-remapping
-                    (face-remap-add-relative 'fixed-pitch
-                                             :height (/ (float facedancer-monospace-height)
-                                                        (float facedancer-variable-height))))
-        (force-window-update (current-buffer)))
-    (progn
-      (face-remap-remove-relative variable-pitch-remapping)
-      (face-remap-remove-relative fixed-pitch-remapping)
-      (force-window-update (current-buffer)))))
-
-(add-hook 'buffer-face-mode-hook (lambda () (facedancer-vadjust-mode 'toggle)))
-
-
-;;; variable-pitch-text
-
-(defvar variable-pitch-text-height 1.1
-  "The height of the `variable-pitch-text' face, must be relative.")
-
-(defun set-variable-pitch-text-height (height)
-  "Sets `variable-pitch-text-height' by converting HEIGHT.
-Converts an absolute HEIGHT (140) to a relative value (1.1) based
-on the default face."
-  (setq variable-pitch-text-height (/ height
-                                      (float (face-attribute 'default :height)))))
-
-(defface variable-pitch-text
-  `((t :inherit variable-pitch
-       :height ,(symbol-value 'variable-pitch-text-height)))
-  "The proportional face used for longer texts.
-This is like the `variable-pitch' face, but is slightly bigger."
-  :group 'basic-faces)
-
-(defun variable-pitch-text-mode (&optional arg)
-  "Swaps the default face for the variable-pitch-text face.
-An interface to `buffer-face-mode' which uses the `variable-pitch-text' face.
-Besides the choice of face, it is the same as `buffer-face-mode'."
-  (interactive (list (or current-prefix-arg 'toggle)))
-  (autoload 'buffer-face-mode-invoke "face-remap")
-  (buffer-face-mode-invoke 'variable-pitch-text (or arg t)
-			   (called-interactively-p 'interactive)))
-
-
-
-
-;;; facedancer-mode
-
-;; There are a number of built-in functions for dealing with setting
-;; per-buffer fonts, but all of them are built on buffer-face-mode, which
-;; works by remapping ONLY the default face to a new value. If you'd like to
-;; remap specific faces (for example the variable-pitch face)
-;; buffer-face-mode won't cut it. The below approach applies the exact same
-;; approach as buffer-face-mode but allows you to target individual faces.
-
-(define-minor-mode facedancer-mode
-  "Local minor mode for setting custom fonts per buffer.
-To use, create a function which sets the variables locally, then
-call that function with a hook, like so:
-
-    (defun my/custom-elfeed-fonts ()
-      (setq-local facedancer-monospace-family \"Iosevka\"
-                  facedancer-variable-family  \"Inter\")
-      (facedancer-mode 'toggle))
-
-    (add-hook 'elfeed-show-mode 'my/custom-elfeed-fonts)"
-  :init-value nil
-  :lighter " FaceD"
-  (if facedancer-mode
-      (progn
-        (setq-local facedancer-default-remapping
-                    (face-remap-add-relative 'default
-                                             :family facedancer-monospace-family
-                                             :weight facedancer-monospace-weight
-                                             :width  facedancer-monospace-width
-                                             :height (* 10 facedancer-monospace-height)))
-        (setq-local facedancer-fixed-pitch-remapping
-                    (face-remap-add-relative 'fixed-pitch
-                                             :family facedancer-monospace-family
-                                             :weight facedancer-monospace-weight
-                                             :width  facedancer-monospace-width
-                                             :height (/ (float facedancer-monospace-height)
-                                                        (float facedancer-variable-height))))
-        (setq-local facedancer-variable-pitch-remapping
-                    (face-remap-add-relative 'variable-pitch
-                                             :family facedancer-variable-family
-                                             :weight facedancer-variable-weight
-                                             :width  facedancer-variable-width
-                                             :height (/ (float facedancer-variable-height)
-                                                        (float facedancer-monospace-height))))
-        (force-window-update (current-buffer)))
-    (progn
-      (face-remap-remove-relative facedancer-default-remapping)
-      (face-remap-remove-relative facedancer-fixed-pitch-remapping)
-      (face-remap-remove-relative facedancer-variable-pitch-remapping)
-      (force-window-update (current-buffer)))))
-
-(defun my/go-fonts ()
-  ;; To make this work, now that I've defined all these variables using defcustom,
-  ;; you have to make each variable buffer-local. That's why this is disabled.
-  ;; https://stackoverflow.com/questions/21917049/how-can-i-set-buffer-local-value-for-a-variable-defined-by-defcustom
-  (interactive)
-  (setq-local facedancer-monospace-family "Go Mono")
-  (facedancer-mode 'toggle))
 
 
 ;;; Transient Keymaps
@@ -1217,12 +1046,6 @@ buffer, and exiting the agenda and releasing all the buffers."
   (use-local-map (copy-keymap org-agenda-mode-map))
   (local-set-key (kbd "x") 'oht-org-agenda-exit-delete-window)
   (local-set-key (kbd "q") 'delete-window))
-
-;;; Mode Line
-
-;; Match mode-line border to mode-line background. Huge mode-line anyone?
-(set-face-attribute 'mode-line nil :box `(:line-width 3 :color ,(face-attribute 'mode-line :background)))
-(set-face-attribute 'mode-line-inactive nil :box `(:line-width 3 :color ,(face-attribute 'mode-line-inactive :background)))
 
 ;;; Dired Transients
 

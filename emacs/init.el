@@ -415,6 +415,41 @@ This will save the buffer if it is not currently saved."
     (insert "</a>")))
 
 
+;;; Advice
+
+(defadvice kill-line (before kill-line-autoreindent activate)
+  ;; https://github.com/Fuco1/.emacs.d/blob/master/site-lisp/my-advices.el
+  "Kill excess whitespace when joining lines.
+If the next line is joined to the current line, kill the extra indent whitespace in front of the next line."
+  (when (and (eolp) (not (bolp)))
+    (save-excursion
+      (forward-char 1)
+      (just-one-space 1))))
+
+(defadvice kill-visual-line (before kill-line-autoreindent activate)
+  ;; https://github.com/Fuco1/.emacs.d/blob/master/site-lisp/my-advices.el
+  "Kill excess whitespace when joining lines.
+If the next line is joined to the current line, kill the extra indent whitespace in front of the next line."
+  (when (and (eolp) (not (bolp)))
+    (save-excursion
+      (forward-char 1)
+      (just-one-space 1))))
+
+;; The below allows for block-undo after running keyboard macros.
+;; From u/oantolin.
+
+(defun block-undo (fn &rest args)
+  (let ((marker (prepare-change-group)))
+    (unwind-protect (apply fn args)
+      (undo-amalgamate-change-group marker))))
+
+(dolist (fn '(kmacro-call-macro
+              kmacro-exec-ring-item
+              dot-mode-execute
+              apply-macro-to-region-lines))
+  (advice-add fn :around #'block-undo))
+
+
 ;;; Bindings
 
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))

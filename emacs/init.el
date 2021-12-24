@@ -105,6 +105,7 @@
  '(tool-bar-mode nil)
  '(ring-bell-function 'ignore)
  '(pixel-scroll-precision-mode 1)
+ '(scroll-step 1)
  '(set-language-environment "UTF-8")
  '(frame-title-format '("%b"))
  '(uniquify-buffer-name-style 'forward)
@@ -185,7 +186,7 @@ Keybindings you define here will take precedence."
   ;; Important paths for this setup to work.
   (defvar user-home-dir "~/home/")
   (defvar user-downloads-directory "~/Desktop/")
-  (defvar local-package-dir (concat user-home-dir "src/lisp/"))
+  (setq local-package-dir (concat user-home-dir "src/lisp/"))
   (setq-default default-directory user-home-dir)
   (setq org-directory (concat user-home-dir "org/"))
   (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/")))
@@ -194,7 +195,8 @@ Keybindings you define here will take precedence."
   ;; I use a lot of transients in this config, so I need to make sure it is
   ;; loaded and configured before those are declared below.
   (autoload 'transient-define-prefix "transient" nil t)
-  (setq transient-detect-key-conflicts t))
+  (setq transient-detect-key-conflicts t
+        transient-show-popup t))
 
 
 ;;; Functions

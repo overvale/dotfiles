@@ -45,11 +45,8 @@
 ;;; Package Management
 
 ;; The very first thing in the config should be setting up the packages I
-;; need. This is done because when Emacs encounters an error in the init file
-;; (which can happen when packages are missing) Emacs stops loading the init
-;; file altogether. Setting up packages first thing ensures that at a minimum
-;; Emacs will load the settings required for installing the packages this
-;; config needs.
+;; need. Setting up packages first thing ensures that at a minimum Emacs will
+;; load the settings required for installing the packages this config needs.
 
 (require 'package)
 
@@ -1806,8 +1803,7 @@ current HH:MM time."
     ("j" "Dired Jump" dired-jump)
     ("l" "List Buffers" bs-show)
     ("k" "Kill Buffer" kill-buffer-dwim)
-    ("n" "Make Frame" make-frame)
-    ("w" "Windows..." window-transient)]
+    ("n" "Make Frame" make-frame)]
    ["Org"
     ("o a" "Org Agenda" org-agenda)
     ("o k" "Org Capture" org-capture)
@@ -1898,6 +1894,9 @@ current HH:MM time."
 
 ;;; Quick Help
 
+;; Inspired by "On-demand help panels for obscure topics" here:
+;; https://svn.red-bean.com/repos/kfogel/trunk/.emacs
+
 (defmacro quick-help (name buffer text)
   "Macro for creating callable functions that display help.
 Where NAME is name of function, BUFFER is name of buffer, and TEXT is displayed."
@@ -1934,11 +1933,29 @@ Lie (recline)   lay   lain  lying
 Lay (put down)  laid  laid  laying
 Lie (false)     lied  lied  lying   lies")
 
+(quick-help qh--NATO-alphabet
+  "NATO ALPHABET"
+  "\
+A - Alpha                  N - November
+B - Bravo                  O - Oscar
+C - Charlie                P - Papa
+D - Delta                  Q - Quebec
+E - Echo                   R - Romeo
+F - Foxtrot                S - Sierra
+G - Golf                   T - Tango
+H - Hotel                  U - Uniform
+I - India                  V - Victor
+J - Juliet                 W - Whiskey
+K - Kilo                   X - X-ray
+L - Lima                   Y - Yankee
+M - Mike                   Z - Zulu")
+
 (define-prefix-command 'quick-help-prompt nil "Quick Help")
 
 (let ((map quick-help-prompt))
   (define-key map "w" '("Weather" . qh--wheather))
-  (define-key map "l" '("Lay" . qh--lying)))
+  (define-key map "l" '("Lay" . qh--lying))
+  (define-key map "n" '("Nato" . qh--NATO-alphabet)))
 
 (global-set-key (kbd "C-c h") 'quick-help-prompt)
 

@@ -374,6 +374,46 @@ This will save the buffer if it is not currently saved."
   (interactive)
   (kill-line 0))
 
+(defun occur-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (--when-let (thing-at-point 'symbol)
+            (regexp-quote it)))
+        regexp-history)
+  (call-interactively 'occur))
+
+(defun wrap-region-in-xml-tag (start end arg)
+  "Wrap the region in an xml tag of ARG."
+  (interactive "r\nsTagname: ")
+  (goto-char start)
+  (insert "<" arg ">")
+  (goto-char (+ end 2 (length arg)))
+  (insert "</" arg ">"))
+
+(defun wrap-http-link-backwards ()
+  "Looks backwards from point for a link and wraps in HTML tag."
+  (interactive)
+  (let ((start (copy-marker (point))))
+    (re-search-backward "\\(^\\|\\s-+\\)https?://")
+    (forward-word 1)
+    (forward-word -1)
+    (insert "<a href=\"")
+    (search-forward " ")
+    (just-one-space)
+    (forward-char -1)
+    (insert "\"")
+    (forward-char 1)
+    (when (looking-at "$")
+      (delete-char -1)
+      (forward-char 1))
+    (insert ">")
+    (goto-char start)
+    (insert "</a>")))
+
 
 ;;; Bindings
 

@@ -80,6 +80,7 @@
         olivetti
         orderless
         org
+        paren-face
         vertico
         visual-regexp
         visual-regexp-steroids))
@@ -1400,6 +1401,9 @@ PROMPT sets the `read-string prompt."
 
 (elpa-package 'expand-region
   (global-set-key (kbd "C-=") 'er/expand-region))
+
+(elpa-package 'paren-face
+  (global-paren-face-mode 1))
 
 
 ;;; Libraries

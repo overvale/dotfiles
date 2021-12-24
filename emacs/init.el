@@ -486,10 +486,10 @@ This will save the buffer if it is not currently saved."
 
 ;;; Themes
 
-;; By default I use a light theme, but sometimes (when all the lights are off)
-;; I use a dark theme. The below are some functions that allow me to quickly
-;; switch between light and dark themes. The main entry point is
-;; `load-theme-dwim'.
+;; I will admit that the below is... overkill. But what it does is (at least)
+;; conceptually simple. It allows you to define your preferred dark and light
+;; themes, and then provides functions for loading them, toggling them, and
+;; matching to MacOS's system appearance.
 
 (defvar light-theme nil
   "Preferred light-theme.")
@@ -508,6 +508,15 @@ This will save the buffer if it is not currently saved."
   (interactive)
   (mapcar 'disable-theme custom-enabled-themes))
 
+(defun load-theme-cleanly (theme)
+  "Disable active themes, then load theme."
+  (interactive
+   (list (intern
+          (completing-read "Load Theme: "
+                           (mapcar 'symbol-name (custom-available-themes))))))
+  (disable-current-themes)
+  (load-theme theme t))
+
 (defun macos-dark-p ()
   "Return t if macOS appearance is dark."
   (interactive)
@@ -519,20 +528,24 @@ This will save the buffer if it is not currently saved."
   (interactive)
   (shell-command-to-string "osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"))
 
-(add-hook 'mac-effective-appearance-change-hook 'theme-color-toggle)
+(defun load-theme-dark nil
+  "Loads the dark theme."
+  (disable-current-themes)
+  (load-theme dark-theme t)
+  (setq current-theme-color 'dark))
+
+(defun load-theme-light nil
+  "Loads the light theme."
+  (disable-current-themes)
+  (load-theme light-theme t)
+  (setq current-theme-color 'light))
 
 (defun theme-color-toggle nil
   "Toggle between `light-theme' and `dark-theme'."
   (interactive)
   (if (eq current-theme-color 'light)
-      (progn
-        (disable-current-themes)
-        (setq current-theme-color 'dark)
-        (load-theme dark-theme t))
-    (progn
-      (disable-current-themes)
-      (setq current-theme-color 'light)
-      (load-theme light-theme t))))
+      (load-theme-dark)
+    (load-theme-light)))
 
 (defun load-theme-dwim (&optional color)
   "Load users preferred theme, based on ARG or macOS appearance.
@@ -543,80 +556,74 @@ Disables all current themes, then:
 - If called without an argument toggle between light and dark themes."
   (interactive
    (list (completing-read "Load Theme Color: " '("dark" "light" "system"))))
-  (disable-current-themes)
   (cond ((string= color "light")
-         (setq current-theme-color 'light)
-         (load-theme light-theme t))
+         (load-theme-light))
         ((string= color "dark")
-         (setq current-theme-color 'dark)
-         (load-theme dark-theme t))
+         (load-theme-dark))
         ((string= color "system")
          (if (macos-dark-p)
-             (load-theme-dwim 'dark)
-           (load-theme-dwim 'light)))
+             (load-theme-dark)
+           (load-theme-light)))
         ((eq color nil)
          (theme-color-toggle))))
 
-(defun load-theme-cleanly (theme)
-  "Disable active themes, then load theme."
-  (interactive
-   (list (intern
-          (completing-read "Load Theme: "
-                           (mapcar 'symbol-name (custom-available-themes))))))
-  (disable-current-themes)
-  (load-theme theme t))
-
-(defun load-system-color-theme nil
-  "On startup, try to match system color, otherwise load `default-color-theme'."
-  (if (macos-dark-p)
-      (load-theme-dwim 'dark)
-    (if (eq default-theme-color 'light)
-        (load-theme-dwim 'light)
-      (load-theme-dwim 'dark))))
+(require 'modus-themes)
 
 (setq light-theme 'modus-operandi)
 (setq dark-theme  'modus-vivendi)
 (setq default-theme-color 'light)
 
-(elpa-package 'modus-themes
-  (require 'modus-themes)
+(custom-set-variables
+ '(modus-themes-mixed-fonts t)
+ '(modus-themes-italic-constructs t)
+ '(modus-themes-region nil)
+ '(modus-themes-links '(neutral-underline))
+ '(modus-themes-mode-line '(accented 3d))
+ '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
+                             (header-date . (bold-today))
+                             (scheduled . rainbow)))
+ ;; These colors are inspired by:
+ ;; https://github.com/rakr/vim-two-firewatch
+ ;; https://simurai.com/projects/2016/01/01/duotone-themes
+ '(modus-themes-operandi-color-overrides '((fg-main . "#000000")
+                                           (bg-main . "#faf8f5")
+                                           (bg-region . "#efdfff")
+                                           ;; bg-inactive and bg-hl-line
+                                           ;; should be the same value
+                                           (bg-inactive . "#e6e4e1")
+                                           (bg-hl-line . "#e6e4e1")))
+ '(modus-themes-vivendi-color-overrides '((fg-main . "#fdf3ec")
+                                          (bg-main . "#24242d")
+                                          (bg-region . "#4f3d88")
+                                          ;; bg-inactive and bg-hl-line
+                                          ;; should be the same value
+                                          (bg-inactive . "#2f2f3b")
+                                          (bg-hl-line . "#2f2f3b")
+                                          (bg-))))
+
+;; I want different syntax options for operandi and vivendi and there doesn't
+;; seem to be a built in way to do that. So I've created some custom
+;; functions/advice for that.
+
+(defun customize-modus-vivendi nil
   (custom-set-variables
-   '(modus-themes-mixed-fonts t)
-   '(modus-themes-italic-constructs t)
-   '(modus-themes-region nil)
-   '(modus-themes-syntax '(yellow-comments))
-   '(modus-themes-links '(neutral-underline))
-   '(modus-themes-mode-line '(accented borderless))
-   ;; These colors are inspired by:
-   ;; https://github.com/rakr/vim-two-firewatch
-   ;; https://simurai.com/projects/2016/01/01/duotone-themes
-   '(modus-themes-operandi-color-overrides '((fg-main . "#000000")
-                                             (bg-main . "#faf8f5")
-                                             ;; bg-inactive and bg-hl-line
-                                             ;; should be the same value
-                                             (bg-region . "#efdfff")
-                                             (bg-inactive . "#e6e4e1")
-                                             (bg-hl-line . "#e6e4e1")))
-   '(modus-themes-vivendi-color-overrides '((fg-main . "#fdf3ec")
-                                            (bg-main . "#24242d")
-                                            ;; bg-inactive and bg-hl-line
-                                            ;; should be the same value
-                                            (bg-region . "#4f3d88")
-                                            (bg-inactive . "#2f2f3b")
-                                            (bg-hl-line . "#2f2f3b")
-                                            (bg-)))
-   '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
-                               (header-date . (bold-today))
-                               (scheduled . rainbow))))
-  (modus-themes-load-themes)
-  (load-system-color-theme)
-  (setq-default cursor-type '(bar . 3)
-                cursor-in-non-selected-windows 'hollow
-                blink-cursor-blinks 10
-                blink-cursor-interval 0.35
-                blink-cursor-delay 0.5))
+   '(modus-themes-syntax '(yellow-comments faint alt-syntax green-strings))))
 
+(defun customize-modus-operandi nil
+  (custom-set-variables
+   '(modus-themes-syntax '(yellow-comments))))
 
+(advice-add 'load-theme-dark :before 'customize-modus-vivendi)
+(advice-add 'load-theme-light :before 'customize-modus-operandi)
+
+;; On startup I want to match the system
+(load-theme-dwim 'system)
+
+(setq-default cursor-type '(bar . 3)
+              cursor-in-non-selected-windows 'hollow
+              blink-cursor-blinks 10
+              blink-cursor-interval 0.35
+              blink-cursor-delay 0.5)
 
 
 ;;; Fonts
@@ -1738,7 +1745,7 @@ current HH:MM time."
     ("c g" "Grep" consult-grep)]
    ["Other"
     ("f" "Set Fonts" set-custom-fonts)
-    ("t" "Toggle Modus" modus-themes-toggle :transient t)
+    ("t" "Toggle Modus" theme-color-toggle :transient t)
     ("T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
     ("d" "Date/Time mode-line" toggle-date-time-battery)
     ("C" "Calendar" calendar)

@@ -614,20 +614,19 @@ If the next line is joined to the current line, kill the extra indent whitespace
   (load-theme light-theme t)
   (setq current-theme-color 'light))
 
-(defun theme-color-toggle nil
+(defun toggle-theme-color nil
   "Toggle between `light-theme' and `dark-theme'."
   (interactive)
   (if (eq current-theme-color 'light)
       (load-theme-dark)
     (load-theme-light)))
 
-(defun load-theme-dwim (&optional color)
+(defun load-theme-color (color)
   "Load users preferred theme, based on ARG or macOS appearance.
 Disables all current themes, then:
 - if COLOR is \"light\" or \"dark\", load the `light-theme' or `dark-theme'.
 - if COLOR is \"system\" check macOS's appearance state and match it with
-  either the light or dark theme.
-- If called without an argument toggle between light and dark themes."
+  either the light or dark theme."
   (interactive
    (list (completing-read "Load Theme Color: " '("dark" "light" "system"))))
   (cond ((string= color "light")
@@ -637,9 +636,7 @@ Disables all current themes, then:
         ((string= color "system")
          (if (macos-dark-p)
              (load-theme-dark)
-           (load-theme-light)))
-        ((eq color nil)
-         (theme-color-toggle))))
+           (load-theme-light)))))
 
 (require 'modus-themes)
 
@@ -691,7 +688,7 @@ Disables all current themes, then:
 (advice-add 'load-theme-light :before 'customize-modus-operandi)
 
 ;; On startup I want to match the system
-(load-theme-dwim 'system)
+(load-theme-color 'system)
 
 (setq-default cursor-type '(bar . 3)
               cursor-in-non-selected-windows 'hollow
@@ -1819,7 +1816,7 @@ current HH:MM time."
     ("c g" "Grep" consult-grep)]
    ["Other"
     ("f" "Set Fonts" set-custom-fonts)
-    ("t" "Toggle Modus" theme-color-toggle :transient t)
+    ("t" "Toggle Dark/Light Theme" toggle-theme-color :transient t)
     ("T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
     ("d" "Date/Time mode-line" toggle-date-time-battery)
     ("C" "Calendar" calendar)

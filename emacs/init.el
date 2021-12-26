@@ -900,7 +900,7 @@ It should probably be a mode instead."
                       :mode-height 130))))
 
 ;; On startup, use this set of fonts:
-(set-custom-fonts "Pragmata")
+(set-custom-fonts "Hack")
 
 
 ;;; Buffer Line-Spacing

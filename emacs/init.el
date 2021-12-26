@@ -638,19 +638,17 @@ Disables all current themes, then:
              (load-theme-dark)
            (load-theme-light)))))
 
-(require 'modus-themes)
+;; Modus Themes options...
 
-(setq light-theme 'modus-operandi)
-(setq dark-theme  'modus-vivendi)
-(setq default-theme-color 'light)
+(local-package "modus-themes"
+  (require 'modus-themes))
 
 (custom-set-variables
  '(modus-themes-mixed-fonts t)
  '(modus-themes-italic-constructs t)
- '(modus-themes-region nil)
  '(modus-themes-links '(neutral-underline))
- '(modus-themes-mode-line '(accented 3d))
- '(modus-themes-org-agenda '((header-block . (variable-pitch scale-title))
+ '(modus-themes-diffs '(desaturated))
+ '(modus-themes-org-agenda '((header-block . (variable-pitch 1.6))
                              (header-date . (bold-today))
                              (scheduled . rainbow)))
  ;; These colors are inspired by:
@@ -687,10 +685,16 @@ Disables all current themes, then:
 (advice-add 'load-theme-dark :before 'customize-modus-vivendi)
 (advice-add 'load-theme-light :before 'customize-modus-operandi)
 
+;; Actual theme loading...
+
+(setq light-theme 'modus-operandi)
+(setq dark-theme  'modus-vivendi)
+(setq default-theme-color 'light)
+
 ;; On startup I want to match the system
 (load-theme-color 'system)
 
-(setq-default cursor-type '(bar . 3)
+(setq-default cursor-type 'box)
               cursor-in-non-selected-windows 'hollow
               blink-cursor-blinks 10
               blink-cursor-interval 0.35
@@ -842,6 +846,13 @@ It should probably be a mode instead."
                    :mono-height 120
                    :mode-height 130
                    :vari-height 140))
+        (Hack . ( :mono "Hack"
+                   :vari "Inter"
+                   :mode "SF Compact Text"
+                   :line nil
+                   :mono-height 120
+                   :mode-height 140
+                   :vari-height 130))
         (IBM . ( :mono "IBM Plex Mono"
                  :vari "IBM Plex Serif"
                  :mode "IBM Plex Sans"

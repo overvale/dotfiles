@@ -42,6 +42,19 @@
 ;; https://github.com/bbatsov/prelude
 
 
+;;; Startup
+
+;; Part 2 of 2 (part 1 is in early-init). This is stolen from here:
+;; https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
+;; In this config, this 2-part dance saves about 0.3 seconds on startup time.
+;; Is it really worth it? Probably not.
+
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (setq gc-cons-threshold 16777216
+          gc-cons-percentage 0.1)))
+
+
 ;;; Package Management
 
 ;; The very first thing in the config should be setting up the packages I

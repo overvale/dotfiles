@@ -997,28 +997,16 @@ If SPACING is nil, set line-spacing to nil."
 (setq-default mode-line-buffer-identification
               (propertized-buffer-identification "%b"))
 
-(defun mode-line-fill (reserve)
-  ;; https://emacs.stackexchange.com/a/45788/31142
-  "Return empty space using FACE and leaving RESERVE space on the right."
-  (when
-    (and window-system (eq 'right (get-scroll-bar-mode)))
-    (setq reserve (- reserve 3)))
-  (propertize " "
-    'display
-    `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))))
-
 (setq-default mode-line-format
               '((:eval (mode-line-buffer-modified-status))
                 "   " mode-line-buffer-identification
                 (:eval (mode-line-buffer-read-only-status))
                 (:eval (mode-line-buffer-confirm-kill-status))
+                (:eval (if (eq buffer-position t) mode-line-position " "))
                 "   " mode-line-modes
                 (:eval (mode-line-buffer-line-spacing-status))
                 " " (vc-mode vc-mode)
-                mode-line-misc-info
-                ;; right align
-                (:eval (mode-line-fill (if column-number-mode 15 11)))
-                (:eval (if (eq buffer-position t) mode-line-position " "))))
+                mode-line-misc-info))
 
 
 ;;; The Mark

@@ -1106,7 +1106,6 @@ Does not pass arguments to underlying functions."
 (transient-define-prefix set-mark-transient ()
   "Transient dispatcher for marking commands."
   :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-warn
   [["Navigate:"
     ("c" "Consult Mark" consult-mark :transient nil)
     ("," "Back" pop-to-mark-command)

@@ -235,6 +235,9 @@ function myHammerMenuItem()
       { title = "Dark/Light Mode", fn = toggleDarkMode },
       { title = "Snippets", menu = snippetMenu },
       { title = "-" },
+      { title = "Launch Emacs Debug Init", fn = emacsDebugInit },
+      { title = "Launch Emacs Q", fn = emacsQ },
+      { title = "-" },
       { title = "Copy Mail Message URL", fn = copyMailURL},
       { title = "New Mail Message", fn = newMailMessage },
       { title = "-" },
@@ -247,6 +250,9 @@ function myHammerMenuItem()
    }
    myHammerMenu:setMenu(menuTable)
 end
+
+function emacsDebugInit() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs --debug-init" ) end
+function emacsQ() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs -q" ) end
 
 function copyMailURL() os.execute( "~/home/dot/bin/getMailURL | pbcopy | open hammerspoon://success" ) end
 function newMailMessage() os.execute("open mailto:") end

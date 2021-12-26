@@ -152,8 +152,11 @@ Keybindings you define here will take precedence."
 (add-to-list 'emulation-mode-map-alists
              `((bosskey-mode . ,bosskey-mode-map)))
 
+;; In addition to the above packages and macros, a few variables need to be
+;; set. I use a lot of transients in this config, so I need to make sure it is
+;; loaded and configured before those are declared below.
+
 (prog1 "environment"
-  ;; Important paths for this setup to work.
   (defvar user-home-dir "~/home/")
   (defvar user-downloads-directory "~/Desktop/")
   (setq local-package-dir (concat user-home-dir "src/lisp/"))
@@ -162,8 +165,6 @@ Keybindings you define here will take precedence."
   (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/")))
 
 (prog1 "transient"
-  ;; I use a lot of transients in this config, so I need to make sure it is
-  ;; loaded and configured before those are declared below.
   (autoload 'transient-define-prefix "transient" nil t)
   (setq transient-detect-key-conflicts t
         transient-show-popup t))
@@ -1572,7 +1573,6 @@ PROMPT sets the `read-string prompt."
   (require 'solar)
   (setq calendar-latitude 34.157
         calendar-longitude -118.324))
-
 
 (prog1 "world-clock"
   (setq world-clock-time-format "%Z%t%R%t%F"

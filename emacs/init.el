@@ -1029,18 +1029,29 @@ If SPACING is nil, set line-spacing to nil."
  '(delete-selection-mode t)
  '(mark-ring-max 512))
 
-(defun mark-line (arg)
-  "Put mark at end of line.
-ARG works as in `forward-line'.  If this command is repeated,
-it marks the next ARG lines after the ones already marked."
-  (interactive "p")
-  (push-mark
-   (save-excursion
-     (if (and (eq last-command this-command) (mark t))
-	     (goto-char (mark)))
-     (forward-line arg)
-     (point))
-   nil t))
+;; https://github.com/oantolin/emacs-config/blob/4eb8a2a4be518f5d528318773062ad9b9296ab56/my-lisp/text-extras.el#L38
+(defun mark-line (&optional arg allow-extend)
+  "Mark ARG lines starting with the current one. If ARG is negative,
+mark -ARG lines ending with the current one.
+
+Interactively (or if ALLOW-EXTEND is non-nil), if this command is
+repeated or (in Transient Mark mode) if the mark is active, it
+marks the next ARG lines after the ones already marked."
+  (interactive "p\np")
+  (unless arg (setq arg 1))
+  (if (and allow-extend
+           (or (and (eq last-command this-command) (mark t))
+               (and transient-mark-mode mark-active)))
+      (set-mark
+       (save-excursion
+         (goto-char (mark))
+         (forward-line arg)
+         (point)))
+    (forward-line arg)
+    (unless (= (preceding-char) 10)
+      (setq arg (1- arg)))
+    (push-mark nil t t)
+    (forward-line (- arg))))
 
 (defalias 'mark-sentence 'mark-end-of-sentence)
 

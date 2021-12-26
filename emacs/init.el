@@ -650,33 +650,21 @@ Disables all current themes, then:
  '(modus-themes-diffs '(desaturated))
  '(modus-themes-org-agenda '((header-block . (variable-pitch 1.6))
                              (header-date . (bold-today))
-                             (scheduled . rainbow)))
- ;; These colors are inspired by:
- ;; https://github.com/rakr/vim-two-firewatch
- ;; https://simurai.com/projects/2016/01/01/duotone-themes
- '(modus-themes-operandi-color-overrides '((fg-main . "#000000")
-                                           (bg-main . "#faf8f5")
-                                           (bg-region . "#efdfff")
-                                           ;; bg-inactive and bg-hl-line
-                                           ;; should be the same value
-                                           (bg-inactive . "#e6e4e1")
-                                           (bg-hl-line . "#e6e4e1")))
- '(modus-themes-vivendi-color-overrides '((fg-main . "#fdf3ec")
-                                          (bg-main . "#24242d")
-                                          (bg-region . "#4f3d88")
-                                          ;; bg-inactive and bg-hl-line
-                                          ;; should be the same value
+                             (scheduled . rainbow))))
+
+(custom-set-variables
+ '(modus-themes-vivendi-color-overrides '((bg-main     . "#24242d")
                                           (bg-inactive . "#2f2f3b")
-                                          (bg-hl-line . "#2f2f3b")
-                                          (bg-))))
+                                          (bg-hl-line  . "#2f2f3b"))))
 
 ;; I want different syntax options for operandi and vivendi and there doesn't
 ;; seem to be a built in way to do that. So I've created some custom
-;; functions/advice for that.
+;; functions/advice for that. NOTE that any options you set in one of the
+;; themes need to be reset to nil in the other theme.
 
 (defun customize-modus-vivendi nil
   (custom-set-variables
-   '(modus-themes-syntax '(yellow-comments faint alt-syntax green-strings))))
+   '(modus-themes-syntax '(yellow-comments faint))))
 
 (defun customize-modus-operandi nil
   (custom-set-variables

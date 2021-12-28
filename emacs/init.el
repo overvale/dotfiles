@@ -1168,7 +1168,8 @@ Does not pass arguments to underlying functions."
  '(winner-mode t)
  '(split-window-keep-point nil)
  '(even-window-sizes nil)
- '(switch-to-buffer-obey-display-actions t))
+ '(switch-to-buffer-obey-display-actions t)
+ '(help-window-select t))
 
 ;; This introduces a fundamental change to how Emacs works. Normally, when
 ;; Emacs displays a new buffer, it tries to intelligently select the best

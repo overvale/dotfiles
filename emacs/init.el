@@ -1461,6 +1461,8 @@ PROMPT sets the `read-string prompt."
 
 ;;; Packages
 
+(setq tab-always-indent 'complete)
+
 (elpa-package 'corfu
   (corfu-global-mode 1))
 

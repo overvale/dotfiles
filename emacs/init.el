@@ -199,6 +199,7 @@ Keybindings you define here will take precedence."
  '(ring-bell-function 'ignore)
  '(pixel-scroll-precision-mode 1)
  '(scroll-step 1)
+ '(scroll-margin 1)
  '(set-language-environment "UTF-8")
  '(frame-title-format '("%b"))
  '(uniquify-buffer-name-style 'forward)

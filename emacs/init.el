@@ -1522,7 +1522,27 @@ PROMPT sets the `read-string prompt."
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
   (global-set-key [remap imenu] 'consult-imenu)
   (global-set-key [remap yank-pop] 'consult-yank-pop)
-  (global-set-key [remap repeat-complex-command] #'consult-complex-command))
+  (global-set-key [remap repeat-complex-command] #'consult-complex-command)
+
+  (defvar mac-find-initial-string nil
+    "String to pass to `consult-line'.")
+
+  (defun set-mac-find-initial-string ()
+    "Sets `consult-initial-string' to the region or symbol at point."
+    (interactive)
+    (let ((thing
+           (if (region-active-p)
+               (buffer-substring (region-beginning) (region-end))
+             (symbol-name (symbol-at-point)))))
+      (setq mac-find-initial-string thing)
+      (message (format "%S" thing))))
+
+  (defun consult-line-mac-find-initial nil
+    (interactive)
+    (consult-line mac-find-initial-string))
+
+  (define-key global-map (kbd "s-e") 'set-mac-find-initial-string)
+  (define-key global-map (kbd "s-g") 'consult-line-mac-find-initial))
 
 (elpa-package 'visual-regexp
   ;; A reasonable regex engine? Live preview of search and replacement? Yes please!

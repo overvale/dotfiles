@@ -470,6 +470,13 @@ If the next line is joined to the current line, kill the extra indent whitespace
               apply-macro-to-region-lines))
   (advice-add fn :around #'block-undo))
 
+(defadvice kill-region (before unix-werase activate compile)
+  "When called interactively with no active region, delete a single word
+backwards instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (save-excursion (backward-word 1) (point)) (point)))))
+
 
 ;;; Bindings
 

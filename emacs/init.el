@@ -475,14 +475,18 @@ If the next line is joined to the current line, kill the extra indent whitespace
 
 (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
 
+;; I'm trying to unlearn these and use the `general-transient' and mac-like
+;; bindings instead.
+(let ((map bosskey-mode-map))
+  (define-key map (kbd "C-x C-f") 'undefined)
+  (define-key map (kbd "C-x f")   'undefined)
+  (define-key map (kbd "C-x C-b") 'undefined)
+  (define-key map (kbd "C-x b")   'undefined)
+  (define-key map (kbd "C-x k")   'undefined))
+
 ;; Because they're in the `bosskey-mode-map' these bindings won't be
 ;; overridden by minor modes and the like.
 (let ((map bosskey-mode-map))
-  (define-key map (kbd "C-x C-f") 'find-file)
-  (define-key map (kbd "C-x f")   'find-file-other-window)
-  (define-key map (kbd "C-x C-b") 'switch-to-buffer)
-  (define-key map (kbd "C-x b")   'switch-to-buffer-other-window)
-  (define-key map (kbd "C-x k")   'kill-buffer-dwim)
   (define-key map (kbd "M-/") 'completion-at-point)
   (define-key map (kbd "M-\\") 'cycle-spacing)
   (define-key map (kbd "M-z") 'zap-up-to-char)
@@ -490,6 +494,7 @@ If the next line is joined to the current line, kill the extra indent whitespace
   (define-key map (kbd "C-d") 'delete-forward-char)
   (define-key map (kbd "M-o") 'other-window)
   (define-key map (kbd "M-O") 'other-window-previous)
+  (define-key map (kbd "C-M-O") 'other-window-prefix)
   (define-key map (kbd "<C-return>") 'universal-transient)
   (define-key map (kbd "C-.") 'embark-act))
 
@@ -567,16 +572,27 @@ If the next line is joined to the current line, kill the extra indent whitespace
   (define-key map (kbd "s-c") 'kill-ring-save)
   (define-key map (kbd "s-v") 'yank)
   (define-key map (kbd "s-<backspace>") 'backward-kill-line)
+  (define-key map (kbd "s-[") 'previous-buffer)
+  (define-key map (kbd "s-]") 'next-buffer)
+  (define-key map (kbd "s-{") 'indent-rigidly-left-to-tab-stop)
+  (define-key map (kbd "s-}") 'indent-rigidly-right-to-tab-stop)
+  (define-key map (kbd "s-/") 'comment-line)
+  (define-key map (kbd "s-<up>") 'beginning-of-buffer)
+  (define-key map (kbd "s-<down>") 'end-of-buffer)
+  (define-key map (kbd "s-/") 'comment-line)
   (define-key map (kbd "s-s") 'save-buffer)
+  (define-key map (kbd "M-s-s") 'save-some-buffers)
   (define-key map (kbd "s-m") 'iconify-frame)
   (define-key map (kbd "s-,") 'find-user-init-file)
-  (define-key map (kbd "s-q") 'save-buffers-kill-emacs))
+  (define-key map (kbd "s-q") 'save-buffers-kill-emacs)
+  (define-key map (kbd "s-.") 'keyboard-quit))
 
 ;; Making things easier
 (let ((map global-map))
   (define-key map (kbd "s-b") 'consult-buffer)
   (define-key map (kbd "s-f") 'consult-line)
   (define-key map (kbd "s-o") 'find-file)
+  (define-key map (kbd "s-j") 'dired-jump)
   (define-key map (kbd "s-w") 'window-transient))
 
 
@@ -1480,6 +1496,8 @@ PROMPT sets the `read-string prompt."
   (custom-set-faces
    '(embark-verbose-indicator-title ((t (:inherit 'modus-themes-heading-1)))))
 
+  (define-key minibuffer-local-map (kbd "C-,") 'embark-become)
+
   (with-eval-after-load 'embark
     (let ((map embark-file-map))
       (define-key map (kbd "O") 'crux-open-with)
@@ -1814,22 +1832,18 @@ current HH:MM time."
   [["Actions/Toggles"
     ("o f" "Other Frame Prefix..." other-frame-prefix)
     ("o w" "Other Window Prefix..." other-window-prefix)
-    ("," "Find Init" find-user-init-file)
     ("a" "AutoFill" auto-fill-mode)
     ("h" "Line Highlight" hl-line-mode)
-    ("j" "Dired Jump" dired-jump)
+    ("g" "Magit Status" magit-status)
     ("l" "List Buffers" bs-show)
     ("k" "Kill Buffer" kill-buffer-dwim)
-    ("n" "Make Frame" make-frame)]
+    ("K" "Kill Buffer & Window" kill-buffer-and-window)]
    ["Org"
     ("o a" "Org Agenda" org-agenda)
     ("o k" "Org Capture" org-capture)
     ("o s" "Store Link" org-store-link)
     ("o i" "Insert Link" org-insert-link)
     "Consult"
-    ("c b" "Buffer" consult-buffer)
-    ("c B" "Buffer Other Window" consult-buffer-other-window)
-    ("c l" "Line" consult-line)
     ("c o" "Outline" consult-outline)
     ("c g" "Grep" consult-grep)]
    ["Other"
@@ -1846,7 +1860,6 @@ current HH:MM time."
     ("m e" "End" end-kbd-macro)
     ("m c" "Call" call-last-kbd-macro)
     ("m r" "Region Lines" apply-macro-to-region-lines)]])
-
 
 ;; Emacs has so many modes. Who can remember all the commands? These
 ;; mode-specific transients are designed to help with that.

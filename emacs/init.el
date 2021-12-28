@@ -1406,7 +1406,12 @@ PROMPT sets the `read-string prompt."
 
 (elpa-package 'vertico
   (setq vertico-count 15)
-  (vertico-mode 1))
+  (with-eval-after-load 'vertico
+    (set-face-attribute 'vertico-current nil
+                        :background (face-attribute 'lazy-highlight :background nil t)
+                        :foreground (face-attribute 'lazy-highlight :foreground nil t)
+                        :weight 'normal))
+    (vertico-mode 1))
 
 (elpa-package 'orderless
   (require 'orderless)

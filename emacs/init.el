@@ -511,7 +511,7 @@ backwards instead."
 
 ;;; Bindings
 
-(define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+(defkey key-translation-map "ESC" (kbd "C-g"))
 
 ;; I'm trying to unlearn these and use the `general-transient' and mac-like
 ;; bindings instead.
@@ -1589,7 +1589,7 @@ PROMPT sets the `read-string prompt."
 
 (elpa-package 'visual-regexp
   ;; A reasonable regex engine? Live preview of search and replacement? Yes please!
-  (define-key global-map [remap query-replace] 'vr/query-replace)
+  (defkey global-map [remap query-replace] 'vr/query-replace)
   (with-eval-after-load 'visual-regexp
     (with-eval-after-load 'visual-regexp-steroids
       (custom-set-variables
@@ -1626,7 +1626,7 @@ PROMPT sets the `read-string prompt."
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
 (elpa-package 'expand-region
-  (global-set-key (kbd "C-=") 'er/expand-region))
+  (defkey global-map "C-=" 'er/expand-region))
 
 (elpa-package 'paren-face
   (global-paren-face-mode 1))
@@ -1854,7 +1854,7 @@ current HH:MM time."
         (call-interactively 'org-capture)))))
 
 (with-eval-after-load 'calendar
-  (define-key calendar-mode-map "k" 'org-calendar-capture))
+  (defkey calendar-mode-map "k" 'org-calendar-capture))
 
 
 ;;;; Fixing `org-todo' and `org-agenda-todo'
@@ -2062,6 +2062,6 @@ M - Mike                   Z - Zulu")
   "l" '("Lay" . qh--lying)
   "n" '("Nato" . qh--NATO-alphabet))
 
-(global-set-key (kbd "C-c h") 'quick-help-prompt)
+(defkey global-map "C-c h" 'quick-help-prompt)
 
 ;;; End of init.el

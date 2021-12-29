@@ -169,6 +169,33 @@ Keybindings you define here will take precedence."
   (setq transient-detect-key-conflicts t
         transient-show-popup t))
 
+;; Let's be honest, it's not hard to bind a key in Emacs, and the syntax for
+;; it is... fine. But it can be easier, and you can save yourself some typing
+;; by creating a function or macro to do it for you. There are many like it
+;; but this one is mine:
+
+(defun defkey (map &rest body)
+  "Define a key for MAP with specs in BODY.
+A custom wrapper around `define-key' that does 2 things:
+1. All string defs of a key are wrapped in `kbd'.
+2. You can define multiple keys in the style of `setq'.
+
+Define your keys like this:
+
+    (defkey global-map
+      \"s-1\" 'switch-to-buffer
+      [f1]  pkg-ops-map
+      \"s-2\" 'find-file)"
+  ;; https://emacs.stackexchange.com/a/58058
+  (while body
+    (let ((key (car body))
+          (def (cadr body)))
+      (define-key
+        map
+        (if (stringp key) (kbd key) key)
+        def)
+      (setq body (cddr body)))))
+
 
 ;;; Settings
 
@@ -488,47 +515,48 @@ backwards instead."
 
 ;; I'm trying to unlearn these and use the `general-transient' and mac-like
 ;; bindings instead.
-(let ((map bosskey-mode-map))
-  (define-key map (kbd "C-x C-f") 'undefined)
-  (define-key map (kbd "C-x f")   'undefined)
-  (define-key map (kbd "C-x C-b") 'undefined)
-  (define-key map (kbd "C-x b")   'undefined)
-  (define-key map (kbd "C-x k")   'undefined))
+(defkey bosskey-mode-map
+  "C-x C-f" 'undefined
+  "C-x f"   'undefined
+  "C-x C-b" 'undefined
+  "C-x b"   'undefined
+  "C-x k"   'undefined)
+
 
 ;; Because they're in the `bosskey-mode-map' these bindings won't be
 ;; overridden by minor modes and the like.
-(let ((map bosskey-mode-map))
-  (define-key map (kbd "M-/") 'completion-at-point)
-  (define-key map (kbd "M-\\") 'cycle-spacing)
-  (define-key map (kbd "M-z") 'zap-up-to-char)
-  (define-key map (kbd "M-i") 'imenu)
-  (define-key map (kbd "C-d") 'delete-forward-char)
-  (define-key map (kbd "M-o") 'other-window)
-  (define-key map (kbd "M-O") 'other-window-previous)
-  (define-key map (kbd "C-M-O") 'other-window-prefix)
-  (define-key map (kbd "<C-return>") 'universal-transient)
-  (define-key map (kbd "C-.") 'embark-act))
+(defkey bosskey-mode-map
+  "M-/" 'completion-at-point
+  "M-\\" 'cycle-spacing
+  "M-z" 'zap-up-to-char
+  "M-i" 'imenu
+  "C-d" 'delete-forward-char
+  "M-o" 'other-window
+  "M-O" 'other-window-previous
+  "C-M-O" 'other-window-prefix
+  "<C-return>" 'universal-transient
+  "C-." 'embark-act)
 
 (with-eval-after-load 'magit
   ;; Magit overrides `bosskey-mode-map', so I need to override this here:
-  (define-key magit-file-section-map (kbd "<C-return>") 'universal-transient))
+  (defkey magit-file-section-map "<C-return>" 'universal-transient))
 
 ;; For bindings that I do want to be overriden by minor/major modes, I use the
 ;; built-in `global-map'.
-(let ((map global-map))
+(defkey global-map
   ;; replace mappings
-  (define-key map [remap capitalize-word] 'capitalize-dwim)
-  (define-key map [remap downcase-word]   'downcase-dwim)
-  (define-key map [remap upcase-word]     'upcase-dwim)
+  [remap capitalize-word] 'capitalize-dwim
+  [remap downcase-word]   'downcase-dwim
+  [remap upcase-word]     'upcase-dwim
   ;; Make shift-click extend the region.
-  (define-key map [S-down-mouse-1] 'ignore)
-  (define-key map [S-mouse-1] 'mouse-save-then-kill)
+  [S-down-mouse-1] 'ignore
+  [S-mouse-1] 'mouse-save-then-kill
   ;; Use M-drag-mouse-1 to create rectangle regions.
-  (define-key map [M-down-mouse-1] #'mouse-drag-region-rectangle) ; down
-  (define-key map [M-drag-mouse-1] #'ignore)                      ; drag
-  (define-key map [M-mouse-1]      #'mouse-set-point))            ; up
+  [M-down-mouse-1] #'mouse-drag-region-rectangle ; down
+  [M-drag-mouse-1] #'ignore                      ; drag
+  [M-mouse-1]      #'mouse-set-point)            ; up
 
-(define-key help-map "s" 'describe-symbol-at-point)
+(defkey help-map "s" 'describe-symbol-at-point)
 
 
 ;; Repeat Mode
@@ -537,8 +565,9 @@ backwards instead."
 
 (defvar buffer-navigation-repeat-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "<left>") 'next-buffer)
-    (define-key map (kbd "<right>") 'previous-buffer)
+    (defkey map
+      "<left>" 'next-buffer
+     "<right>" 'previous-buffer)
     map)
   "Keymap to repeat buffer navigation commands. Used in `repeat-mode'.")
 (put 'next-buffer 'repeat-map 'buffer-navigation-repeat-map)
@@ -546,8 +575,9 @@ backwards instead."
 
 (defvar winner-mode-repeat-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "<left>") 'winner-undo)
-    (define-key map (kbd "<right>") 'winner-redo)
+    (defkey map
+      "<left>" 'winner-undo
+      "<right>" 'winner-redo)
     map)
   "Keymap to repeat winner-undo/redo. Used in `repeat-mode'.")
 (put 'winner-undo 'repeat-map 'winner-mode-repeat-map)
@@ -558,16 +588,16 @@ backwards instead."
 
 (define-prefix-command 'pkg-ops-map nil "Packages")
 
-(let ((map pkg-ops-map))
-  (define-key map "h" '("describe" . describe-package))
-  (define-key map "a" '("autoremove" . package-autoremove))
-  (define-key map "d" '("delete" . package-delete))
-  (define-key map "i" '("install" . package-install))
-  (define-key map "s" '("selected" . package-install-selected-packages))
-  (define-key map "r" '("refresh" . package-refresh-contents))
-  (define-key map "l" '("list" . list-packages)))
+(defkey pkg-ops-map
+  "h" '("describe" . describe-package)
+  "a" '("autoremove" . package-autoremove)
+  "d" '("delete" . package-delete)
+  "i" '("install" . package-install)
+  "s" '("selected" . package-install-selected-packages)
+  "r" '("refresh" . package-refresh-contents)
+  "l" '("list" . list-packages))
 
-(global-set-key (kbd "C-c p") 'pkg-ops-map)
+(defkey global-map"C-c p" 'pkg-ops-map)
 
 
 ;; MacOS-like bindings
@@ -575,36 +605,34 @@ backwards instead."
 (setq mac-command-modifier 'super
       mac-option-modifier 'meta)
 
-;; The Minimum set
-(let ((map global-map))
-  (define-key map (kbd "s-z") 'undo-only)
-  (define-key map (kbd "s-Z") 'undo-redo)
-  (define-key map (kbd "s-x") 'kill-region)
-  (define-key map (kbd "s-c") 'kill-ring-save)
-  (define-key map (kbd "s-v") 'yank)
-  (define-key map (kbd "s-<backspace>") 'backward-kill-line)
-  (define-key map (kbd "s-[") 'previous-buffer)
-  (define-key map (kbd "s-]") 'next-buffer)
-  (define-key map (kbd "s-{") 'indent-rigidly-left-to-tab-stop)
-  (define-key map (kbd "s-}") 'indent-rigidly-right-to-tab-stop)
-  (define-key map (kbd "s-/") 'comment-line)
-  (define-key map (kbd "s-<up>") 'beginning-of-buffer)
-  (define-key map (kbd "s-<down>") 'end-of-buffer)
-  (define-key map (kbd "s-/") 'comment-line)
-  (define-key map (kbd "s-s") 'save-buffer)
-  (define-key map (kbd "M-s-s") 'save-some-buffers)
-  (define-key map (kbd "s-m") 'iconify-frame)
-  (define-key map (kbd "s-,") 'find-user-init-file)
-  (define-key map (kbd "s-q") 'save-buffers-kill-emacs)
-  (define-key map (kbd "s-.") 'keyboard-quit))
-
-;; Making things easier
-(let ((map global-map))
-  (define-key map (kbd "s-b") 'consult-buffer)
-  (define-key map (kbd "s-f") 'consult-line)
-  (define-key map (kbd "s-o") 'find-file)
-  (define-key map (kbd "s-j") 'dired-jump)
-  (define-key map (kbd "s-w") 'window-transient))
+(defkey global-map
+  ;; The Minimum set
+  "s-z" 'undo-only
+  "s-Z" 'undo-redo
+  "s-x" 'kill-region
+  "s-c" 'kill-ring-save
+  "s-v" 'yank
+  "s-<backspace>" 'backward-kill-line
+  "s-[" 'previous-buffer
+  "s-]" 'next-buffer
+  "s-{" 'indent-rigidly-left-to-tab-stop
+  "s-}" 'indent-rigidly-right-to-tab-stop
+  "s-/" 'comment-line
+  "s-<up>" 'beginning-of-buffer
+  "s-<down>" 'end-of-buffer
+  "s-/" 'comment-line
+  "s-s" 'save-buffer
+  "M-s-s" 'save-some-buffers
+  "s-m" 'iconify-frame
+  "s-," 'find-user-init-file
+  "s-q" 'save-buffers-kill-emacs
+  "s-." 'keyboard-quit
+  ;; Making things easier
+  "s-b" 'consult-buffer
+  "s-f" 'consult-line
+  "s-o" 'find-file
+  "s-j" 'dired-jump
+  "s-w" 'window-transient)
 
 
 ;;; Themes
@@ -955,21 +983,23 @@ If SPACING is nil, set line-spacing to nil."
       (message "Line-spacing is nil")
     (setq-local line-spacing (- line-spacing 1))))
 
-(define-key global-map (kbd "C-c C-=") 'buffer-line-spacing-increase)
-(define-key global-map (kbd "C-c C-+") 'buffer-line-spacing-increase)
-(define-key global-map (kbd "C-c C--") 'buffer-line-spacing-decrease)
-(define-key global-map (kbd "C-c C-0") 'set-buffer-line-spacing)
+(defkey global-map
+  "C-c C-=" 'buffer-line-spacing-increase
+  "C-c C-+" 'buffer-line-spacing-increase
+  "C-c C--" 'buffer-line-spacing-decrease
+  "C-c C-0" 'set-buffer-line-spacing)
 
 (defvar line-spacing-repeat-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "=") 'buffer-line-spacing-increase)
-    (define-key map (kbd "+") 'buffer-line-spacing-increase)
-    (define-key map (kbd "-") 'buffer-line-spacing-decrease)
-    (define-key map (kbd "0") 'set-buffer-line-spacing)
-    (define-key map (kbd "C-=") 'buffer-line-spacing-increase)
-    (define-key map (kbd "C-+") 'buffer-line-spacing-increase)
-    (define-key map (kbd "C--") 'buffer-line-spacing-decrease)
-    (define-key map (kbd "C-0") 'set-buffer-line-spacing)
+    (defkey map
+      "=" 'buffer-line-spacing-increase
+      "+" 'buffer-line-spacing-increase
+      "-" 'buffer-line-spacing-decrease
+      "0" 'set-buffer-line-spacing
+      "C-=" 'buffer-line-spacing-increase
+      "C-+" 'buffer-line-spacing-increase
+      "C--" 'buffer-line-spacing-decrease
+      "C-0" 'set-buffer-line-spacing)
     map)
   "Keymap to repeat buffer line-spacing commands. Used in `repeat-mode'.")
 (put 'buffer-line-spacing-increase 'repeat-map 'line-spacing-repeat-map)
@@ -1150,10 +1180,10 @@ Does not pass arguments to underlying functions."
     ("D" "Defun" mark-defun)]
    [("SPC" "Activate Mark" activate-the-mark)]])
 
-(let ((map bosskey-mode-map))
-  (define-key map (kbd "C-z") 'set-mark-transient)
-  (define-key map (kbd "C-M-h") 'mark-line)
-  (define-key map (kbd "C-x C-x") 'exchange-point-and-mark-dwim))
+(defkey bosskey-mode-map
+  "C-z" 'set-mark-transient
+  "C-M-h" 'mark-line
+  "C-x C-x" 'exchange-point-and-mark-dwim)
 
 (elpa-package 'visible-mark
   (setq visible-mark-faces `(highlight))
@@ -1247,15 +1277,15 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 
 (prog1 "windmove"
   (setq windmove-create-window t)
-  (let ((map global-map))
-    (define-key map (kbd "S-<up>") #'windmove-up)
-    (define-key map (kbd "S-<right>") #'windmove-right)
-    (define-key map (kbd "S-<down>") #'windmove-down)
-    (define-key map (kbd "S-<left>") #'windmove-left)
-    (define-key map (kbd "M-S-<up>") #'windmove-swap-states-up)
-    (define-key map (kbd "M-S-<right>") #'windmove-swap-states-right)
-    (define-key map (kbd "M-S-<down>") #'windmove-swap-states-down)
-    (define-key map (kbd "M-S-<left>") #'windmove-swap-states-left)))
+  (defkey global-map
+    "S-<up>" #'windmove-up
+    "S-<right>" #'windmove-right
+    "S-<down>" #'windmove-down
+    "S-<left>" #'windmove-left
+    "M-S-<up>" #'windmove-swap-states-up
+    "M-S-<right>" #'windmove-swap-states-right
+    "M-S-<down>" #'windmove-swap-states-down
+    "M-S-<left>" #'windmove-swap-states-left))
 
 
 ;;; Confirm Killing Modified Buffers
@@ -1447,14 +1477,16 @@ PROMPT sets the `read-string prompt."
 
 (let ((minibuffer minibuffer-local-completion-map)
       (list completion-list-mode-map))
-  (define-key minibuffer (kbd "C-n") 'switch-to-completions)
-  (define-key minibuffer (kbd "C-p") 'switch-to-completions-bottom)
-  (define-key list [remap other-window] 'switch-to-minibuffer)
-  (define-key list "z" #'completion-kill-buffer)
-  (define-key list [remap keyboard-quit] #'delete-completion-window)
-  (define-key list [remap quit-window] #'completion-quit)
-  (define-key list (kbd "n") 'next-completion)
-  (define-key list (kbd "p") 'previous-completion))
+  (defkey minibuffer
+    "C-n" 'switch-to-completions
+    "C-p" 'switch-to-completions-bottom)
+  (defkey list
+    [remap other-window] 'switch-to-minibuffer
+    "z" #'completion-kill-buffer
+    [remap keyboard-quit] #'delete-completion-window
+    [remap quit-window] #'completion-quit
+    "n" 'next-completion
+    "p" 'previous-completion))
 
 (add-hook 'completion-list-mode-hook 'hl-line-mode)
 
@@ -1488,7 +1520,7 @@ PROMPT sets the `read-string prompt."
   (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-symbol)
   (add-to-list 'completion-at-point-functions #'cape-line)
-  (define-key bosskey-mode-map (kbd "C-M-/") 'cape-transient))
+  (defkey bosskey-mode-map "C-M-/" 'cape-transient))
 
 (local-package "vundo"
   ;; Vundo creates a tree-like visualization of your undo history
@@ -1515,21 +1547,24 @@ PROMPT sets the `read-string prompt."
   (custom-set-faces
    '(embark-verbose-indicator-title ((t (:inherit 'modus-themes-heading-1)))))
 
-  (define-key minibuffer-local-map (kbd "C-,") 'embark-become)
+  (defkey minibuffer-local-map "C-," 'embark-become)
 
   (with-eval-after-load 'embark
-    (let ((map embark-file-map))
-      (define-key map (kbd "O") 'crux-open-with)
-      (define-key map (kbd "j") 'dired-jump))))
+    (defkey embark-file-map
+      "O" 'crux-open-with
+      "j" 'dired-jump)))
 
 (elpa-package 'consult
   (with-eval-after-load 'consult
     (consult-customize consult-buffer consult-buffer-other-window :preview-key nil))
+
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
-  (global-set-key [remap imenu] 'consult-imenu)
-  (global-set-key [remap yank-pop] 'consult-yank-pop)
-  (global-set-key [remap repeat-complex-command] #'consult-complex-command)
+
+  (defkey global-map
+    [remap imenu] 'consult-imenu
+    [remap yank-pop] 'consult-yank-pop
+    [remap repeat-complex-command] #'consult-complex-command)
 
   (defvar mac-find-initial-string nil
     "String to pass to `consult-line'.")
@@ -1548,8 +1583,9 @@ PROMPT sets the `read-string prompt."
     (interactive)
     (consult-line mac-find-initial-string))
 
-  (define-key global-map (kbd "s-e") 'set-mac-find-initial-string)
-  (define-key global-map (kbd "s-g") 'consult-line-mac-find-initial))
+  (defkey global-map
+    "s-e" 'set-mac-find-initial-string
+    "s-g" 'consult-line-mac-find-initial))
 
 (elpa-package 'visual-regexp
   ;; A reasonable regex engine? Live preview of search and replacement? Yes please!
@@ -1608,9 +1644,9 @@ PROMPT sets the `read-string prompt."
 (with-eval-after-load 'dired
   (setq dired-use-ls-dired nil)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-  (let ((map dired-mode-map))
-    (define-key map (kbd "O") 'crux-open-with)
-    (define-key map (kbd "C-/") 'dired-undo)))
+  (defkey dired-mode-map
+    "O" 'crux-open-with
+    "C-/" 'dired-undo))
 
 (prog1 "prog-mode"
   (defun prog-mode-hook-config nil
@@ -1623,7 +1659,7 @@ PROMPT sets the `read-string prompt."
   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
   (setq outline-minor-mode-cycle t)
   (with-eval-after-load 'outline
-    (define-key outline-minor-mode-map (kbd "<backtab>") 'outline-cycle-buffer)))
+    (defkey outline-minor-mode-map "<backtab>" 'outline-cycle-buffer)))
 
 (prog1 "calendar"
   (require 'solar)
@@ -1788,12 +1824,12 @@ PROMPT sets the `read-string prompt."
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
                    (org-agenda-overriding-header "Active, not scheduled, Tasks: ")))))))
 
-  (let ((map org-agenda-mode-map))
-    (define-key map (kbd "k") 'org-capture)
-    (define-key map (kbd "K") 'org-agenda-capture)
-    (define-key map (kbd "S") 'org-agenda-schedule)
-    (define-key map (kbd "D") 'org-agenda-deadline)
-    (define-key map (kbd "C-/") 'org-agenda-undo))
+  (defkey org-agenda-mode-map
+    "k" 'org-capture
+    "K" 'org-agenda-capture
+    "S" 'org-agenda-schedule
+    "D" 'org-agenda-deadline
+    "C-/" 'org-agenda-undo)
 
   ) ; End Org Agenda
 
@@ -1840,7 +1876,7 @@ current HH:MM time."
     ]])
 
 (with-eval-after-load 'org
-  (define-key org-mode-map (kbd "C-c C-t") 'org-todo-transient))
+  (defkey org-mode-map "C-c C-t" 'org-todo-transient))
 
 
 (transient-define-prefix org-agenda-todo-transient ()
@@ -1854,7 +1890,7 @@ current HH:MM time."
     ]])
 
 (with-eval-after-load 'org-agenda
-  (define-key org-agenda-mode-map (kbd "t") 'org-agenda-todo-transient))
+  (defkey org-agenda-mode-map "t" 'org-agenda-todo-transient))
 
 
 ;;; Transients
@@ -2021,10 +2057,10 @@ M - Mike                   Z - Zulu")
 
 (define-prefix-command 'quick-help-prompt nil "Quick Help")
 
-(let ((map quick-help-prompt))
-  (define-key map "w" '("Weather" . qh--wheather))
-  (define-key map "l" '("Lay" . qh--lying))
-  (define-key map "n" '("Nato" . qh--NATO-alphabet)))
+(defkey quick-help-prompt
+  "w" '("Weather" . qh--wheather)
+  "l" '("Lay" . qh--lying)
+  "n" '("Nato" . qh--NATO-alphabet))
 
 (global-set-key (kbd "C-c h") 'quick-help-prompt)
 

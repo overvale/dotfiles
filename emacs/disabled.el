@@ -718,34 +718,8 @@ FEATURE is name of lisp feature, MODE and REPLACEMENT are as in `blackout'."
   `(with-eval-after-load ',feature
      (blackout ',mode ,replacement)))
 
-;; https://github.com/amno1/emacs-init-generator/blob/main/generator.org
-(defmacro define-keys (mapname &rest body)
-  `(dolist (def '(,@body))
-     (define-key ,mapname
-       (if (vectorp (car def))
-           (car def)
-         (read-kbd-macro (car def)))
-       (cdr def))))
-
-(defmacro global-set-keys (&rest body)
-  `(dolist (def '(,@body))
-     (global-set-key
-       (if (vectorp (car def))
-           (car def)
-         (read-kbd-macro (car def)))
-       (cdr def))))
-
-(defmacro define-key-lambda (map key &rest body)
-  `(define-key ,map ,key (lambda () (interactive) ,@body)))
-
-(defmacro define-funkey (map key name &rest body)
-  `(define-key ,map ,key (defun ,name nil (interactive) ,@body)))
-
-(define-key-lambda global-map (kbd "s-1")
-  (message "works"))
-
-(define-funkey global-map (kbd "s-1") my:test2
-  (message "test2"))
+;; https://www.reddit.com/r/emacs/comments/6adli0/comment/dhedc64/?utm_source=share&utm_medium=web2x&context=3
+;; https://github.com/jschaf/keydef.el/blob/master/keydef.el
 
 
 ;;; Facedancer

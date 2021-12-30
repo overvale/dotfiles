@@ -94,7 +94,8 @@
         vertico
         visible-mark
         visual-regexp
-        visual-regexp-steroids))
+        visual-regexp-steroids
+        wolfram))
 
 
 ;;; Critical Setup
@@ -162,6 +163,7 @@ Keybindings you define here will take precedence."
   (setq local-package-dir (concat user-home-dir "src/lisp/"))
   (setq-default default-directory user-home-dir)
   (setq org-directory (concat user-home-dir "org/"))
+  (load (concat local-package-dir "private.el"))
   (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/")))
 
 (prog1 "transient"

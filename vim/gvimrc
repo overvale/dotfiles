@@ -1,5 +1,0 @@
-set guifont=IBMPlexMono-Text:h13
-set guioptions=g
-colorscheme gruvbox
-set background=light
-set linespace=1

@@ -1,5 +1,0 @@
-#!/usr/bin/ruby
-
-# Very simple script that adds periods for abbreviations. nasa => N.A.S.A.
-
-print ARGF.read.gsub(/\w/, '\0.').upcase

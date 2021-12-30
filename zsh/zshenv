@@ -1,2 +1,1 @@
-export PLAN9=~/home/opt/plan9port
-export PATH=~/home/dot/bin:$PLAN9/bin:~/home/dot/acme/bin:$PATH
+export PATH=~/home/dot/bin:$PATH

@@ -1,29 +1,23 @@
-# TAKE NOTE!!
-# Everything in this file is only loaded for interactive shells.
-# For non-interactive shells, like those used by emacs & vim, use 'zshenv'
-
-# {{{ OPTIONS
+# SETTINGS
 # ----------------------------------------------------------------------------
 
-export DOT=~/home/dot
-
-export LANG=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8           # UTF-8 Encoding
+export LC_CTYPE=en_US.UTF-8       # UTF-8 Encoding
+export LC_ALL=en_US.UTF-8         # UTF-8 Encoding
 setopt HIST_IGNORE_DUPS           # Ignore duplication command history list
 setopt SHARE_HISTORY              # Share history data between sessions
 setopt APPEND_HISTORY             # New sessions append history data rather than overwrite
 setopt EXTENDED_HISTORY           # save each command’s beginning timestamp
-HISTFILE=~/.zsh_history
-SAVEHIST=10000
-HISTSIZE=10000
+HISTFILE=~/.zsh_history           # location of of zsh history
+SAVEHIST=10000                    # maximum number of events stored in the internal history list
+HISTSIZE=10000                    # maximum number of events stored in the internal history list
 setopt NOCLOBBER                  # Disallow overwriting of files using >
 setopt complete_aliases           # Dont expand aliases _before_ completion has finished
 set    completion-ignore-case on  # Ignore case for tab completion
 set    show-all-if-ambiguous on   # Show all suggestions after pressing tab once instead of twice
 bindkey -e                        # Use emacs bindings
-autoload -U compinit
-compinit -C
+autoload -U compinit              # setup completions
+compinit -C                       # setup completions
 
 ## case-insensitive (all),partial-word and then substring completion
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' \
@@ -32,49 +26,17 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' \
 # pasting with tabs doesn't perform completion
 zstyle ':completion:*' insert-tab pending
 
-bindkey "^K" history-beginning-search-backward
-bindkey "^J" history-beginning-search-forward
-
-export EDITOR=vim
-export BORG_REMOTE_PATH=/usr/local/bin/borg1/borg1
-
 # Automatically quote URLs
 autoload -Uz url-quote-magic
 zle -N self-insert url-quote-magic
 
-# }}}
-# {{{ PROMPT
+# Cycle through history
+bindkey "^K" history-beginning-search-backward
+bindkey "^J" history-beginning-search-forward
+
+
+# ALIASES
 # ----------------------------------------------------------------------------
-
-setopt prompt_subst
-
-# Setup the variables used in the prompt
-if [ -n "$SSH_CLIENT" ]; then
-    local myUsermachine='%n@%m:'
-fi
-
-ExitStatus='%(?..%F{red}✗ %f)'
-myDir='[%~]'
-myBackgroundjobs='%(1j. (%j jobs).)'
-myPrompt='⑆ '
-
-# Build the Prompt
-PROMPT='${ExitStatus}${myUsermachine}${myDir}${myBackgroundjobs} ${myPrompt}'
-
-# }}}
-# {{{ ALIASES
-# ----------------------------------------------------------------------------
-alias evrc="vim $DOT/vim/vimrc"
-alias ezrc="vim $DOT/zsh/zshrc && source $DOT/zsh/zshrc"
-alias szrc="source $DOT/zsh/zshrc"
-
-alias acme="~/home/dot/acme/bin/acme"
-
-alias ,gs="git status -sb"
-alias ,gl="git log --all --graph --pretty=format:'%C(blue)%cd%C(reset) %C(yellow)%h%C(reset) %s%C(red)%d%C(reset)' --abbrev-commit --date=short --branches --tags --remotes"
-alias ,gd="git diff -b"
-alias ,ga="git add"
-alias ,gc="git commit"
 
 alias rm="rm -i"
 alias mv="mv -i"
@@ -87,21 +49,7 @@ alias server='python -m http.server 8000'
 alias unquarantine='xattr -d com.apple.quarantine'
 alias pbp="pbpaste"
 alias pbc="pbcopy"
-alias bbe="bbedit"
 alias python=python3
-
-# TMUX
-alias ,tmn='tmux new -s `basename $PWD`'
-alias ,tma='tmux attach -t '
-alias ,tml='tmux list-sessions'
-alias ,tmk='tmux kill-session -t '
-,tmh() {
-echo "
-    tmn - New tmux session
-    tma - Attach tmux session
-    tml - List tmux sessions
-    tmk - Kill tmux session
-" }
 
 # System Reports
 # I use these commands to search for background processes I don't want
@@ -111,16 +59,20 @@ alias ,lsrunsysdeamons='sudo launchctl list | grep -v "com.apple." | tail -n+2 |
 alias ,lskext='kextstat | grep -v com.apple'
 alias ,lsmyps='ps -ax | grep -v "/System\|/Applications\|/usr\|/sbin\|ttys00[0-9]"'
 
-# }}}
-# {{{ FUNCTIONS
+
+# FUNCTIONS
 # ----------------------------------------------------------------------------
 
-# did file - listing things you've done
 did (){
+    # A simple log-entry system that appends anything you type after
+    # `did` to the log file.
     echo "$(ddate): $@" >> ~/home/files/did.txt
 }
 
-myip() { (awk '{print $2}' <(ifconfig en0 | grep 'inet ')); }
+myip() {
+	# Get IP address from `ifconfig`
+	(awk '{print $2}' <(ifconfig en0 | grep 'inet '));
+}
 
 size(){
     if test -z $1; then
@@ -162,69 +114,4 @@ function makepdf(){
     fi
 }
 
-# }}}
-# {{{ Project Management System
-# ----------------------------------------------------------------------------
 
-fzf-launcher() {
-    eval "$(~/home/src/launcher/launcher | fzf)"
-}
-alias ll=fzf-launcher
-
-# Generic function that searches for "TODO" in the paths given
-function td() {
-    if test -z $1; then
-        # if no arguments
-        echo "ERROR: requires argument" >&2
-        return 1
-    elif test -z $2; then
-        # if there's only one argument, this pattern
-        ag TODO $1
-        return 0
-    else
-        # if more than one argument, this pattern
-        ag TODO $*
-        return 0
-    fi
-}
-
-# }}}
-# {{{ FZF OPTIONS / FUNCTIONS
-# ----------------------------------------------------------------------------
-
-source /usr/local/opt/fzf/shell/completion.zsh
-source /usr/local/opt/fzf/shell/key-bindings.zsh
-
-export FZF_DEFAULT_OPTS="--color=light --height 60%"
-export FZF_CTRL_T_OPTS="--preview '(cat {} || tree -C {}) 2> /dev/null | head -200'"
-# don't forget to set "use option key as meta" for this to work:
-export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
-export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden --bind '?:toggle-preview'"
-export FZF_FS_OPENER=vim
-
-# fshow - git commit browser
-fshow() {
-  git log --graph --color=always \
-      --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
-  fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
-      --bind "ctrl-m:execute:
-                (grep -o '[a-f0-9]\{7\}' | head -1 |
-                xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
-                {}
-FZF-EOF"
-}
-
-# v - open files in ~/.viminfo
-v() {
-  local files
-  files=$(grep '^>' ~/.viminfo | cut -c3- |
-          while read line; do
-            [ -f "${line/\~/$HOME}" ] && echo "$line"
-          done | fzf-tmux -d -m -q "$*" -1) && vim ${files//\~/$HOME}
-}
-
-# This stuff has to be last
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-source ~/home/opt/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
-
-# }}}

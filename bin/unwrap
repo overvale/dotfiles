@@ -1,9 +1,0 @@
-#!/usr/bin/ruby
-
-ARGF.set_encoding(Encoding::UTF_8)
-x = ARGF.read
-
-# replaces newlines with spaces
-x = x.gsub(/(?!^) *\n(?=\S)/, ' ')
-
-print x

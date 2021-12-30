@@ -1,8 +1,0 @@
-if test -z $1; then
-  # Takes misspelled word as input, outputs suggestions from aspell
-  aspell -a | tail -2 | sed 's/& .*: //' | awk 'gsub(/, /,"\n")'
-else
-  # Also takes 1st argument
-  echo "$1" | aspell -a | tail -2 | sed 's/& .*: //' | awk 'gsub(/, /,"\n")'
-fi
-

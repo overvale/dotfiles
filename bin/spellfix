@@ -1,3 +1,0 @@
-# takes a word and feeds it to aspell, outputs the first suggestion (without newline)
-
-aspell -a | tail -2 | sed 's/& .*: //' | awk 'gsub(/, /,"\n")' | head -1 | tr -d '\n'

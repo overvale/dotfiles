@@ -143,12 +143,10 @@ permissions. Some tools, like Excel, require installation to =/Applications= so
 they can run background processes, others complain every launch but work just
 fine.
 
-- Acme ([[https://9fans.github.io/plan9port/][Plan9Port]]) -- install to =~/home/opt=
 - BBEdit
 - Emacs (the [[https://github.com/railwaycat/homebrew-emacsmacport][correct version]], [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][more info]])
 - Firefox
 - Hammerspoon
-- Mimestream
 - Microsoft Excel
 - Monodraw
 - Tot
@@ -157,7 +155,6 @@ fine.
 
 * My Stuff
 
-- Create a "dump" file for acme by running acme from =~/home/dot/acme/bin/acme=.
 - Copy files from old machine / backup (thunderbolt bridge is nice if you have the cable).
 - Copy fonts from backup.
 - Install [[http://git.io/textplay][textplay]] with =cd ~/home/src/textplay && make install=.
@@ -190,7 +187,6 @@ I pretty much organize everything under =~/home/=.
 Run from =$HOME=:
 
 #+begin_src bash
-ln -s ~/home/dot/vim .vim
 ln -s ~/home/dot/emacs/init.el ~/.emacs.d/init.el
 ln -s ~/home/dot/emacs/early-init.el ~/.emacs.d/early-init.el
 ln -s ~/home/dot/git/gitconfig .gitconfig
@@ -202,7 +198,7 @@ ln -s ~/home/dot/hammerspoon ~/.hammerspoon
 
 - Rewrite all paths pointing to repos in =~/home/src/git/= --- this can be done
   with the command =fd "\.git$" -H -t f | xargs bbedit=
-- Open vim, emacs, zsh, etc. and verify everything is functioning correctly (plugins and whatnot).
+- Open emacs, zsh, etc. and verify everything is functioning correctly (plugins and whatnot).
 
 ** Dictionaries
 
@@ -267,9 +263,9 @@ but I'm pretty happen with it so far.
                        │                           
                        │                           
                        │                           
-┌───────────┐    ┌───────────┐        ┌───────────┐
-│  iPhone   │    │  MacBook  │◀──────▶│ Work iMac │
-└───────────┘    └───────────┘        └───────────┘
+┌───────────┐    ┌───────────┐
+│  iPhone   │    │  MacBook  │
+└───────────┘    └───────────┘
       │                ▲                           
       │                │                           
       │                │                           
@@ -283,11 +279,6 @@ but I'm pretty happen with it so far.
 
 + iCloud to MacBook :: I have the Photos app on my MacBook set to download all
   the originals, that way I have a local copy of everything.
-
-+ MacBook 2-way sync with Work iMac :: I use Syncthing to keep a few key
-  folders in sync directly between these computers. Because everything syncs
-  to my MacBook, and because I rarely use my Work iMac for things I want
-  backed-up, I don't worry about backing anything up directly from the iMac.
 
 + MacBook to Local NAS ::
 

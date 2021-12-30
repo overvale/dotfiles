@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Requires pandoc <http://johnmacfarlane.net/pandoc/>
-# Wraps lists to 78 characters
-# Since pandoc converts bulleted-lists to hyphen-lists, I correct for that here
-
-cat | pandoc -f rst -t rst --columns=78 | sed 's/^\(\ *\)\-/\1*/g'

@@ -1,5 +1,0 @@
-#!/bin/sh
-# Open Man Pages in BBedit
-cmd=$(tr [a-z] [A-Z] <<< "$1")
-man $1 | col -b | /usr/local/bin/bbedit --view-top --clean -t "$cmd MANUAL"
-

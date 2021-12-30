@@ -1,6 +1,10 @@
 #!/usr/bin/ruby
 # coding: utf-8
 
+# This script converts a custom markup (described in the comments below)
+# to HTML. It is intended to extend a plain-text markup language like
+# markdown with custom features.
+
 ARGF.set_encoding(Encoding::UTF_8)
 input = ARGF.read
 

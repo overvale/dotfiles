@@ -11,9 +11,6 @@ I hope you can learn something from reading mine.
 You can find a detailed write-up of the software I use in =bootstrap.org=, but
 these dotfiles are centered around just a few programs:
 
-+ [[http://acme.cat-v.org][Acme]] :: a powerful text editor that takes the UNIX maxim (do one thing and
-  do it well) to its logical extreme. If you haven't heard of Acme before [[https://research.swtch.com/acme][Russ
-  Cox's tour of Acme]] gives a great overview of what it can do.
 + Shell Scripts :: these are a random collection of text-transformation
   scripts I've collected over the years, a few I wrote myself but most of them
   are ripped from other people's dotfiles (I hope you do the same!).
@@ -25,7 +22,6 @@ these dotfiles are centered around just a few programs:
   Lots of apps like this exist, but Hammerspoon is /crazy powerful/ and /crazy
   flexible/. I am not a real programmer, so the code therein might be a
   little... bad.
-+ Vim :: I don't have a remarkable =vimrc= file but it's short and very vim-ish.
 
 ** Feedback
 

@@ -50,9 +50,9 @@
 ;; Is it really worth it? Probably not.
 
 (add-hook 'emacs-startup-hook
-  (lambda ()
-    (setq gc-cons-threshold 16777216
-          gc-cons-percentage 0.1)))
+          (lambda ()
+            (setq gc-cons-threshold 16777216
+                  gc-cons-percentage 0.1)))
 
 
 ;;; Package Management
@@ -578,7 +578,7 @@ backwards instead."
   (let ((map (make-sparse-keymap)))
     (defkey map
       "<left>" 'next-buffer
-     "<right>" 'previous-buffer)
+      "<right>" 'previous-buffer)
     map)
   "Keymap to repeat buffer navigation commands. Used in `repeat-mode'.")
 (put 'next-buffer 'repeat-map 'buffer-navigation-repeat-map)
@@ -923,12 +923,12 @@ It should probably be a mode instead."
                    :mode-height 130
                    :vari-height 140))
         (Hack . ( :mono "Hack"
-                   :vari "Inter"
-                   :mode "SF Compact Text"
-                   :line nil
-                   :mono-height 120
-                   :mode-height 140
-                   :vari-height 130))
+                  :vari "Inter"
+                  :mode "SF Compact Text"
+                  :line nil
+                  :mono-height 120
+                  :mode-height 140
+                  :vari-height 130))
         (IBM . ( :mono "IBM Plex Mono"
                  :vari "IBM Plex Serif"
                  :mode "IBM Plex Sans"
@@ -1047,10 +1047,10 @@ If SPACING is nil, set line-spacing to nil."
 
 (defun mode-line-buffer-modified-status ()
   "Return a string indicating buffer modification status."
-   (if (and (buffer-modified-p)
-            (buffer-file-name))
-       (propertize "  -MD-"
-                   'help-echo "Buffer is modified.")))
+  (if (and (buffer-modified-p)
+           (buffer-file-name))
+      (propertize "  -MD-"
+                  'help-echo "Buffer is modified.")))
 
 (defun mode-line-buffer-read-only-status ()
   "Return a string indicating buffer read-only status."
@@ -1341,8 +1341,8 @@ This function is designed to be called from `kill-buffer-query-functions'."
         (setq-local buffer-confirm-kill nil)
         (message "'buffer-confirm-kill' set to 'nil'"))
     (progn
-        (setq-local buffer-confirm-kill t)
-        (message "'buffer-confirm-kill' set to 't'"))))
+      (setq-local buffer-confirm-kill t)
+      (message "'buffer-confirm-kill' set to 't'"))))
 
 
 ;;; Scratch Buffers
@@ -1467,7 +1467,7 @@ PROMPT sets the `read-string prompt."
     (defkey vertico-map
       "s-<down>" 'vertico-next-group
       "s-<up>"   'vertico-previous-group))
-    (vertico-mode 1))
+  (vertico-mode 1))
 
 (elpa-package 'orderless
   (require 'orderless)

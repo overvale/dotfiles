@@ -1631,6 +1631,9 @@ PROMPT sets the `read-string prompt."
 (elpa-package 'paren-face
   (global-paren-face-mode 1))
 
+(local-package "emacs-sdcv"
+  (require 'sdcv-mode))
+
 
 ;;; Libraries
 
@@ -1925,9 +1928,10 @@ current HH:MM time."
     ("f" "Set Fonts" set-custom-fonts)
     ("t" "Toggle Dark/Light Theme" toggle-theme-color :transient t)
     ("T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
-    ("d" "Date/Time mode-line" toggle-date-time-battery)
+    ("D" "Date/Time mode-line" toggle-date-time-battery)
     ("C" "Calendar" calendar)
     ("W" "World Clock" world-clock)
+    ("d" "Define Word" sdcv-search)
     ("x o" "*scratch-org*" scratch-buffer-org)
     ("x m" "*scratch-markdown*" scratch-buffer-markdown)]
    ["Macros"

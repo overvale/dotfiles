@@ -1254,6 +1254,13 @@ Does not pass arguments to underlying functions."
                (window-parameters . ((select . t))))
              t)
 
+(add-to-list 'display-buffer-alist
+             '("\\*Pp Macroexpand Output.*"
+               (display-buffer-below-selected)
+               (window-height . fit-window-to-buffer)
+               (window-parameters . ((select . nil))))
+             t)
+
 (define-minor-mode dedicated-mode
   "Minor mode for dedicating windows.
 This minor mode dedicates the current window to the current buffer.
@@ -1456,7 +1463,10 @@ PROMPT sets the `read-string prompt."
     (set-face-attribute 'vertico-current nil
                         :background (face-attribute 'lazy-highlight :background nil t)
                         :foreground (face-attribute 'lazy-highlight :foreground nil t)
-                        :weight 'normal))
+                        :weight 'normal)
+    (defkey vertico-map
+      "s-<down>" 'vertico-next-group
+      "s-<up>"   'vertico-previous-group))
     (vertico-mode 1))
 
 (elpa-package 'orderless
@@ -1759,7 +1769,7 @@ PROMPT sets the `read-string prompt."
    '(org-image-actual-width '(600))
    '(org-hide-emphasis-markers t)
    '(org-hide-leading-stars nil)
-   '(org-adapt-indentation t)
+   '(org-adapt-indentation nil)
    '(org-ellipsis "...")
    '(org-insert-heading-respect-content t)
    '(org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+")))

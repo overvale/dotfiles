@@ -198,6 +198,15 @@ Define your keys like this:
         def)
       (setq body (cddr body)))))
 
+;; I should be scolded for the below since one should never bind keys to
+;; anonymous functions. But at least I've added some documentation that will
+;; direct the user to the right place when the key's definition is looked-up.
+;; Forgive me.
+
+(defmacro lam-in (body)
+  "Wrap BODY in an interactive `lambda' form."
+  `(lambda () "Anonymous function in `user-init-file'." (interactive) ,body))
+
 
 ;;; Settings
 

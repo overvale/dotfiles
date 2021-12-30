@@ -4,6 +4,31 @@
 ;; This file contains lisp that I'm not using but don't want to get rid of.
 
 
+;;; Repeat Mode
+
+(repeat-mode 1)
+
+(defvar buffer-navigation-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (defkey map
+      "<left>" 'next-buffer
+      "<right>" 'previous-buffer)
+    map)
+  "Keymap to repeat buffer navigation commands. Used in `repeat-mode'.")
+(put 'next-buffer 'repeat-map 'buffer-navigation-repeat-map)
+(put 'previous-buffer 'repeat-map 'buffer-navigation-repeat-map)
+
+(defvar winner-mode-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (defkey map
+      "<left>" 'winner-undo
+      "<right>" 'winner-redo)
+    map)
+  "Keymap to repeat winner-undo/redo. Used in `repeat-mode'.")
+(put 'winner-undo 'repeat-map 'winner-mode-repeat-map)
+(put 'winner-redo 'repeat-map 'winner-mode-repeat-map)
+
+
 ;;; Misc
 
 ;; FIXME: Stole this technique from https://svn.red-bean.com/repos/kfogel/trunk/.emacs

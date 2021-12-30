@@ -9,13 +9,12 @@
 
 ;; This config targets Emacs 28.1
 
+;;; Commentary:
+
 ;; This file has an outline which can be viewed by looking at comments
 ;; starting with three or more semicolons. `outline-minor-mode' supports this
 ;; convention by default and helps with navigation. You can also create an
 ;; occur buffer with the search /^;;;+/.
-
-
-;;; Commentary:
 
 ;; Every Emacs configuration is unique to the person who created it, to their
 ;; needs and their taste. This one takes the following approach:
@@ -44,6 +43,10 @@
 
 ;;; Startup
 
+;; I don't think of myself as fanatical about startup time, but I do try to
+;; keep it below 0.5 seconds (as reported by `emacs-init-time'). That's
+;; roughly double the speed that Emacs starts up with no init file.
+
 ;; Part 2 of 2 (part 1 is in early-init). This is stolen from here:
 ;; https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
 ;; In this config, this 2-part dance saves about 0.3 seconds on startup time.
@@ -55,11 +58,60 @@
                   gc-cons-percentage 0.1)))
 
 
-;;; Package Management
+;;; Settings
 
-;; The very first thing in the config should be setting up the packages I
-;; need. Setting up packages first thing ensures that at a minimum Emacs will
-;; load the settings required for installing the packages this config needs.
+;; Save all interactive customization to a temp file, which is never loaded.
+;; This means interactive customization is session-local. Only this init file persists sessions.
+(setq custom-file (make-temp-file "emacs-custom-"))
+
+;; For most of my "settings" I use `custom-set-variables', which does a bunch of neat stuff:
+;;
+;; 1. It calls a variable's "setter" function, if it has one. A perfect
+;;    example of why this is needed is `truncate-lines', which simply will not
+;;    work unless set this way.
+;;
+;; 2. It can activate modes as well as set variables, which makes it tidy.
+;;
+;; 3. It takes care of setting the default for buffer-local variables correctly.
+;;
+;; https://with-emacs.com/posts/tutorials/almost-all-you-need-to-know-about-variables/#_user_options
+;; https://old.reddit.com/r/emacs/comments/exnxha/withemacs_almost_all_you_need_to_know_about/fgadihl/
+
+(custom-set-variables
+ '(inhibit-startup-screen t)
+ '(global-auto-revert-mode t)
+ '(save-place-mode t)
+ '(recentf-mode t)
+ '(scroll-bar-mode nil)
+ '(tool-bar-mode nil)
+ '(ring-bell-function 'ignore)
+ '(pixel-scroll-precision-mode 1)
+ '(scroll-step 1)
+ '(scroll-margin 1)
+ '(set-language-environment "UTF-8")
+ '(frame-title-format '("%b"))
+ '(uniquify-buffer-name-style 'forward)
+ '(vc-follow-symlinks t)
+ '(find-file-visit-truename t)
+ '(create-lockfiles nil)
+ '(make-backup-files nil)
+ '(bookmark-save-flag 1)
+ '(bookmark-menu-confirm-deletion t)
+ '(describe-bindings-outline t)
+ '(truncate-lines t)
+ '(save-interprogram-paste-before-kill t)
+ '(kill-do-not-save-duplicates t)
+ '(kill-ring-max 512)
+ '(sentence-end-double-space nil)
+ '(tab-always-indent 'complete)
+ '(tab-width 4)
+ '(indent-tabs-mode nil)
+ '(fill-column 78)
+ '(delete-by-moving-to-trash t)
+ '(trash-directory "~/.Trash"))
+
+
+;;; Critical Setup
 
 (require 'package)
 
@@ -79,26 +131,20 @@
         embark
         embark-consult
         expand-region
-        exec-path-from-shell
         fountain-mode
         hide-mode-line
         lua-mode
         magit
         markdown-mode
         marginalia
-        modus-themes
+        no-littering
         olivetti
         orderless
         org
-        paren-face
         vertico
-        visible-mark
         visual-regexp
         visual-regexp-steroids
         wolfram))
-
-
-;;; Critical Setup
 
 ;; There are 2 ways I install packages/lisp that aren't a part of this file:
 ;;
@@ -154,8 +200,7 @@ Keybindings you define here will take precedence."
              `((bosskey-mode . ,bosskey-mode-map)))
 
 ;; In addition to the above packages and macros, a few variables need to be
-;; set. I use a lot of transients in this config, so I need to make sure it is
-;; loaded and configured before those are declared below.
+;; set.
 
 (prog1 "environment"
   (defvar user-home-dir "~/home/")
@@ -164,7 +209,20 @@ Keybindings you define here will take precedence."
   (setq-default default-directory user-home-dir)
   (setq org-directory (concat user-home-dir "org/"))
   (load (concat local-package-dir "private.el"))
-  (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/")))
+  (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/"))
+  (add-to-list 'exec-path "/usr/local/bin/") ; homebrew
+  (add-to-list 'exec-path (concat user-home-dir "dot/bin")))
+
+;; Keep ~/.emacs.d/ clean
+(elpa-package 'no-littering
+  (require 'no-littering)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
+  (setq auto-save-file-name-transforms
+      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+
+;; I use a lot of transients in this config, so I need to make sure it is
+;; loaded and configured before those are declared below.
 
 (prog1 "transient"
   (autoload 'transient-define-prefix "transient" nil t)
@@ -206,58 +264,6 @@ Define your keys like this:
 (defmacro lam-in (body)
   "Wrap BODY in an interactive `lambda' form."
   `(lambda () "Anonymous function in `user-init-file'." (interactive) ,body))
-
-
-;;; Settings
-
-;; Save all interactive customization to a temp file, which is never loaded.
-;; This means interactive customization is session-local. Only this init file persists sessions.
-(setq custom-file (make-temp-file "emacs-custom-"))
-
-;; For most of my "settings" I use `custom-set-variables', which does a bunch of neat stuff:
-;;
-;; 1. It calls a variable's "setter" function, if it has one. A perfect
-;;    example of why this is needed is `truncate-lines', which simply will not
-;;    work unless set this way.
-;;
-;; 2. It can activate modes as well as set variables, which makes it tidy.
-;;
-;; 3. It takes care of setting the default for buffer-local variables correctly.
-;;
-;; https://with-emacs.com/posts/tutorials/almost-all-you-need-to-know-about-variables/#_user_options
-;; https://old.reddit.com/r/emacs/comments/exnxha/withemacs_almost_all_you_need_to_know_about/fgadihl/
-
-(custom-set-variables
- '(inhibit-startup-screen t)
- '(global-auto-revert-mode t)
- '(save-place-mode t)
- '(recentf-mode t)
- '(scroll-bar-mode nil)
- '(tool-bar-mode nil)
- '(ring-bell-function 'ignore)
- '(pixel-scroll-precision-mode 1)
- '(scroll-step 1)
- '(scroll-margin 1)
- '(set-language-environment "UTF-8")
- '(frame-title-format '("%b"))
- '(uniquify-buffer-name-style 'forward)
- '(vc-follow-symlinks t)
- '(find-file-visit-truename t)
- '(create-lockfiles nil)
- '(make-backup-files nil)
- '(bookmark-save-flag 1)
- '(bookmark-menu-confirm-deletion t)
- '(describe-bindings-outline t)
- '(truncate-lines t)
- '(save-interprogram-paste-before-kill t)
- '(kill-do-not-save-duplicates t)
- '(kill-ring-max 512)
- '(sentence-end-double-space nil)
- '(tab-width 4)
- '(indent-tabs-mode nil)
- '(fill-column 78)
- '(delete-by-moving-to-trash t)
- '(trash-directory "~/.Trash"))
 
 
 ;;; Functions
@@ -477,27 +483,8 @@ This will save the buffer if it is not currently saved."
 
 ;;; Advice
 
-(defadvice kill-line (before kill-line-autoreindent activate)
-  ;; https://github.com/Fuco1/.emacs.d/blob/master/site-lisp/my-advices.el
-  "Kill excess whitespace when joining lines.
-If the next line is joined to the current line, kill the extra indent whitespace in front of the next line."
-  (when (and (eolp) (not (bolp)))
-    (save-excursion
-      (forward-char 1)
-      (just-one-space 1))))
-
-(defadvice kill-visual-line (before kill-line-autoreindent activate)
-  ;; https://github.com/Fuco1/.emacs.d/blob/master/site-lisp/my-advices.el
-  "Kill excess whitespace when joining lines.
-If the next line is joined to the current line, kill the extra indent whitespace in front of the next line."
-  (when (and (eolp) (not (bolp)))
-    (save-excursion
-      (forward-char 1)
-      (just-one-space 1))))
-
 ;; The below allows for block-undo after running keyboard macros.
 ;; From u/oantolin.
-
 (defun block-undo (fn &rest args)
   (let ((marker (prepare-change-group)))
     (unwind-protect (apply fn args)
@@ -520,6 +507,76 @@ backwards instead."
      (list (save-excursion (backward-word 1) (point)) (point)))))
 
 
+
+
+;;; Minibuffer
+
+(custom-set-variables
+ '(completions-format 'one-column)
+ '(completions-detailed t)
+ '(completion-show-help nil)
+ '(completion-cycle-threshold nil)
+ '(enable-recursive-minibuffers t)
+ '(savehist-mode t)
+ '(minibuffer-eldef-shorten-default t)
+ '(minibuffer-depth-indicate-mode t)
+ '(file-name-shadow-mode 1)
+ '(minibuffer-depth-indicate-mode 1)
+ '(minibuffer-electric-default-mode 1))
+
+(elpa-package 'vertico
+  (setq vertico-count 15)
+  (with-eval-after-load 'vertico
+    ;; (set-face-attribute 'vertico-current nil
+    ;;                     :background (face-attribute 'lazy-highlight :background nil t)
+    ;;                     :foreground (face-attribute 'lazy-highlight :foreground nil t)
+    ;;                     :weight 'normal)
+    (defkey vertico-map
+      "s-<down>" 'vertico-next-group
+      "s-<up>"   'vertico-previous-group))
+  (vertico-mode 1))
+
+(elpa-package 'orderless
+  (require 'orderless)
+  (custom-set-variables
+   '(completion-styles '(orderless))))
+
+;; The below code introduces some improvements to the default completion
+;; experience. I took these ideas from the emacs-devel mailing list.
+
+(defun switch-to-completions-bottom ()
+  "Switch to the *Completions* buffer, at the bottom."
+  (interactive)
+  (switch-to-completions)
+  (move-to-window-line -1))
+
+(defun completion-quit ()
+  "Close the completion buffer and return to the minibuffer."
+  (interactive)
+  (quit-window)
+  (switch-to-minibuffer))
+
+(defun completion-kill-buffer ()
+  "Close the completion buffer and return to the minibuffer."
+  (interactive)
+  (let ((win (get-buffer-window "*Completions*")))
+    (when win (quit-window t win)))
+  (switch-to-minibuffer))
+
+(let ((minibuffer minibuffer-local-completion-map)
+      (list completion-list-mode-map))
+  (defkey minibuffer
+    "C-n" 'switch-to-completions
+    "C-p" 'switch-to-completions-bottom)
+  (defkey list
+    [remap other-window] 'switch-to-minibuffer
+    "z" #'completion-kill-buffer
+    [remap keyboard-quit] #'delete-completion-window
+    [remap quit-window] #'completion-quit
+    "n" 'next-completion
+    "p" 'previous-completion))
+
+
 ;;; Bindings
 
 (defkey key-translation-map "ESC" (kbd "C-g"))
@@ -532,7 +589,6 @@ backwards instead."
   "C-x C-b" 'undefined
   "C-x b"   'undefined
   "C-x k"   'undefined)
-
 
 ;; Because they're in the `bosskey-mode-map' these bindings won't be
 ;; overridden by minor modes and the like.
@@ -568,32 +624,6 @@ backwards instead."
   [M-mouse-1]      #'mouse-set-point)            ; up
 
 (defkey help-map "s" 'describe-symbol-at-point)
-
-
-;; Repeat Mode
-
-(repeat-mode 1)
-
-(defvar buffer-navigation-repeat-map
-  (let ((map (make-sparse-keymap)))
-    (defkey map
-      "<left>" 'next-buffer
-      "<right>" 'previous-buffer)
-    map)
-  "Keymap to repeat buffer navigation commands. Used in `repeat-mode'.")
-(put 'next-buffer 'repeat-map 'buffer-navigation-repeat-map)
-(put 'previous-buffer 'repeat-map 'buffer-navigation-repeat-map)
-
-(defvar winner-mode-repeat-map
-  (let ((map (make-sparse-keymap)))
-    (defkey map
-      "<left>" 'winner-undo
-      "<right>" 'winner-redo)
-    map)
-  "Keymap to repeat winner-undo/redo. Used in `repeat-mode'.")
-(put 'winner-undo 'repeat-map 'winner-mode-repeat-map)
-(put 'winner-redo 'repeat-map 'winner-mode-repeat-map)
-
 
 ;; Package Operations
 
@@ -668,7 +698,8 @@ backwards instead."
 (defun disable-current-themes nil
   "Disables all currently enabled themes."
   (interactive)
-  (mapcar 'disable-theme custom-enabled-themes))
+  (if custom-enabled-themes
+    (mapcar 'disable-theme custom-enabled-themes)))
 
 (defun load-theme-cleanly (theme)
   "Disable active themes, then load theme."
@@ -728,8 +759,8 @@ Disables all current themes, then:
 
 ;; Modus Themes options...
 
-(local-package "modus-themes"
-  (require 'modus-themes))
+;; Use the local version instead of the built-in one
+(local-package "modus-themes")
 
 (custom-set-variables
  '(modus-themes-mixed-fonts t)
@@ -969,55 +1000,6 @@ It should probably be a mode instead."
 (set-custom-fonts "Hack")
 
 
-;;; Buffer Line-Spacing
-
-;; In a manner similar to `text-scale-adjust'.
-
-(defun set-buffer-line-spacing (&optional spacing)
-  "Set the buffer's line-spacing to SPACING.
-If SPACING is nil, set line-spacing to nil."
-  (interactive "P")
-  (setq-local line-spacing (if (integerp spacing)
-                               spacing
-                             nil)))
-
-(defun buffer-line-spacing-increase ()
-  "Increase the buffer's line-spacing by 1."
-  (interactive)
-  (setq-local line-spacing (+ (or line-spacing 0) 1)))
-
-(defun buffer-line-spacing-decrease ()
-  "Decrease the buffer's line-spacing by 1."
-  (interactive)
-  (if (or (null line-spacing)
-          (<= line-spacing 0))
-      (message "Line-spacing is nil")
-    (setq-local line-spacing (- line-spacing 1))))
-
-(defkey global-map
-  "C-c C-=" 'buffer-line-spacing-increase
-  "C-c C-+" 'buffer-line-spacing-increase
-  "C-c C--" 'buffer-line-spacing-decrease
-  "C-c C-0" 'set-buffer-line-spacing)
-
-(defvar line-spacing-repeat-map
-  (let ((map (make-sparse-keymap)))
-    (defkey map
-      "=" 'buffer-line-spacing-increase
-      "+" 'buffer-line-spacing-increase
-      "-" 'buffer-line-spacing-decrease
-      "0" 'set-buffer-line-spacing
-      "C-=" 'buffer-line-spacing-increase
-      "C-+" 'buffer-line-spacing-increase
-      "C--" 'buffer-line-spacing-decrease
-      "C-0" 'set-buffer-line-spacing)
-    map)
-  "Keymap to repeat buffer line-spacing commands. Used in `repeat-mode'.")
-(put 'buffer-line-spacing-increase 'repeat-map 'line-spacing-repeat-map)
-(put 'buffer-line-spacing-decrease 'repeat-map 'line-spacing-repeat-map)
-(put 'set-buffer-line-spacing 'repeat-map 'line-spacing-repeat-map)
-
-
 ;;; Mode-Line
 
 (setq display-time-default-load-average nil)
@@ -1089,6 +1071,55 @@ If SPACING is nil, set line-spacing to nil."
                 (:eval (mode-line-buffer-line-spacing-status))
                 " " (vc-mode vc-mode)
                 mode-line-misc-info))
+
+
+;;; Buffer Line-Spacing
+
+;; In a manner similar to `text-scale-adjust'.
+
+(defun set-buffer-line-spacing (&optional spacing)
+  "Set the buffer's line-spacing to SPACING.
+If SPACING is nil, set line-spacing to nil."
+  (interactive "P")
+  (setq-local line-spacing (if (integerp spacing)
+                               spacing
+                             nil)))
+
+(defun buffer-line-spacing-increase ()
+  "Increase the buffer's line-spacing by 1."
+  (interactive)
+  (setq-local line-spacing (+ (or line-spacing 0) 1)))
+
+(defun buffer-line-spacing-decrease ()
+  "Decrease the buffer's line-spacing by 1."
+  (interactive)
+  (if (or (null line-spacing)
+          (<= line-spacing 0))
+      (message "Line-spacing is nil")
+    (setq-local line-spacing (- line-spacing 1))))
+
+(defkey global-map
+  "C-c C-=" 'buffer-line-spacing-increase
+  "C-c C-+" 'buffer-line-spacing-increase
+  "C-c C--" 'buffer-line-spacing-decrease
+  "C-c C-0" 'set-buffer-line-spacing)
+
+(defvar line-spacing-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (defkey map
+      "=" 'buffer-line-spacing-increase
+      "+" 'buffer-line-spacing-increase
+      "-" 'buffer-line-spacing-decrease
+      "0" 'set-buffer-line-spacing
+      "C-=" 'buffer-line-spacing-increase
+      "C-+" 'buffer-line-spacing-increase
+      "C--" 'buffer-line-spacing-decrease
+      "C-0" 'set-buffer-line-spacing)
+    map)
+  "Keymap to repeat buffer line-spacing commands. Used in `repeat-mode'.")
+(put 'buffer-line-spacing-increase 'repeat-map 'line-spacing-repeat-map)
+(put 'buffer-line-spacing-decrease 'repeat-map 'line-spacing-repeat-map)
+(put 'set-buffer-line-spacing 'repeat-map 'line-spacing-repeat-map)
 
 
 ;;; The Mark
@@ -1442,115 +1473,48 @@ PROMPT sets the `read-string prompt."
                                "Github Elisp: ")
 
 
-;;; Minibuffer
-
-(custom-set-variables
- '(completions-format 'one-column)
- '(completions-detailed t)
- '(completion-show-help nil)
- '(completion-cycle-threshold nil)
- '(enable-recursive-minibuffers t)
- '(savehist-mode t)
- '(minibuffer-eldef-shorten-default t)
- '(minibuffer-depth-indicate-mode t)
- '(file-name-shadow-mode 1)
- '(minibuffer-depth-indicate-mode 1)
- '(minibuffer-electric-default-mode 1))
-
-(elpa-package 'vertico
-  (setq vertico-count 15)
-  (with-eval-after-load 'vertico
-    (set-face-attribute 'vertico-current nil
-                        :background (face-attribute 'lazy-highlight :background nil t)
-                        :foreground (face-attribute 'lazy-highlight :foreground nil t)
-                        :weight 'normal)
-    (defkey vertico-map
-      "s-<down>" 'vertico-next-group
-      "s-<up>"   'vertico-previous-group))
-  (vertico-mode 1))
-
-(elpa-package 'orderless
-  (require 'orderless)
-  (custom-set-variables
-   '(completion-styles '(orderless))))
-
-;; The below code introduces some improvements to the default completion
-;; experience. I took these ideas from the emacs-devel mailing list.
-
-(defun switch-to-completions-bottom ()
-  "Switch to the *Completions* buffer, at the bottom."
-  (interactive)
-  (switch-to-completions)
-  (move-to-window-line -1))
-
-(defun completion-quit ()
-  "Close the completion buffer and return to the minibuffer."
-  (interactive)
-  (quit-window)
-  (switch-to-minibuffer))
-
-(defun completion-kill-buffer ()
-  "Close the completion buffer and return to the minibuffer."
-  (interactive)
-  (let ((win (get-buffer-window "*Completions*")))
-    (when win (quit-window t win)))
-  (switch-to-minibuffer))
-
-(let ((minibuffer minibuffer-local-completion-map)
-      (list completion-list-mode-map))
-  (defkey minibuffer
-    "C-n" 'switch-to-completions
-    "C-p" 'switch-to-completions-bottom)
-  (defkey list
-    [remap other-window] 'switch-to-minibuffer
-    "z" #'completion-kill-buffer
-    [remap keyboard-quit] #'delete-completion-window
-    [remap quit-window] #'completion-quit
-    "n" 'next-completion
-    "p" 'previous-completion))
-
-(add-hook 'completion-list-mode-hook 'hl-line-mode)
-
-
 ;;; Packages
 
-(setq tab-always-indent 'complete)
+(elpa-package 'visual-regexp
+  ;; A reasonable regex engine? Live preview of search and replacement? Yes please!
+  (defkey global-map [remap query-replace] 'vr/query-replace)
+  (with-eval-after-load 'visual-regexp
+    (with-eval-after-load 'visual-regexp-steroids
+      (custom-set-variables
+       '(vr/engine 'pcre2el)))))
 
 (elpa-package 'corfu
   (corfu-global-mode 1))
 
-(elpa-package 'cape
-  (require 'cape)
-  (transient-define-prefix cape-transient ()
-    "Transient for cape commands."
-    [[("/" "capf" completion-at-point) ;; capf
-      ("d" "dabbrev" dabbrev-completion)  ;; dabbrev
-      ("t" "etags" complete-tag)        ;; etags
-      ("a" "abbrev" cape-abbrev)]
-     [("f" "file" cape-file)
-      ("k" "keyword" cape-keyword)
-      ("o" "symbol" cape-symbol)
-      ("i" "ispell" cape-ispell)
-      ;;("w" "dictionary" cape-dict)
-      ]])
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
-  (add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (add-to-list 'completion-at-point-functions #'cape-ispell)
-  (add-to-list 'completion-at-point-functions #'cape-dict)
-  (add-to-list 'completion-at-point-functions #'cape-symbol)
-  (add-to-list 'completion-at-point-functions #'cape-line)
-  (defkey bosskey-mode-map "C-M-/" 'cape-transient))
+;; (elpa-package 'cape
+;;   (require 'cape)
+;;   (transient-define-prefix cape-transient ()
+;;     "Transient for cape commands."
+;;     [[("/" "capf" completion-at-point) ;; capf
+;;       ("d" "dabbrev" dabbrev-completion)  ;; dabbrev
+;;       ("t" "etags" complete-tag)        ;; etags
+;;       ("a" "abbrev" cape-abbrev)]
+;;      [("f" "file" cape-file)
+;;       ("k" "keyword" cape-keyword)
+;;       ("o" "symbol" cape-symbol)
+;;       ("i" "ispell" cape-ispell)
+;;       ;;("w" "dictionary" cape-dict)
+;;       ]])
+;;   (add-to-list 'completion-at-point-functions #'cape-file)
+;;   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+;;   (add-to-list 'completion-at-point-functions #'cape-keyword)
+;;   (add-to-list 'completion-at-point-functions #'cape-abbrev)
+;;   (add-to-list 'completion-at-point-functions #'cape-ispell)
+;;   (add-to-list 'completion-at-point-functions #'cape-dict)
+;;   (add-to-list 'completion-at-point-functions #'cape-symbol)
+;;   (add-to-list 'completion-at-point-functions #'cape-line)
+;;   (defkey bosskey-mode-map "C-M-/" 'cape-transient))
 
 (local-package "vundo"
   ;; Vundo creates a tree-like visualization of your undo history
   ;; using only standard Emacs undo commands and data. Requires either
   ;; Emacs 28 or its backported undo functions.
   (require 'vundo))
-
-(elpa-package 'exec-path-from-shell
-  (exec-path-from-shell-initialize))
 
 (elpa-package 'marginalia
   (marginalia-mode 1))
@@ -1608,14 +1572,6 @@ PROMPT sets the `read-string prompt."
     "s-e" 'set-mac-find-initial-string
     "s-g" 'consult-line-mac-find-initial))
 
-(elpa-package 'visual-regexp
-  ;; A reasonable regex engine? Live preview of search and replacement? Yes please!
-  (defkey global-map [remap query-replace] 'vr/query-replace)
-  (with-eval-after-load 'visual-regexp
-    (with-eval-after-load 'visual-regexp-steroids
-      (custom-set-variables
-       '(vr/engine 'pcre2el)))))
-
 (elpa-package 'delight
   (with-eval-after-load 'flyspell (delight 'flyspell-mode " Spell" "flyspell"))
   (delight 'outline-minor-mode " Out" "outline")
@@ -1649,11 +1605,8 @@ PROMPT sets the `read-string prompt."
 (elpa-package 'expand-region
   (defkey global-map "C-=" 'er/expand-region))
 
-(elpa-package 'paren-face
-  (global-paren-face-mode 1))
-
 (local-package "emacs-sdcv"
-  (require 'sdcv-mode))
+  (autoload 'sdcv-search "sdcv-mode"))
 
 
 ;;; Libraries
@@ -1683,9 +1636,12 @@ PROMPT sets the `read-string prompt."
   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
   (setq outline-minor-mode-cycle t)
   (with-eval-after-load 'outline
+    (defkey outline-minor-mode-cycle-map
+      "TAB"   nil ;; too often conflicts with tab-complete
+      "M-TAB" 'outline-cycle)
     (defkey outline-minor-mode-map "<backtab>" 'outline-cycle-buffer)))
 
-(prog1 "calendar"
+(with-eval-after-load 'calendar
   (require 'solar)
   (setq calendar-latitude 34.157
         calendar-longitude -118.324))
@@ -1711,9 +1667,6 @@ PROMPT sets the `read-string prompt."
 
 (prog1 "ibuffer"
   (setq ibuffer-display-summary nil))
-
-(prog1 "bs"
-  (add-hook 'bs-mode-hook 'hl-line-mode))
 
 (prog1 "remember"
   (custom-set-variables

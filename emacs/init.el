@@ -532,14 +532,32 @@ This will save the buffer if it is not currently saved."
 (elpa-package 'vertico
   (setq vertico-count 15)
   (with-eval-after-load 'vertico
-    ;; (set-face-attribute 'vertico-current nil
-    ;;                     :background (face-attribute 'lazy-highlight :background nil t)
-    ;;                     :foreground (face-attribute 'lazy-highlight :foreground nil t)
-    ;;                     :weight 'normal)
     (defkey vertico-map
       "s-<down>" 'vertico-next-group
-      "s-<up>"   'vertico-previous-group))
-  (vertico-mode 1))
+      "s-<up>"   'vertico-previous-group)))
+
+(local-package "mct")
+
+(defun select-completion-framework (framework)
+  (interactive
+   (list (completing-read "Completion Framework: "
+                          '("built-in" "vertico" "mct"))))
+  (cond ((string= framework "vertico")
+         (mct-mode -1)
+         (vertico-mode 1))
+        ((string= framework "mct")
+         (vertico-mode -1)
+         (require 'mct)
+         (mct-mode 1))
+        ((string= framework "built-in")
+         (vertico-mode -1)
+         (mct-mode -1))))
+
+(select-completion-framework "mct")
+
+(local-package "lin"
+  (require 'lin)
+  (lin-add-to-many-modes))
 
 (elpa-package 'orderless
   (require 'orderless)
@@ -1934,6 +1952,7 @@ current HH:MM time."
     ("c g" "Grep" consult-grep)]
    ["Other"
     ("f" "Set Fonts" set-custom-fonts)
+    ("C-c" "Completion Framework" select-completion-framework)
     ("t" "Toggle Dark/Light Theme" toggle-theme-color :transient t)
     ("T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
     ("D" "Date/Time mode-line" toggle-date-time-battery)

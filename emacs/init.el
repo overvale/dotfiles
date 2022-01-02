@@ -98,6 +98,7 @@
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(ring-bell-function 'ignore)
+ '(echo-keystrokes 0.5)
  '(pixel-scroll-precision-mode 1)
  '(scroll-step 1)
  '(scroll-margin 1)
@@ -494,7 +495,6 @@ This will save the buffer if it is not currently saved."
     (goto-char start)
     (insert "</a>")))
 
-
 ;;; Advice
 
 ;; The below allows for block-undo after running keyboard macros.
@@ -816,7 +816,7 @@ Disables all current themes, then:
 
 (defun customize-modus-operandi nil
   (custom-set-variables
-   '(modus-themes-syntax '(yellow-comments))))
+   '(modus-themes-syntax nil)))
 
 (advice-add 'load-theme-dark :before 'customize-modus-vivendi)
 (advice-add 'load-theme-light :before 'customize-modus-operandi)
@@ -1571,7 +1571,7 @@ PROMPT sets the `read-string prompt."
 
 (elpa-package 'consult
   (with-eval-after-load 'consult
-    (consult-customize consult-buffer consult-buffer-other-window :preview-key nil))
+    (consult-customize consult-line consult-buffer consult-buffer-other-window :preview-key nil))
 
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))

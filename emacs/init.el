@@ -593,6 +593,13 @@ backwards instead."
 ;; Because they're in the `bosskey-mode-map' these bindings won't be
 ;; overridden by minor modes and the like.
 (defkey bosskey-mode-map
+  "<C-return>" 'universal-transient
+  "C-." 'embark-act
+  "s-b" 'consult-buffer
+  "s-f" 'consult-line
+  "s-o" 'find-file
+  "s-j" 'dired-jump
+  "s-w" 'window-transient
   "M-/" 'completion-at-point
   "M-\\" 'cycle-spacing
   "M-z" 'zap-up-to-char
@@ -600,9 +607,7 @@ backwards instead."
   "C-d" 'delete-forward-char
   "M-o" 'other-window
   "M-O" 'other-window-previous
-  "C-M-O" 'other-window-prefix
-  "<C-return>" 'universal-transient
-  "C-." 'embark-act)
+  "C-M-O" 'other-window-prefix)
 
 (with-eval-after-load 'magit
   ;; Magit overrides `bosskey-mode-map', so I need to override this here:
@@ -647,7 +652,6 @@ backwards instead."
       mac-option-modifier 'meta)
 
 (defkey global-map
-  ;; The Minimum set
   "s-z" 'undo-only
   "s-Z" 'undo-redo
   "s-x" 'kill-region
@@ -661,19 +665,12 @@ backwards instead."
   "s-/" 'comment-line
   "s-<up>" 'beginning-of-buffer
   "s-<down>" 'end-of-buffer
-  "s-/" 'comment-line
   "s-s" 'save-buffer
   "M-s-s" 'save-some-buffers
   "s-m" 'iconify-frame
   "s-," 'find-user-init-file
   "s-q" 'save-buffers-kill-emacs
-  "s-." 'keyboard-quit
-  ;; Making things easier
-  "s-b" 'consult-buffer
-  "s-f" 'consult-line
-  "s-o" 'find-file
-  "s-j" 'dired-jump
-  "s-w" 'window-transient)
+  "s-." 'keyboard-quit)
 
 ;; I spend a lot of time in the terminal, and I spent many years working in
 ;; vim, both of which use readline bindings. I miss them when I don't have
@@ -1612,7 +1609,7 @@ PROMPT sets the `read-string prompt."
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
 (elpa-package 'expand-region
-  (defkey global-map "C-=" 'er/expand-region))
+  (defkey global-map "s-r" 'er/expand-region))
 
 (local-package "emacs-sdcv"
   (autoload 'sdcv-search "sdcv-mode"))

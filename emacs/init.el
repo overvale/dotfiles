@@ -812,11 +812,12 @@ Disables all current themes, then:
 ;; On startup I want to match the system
 (load-theme-color 'system)
 
-(setq-default cursor-type 'box
-              cursor-in-non-selected-windows 'hollow
-              blink-cursor-blinks 10
-              blink-cursor-interval 0.35
-              blink-cursor-delay 0.5)
+(custom-set-variables
+ '(cursor-type 'box)
+ '(cursor-in-non-selected-windows 'hollow)
+ '(blink-cursor-blinks 10)
+ '(blink-cursor-interval 0.35)
+ '(blink-cursor-delay 0.5))
 
 
 ;;; Fonts

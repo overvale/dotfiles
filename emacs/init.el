@@ -675,6 +675,15 @@ backwards instead."
   "s-j" 'dired-jump
   "s-w" 'window-transient)
 
+;; I spend a lot of time in the terminal, and I spent many years working in
+;; vim, both of which use readline bindings. I miss them when I don't have
+;; them.
+(defkey bosskey-mode-map
+  "s-u" 'universal-argument
+  "C-u" 'backward-kill-line
+  "C-w" 'backward-kill-word
+  "s-x" 'kill-region)
+
 
 ;;; Themes
 

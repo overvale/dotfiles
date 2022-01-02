@@ -189,6 +189,90 @@ for key, app in pairs(applicationHotkeys) do
 end
 
 
+-- Readline Shortcuts
+-- ----------------------------------------------
+-- The Mac supports lots of Emacs-style shortcuts out of the box, but it is
+-- missing M-f, M-b, M-d -- and I think it should also support the readline
+-- shortcuts  C-u, C-w.
+-- https://readline.kablamo.org/emacs.html
+-- However, rather than just binding them globally, I want to switch them off
+-- when Emacs and the Terminal are the foreground app, so the below code does
+-- all that.
+
+function deleteLineBack()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.cmd, true):post()
+   hs.eventtap.event.newKeyEvent('delete', true):post()
+   hs.eventtap.event.newKeyEvent('delete', false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.cmd, false):post()
+end
+
+function deleteWordBack()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
+   hs.eventtap.event.newKeyEvent('delete', true):post()
+   hs.eventtap.event.newKeyEvent('delete', false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
+end
+
+function deleteWordForward()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
+   hs.eventtap.event.newKeyEvent('forwarddelete', true):post()
+   hs.eventtap.event.newKeyEvent('forwarddelete', false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
+end
+
+function moveWordBack()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
+   hs.eventtap.event.newKeyEvent('left', true):post()
+   hs.eventtap.event.newKeyEvent('left', false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
+end
+
+function moveWordForward()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
+   hs.eventtap.event.newKeyEvent('right', true):post()
+   hs.eventtap.event.newKeyEvent('right', false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
+end
+
+local function appTitle()
+   -- Get title of foreground app
+   app = hs.application.frontmostApplication()
+   if app ~= nil then
+      return app:title()
+   end
+ end
+
+-- Create a new keymap
+local ReadlineKeymap = hs.hotkey.modal.new()
+
+local function setReadlineKeymap()
+   -- Activate and deactivate keymap based on appTitle()
+   if appTitle() == "Emacs" or appTitle() == "Terminal" then
+      print('Turning OFF keybindings for: ' .. appTitle())
+      ReadlineKeymap:exit()
+   else
+      print('Turnning ON keybindings for: ' .. appTitle())
+      ReadlineKeymap:enter()
+   end
+ end
+
+local function appWatcherFunction(appName, eventType, appObject)
+   if (eventType == hs.application.watcher.activated) then
+      setReadlineKeymap()
+   end
+ end
+
+setReadlineKeymap()
+local appWatcher = hs.application.watcher.new(appWatcherFunction)
+appWatcher:start()
+
+ReadlineKeymap:bind({'ctrl'}, 'w', deleteWordBack)
+ReadlineKeymap:bind({'ctrl'}, 'u', deleteLineBack)
+ReadlineKeymap:bind({'alt'},  'd', deleteWordForward)
+ReadlineKeymap:bind({'alt'},  'b', moveWordBack)
+ReadlineKeymap:bind({'alt'},  'f', moveWordForward)
+
+
 -- Toggle Dark Mode
 -- ----------------------------------------------
 

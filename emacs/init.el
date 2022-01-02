@@ -92,6 +92,7 @@
 (custom-set-variables
  '(inhibit-startup-screen t)
  '(global-auto-revert-mode t)
+ '(repeat-mode 1)
  '(save-place-mode t)
  '(recentf-mode t)
  '(scroll-bar-mode nil)
@@ -154,6 +155,7 @@
         orderless
         org
         vertico
+        visible-mark
         visual-regexp
         visual-regexp-steroids
         wolfram))

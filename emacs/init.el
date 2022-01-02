@@ -45,17 +45,29 @@
 
 ;; I don't think of myself as fanatical about startup time, but I do try to
 ;; keep it below 0.5 seconds (as reported by `emacs-init-time'). That's
-;; roughly double the speed that Emacs starts up with no init file.
+;; roughly double the speed that Emacs starts up with no init file. Ultimately,
+;; I suspect that the 3 biggest factors (in this init file anyway) are the
+;; number of installed packages, the number of lines of code (I try to keep it
+;; under 2,000), and the theme.
 
 ;; Part 2 of 2 (part 1 is in early-init). This is stolen from here:
 ;; https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
 ;; In this config, this 2-part dance saves about 0.3 seconds on startup time.
 ;; Is it really worth it? Probably not.
-
 (add-hook 'emacs-startup-hook
           (lambda ()
             (setq gc-cons-threshold 16777216
                   gc-cons-percentage 0.1)))
+
+;; I can never seem to actually suppress the Emacs startup echo area message,
+;; despite following the documentation carefully, so just redefine the
+;; function instead.
+(defun display-startup-echo-area-message ()
+  (message "Welcome to Emacs!"))
+
+;; The *scratch* buffer is great, but how about a buffer that always
+;; auto-saves and you can capture things to it? Sounds good!
+(setq initial-buffer-choice 'remember-notes)
 
 
 ;;; Settings

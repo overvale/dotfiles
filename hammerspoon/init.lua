@@ -16,13 +16,18 @@
 -- Config Setup
 -- ----------------------------------------------
 
-hs.window.animationDuration = 0
+-- These are variables which refer to different combinations of modifier keys.
 local omega = {"ctrl", "cmd"}
 local hyper = {"ctrl", "alt", "cmd"}
 local super = {"ctrl", "alt", "cmd", "shift"}
 
--- Capture the hostname, so we can make this config behave differently across my Macs
+-- Capture the hostname, so we can make this config behave differently
+-- depending on the computer.
 hostname = hs.host.localizedName()
+
+
+-- Testing/Debugging
+-- ----------------------------------------------
 
 function genericSuccess()
    -- Function for creating a notification saying "Success!"
@@ -45,7 +50,7 @@ local anycomplete = require "anycomplete"
 -- The default binding for anycomplete is hyper-g
 anycomplete.registerDefaultBindings()
 
--- This is a custom spoon I make that interacts with the command-line backup
+-- This is a custom spoon I made that interacts with the command-line backup
 -- tool 'restic' and some launchd scripts I run on my Mac. It's really great,
 -- but not public at the moment. Maybe one day I'll package it up so people
 -- can see it.
@@ -55,8 +60,12 @@ require('backup_menu')
 -- Window Control
 -- -----------------------------------------------
 
--- Reposition the current window to the left, right, top, or bottom of screen.
+-- When moving/resizing windows, I don't want any animation, I just want them
+-- to snap into position.
+hs.window.animationDuration = 0
+
 function snap_window(dir)
+   -- Reposition the current window to the left, right, top, or bottom of screen.
    local thiswindow = hs.window.frontmostWindow()
    local loc = thiswindow:frame()
    local thisscreen = thiswindow:screen()
@@ -73,7 +82,7 @@ function snap_window(dir)
    thiswindow:setFrame(loc)
 end
 
--- Move windows around the screen
+-- Move windows left, right, center
 hs.hotkey.bind(hyper, "[", function() snap_window('left') end)
 hs.hotkey.bind(hyper, "]", function() snap_window('right') end)
 hs.hotkey.bind(hyper, "=", function() hs.window.focusedWindow():centerOnScreen() end)
@@ -170,9 +179,10 @@ end)
 flags_event:start()
 
 
--- Launcher
+-- App Launcher
 -- -----------------------------------------------
 
+-- First, define a list of apps and the key you want to use to launch them.
 local applicationHotkeys = {
    m = 'Mail',
    c = 'Calendar',
@@ -182,22 +192,28 @@ local applicationHotkeys = {
    t = 'Terminal',
 }
 
+-- Then loop over the list of apps and create a binding for each.
 for key, app in pairs(applicationHotkeys) do
    hs.hotkey.bind(omega, key, function()
-	 hs.application.launchOrFocus(app)
+                     hs.application.launchOrFocus(app)
    end)
 end
 
 
 -- Readline Shortcuts
 -- ----------------------------------------------
--- The Mac supports lots of Emacs-style shortcuts out of the box, but it is
+-- MacOS supports lots of Emacs-style shortcuts out of the box, but it is
 -- missing M-f, M-b, M-d -- and I think it should also support the readline
 -- shortcuts  C-u, C-w.
 -- https://readline.kablamo.org/emacs.html
 -- However, rather than just binding them globally, I want to switch them off
 -- when Emacs and the Terminal are the foreground app, so the below code does
 -- all that.
+
+-- There are a lot of different ways to simulate key events but the below
+-- approach, which simulates all the key up and down events for both modifiers
+-- and the keys themselves has proved the most reliable and the least likely
+-- to suffer from lag. At least that's what I've found.
 
 function deleteLineBack()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.cmd, true):post()
@@ -240,7 +256,7 @@ local function appTitle()
    if app ~= nil then
       return app:title()
    end
- end
+end
 
 -- Create a new keymap
 local ReadlineKeymap = hs.hotkey.modal.new()
@@ -248,19 +264,19 @@ local ReadlineKeymap = hs.hotkey.modal.new()
 local function setReadlineKeymap()
    -- Activate and deactivate keymap based on appTitle()
    if appTitle() == "Emacs" or appTitle() == "Terminal" then
-      print('Turning OFF keybindings for: ' .. appTitle())
+      print('Readline keybindings OFF for ' .. appTitle())
       ReadlineKeymap:exit()
    else
-      print('Turnning ON keybindings for: ' .. appTitle())
+      print('Readline keybindings ON for ' .. appTitle())
       ReadlineKeymap:enter()
    end
- end
+end
 
 local function appWatcherFunction(appName, eventType, appObject)
    if (eventType == hs.application.watcher.activated) then
       setReadlineKeymap()
    end
- end
+end
 
 setReadlineKeymap()
 local appWatcher = hs.application.watcher.new(appWatcherFunction)
@@ -275,22 +291,27 @@ ReadlineKeymap:bind({'alt'},  'f', moveWordForward)
 
 -- Toggle Dark Mode
 -- ----------------------------------------------
+-- Creates a function and binding for toggling MacOS's dark mode.
 
 function darkModeStatus()
-  local _, darkModeState = hs.osascript.javascript(
-    'Application("System Events").appearancePreferences.darkMode()'
-  )
-  return darkModeState
+   -- return the status of Dark Mode
+   local _, darkModeState = hs.osascript.javascript(
+      'Application("System Events").appearancePreferences.darkMode()'
+   )
+   return darkModeState
 end
 
 function setDarkMode(state)
-  return hs.osascript.javascript(
-    string.format(
-      "Application('System Events').appearancePreferences.darkMode.set(%s)", state
-    ))
+   -- Function for setting Dark Mode on/off.
+   -- Argument should be either 'true' or 'false'.
+   return hs.osascript.javascript(
+      string.format(
+         "Application('System Events').appearancePreferences.darkMode.set(%s)", state
+   ))
 end
 
 function toggleDarkMode()
+   -- Toggle Dark Mode status
    if darkModeStatus() then
       setDarkMode(false)
    else
@@ -366,4 +387,3 @@ hs.hotkey.bind(omega, 'r', hs.reload)
 
 
 -- END HAMMERSPOON CONFIG --
-

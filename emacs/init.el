@@ -1631,6 +1631,28 @@ PROMPT sets the `read-string prompt."
 
 ;;; Libraries
 
+(prog1 "info"
+  (defun my-info-copy-current-node-name (arg)
+    ;; https://depp.brause.cc/dotemacs/
+    "Copy the lispy form of the current node.
+With a prefix argument, copy the link to the online manual instead."
+    (interactive "P")
+    (let* ((manual (file-name-sans-extension
+                    (file-name-nondirectory Info-current-file)))
+           (node Info-current-node)
+           (link (if (not arg)
+                     (format "(info \"(%s) %s\")" manual node)
+                   ;; NOTE this will only work with emacs-related nodes...
+                   (format "https://www.gnu.org/software/emacs/manual/html_node/%s/%s.html"
+                           manual (if (string= node "Top")
+                                      "index"
+                                    (replace-regexp-in-string " " "-" node))))))
+      (kill-new link)
+      (message link)))
+
+  (with-eval-after-load 'info
+    (defkey Info-mode-map "c" 'my-info-copy-current-node-name)))
+
 (prog1 "spelling"
   (add-hook 'text-mode-hook 'turn-on-flyspell)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)

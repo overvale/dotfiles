@@ -140,7 +140,6 @@
 (setq package-selected-packages
       '(consult
         corfu
-        cape
         delight
         embark
         embark-consult
@@ -494,6 +493,7 @@ This will save the buffer if it is not currently saved."
     (insert ">")
     (goto-char start)
     (insert "</a>")))
+
 
 ;;; Advice
 
@@ -1515,30 +1515,6 @@ PROMPT sets the `read-string prompt."
 
 (elpa-package 'corfu
   (corfu-global-mode 1))
-
-;; (elpa-package 'cape
-;;   (require 'cape)
-;;   (transient-define-prefix cape-transient ()
-;;     "Transient for cape commands."
-;;     [[("/" "capf" completion-at-point) ;; capf
-;;       ("d" "dabbrev" dabbrev-completion)  ;; dabbrev
-;;       ("t" "etags" complete-tag)        ;; etags
-;;       ("a" "abbrev" cape-abbrev)]
-;;      [("f" "file" cape-file)
-;;       ("k" "keyword" cape-keyword)
-;;       ("o" "symbol" cape-symbol)
-;;       ("i" "ispell" cape-ispell)
-;;       ;;("w" "dictionary" cape-dict)
-;;       ]])
-;;   (add-to-list 'completion-at-point-functions #'cape-file)
-;;   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-;;   (add-to-list 'completion-at-point-functions #'cape-keyword)
-;;   (add-to-list 'completion-at-point-functions #'cape-abbrev)
-;;   (add-to-list 'completion-at-point-functions #'cape-ispell)
-;;   (add-to-list 'completion-at-point-functions #'cape-dict)
-;;   (add-to-list 'completion-at-point-functions #'cape-symbol)
-;;   (add-to-list 'completion-at-point-functions #'cape-line)
-;;   (defkey bosskey-mode-map "C-M-/" 'cape-transient))
 
 (local-package "vundo"
   ;; Vundo creates a tree-like visualization of your undo history

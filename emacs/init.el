@@ -146,7 +146,6 @@
 
 (setq package-selected-packages
       '(consult
-        corfu
         delight
         embark
         embark-consult
@@ -1521,9 +1520,6 @@ PROMPT sets the `read-string prompt."
       (custom-set-variables
        '(vr/engine 'pcre2el)))))
 
-(elpa-package 'corfu
-  (corfu-global-mode 1))
-
 (local-package "vundo"
   ;; Vundo creates a tree-like visualization of your undo history
   ;; using only standard Emacs undo commands and data. Requires either
@@ -1716,6 +1712,18 @@ With a prefix argument, copy the link to the online manual instead."
         (let ((current-prefix-arg 4)) (call-interactively 'remember))
       (remember))))
 
+(prog1 "hippie-expand"
+  (setq hippie-expand-try-functions-list
+        '(try-complete-file-name-partially
+          try-complete-file-name
+          try-complete-lisp-symbol-partially
+          try-complete-lisp-symbol
+          try-expand-line
+          try-expand-list
+          try-expand-all-abbrevs
+          try-expand-dabbrev
+          try-expand-dabbrev-all-buffers
+          try-expand-dabbrev-from-kill)))
 
 ;;; Org
 

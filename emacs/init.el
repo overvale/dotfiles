@@ -543,7 +543,10 @@ This will save the buffer if it is not currently saved."
       "s-<down>" 'vertico-next-group
       "s-<up>"   'vertico-previous-group)))
 
-(local-package "mct")
+(local-package "mct"
+  (setq mct-completion-passlist '(consult-buffer
+                                  consult-mark
+                                  consult-imenu)))
 
 (defun select-completion-framework (framework)
   (interactive
@@ -561,10 +564,6 @@ This will save the buffer if it is not currently saved."
          (mct-mode -1))))
 
 (select-completion-framework "mct")
-
-(local-package "lin"
-  (require 'lin)
-  (lin-add-to-many-modes))
 
 (elpa-package 'orderless
   (require 'orderless)
@@ -1257,8 +1256,8 @@ Does not pass arguments to underlying functions."
     ("P" "Page" mark-page)]
    [("S" "Sexp" mark-sexp)
     ("D" "Defun" mark-defun)]
-   [("SPC" "Activate Mark" activate-the-mark)]])
-
+   [("SPC" "Activate Mark" activate-the-mark)
+    ("RET" "Exit" transient-quit-all)]])
 (defkey bosskey-mode-map
   "C-z" 'set-mark-transient
   "C-M-h" 'mark-line
@@ -1551,7 +1550,13 @@ PROMPT sets the `read-string prompt."
 
 (elpa-package 'consult
   (with-eval-after-load 'consult
-    (consult-customize consult-line consult-buffer consult-buffer-other-window :preview-key nil))
+    (consult-customize consult-line
+                       consult-buffer
+                       consult-buffer-other-window
+                       consult-outline
+                       consult-imenu
+                       consult-mark
+                       :preview-key nil))
 
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
@@ -1581,6 +1586,10 @@ PROMPT sets the `read-string prompt."
   (defkey global-map
     "s-e" 'set-mac-find-initial-string
     "s-g" 'consult-line-mac-find-initial))
+
+(local-package "lin"
+  (require 'lin)
+  (lin-add-to-many-modes))
 
 (elpa-package 'delight
   (with-eval-after-load 'flyspell (delight 'flyspell-mode " Spell" "flyspell"))

@@ -226,10 +226,10 @@ Keybindings you define here will take precedence."
 (prog1 "environment"
   (defvar user-home-dir "~/home/")
   (defvar user-downloads-directory "~/Desktop/")
-  (setq local-package-dir (concat user-home-dir "src/lisp/"))
+  (setq local-package-dir (concat user-home-dir "opt/"))
   (setq-default default-directory user-home-dir)
   (setq org-directory (concat user-home-dir "org/"))
-  (load (concat local-package-dir "private.el"))
+  (load (concat user-home-dir "src/lisp/private.el"))
   (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/"))
   (add-to-list 'exec-path "/usr/local/bin/") ; homebrew
   (add-to-list 'exec-path (concat user-home-dir "dot/bin")))

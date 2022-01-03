@@ -1520,7 +1520,7 @@ PROMPT sets the `read-string prompt."
   ;; Vundo creates a tree-like visualization of your undo history
   ;; using only standard Emacs undo commands and data. Requires either
   ;; Emacs 28 or its backported undo functions.
-  (require 'vundo))
+  (autoload 'vundo "vundo" "Display visual undo for the current buffer." t))
 
 (elpa-package 'marginalia
   (marginalia-mode 1))
@@ -1538,9 +1538,9 @@ PROMPT sets the `read-string prompt."
   (custom-set-faces
    '(embark-verbose-indicator-title ((t (:inherit 'modus-themes-heading-1)))))
 
-  (defkey minibuffer-local-map "C-," 'embark-become)
-
   (with-eval-after-load 'embark
+    (defkey minibuffer-local-map
+      "C-," 'embark-become)
     (defkey embark-file-map
       "O" 'crux-open-with
       "j" 'dired-jump)))
@@ -1612,12 +1612,12 @@ PROMPT sets the `read-string prompt."
   (defkey global-map "s-r" 'er/expand-region))
 
 (local-package "emacs-sdcv"
-  (autoload 'sdcv-search "sdcv-mode"))
+  (autoload 'sdcv-search "sdcv-mode" nil t))
 
 
 ;;; Libraries
 
-(prog1 "info"
+(with-eval-after-load 'info
   (defun my-info-copy-current-node-name (arg)
     ;; https://depp.brause.cc/dotemacs/
     "Copy the lispy form of the current node.
@@ -1636,8 +1636,7 @@ With a prefix argument, copy the link to the online manual instead."
       (kill-new link)
       (message link)))
 
-  (with-eval-after-load 'info
-    (defkey Info-mode-map "c" 'my-info-copy-current-node-name)))
+  (defkey Info-mode-map "c" 'my-info-copy-current-node-name))
 
 (prog1 "spelling"
   (add-hook 'text-mode-hook 'turn-on-flyspell)
@@ -1667,7 +1666,8 @@ With a prefix argument, copy the link to the online manual instead."
     (defkey outline-minor-mode-cycle-map
       "TAB"   nil ;; too often conflicts with tab-complete
       "M-TAB" 'outline-cycle)
-    (defkey outline-minor-mode-map "<backtab>" 'outline-cycle-buffer)))
+    (defkey outline-minor-mode-map
+      "<backtab>" 'outline-cycle-buffer)))
 
 (with-eval-after-load 'calendar
   (require 'solar)
@@ -1726,11 +1726,6 @@ With a prefix argument, copy the link to the online manual instead."
   (interactive)
   (consult-grep org-directory))
 
-(defun org-toggle-checkbox-presence ()
-  (interactive)
-  (let ((current-prefix-arg '(4)))
-    (call-interactively 'org-toggle-checkbox)))
-
 (autoload 'org-export-dispatch "org")
 (autoload 'org-store-link "org")
 
@@ -1787,6 +1782,18 @@ With a prefix argument, copy the link to the online manual instead."
         '(("DELG" . org-scheduled-previously)
           ("LATER" . org-scheduled-previously)))
 
+  (transient-define-prefix org-todo-transient ()
+    [["Org TODO Status"
+      ("t" "TODO"     (lambda () (interactive) (org-todo "TODO")))
+      ("g" "DELG"     (lambda () (interactive) (org-todo "DELG")))
+      ("l" "LATER"    (lambda () (interactive) (org-todo "LATER")))
+      ("d" "DONE"     (lambda () (interactive) (org-todo "DONE")))
+      ("c" "CANCELED" (lambda () (interactive) (org-todo "CANCELED")))
+      ("m" "MOVED"    (lambda () (interactive) (org-todo "MOVED")))
+      ]])
+
+  (defkey org-mode-map "C-c C-t" 'org-todo-transient)
+
   (setq org-capture-templates
         `(("i" "Personal Inbox" entry
            (file+headline ,(concat org-directory "life.org") "Inbox")
@@ -1797,6 +1804,11 @@ With a prefix argument, copy the link to the online manual instead."
           ("e" "Emacs Config" entry
            (file+headline ,(concat org-directory "emacs.org") "Emacs Config")
            "* TODO %?" :empty-lines 1)))
+
+  (defun org-toggle-checkbox-presence ()
+    (interactive)
+    (let ((current-prefix-arg '(4)))
+      (call-interactively 'org-toggle-checkbox)))
 
   (defun my/org-refile-preserve-collapsed-parent ()
     (org-up-heading-safe)
@@ -1836,55 +1848,7 @@ With a prefix argument, copy the link to the online manual instead."
     "D" 'org-agenda-deadline
     "C-/" 'org-agenda-undo)
 
-  ) ; End Org Agenda
-
-
-;;;; Calendar <--> Org Integration
-
-;; You can jump to org's agenda from the calendar, and capture from any date
-;; in the agenda, why now capture from the calendar as well?
-
-(defun org-calendar-capture (&optional with-time)
-  "Call `org-capture' with the date at point.
-With a `C-1' prefix, use the HH:MM value at point, if any, or the
-current HH:MM time."
-  (interactive "P")
-  (if (not (eq major-mode 'calendar-mode))
-      (user-error "You cannot do this outside of calendar buffers")
-    (progn
-      (require 'org)
-      (let ((org-overriding-default-time
-	         (org-get-cursor-date (equal with-time 1))))
-        (delete-window)
-        (call-interactively 'org-capture)))))
-
-(with-eval-after-load 'calendar
-  (defkey calendar-mode-map "k" 'org-calendar-capture))
-
-
-;;;; Fixing `org-todo' and `org-agenda-todo'
-
-;; Org has an absolutely infuriating habit of destroying window layouts to
-;; display its various pop-up windows (though, to be fair, it is good about
-;; restoring them). These two transients help me retain a small dose of my
-;; sanity. I really wish this wasn't necessary. Also see:
-;; https://emacs.stackexchange.com/a/14818
-
-(transient-define-prefix org-todo-transient ()
-  [["Org TODO Status"
-    ("t" "TODO"     (lambda () (interactive) (org-todo "TODO")))
-    ("g" "DELG"     (lambda () (interactive) (org-todo "DELG")))
-    ("l" "LATER"    (lambda () (interactive) (org-todo "LATER")))
-    ("d" "DONE"     (lambda () (interactive) (org-todo "DONE")))
-    ("c" "CANCELED" (lambda () (interactive) (org-todo "CANCELED")))
-    ("m" "MOVED"    (lambda () (interactive) (org-todo "MOVED")))
-    ]])
-
-(with-eval-after-load 'org
-  (defkey org-mode-map "C-c C-t" 'org-todo-transient))
-
-
-(transient-define-prefix org-agenda-todo-transient ()
+  (transient-define-prefix org-agenda-todo-transient ()
   [["Org TODO Status"
     ("t" "TODO"     (lambda () (interactive) (org-agenda-todo "TODO")))
     ("g" "DELG"     (lambda () (interactive) (org-agenda-todo "DELG")))
@@ -1894,8 +1858,32 @@ current HH:MM time."
     ("m" "MOVED"    (lambda () (interactive) (org-agenda-todo "MOVED")))
     ]])
 
-(with-eval-after-load 'org-agenda
-  (defkey org-agenda-mode-map "t" 'org-agenda-todo-transient))
+  (defkey org-agenda-mode-map "t" 'org-agenda-todo-transient)
+
+  ) ; End Org Agenda
+
+
+;;;; Calendar <--> Org Integration
+
+;; You can jump to org's agenda from the calendar, and capture from any date
+;; in the agenda, why now capture from the calendar as well?
+
+(with-eval-after-load 'calendar
+  (defun org-calendar-capture (&optional with-time)
+    "Call `org-capture' with the date at point.
+With a `C-1' prefix, use the HH:MM value at point, if any, or the
+current HH:MM time."
+    (interactive "P")
+    (if (not (eq major-mode 'calendar-mode))
+        (user-error "You cannot do this outside of calendar buffers")
+      (progn
+        (require 'org)
+        (let ((org-overriding-default-time
+	           (org-get-cursor-date (equal with-time 1))))
+          (delete-window)
+          (call-interactively 'org-capture)))))
+
+  (defkey calendar-mode-map "k" 'org-calendar-capture))
 
 
 ;;; Transients

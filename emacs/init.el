@@ -91,10 +91,6 @@
 
 (custom-set-variables
  '(inhibit-startup-screen t)
- '(global-auto-revert-mode t)
- '(repeat-mode 1)
- '(save-place-mode t)
- '(recentf-mode t)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(ring-bell-function 'ignore)
@@ -123,6 +119,17 @@
  '(fill-column 78)
  '(delete-by-moving-to-trash t)
  '(trash-directory "~/.Trash"))
+
+;; You can delay activating these modes a moment to save a very tiny bit of
+;; startup time.
+
+(defun after-init-hook-setup nil
+  (global-auto-revert-mode 1)
+  (repeat-mode 1)
+  (save-place-mode 1)
+  (recentf-mode 1))
+
+(add-hook 'after-init-hook 'after-init-hook-setup)
 
 
 ;;; Critical Setup
@@ -230,10 +237,11 @@ Keybindings you define here will take precedence."
 ;; Keep ~/.emacs.d/ clean
 (elpa-package 'no-littering
   (require 'no-littering)
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory)
+  (with-eval-after-load 'recentf
+    (add-to-list 'recentf-exclude no-littering-var-directory)
+    (add-to-list 'recentf-exclude no-littering-etc-directory))
   (setq auto-save-file-name-transforms
-      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 ;; I use a lot of transients in this config, so I need to make sure it is
 ;; loaded and configured before those are declared below.

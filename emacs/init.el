@@ -501,6 +501,14 @@ This will save the buffer if it is not currently saved."
     (goto-char start)
     (insert "</a>")))
 
+(defun safari-read-later (url)
+  "Add URL to Safari's Reading List."
+  (interactive
+   (list (completing-read "URL to save: " nil)))
+  (shell-command-to-string
+   (concat "osascript -e \'tell application \"Safari\" to add reading list item \""
+           url "\"\'")))
+
 
 ;;; Advice
 
@@ -1544,6 +1552,8 @@ PROMPT sets the `read-string prompt."
   (with-eval-after-load 'embark
     (defkey minibuffer-local-map
       "C-," 'embark-become)
+    (defkey embark-url-map
+      "r" 'safari-read-later)
     (defkey embark-file-map
       "O" 'crux-open-with
       "j" 'dired-jump)))

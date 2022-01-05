@@ -61,13 +61,6 @@
 
 (define-key package-menu-mode-map (kbd "/ s") 'package-menu-filter-by-status)
 
-(defun browse-url-macos-background (url)
-  "Open URL with macOS `open'."
-  (interactive)
-  (start-process "open url"
-                 nil "open" "--background" url))
-
-
 (defun narrow-or-widen-dwim (p)
   ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/narrow-extras.el
   "Widen if buffer is narrowed, narrow-dwim otherwise.
@@ -910,79 +903,6 @@ FEATURE is name of lisp feature, MODE and REPLACEMENT are as in `blackout'."
 
 
 
-;;; EWW
-
-(setq shr-max-image-proportion 0.5)
-(setq shr-width 80)
-(setq shr-bullet "• ")
-(setq browse-url-browser-function 'eww-browse-url) ; Use EWW as Emacs's browser
-
-(use-package eww
-  :custom
-  (eww-use-external-browser-for-content-type "\\`\\(video/\\|audio/\\|application/pdf\\)")
-  :init
-  (defun eww-mode-setup ()
-    "Apply some customization to fonts in eww-mode."
-    (facedancer-vadjust-mode)
-    (text-scale-increase 1)
-    (setq-local line-spacing 2))
-  :commands (eww)
-  :hook (eww-mode-hook . eww-mode-setup)
-  :config
-  (make-variable-buffer-local
-   (defvar eww-inhibit-images-status nil
-     "EWW Inhibit Images Status"))
-
-  (defun eww-inhibit-images-toggle ()
-    (interactive)
-    (setq eww-inhibit-images-status (not eww-inhibit-images-status))
-    (if eww-inhibit-images-status
-        (progn (setq-local shr-inhibit-images t)
-               (eww-reload t))
-      (progn (setq-local shr-inhibit-images nil)
-             (eww-reload t))))
-
-  (defun prot-eww--rename-buffer ()
-    "Rename EWW buffer using page title or URL.
-To be used by `eww-after-render-hook'."
-    (let ((name (if (eq "" (plist-get eww-data :title))
-                    (plist-get eww-data :url)
-                  (plist-get eww-data :title))))
-      (rename-buffer (format "*eww # %s*" name) t)))
-
-  (add-hook 'eww-after-render-hook #'prot-eww--rename-buffer)
-  (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
-  (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer)
-
-  ) ; End "use-package eww"
-
-(with-eval-after-load 'eww
-  (transient-define-prefix eww-mode-help-transient ()
-    "Transient for EWW"
-    :transient-suffix 'transient--do-stay
-    :transient-non-suffix 'transient--do-warn
-    ["EWW"
-     ["Actions"
-      ("G" "Browse" eww)
-      ("&" "Browse With External Browser" eww-browse-with-external-browser)
-      ("w" "Copy URL" eww-copy-page-url)]
-     ["Display"
-      ("i" "Toggle Images" eww-inhibit-images-toggle)
-      ("F" "Toggle Fonts" eww-toggle-fonts)
-      ("R" "Readable" eww-readable)
-      ("M-C" "Colors" eww-toggle-colors)]
-     ["History"
-      ("H" "History" eww-list-histories)
-      ("l" "Back" eww-back-url)
-      ("r" "Forward" eww-forward-url)]
-     ["Bookmarks"
-      ("a" "Add Eww Bookmark" eww-add-bookmark)
-      ("b" "Bookmark" bookmark-set)
-      ("B" "List Bookmarks" eww-list-bookmarks)
-      ("M-n" "Next Bookmark" eww-next-bookmark)
-      ("M-p" "Previous Bookmark" eww-previous-bookmark)]]))
-
-
 ;;; iBuffer
 
 (setq ibuffer-show-empty-filter-groups nil)
@@ -1228,93 +1148,6 @@ Useful for mode hooks where you don't want selected to be active."
       (define-key map (kbd "R") 'replace-rectangle))))
 
 
-;;; Elfeed
-
-(add-hook 'elfeed-search-mode-hook 'disable-selected-minor-mode)
-(add-hook 'elfeed-show-mode-hook   'disable-selected-minor-mode)
-
-(setq shr-max-image-proportion 0.5
-      shr-width 80
-      shr-bullet "• ")
-
-(with-eval-after-load 'elfeed
-
-  (custom-set-variables
-   '(elfeed-use-curl t)
-   '(elfeed-db-directory (concat user-emacs-directory "elfeed/"))
-   '(elfeed-enclosure-default-dir user-downloads-directory))
-
-  (load "~/home/src/lisp/rss-feeds.el")
-
-  ;; Why doesn't this exist in show mode?
-  (defalias 'elfeed-show-tag--unread (elfeed-expose #'elfeed-show-tag 'unread)
-    "Mark the current entry unread.")
-  (defalias 'elfeed-show-tag--read (elfeed-expose #'elfeed-show-untag 'unread)
-    "Mark the current entry read.")
-
-  ;; Stars in search mode
-  (defalias 'elfeed-search-tag--star (elfeed-expose #'elfeed-search-tag-all 'star)
-    "Add the 'star' tag to all selected entries")
-  (defalias 'elfeed-search-untag--star (elfeed-expose #'elfeed-search-untag-all 'star)
-    "Remove the 'star' tag to all selected entries")
-
-  ;; Stars in show mode
-  (defalias 'elfeed-show-tag--star (elfeed-expose #'elfeed-show-tag 'star)
-    "Add the 'star' tag to current entry")
-  (defalias 'elfeed-show-tag--unstar (elfeed-expose #'elfeed-show-untag 'star)
-    "Remove the 'star' tag to current entry")
-
-  (defun elfeed-search:emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
-  (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs"))
-  (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
-
-  (defun elfeed-search-browse-url-background ()
-    "Visit the current entry, or region entries, in browser without losing focus."
-    (interactive)
-    (let ((entries (elfeed-search-selected)))
-      (mapc (lambda (entry)
-              (browse-url-macos-background (elfeed-entry-link entry))
-              (elfeed-untag entry 'unread)
-              (elfeed-search-update-entry entry))
-            entries)
-      (unless (or elfeed-search-remain-on-entry (use-region-p))
-        (forward-line))))
-
-  (defun elfeed-show-visit-background ()
-    "Visit the current entry in your browser using `browse-url'.
-If there is a prefix argument, visit the current entry in the
-browser defined by `browse-url-generic-program'."
-    (interactive)
-    (let ((link (elfeed-entry-link elfeed-show-entry)))
-      (when link
-        (message "Sent to browser: %s" link)
-        (browse-url-macos-background link))))
-
-  (defun elfeed-ytdl-download ()
-    "Jump to next link (always entry link) and call `ytdl-download'."
-    (interactive)
-    (shr-next-link)
-    (ytdl-download))
-
-  (let ((map elfeed-search-mode-map))
-    (define-key map (kbd "b") 'elfeed-search-browse-url-background)
-    (define-key map (kbd "*") 'elfeed-search-tag--star)
-    (define-key map (kbd "8") 'elfeed-search-untag--star)
-    (define-key map (kbd "o") 'delete-other-windows)
-    (define-key map (kbd "E") 'elfeed-search:emacs)
-    (define-key map (kbd "O") 'elfeed-search:other)
-    (define-key map (kbd "S") 'elfeed-search:star))
-
-  (let ((map elfeed-show-mode-map))
-    (define-key map (kbd "r") 'elfeed-show-tag--read)
-    (define-key map (kbd "u") 'elfeed-show-tag--unread)
-    (define-key map (kbd "*") 'elfeed-show-tag--star)
-    (define-key map (kbd "8") 'elfeed-show-tag--unstar)
-    (define-key map (kbd "b") 'elfeed-show-visit-background)
-    (define-key map (kbd "o") 'delete-other-windows)
-    (define-key map (kbd "d") 'elfeed-ytdl-download))
-
-  ) ; End elfeed
 
 
 ;;; Secondary Selection

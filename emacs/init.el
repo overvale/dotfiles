@@ -147,6 +147,7 @@
 (setq package-selected-packages
       '(consult
         delight
+        elfeed
         embark
         embark-consult
         expand-region
@@ -386,6 +387,13 @@ Uses the `default-directory' unless a path is supplied."
       (unfill-region)
     (unfill-paragraph)))
 
+(defun browse-url-macos-background (url)
+  "Open URL with macOS `open'."
+  (interactive)
+  (start-process "open url"
+                 nil "open" "--background" url)
+  (message "URL opened in background."))
+
 (defun crux-open-with (arg)
   "Open visited file in default external program.
 When in dired mode, open file under the cursor.
@@ -507,7 +515,8 @@ This will save the buffer if it is not currently saved."
    (list (completing-read "URL to save: " nil)))
   (shell-command-to-string
    (concat "osascript -e \'tell application \"Safari\" to add reading list item \""
-           url "\"\'")))
+           url "\"\'"))
+  (message "URL sent to Safari's Reading List.")))
 
 
 ;;; Advice
@@ -1743,6 +1752,164 @@ With a prefix argument, copy the link to the online manual instead."
           try-expand-dabbrev
           try-expand-dabbrev-all-buffers
           try-expand-dabbrev-from-kill)))
+
+
+;;; Elfeed
+
+(with-eval-after-load 'elfeed
+
+  (custom-set-variables
+   '(elfeed-use-curl t)
+   '(elfeed-db-directory (concat user-emacs-directory "elfeed/"))
+   '(elfeed-enclosure-default-dir user-downloads-directory))
+
+  ;; Why doesn't this exist in show mode?
+  (defalias 'elfeed-show-tag--unread (elfeed-expose #'elfeed-show-tag 'unread)
+    "Mark the current entry unread.")
+  (defalias 'elfeed-show-tag--read (elfeed-expose #'elfeed-show-untag 'unread)
+    "Mark the current entry read.")
+
+  ;; Stars in search mode
+  (defalias 'elfeed-search-tag--star (elfeed-expose #'elfeed-search-tag-all 'star)
+    "Add the 'star' tag to all selected entries")
+  (defalias 'elfeed-search-untag--star (elfeed-expose #'elfeed-search-untag-all 'star)
+    "Remove the 'star' tag to all selected entries")
+
+  ;; Stars in show mode
+  (defalias 'elfeed-show-tag--star (elfeed-expose #'elfeed-show-tag 'star)
+    "Add the 'star' tag to current entry")
+  (defalias 'elfeed-show-tag--unstar (elfeed-expose #'elfeed-show-untag 'star)
+    "Remove the 'star' tag to current entry")
+
+  (defun elfeed-search:emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
+  (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs"))
+  (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
+
+  (defun elfeed-search-browse-url-background ()
+    "Visit the current entry, or region entries, using `browse-url-macos-background'."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (mapc (lambda (entry)
+              (browse-url-macos-background (elfeed-entry-link entry))
+              (elfeed-untag entry 'unread)
+              (elfeed-search-update-entry entry))
+            entries)
+      (unless (or elfeed-search-remain-on-entry (use-region-p))
+        (forward-line))))
+
+  (defun elfeed-show-visit-background ()
+    "Visit the current entry in your browser using `browse-url-macos-background'."
+    (interactive)
+    (let ((link (elfeed-entry-link elfeed-show-entry)))
+      (when link
+        (browse-url-macos-background link))))
+
+  (defun elfeed-ytdl-download ()
+    "Jump to next link (always entry link) and call `ytdl-download'."
+    (interactive)
+    (shr-next-link)
+    (ytdl-download))
+
+  (defun elfeed-safari-read-later ()
+    "Save the current elfeed entry to Safari's Reading List."
+    (interactive)
+    (let ((link (elfeed-entry-link elfeed-show-entry)))
+      (when link
+        (safari-read-later link))))
+
+  (defkey elfeed-search-mode-map
+    "b"   'elfeed-search-browse-url-background
+    "*"   'elfeed-search-tag--star
+    "8"   'elfeed-search-untag--star
+    "s-D" 'elfeed-safari-read-later
+    "o"   'delete-other-windows
+    "E"   'elfeed-search:emacs
+    "O"   'elfeed-search:other
+    "S"   'elfeed-search:star)
+
+  (defkey elfeed-show-mode-map
+    "r"   'elfeed-show-tag--read
+    "u"   'elfeed-show-tag--unread
+    "*"   'elfeed-show-tag--star
+    "8"   'elfeed-show-tag--unstar
+    "s-D" 'elfeed-safari-read-later
+    "b"   'elfeed-show-visit-background
+    "o"   'delete-other-windows
+    "d"   'elfeed-ytdl-download)
+
+  ) ; End elfeed
+
+
+;;; EWW
+
+(setq shr-max-image-proportion 0.5)
+(setq shr-width 80)
+(setq shr-bullet "• ")
+;;(setq browse-url-browser-function 'eww-browse-url) ; Use EWW as Emacs's browser
+
+(setq eww-use-external-browser-for-content-type "\\`\\(video/\\|audio/\\|application/pdf\\)")
+
+(defun eww-mode-setup ()
+  "Apply some customization to fonts in eww-mode."
+  (text-scale-increase 1)
+  (setq-local line-spacing 2))
+
+(add-hook 'eww-mode-hook 'eww-mode-setup)
+
+(with-eval-after-load 'eww
+  (make-variable-buffer-local
+   (defvar eww-inhibit-images-status nil
+     "EWW Inhibit Images Status"))
+
+  (defun eww-inhibit-images-toggle ()
+    (interactive)
+    (setq eww-inhibit-images-status (not eww-inhibit-images-status))
+    (if eww-inhibit-images-status
+        (progn (setq-local shr-inhibit-images t)
+               (eww-reload t))
+      (progn (setq-local shr-inhibit-images nil)
+             (eww-reload t))))
+
+  (defun prot-eww--rename-buffer ()
+    "Rename EWW buffer using page title or URL.
+To be used by `eww-after-render-hook'."
+    (let ((name (if (eq "" (plist-get eww-data :title))
+                    (plist-get eww-data :url)
+                  (plist-get eww-data :title))))
+      (rename-buffer (format "*eww # %s*" name) t)))
+
+  (add-hook 'eww-after-render-hook #'prot-eww--rename-buffer)
+  (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
+  (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer)
+
+  ) ; end "EWW"
+
+(with-eval-after-load 'eww
+  (transient-define-prefix eww-mode-help-transient ()
+    "Transient for EWW"
+    :transient-suffix 'transient--do-stay
+    :transient-non-suffix 'transient--do-warn
+    ["EWW"
+     ["Actions"
+      ("G" "Browse" eww)
+      ("&" "Browse With External Browser" eww-browse-with-external-browser)
+      ("w" "Copy URL" eww-copy-page-url)]
+     ["Display"
+      ("i" "Toggle Images" eww-inhibit-images-toggle)
+      ("F" "Toggle Fonts" eww-toggle-fonts)
+      ("R" "Readable" eww-readable)
+      ("M-C" "Colors" eww-toggle-colors)]
+     ["History"
+      ("H" "History" eww-list-histories)
+      ("l" "Back" eww-back-url)
+      ("r" "Forward" eww-forward-url)]
+     ["Bookmarks"
+      ("a" "Add Eww Bookmark" eww-add-bookmark)
+      ("b" "Bookmark" bookmark-set)
+      ("B" "List Bookmarks" eww-list-bookmarks)
+      ("M-n" "Next Bookmark" eww-next-bookmark)
+      ("M-p" "Previous Bookmark" eww-previous-bookmark)]]))
+
 
 ;;; Org
 

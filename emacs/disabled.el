@@ -535,6 +535,36 @@ Source: https://old.reddit.com/r/emacs/comments/nhat3z/modifying_the_current_def
 (define-key minibuffer-local-filename-completion-map (kbd "<return>") 'exit-with-top-completion)
 
 
+;;;; Vertico + MCT
+
+(elpa-package 'vertico
+  (setq vertico-count 15)
+  (with-eval-after-load 'vertico
+    (defkey vertico-map
+      "s-<down>" 'vertico-next-group
+      "s-<up>"   'vertico-previous-group)))
+
+(local-package "mct"
+  (setq mct-completion-passlist '(consult-buffer
+                                  consult-mark
+                                  consult-imenu)))
+
+(defun select-completion-framework (framework)
+  (interactive
+   (list (completing-read "Completion Framework: "
+                          '("built-in" "vertico" "mct"))))
+  (cond ((string= framework "vertico")
+         (mct-mode -1)
+         (vertico-mode 1))
+        ((string= framework "mct")
+         (vertico-mode -1)
+         (require 'mct)
+         (mct-mode 1))
+        ((string= framework "built-in")
+         (vertico-mode -1)
+         (mct-mode -1))))
+
+
 ;;; PDFs
 
 ;; TODO: remove this

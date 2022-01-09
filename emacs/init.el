@@ -553,34 +553,51 @@ This will save the buffer if it is not currently saved."
  '(minibuffer-depth-indicate-mode 1)
  '(minibuffer-electric-default-mode 1))
 
-(elpa-package 'vertico
-  (setq vertico-count 15)
-  (with-eval-after-load 'vertico
-    (defkey vertico-map
-      "s-<down>" 'vertico-next-group
-      "s-<up>"   'vertico-previous-group)))
+(local-package "vertico"
+  (require 'vertico)
+  (vertico-mode 1))
 
-(local-package "mct"
-  (setq mct-completion-passlist '(consult-buffer
-                                  consult-mark
-                                  consult-imenu)))
+(local-package "vertico/extensions"
+  (require 'vertico-buffer)
+  (require 'vertico-directory)
+  (require 'vertico-flat)
+  (require 'vertico-grid)
+  (require 'vertico-indexed)
+  (require 'vertico-mouse)
+  (require 'vertico-multiform)
+  (require 'vertico-quick)
+  (require 'vertico-repeat)
+  (require 'vertico-reverse)
+  (require 'vertico-unobtrusive)
 
-(defun select-completion-framework (framework)
-  (interactive
-   (list (completing-read "Completion Framework: "
-                          '("built-in" "vertico" "mct"))))
-  (cond ((string= framework "vertico")
-         (mct-mode -1)
-         (vertico-mode 1))
-        ((string= framework "mct")
-         (vertico-mode -1)
-         (require 'mct)
-         (mct-mode 1))
-        ((string= framework "built-in")
-         (vertico-mode -1)
-         (mct-mode -1))))
+  (vertico-multiform-mode 1)
 
-(select-completion-framework "mct")
+  (setq vertico-multiform-categories
+        '((file reverse)
+          (consult-grep buffer)))
+
+  (setq vertico-multiform-commands
+        '((consult-imenu buffer indexed)
+          (consult-buffer unobtrusive)
+          (consult-line buffer)
+          (execute-extended-command unobtrusive)
+          (completion-at-point reverse)
+          (describe-symbol buffer)
+          ))
+
+  (defkey vertico-map
+    "M-g" #'vertico-multiform-grid
+    "M-f" #'vertico-multiform-flat
+    "M-r" #'vertico-multiform-reverse
+    "M-u" #'vertico-multiform-unobtrusive)
+
+  ;; vertico-directory
+  (define-key vertico-map "\r" #'vertico-directory-enter)
+  (define-key vertico-map "\d" #'vertico-directory-delete-char)
+  (define-key vertico-map "\M-\d" #'vertico-directory-delete-word)
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+
+  ) ; end vertico/extensions
 
 (elpa-package 'orderless
   (require 'orderless)
@@ -1570,11 +1587,12 @@ PROMPT sets the `read-string prompt."
 (elpa-package 'consult
   (with-eval-after-load 'consult
     (consult-customize consult-line
-                       consult-buffer
-                       consult-buffer-other-window
                        consult-outline
                        consult-imenu
                        consult-mark
+                       :preview-key 'any
+                       consult-buffer
+                       consult-buffer-other-window
                        :preview-key nil))
 
   (custom-set-variables
@@ -2118,7 +2136,6 @@ current HH:MM time."
     ("c g" "Grep" consult-grep)]
    ["Other"
     ("f" "Set Fonts" set-custom-fonts)
-    ("C-c" "Completion Framework" select-completion-framework)
     ("t" "Toggle Dark/Light Theme" toggle-theme-color :transient t)
     ("T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
     ("D" "Date/Time mode-line" toggle-date-time-battery)

@@ -516,7 +516,7 @@ This will save the buffer if it is not currently saved."
   (shell-command-to-string
    (concat "osascript -e \'tell application \"Safari\" to add reading list item \""
            url "\"\'"))
-  (message "URL sent to Safari's Reading List.")))
+  (message "URL sent to Safari's Reading List."))
 
 
 ;;; Advice

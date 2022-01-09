@@ -852,10 +852,12 @@ Disables all current themes, then:
 
 (defun customize-modus-vivendi nil
   (custom-set-variables
+   '(modus-themes-mode-line '(borderless accented))
    '(modus-themes-syntax '(yellow-comments faint))))
 
 (defun customize-modus-operandi nil
   (custom-set-variables
+   '(modus-themes-mode-line '(3d))
    '(modus-themes-syntax nil)))
 
 (advice-add 'load-theme-dark :before 'customize-modus-vivendi)

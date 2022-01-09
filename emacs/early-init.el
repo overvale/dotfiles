@@ -23,3 +23,7 @@
       gc-cons-percentage 0.6)
 
 (setq package-quickstart t)
+
+;; end early-init.el
+
+

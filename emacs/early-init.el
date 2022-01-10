@@ -24,6 +24,10 @@
 
 (setq package-quickstart t)
 
+ (setq initial-frame-alist
+       '((width . 90)
+         (height . 55)))
+
 ;; end early-init.el
 
 

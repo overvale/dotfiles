@@ -169,7 +169,8 @@
 
 ;; There are 2 ways I install packages/lisp that aren't a part of this file:
 ;;
-;; 1. Using `package-install-selected-packages',
+;; 1. Using `package-install-selected-packages' to install packages from
+;;    `package-selected-packages'.
 ;;
 ;; 2. in a "local-package" directory that contains cloned git repositories
 ;;    that I can't install from a package archive such as elpa.gnu.org.
@@ -190,7 +191,7 @@
   "Directory containing lisp files which are not in dotfiles or an ELPA package.")
 
 (defmacro local-package (package-dir &rest body)
-  "Eval BODY if PACKAGE-DIR exists in `local-package-dir'."
+  "Eval BODY if PACKAGE-DIR (as string) exists in `local-package-dir'."
   (declare (indent defun))
   `(let* ((package-path (concat local-package-dir ,package-dir)))
      (if (file-exists-p package-path)
@@ -201,6 +202,42 @@
                         " cannot be found at \'"
                         package-path
                         "\'... skipping config.")))))
+
+;; I should be scolded for the below since one should never bind keys to
+;; anonymous functions. But at least I've added some documentation that will
+;; direct the user to the right place when the key's definition is looked-up.
+;; Forgive me.
+
+(defmacro lam-in (body)
+  "Wrap BODY in an interactive `lambda' form."
+  `(lambda () "Anonymous function in `user-init-file'." (interactive) ,body))
+
+;; Let's be honest, it's not hard to bind a key in Emacs, and the syntax for
+;; it is... fine. But it can be easier, and you can save yourself some typing
+;; by creating a function or macro to do it for you. There are many like it
+;; but this one is mine:
+
+(defun defkey (map &rest body)
+  "Define a key for MAP with specs in BODY.
+A custom wrapper around `define-key' that does 2 things:
+1. All string defs of a key are wrapped in `kbd'.
+2. You can define multiple keys in the style of `setq'.
+
+Define your keys like this:
+
+    (defkey global-map
+      \"s-1\" 'switch-to-buffer
+      [f1]  pkg-ops-map
+      \"s-2\" 'find-file)"
+  ;; https://emacs.stackexchange.com/a/58058
+  (while body
+    (let ((key (car body))
+          (def (cadr body)))
+      (define-key
+        map
+        (if (stringp key) (kbd key) key)
+        def)
+      (setq body (cddr body)))))
 
 ;; The key binding technique below is taken from the bind-key package. It
 ;; places all the bindings I don't want overridden into a minor mode which is
@@ -250,42 +287,6 @@ Keybindings you define here will take precedence."
   (autoload 'transient-define-prefix "transient" nil t)
   (setq transient-detect-key-conflicts t
         transient-show-popup t))
-
-;; Let's be honest, it's not hard to bind a key in Emacs, and the syntax for
-;; it is... fine. But it can be easier, and you can save yourself some typing
-;; by creating a function or macro to do it for you. There are many like it
-;; but this one is mine:
-
-(defun defkey (map &rest body)
-  "Define a key for MAP with specs in BODY.
-A custom wrapper around `define-key' that does 2 things:
-1. All string defs of a key are wrapped in `kbd'.
-2. You can define multiple keys in the style of `setq'.
-
-Define your keys like this:
-
-    (defkey global-map
-      \"s-1\" 'switch-to-buffer
-      [f1]  pkg-ops-map
-      \"s-2\" 'find-file)"
-  ;; https://emacs.stackexchange.com/a/58058
-  (while body
-    (let ((key (car body))
-          (def (cadr body)))
-      (define-key
-        map
-        (if (stringp key) (kbd key) key)
-        def)
-      (setq body (cddr body)))))
-
-;; I should be scolded for the below since one should never bind keys to
-;; anonymous functions. But at least I've added some documentation that will
-;; direct the user to the right place when the key's definition is looked-up.
-;; Forgive me.
-
-(defmacro lam-in (body)
-  "Wrap BODY in an interactive `lambda' form."
-  `(lambda () "Anonymous function in `user-init-file'." (interactive) ,body))
 
 
 ;;; Functions
@@ -582,8 +583,7 @@ This will save the buffer if it is not currently saved."
           (consult-line buffer)
           (execute-extended-command unobtrusive)
           (completion-at-point reverse)
-          (describe-symbol buffer)
-          ))
+          (describe-symbol buffer)))
 
   (defkey vertico-map
     "M-g" #'vertico-multiform-grid

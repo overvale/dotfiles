@@ -65,10 +65,6 @@
 (defun display-startup-echo-area-message ()
   (message "Welcome to Emacs!"))
 
-;; The *scratch* buffer is great, but how about a buffer that always
-;; auto-saves and you can capture things to it? Sounds good!
-(setq initial-buffer-choice 'remember-notes)
-
 
 ;;; Settings
 
@@ -167,50 +163,64 @@
         visual-regexp-steroids
         wolfram))
 
-;; There are 2 ways I install packages/lisp that aren't a part of this file:
-;;
-;; 1. Using `package-install-selected-packages' to install packages from
-;;    `package-selected-packages'.
-;;
-;; 2. in a "local-package" directory that contains cloned git repositories
-;;    that I can't install from a package archive such as elpa.gnu.org.
-;;
-;; I configure those packages using the `elpa-package' and `local-package'
-;; macros, which do some sanity checks and ensure the packages are loaded.
-
-(defmacro elpa-package (package &rest body)
-  "Eval BODY only if PACKAGE is installed."
-  (declare (indent defun))
-  `(if (package-installed-p ,package)
-       (progn ,@body)
-     (message (concat "Package \'"
-                      (symbol-name ,package)
-                      "\' is not installed... skipping config."))))
+;; So... Like any Emacs hacker who has spent entirely too much time thinking
+;; about their config I've created my own version of `use-package'. Compared
+;; to it my version is laughably incomplete, but it does only a few very
+;; simple things, all of which I understand well, which is not something I can
+;; say for `use-package'. It is a modified version of this:
+;; https://github.com/casouri/lunarymacs/blob/master/site-lisp/luna-load-package.el
 
 (defvar local-package-dir nil
   "Directory containing lisp files which are not in dotfiles or an ELPA package.")
 
-(defmacro local-package (package-dir &rest body)
-  "Eval BODY if PACKAGE-DIR (as string) exists in `local-package-dir'."
-  (declare (indent defun))
-  `(let* ((package-path (concat local-package-dir ,package-dir)))
-     (if (file-exists-p package-path)
-         (progn
-           (add-to-list 'load-path package-path)
-           ,@body)
-       (message (concat "\'" ,package-dir "\'"
-                        " cannot be found at \'"
-                        package-path
-                        "\'... skipping config.")))))
+(defun luna-split-command-args (args)
+  "Split args into commands and args.
+If ARGS is (:command args args args :command args),
+return: ((:command . (args args args)) (:command . (args)))."
+  (let (ret-list arg-list command)
+    (dolist (token (append args '(:finish)))
+      (if (keywordp token)
+          ;; Finish previous command
+          (progn (if command (push (cons command (reverse arg-list))
+                                   ret-list))
+                 (setq arg-list nil)
+                 ;; Start new command
+                 (setq command token))
+        (push token arg-list)))
+    (reverse ret-list)))
 
-;; I should be scolded for the below since one should never bind keys to
-;; anonymous functions. But at least I've added some documentation that will
-;; direct the user to the right place when the key's definition is looked-up.
-;; Forgive me.
+(defmacro load-package (package &rest args)
+  "Load PACKAGE according to ARGS, similar to `use-package'.
+Available keywords are (must use one):
 
-(defmacro lam-in (body)
-  "Wrap BODY in an interactive `lambda' form."
-  `(lambda () "Anonymous function in `user-init-file'." (interactive) ,body))
+  :local-dir     Name of package directory as string. This string
+                 is appended to `local-package-dir' and added to
+                 `load-path'.
+  :eval          Code to be evaluated without conditions.
+  :after-load    Code to be evaluated after the package is loaded
+                 using `with-eval-after-load'.
+  :autoload      Add autoloads for each command, listed literally."
+  (declare (indent 1))
+  (let* ((arg-list (luna-split-command-args args))
+         (body
+          (mapcan
+           (lambda (arg)
+             (let ((command (car arg))
+                   (arg-list (cdr arg)))
+               (pcase command
+                 (:require `((require ,package)))
+                 (:local-dir `((add-to-list 'load-path
+                                            (concat local-package-dir
+                                                    ,@arg-list))))
+                 (:after-load `((with-eval-after-load ,package
+                                  ,@arg-list)))
+                 (:autoload
+                  (mapcar (lambda (cmd)
+                            `(autoload ',cmd (symbol-name ,package) nil t))
+                          arg-list))
+                 (:eval arg-list))))
+           arg-list)))
+    `(progn ,@body)))
 
 ;; Let's be honest, it's not hard to bind a key in Emacs, and the syntax for
 ;; it is... fine. But it can be easier, and you can save yourself some typing
@@ -260,20 +270,23 @@ Keybindings you define here will take precedence."
 ;; In addition to the above packages and macros, a few variables need to be
 ;; set.
 
-(prog1 "environment"
-  (defvar user-home-dir "~/home/")
-  (defvar user-downloads-directory "~/Desktop/")
-  (setq local-package-dir (concat user-home-dir "opt/"))
-  (setq-default default-directory user-home-dir)
-  (setq org-directory (concat user-home-dir "org/"))
-  (load (concat user-home-dir "src/lisp/private.el"))
-  (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/"))
-  (add-to-list 'exec-path "/usr/local/bin/") ; homebrew
-  (add-to-list 'exec-path (concat user-home-dir "dot/bin")))
+(defvar user-home-dir "~/home/")
+(defvar user-downloads-directory "~/Desktop/")
 
-;; Keep ~/.emacs.d/ clean
-(elpa-package 'no-littering
-  (require 'no-littering)
+(setq local-package-dir (concat user-home-dir "opt/"))
+(setq-default default-directory user-home-dir)
+(setq org-directory (concat user-home-dir "org/"))
+
+(load (concat user-home-dir "src/lisp/private.el"))
+
+(add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/"))
+
+(add-to-list 'exec-path "/usr/local/bin/") ; homebrew
+(add-to-list 'exec-path (concat user-home-dir "dot/bin"))
+
+(load-package 'no-littering
+  :require
+  :eval
   (with-eval-after-load 'recentf
     (add-to-list 'recentf-exclude no-littering-var-directory)
     (add-to-list 'recentf-exclude no-littering-etc-directory))
@@ -283,8 +296,9 @@ Keybindings you define here will take precedence."
 ;; I use a lot of transients in this config, so I need to make sure it is
 ;; loaded and configured before those are declared below.
 
-(prog1 "transient"
-  (autoload 'transient-define-prefix "transient" nil t)
+(load-package 'transient
+  :autoload transient-define-prefix
+  :after-load
   (setq transient-detect-key-conflicts t
         transient-show-popup t))
 
@@ -554,11 +568,14 @@ This will save the buffer if it is not currently saved."
  '(minibuffer-depth-indicate-mode 1)
  '(minibuffer-electric-default-mode 1))
 
-(local-package "vertico"
-  (require 'vertico)
-  (vertico-mode 1))
+(load-package 'vertico
+  :local-dir "vertico"
+  :require
+  :eval (vertico-mode 1))
 
-(local-package "vertico/extensions"
+(load-package 'vertico-extensions
+  :local-dir "vertico/extensions"
+  :eval
   (require 'vertico-buffer)
   (require 'vertico-directory)
   (require 'vertico-flat)
@@ -599,8 +616,9 @@ This will save the buffer if it is not currently saved."
 
   ) ; end vertico/extensions
 
-(elpa-package 'orderless
-  (require 'orderless)
+(load-package 'orderless
+  :require
+  :eval
   (custom-set-variables
    '(completion-styles '(orderless))))
 
@@ -829,7 +847,8 @@ Disables all current themes, then:
 ;; Modus Themes options...
 
 ;; Use the local version instead of the built-in one
-(local-package "modus-themes")
+(load-package 'modus-themes
+  :local-dir "modus-themes")
 
 (custom-set-variables
  '(modus-themes-mixed-fonts t)
@@ -1299,7 +1318,8 @@ Does not pass arguments to underlying functions."
   "C-M-h" 'mark-line
   "C-x C-x" 'exchange-point-and-mark-dwim)
 
-(elpa-package 'visible-mark
+(load-package 'visible-mark
+  :eval
   (setq visible-mark-faces `(highlight))
   (global-visible-mark-mode 1))
 
@@ -1396,7 +1416,8 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("o" "Kill Others"  delete-other-windows)
     ("m" "Maximize" maximize-window)]])
 
-(prog1 "windmove"
+(load-package 'windmove
+  :eval
   (setq windmove-create-window t)
   (defkey global-map
     "S-<up>" #'windmove-up
@@ -1547,24 +1568,24 @@ PROMPT sets the `read-string prompt."
 
 ;;; Packages
 
-(elpa-package 'visual-regexp
-  ;; A reasonable regex engine? Live preview of search and replacement? Yes please!
+(load-package 'visual-regexp
+  :eval
   (defkey global-map [remap query-replace] 'vr/query-replace)
-  (with-eval-after-load 'visual-regexp
-    (with-eval-after-load 'visual-regexp-steroids
-      (custom-set-variables
-       '(vr/engine 'pcre2el)))))
+  :after-load
+  (with-eval-after-load 'visual-regexp-steroids
+    (custom-set-variables
+     '(vr/engine 'pcre2el))))
 
-(local-package "vundo"
-  ;; Vundo creates a tree-like visualization of your undo history
-  ;; using only standard Emacs undo commands and data. Requires either
-  ;; Emacs 28 or its backported undo functions.
-  (autoload 'vundo "vundo" "Display visual undo for the current buffer." t))
+(load-package 'vundo
+  :local-dir "vundo"
+  :autoload vundo)
 
-(elpa-package 'marginalia
+(load-package 'marginalia
+  :eval
   (marginalia-mode 1))
 
-(elpa-package 'embark
+(load-package 'embark
+  :after-load
   (custom-set-variables
    '(prefix-help-command 'embark-prefix-help-command)
    '(embark-indicators '(embark-mixed-indicator
@@ -1577,29 +1598,29 @@ PROMPT sets the `read-string prompt."
   (custom-set-faces
    '(embark-verbose-indicator-title ((t (:inherit 'modus-themes-heading-1)))))
 
-  (with-eval-after-load 'embark
-    (defkey minibuffer-local-map
-      "C-," 'embark-become)
-    (defkey embark-url-map
-      "r" 'safari-read-later)
-    (defkey embark-file-map
-      "O" 'crux-open-with
-      "j" 'dired-jump)))
+  (defkey minibuffer-local-map
+    "C-," 'embark-become)
+  (defkey embark-url-map
+    "r" 'safari-read-later)
+  (defkey embark-file-map
+    "O" 'crux-open-with
+    "j" 'dired-jump))
 
-(elpa-package 'consult
-  (with-eval-after-load 'consult
-    (consult-customize consult-line
-                       consult-outline
-                       consult-imenu
-                       consult-mark
-                       :preview-key 'any
-                       consult-buffer
-                       consult-buffer-other-window
-                       :preview-key nil))
+(load-package 'consult
+  :after-load
+  (consult-customize consult-line
+                     consult-outline
+                     consult-imenu
+                     consult-mark
+                     :preview-key 'any
+                     consult-buffer
+                     consult-buffer-other-window
+                     :preview-key nil)
 
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
 
+  :eval
   (defkey global-map
     [remap imenu] 'consult-imenu
     [remap yank-pop] 'consult-yank-pop
@@ -1626,23 +1647,28 @@ PROMPT sets the `read-string prompt."
     "s-e" 'set-mac-find-initial-string
     "s-g" 'consult-line-mac-find-initial))
 
-(local-package "lin"
-  (require 'lin)
+(load-package 'lin
+  :local-dir "lin"
+  :require
+  :after-load
   (lin-add-to-many-modes))
 
-(elpa-package 'delight
+(load-package 'delight
+  :eval
   (with-eval-after-load 'flyspell (delight 'flyspell-mode " Spell" "flyspell"))
   (delight 'outline-minor-mode " Out" "outline")
   (delight 'eldoc-mode nil "eldoc")
   (delight 'emacs-lisp-mode "Elisp" "elisp-mode")
   (delight 'auto-fill-function " Fill" "simple"))
 
-(elpa-package 'fountain-mode
+(load-package 'fountain-mode
+  :after-load
   (custom-set-variables
    '(fountain-add-continued-dialog nil)
    '(fountain-highlight-elements (quote (section-heading)))))
 
-(elpa-package 'markdown-mode
+(load-package 'markdown-mode
+  :eval
   ;; It seems everyone wants me to use the extension 'mdown' for
   ;; markdown documents, which for some reason I hate. I have no idea
   ;; why. I prefer 'text'. I probably got the idea here:
@@ -1650,26 +1676,32 @@ PROMPT sets the `read-string prompt."
   (add-to-list 'auto-mode-alist
                '("\\.text" . markdown-mode)))
 
-(elpa-package 'olivetti
+(load-package 'olivetti
+  :after-load
   (custom-set-variables
    '(olivetti-body-width 72)))
 
-(local-package "oblique-strategies"
-  (autoload 'oblique-strategy "oblique")
-  (setq initial-scratch-message (concat
-                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
-                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
+;; (load-package 'oblique
+;;   :local-dir "oblique-strategies"
+;;   :autoload oblique-strategy
+;;   :eval
+;;   (setq initial-scratch-message (concat
+;;                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
+;;                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
-(elpa-package 'expand-region
+(load-package 'expand-region
+  :eval
   (defkey global-map "s-r" 'er/expand-region))
 
-(local-package "emacs-sdcv"
-  (autoload 'sdcv-search "sdcv-mode" nil t))
+(load-package 'sdcv-mode
+  :local-dir "emacs-sdcv"
+  :autoload sdcv-search)
 
 
 ;;; Libraries
 
-(with-eval-after-load 'info
+(load-package 'info
+  :after-load
   (defun my-info-copy-current-node-name (arg)
     ;; https://depp.brause.cc/dotemacs/
     "Copy the lispy form of the current node.
@@ -1690,43 +1722,49 @@ With a prefix argument, copy the link to the online manual instead."
 
   (defkey Info-mode-map "c" 'my-info-copy-current-node-name))
 
-(prog1 "spelling"
+(load-package 'flyspell
+  :eval
   (add-hook 'text-mode-hook 'turn-on-flyspell)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
   (setq flyspell-issue-message-flag nil)
   (setq flyspell-issue-welcome-flag nil)
   (setq ispell-program-name "/usr/local/bin/aspell"))
 
-(with-eval-after-load 'dired
+(load-package 'dired
+  :after-load
   (setq dired-use-ls-dired nil)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   (defkey dired-mode-map
     "O" 'crux-open-with
     "C-/" 'dired-undo))
 
-(prog1 "prog-mode"
+(load-package 'prog-mode
+  :eval
   (defun prog-mode-hook-config nil
     (setq-local show-trailing-whitespace t)
     (setq-local comment-auto-fill-only-comments t)
     (auto-fill-mode))
   (add-hook 'prog-mode-hook 'prog-mode-hook-config))
 
-(prog1 "outline"
+(load-package 'outline
+  :eval
   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
   (setq outline-minor-mode-cycle t)
-  (with-eval-after-load 'outline
-    (defkey outline-minor-mode-cycle-map
-      "TAB"   nil ;; too often conflicts with tab-complete
-      "M-TAB" 'outline-cycle)
-    (defkey outline-minor-mode-map
-      "<backtab>" 'outline-cycle-buffer)))
+  :after-load
+  (defkey outline-minor-mode-cycle-map
+    "TAB"   nil ;; too often conflicts with tab-complete
+    "M-TAB" 'outline-cycle)
+  (defkey outline-minor-mode-map
+    "<backtab>" 'outline-cycle-buffer))
 
-(with-eval-after-load 'calendar
+(load-package 'calendar
+  :after-load
   (require 'solar)
   (setq calendar-latitude 34.157
         calendar-longitude -118.324))
 
-(prog1 "world-clock"
+(load-package 'time
+  :after-load
   (setq world-clock-time-format "%Z%t%R%t%F"
         world-clock-list
         '(("America/Los_Angeles" "Los Angeles")
@@ -1734,7 +1772,8 @@ With a prefix argument, copy the link to the online manual instead."
           ("America/Montreal" "Montreal")
           ("Europe/London" "London"))))
 
-(prog1 "isearch"
+(load-package 'isearch
+  :after-load
   (setq isearch-lazy-count t)
   (setq isearch-repeat-on-direction-change t)
   (defun isearch-exit-at-start ()
@@ -1745,10 +1784,12 @@ With a prefix argument, copy the link to the online manual instead."
       (goto-char isearch-other-end)))
   (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start))
 
-(prog1 "ibuffer"
+(load-package 'ibuffer
+  :after-load
   (setq ibuffer-display-summary nil))
 
-(prog1 "remember"
+(load-package 'remember
+  :eval
   (custom-set-variables
    '(remember-data-file (concat org-directory "remember-notes"))
    '(remember-notes-initial-major-mode 'fundamental-mode)
@@ -1760,7 +1801,8 @@ With a prefix argument, copy the link to the online manual instead."
         (let ((current-prefix-arg 4)) (call-interactively 'remember))
       (remember))))
 
-(prog1 "hippie-expand"
+(load-package 'hippie-exp
+  :eval
   (setq hippie-expand-try-functions-list
         '(try-complete-file-name-partially
           try-complete-file-name
@@ -1902,9 +1944,6 @@ To be used by `eww-after-render-hook'."
   (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
   (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer)
 
-  ) ; end "EWW"
-
-(with-eval-after-load 'eww
   (transient-define-prefix eww-mode-help-transient ()
     "Transient for EWW"
     :transient-suffix 'transient--do-stay
@@ -1928,7 +1967,8 @@ To be used by `eww-after-render-hook'."
       ("b" "Bookmark" bookmark-set)
       ("B" "List Bookmarks" eww-list-bookmarks)
       ("M-n" "Next Bookmark" eww-next-bookmark)
-      ("M-p" "Previous Bookmark" eww-previous-bookmark)]]))
+      ("M-p" "Previous Bookmark" eww-previous-bookmark)]])
+  ) ; end "EWW"
 
 
 ;;; Org
@@ -2110,60 +2150,66 @@ current HH:MM time."
 
 ;;; Transients
 
-(defun universal-transient ()
-  "If ARG is nil, display the `general-transient', otherwise `call-mode-help-transient'."
-  (interactive)
-  (if (equal current-prefix-arg nil)
-      (general-transient)
-    (call-mode-help-transient)))
+(autoload 'universal-transient "transient" nil t)
 
-(transient-define-prefix general-transient ()
-  "General-purpose transient."
-  [["Actions/Toggles"
-    ("o f" "Other Frame Prefix..." other-frame-prefix)
-    ("o w" "Other Window Prefix..." other-window-prefix)
-    ("a" "AutoFill" auto-fill-mode)
-    ("h" "Line Highlight" hl-line-mode)
-    ("g" "Magit Status" magit-status)
-    ("l" "List Buffers" bs-show)
-    ("k" "Kill Buffer" kill-buffer-dwim)
-    ("K" "Kill Buffer & Window" kill-buffer-and-window)]
-   ["Org"
-    ("o a" "Org Agenda" org-agenda)
-    ("o k" "Org Capture" org-capture)
-    ("o s" "Store Link" org-store-link)
-    ("o i" "Insert Link" org-insert-link)
-    "Consult"
-    ("c o" "Outline" consult-outline)
-    ("c g" "Grep" consult-grep)]
-   ["Other"
-    ("f" "Set Fonts" set-custom-fonts)
-    ("t" "Toggle Dark/Light Theme" toggle-theme-color :transient t)
-    ("T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
-    ("D" "Date/Time mode-line" toggle-date-time-battery)
-    ("C" "Calendar" calendar)
-    ("W" "World Clock" world-clock)
-    ("d" "Define Word" sdcv-search)
-    ("x o" "*scratch-org*" scratch-buffer-org)
-    ("x m" "*scratch-markdown*" scratch-buffer-markdown)]
-   ["Macros"
-    ("m s" "Start" start-kbd-macro)
-    ("m e" "End" end-kbd-macro)
-    ("m c" "Call" call-last-kbd-macro)
-    ("m r" "Region Lines" apply-macro-to-region-lines)]])
+(with-eval-after-load 'transient
 
-;; Emacs has so many modes. Who can remember all the commands? These
-;; mode-specific transients are designed to help with that.
+  (defun universal-transient ()
+    "If ARG is nil, display the `general-transient', otherwise `call-mode-help-transient'."
+    (interactive)
+    (if (equal current-prefix-arg nil)
+        (general-transient)
+      (call-mode-help-transient)))
 
-(defun call-mode-help-transient ()
-  "Call a helpful transient based on the mode you're in."
-  (interactive)
-  (unless
-      (cond ((derived-mode-p 'org-mode)
-             (org-mode-help-transient))
-            ((derived-mode-p 'Info-mode)
-             (info-mode-help-transient)))
-    (message "No transient defined for this mode.")))
+  (transient-define-prefix general-transient ()
+    "General-purpose transient."
+    [["Actions/Toggles"
+      ("o f" "Other Frame Prefix..." other-frame-prefix)
+      ("o w" "Other Window Prefix..." other-window-prefix)
+      ("a" "AutoFill" auto-fill-mode)
+      ("h" "Line Highlight" hl-line-mode)
+      ("g" "Magit Status" magit-status)
+      ("l" "List Buffers" bs-show)
+      ("k" "Kill Buffer" kill-buffer-dwim)
+      ("K" "Kill Buffer & Window" kill-buffer-and-window)]
+     ["Org"
+      ("o a" "Org Agenda" org-agenda)
+      ("o k" "Org Capture" org-capture)
+      ("o s" "Store Link" org-store-link)
+      ("o i" "Insert Link" org-insert-link)
+      "Consult"
+      ("c o" "Outline" consult-outline)
+      ("c g" "Grep" consult-grep)]
+     ["Other"
+      ("f" "Set Fonts" set-custom-fonts)
+      ("t" "Toggle Dark/Light Theme" toggle-theme-color :transient t)
+      ("T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
+      ("D" "Date/Time mode-line" toggle-date-time-battery)
+      ("C" "Calendar" calendar)
+      ("W" "World Clock" world-clock)
+      ("d" "Define Word" sdcv-search)
+      ("x o" "*scratch-org*" scratch-buffer-org)
+      ("x m" "*scratch-markdown*" scratch-buffer-markdown)]
+     ["Macros"
+      ("m s" "Start" start-kbd-macro)
+      ("m e" "End" end-kbd-macro)
+      ("m c" "Call" call-last-kbd-macro)
+      ("m r" "Region Lines" apply-macro-to-region-lines)]])
+
+  ;; Emacs has so many modes. Who can remember all the commands? These
+  ;; mode-specific transients are designed to help with that.
+
+  (defun call-mode-help-transient ()
+    "Call a helpful transient based on the mode you're in."
+    (interactive)
+    (unless
+        (cond ((derived-mode-p 'org-mode)
+               (org-mode-help-transient))
+              ((derived-mode-p 'Info-mode)
+               (info-mode-help-transient)))
+      (message "No transient defined for this mode.")))
+
+  ) ; end transient
 
 (with-eval-after-load 'org
   (transient-define-prefix org-mode-help-transient ()

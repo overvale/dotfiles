@@ -968,12 +968,10 @@ fixed-pitch and default face heights."
         (setq-local fixed-pitch-remapping
                     (face-remap-add-relative 'fixed-pitch
                                              :height (/ (float (face-attribute 'default :height))
-                                                        variable-pitch-adjust-height)))
-        (force-window-update (current-buffer)))
+                                                        variable-pitch-adjust-height))))
     (progn
       (face-remap-remove-relative variable-pitch-remapping)
-      (face-remap-remove-relative fixed-pitch-remapping)
-      (force-window-update (current-buffer)))))
+      (face-remap-remove-relative fixed-pitch-remapping))))
 
 (add-hook 'buffer-face-mode-hook (lambda () (variable-pitch-adjust-mode 'toggle)))
 
@@ -989,11 +987,7 @@ fixed-pitch and default face heights."
   (interactive)
   (face-remap-remove-relative buffer-remap-faces-default-cookie)
   (face-remap-remove-relative buffer-remap-faces-fixed-pitch-cookie)
-  (face-remap-remove-relative buffer-remap-faces-variable-pitch-cookie)
-  (setq-local buffer-remap-faces-default-cookie nil)
-  (setq-local buffer-remap-faces-fixed-pitch-cookie nil)
-  (setq-local buffer-remap-faces-variable-pitch-cookie nil)
-  (force-window-update (current-buffer)))
+  (face-remap-remove-relative buffer-remap-faces-variable-pitch-cookie))
 
 (defun buffer-remap-faces--set (font-settings)
   "Prompt user and set fonts for the current buffer according to selection from `custom-fonts-alist'.
@@ -1008,16 +1002,16 @@ It should probably be a mode instead."
          (vari (plist-get properties :vari))
          (mono-height (plist-get properties :mono-height)))
     (buffer-remap-faces--clear)
-    (setq-local buffer-remap-faces-default-cookie
-                (face-remap-add-relative 'default
-                                         :family mono
-                                         :height mono-height))
-    (setq-local buffer-remap-faces-variable-pitch-cookie
-                (face-remap-add-relative 'fixed-pitch
-                                         :family mono))
-    (setq-local buffer-remap-faces-fixed-pitch-cookie
-                (face-remap-add-relative 'variable-pitch
-                                         :family vari))
+    (setq buffer-remap-faces-default-cookie
+          (face-remap-add-relative 'default
+                                   :family mono
+                                   :height mono-height))
+    (setq buffer-remap-faces-variable-pitch-cookie
+          (face-remap-add-relative 'fixed-pitch
+                                   :family mono))
+    (setq buffer-remap-faces-fixed-pitch-cookie
+          (face-remap-add-relative 'variable-pitch
+                                   :family vari))
     (force-window-update (current-buffer))))
 
 (define-minor-mode buffer-remap-faces

@@ -1872,7 +1872,19 @@ With a prefix argument, copy the link to the online manual instead."
     (shr-next-link)
     (ytdl-download))
 
-  (defun elfeed-safari-read-later ()
+  (defun elfeed-search-safari-read-later ()
+    "Save the current entry, or region entries, to Safari's Reading List."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (mapc (lambda (entry)
+              (safari-read-later (elfeed-entry-link entry))
+              (elfeed-untag entry 'unread)
+              (elfeed-search-update-entry entry))
+            entries)
+      (unless (or elfeed-search-remain-on-entry (use-region-p))
+        (forward-line))))
+
+  (defun elfeed-show-safari-read-later ()
     "Save the current elfeed entry to Safari's Reading List."
     (interactive)
     (let ((link (elfeed-entry-link elfeed-show-entry)))
@@ -1883,7 +1895,7 @@ With a prefix argument, copy the link to the online manual instead."
     "b"   'elfeed-search-browse-url-background
     "*"   'elfeed-search-tag--star
     "8"   'elfeed-search-untag--star
-    "s-D" 'elfeed-safari-read-later
+    "s-D" 'elfeed-search-safari-read-later
     "o"   'delete-other-windows
     "E"   'elfeed-search:emacs
     "O"   'elfeed-search:other
@@ -1894,10 +1906,12 @@ With a prefix argument, copy the link to the online manual instead."
     "u"   'elfeed-show-tag--unread
     "*"   'elfeed-show-tag--star
     "8"   'elfeed-show-tag--unstar
-    "s-D" 'elfeed-safari-read-later
+    "s-D" 'elfeed-show-safari-read-later
     "b"   'elfeed-show-visit-background
     "o"   'delete-other-windows
     "d"   'elfeed-ytdl-download)
+
+  (add-hook 'elfeed-show-mode-hook 'variable-pitch-adjust-mode)
 
   ) ; End elfeed
 

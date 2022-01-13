@@ -267,6 +267,15 @@ Keybindings you define here will take precedence."
 (add-to-list 'emulation-mode-map-alists
              `((bosskey-mode . ,bosskey-mode-map)))
 
+;; I use a lot of transients in this config, so I need to make sure it is
+;; loaded and configured before those are declared below.
+
+(load-package 'transient
+  :autoload transient-define-prefix
+  :after-load
+  (setq transient-detect-key-conflicts t
+        transient-show-popup t))
+
 ;; In addition to the above packages and macros, a few variables need to be
 ;; set.
 
@@ -292,15 +301,6 @@ Keybindings you define here will take precedence."
     (add-to-list 'recentf-exclude no-littering-etc-directory))
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
-
-;; I use a lot of transients in this config, so I need to make sure it is
-;; loaded and configured before those are declared below.
-
-(load-package 'transient
-  :autoload transient-define-prefix
-  :after-load
-  (setq transient-detect-key-conflicts t
-        transient-show-popup t))
 
 
 ;;; Functions

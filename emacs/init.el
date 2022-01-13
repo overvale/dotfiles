@@ -1018,12 +1018,12 @@ It should probably be a mode instead."
                                    :family vari))
     (force-window-update (current-buffer))))
 
-(define-minor-mode buffer-remap-faces
+(define-minor-mode buffer-remap-faces-mode
   "Minor mode to set buffer-local fonts."
   :lighter " BufferFaces"
   :init-value nil
   :global nil
-  (if buffer-remap-faces
+  (if buffer-remap-faces-mode
       (call-interactively 'buffer-remap-faces--set)
     (buffer-remap-faces--clear)))
 
@@ -2194,6 +2194,7 @@ current HH:MM time."
       ("c g" "Grep" consult-grep)]
      ["Other"
       ("f" "Set Fonts" set-custom-fonts)
+      ("F" "Set Buffer Fonts" buffer-remap-faces-mode)
       ("t" "Toggle Dark/Light Theme" toggle-theme-color :transient t)
       ("T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
       ("D" "Date/Time mode-line" toggle-date-time-battery)

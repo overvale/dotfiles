@@ -409,6 +409,10 @@ Uses the `default-directory' unless a path is supplied."
                  nil "open" "--background" url)
   (message "URL opened in background."))
 
+(defun macos-open-app (app)
+  "Open APP with macOS `open'."
+  (start-process "open app" nil "open" "-a" app))
+
 (defun crux-open-with (arg)
   "Open visited file in default external program.
 When in dired mode, open file under the cursor.

@@ -1,18 +1,18 @@
 # SETTINGS
 # ----------------------------------------------------------------------------
+# https://zsh.sourceforge.io/Doc/Release/Options.html
 
 export LANG=en_US.UTF-8           # UTF-8 Encoding
-export LC_CTYPE=en_US.UTF-8       # UTF-8 Encoding
-export LC_ALL=en_US.UTF-8         # UTF-8 Encoding
-setopt HIST_IGNORE_DUPS           # Ignore duplication command history list
-setopt SHARE_HISTORY              # Share history data between sessions
+
+setopt INC_APPEND_HISTORY         # Add to history immediately, instead of on exit
+setopt HIST_IGNORE_ALL_DUPS       # De-duplicate history
 setopt APPEND_HISTORY             # New sessions append history data rather than overwrite
 setopt EXTENDED_HISTORY           # save each command’s beginning timestamp
 HISTFILE=~/.zsh_history           # location of of zsh history
 SAVEHIST=10000                    # maximum number of events stored in the internal history list
 HISTSIZE=10000                    # maximum number of events stored in the internal history list
+
 setopt NOCLOBBER                  # Disallow overwriting of files using >
-setopt complete_aliases           # Dont expand aliases _before_ completion has finished
 set    completion-ignore-case on  # Ignore case for tab completion
 set    show-all-if-ambiguous on   # Show all suggestions after pressing tab once instead of twice
 bindkey -e                        # Use emacs bindings
@@ -30,14 +30,9 @@ zstyle ':completion:*' insert-tab pending
 autoload -Uz url-quote-magic
 zle -N self-insert url-quote-magic
 
-# Cycle through history
-bindkey "^K" history-beginning-search-backward
-bindkey "^J" history-beginning-search-forward
-
 
 # ALIASES
 # ----------------------------------------------------------------------------
-
 alias rm="rm -i"
 alias mv="mv -i"
 alias l='exa -1'
@@ -66,7 +61,30 @@ alias ,lsmyps='ps -ax | grep -v "/System\|/Applications\|/usr\|/sbin\|ttys00[0-9
 did (){
     # A simple log-entry system that appends anything you type after
     # `did` to the log file.
-    echo "$(ddate): $@" >> ~/home/files/did.txt
+    echo "$(date +%Y-%m-%d): $@" >> ~/home/files/did.txt
+}
+
+fzf-launcher() {
+    eval "$(~/home/src/launcher/launcher | fzf)"
+}
+
+alias ll=fzf-launcher
+
+# Generic function that searches for "TODO" in the paths given
+function td() {
+    if test -z $1; then
+        # if no arguments
+        echo "ERROR: requires argument" >&2
+        return 1
+    elif test -z $2; then
+        # if there's only one argument, this pattern
+        ag TODO $1
+        return 0
+    else
+        # if more than one argument, this pattern
+        ag TODO $*
+        return 0
+    fi
 }
 
 myip() {

@@ -147,6 +147,7 @@
         embark
         embark-consult
         expand-region
+        exec-path-from-shell
         fountain-mode
         hide-mode-line
         lua-mode
@@ -290,8 +291,10 @@ Keybindings you define here will take precedence."
 
 (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/"))
 
-(add-to-list 'exec-path "/usr/local/bin/") ; homebrew
-(add-to-list 'exec-path (concat user-home-dir "dot/bin"))
+(load-package 'exec-path-from-shell
+  :require
+  :eval
+  (exec-path-from-shell-initialize))
 
 (load-package 'no-littering
   :require

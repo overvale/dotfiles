@@ -158,7 +158,7 @@
         olivetti
         orderless
         org
-        vertico
+        titlecase
         visible-mark
         visual-regexp
         visual-regexp-steroids
@@ -1558,6 +1558,7 @@ PROMPT sets the `read-string prompt."
 (prelude-install-search-engine "youtube"    "http://www.youtube.com/results?search_query=" "Search YouTube: ")
 (prelude-install-search-engine "github"     "https://github.com/search?q="                 "Search GitHub: ")
 (prelude-install-search-engine "duckduckgo" "https://duckduckgo.com/?t=lm&q="              "Search DuckDuckGo: ")
+(prelude-install-search-engine "pinboard"   "https://pinboard.in/search/u:Oliver?query="   "Pinboard: ")
 
 (prelude-install-search-engine "wikipedia"
                                "http://en.wikipedia.org/wiki/Special:Search?go=Go&search="

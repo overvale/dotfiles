@@ -275,6 +275,7 @@ Keybindings you define here will take precedence."
   :autoload transient-define-prefix
   :after-load
   (setq transient-detect-key-conflicts t
+        transient-force-fixed-pitch t
         transient-show-popup t))
 
 ;; In addition to the above packages and macros, a few variables need to be
@@ -603,7 +604,7 @@ This will save the buffer if it is not currently saved."
 
   (setq vertico-multiform-commands
         '((consult-imenu buffer indexed)
-          (consult-buffer unobtrusive)
+          (consult-buffer flat)
           (consult-line buffer)
           (execute-extended-command unobtrusive)
           (completion-at-point reverse)
@@ -1382,7 +1383,7 @@ Does not pass arguments to underlying functions."
              '("\\*Pp Macroexpand Output.*"
                (display-buffer-below-selected)
                (window-height . fit-window-to-buffer)
-               (window-parameters . ((select . nil))))
+               (window-parameters . ((select . t))))
              t)
 
 (define-minor-mode dedicated-mode
@@ -2020,7 +2021,7 @@ To be used by `eww-after-render-hook'."
    '(org-refile-targets '((org-agenda-files :maxlevel . 2)))
    '(org-startup-with-inline-images t)
    '(org-image-actual-width '(600))
-   '(org-hide-emphasis-markers t)
+   '(org-hide-emphasis-markers nil)
    '(org-hide-leading-stars nil)
    '(org-adapt-indentation nil)
    '(org-ellipsis "...")

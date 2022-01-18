@@ -598,8 +598,16 @@ This will save the buffer if it is not currently saved."
 
   (vertico-multiform-mode 1)
 
+  (defun vertico-multiform-reset nil
+    "Temporarily disable all vertico multiform modes."
+    (interactive)
+    (dolist (m '(vertico-unobtrusive-mode vertico-flat-mode
+                 vertico-grid-mode vertico-reverse-mode))
+      (vertico-multiform--temporary-mode m -1)))
+
   (setq vertico-multiform-categories
         '((file reverse)
+          (embark-keybinding grid)
           (consult-grep buffer)))
 
   (setq vertico-multiform-commands
@@ -611,6 +619,8 @@ This will save the buffer if it is not currently saved."
           (describe-symbol buffer)))
 
   (defkey vertico-map
+    "'"   #'vertico-quick-jump
+    "M-q" #'vertico-multiform-reset
     "M-g" #'vertico-multiform-grid
     "M-f" #'vertico-multiform-flat
     "M-r" #'vertico-multiform-reverse

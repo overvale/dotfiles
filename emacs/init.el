@@ -598,8 +598,8 @@ This will save the buffer if it is not currently saved."
 
   (vertico-multiform-mode 1)
 
-  (defun vertico-multiform-reset nil
-    "Temporarily disable all vertico multiform modes."
+  (defun vertico-multiform-list nil
+    "Temporarily revert vertico to its default appearance."
     (interactive)
     (dolist (m '(vertico-unobtrusive-mode vertico-flat-mode
                  vertico-grid-mode vertico-reverse-mode))
@@ -612,7 +612,7 @@ This will save the buffer if it is not currently saved."
 
   (setq vertico-multiform-commands
         '((consult-imenu buffer indexed)
-          (consult-buffer flat)
+          (consult-buffer unobtrusive)
           (consult-line buffer)
           (execute-extended-command unobtrusive)
           (completion-at-point reverse)
@@ -620,7 +620,7 @@ This will save the buffer if it is not currently saved."
 
   (defkey vertico-map
     "'"   #'vertico-quick-jump
-    "M-q" #'vertico-multiform-reset
+    "M-l" #'vertico-multiform-list
     "M-g" #'vertico-multiform-grid
     "M-f" #'vertico-multiform-flat
     "M-r" #'vertico-multiform-reverse

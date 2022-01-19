@@ -2357,4 +2357,49 @@ M - Mike         Z - Zulu")
 
 (defkey global-map "C-c h" 'quick-help-prompt)
 
+
+;;; Snippets
+
+(load-package 'placeholder
+  :local-dir "placeholder"
+  :autoload placeholder-forward placeholder-backward)
+
+(defvar snippet-alist nil
+  "An alist of snippets.")
+
+(defmacro defsnippet (name snippet)
+  "Create function called NAME to insert SNIPPET."
+  `(progn
+     (add-to-list 'snippet-alist ',name)
+     (defun ,name nil
+       "Function created by `defsnippet' to insert snippets."
+       (interactive)
+       (save-excursion
+         (insert ,snippet))
+       (snippet-transient))))
+
+(defun insert-snippet nil
+  "Prompt user to insert snippet from `snippet-alist'."
+  (interactive)
+  (call-interactively
+   (intern (completing-read "Insert Snippet: " snippet-alist))))
+
+(transient-define-prefix snippet-transient ()
+  "..."
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-stay
+  [["Snippets"
+    ("<tab>" "Next Placeholder" placeholder-forward)
+    ("<backtab>" "Previous Placeholder" placeholder-backward)
+    ("C-i" "Insert Snippet" insert-snippet :transient nil)]])
+
+(defsnippet snippet-html-ul
+  "<ul>
+  <li><++></li>
+</ul>")
+
+(defsnippet snippet-html-li
+  "<li><++></li>")
+
+
 ;;; End of init.el

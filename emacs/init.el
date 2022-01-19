@@ -2292,11 +2292,15 @@ current HH:MM time."
 ;; Inspired by "On-demand help panels for obscure topics" here:
 ;; https://svn.red-bean.com/repos/kfogel/trunk/.emacs
 
+(defvar quick-help-functions-alist nil
+  "An alist of functions created by the `quick-help' macro.")
+
 (defmacro quick-help (name buffer text)
   "Macro for creating callable functions that display help.
 Where NAME is name of function, BUFFER is name of buffer, and TEXT is displayed."
   (declare (indent defun))
   `(progn
+     (add-to-list 'quick-help-functions-alist ',name t)
      (defun ,name nil
        ,buffer
        (interactive)
@@ -2315,42 +2319,41 @@ Where NAME is name of function, BUFFER is name of buffer, and TEXT is displayed.
                                   (window-height . fit-window-to-buffer)))
          (message "C-g - Previous Window, q - Remove Window")))))
 
-(quick-help qh--wheather
+(quick-help qhelp-wheather
   "Weather Whether Wether"
   "The climate is made up of \"WEATHER\";
 WHETHER it is nice out depends on whether it is raining or not.
 A WETHER is just a castrated sheep.")
 
-(quick-help qh--lying
+(quick-help qhelp-lying
   "Lying"
   "\
 Lie (recline)   lay   lain  lying
 Lay (put down)  laid  laid  laying
 Lie (false)     lied  lied  lying   lies")
 
-(quick-help qh--NATO-alphabet
+(quick-help qhelp-NATO-alphabet
   "NATO ALPHABET"
   "\
-A - Alpha                  N - November
-B - Bravo                  O - Oscar
-C - Charlie                P - Papa
-D - Delta                  Q - Quebec
-E - Echo                   R - Romeo
-F - Foxtrot                S - Sierra
-G - Golf                   T - Tango
-H - Hotel                  U - Uniform
-I - India                  V - Victor
-J - Juliet                 W - Whiskey
-K - Kilo                   X - X-ray
-L - Lima                   Y - Yankee
-M - Mike                   Z - Zulu")
+A - Alpha        N - November
+B - Bravo        O - Oscar
+C - Charlie      P - Papa
+D - Delta        Q - Quebec
+E - Echo         R - Romeo
+F - Foxtrot      S - Sierra
+G - Golf         T - Tango
+H - Hotel        U - Uniform
+I - India        V - Victor
+J - Juliet       W - Whiskey
+K - Kilo         X - X-ray
+L - Lima         Y - Yankee
+M - Mike         Z - Zulu")
 
-(define-prefix-command 'quick-help-prompt nil "Quick Help")
-
-(defkey quick-help-prompt
-  "w" '("Weather" . qh--wheather)
-  "l" '("Lay" . qh--lying)
-  "n" '("Nato" . qh--NATO-alphabet))
+(defun quick-help-prompt nil
+  "Prompt user for help to display."
+  (interactive)
+  (call-interactively
+   (intern (completing-read "Quick Help: " quick-help-functions-alist))))
 
 (defkey global-map "C-c h" 'quick-help-prompt)
 

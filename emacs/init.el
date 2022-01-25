@@ -1134,27 +1134,33 @@ It should probably be a mode instead."
   "Return a string indicating buffer modification status."
   (if (and (buffer-modified-p)
            (buffer-file-name))
-      (propertize "  -MD-"
+      (propertize " -MOD- "
+                  'face `( :background ,(modus-themes-color 'blue)
+                           :foreground ,(modus-themes-color 'bg-main)
+                           :weight bold)
                   'help-echo "Buffer is modified.")))
 
 (defun mode-line-buffer-read-only-status ()
   "Return a string indicating buffer read-only status."
   (if buffer-read-only
-      (propertize "  -RO-"
+      (propertize " -RO- "
+                  'face `( :background ,(modus-themes-color 'red-alt-other)
+                           :foreground ,(modus-themes-color 'bg-main)
+                           :weight bold)
                   'help-echo "Buffer is read-only!")))
 
 (defun mode-line-buffer-confirm-kill-status ()
   "Return a string indicating `buffer-confirm-kill' status."
-  (if (and buffer-confirm-kill
-           (buffer-modified-p))
-      (propertize "  -CK-"
+  (if buffer-confirm-kill
+      (propertize " -CK- "
+                  'face `( :foreground ,(modus-themes-color 'green))
                   'help-echo "You must confirm killing this buffer.")))
 
 (defun mode-line-buffer-line-spacing-status ()
   "Return a string indicating the buffer's `line-spacing' value."
   (if line-spacing
       (propertize
-       (concat "  LS+" (number-to-string line-spacing))
+       (concat " LS+" (number-to-string line-spacing))
        'help-echo "Buffer's line-spacing has been modified.")))
 
 ;; Normally the buffer name is right-padded with whitespace until it
@@ -1166,13 +1172,13 @@ It should probably be a mode instead."
 
 (setq-default mode-line-format
               '((:eval (mode-line-buffer-modified-status))
-                "   " mode-line-buffer-identification
+                "  " mode-line-buffer-identification "  "
                 (:eval (mode-line-buffer-read-only-status))
                 (:eval (mode-line-buffer-confirm-kill-status))
-                (:eval (if (eq buffer-position t) mode-line-position " "))
-                "   " mode-line-modes
+                (:eval (if (eq buffer-position t) (list "  " mode-line-position "  ") " "))
+                mode-line-modes
                 (:eval (mode-line-buffer-line-spacing-status))
-                " " (vc-mode vc-mode)
+                (vc-mode vc-mode)
                 mode-line-misc-info))
 
 

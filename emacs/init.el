@@ -1577,7 +1577,7 @@ This function is designed to be called from `kill-buffer-query-functions'."
         (switch-to-buffer buf)
       (progn
         (switch-to-buffer buf)
-        (markdown-mode)
+        (gfm-mode) ; GitHub-Flavored Markdown
         (with-current-buffer buf
           (setq-local buffer-confirm-kill t)
           (setq-local buffer-offer-save t)
@@ -1615,6 +1615,7 @@ This function is designed to be called from `kill-buffer-query-functions'."
           nil nil "untitled")))
   (let ((buffer (generate-new-buffer name)))
     (switch-to-buffer buffer)
+    (text-mode)
     (setq-local buffer-offer-save t)
     (setq-local buffer-confirm-kill t)))
 

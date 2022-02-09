@@ -1543,15 +1543,17 @@ This function is designed to be called from `kill-buffer-query-functions'."
 
 (add-hook 'kill-buffer-query-functions #'buffer-confirm-kill-p)
 
-(defun toggle-buffer-confirm-kill nil
-  "Sets the buffer-local variable `buffer-confirm-kill' to t."
+(defun toggle-buffer-kill-protection nil
+  "Sets `buffer-confirm-kill' and `buffer-offer-save' to t."
   (interactive)
   (if buffer-confirm-kill
       (progn
-        (setq-local buffer-confirm-kill nil)
+        (setq-local buffer-confirm-kill nil
+                    buffer-offer-save nil)
         (message "'buffer-confirm-kill' set to 'nil'"))
     (progn
-      (setq-local buffer-confirm-kill t)
+      (setq-local buffer-confirm-kill t
+                  buffer-offer-save t)
       (message "'buffer-confirm-kill' set to 't'"))))
 
 

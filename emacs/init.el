@@ -1159,17 +1159,17 @@ It should probably be a mode instead."
                       :line nil
                       :mono-height 130
                       :mode-height 140
-                      :vari-height 140))
-        (Cascadia . ( :mono "Cascadia Code"
-                      :vari "Fira Sans"
-                      :mode "Fira Sans"
-                      :line nil
-                      :mono-height 120
-                      :vari-height 130
-                      :mode-height 130))))
+                      :vari-height 130))
+        (Triplicate . ( :mono "Triplicate T4c"
+                        :vari "Triplicate T4p"
+                        :mode "Triplicate T4p"
+                        :line nil
+                        :mono-height 120
+                        :mode-height 120
+                        :vari-height 120))))
 
 ;; On startup, use this set of fonts:
-(set-custom-fonts "Hack")
+(set-custom-fonts "Apple")
 
 
 ;;; Mode-Line
@@ -1204,7 +1204,7 @@ It should probably be a mode instead."
   (if (and (buffer-modified-p)
            (buffer-file-name))
       (propertize " -MOD- "
-                  'face `( :background ,(modus-themes-color 'blue)
+                  'face `( :background ,(modus-themes-color 'blue-faint)
                            :foreground ,(modus-themes-color 'bg-main)
                            :weight bold)
                   'help-echo "Buffer is modified.")))
@@ -1213,16 +1213,15 @@ It should probably be a mode instead."
   "Return a string indicating buffer read-only status."
   (if buffer-read-only
       (propertize " -RO- "
-                  'face `( :background ,(modus-themes-color 'red-alt-other)
+                  'face `( :background ,(modus-themes-color 'yellow)
                            :foreground ,(modus-themes-color 'bg-main)
                            :weight bold)
                   'help-echo "Buffer is read-only!")))
-
 (defun mode-line-buffer-confirm-kill-status ()
   "Return a string indicating `buffer-confirm-kill' status."
   (if buffer-confirm-kill
       (propertize " -CK- "
-                  'face `( :foreground ,(modus-themes-color 'green))
+                  'face `( :foreground ,(modus-themes-color 'cyan-intense))
                   'help-echo "You must confirm killing this buffer.")))
 
 (defun mode-line-buffer-line-spacing-status ()

@@ -2107,6 +2107,9 @@ To be used by `eww-after-render-hook'."
 (autoload 'org-export-dispatch "org")
 (autoload 'org-store-link "org")
 
+;; Load less modules to reduce org initialization time
+(setq org-modules '(org-id ol-info))
+
 (with-eval-after-load 'org
   (custom-set-variables
    '(org-list-allow-alphabetical t)

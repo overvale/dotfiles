@@ -1783,13 +1783,13 @@ PROMPT sets the `read-string prompt."
   (custom-set-variables
    '(olivetti-body-width 72)))
 
-;; (load-package 'oblique
-;;   :local-dir "oblique-strategies"
-;;   :autoload oblique-strategy
-;;   :eval
-;;   (setq initial-scratch-message (concat
-;;                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
-;;                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
+(load-package 'oblique
+  :local-dir "oblique-strategies"
+  :autoload oblique-strategy
+  :eval
+  (setq initial-scratch-message (concat
+                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
+                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
 (load-package 'expand-region
   :eval

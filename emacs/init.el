@@ -1771,12 +1771,10 @@ PROMPT sets the `read-string prompt."
 
 (load-package 'markdown-mode
   :eval
-  ;; It seems everyone wants me to use the extension 'mdown' for
-  ;; markdown documents, which for some reason I hate. I have no idea
-  ;; why. I prefer 'text'. I probably got the idea here:
-  ;; https://daringfireball.net/linked/2014/01/08/markdown-extension
+  (autoload 'markdown-mode "markdown-mode"
+    "Major mode for editing Markdown files" t)
   (add-to-list 'auto-mode-alist
-               '("\\.text" . markdown-mode)))
+               '("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . gfm-mode)))
 
 (load-package 'olivetti
   :after-load

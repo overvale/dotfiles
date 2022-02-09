@@ -23,14 +23,14 @@ input = input.gsub(/^\s*{break}\s*$/, "\n<div class=\"break\"></div>\n")
 # {code foo} => <code>foo</code>
 input = input.gsub(/#{span_open}(code):?[ \t]+(.+?)#{span_close}/, '<code>\2</code>')
 
+# {sup foo} => <sup>foo</sup>
+input = input.gsub(/#{span_open}(sup):?[ \t]+(.+?)#{span_close}/, '<sup>\2</sup>')
+
 # Lines beginning with ¶
 input = input.gsub(/¶ +/, "\n")
 
 # {img /path/to/img.jpg} => <img src="/path/to/img.jpg" />
 input = input.gsub(/#{span_open}img:?[ \t]+(.+?)#{span_close}/, '<img src="\1" />')
-
-# {/path/to/img.jpg} => <img src="/path/to/img.jpg" />
-input = input.gsub(/#{span_open}(\S+?).(jpg|png|gif)#{span_close}/, '<img src="\1" />')
 
 # {[foo bar]} => <div class="foo">bar</div><!--foo-->
 input = input.gsub(/#{div_open}(\w+):?[ \t\n]+/, '<div class="\1">'+"\n")

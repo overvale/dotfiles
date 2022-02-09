@@ -674,11 +674,11 @@ With prefix argument, always prompt for a file to sudo-edit."
   (setq vertico-multiform-categories
         '((file reverse)
           (embark-keybinding grid)
-          (consult-grep buffer)))
+          (consult-grep buffer)
+          (imenu buffer indexed)))
 
   (setq vertico-multiform-commands
-        '((consult-imenu buffer indexed)
-          (consult-buffer unobtrusive)
+        '((consult-buffer unobtrusive)
           (consult-line buffer)
           (execute-extended-command unobtrusive)
           (completion-at-point reverse)
@@ -1779,7 +1779,7 @@ PROMPT sets the `read-string prompt."
 (load-package 'olivetti
   :after-load
   (custom-set-variables
-   '(olivetti-body-width 72)))
+   '(olivetti-body-width 82)))
 
 (load-package 'oblique
   :local-dir "oblique-strategies"

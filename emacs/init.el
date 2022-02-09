@@ -1275,7 +1275,7 @@ If SPACING is nil, set line-spacing to nil."
       (message "Line-spacing is nil")
     (setq-local line-spacing (- line-spacing 1))))
 
-(defkey global-map
+(defkey bosskey-mode-map
   "C-c C-=" 'buffer-line-spacing-increase
   "C-c C-+" 'buffer-line-spacing-increase
   "C-c C--" 'buffer-line-spacing-decrease

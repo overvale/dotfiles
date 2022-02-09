@@ -492,6 +492,11 @@ This will save the buffer if it is not currently saved."
   (interactive)
   (kill-line 0))
 
+(defun join-line-next nil
+  "Join this line to next."
+  (interactive)
+    (delete-indentation t))
+
 (defun occur-dwim ()
   "Call `occur' with a sane default."
   (interactive)
@@ -541,6 +546,67 @@ This will save the buffer if it is not currently saved."
            url "\"\'"))
   (message "URL sent to Safari's Reading List."))
 
+
+(defun my-sudo-edit (&optional arg)
+  "Edit a file as root via sudo.
+
+Edit the current buffer's file as root. If the buffer isn't
+visiting a file, prompt user to select a file. If opening a flile
+as root was successfull, the original buffer is killed (unless it
+has unsaved changes).
+
+With prefix argument, always prompt for a file to sudo-edit."
+  (interactive "P")
+  (require 'tramp)
+  (let ((fname (if (or arg (not buffer-file-name))
+                   (read-file-name "File: ")
+                 buffer-file-name))
+        (orig-buffer (and buffer-file-name (current-buffer))))
+    (find-file
+     (if (not (tramp-tramp-file-p fname))
+         (concat "/sudo:root@localhost:" fname)
+       (with-parsed-tramp-file-name fname parsed
+         (when (equal parsed-user "root")
+           (error "Already root!"))
+         (let* ((new-hop (tramp-make-tramp-file-name
+                          ;; Try to retrieve a tramp method suitable for
+                          ;; multi-hopping
+                          (cond ((tramp-get-method-parameter
+                                  parsed 'tramp-login-program))
+                                ((tramp-get-method-parameter
+                                  parsed 'tramp-copy-program))
+                                (t parsed-method))
+                          parsed-user
+                          parsed-domain
+                          parsed-host
+                          parsed-port
+                          nil
+                          parsed-hop))
+                (new-hop (substring new-hop 1 -1))
+                (new-hop (concat new-hop "|"))
+                (new-fname (tramp-make-tramp-file-name
+                            "sudo"
+                            parsed-user
+                            parsed-domain
+                            parsed-host
+                            parsed-port
+                            parsed-localname
+                            new-hop)))
+           new-fname))))
+    (when (and orig-buffer
+               (not (buffer-modified-p orig-buffer)))
+      (kill-buffer orig-buffer))))
+
+(defun dumb-down-punctuation (beg end)
+  "Replace smart punctuation in buffer or region with ascii equivalents."
+  (interactive "r")
+  (format-replace-strings '(("\x201C" . "\"")
+                            ("\x201D" . "\"")
+                            ("\x2018" . "'")
+                            ("\x2019" . "'")
+                            ("\x2013" . "--")
+                            ("\x2014" . "---"))
+                          nil beg end))
 
 ;;; Advice
 
@@ -676,7 +742,7 @@ This will save the buffer if it is not currently saved."
     "p" 'previous-completion))
 
 
-;;; Bindings
+;;; Key Bindings
 
 (defkey key-translation-map "ESC" (kbd "C-g"))
 
@@ -693,6 +759,7 @@ This will save the buffer if it is not currently saved."
 ;; overridden by minor modes and the like.
 (defkey bosskey-mode-map
   "<C-return>" 'universal-transient
+  "M-j" 'join-line-next
   "C-." 'embark-act
   "s-b" 'consult-buffer
   "s-f" 'consult-line
@@ -757,6 +824,8 @@ This will save the buffer if it is not currently saved."
   "s-c" 'kill-ring-save
   "s-v" 'yank
   "s-<backspace>" 'backward-kill-line
+  "s-n" 'new-buffer
+  "s-N" 'make-frame-command
   "s-[" 'previous-buffer
   "s-]" 'next-buffer
   "s-{" 'indent-rigidly-left-to-tab-stop

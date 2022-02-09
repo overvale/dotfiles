@@ -1656,6 +1656,18 @@ PROMPT sets the `read-string prompt."
                                "Github Elisp: ")
 
 
+;;; Pulse Line
+
+(defun pulse-line (&rest _)
+      "Pulse the current line."
+      (pulse-momentary-highlight-one-line (point)))
+
+(dolist (command '(scroll-up-command
+                   scroll-down-command
+                   recenter-top-bottom
+                   other-window))
+  (advice-add command :after #'pulse-line))
+
 ;;; Packages
 
 (load-package 'visual-regexp

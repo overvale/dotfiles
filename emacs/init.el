@@ -2385,44 +2385,48 @@ current HH:MM time."
 (defvar quick-help-functions-alist nil
   "An alist of functions created by the `quick-help' macro.")
 
-(defmacro quick-help (name buffer text)
+(defun quick-help (topic text)
+  "Create quick help buffer for TOPIC with TEXT."
+  (let ((qh-buffer (concat "*Quick Help: " topic "*")))
+    (with-current-buffer (get-buffer-create qh-buffer)
+      (buffer-disable-undo)
+      (setf (buffer-string) text)
+      (goto-char (point-min))
+      (set-buffer-modified-p nil)
+      (toggle-truncate-lines 1)
+      (let ((view-read-only nil))
+        (read-only-mode 1))
+      (local-set-key (kbd "C-g") (lambda () (interactive) (other-window -1)))
+      (local-set-key (kbd "q") 'kill-buffer-and-window))
+    (pop-to-buffer qh-buffer '((display-buffer-below-selected)
+                               (window-parameters . ((no-other-window . nil)))
+                               (window-height . fit-window-to-buffer)))
+    (message "C-g - Previous Window, q - Remove Window")))
+
+(defmacro def-quick-help (name buffer text)
   "Macro for creating callable functions that display help.
 Where NAME is name of function, BUFFER is name of buffer, and TEXT is displayed."
   (declare (indent defun))
   `(progn
      (add-to-list 'quick-help-functions-alist ',name t)
      (defun ,name nil
-       ,buffer
        (interactive)
-       (let ((qh-buff (concat "*Quick Help: " ,buffer "*"))
-             (qh-text ,text))
-         (get-buffer-create qh-buff)
-         (with-current-buffer qh-buff
-           (insert qh-text)
-           (goto-char (point-min))
-           (not-modified)
-           (read-only-mode)
-           (local-set-key (kbd "C-g") (lambda () (interactive) (other-window -1)))
-           (local-set-key (kbd "q") 'kill-buffer-and-window))
-         (pop-to-buffer qh-buff '((display-buffer-below-selected)
-                                  (window-parameters . ((no-other-window . nil)))
-                                  (window-height . fit-window-to-buffer)))
-         (message "C-g - Previous Window, q - Remove Window")))))
+       (quick-help ,buffer ,text))))
 
-(quick-help qhelp-wheather
+(def-quick-help qhelp-wheather
   "Weather Whether Wether"
   "The climate is made up of \"WEATHER\";
 WHETHER it is nice out depends on whether it is raining or not.
 A WETHER is just a castrated sheep.")
 
-(quick-help qhelp-lying
+(def-quick-help qhelp-lying
   "Lying"
   "\
 Lie (recline)   lay   lain  lying
 Lay (put down)  laid  laid  laying
 Lie (false)     lied  lied  lying   lies")
 
-(quick-help qhelp-NATO-alphabet
+(def-quick-help qhelp-NATO-alphabet
   "NATO ALPHABET"
   "\
 A - Alpha        N - November

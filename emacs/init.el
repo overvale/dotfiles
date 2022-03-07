@@ -495,7 +495,8 @@ This will save the buffer if it is not currently saved."
 (defun join-line-next nil
   "Join this line to next."
   (interactive)
-    (delete-indentation t))
+  (save-excursion
+    (delete-indentation t)))
 
 (defun occur-dwim ()
   "Call `occur' with a sane default."

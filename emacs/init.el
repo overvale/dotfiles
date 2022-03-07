@@ -286,7 +286,7 @@ Keybindings you define here will take precedence."
 
 (setq local-package-dir (concat user-home-dir "opt/"))
 (setq-default default-directory user-home-dir)
-(setq org-directory (concat user-home-dir "org/"))
+(setq org-directory nil)
 
 (load (concat user-home-dir "src/lisp/private.el"))
 

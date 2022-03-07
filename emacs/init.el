@@ -2410,6 +2410,7 @@ Where NAME is name of function, BUFFER is name of buffer, and TEXT is displayed.
   `(progn
      (add-to-list 'quick-help-functions-alist ',name t)
      (defun ,name nil
+       "Function created by the `def-quick-help` macro."
        (interactive)
        (quick-help ,buffer ,text))))
 

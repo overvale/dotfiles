@@ -1650,10 +1650,38 @@ PROMPT sets the `read-string prompt."
       "Pulse the current line."
       (pulse-momentary-highlight-one-line (point)))
 
+;; This list from: https://gitlab.com/protesilaos/pulsar/
 (dolist (command '(scroll-up-command
                    scroll-down-command
                    recenter-top-bottom
-                   other-window))
+                   other-window
+                   move-to-window-line-top-bottom
+                   reposition-window
+                   bookmark-jump
+                   delete-window
+                   delete-other-windows
+                   forward-page
+                   backward-page
+                   windmove-right
+                   windmove-left
+                   windmove-up
+                   windmove-down
+                   windmove-swap-states-right
+                   windmove-swap-states-left
+                   windmove-swap-states-up
+                   windmove-swap-states-down
+                   tab-new
+                   tab-close
+                   tab-next
+                   org-next-visible-heading
+                   org-previous-visible-heading
+                   org-forward-heading-same-level
+                   org-backward-heading-same-level
+                   outline-backward-same-level
+                   outline-forward-same-level
+                   outline-next-visible-heading
+                   outline-previous-visible-heading
+                   outline-up-heading))
   (advice-add command :after #'pulse-line))
 
 ;;; Packages

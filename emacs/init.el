@@ -1126,13 +1126,13 @@ It should probably be a mode instead."
                    :mono-height 120
                    :mode-height 130
                    :vari-height 140))
-        (Hack . ( :mono "Hack"
-                  :vari "Inter"
-                  :mode "SF Compact Text"
-                  :line nil
-                  :mono-height 120
-                  :mode-height 140
-                  :vari-height 130))
+        (Berkeley . ( :mono "Berkeley Mono"
+                      :vari "Verdana"
+                      :mode "SF Compact Text"
+                      :line nil
+                      :mono-height 120
+                      :mode-height 130
+                      :vari-height 120))
         (IBM . ( :mono "IBM Plex Mono"
                  :vari "IBM Plex Serif"
                  :mode "IBM Plex Sans"
@@ -1140,13 +1140,6 @@ It should probably be a mode instead."
                  :mono-height 120
                  :mode-height 140
                  :vari-height 130))
-        (iAWriter . ( :mono "iA Writer Duospace"
-                      :vari "iA Writer Duospace"
-                      :mode "IBM Plex Sans"
-                      :line nil
-                      :mono-height 120
-                      :mode-height 120
-                      :vari-height 120))
         (Go . ( :mono "Go Mono"
                 :vari "Go"
                 :mode "Go"
@@ -1160,17 +1153,10 @@ It should probably be a mode instead."
                       :line nil
                       :mono-height 130
                       :mode-height 140
-                      :vari-height 130))
-        (Triplicate . ( :mono "Triplicate T4c"
-                        :vari "Triplicate T4p"
-                        :mode "Triplicate T4p"
-                        :line nil
-                        :mono-height 120
-                        :mode-height 120
-                        :vari-height 120))))
+                      :vari-height 130))))
 
 ;; On startup, use this set of fonts:
-(set-custom-fonts "Apple")
+(set-custom-fonts "Berkeley")
 
 
 ;;; Mode-Line
@@ -1400,6 +1386,7 @@ Does not pass arguments to underlying functions."
     ("D" "Defun" mark-defun)]
    [("SPC" "Activate Mark" activate-the-mark)
     ("RET" "Exit" transient-quit-all)]])
+
 (defkey bosskey-mode-map
   "C-z" 'set-mark-transient
   "C-M-h" 'mark-line

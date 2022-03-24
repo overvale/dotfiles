@@ -194,6 +194,7 @@ return: ((:command . (args args args)) (:command . (args)))."
   "Load PACKAGE according to ARGS, similar to `use-package'.
 Available keywords are (must use one):
 
+  :require       If present, require the package.
   :local-dir     Name of package directory as string. This string
                  is appended to `local-package-dir' and added to
                  `load-path'.
@@ -1204,6 +1205,7 @@ It should probably be a mode instead."
                            :foreground ,(modus-themes-color 'bg-main)
                            :weight bold)
                   'help-echo "Buffer is read-only!")))
+
 (defun mode-line-buffer-confirm-kill-status ()
   "Return a string indicating `buffer-confirm-kill' status."
   (if buffer-confirm-kill

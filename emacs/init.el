@@ -1698,7 +1698,10 @@ PROMPT sets the `read-string prompt."
 
 (load-package 'vundo
   :local-dir "vundo"
-  :autoload vundo)
+  :autoload vundo
+  :eval
+  (custom-set-variables
+   '(vundo-glyph-alist vundo-unicode-symbols)))
 
 (load-package 'marginalia
   :eval

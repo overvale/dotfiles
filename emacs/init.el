@@ -937,7 +937,8 @@ Disables all current themes, then:
 
 ;; Use the local version instead of the built-in one
 (load-package 'modus-themes
-  :local-dir "modus-themes")
+  :local-dir "modus-themes"
+  :require)
 
 (custom-set-variables
  '(modus-themes-mixed-fonts t)

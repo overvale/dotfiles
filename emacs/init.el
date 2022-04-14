@@ -145,6 +145,7 @@
       '(consult
         delight
         elfeed
+        hackernews
         embark
         embark-consult
         expand-region
@@ -1829,6 +1830,21 @@ PROMPT sets the `read-string prompt."
 (load-package 'sdcv-mode
   :local-dir "emacs-sdcv"
   :autoload sdcv-search)
+
+(load-package 'hackernews
+  :eval
+  (setq hackernews-items-per-page 30)
+  :after-load
+  (add-hook 'hackernews-mode-hook
+            (defun hackernews-config ()
+              (hl-line-mode 1)
+              (lin-mode 1)))
+  (custom-set-faces
+   '(hackernews-comment-count ((t (:inherit 'modus-themes-subtle-neutral))))
+   '(hackernews-comment-count-visited ((t (:inherit 'modus-themes-markup-macro))))
+   '(hackernews-link ((t (:inherit 'bold))))
+   '(hackernews-link-visited ((t (:inherit 'modus-themes-markup-macro))))
+   '(hackernews-score ((t (:inherit 'modus-themes-refine-yellow))))))
 
 
 ;;; Libraries

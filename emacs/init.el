@@ -1942,7 +1942,7 @@ With a prefix argument, copy the link to the online manual instead."
 (load-package 'remember
   :eval
   (custom-set-variables
-   '(remember-data-file (concat org-directory "remember-notes"))
+   '(remember-data-file "~/home/remember-notes")
    '(remember-notes-initial-major-mode 'fundamental-mode)
    '(remember-notes-auto-save-visited-file-name t))
   (defun remember-dwim ()

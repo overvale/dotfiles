@@ -936,6 +936,7 @@ Disables all current themes, then:
 ;; Modus Themes options...
 
 ;; Use the local version instead of the built-in one
+;; You need to disable the built-in version in early-init
 (load-package 'modus-themes
   :local-dir "modus-themes"
   :require)
@@ -1687,6 +1688,7 @@ PROMPT sets the `read-string prompt."
                    outline-up-heading))
   (advice-add command :after #'pulse-line))
 
+
 ;;; Packages
 
 (load-package 'visual-regexp
@@ -2178,7 +2180,6 @@ To be used by `eww-after-render-hook'."
    '(org-agenda-skip-deadline-prewarning-if-scheduled t))
 
   (setq org-agenda-files (list org-directory))
-  (add-to-list 'org-agenda-files "~/home/writing/kindred/compendium.org")
 
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
@@ -2310,6 +2311,7 @@ current HH:MM time."
   (transient-define-prefix general-transient ()
     "General-purpose transient."
     [["Actions/Toggles"
+      ("x" "M-x" execute-extended-command)
       ("o f" "Other Frame Prefix..." other-frame-prefix)
       ("o w" "Other Window Prefix..." other-window-prefix)
       ("a" "AutoFill" auto-fill-mode)
@@ -2335,8 +2337,8 @@ current HH:MM time."
       ("C" "Calendar" calendar)
       ("W" "World Clock" world-clock)
       ("d" "Define Word" sdcv-search)
-      ("x o" "*scratch-org*" scratch-buffer-org)
-      ("x m" "*scratch-markdown*" scratch-buffer-markdown)]
+      ("s o" "*scratch-org*" scratch-buffer-org)
+      ("s m" "*scratch-markdown*" scratch-buffer-markdown)]
      ["Macros"
       ("m s" "Start" start-kbd-macro)
       ("m e" "End" end-kbd-macro)
@@ -2518,7 +2520,8 @@ M - Mike         Z - Zulu")
     ("C-i" "Insert Snippet" insert-snippet :transient nil)]])
 
 (defsnippet snippet-html-ul
-  "<ul>
+  "\
+<ul>
   <li><++></li>
 </ul>")
 

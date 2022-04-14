@@ -5,15 +5,13 @@
 
 ;; Unless 'package-enable-at-startup' is set to 'nil' Emacs will automatically
 ;; "activate" all installed packages after early-init.el but before init.el.
-;; To prevent an installed package from loading at startup, customize the
-;; `package-load-list':
 
+;; Prevent these built-in packages from being activated:
 (setq package-load-list '((modus-themes nil)
                           ;; make all others available:
                           all))
 
 ;; Set these settings before the GUI frame is created.
-
 (setq tool-bar-mode nil
       menu-bar-mode t)
 

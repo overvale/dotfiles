@@ -1749,6 +1749,15 @@ PROMPT sets the `read-string prompt."
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
 
+  ;; Use `consult-completion-in-region' if Vertico is enabled.
+  ;; Otherwise use the default `completion--in-region' function.
+  (setq completion-in-region-function
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args)))
+
   :eval
   (defkey global-map
     [remap imenu] 'consult-imenu

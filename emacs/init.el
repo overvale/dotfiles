@@ -965,12 +965,12 @@ Disables all current themes, then:
 
 (defun customize-modus-vivendi nil
   (custom-set-variables
-   '(modus-themes-mode-line '(borderless accented))
+   '(modus-themes-mode-line '(accented borderless))
    '(modus-themes-syntax '(yellow-comments faint))))
 
 (defun customize-modus-operandi nil
   (custom-set-variables
-   '(modus-themes-mode-line '(3d))
+   '(modus-themes-mode-line '())
    '(modus-themes-syntax nil)))
 
 (advice-add 'load-theme-dark :before 'customize-modus-vivendi)
@@ -1708,13 +1708,6 @@ PROMPT sets the `read-string prompt."
   :eval
   (custom-set-variables
    '(vundo-glyph-alist vundo-unicode-symbols)))
-
-(load-package 'undo-hl
-  :local-dir "undo-hl"
-  :autoload undo-hl-mode
-  :eval
-  (add-hook 'text-mode-hook 'undo-hl-mode)
-  (add-hook 'prog-mode-hook 'undo-hl-mode))
 
 (load-package 'marginalia
   :eval

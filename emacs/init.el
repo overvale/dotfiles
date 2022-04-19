@@ -794,6 +794,10 @@ With prefix argument, always prompt for a file to sudo-edit."
   ;; Make shift-click extend the region.
   [S-down-mouse-1] 'ignore
   [S-mouse-1] 'mouse-save-then-kill
+  ;; mode-line mouse mappings
+  [mode-line S-mouse-1] 'mouse-delete-other-windows
+  [mode-line M-mouse-1] 'mouse-delete-window
+  [mode-line C-mouse-1] 'mouse-split-window-horizontally
   ;; Use M-drag-mouse-1 to create rectangle regions.
   [M-down-mouse-1] #'mouse-drag-region-rectangle ; down
   [M-drag-mouse-1] #'ignore                      ; drag
@@ -829,12 +833,13 @@ With prefix argument, always prompt for a file to sudo-edit."
   "s-c" 'kill-ring-save
   "s-v" 'yank
   "s-<backspace>" 'backward-kill-line
+  "s-a" 'mark-whole-buffer
   "s-n" 'new-buffer
   "s-N" 'make-frame-command
   "s-[" 'previous-buffer
   "s-]" 'next-buffer
-  "s-{" 'indent-rigidly-left-to-tab-stop
-  "s-}" 'indent-rigidly-right-to-tab-stop
+  ;; "s-{" 'indent-rigidly-left-to-tab-stop
+  ;; "s-}" 'indent-rigidly-right-to-tab-stop
   "s-/" 'comment-line
   "s-<up>" 'beginning-of-buffer
   "s-<down>" 'end-of-buffer
@@ -1242,6 +1247,37 @@ It should probably be a mode instead."
                 (:eval (mode-line-buffer-line-spacing-status))
                 (vc-mode vc-mode)
                 mode-line-misc-info))
+
+
+;;; Mac-style Tabs
+
+;; I use the Emacs Mac-Port, and the below code makes it so Emacs uses
+;; mac-style tabs, with mac-style shortcuts. I like this much better than
+;; `tab-bar-mode'.
+
+(defun mac-new-tab ()
+  "Create new Mac-style tab.
+This function works by setting the new-frame behaviour to use
+tabs, creating a new frame (thus, tab), then changing the setting
+back to system default."
+  (interactive)
+  (setq mac-frame-tabbing t)
+  (make-frame-command)
+  (setq mac-frame-tabbing 'automatic))
+
+(defun add-arg-to-func (fn &rest args)
+  "Adds the argument \'1\' to FN."
+  (funcall fn 1))
+
+(advice-add 'mac-next-tab :around 'add-arg-to-func)
+(advice-add 'mac-previous-tab :around 'add-arg-to-func)
+
+(defkey bosskey-mode-map
+  "s-t" 'mac-new-tab
+  "s-}" 'mac-next-tab
+  "s-{" 'mac-previous-tab
+  "s-T" 'mac-toggle-tab-bar
+  "s-|" 'mac-toggle-tab-group-overview)
 
 
 ;;; Buffer Line-Spacing

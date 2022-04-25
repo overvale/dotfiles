@@ -309,308 +309,9 @@ Keybindings you define here will take precedence."
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
-
-;;; Functions
-
-;; Some of these functions I wrote myself, many of them I copied (and perhaps
-;; modified) from other people's configs.
-
-(defun find-user-init-file ()
-  "Find the user-init-file."
-  (interactive)
-  (find-file user-init-file))
-
-(defun rotate-window-split ()
-  ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/window-extras.el
-  "Rotate window split from vertical to horizontal."
-  (interactive)
-  (if (> (length (window-list)) 2)
-      (error "Can't toggle with more than 2 windows.")
-    (let ((was-full-height (window-full-height-p)))
-      (delete-other-windows)
-      (if was-full-height
-          (split-window-vertically)
-        (split-window-horizontally))
-      (save-selected-window
-        (other-window 1)
-        (switch-to-buffer (other-buffer))))))
-
-(defun swap-windows (count)
-  "Swap your windows.
-Dedicated windows are left untouched. Giving a negative prefix
-argument makes the windows rotate backwards."
-  (interactive "p")
-  (let* ((non-dedicated-windows (cl-remove-if 'window-dedicated-p (window-list)))
-         (num-windows (length non-dedicated-windows))
-         (i 0)
-         (step (+ num-windows count)))
-    (cond ((not (> num-windows 1))
-           (message "You can't rotate a single window!"))
-          (t
-           (dotimes (counter (- num-windows 1))
-             (let* ((next-i (% (+ step i) num-windows))
-
-                    (w1 (elt non-dedicated-windows i))
-                    (w2 (elt non-dedicated-windows next-i))
-
-                    (b1 (window-buffer w1))
-                    (b2 (window-buffer w2))
-
-                    (s1 (window-start w1))
-                    (s2 (window-start w2)))
-               (set-window-buffer w1 b2)
-               (set-window-buffer w2 b1)
-               (set-window-start w1 s2)
-               (set-window-start w2 s1)
-               (setq i next-i)))))))
-
-(defun other-window-previous nil
-  "Select previous window."
-  (interactive)
-  (other-window -1))
-
-(defun split-window-dwim ()
-  "Interactive wrapper around `split-window-sensibly'."
-  (interactive)
-  (split-window-sensibly))
-
-(defun find-file-recursively (&optional path)
-  "Find Files Recursively using completing read.
-Uses the `default-directory' unless a path is supplied."
-  (interactive)
-  (find-file (completing-read "Find File Recursively: "
-                              (directory-files-recursively (if path path default-directory) ".+" t))))
-
-(defalias 'find-files-recursively 'find-file-recursively)
-
-(defun kill-buffer-dwim (&optional u-arg)
-  "Call kill-current-buffer, with C-u: call kill-buffer."
-  (interactive "P")
-  (if u-arg
-      (call-interactively 'kill-buffer)
-    (call-interactively 'kill-current-buffer)))
-
-(defun unfill-paragraph ()
-  "Remove all newlines from paragraph."
-  (interactive)
-  (let ((fill-column (point-max)))
-    (fill-paragraph nil)))
-
-(defun unfill-region ()
-  "Remove all newlines from paragraphs in region."
-  (interactive)
-  (let ((fill-column (point-max)))
-    (fill-paragraph nil t)))
-
-(defun unfill-dwim ()
-  "If there's a region, `unfill-region', otherwise `unfill-paragraph'."
-  (interactive)
-  (if (use-region-p)
-      (unfill-region)
-    (unfill-paragraph)))
-
-(defun browse-url-macos-background (url)
-  "Open URL with macOS `open'."
-  (interactive)
-  (start-process "open url"
-                 nil "open" "--background" url)
-  (message "URL opened in background."))
-
-(defun macos-open-app (app)
-  "Open APP with macOS `open'."
-  (start-process "open app" nil "open" "-a" app))
-
-(defun crux-open-with (arg)
-  "Open visited file in default external program.
-When in dired mode, open file under the cursor.
-With a prefix ARG always prompt for command to use."
-  (interactive "P")
-  (let* ((current-file-name
-          (if (eq major-mode 'dired-mode)
-              (dired-get-file-for-visit)
-            buffer-file-name))
-         (open (pcase system-type
-                 (`darwin "open")
-                 ((or `gnu `gnu/linux `gnu/kfreebsd) "xdg-open")))
-         (program (if (or arg (not open))
-                      (read-shell-command "Open current file with: ")
-                    open)))
-    (call-process program nil 0 nil current-file-name)))
-
-(defun crux-rename-file-and-buffer ()
-  "Rename current buffer and if the buffer is visiting a file, rename it too."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (rename-buffer (read-from-minibuffer "New name: " (buffer-name)))
-      (let* ((new-name (read-file-name "New name: " (file-name-directory filename)))
-             (containing-dir (file-name-directory new-name)))
-        (make-directory containing-dir t)
-        (cond
-         ((vc-backend filename) (vc-rename-file filename new-name))
-         (t
-          (rename-file filename new-name t)
-          (set-visited-file-name new-name t t)))))))
-
-(defun kf-make-file-executable ()
-  "Make current buffer's file have permissions 755 \(rwxr-xr-x)\.
-This will save the buffer if it is not currently saved."
-  (interactive)
-  (set-buffer-modified-p t)
-  (save-buffer)
-  (chmod (buffer-file-name) 493))
-
-(defun olivertaylor.net ()
-  "Helpful stuff for coding my website."
-  (interactive)
-  (load "~/home/src/olivertaylor/lib/helper.el")
-  (oht-site-transient))
-
-(defun frames-p-save-buffers-kill-emacs ()
-  "If more than one frame exists, confirm exit of Emacs."
-  (interactive)
-  (if (nth 1 (frame-list))
-      (if (y-or-n-p "Multiple frames exist; exit anyway?")
-          (save-buffers-kill-emacs)
-        nil)
-    (save-buffers-kill-emacs)))
-
-(defun describe-symbol-at-point ()
-  "Run `describe-symbol' for the `symbol-at-point'."
-  (interactive)
-  (describe-symbol (symbol-at-point)))
-
-(defun split-window-below-select nil
-  "Split window below and select it."
-  (interactive)
-  (select-window (split-window-below)))
-
-(defun split-window-right-select nil
-  "Split window to the right and select it."
-  (interactive)
-  (select-window (split-window-right)))
-
-(defun backward-kill-line nil
-  "Kill from point to beginning of line."
-  (interactive)
-  (kill-line 0))
-
-(defun join-line-next nil
-  "Join this line to next."
-  (interactive)
-  (save-excursion
-    (delete-indentation t)))
-
-(defun occur-dwim ()
-  "Call `occur' with a sane default."
-  (interactive)
-  (push (if (region-active-p)
-            (buffer-substring-no-properties
-             (region-beginning)
-             (region-end))
-          (--when-let (thing-at-point 'symbol)
-            (regexp-quote it)))
-        regexp-history)
-  (call-interactively 'occur))
-
-(defun wrap-region-in-xml-tag (start end arg)
-  "Wrap the region in an xml tag of ARG."
-  (interactive "r\nsTagname: ")
-  (goto-char start)
-  (insert "<" arg ">")
-  (goto-char (+ end 2 (length arg)))
-  (insert "</" arg ">"))
-
-(defun wrap-http-link-backwards ()
-  "Looks backwards from point for a link and wraps in HTML tag."
-  (interactive)
-  (let ((start (copy-marker (point))))
-    (re-search-backward "\\(^\\|\\s-+\\)https?://")
-    (forward-word 1)
-    (forward-word -1)
-    (insert "<a href=\"")
-    (search-forward " ")
-    (just-one-space)
-    (forward-char -1)
-    (insert "\"")
-    (forward-char 1)
-    (when (looking-at "$")
-      (delete-char -1)
-      (forward-char 1))
-    (insert ">")
-    (goto-char start)
-    (insert "</a>")))
-
-(defun safari-read-later (url)
-  "Add URL to Safari's Reading List."
-  (interactive
-   (list (completing-read "URL to save: " nil)))
-  (shell-command-to-string
-   (concat "osascript -e \'tell application \"Safari\" to add reading list item \""
-           url "\"\'"))
-  (message "URL sent to Safari's Reading List."))
+(load-package 'init-functions :require)
 
 
-(defun my-sudo-edit (&optional arg)
-  "Edit a file as root via sudo.
-
-Edit the current buffer's file as root. If the buffer isn't
-visiting a file, prompt user to select a file. If opening a flile
-as root was successfull, the original buffer is killed (unless it
-has unsaved changes).
-
-With prefix argument, always prompt for a file to sudo-edit."
-  (interactive "P")
-  (require 'tramp)
-  (let ((fname (if (or arg (not buffer-file-name))
-                   (read-file-name "File: ")
-                 buffer-file-name))
-        (orig-buffer (and buffer-file-name (current-buffer))))
-    (find-file
-     (if (not (tramp-tramp-file-p fname))
-         (concat "/sudo:root@localhost:" fname)
-       (with-parsed-tramp-file-name fname parsed
-         (when (equal parsed-user "root")
-           (error "Already root!"))
-         (let* ((new-hop (tramp-make-tramp-file-name
-                          ;; Try to retrieve a tramp method suitable for
-                          ;; multi-hopping
-                          (cond ((tramp-get-method-parameter
-                                  parsed 'tramp-login-program))
-                                ((tramp-get-method-parameter
-                                  parsed 'tramp-copy-program))
-                                (t parsed-method))
-                          parsed-user
-                          parsed-domain
-                          parsed-host
-                          parsed-port
-                          nil
-                          parsed-hop))
-                (new-hop (substring new-hop 1 -1))
-                (new-hop (concat new-hop "|"))
-                (new-fname (tramp-make-tramp-file-name
-                            "sudo"
-                            parsed-user
-                            parsed-domain
-                            parsed-host
-                            parsed-port
-                            parsed-localname
-                            new-hop)))
-           new-fname))))
-    (when (and orig-buffer
-               (not (buffer-modified-p orig-buffer)))
-      (kill-buffer orig-buffer))))
-
-(defun dumb-down-punctuation (beg end)
-  "Replace smart punctuation in buffer or region with ascii equivalents."
-  (interactive "r")
-  (format-replace-strings '(("\x201C" . "\"")
-                            ("\x201D" . "\"")
-                            ("\x2018" . "'")
-                            ("\x2019" . "'")
-                            ("\x2013" . "--")
-                            ("\x2014" . "---"))
-                          nil beg end))
 
 ;;; Advice
 
@@ -862,133 +563,56 @@ With prefix argument, always prompt for a file to sudo-edit."
 
 ;;; Themes
 
-;; I will admit that the below is... overkill. But what it does is (at least)
-;; conceptually simple. It allows you to define your preferred dark and light
-;; themes, and then provides functions for loading them, toggling them, and
-;; matching to MacOS's system appearance.
-
-(defvar light-theme nil
-  "Preferred light-theme.")
-
-(defvar dark-theme nil
-  "Preferred dark-theme.")
-
-(defvar default-theme-color 'light
-  "Default theme to load, accepts 'light and 'dark.")
-
-(defvar current-theme-color default-theme-color
-  "Is the current theme color light or dark?")
-
-(defun disable-current-themes nil
-  "Disables all currently enabled themes."
-  (interactive)
-  (if custom-enabled-themes
-    (mapcar 'disable-theme custom-enabled-themes)))
-
-(defun load-theme-cleanly (theme)
-  "Disable active themes, then load theme."
-  (interactive
-   (list (intern
-          (completing-read "Load Theme: "
-                           (mapcar 'symbol-name (custom-available-themes))))))
-  (disable-current-themes)
-  (load-theme theme t))
-
-(defun macos-dark-p ()
-  "Return t if macOS appearance is dark."
-  (interactive)
-  (string= (shell-command-to-string "defaults read -g AppleInterfaceStyle")
-           "Dark\n"))
-
-(defun macos-toggle-system-appearance nil
-  "Toggle macOS's system appearance between dark and light modes."
-  (interactive)
-  (shell-command-to-string "osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"))
-
-(defun load-theme-dark nil
-  "Loads the dark theme."
-  (disable-current-themes)
-  (load-theme dark-theme t)
-  (setq current-theme-color 'dark))
-
-(defun load-theme-light nil
-  "Loads the light theme."
-  (disable-current-themes)
-  (load-theme light-theme t)
-  (setq current-theme-color 'light))
-
-(defun toggle-theme-color nil
-  "Toggle between `light-theme' and `dark-theme'."
-  (interactive)
-  (if (eq current-theme-color 'light)
-      (load-theme-dark)
-    (load-theme-light)))
-
-(defun load-theme-color (color)
-  "Load users preferred theme, based on ARG or macOS appearance.
-Disables all current themes, then:
-- if COLOR is \"light\" or \"dark\", load the `light-theme' or `dark-theme'.
-- if COLOR is \"system\" check macOS's appearance state and match it with
-  either the light or dark theme."
-  (interactive
-   (list (completing-read "Load Theme Color: " '("dark" "light" "system"))))
-  (cond ((string= color "light")
-         (load-theme-light))
-        ((string= color "dark")
-         (load-theme-dark))
-        ((string= color "system")
-         (if (macos-dark-p)
-             (load-theme-dark)
-           (load-theme-light)))))
-
-;; Modus Themes options...
-
+;; Modus Themes
 ;; Use the local version instead of the built-in one
 ;; You need to disable the built-in version in early-init
 (load-package 'modus-themes
   :local-dir "modus-themes"
-  :require)
+  :require
+  :after-load
 
-(custom-set-variables
- '(modus-themes-mixed-fonts t)
- '(modus-themes-italic-constructs t)
- '(modus-themes-links '(neutral-underline))
- '(modus-themes-diffs '(desaturated))
- '(modus-themes-org-agenda '((header-block . (variable-pitch 1.6))
-                             (header-date . (bold-today))
-                             (scheduled . rainbow))))
-
-(custom-set-variables
- '(modus-themes-vivendi-color-overrides '((bg-main     . "#24242d")
-                                          (bg-inactive . "#2f2f3b")
-                                          (bg-hl-line  . "#2f2f3b"))))
-
-;; I want different syntax options for operandi and vivendi and there doesn't
-;; seem to be a built in way to do that. So I've created some custom
-;; functions/advice for that. NOTE that any options you set in one of the
-;; themes need to be reset to nil in the other theme.
-
-(defun customize-modus-vivendi nil
   (custom-set-variables
-   '(modus-themes-mode-line '(accented borderless))
-   '(modus-themes-syntax '(yellow-comments faint))))
+   '(modus-themes-mixed-fonts t)
+   '(modus-themes-italic-constructs t)
+   '(modus-themes-links '(neutral-underline))
+   '(modus-themes-diffs '(desaturated))
+   '(modus-themes-org-agenda '((header-block . (variable-pitch 1.6))
+                               (header-date . (bold-today))
+                               (scheduled . rainbow))))
 
-(defun customize-modus-operandi nil
   (custom-set-variables
-   '(modus-themes-mode-line '())
-   '(modus-themes-syntax nil)))
+   '(modus-themes-vivendi-color-overrides '((bg-main     . "#24242d")
+                                            (bg-inactive . "#2f2f3b")
+                                            (bg-hl-line  . "#2f2f3b"))))
 
-(advice-add 'load-theme-dark :before 'customize-modus-vivendi)
-(advice-add 'load-theme-light :before 'customize-modus-operandi)
+  ;; I want different syntax options for operandi and vivendi and there doesn't
+  ;; seem to be a built in way to do that. So I've created some custom
+  ;; functions/advice for that. NOTE that any options you set in one of the
+  ;; themes need to be reset to nil in the other theme.
+
+  (defun customize-modus-vivendi nil
+    (custom-set-variables
+     '(modus-themes-mode-line '(accented borderless))
+     '(modus-themes-syntax '(yellow-comments faint))))
+
+  (defun customize-modus-operandi nil
+    (custom-set-variables
+     '(modus-themes-mode-line '())
+     '(modus-themes-syntax nil)))
+
+  (advice-add 'load-theme-dark :before 'customize-modus-vivendi)
+  (advice-add 'load-theme-light :before 'customize-modus-operandi))
 
 ;; Actual theme loading...
+(load-package 'theme-loading
+  :require
+  :after-load
+  (setq light-theme 'modus-operandi)
+  (setq dark-theme  'modus-vivendi)
+  (setq default-theme-color 'light)
 
-(setq light-theme 'modus-operandi)
-(setq dark-theme  'modus-vivendi)
-(setq default-theme-color 'light)
-
-;; On startup I want to match the system
-(load-theme-color 'system)
+  ;; On startup I want to match the system
+  (load-theme-color 'system))
 
 (custom-set-variables
  '(cursor-type 'box)
@@ -1000,174 +624,52 @@ Disables all current themes, then:
 
 ;;; Fonts
 
-;; The below code provides the following features:
-
-;; 1. A way to define sets of fonts and font sizes, which you can load as the
-;;    default for all frames or per-buffer.
-;; 2. A mode for scaling only the variable-pitch face up to the exact size of
-;;    your choosing so that mixed-font buffers look great.
-
-(defvar custom-fonts-alist nil
-  "An alist of font properties used by `set-custom-fonts'.
-The alist should be formatted thus:
-
-(setq custom-fonts-alist
-      '((Apple . ( :mono \"SF Mono\"
-                   :vari \"New York\"
-                   :mode \"SF Compact Text\"
-                   :line nil
-                   :mono-height 120
-                   :mode-height 130
-                   :vari-height 140))))")
-
-(defun set-custom-fonts (font-settings)
-  "Prompt user and set fonts according to selection from `custom-fonts-alist'.
-FONT-SETTINGS should be a string."
-  (interactive
-   (list (completing-read
-          "Select default font pairings: "
-          (mapcar #'car custom-fonts-alist))))
-  (let* ((fonts (intern font-settings))
-         (properties (alist-get fonts custom-fonts-alist))
-         (mono (plist-get properties :mono))
-         (vari (plist-get properties :vari))
-         (mode (plist-get properties :mode))
-         (line (plist-get properties :line))
-         (mono-height (plist-get properties :mono-height))
-         (mode-height (plist-get properties :mode-height))
-         (vari-height (plist-get properties :vari-height)))
-    (setq line-spacing line
-          variable-pitch-adjust-height vari-height)
-    (custom-set-faces
-     `(default ((t :family ,mono :height ,mono-height)))
-     `(fixed-pitch ((t :family ,mono)))
-     `(variable-pitch ((t :family ,vari)))
-     `(mode-line ((t :family ,mode :height ,mode-height)))
-     `(mode-line-inactive ((t :family ,mode :height ,mode-height))))))
-
-(defvar variable-pitch-adjust-height nil
-  "Used by `variable-pitch-adjust-mode' to determine the
-variable-pitch scaling amount in that mode.")
-
-(define-minor-mode variable-pitch-adjust-mode
-  "Minor mode to adjust only the variable-pitch face height buffer-locally.
-Scales the variable-pitch height up to the height defined by
-‘variable-pitch-adjust-height’ and the fixed-pitch face down to
-match the default face height. Thus, in mixed-font settings you
-can scale the variable-pitch height independently of the
-fixed-pitch and default face heights."
-  :init-value nil
-  :lighter " V+"
-  (if variable-pitch-adjust-mode
-      (progn
-        (setq-local variable-pitch-remapping
-                    (face-remap-add-relative 'variable-pitch
-                                             :height (/ variable-pitch-adjust-height
-                                                        (float (face-attribute 'default :height)))))
-        (setq-local fixed-pitch-remapping
-                    (face-remap-add-relative 'fixed-pitch
-                                             :height (/ (float (face-attribute 'default :height))
-                                                        variable-pitch-adjust-height))))
-    (progn
-      (face-remap-remove-relative variable-pitch-remapping)
-      (face-remap-remove-relative fixed-pitch-remapping))))
-
-(add-hook 'buffer-face-mode-hook (lambda () (variable-pitch-adjust-mode 'toggle)))
-
-(defvar-local buffer-remap-faces-default-cookie nil
-  "Cookie used for `buffer-remap-faces--set'.")
-(defvar-local buffer-remap-faces-fixed-pitch-cookie nil
-  "Cookie used for `buffer-remap-faces--set'.")
-(defvar-local buffer-remap-faces-variable-pitch-cookie nil
-  "Cookie used for `buffer-remap-faces--set'.")
-
-(defun buffer-remap-faces--clear nil
-  "In the current buffer, remove all buffer-remap-faces--set cookies."
-  (interactive)
-  (face-remap-remove-relative buffer-remap-faces-default-cookie)
-  (face-remap-remove-relative buffer-remap-faces-fixed-pitch-cookie)
-  (face-remap-remove-relative buffer-remap-faces-variable-pitch-cookie))
-
-(defun buffer-remap-faces--set (font-settings)
-  "Prompt user and set fonts for the current buffer according to selection from `custom-fonts-alist'.
-It should probably be a mode instead."
-  (interactive
-   (list (completing-read
-          "Select font pairings for Buffer: "
-          (mapcar #'car custom-fonts-alist))))
-  (let* ((fonts (intern font-settings))
-         (properties (alist-get fonts custom-fonts-alist))
-         (mono (plist-get properties :mono))
-         (vari (plist-get properties :vari))
-         (mono-height (plist-get properties :mono-height)))
-    (buffer-remap-faces--clear)
-    (setq buffer-remap-faces-default-cookie
-          (face-remap-add-relative 'default
-                                   :family mono
-                                   :height mono-height))
-    (setq buffer-remap-faces-variable-pitch-cookie
-          (face-remap-add-relative 'fixed-pitch
-                                   :family mono))
-    (setq buffer-remap-faces-fixed-pitch-cookie
-          (face-remap-add-relative 'variable-pitch
-                                   :family vari))
-    (force-window-update (current-buffer))))
-
-(define-minor-mode buffer-remap-faces-mode
-  "Minor mode to set buffer-local fonts."
-  :lighter " BufferFaces"
-  :init-value nil
-  :global nil
-  (if buffer-remap-faces-mode
-      (call-interactively 'buffer-remap-faces--set)
-    (buffer-remap-faces--clear)))
-
 ;; This makes it so text-scale adjustments operate exactly one point size at a
 ;; time. The original value is 1.2, which jumps point-sizes when stepping
 ;; up/down.
 (setq text-scale-mode-step 1.09)
 
-;; Set the different font-pairings (and settings for them) you want to be able
-;; to switch between.
-(setq custom-fonts-alist
-      '((Apple . ( :mono "SF Mono"
-                   :vari "New York"
-                   :mode "SF Compact Text"
+(load-package 'custom-fonts
+  :require
+  :after-load
+  (setq custom-fonts-alist
+        '((Apple . ( :mono "SF Mono"
+                     :vari "New York"
+                     :mode "SF Compact Text"
+                     :line nil
+                     :mono-height 120
+                     :mode-height 130
+                     :vari-height 140))
+          (Berkeley . ( :mono "Berkeley Mono"
+                        :vari "Verdana"
+                        :mode "SF Compact Text"
+                        :line nil
+                        :mono-height 120
+                        :mode-height 130
+                        :vari-height 120))
+          (IBM . ( :mono "IBM Plex Mono"
+                   :vari "IBM Plex Serif"
+                   :mode "IBM Plex Sans"
                    :line nil
                    :mono-height 120
-                   :mode-height 130
-                   :vari-height 140))
-        (Berkeley . ( :mono "Berkeley Mono"
-                      :vari "Verdana"
-                      :mode "SF Compact Text"
-                      :line nil
-                      :mono-height 120
-                      :mode-height 130
-                      :vari-height 120))
-        (IBM . ( :mono "IBM Plex Mono"
-                 :vari "IBM Plex Serif"
-                 :mode "IBM Plex Sans"
-                 :line nil
-                 :mono-height 120
-                 :mode-height 140
-                 :vari-height 130))
-        (Go . ( :mono "Go Mono"
-                :vari "Go"
-                :mode "Go"
-                :line nil
-                :mono-height 120
-                :mode-height 130
-                :vari-height 130))
-        (Pragmata . ( :mono "PragmataPro"
-                      :vari "Fira Sans"
-                      :mode "SF Compact Text"
-                      :line nil
-                      :mono-height 130
-                      :mode-height 140
-                      :vari-height 130))))
+                   :mode-height 140
+                   :vari-height 130))
+          (Go . ( :mono "Go Mono"
+                  :vari "Go"
+                  :mode "Go"
+                  :line nil
+                  :mono-height 120
+                  :mode-height 130
+                  :vari-height 130))
+          (Pragmata . ( :mono "PragmataPro"
+                        :vari "Fira Sans"
+                        :mode "SF Compact Text"
+                        :line nil
+                        :mono-height 130
+                        :mode-height 140
+                        :vari-height 130))))
 
-;; On startup, use this set of fonts:
-(set-custom-fonts "Berkeley")
+  (set-custom-fonts "Berkeley"))
 
 
 ;;; Mode-Line

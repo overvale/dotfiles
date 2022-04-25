@@ -2005,7 +2005,6 @@ With a prefix argument, copy the link to the online manual instead."
 
 ;;; Mail
 
-
 (setq mail-user-agent 'mu4e-user-agent)
 
 (load-package 'mu4e
@@ -2022,6 +2021,7 @@ With a prefix argument, copy the link to the online manual instead."
    '(mu4e-drafts-folder "/icloud/Drafts")
    '(mu4e-trash-folder "/icloud/Deleted Messages")
    '(mu4e-sent-folder "/icloud/Sent Messages")
+   '(mu4e-refile-folder "/icloud/Archive")
    '(mu4e-attachments-dir user-downloads-directory)
    '(mu4e-update-interval (* 5 60))
    '(mu4e-change-filenames-when-moving t)
@@ -2033,7 +2033,6 @@ With a prefix argument, copy the link to the online manual instead."
    '(mu4e-headers-skip-duplicates t)
    '(mu4e-headers-time-format "%H:%M")
    '(mu4e-headers-visible-lines 20)
-   '(mu4e-use-fancy-chars nil)
    '(mu4e-view-show-addresses t)
    '(mu4e-view-show-images t)
    '(mu4e-sent-messages-behavior 'delete)
@@ -2042,6 +2041,21 @@ With a prefix argument, copy the link to the online manual instead."
        (:flags . 6)
        (:from . 22)
        (:thread-subject))))
+
+  (setq mu4e-use-fancy-chars t
+        mu4e-headers-new-mark '("N" . "")
+        mu4e-headers-passed-mark '("P" . "→")
+        mu4e-headers-replied-mark '("R" . "←")
+        mu4e-headers-seen-mark '("S" . "")
+        mu4e-headers-attach-mark '("a" . "a")
+        mu4e-headers-flagged-mark '("F" . "✱")
+        mu4e-headers-unread-mark '("u" . "●"))
+
+  (setq mu4e-headers-thread-child-prefix '("├>" . "├▶")
+        mu4e-headers-thread-last-child-prefix '("└>" . "└▶")
+        mu4e-headers-thread-connection-prefix '("│" . "│")
+        mu4e-headers-thread-orphan-prefix '("┬>" . "┬▶")
+        mu4e-headers-thread-single-orphan-prefix '("─>" . "─▶"))
 
   (defun m4e-view-in-eww (msg)
     (eww-browse-url (concat "file://" (mu4e~write-body-to-html msg))))

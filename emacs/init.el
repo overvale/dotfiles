@@ -622,7 +622,10 @@ Keybindings you define here will take precedence."
   (setq default-theme-color 'light)
 
   ;; On startup I want to match the system
-  (load-theme-color 'system))
+  (load-theme-color 'system)
+
+  ;; I'm using the mac-port, which has this hook I can use:
+  (add-hook 'mac-effective-appearance-change-hook (lambda () (load-theme-color 'system))))
 
 (custom-set-variables
  '(cursor-type 'box)

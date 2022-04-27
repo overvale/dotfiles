@@ -131,6 +131,8 @@
 
 ;;; Critical Setup
 
+;;;; Packages
+
 (require 'package)
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -165,6 +167,8 @@
         visual-regexp
         visual-regexp-steroids
         wolfram))
+
+;;;; Load-Package Macro
 
 ;; So... Like any Emacs hacker who has spent entirely too much time thinking
 ;; about their config I've created my own version of `use-package'. Compared
@@ -226,6 +230,8 @@ Available keywords are (must use one):
            arg-list)))
     `(progn ,@body)))
 
+;;;; Defkey
+
 ;; Let's be honest, it's not hard to bind a key in Emacs, and the syntax for
 ;; it is... fine. But it can be easier, and you can save yourself some typing
 ;; by creating a function or macro to do it for you. There are many like it
@@ -253,6 +259,8 @@ Define your keys like this:
         def)
       (setq body (cddr body)))))
 
+;;;; Bosskey Mode
+
 ;; The key binding technique below is taken from the bind-key package. It
 ;; places all the bindings I don't want overridden into a minor mode which is
 ;; inserted into the `emulation-mode-map-alists', so only very few things can
@@ -270,6 +278,8 @@ Keybindings you define here will take precedence."
 
 (add-to-list 'emulation-mode-map-alists
              `((bosskey-mode . ,bosskey-mode-map)))
+
+;;;; Environment
 
 ;; I use a lot of transients in this config, so I need to make sure it is
 ;; loaded and configured before those are declared below.

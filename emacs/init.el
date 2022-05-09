@@ -541,8 +541,6 @@ Keybindings you define here will take precedence."
   "s-N" 'make-frame-command
   "s-[" 'previous-buffer
   "s-]" 'next-buffer
-  ;; "s-{" 'indent-rigidly-left-to-tab-stop
-  ;; "s-}" 'indent-rigidly-right-to-tab-stop
   "s-/" 'comment-line
   "s-<up>" 'beginning-of-buffer
   "s-<down>" 'end-of-buffer
@@ -552,15 +550,6 @@ Keybindings you define here will take precedence."
   "s-," 'find-user-init-file
   "s-q" 'save-buffers-kill-emacs
   "s-." 'keyboard-quit)
-
-;; I spend a lot of time in the terminal, and I spent many years working in
-;; vim, both of which use readline bindings. I miss them when I don't have
-;; them.
-(defkey bosskey-mode-map
-  "s-u" 'universal-argument
-  "C-u" 'backward-kill-line
-  "C-w" 'backward-kill-word
-  "s-x" 'kill-region)
 
 
 ;;; Themes

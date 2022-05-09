@@ -146,8 +146,6 @@
 (setq package-selected-packages
       '(consult
         delight
-        elfeed
-        hackernews
         embark
         embark-consult
         expand-region

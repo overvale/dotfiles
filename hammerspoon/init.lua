@@ -30,12 +30,9 @@ hs.urlevent.bind("success", genericSuccess)
 -- Misc Spoons
 -- -----------------------------------------------
 
--- Anycomplete lets you insert text by using use Google search's autocomplete.
--- So incredibly handy for words you don't know how to spell.
-local anycomplete = require "anycomplete"
-
--- The default binding for anycomplete is hyper-g
-anycomplete.registerDefaultBindings()
+anycomplete = hs.loadSpoon("Anycomplete")
+anycomplete.engine = "duckduckgo"
+anycomplete.bindHotkeys()
 
 -- This is a custom spoon I made that interacts with the command-line backup
 -- tool 'restic' and some launchd scripts I run on my Mac. It's really great,

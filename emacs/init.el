@@ -287,7 +287,7 @@ Keybindings you define here will take precedence."
   :after-load
   (setq transient-detect-key-conflicts t
         transient-force-fixed-pitch t
-        transient-show-popup t))
+        transient-show-popup 0.5))
 
 ;; In addition to the above packages and macros, a few variables need to be
 ;; set.
@@ -577,6 +577,7 @@ Keybindings you define here will take precedence."
    '(modus-themes-mixed-fonts t)
    '(modus-themes-italic-constructs t)
    '(modus-themes-links '(neutral-underline))
+   '(modus-themes-org-blocks 'gray-background)
    '(modus-themes-diffs '(desaturated))
    '(modus-themes-org-agenda '((header-block . (variable-pitch 1.6))
                                (header-date . (bold-today))
@@ -630,8 +631,8 @@ Keybindings you define here will take precedence."
 ;;; Fonts
 
 ;; This makes it so text-scale adjustments operate exactly one point size at a
-;; time. The original value is 1.2, which jumps point-sizes when stepping
-;; up/down.
+;; time. The original value is 1.2, which sometimes increases/decreases by
+;; more than a single point size.
 (setq text-scale-mode-step 1.09)
 
 (load-package 'custom-fonts

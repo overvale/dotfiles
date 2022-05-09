@@ -11,20 +11,7 @@
 -- + https://github.com/dbmrq/dotfiles
 -- + https://github.com/raulchen/dotfiles
 -- + https://github.com/justintanner/universal-emacs-keybindings
-
-
--- Testing/Debugging
--- ----------------------------------------------
-
-function genericSuccess()
-   -- Function for creating a notification saying "Success!"
-   -- This is useful when testing new Hammerspoon stuff.
-   hs.notify.new({title='Hammerspoon', informativeText='Success!'}):send()
-end
-
--- With the below you can run `open hammerspoon:///success` in your terminal
--- and you'll run the 'genericSuccess' function.
-hs.urlevent.bind("success", genericSuccess)
+-- + https://github.com/dbalatero/dotfiles/tree/master/hammerspoon
 
 
 -- Misc Spoons
@@ -98,6 +85,16 @@ function wm_right1third() moveResizeWin('right1/3') end
 
 -- Misc Functions
 -- -----------------------------------------------
+
+function genericSuccess()
+   -- Function for creating a notification saying "Success!"
+   -- This is useful when testing new Hammerspoon stuff.
+   hs.notify.new({title='Hammerspoon', informativeText='Success!'}):send()
+end
+
+-- With the below you can run `open hammerspoon:///success` in your terminal
+-- and you'll run the 'genericSuccess' function.
+hs.urlevent.bind("success", genericSuccess)
 
 local reloadHammerspoon = function() hs.reload() end
 

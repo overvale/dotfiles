@@ -366,26 +366,20 @@ Keybindings you define here will take precedence."
 (load-package 'vertico-extensions
   :local-dir "vertico/extensions"
   :eval
-  (require 'vertico-buffer)
-  (require 'vertico-directory)
-  (require 'vertico-flat)
-  (require 'vertico-grid)
-  (require 'vertico-indexed)
-  (require 'vertico-mouse)
-  (require 'vertico-multiform)
-  (require 'vertico-quick)
-  (require 'vertico-repeat)
-  (require 'vertico-reverse)
-  (require 'vertico-unobtrusive)
+  (dolist (extension '(vertico-buffer
+                       vertico-directory
+                       vertico-flat
+                       vertico-grid
+                       vertico-indexed
+                       vertico-mouse
+                       vertico-multiform
+                       vertico-quick
+                       vertico-repeat
+                       vertico-reverse
+                       vertico-unobtrusive))
+    (require extension))
 
   (vertico-multiform-mode 1)
-
-  (defun vertico-multiform-list nil
-    "Temporarily revert vertico to its default appearance."
-    (interactive)
-    (dolist (m '(vertico-unobtrusive-mode vertico-flat-mode
-                 vertico-grid-mode vertico-reverse-mode))
-      (vertico-multiform--temporary-mode m -1)))
 
   (setq vertico-multiform-categories
         '((file reverse)
@@ -402,7 +396,7 @@ Keybindings you define here will take precedence."
 
   (defkey vertico-map
     "'"   #'vertico-quick-jump
-    "M-l" #'vertico-multiform-list
+    "M-v" #'vertico-multiform-vertical
     "M-g" #'vertico-multiform-grid
     "M-f" #'vertico-multiform-flat
     "M-r" #'vertico-multiform-reverse
@@ -420,7 +414,7 @@ Keybindings you define here will take precedence."
   :require
   :eval
   (custom-set-variables
-   '(completion-styles '(orderless))))
+   '(completion-styles '(substring orderless basic))))
 
 ;; The below code introduces some improvements to the default completion
 ;; experience. I took these ideas from the emacs-devel mailing list.

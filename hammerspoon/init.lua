@@ -296,13 +296,6 @@ function myHammerMenuItem()
       { title = "-" },
       { title = "Copy Mail Message URL", fn = copyMailURL},
       { title = "New Mail Message", fn = newMailMessage },
-      { title = "-" },
-      { title = "Available Tools:", disabled = true },
-      { title = "Any Complete", disabled = true },
-      { title = "Snap Window", disabled = true  },
-      { title = "Resize Window", disabled = true  },
-      { title = "App Launcher", disabled = true  },
-
    }
    myHammerMenu:setMenu(menuTable)
 end

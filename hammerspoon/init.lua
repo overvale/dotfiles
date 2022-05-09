@@ -13,19 +13,6 @@
 -- + https://github.com/justintanner/universal-emacs-keybindings
 
 
--- Config Setup
--- ----------------------------------------------
-
--- These are variables which refer to different combinations of modifier keys.
-local omega = {"ctrl", "cmd"}
-local hyper = {"ctrl", "alt", "cmd"}
-local super = {"ctrl", "alt", "cmd", "shift"}
-
--- Capture the hostname, so we can make this config behave differently
--- depending on the computer.
-hostname = hs.host.localizedName()
-
-
 -- Testing/Debugging
 -- ----------------------------------------------
 
@@ -40,7 +27,7 @@ end
 hs.urlevent.bind("success", genericSuccess)
 
 
--- Spoons
+-- Misc Spoons
 -- -----------------------------------------------
 
 -- Anycomplete lets you insert text by using use Google search's autocomplete.
@@ -57,14 +44,12 @@ anycomplete.registerDefaultBindings()
 require('backup_menu')
 
 
--- Window Control
+-- Window Control Functions
 -- -----------------------------------------------
 
--- When moving/resizing windows, I don't want any animation, I just want them
--- to snap into position.
 hs.window.animationDuration = 0
 
-function snap_window(dir)
+function moveWindow(dir)
    -- Reposition the current window to the left, right, top, or bottom of screen.
    local thiswindow = hs.window.frontmostWindow()
    local loc = thiswindow:frame()
@@ -82,57 +67,106 @@ function snap_window(dir)
    thiswindow:setFrame(loc)
 end
 
--- Move windows left, right, center
-hs.hotkey.bind(hyper, "[", function() snap_window('left') end)
-hs.hotkey.bind(hyper, "]", function() snap_window('right') end)
-hs.hotkey.bind(hyper, "=", function() hs.window.focusedWindow():centerOnScreen() end)
+function moveResizeWin(loc)
+   -- Move and resize window to my preferred locations
+   if loc == 'left1/2' then
+      hs.window.focusedWindow():moveToUnit({0, 0, 1/2, 1})
+   elseif loc == 'right1/2' then
+      hs.window.focusedWindow():moveToUnit({1/2, 0, 1/2, 1})
+   elseif loc == 'left1/3' then
+      hs.window.focusedWindow():moveToUnit({0, 0, 1/3, 1})
+   elseif loc == 'left2/3' then
+      hs.window.focusedWindow():moveToUnit({0, 0, 2/3, 1})
+   elseif loc == 'right2/3' then
+      hs.window.focusedWindow():moveToUnit({1/3, 0, 2/3, 1})
+   elseif loc == 'right1/3' then
+      hs.window.focusedWindow():moveToUnit({2/3, 0, 1/3, 1})
+   elseif loc == 'full' then
+      hs.window.focusedWindow():moveToUnit({0, 0, 1, 1})
+   end
+end
 
--- Move windows between monitors
-hs.hotkey.bind(super, "[",  function() hs.window.focusedWindow():moveOneScreenWest(noResize, ensureInScreenBounds) end)
-hs.hotkey.bind(super, "]",  function() hs.window.focusedWindow():moveOneScreenEast(noResize, ensureInScreenBounds)  end)
-
--- Half Screen
-hs.hotkey.bind(hyper, 'left',   function() hs.window.focusedWindow():moveToUnit({0, 0, 1/2, 1}) end)
-hs.hotkey.bind(hyper, 'right',  function() hs.window.focusedWindow():moveToUnit({1/2, 0, 1/2, 1}) end)
-
--- Thirds of Screen
-hs.hotkey.bind(hyper, 'h', function() hs.window.focusedWindow():moveToUnit({0, 0, 1/3, 1}) end)
-hs.hotkey.bind(hyper, 'j', function() hs.window.focusedWindow():moveToUnit({0, 0, 2/3, 1}) end)
-hs.hotkey.bind(hyper, 'k', function() hs.window.focusedWindow():moveToUnit({1/3, 0, 2/3, 1}) end)
-hs.hotkey.bind(hyper, 'l', function() hs.window.focusedWindow():moveToUnit({2/3, 0, 1/3, 1}) end)
-
--- Full Screen
-hs.hotkey.bind(hyper, 'f', function() hs.window.focusedWindow():moveToUnit({0, 0, 1, 1}) end)
-hs.hotkey.bind(hyper, 'up', function() hs.window.focusedWindow():moveToUnit({0, 0, 1, 1}) end)
-
--- window hints
-hs.hotkey.bind(hyper, 'i', hs.hints.windowHints)
-
--- window grid
-hs.grid.setGrid('8x4', nil, nil)
-hs.grid.setMargins({0, 0})
-hs.hotkey.bind(hyper, ';', hs.grid.show)
+-- Named Window Movement/Resize Functions
+function wm_left()        moveWindow('left') end
+function wm_right()       moveWindow('right') end
+function wm_center()      hs.window.focusedWindow():centerOnScreen() end
+function wm_leftHalf()    moveResizeWin('left1/2') end
+function wm_rightHalf()   moveResizeWin('right1/2') end
+function wm_full()        moveResizeWin('full') end
+function wm_left1third()  moveResizeWin('left1/3') end
+function wm_left2third()  moveResizeWin('left2/3') end
+function wm_right2third() moveResizeWin('right2/3') end
+function wm_right1third() moveResizeWin('right1/3') end
 
 
--- App Launcher
+-- Misc Functions
 -- -----------------------------------------------
 
--- First, define a list of apps and the key you want to use to launch them.
-local applicationHotkeys = {
-   m = 'Mail',
-   c = 'Calendar',
-   e = 'Emacs',
-   s = 'Safari',
-   a = 'Music',
-   t = 'Terminal',
-}
+local reloadHammerspoon = function() hs.reload() end
 
--- Then loop over the list of apps and create a binding for each.
-for key, app in pairs(applicationHotkeys) do
-   hs.hotkey.bind(omega, key, function()
-                     hs.application.launchOrFocus(app)
-   end)
+function darkModeStatus()
+   -- return the status of Dark Mode
+   local _, darkModeState = hs.osascript.javascript(
+      'Application("System Events").appearancePreferences.darkMode()'
+   )
+   return darkModeState
 end
+
+function setDarkMode(state)
+   -- Function for setting Dark Mode on/off.
+   -- Argument should be either 'true' or 'false'.
+   return hs.osascript.javascript(
+      string.format(
+         "Application('System Events').appearancePreferences.darkMode.set(%s)", state
+   ))
+end
+
+function toggleDarkMode()
+   -- Toggle Dark Mode status
+   if darkModeStatus() then
+      setDarkMode(false)
+   else
+      setDarkMode(true)
+   end
+end
+
+
+-- HyperKey.spoon
+-- -----------------------------------------------
+
+-- Load and create a new switcher with 'HyperKey.spoon'
+local HyperKey = hs.loadSpoon("HyperKey")
+
+-- Define Shortcut Keys
+local hyper = {'cmd', 'alt', 'ctrl'}
+local alpha = {'cmd', 'ctrl'}
+
+-- Activate the shortcut keys
+alphaKey = HyperKey:new(alpha)
+hyperKey = HyperKey:new(hyper)
+
+alphaKey
+   :bind('m'):toApplication('/System/Applications/Mail.app')
+   :bind('c'):toApplication('/System/Applications/Calendar.app')
+   :bind('e'):toApplication('/Users/oht/Applications/Emacs.app')
+   :bind('s'):toApplication('/Applications/Safari.app')
+   :bind('a'):toApplication('/System/Applications/Music.app')
+   :bind('t'):toApplication('/System/Applications/Utilities/Terminal.app')
+   :bind('h'):toFunction("Reload Hammerspoon", reloadHammerspoon)
+   :bind('l'):toFunction("Lock screen", hs.caffeinate.startScreensaver)
+
+hyperKey
+   :bind('d'):toFunction("Toggle Dark Mode", toggleDarkMode)
+   :bind('['):toFunction("Move Win ←", wm_left)
+   :bind(']'):toFunction("Move Win →", wm_right)
+   :bind('='):toFunction("Center Window", wm_center)
+   :bind('left'):toFunction("Move/Resize Win ◼︎◻︎", wm_leftHalf)
+   :bind('right'):toFunction("Move/Resize Win ◻︎◼︎", wm_rightHalf)
+   :bind('f'):toFunction("Move/Resize Win Fullscreen", wm_full)
+   :bind('h'):toFunction("Move/Resize Win ◼︎◻︎◻︎", wm_left1third)
+   :bind('j'):toFunction("Move/Resize Win ◼︎◼︎◻︎", wm_left2third)
+   :bind('k'):toFunction("Move/Resize Win ◻︎◼︎◼︎", wm_right2third)
+   :bind('l'):toFunction("Move/Resize Win ◻︎◻︎◼︎", wm_right1third)
 
 
 -- Readline Shortcuts
@@ -224,39 +258,6 @@ ReadlineKeymap:bind({'alt'},  'b', moveWordBack)
 ReadlineKeymap:bind({'alt'},  'f', moveWordForward)
 
 
--- Toggle Dark Mode
--- ----------------------------------------------
--- Creates a function and binding for toggling MacOS's dark mode.
-
-function darkModeStatus()
-   -- return the status of Dark Mode
-   local _, darkModeState = hs.osascript.javascript(
-      'Application("System Events").appearancePreferences.darkMode()'
-   )
-   return darkModeState
-end
-
-function setDarkMode(state)
-   -- Function for setting Dark Mode on/off.
-   -- Argument should be either 'true' or 'false'.
-   return hs.osascript.javascript(
-      string.format(
-         "Application('System Events').appearancePreferences.darkMode.set(%s)", state
-   ))
-end
-
-function toggleDarkMode()
-   -- Toggle Dark Mode status
-   if darkModeStatus() then
-      setDarkMode(false)
-   else
-      setDarkMode(true)
-   end
-end
-
-hs.hotkey.bind(hyper, "d", toggleDarkMode)
-
-
 -- My Hammerspoon Menubar Item
 -- ----------------------------------------------
 
@@ -297,8 +298,6 @@ function emacsQ() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs -q"
 function copyMailURL() os.execute( "~/home/dot/bin/getMailURL | pbcopy | open hammerspoon://success" ) end
 function newMailMessage() os.execute("open mailto:") end
 
-hs.hotkey.bind(hyper, "m", newMailMessage)
-
 function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end
 function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
 function snipOrgDate() hs.eventtap.keyStrokes(os.date("<%Y-%m-%d %a>")) end
@@ -316,9 +315,7 @@ myHammerMenu:setTitle("H")
 
 -- When this config is loaded, or reloaded, notify that it was done
 -- successfully.
-
 hs.notify.new({title='Hammerspoon', informativeText='🤘 Ready to Rock! 🤘'}):send()
-hs.hotkey.bind(omega, 'r', hs.reload)
 
 
 -- END HAMMERSPOON CONFIG --

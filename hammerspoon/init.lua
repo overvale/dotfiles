@@ -174,13 +174,13 @@ sky = SkyRocket:new({
 
   -- Which mouse button to hold to move a window?
   moveMouseButton = 'left',
-  -- Which mouse button to hold to resize a window?
-  resizeMouseButton = 'left',
-
   -- Which modifiers to hold to move a window?
   moveModifiers = {'shift', 'ctrl'},
+
+  -- Which mouse button to hold to resize a window?
+  resizeMouseButton = 'left',
   -- Which modifiers to hold to resize a window?
-  resizeModifiers = {'shift', 'alt'},
+  resizeModifiers = {'cmd', 'alt'},
 })
 
 

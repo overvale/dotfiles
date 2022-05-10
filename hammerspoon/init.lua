@@ -284,8 +284,8 @@ function myHammerMenuItem()
    local snippetMenu = {
       { title = "waving hands around", fn = snipWave },
       { title = " ¯\\_(ツ)_/¯", fn = snipShrug },
-      { title = "[Org Mode Date]", fn = snipOrgDate },
-      { title = "[YYYY-MM-DD]", fn = snipISODate },
+      { title = "<YYYY-MM-DD Day>", fn = snipOrgDate },
+      { title = "YYYY-MM-DD", fn = snipISODate },
    }
    local menuTable = {
       { title = "Dark/Light Mode", fn = toggleDarkMode },

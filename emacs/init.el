@@ -176,7 +176,7 @@ return: ((:command . (args args args)) (:command . (args)))."
 
 (defmacro load-package (package &rest args)
   "Load PACKAGE according to ARGS, similar to `use-package'.
-Available keywords are (must use one):
+Available keywords are (MUST USE ONE):
 
   :require       If present, require the package.
   :local-dir     Name of package directory as string. This string
@@ -280,6 +280,7 @@ Keybindings you define here will take precedence."
 (load (concat user-home-dir "src/lisp/private.el"))
 
 (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/"))
+(require 'init-functions)
 
 (load-package 'exec-path-from-shell
   :require
@@ -294,9 +295,6 @@ Keybindings you define here will take precedence."
     (add-to-list 'recentf-exclude no-littering-etc-directory))
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
-
-(load-package 'init-functions :require)
-
 
 
 ;;; Advice
@@ -314,6 +312,7 @@ Keybindings you define here will take precedence."
               apply-macro-to-region-lines))
   (advice-add fn :around #'block-undo))
 
+;; This makes it so the region is not deactivated after you indent text.
 (advice-add 'indent-rigidly-left-to-tab-stop :after 'activate-mark)
 (advice-add 'indent-rigidly-right-to-tab-stop :after 'activate-mark)
 

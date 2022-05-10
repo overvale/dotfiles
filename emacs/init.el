@@ -156,6 +156,7 @@
         magit
         markdown-mode
         marginalia
+        move-text
         no-littering
         olivetti
         orderless
@@ -1380,6 +1381,11 @@ PROMPT sets the `read-string prompt."
    '(hackernews-link ((t (:inherit 'bold))))
    '(hackernews-link-visited ((t (:inherit 'modus-themes-markup-macro))))
    '(hackernews-score ((t (:inherit 'modus-themes-refine-yellow))))))
+
+(load-package 'move-text
+  :require
+  :eval
+  (move-text-default-bindings))
 
 
 ;;; Libraries

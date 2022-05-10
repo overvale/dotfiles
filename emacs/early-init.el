@@ -19,6 +19,12 @@
        '((width . 90)
          (height . 55)))
 
+;; The scratch buffer is created before `user-init-file' is evaluated, so if
+;; you want `find-file' to start somewhere other than ~ it needs to be here in
+;; your early-init file.
+(defvar user-home-dir "~/home/")
+(setq default-directory user-home-dir)
+
 ;; end early-init.el
 
 

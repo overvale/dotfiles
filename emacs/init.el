@@ -272,11 +272,9 @@ Keybindings you define here will take precedence."
 ;; In addition to the above packages and macros, a few variables need to be
 ;; set.
 
-(defvar user-home-dir "~/home/")
 (defvar user-downloads-directory "~/Desktop/")
 
 (setq local-package-dir (concat user-home-dir "opt/"))
-(setq-default default-directory user-home-dir)
 (setq org-directory nil)
 
 (load (concat user-home-dir "src/lisp/private.el"))

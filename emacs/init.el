@@ -127,24 +127,21 @@
         delight
         embark
         embark-consult
-        expand-region
         exec-path-from-shell
-        fountain-mode
-        hide-mode-line
+        lin
         lua-mode
         magit
         markdown-mode
         marginalia
+        modus-themes
         move-text
         no-littering
         olivetti
         orderless
-        org
         titlecase
-        visible-mark
+        vertico
         visual-regexp
-        visual-regexp-steroids
-        wolfram))
+        visual-regexp-steroids))
 
 ;;;; Load-Package Macro
 
@@ -333,67 +330,6 @@ Keybindings you define here will take precedence."
  '(minibuffer-depth-indicate-mode 1)
  '(minibuffer-electric-default-mode 1))
 
-(load-package 'vertico
-  :local-dir "vertico"
-  :require
-  :eval (vertico-mode 1))
-
-(load-package 'vertico-extensions
-  :local-dir "vertico/extensions"
-  :eval
-  (dolist (extension '(vertico-buffer
-                       vertico-directory
-                       vertico-flat
-                       vertico-grid
-                       vertico-indexed
-                       vertico-mouse
-                       vertico-multiform
-                       vertico-quick
-                       vertico-repeat
-                       vertico-reverse
-                       vertico-unobtrusive))
-    (require extension))
-
-  (vertico-multiform-mode 1)
-
-  (setq vertico-multiform-categories
-        '((file reverse)
-          (embark-keybinding grid)
-          (consult-grep buffer)
-          (imenu buffer indexed)))
-
-  (setq vertico-multiform-commands
-        '((consult-buffer unobtrusive)
-          (consult-line buffer)
-          (execute-extended-command unobtrusive)
-          (completion-at-point reverse)
-          (describe-symbol buffer)))
-
-  (defkey vertico-map
-    "'"   #'vertico-quick-jump
-    "M-v" #'vertico-multiform-vertical
-    "M-g" #'vertico-multiform-grid
-    "M-f" #'vertico-multiform-flat
-    "M-r" #'vertico-multiform-reverse
-    "M-u" #'vertico-multiform-unobtrusive)
-
-  ;; vertico-directory
-  (define-key vertico-map "\r" #'vertico-directory-enter)
-  (define-key vertico-map "\d" #'vertico-directory-delete-char)
-  (define-key vertico-map "\M-\d" #'vertico-directory-delete-word)
-  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-
-  ) ; end vertico/extensions
-
-(load-package 'orderless
-  :require
-  :eval
-  (custom-set-variables
-   '(completion-styles '(substring orderless basic))))
-
-;; The below code introduces some improvements to the default completion
-;; experience. I took these ideas from the emacs-devel mailing list.
-
 (defun switch-to-completions-bottom ()
   "Switch to the *Completions* buffer, at the bottom."
   (interactive)
@@ -535,7 +471,6 @@ Keybindings you define here will take precedence."
 ;; Use the local version instead of the built-in one
 ;; You need to disable the built-in version in early-init
 (load-package 'modus-themes
-  :local-dir "modus-themes"
   :require
   :after-load
 
@@ -909,11 +844,6 @@ Does not pass arguments to underlying functions."
   "C-M-h" 'mark-line
   "C-x C-x" 'exchange-point-and-mark-dwim)
 
-(load-package 'visible-mark
-  :eval
-  (setq visible-mark-faces `(highlight))
-  (global-visible-mark-mode 1))
-
 
 ;;; Windows
 
@@ -1204,20 +1134,46 @@ PROMPT sets the `read-string prompt."
 
 ;;; Packages
 
-(load-package 'visual-regexp
-  :eval
-  (defkey global-map [remap query-replace] 'vr/query-replace)
-  :after-load
-  (with-eval-after-load 'visual-regexp-steroids
-    (custom-set-variables
-     '(vr/engine 'pcre2el))))
-
-(load-package 'vundo
-  :local-dir "vundo"
-  :autoload vundo
+(load-package 'orderless
+  :require
   :eval
   (custom-set-variables
-   '(vundo-glyph-alist vundo-unicode-symbols)))
+   '(completion-styles '(substring orderless basic))))
+
+(load-package 'vertico
+  :require
+  :eval
+  (vertico-mode 1)
+  (vertico-multiform-mode 1)
+
+  (setq vertico-multiform-categories
+        '((file reverse)
+          (embark-keybinding grid)
+          (consult-grep buffer)
+          (imenu buffer indexed)))
+
+  (setq vertico-multiform-commands
+        '((consult-buffer unobtrusive)
+          (consult-line buffer)
+          (execute-extended-command unobtrusive)
+          (completion-at-point reverse)
+          (describe-symbol buffer)))
+
+  (defkey vertico-map
+    "'"   #'vertico-quick-jump
+    "M-v" #'vertico-multiform-vertical
+    "M-g" #'vertico-multiform-grid
+    "M-f" #'vertico-multiform-flat
+    "M-r" #'vertico-multiform-reverse
+    "M-u" #'vertico-multiform-unobtrusive)
+
+  ;; vertico-directory
+  (define-key vertico-map "\r" #'vertico-directory-enter)
+  (define-key vertico-map "\d" #'vertico-directory-delete-char)
+  (define-key vertico-map "\M-\d" #'vertico-directory-delete-word)
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+
+  ) ; end vertico/extensions
 
 (load-package 'marginalia
   :eval
@@ -1296,10 +1252,9 @@ PROMPT sets the `read-string prompt."
     "s-g" 'consult-line-mac-find-initial))
 
 (load-package 'lin
-  :local-dir "lin"
   :require
   :after-load
-  (lin-add-to-many-modes))
+  (lin-global-mode 1))
 
 (load-package 'delight
   :eval
@@ -1334,10 +1289,6 @@ PROMPT sets the `read-string prompt."
   (setq initial-scratch-message (concat
                                  ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
                                  ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
-
-(load-package 'expand-region
-  :eval
-  (defkey global-map "s-r" 'er/expand-region))
 
 (load-package 'sdcv-mode
   :local-dir "emacs-sdcv"
@@ -2097,10 +2048,6 @@ M - Mike         Z - Zulu")
 
 
 ;;; Snippets
-
-(load-package 'placeholder
-  :local-dir "placeholder"
-  :autoload placeholder-forward placeholder-backward)
 
 (defvar snippet-alist nil
   "An alist of snippets.")

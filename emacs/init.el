@@ -271,7 +271,7 @@ Keybindings you define here will take precedence."
 (defvar user-downloads-directory "~/Desktop/")
 
 (setq local-package-dir (concat user-home-dir "opt/"))
-(setq org-directory nil)
+(setq org-directory (concat user-home-dir "org/"))
 
 (load (concat user-home-dir "src/lisp/private.el"))
 

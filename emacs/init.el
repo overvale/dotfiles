@@ -71,7 +71,6 @@
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(ring-bell-function 'ignore)
- '(echo-keystrokes 0.5)
  '(context-menu-mode 1)
  '(scroll-step 1)
  '(scroll-margin 1)
@@ -479,7 +478,6 @@ Keybindings you define here will take precedence."
    '(modus-themes-italic-constructs t)
    '(modus-themes-links '(neutral-underline))
    '(modus-themes-org-blocks 'gray-background)
-   '(modus-themes-diffs '(desaturated))
    '(modus-themes-org-agenda '((header-block . (variable-pitch 1.6))
                                (header-date . (bold-today))
                                (scheduled . rainbow))))
@@ -501,7 +499,7 @@ Keybindings you define here will take precedence."
 
   (defun customize-modus-operandi nil
     (custom-set-variables
-     '(modus-themes-mode-line '())
+     '(modus-themes-mode-line nil)
      '(modus-themes-syntax nil)))
 
   (advice-add 'load-theme-dark :before 'customize-modus-vivendi)
@@ -524,9 +522,9 @@ Keybindings you define here will take precedence."
 (custom-set-variables
  '(cursor-type 'box)
  '(cursor-in-non-selected-windows 'hollow)
- '(blink-cursor-blinks 10)
- '(blink-cursor-interval 0.35)
- '(blink-cursor-delay 0.5))
+ '(blink-cursor-blinks 0)
+ '(blink-cursor-interval 0.5)
+ '(blink-cursor-delay 0.2))
 
 
 ;;; Fonts

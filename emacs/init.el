@@ -204,6 +204,7 @@ Available keywords are (MUST USE ONE):
            arg-list)))
     `(progn ,@body)))
 
+
 ;;;; Defkey
 
 ;; Let's be honest, it's not hard to bind a key in Emacs, and the syntax for
@@ -2093,40 +2094,27 @@ M - Mike         Z - Zulu")
 (defvar snippet-alist nil
   "An alist of snippets.")
 
-(defmacro defsnippet (name snippet)
-  "Create function called NAME to insert SNIPPET."
-  `(progn
-     (add-to-list 'snippet-alist ',name)
-     (defun ,name nil
-       "Function created by `defsnippet' to insert snippets."
-       (interactive)
-       (save-excursion
-         (insert ,snippet))
-       (snippet-transient))))
-
-(defun insert-snippet nil
+(defun insert-snippet (snippet)
   "Prompt user to insert snippet from `snippet-alist'."
-  (interactive)
-  (call-interactively
-   (intern (completing-read "Insert Snippet: " snippet-alist))))
+  (interactive
+   (list (completing-read
+          "Insert Snippet: "
+          (mapcar #'car snippet-alist))))
+  (let* ((snip (intern snippet))
+         (string (alist-get snip snippet-alist)))
+    (insert string)))
 
-(transient-define-prefix snippet-transient ()
-  "..."
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-stay
-  [["Snippets"
-    ("<tab>" "Next Placeholder" placeholder-forward)
-    ("<backtab>" "Previous Placeholder" placeholder-backward)
-    ("C-i" "Insert Snippet" insert-snippet :transient nil)]])
-
-(defsnippet snippet-html-ul
-  "\
+(add-to-list 'snippet-alist '(html-list . "\
 <ul>
-  <li><++></li>
-</ul>")
+  <li></li>
+</ul>"))
 
-(defsnippet snippet-html-li
-  "<li><++></li>")
+(add-to-list 'snippet-alist '(html-li . "<li></li>"))
+
+(add-to-list 'snippet-alist '(defun . "\
+(defun function ()
+  (interactive)
+  )"))
 
 
 ;;; End of init.el

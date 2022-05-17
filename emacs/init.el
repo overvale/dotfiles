@@ -1091,10 +1091,6 @@ PROMPT sets the `read-string prompt."
 
 ;;; Pulse Line
 
-(defun pulse-line (&rest _)
-      "Pulse the current line."
-      (pulse-momentary-highlight-one-line (point)))
-
 ;; This list from: https://gitlab.com/protesilaos/pulsar/
 (dolist (command '(scroll-up-command
                    scroll-down-command
@@ -1127,7 +1123,7 @@ PROMPT sets the `read-string prompt."
                    outline-next-visible-heading
                    outline-previous-visible-heading
                    outline-up-heading))
-  (advice-add command :after #'pulse-line))
+  (advice-add command :after #'pulse-momentary-highlight-one-line))
 
 
 ;;; Packages

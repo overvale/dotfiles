@@ -1277,7 +1277,20 @@ PROMPT sets the `read-string prompt."
     [remap yank-pop] 'consult-yank-pop
     [remap repeat-complex-command] #'consult-complex-command))
 
+(load-package 'visual-regexp
+  :eval
+  (defkey global-map [remap query-replace] 'vr/query-replace)
+  :after-load
+  (with-eval-after-load 'visual-regexp-steroids
+    (custom-set-variables
+     '(vr/engine 'pcre2el))))
 
+(load-package 'vundo
+  :local-dir "vundo"
+  :autoload vundo
+  :eval
+  (custom-set-variables
+   '(vundo-glyph-alist vundo-unicode-symbols)))
 
 (load-package 'lin
   :require

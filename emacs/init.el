@@ -128,6 +128,7 @@
         embark
         embark-consult
         exec-path-from-shell
+        hackernews
         lin
         lua-mode
         magit

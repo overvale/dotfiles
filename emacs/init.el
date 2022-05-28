@@ -1,6 +1,6 @@
 ;; init.el --- Oliver Taylor's Emacs Config -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020-2021 Oliver Taylor
+;; Copyright © Oliver Taylor
 ;; Learning Emacs was my COVID pandemic project, now I cannot escape.
 
 ;; Author: Oliver Taylor
@@ -468,9 +468,6 @@ Keybindings you define here will take precedence."
 
 ;;; Themes
 
-;; Modus Themes
-;; Use the local version instead of the built-in one
-;; You need to disable the built-in version in early-init
 (load-package 'modus-themes
   :require
   :after-load

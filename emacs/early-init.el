@@ -1,4 +1,4 @@
-;;; early-init.el --- -*- lexical-binding: t -*-
+;; early-init.el --- -*- lexical-binding: t -*-
 
 ;; Documentation: (info "(emacs) Early Init File")
 ;;                (info "(emacs) Package Installation")

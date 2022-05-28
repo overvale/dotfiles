@@ -1332,7 +1332,9 @@ PROMPT sets the `read-string prompt."
 
 (load-package 'sdcv-mode
   :local-dir "emacs-sdcv"
-  :autoload sdcv-search)
+  :autoload sdcv-search
+  :eval
+  (defalias 'describe-word 'sdcv-search))
 
 (load-package 'elfeed
   :after-load

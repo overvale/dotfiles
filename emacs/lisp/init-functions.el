@@ -109,6 +109,10 @@ Uses the `default-directory' unless a path is supplied."
   "Open APP with macOS `open'."
   (start-process "open app" nil "open" "-a" app))
 
+(defun macos-define-word ()
+  "Lookup `word-at-point' with MacOS's Dictionary.app"
+  (interactive)
+  (shell-command (format "open dict://%s" (word-at-point))))
 (defun crux-open-with (arg)
   "Open visited file in default external program.
 When in dired mode, open file under the cursor.

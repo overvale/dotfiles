@@ -1178,6 +1178,110 @@ PROMPT sets the `read-string prompt."
   (advice-add command :after #'pulse-momentary-highlight-one-line))
 
 
+;;; Quick Help
+
+;; Inspired by "On-demand help panels for obscure topics" here:
+;; https://svn.red-bean.com/repos/kfogel/trunk/.emacs
+
+(defvar quick-help-functions-alist nil
+  "An alist of functions created by the `quick-help' macro.")
+
+(defun quick-help (topic text)
+  "Create quick help buffer for TOPIC with TEXT."
+  (let ((qh-buffer (concat "*Quick Help: " topic "*")))
+    (with-current-buffer (get-buffer-create qh-buffer)
+      (buffer-disable-undo)
+      (setf (buffer-string) text)
+      (goto-char (point-min))
+      (set-buffer-modified-p nil)
+      (toggle-truncate-lines 1)
+      (let ((view-read-only nil))
+        (read-only-mode 1))
+      (local-set-key (kbd "C-g") (lambda () (interactive) (other-window -1)))
+      (local-set-key (kbd "q") 'kill-buffer-and-window))
+    (pop-to-buffer qh-buffer '((display-buffer-below-selected)
+                               (window-parameters . ((no-other-window . nil)))
+                               (window-height . fit-window-to-buffer)))
+    (message "C-g - Previous Window, q - Remove Window")))
+
+(defmacro def-quick-help (name buffer text)
+  "Macro for creating callable functions that display help.
+Where NAME is name of function, BUFFER is name of buffer, and TEXT is displayed."
+  (declare (indent defun))
+  `(progn
+     (add-to-list 'quick-help-functions-alist ',name t)
+     (defun ,name nil
+       "Function created by the `def-quick-help` macro."
+       (interactive)
+       (quick-help ,buffer ,text))))
+
+(def-quick-help qhelp-wheather
+  "Weather Whether Wether"
+  "The climate is made up of \"WEATHER\";
+WHETHER it is nice out depends on whether it is raining or not.
+A WETHER is just a castrated sheep.")
+
+(def-quick-help qhelp-lying
+  "Lying"
+  "\
+Lie (recline)   lay   lain  lying
+Lay (put down)  laid  laid  laying
+Lie (false)     lied  lied  lying   lies")
+
+(def-quick-help qhelp-NATO-alphabet
+  "NATO ALPHABET"
+  "\
+A - Alpha        N - November
+B - Bravo        O - Oscar
+C - Charlie      P - Papa
+D - Delta        Q - Quebec
+E - Echo         R - Romeo
+F - Foxtrot      S - Sierra
+G - Golf         T - Tango
+H - Hotel        U - Uniform
+I - India        V - Victor
+J - Juliet       W - Whiskey
+K - Kilo         X - X-ray
+L - Lima         Y - Yankee
+M - Mike         Z - Zulu")
+
+(defun quick-help-prompt nil
+  "Prompt user for help to display."
+  (interactive)
+  (call-interactively
+   (intern (completing-read "Quick Help: " quick-help-functions-alist))))
+
+(defkey global-map "C-c h" 'quick-help-prompt)
+
+
+;;; Snippets
+
+(defvar snippet-alist nil
+  "An alist of snippets.")
+
+(defun insert-snippet (snippet)
+  "Prompt user to insert snippet from `snippet-alist'."
+  (interactive
+   (list (completing-read
+          "Insert Snippet: "
+          (mapcar #'car snippet-alist))))
+  (let* ((snip (intern snippet))
+         (string (alist-get snip snippet-alist)))
+    (insert string)))
+
+(add-to-list 'snippet-alist '(html-list . "\
+<ul>
+  <li></li>
+</ul>"))
+
+(add-to-list 'snippet-alist '(html-li . "<li></li>"))
+
+(add-to-list 'snippet-alist '(defun . "\
+(defun function ()
+  (interactive)
+  )"))
+
+
 ;;; Packages
 
 (load-package 'orderless
@@ -1942,110 +2046,6 @@ current HH:MM time."
       (">" "Final Node" Info-final-node)
       ("[" "Forward Node" Info-backward-node)
       ("]" "Backward Node" Info-forward-node)]]))
-
-
-;;; Quick Help
-
-;; Inspired by "On-demand help panels for obscure topics" here:
-;; https://svn.red-bean.com/repos/kfogel/trunk/.emacs
-
-(defvar quick-help-functions-alist nil
-  "An alist of functions created by the `quick-help' macro.")
-
-(defun quick-help (topic text)
-  "Create quick help buffer for TOPIC with TEXT."
-  (let ((qh-buffer (concat "*Quick Help: " topic "*")))
-    (with-current-buffer (get-buffer-create qh-buffer)
-      (buffer-disable-undo)
-      (setf (buffer-string) text)
-      (goto-char (point-min))
-      (set-buffer-modified-p nil)
-      (toggle-truncate-lines 1)
-      (let ((view-read-only nil))
-        (read-only-mode 1))
-      (local-set-key (kbd "C-g") (lambda () (interactive) (other-window -1)))
-      (local-set-key (kbd "q") 'kill-buffer-and-window))
-    (pop-to-buffer qh-buffer '((display-buffer-below-selected)
-                               (window-parameters . ((no-other-window . nil)))
-                               (window-height . fit-window-to-buffer)))
-    (message "C-g - Previous Window, q - Remove Window")))
-
-(defmacro def-quick-help (name buffer text)
-  "Macro for creating callable functions that display help.
-Where NAME is name of function, BUFFER is name of buffer, and TEXT is displayed."
-  (declare (indent defun))
-  `(progn
-     (add-to-list 'quick-help-functions-alist ',name t)
-     (defun ,name nil
-       "Function created by the `def-quick-help` macro."
-       (interactive)
-       (quick-help ,buffer ,text))))
-
-(def-quick-help qhelp-wheather
-  "Weather Whether Wether"
-  "The climate is made up of \"WEATHER\";
-WHETHER it is nice out depends on whether it is raining or not.
-A WETHER is just a castrated sheep.")
-
-(def-quick-help qhelp-lying
-  "Lying"
-  "\
-Lie (recline)   lay   lain  lying
-Lay (put down)  laid  laid  laying
-Lie (false)     lied  lied  lying   lies")
-
-(def-quick-help qhelp-NATO-alphabet
-  "NATO ALPHABET"
-  "\
-A - Alpha        N - November
-B - Bravo        O - Oscar
-C - Charlie      P - Papa
-D - Delta        Q - Quebec
-E - Echo         R - Romeo
-F - Foxtrot      S - Sierra
-G - Golf         T - Tango
-H - Hotel        U - Uniform
-I - India        V - Victor
-J - Juliet       W - Whiskey
-K - Kilo         X - X-ray
-L - Lima         Y - Yankee
-M - Mike         Z - Zulu")
-
-(defun quick-help-prompt nil
-  "Prompt user for help to display."
-  (interactive)
-  (call-interactively
-   (intern (completing-read "Quick Help: " quick-help-functions-alist))))
-
-(defkey global-map "C-c h" 'quick-help-prompt)
-
-
-;;; Snippets
-
-(defvar snippet-alist nil
-  "An alist of snippets.")
-
-(defun insert-snippet (snippet)
-  "Prompt user to insert snippet from `snippet-alist'."
-  (interactive
-   (list (completing-read
-          "Insert Snippet: "
-          (mapcar #'car snippet-alist))))
-  (let* ((snip (intern snippet))
-         (string (alist-get snip snippet-alist)))
-    (insert string)))
-
-(add-to-list 'snippet-alist '(html-list . "\
-<ul>
-  <li></li>
-</ul>"))
-
-(add-to-list 'snippet-alist '(html-li . "<li></li>"))
-
-(add-to-list 'snippet-alist '(defun . "\
-(defun function ()
-  (interactive)
-  )"))
 
 
 ;;; End of init.el

@@ -1938,8 +1938,6 @@ current HH:MM time."
 
 ;;; Transients
 
-(autoload 'universal-transient "transient" nil t)
-
 (with-eval-after-load 'transient
 
   (defun universal-transient ()

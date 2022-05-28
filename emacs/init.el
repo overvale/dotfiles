@@ -124,6 +124,7 @@
 (setq package-selected-packages
       '(consult
         delight
+        elfeed
         embark
         embark-consult
         exec-path-from-shell
@@ -1336,6 +1337,37 @@ PROMPT sets the `read-string prompt."
   :local-dir "emacs-sdcv"
   :autoload sdcv-search)
 
+(load-package 'elfeed
+  :after-load
+  (require 'elfeed-extras)
+
+  (custom-set-variables
+   '(elfeed-use-curl t)
+   '(elfeed-db-directory (concat user-emacs-directory "elfeed/"))
+   '(elfeed-enclosure-default-dir user-downloads-directory))
+
+  (defkey elfeed-search-mode-map
+    "b"   'elfeed-search-browse-url-background
+    "*"   'elfeed-search-tag--star
+    "8"   'elfeed-search-untag--star
+    "s-D" 'elfeed-search-safari-read-later
+    "o"   'delete-other-windows
+    "E"   'elfeed-search:emacs
+    "O"   'elfeed-search:other
+    "S"   'elfeed-search:star)
+
+  (defkey elfeed-show-mode-map
+    "r"   'elfeed-show-tag--read
+    "u"   'elfeed-show-tag--unread
+    "*"   'elfeed-show-tag--star
+    "8"   'elfeed-show-tag--unstar
+    "s-D" 'elfeed-show-safari-read-later
+    "b"   'elfeed-show-visit-background
+    "o"   'delete-other-windows
+    "d"   'elfeed-ytdl-download)
+
+  (add-hook 'elfeed-show-mode-hook 'variable-pitch-adjust-mode))
+
 (load-package 'hackernews
   :eval
   (setq hackernews-items-per-page 30)
@@ -1550,106 +1582,6 @@ With a prefix argument, copy the link to the online manual instead."
   (custom-set-variables
    '(send-mail-function 'smtpmail-send-it)
    '(auth-sources '("~/home/src/lisp/authinfo"))))
-
-
-;;; Elfeed
-
-(with-eval-after-load 'elfeed
-
-  (custom-set-variables
-   '(elfeed-use-curl t)
-   '(elfeed-db-directory (concat user-emacs-directory "elfeed/"))
-   '(elfeed-enclosure-default-dir user-downloads-directory))
-
-  ;; Why doesn't this exist in show mode?
-  (defalias 'elfeed-show-tag--unread (elfeed-expose #'elfeed-show-tag 'unread)
-    "Mark the current entry unread.")
-  (defalias 'elfeed-show-tag--read (elfeed-expose #'elfeed-show-untag 'unread)
-    "Mark the current entry read.")
-
-  ;; Stars in search mode
-  (defalias 'elfeed-search-tag--star (elfeed-expose #'elfeed-search-tag-all 'star)
-    "Add the 'star' tag to all selected entries")
-  (defalias 'elfeed-search-untag--star (elfeed-expose #'elfeed-search-untag-all 'star)
-    "Remove the 'star' tag to all selected entries")
-
-  ;; Stars in show mode
-  (defalias 'elfeed-show-tag--star (elfeed-expose #'elfeed-show-tag 'star)
-    "Add the 'star' tag to current entry")
-  (defalias 'elfeed-show-tag--unstar (elfeed-expose #'elfeed-show-untag 'star)
-    "Remove the 'star' tag to current entry")
-
-  (defun elfeed-search:emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
-  (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs"))
-  (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
-
-  (defun elfeed-search-browse-url-background ()
-    "Visit the current entry, or region entries, using `browse-url-macos-background'."
-    (interactive)
-    (let ((entries (elfeed-search-selected)))
-      (mapc (lambda (entry)
-              (browse-url-macos-background (elfeed-entry-link entry))
-              (elfeed-untag entry 'unread)
-              (elfeed-search-update-entry entry))
-            entries)
-      (unless (or elfeed-search-remain-on-entry (use-region-p))
-        (forward-line))))
-
-  (defun elfeed-show-visit-background ()
-    "Visit the current entry in your browser using `browse-url-macos-background'."
-    (interactive)
-    (let ((link (elfeed-entry-link elfeed-show-entry)))
-      (when link
-        (browse-url-macos-background link))))
-
-  (defun elfeed-ytdl-download ()
-    "Jump to next link (always entry link) and call `ytdl-download'."
-    (interactive)
-    (shr-next-link)
-    (ytdl-download))
-
-  (defun elfeed-search-safari-read-later ()
-    "Save the current entry, or region entries, to Safari's Reading List."
-    (interactive)
-    (let ((entries (elfeed-search-selected)))
-      (mapc (lambda (entry)
-              (safari-read-later (elfeed-entry-link entry))
-              (elfeed-untag entry 'unread)
-              (elfeed-search-update-entry entry))
-            entries)
-      (unless (or elfeed-search-remain-on-entry (use-region-p))
-        (forward-line))))
-
-  (defun elfeed-show-safari-read-later ()
-    "Save the current elfeed entry to Safari's Reading List."
-    (interactive)
-    (let ((link (elfeed-entry-link elfeed-show-entry)))
-      (when link
-        (safari-read-later link))))
-
-  (defkey elfeed-search-mode-map
-    "b"   'elfeed-search-browse-url-background
-    "*"   'elfeed-search-tag--star
-    "8"   'elfeed-search-untag--star
-    "s-D" 'elfeed-search-safari-read-later
-    "o"   'delete-other-windows
-    "E"   'elfeed-search:emacs
-    "O"   'elfeed-search:other
-    "S"   'elfeed-search:star)
-
-  (defkey elfeed-show-mode-map
-    "r"   'elfeed-show-tag--read
-    "u"   'elfeed-show-tag--unread
-    "*"   'elfeed-show-tag--star
-    "8"   'elfeed-show-tag--unstar
-    "s-D" 'elfeed-show-safari-read-later
-    "b"   'elfeed-show-visit-background
-    "o"   'delete-other-windows
-    "d"   'elfeed-ytdl-download)
-
-  (add-hook 'elfeed-show-mode-hook 'variable-pitch-adjust-mode)
-
-  ) ; End elfeed
 
 
 ;;; EWW

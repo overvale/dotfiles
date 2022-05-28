@@ -494,12 +494,12 @@ Keybindings you define here will take precedence."
 
   (defun customize-modus-vivendi nil
     (custom-set-variables
-     '(modus-themes-mode-line '(accented borderless))
+     '(modus-themes-mode-line '(accented borderless (padding . 3)))
      '(modus-themes-syntax '(yellow-comments faint))))
 
   (defun customize-modus-operandi nil
     (custom-set-variables
-     '(modus-themes-mode-line nil)
+     '(modus-themes-mode-line '(borderless (padding . 3)))
      '(modus-themes-syntax nil)))
 
   (advice-add 'load-theme-dark :before 'customize-modus-vivendi)

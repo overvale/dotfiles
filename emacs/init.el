@@ -723,17 +723,6 @@ back to system default."
         (search-backward search-dwim-initial-string)
       (message "Nothing to search for!"))))
 
-;; I'm using a pulse after each match instead of selecting each match beacuse
-;; I found it too difficult to manage the region when stepping through the
-;; search, also because that would be less idiomatic to Emacs.
-
-(defun pulse-search-match (&rest _)
-  "Highlight `match-beginning' to `match-end'."
-  (pulse-momentary-highlight-region (match-beginning 0)(match-end 0)))
-
-(advice-add 'search-forward :after #'pulse-search-match)
-(advice-add 'search-backward :after #'pulse-search-match)
-
 (defkey global-map
   "s-e" 'set-search-dwim-initial-string
   "s-G" 'search-backward-dwim
@@ -1140,43 +1129,6 @@ PROMPT sets the `read-string prompt."
 (prelude-install-search-engine "github-elisp"
                                "https://github.com/search?l=Emacs+Lisp&type=Code&q="
                                "Github Elisp: ")
-
-
-;;; Pulse Line
-
-;; This list from: https://gitlab.com/protesilaos/pulsar/
-(dolist (command '(scroll-up-command
-                   scroll-down-command
-                   recenter-top-bottom
-                   other-window
-                   move-to-window-line-top-bottom
-                   reposition-window
-                   bookmark-jump
-                   delete-window
-                   delete-other-windows
-                   forward-page
-                   backward-page
-                   windmove-right
-                   windmove-left
-                   windmove-up
-                   windmove-down
-                   windmove-swap-states-right
-                   windmove-swap-states-left
-                   windmove-swap-states-up
-                   windmove-swap-states-down
-                   tab-new
-                   tab-close
-                   tab-next
-                   org-next-visible-heading
-                   org-previous-visible-heading
-                   org-forward-heading-same-level
-                   org-backward-heading-same-level
-                   outline-backward-same-level
-                   outline-forward-same-level
-                   outline-next-visible-heading
-                   outline-previous-visible-heading
-                   outline-up-heading))
-  (advice-add command :after #'pulse-momentary-highlight-one-line))
 
 
 ;;; Quick Help

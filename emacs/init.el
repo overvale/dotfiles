@@ -256,10 +256,11 @@ Keybindings you define here will take precedence."
 (add-to-list 'emulation-mode-map-alists
              `((bosskey-mode . ,bosskey-mode-map)))
 
-;;;; Environment
 
-;; I use a lot of transients in this config, so I need to make sure it is
-;; loaded and configured before those are declared below.
+;;;; Critical Packages
+
+;; These packages effect how Emacs starts-up, and how this config is loaded,
+;; so they need to be declared early on.
 
 (load-package 'transient
   :autoload transient-define-prefix
@@ -267,19 +268,6 @@ Keybindings you define here will take precedence."
   (setq transient-detect-key-conflicts t
         transient-force-fixed-pitch t
         transient-show-popup 0.5))
-
-;; In addition to the above packages and macros, a few variables need to be
-;; set.
-
-(defvar user-downloads-directory "~/Desktop/")
-
-(setq local-package-dir (concat user-home-dir "opt/"))
-(setq org-directory (concat user-home-dir "org/"))
-
-(load (concat user-home-dir "src/lisp/private.el"))
-
-(add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/"))
-(require 'init-functions)
 
 (load-package 'exec-path-from-shell
   :require
@@ -294,6 +282,21 @@ Keybindings you define here will take precedence."
     (add-to-list 'recentf-exclude no-littering-etc-directory))
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+
+
+;;;; Environment Variables
+
+(defvar user-downloads-directory "~/Desktop/")
+
+(setq local-package-dir (concat user-home-dir "opt/"))
+
+(setq org-directory (concat user-home-dir "org/"))
+
+(load (concat user-home-dir "src/lisp/private.el"))
+
+(add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/"))
+
+(require 'init-functions)
 
 
 ;;; Advice

@@ -3,7 +3,6 @@
 ;; Some of these functions I wrote myself, many of them I copied (and perhaps
 ;; modified) from other people's configs.
 
-
 (defun find-user-init-file ()
   "Find the user-init-file."
   (interactive)
@@ -328,5 +327,11 @@ If r is pressed replace the text with the result"
           (goto-char my-beg)
           (insert result)))
       (set-transient-map map))))
+
+(defun url-retrieve-source-at-point ()
+  "Get the URL at point and display the source."
+  (interactive)
+  (switch-to-buffer (url-retrieve (thing-at-point-url-at-point) (lambda (_)))))
+
 
 (provide 'init-functions)

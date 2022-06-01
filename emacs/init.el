@@ -1254,7 +1254,6 @@ M - Mike         Z - Zulu")
 
   (setq vertico-multiform-categories
         '((file reverse)
-          (embark-keybinding grid)
           (consult-grep buffer)
           (imenu buffer indexed)))
 
@@ -1262,8 +1261,7 @@ M - Mike         Z - Zulu")
         '((consult-buffer unobtrusive)
           (consult-line buffer)
           (execute-extended-command unobtrusive)
-          (completion-at-point reverse)
-          (describe-symbol buffer)))
+          (completion-at-point reverse)))
 
   (defkey vertico-map
     "'"   #'vertico-quick-jump

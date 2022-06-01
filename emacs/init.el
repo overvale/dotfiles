@@ -1347,7 +1347,7 @@ M - Mike         Z - Zulu")
 (load-package 'vundo
   :local-dir "vundo"
   :autoload vundo
-  :eval
+  :after-load
   (custom-set-variables
    '(vundo-glyph-alist vundo-unicode-symbols)))
 
@@ -1381,14 +1381,6 @@ M - Mike         Z - Zulu")
   :after-load
   (custom-set-variables
    '(olivetti-body-width 82)))
-
-(load-package 'oblique
-  :local-dir "oblique-strategies"
-  :autoload oblique-strategy
-  :eval
-  (setq initial-scratch-message (concat
-                                 ";; Welcome to Emacs!\n;; This is the scratch buffer, for unsaved text and Lisp evaluation.\n"
-                                 ";; Oblique Strategy: " (oblique-strategy) "\n\n")))
 
 (load-package 'sdcv-mode
   :local-dir "emacs-sdcv"
@@ -1428,9 +1420,8 @@ M - Mike         Z - Zulu")
   (add-hook 'elfeed-show-mode-hook 'variable-pitch-adjust-mode))
 
 (load-package 'hackernews
-  :eval
-  (setq hackernews-items-per-page 30)
   :after-load
+  (setq hackernews-items-per-page 30)
   (add-hook 'hackernews-mode-hook
             (defun hackernews-config ()
               (hl-line-mode 1)
@@ -1499,8 +1490,8 @@ With a prefix argument, copy the link to the online manual instead."
 (load-package 'outline
   :eval
   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
-  (setq outline-minor-mode-cycle t)
   :after-load
+  (setq outline-minor-mode-cycle t)
   (defkey outline-minor-mode-cycle-map
     "TAB"   nil ;; too often conflicts with tab-complete
     "M-TAB" 'outline-cycle)
@@ -1552,7 +1543,7 @@ With a prefix argument, copy the link to the online manual instead."
       (remember))))
 
 (load-package 'hippie-exp
-  :eval
+  :after-load
   (setq hippie-expand-try-functions-list
         '(try-complete-file-name-partially
           try-complete-file-name
@@ -1648,18 +1639,20 @@ With a prefix argument, copy the link to the online manual instead."
 (setq shr-max-image-proportion 0.5)
 (setq shr-width 80)
 (setq shr-bullet "• ")
-;;(setq browse-url-browser-function 'eww-browse-url) ; Use EWW as Emacs's browser
 
-(setq eww-use-external-browser-for-content-type "\\`\\(video/\\|audio/\\|application/pdf\\)")
+(load-package 'eww
+  :eval
+  (setq eww-use-external-browser-for-content-type "\\`\\(video/\\|audio/\\|application/pdf\\)")
+  ;;(setq browse-url-browser-function 'eww-browse-url) ; Use EWW as Emacs's browser
 
-(defun eww-mode-setup ()
-  "Apply some customization to fonts in eww-mode."
-  (text-scale-increase 1)
-  (setq-local line-spacing 2))
+  (defun eww-mode-setup ()
+    "Apply some customization to fonts in eww-mode."
+    (text-scale-increase 1)
+    (setq-local line-spacing 2))
 
-(add-hook 'eww-mode-hook 'eww-mode-setup)
+  (add-hook 'eww-mode-hook 'eww-mode-setup)
 
-(with-eval-after-load 'eww
+  :after-load
   (make-variable-buffer-local
    (defvar eww-inhibit-images-status nil
      "EWW Inhibit Images Status"))
@@ -1708,8 +1701,7 @@ To be used by `eww-after-render-hook'."
       ("b" "Bookmark" bookmark-set)
       ("B" "List Bookmarks" eww-list-bookmarks)
       ("M-n" "Next Bookmark" eww-next-bookmark)
-      ("M-p" "Previous Bookmark" eww-previous-bookmark)]])
-  ) ; end "EWW"
+      ("M-p" "Previous Bookmark" eww-previous-bookmark)]]))
 
 
 ;;; Org

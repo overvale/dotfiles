@@ -1432,11 +1432,11 @@ This function is designed to be called from `kill-buffer-query-functions'."
     (setq-local buffer-confirm-kill t)))
 
 
-;;; Prelude Search
+;;; Web Search
 
 ;; https://github.com/bbatsov/prelude/blob/master/core/prelude-core.el
 
-(defun prelude-search (query-url prompt)
+(defun web-search (query-url prompt)
   "Open the search url constructed with the QUERY-URL.
 PROMPT sets the `read-string prompt."
   (browse-url
@@ -1446,26 +1446,36 @@ PROMPT sets the `read-string prompt."
                 (buffer-substring (region-beginning) (region-end))
               (read-string prompt))))))
 
-(defmacro prelude-install-search-engine (search-engine-name search-engine-url search-engine-prompt)
+(defmacro web-search-engine (search-engine-name search-engine-url search-engine-prompt)
   "Given some information regarding a search engine, install the interactive command to search through them"
-  `(defun ,(intern (format "prelude-%s" search-engine-name)) ()
+  `(defun ,(intern (format "web-%s" search-engine-name)) ()
      ,(format "Search %s with a query or region if any." search-engine-name)
      (interactive)
-     (prelude-search ,search-engine-url ,search-engine-prompt)))
+     (web-search ,search-engine-url ,search-engine-prompt)))
 
-(prelude-install-search-engine "google"     "http://www.google.com/search?q="              "Google: ")
-(prelude-install-search-engine "youtube"    "http://www.youtube.com/results?search_query=" "Search YouTube: ")
-(prelude-install-search-engine "github"     "https://github.com/search?q="                 "Search GitHub: ")
-(prelude-install-search-engine "duckduckgo" "https://duckduckgo.com/?t=lm&q="              "Search DuckDuckGo: ")
-(prelude-install-search-engine "pinboard"   "https://pinboard.in/search/u:Oliver?query="   "Pinboard: ")
+(web-search-engine "google"
+                   "http://www.google.com/search?q="
+                   "Google: ")
 
-(prelude-install-search-engine "wikipedia"
-                               "http://en.wikipedia.org/wiki/Special:Search?go=Go&search="
-                               "Search Wikipedia: ")
+(web-search-engine "youtube"
+                   "http://www.youtube.com/results?search_query="
+                   "Search YouTube: ")
 
-(prelude-install-search-engine "github-elisp"
-                               "https://github.com/search?l=Emacs+Lisp&type=Code&q="
-                               "Github Elisp: ")
+(web-search-engine "github"
+                   "https://github.com/search?q="
+                   "Search GitHub: ")
+
+(web-search-engine "pinboard"
+                   "https://pinboard.in/search/u:Oliver?query="
+                   "Pinboard: ")
+
+(web-search-engine "wikipedia"
+                   "http://en.wikipedia.org/wiki/Special:Search?go=Go&search="
+                   "Search Wikipedia: ")
+
+(web-search-engine "github-elisp"
+                   "https://github.com/search?l=Emacs+Lisp&type=Code&q="
+                   "Github Elisp: ")
 
 
 ;;; Quick Help

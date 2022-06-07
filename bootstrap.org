@@ -110,6 +110,7 @@ specific workflow. Lucky you.
 - Install [[https://brew.sh][Homebrew]]
 - Install [[https://github.com/syncthing/syncthing-macos][Syncthing (macos)]]
 - Install [[https://support.apple.com/downloads/pro%2520video%2520formats][Pro Video Formats 2.2]] (work-related)
+- Install WorldWideWeb
 
 Install brew packages (you can run =brew leaves= to find out what you have installed right now):
 

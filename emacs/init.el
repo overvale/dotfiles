@@ -872,6 +872,25 @@ If r is pressed replace the text with the result"
  '(blink-cursor-interval 0.5)
  '(blink-cursor-delay 0.2))
 
+(defvar-local hide-cursor--original nil)
+
+(define-minor-mode hide-cursor-mode
+  "Hide or show the cursor.
+
+When the cursor is hidden `scroll-lock-mode' is enabled, so that
+the buffer works like a pager."
+  :global nil
+  :lighter "H"
+  (if hide-cursor-mode
+      (progn
+        (scroll-lock-mode 1)
+        (setq-local hide-cursor--original
+                    cursor-type)
+        (setq-local cursor-type nil))
+    (scroll-lock-mode -1)
+    (setq-local cursor-type (or hide-cursor--original
+                                t))))
+
 
 ;;; Fonts
 

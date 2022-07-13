@@ -459,12 +459,6 @@ This will save the buffer if it is not currently saved."
   (save-buffer)
   (chmod (buffer-file-name) 493))
 
-(defun olivertaylor.net ()
-  "Helpful stuff for coding my website."
-  (interactive)
-  (load "~/home/src/olivertaylor/lib/helper.el")
-  (oht-site-transient))
-
 (defun frames-p-save-buffers-kill-emacs ()
   "If more than one frame exists, confirm exit of Emacs."
   (interactive)
@@ -640,6 +634,22 @@ If r is pressed replace the text with the result"
   (interactive)
   (switch-to-buffer (url-retrieve (thing-at-point-url-at-point) (lambda (_)))))
 
+(defun scroll-up-half ()
+  (interactive)
+  (scroll-up-command
+   (floor
+    (- (window-height)
+       next-screen-context-lines)
+    2)))
+
+(defun scroll-down-half ()
+  (interactive)
+  (scroll-down-command
+   (floor
+    (- (window-height)
+       next-screen-context-lines)
+    2)))
+
 
 ;;; Advice
 
@@ -769,6 +779,9 @@ If r is pressed replace the text with the result"
 
 (defkey help-map "s" 'describe-symbol-at-point)
 
+(with-eval-after-load 'bs-mode
+  (defkey bs-mode-map "i" 'ibuffer))
+
 ;; Package Operations
 
 (define-prefix-command 'pkg-ops-map nil "Packages")
@@ -865,6 +878,9 @@ If r is pressed replace the text with the result"
   ;; I'm using the mac-port, which has this hook I can use:
   (add-hook 'mac-effective-appearance-change-hook (lambda () (load-theme-color 'system))))
 
+
+;;; Cursor
+
 (custom-set-variables
  '(cursor-type 'box)
  '(cursor-in-non-selected-windows 'hollow)
@@ -916,7 +932,7 @@ the buffer works like a pager."
                         :line nil
                         :mono-height 120
                         :mode-height 130
-                        :vari-height 120))
+                        :vari-height 130))
           (IBM . ( :mono "IBM Plex Mono"
                    :vari "IBM Plex Serif"
                    :mode "IBM Plex Sans"
@@ -924,13 +940,6 @@ the buffer works like a pager."
                    :mono-height 120
                    :mode-height 140
                    :vari-height 130))
-          (Go . ( :mono "Go Mono"
-                  :vari "Go"
-                  :mode "Go"
-                  :line nil
-                  :mono-height 120
-                  :mode-height 130
-                  :vari-height 130))
           (Pragmata . ( :mono "PragmataPro"
                         :vari "Fira Sans"
                         :mode "SF Compact Text"
@@ -945,7 +954,7 @@ the buffer works like a pager."
 ;;; Mode-Line
 
 (setq display-time-default-load-average nil)
-(setq display-time-format "  [%F]  %R")
+(setq display-time-format "  %F  %R")
 (setq battery-mode-line-format "  %b%p%%")
 
 (defvar date-time-battery nil
@@ -1260,17 +1269,6 @@ Does not pass arguments to underlying functions."
  '(even-window-sizes nil)
  '(switch-to-buffer-obey-display-actions t)
  '(help-window-select t))
-
-;; This introduces a fundamental change to how Emacs works. Normally, when
-;; Emacs displays a new buffer, it tries to intelligently select the best
-;; window for that buffer. Sometimes this is a new window (split), sometimes
-;; it is the current window, sometimes it re-uses an existing window. The
-;; below code makes it so the default window is always the current one. The
-;; advantage of this is that your window layouts are never changed for you.
-;; https://github.com/nex3/perspective-el#some-musings-on-emacs-window-layouts
-;; (customize-set-variable 'display-buffer-base-action
-;;                         '((display-buffer-reuse-window display-buffer-same-window)
-;;                           (reusable-frames . t)))
 
 ;; The order of the below items matter. The first one that matches is applied.
 ;; That's why all these add-to-list items have the APPEND flag.

@@ -2135,14 +2135,17 @@ To be used by `eww-after-render-hook'."
 
   (setq org-capture-templates
         `(("i" "Personal Inbox" entry
-           (file+headline ,(concat org-directory "life.org") "Inbox")
+           (file+headline ,(concat org-directory "oliver.org") "Inbox")
            "* %?\n\n" :empty-lines 1)
           ("l" "Personal Log Entry" entry
            (file+olp+datetree ,(concat org-directory "logbook.org"))
            "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
-          ("e" "Emacs Config" entry
-           (file+headline ,(concat org-directory "emacs.org") "Emacs Config")
-           "* TODO %?" :empty-lines 1)))
+          ("o" "Outpost Log Entry" entry
+           (file+olp+datetree ,(concat org-directory "outpost-logbook.org"))
+           "* %?\n%T\n\n" :empty-lines 1)
+          ("k" "Links" entry
+           (file+headline ,(concat org-directory "links.org") "LINKS")
+           "* %?\n\n" :empty-lines 1)))
 
   (defun org-toggle-checkbox-presence ()
     (interactive)
@@ -2218,7 +2221,7 @@ current HH:MM time."
       (progn
         (require 'org)
         (let ((org-overriding-default-time
-	           (org-get-cursor-date (equal with-time 1))))
+	           (org-get-cursor-date)))
           (delete-window)
           (call-interactively 'org-capture)))))
 

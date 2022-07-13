@@ -1739,6 +1739,12 @@ M - Mike         Z - Zulu")
    '(elfeed-db-directory (concat user-emacs-directory "elfeed/"))
    '(elfeed-enclosure-default-dir user-downloads-directory))
 
+  (defun elfeed-search:emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
+  (defun elfeed-search:vfx   () (interactive) (elfeed-search-set-filter "+unread +vfx"))
+  (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs -vfx"))
+  (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
+
+
   (defkey elfeed-search-mode-map
     "b"   'elfeed-search-browse-url-background
     "*"   'elfeed-search-tag--star
@@ -1747,7 +1753,8 @@ M - Mike         Z - Zulu")
     "o"   'delete-other-windows
     "E"   'elfeed-search:emacs
     "O"   'elfeed-search:other
-    "S"   'elfeed-search:star)
+    "S"   'elfeed-search:star
+    "V"   'elfeed-search:vfx)
 
   (defkey elfeed-show-mode-map
     "r"   'elfeed-show-tag--read

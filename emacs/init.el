@@ -396,6 +396,14 @@ Uses the `default-directory' unless a path is supplied."
       (unfill-region)
     (unfill-paragraph)))
 
+(defun fill-unfill-paragraph ()
+  "Fill/unfill paragraph."
+  (interactive)
+  (if (eq last-command this-command)
+      (progn (setq this-command nil)
+             (unfill-paragraph))
+    (fill-paragraph)))
+
 (defun browse-url-macos-background (url)
   "Open URL with macOS `open'."
   (interactive)
@@ -730,6 +738,7 @@ If r is pressed replace the text with the result"
   "M-\\" 'cycle-spacing
   "M-z" 'zap-up-to-char
   "M-i" 'imenu
+  "M-q" 'fill-unfill-paragraph
   "C-d" 'delete-forward-char
   "M-o" 'other-window
   "M-O" 'other-window-previous

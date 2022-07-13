@@ -18,10 +18,6 @@
 (defalias 'elfeed-show-tag--unstar (elfeed-expose #'elfeed-show-untag 'star)
   "Remove the 'star' tag to current entry")
 
-(defun elfeed-search:emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
-(defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs"))
-(defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
-
 (defun elfeed-search-browse-url-background ()
   "Visit the current entry, or region entries, using `browse-url-macos-background'."
   (interactive)

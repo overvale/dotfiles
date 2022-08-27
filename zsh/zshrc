@@ -45,6 +45,7 @@ alias unquarantine='xattr -d com.apple.quarantine'
 alias pbp="pbpaste"
 alias pbc="pbcopy"
 alias python=python3
+alias emacs="open -a Emacs"
 
 # System Reports
 # I use these commands to search for background processes I don't want
@@ -61,17 +62,25 @@ alias ,lsmyps='ps -ax | grep -v "/System\|/Applications\|/usr\|/sbin\|ttys00[0-9
 did (){
     # A simple log-entry system that appends anything you type after
     # `did` to the log file.
-    echo "$(date +%Y-%m-%d): $@" >> ~/home/files/did.txt
+    echo "$(date +%Y-%m-%d): $@" >> ~/home/did.txt
 }
 
 fzf-launcher() {
     eval "$(~/home/src/launcher/launcher | fzf)"
 }
 
+openbid(){
+    open $(find ~/home/dropbox/BIDDING/* -type d | fzf)
+}
+
+fzcd() {
+    cd $(find * -type d | fzf)
+}
+
 alias ll=fzf-launcher
 
-# Generic function that searches for "TODO" in the paths given
 function td() {
+    # Generic function that searches for "TODO" in the paths given
     if test -z $1; then
         # if no arguments
         echo "ERROR: requires argument" >&2

@@ -124,6 +124,10 @@ function toggleDarkMode()
    end
 end
 
+function bbeditScratch()
+   os.execute( "osascript -e 'tell application \"BBEdit\" to (open scratchpad document) activate'" )
+end
+
 
 -- HyperKey.spoon
 -- -----------------------------------------------
@@ -148,6 +152,7 @@ alphaKey
    :bind('t'):toApplication('/System/Applications/Utilities/Terminal.app')
    :bind('h'):toFunction("Reload Hammerspoon", reloadHammerspoon)
    :bind('l'):toFunction("Lock screen", hs.caffeinate.startScreensaver)
+   :bind('p'):toFunction("BBEdit Scratchpad", bbeditScratch)
 
 hyperKey
    :bind('d'):toFunction("Toggle Dark Mode", toggleDarkMode)
@@ -293,6 +298,7 @@ function myHammerMenuItem()
       { title = "-" },
       { title = "Launch Emacs Debug Init", fn = emacsDebugInit },
       { title = "Launch Emacs Q", fn = emacsQ },
+      { title = "Open BBEdit Scratchpad", fn = bbeditScratch },
       { title = "-" },
       { title = "Copy Mail Message URL", fn = copyMailURL},
       { title = "New Mail Message", fn = newMailMessage },

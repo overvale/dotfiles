@@ -56,6 +56,12 @@ alias ,lskext='kextstat | grep -v com.apple'
 alias ,lsmyps='ps -ax | grep -v "/System\|/Applications\|/usr\|/sbin\|ttys00[0-9]"'
 
 
+# FZF
+# ----------------------------------------------------------------------------
+
+source ~/home/opt/fzf-tab/fzf-tab.plugin.zsh
+
+
 # FUNCTIONS
 # ----------------------------------------------------------------------------
 
@@ -64,20 +70,6 @@ did (){
     # `did` to the log file.
     echo "$(date +%Y-%m-%d): $@" >> ~/home/did.txt
 }
-
-fzf-launcher() {
-    eval "$(~/home/src/launcher/launcher | fzf)"
-}
-
-openbid(){
-    open $(find ~/home/dropbox/BIDDING/* -type d | fzf)
-}
-
-fzcd() {
-    cd $(find * -type d | fzf)
-}
-
-alias ll=fzf-launcher
 
 function td() {
     # Generic function that searches for "TODO" in the paths given

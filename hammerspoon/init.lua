@@ -17,9 +17,19 @@
 -- Misc Spoons
 -- -----------------------------------------------
 
+local hyper = {'cmd', 'alt', 'ctrl'}
+local alpha = {'cmd', 'ctrl'}
+
 anycomplete = hs.loadSpoon("Anycomplete")
 anycomplete.engine = "duckduckgo"
 anycomplete.bindHotkeys()
+
+hs.loadSpoon("ClipboardTool")
+spoon.ClipboardTool:bindHotkeys( { show_clipboard = {hyper, "v"} })
+spoon.ClipboardTool.paste_on_select = true
+spoon.ClipboardTool.show_in_menubar = false
+spoon.ClipboardTool.show_copied_alert = false
+spoon.ClipboardTool:start()
 
 -- This is a custom spoon I made that interacts with the command-line backup
 -- tool 'restic' and some launchd scripts I run on my Mac. It's really great,
@@ -134,10 +144,6 @@ end
 
 -- Load and create a new switcher with 'HyperKey.spoon'
 local HyperKey = hs.loadSpoon("HyperKey")
-
--- Define Shortcut Keys
-local hyper = {'cmd', 'alt', 'ctrl'}
-local alpha = {'cmd', 'ctrl'}
 
 -- Activate the shortcut keys
 alphaKey = HyperKey:new(alpha)

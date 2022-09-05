@@ -142,7 +142,8 @@
         titlecase
         vertico
         visual-regexp
-        visual-regexp-steroids))
+        visual-regexp-steroids
+        vundo))
 
 ;;;; Load-Package Macro
 
@@ -1713,7 +1714,6 @@ M - Mike         Z - Zulu")
      '(vr/engine 'pcre2el))))
 
 (load-package 'vundo
-  :local-dir "vundo"
   :autoload vundo
   :after-load
   (custom-set-variables

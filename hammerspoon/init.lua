@@ -31,13 +31,6 @@ spoon.ClipboardTool.show_in_menubar = false
 spoon.ClipboardTool.show_copied_alert = false
 spoon.ClipboardTool:start()
 
--- This is a custom spoon I made that interacts with the command-line backup
--- tool 'restic' and some launchd scripts I run on my Mac. It's really great,
--- but not public at the moment. Maybe one day I'll package it up so people
--- can see it.
-require('backup_menu')
-
-
 -- Window Control Functions
 -- -----------------------------------------------
 
@@ -299,18 +292,26 @@ function myHammerMenuItem()
       { title = "YYYY-MM-DD", fn = snipISODate },
    }
    local menuTable = {
+      { title = "Misc", disabled = true },
       { title = "Dark/Light Mode", fn = toggleDarkMode },
       { title = "Snippets", menu = snippetMenu },
+      { title = "Open BBEdit Scratchpad", fn = bbeditScratch },
       { title = "-" },
       { title = "Launch Emacs Debug Init", fn = emacsDebugInit },
       { title = "Launch Emacs Q", fn = emacsQ },
-      { title = "Open BBEdit Scratchpad", fn = bbeditScratch },
       { title = "-" },
       { title = "Copy Mail Message URL", fn = copyMailURL},
       { title = "New Mail Message", fn = newMailMessage },
+      { title = "-" },
+      { title = "Rsync Backups", disabled = true },
+      { title = "Rsync to NAS", fn = rsyncBackup },
+      { title = "Open Logs", fn = backupOpenLogs },
    }
    myHammerMenu:setMenu(menuTable)
 end
+
+function backupOpenLogs () os.execute("open ~/home/src/rsync-backup/logs") end
+function rsyncBackup() os.execute( "~/home/src/rsync-backup/laptop-backup.sh" ) end
 
 function emacsDebugInit() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs --debug-init" ) end
 function emacsQ() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs -q" ) end

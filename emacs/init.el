@@ -1955,62 +1955,6 @@ With a prefix argument, copy the link to the online manual instead."
 
 (setq mail-user-agent 'mu4e-user-agent)
 
-(load-package 'mu4e
-  :eval
-  (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
-  :autoload mu4e
-  :after-load
-  (defkey mu4e-headers-mode-map
-    "G" 'mu4e-update-mail-and-index)
-
-  (custom-set-variables
-   '(mu4e-get-mail-command "mbsync -a")
-   '(mu4e-sent-folder "/icloud/Sent Messages")
-   '(mu4e-drafts-folder "/icloud/Drafts")
-   '(mu4e-trash-folder "/icloud/Deleted Messages")
-   '(mu4e-sent-folder "/icloud/Sent Messages")
-   '(mu4e-refile-folder "/icloud/Archive")
-   '(mu4e-attachments-dir user-downloads-directory)
-   '(mu4e-update-interval (* 5 60))
-   '(mu4e-change-filenames-when-moving t)
-   '(mu4e-completing-read-function 'completing-read)
-   '(mu4e-compose-dont-reply-to-self t)
-   '(mu4e-compose-format-flowed t)
-   '(mu4e-confirm-quit nil)
-   '(mu4e-headers-date-format "%Y-%m-%d")
-   '(mu4e-headers-skip-duplicates t)
-   '(mu4e-headers-time-format "%H:%M")
-   '(mu4e-headers-visible-lines 20)
-   '(mu4e-view-show-addresses t)
-   '(mu4e-view-show-images t)
-   '(mu4e-sent-messages-behavior 'delete)
-   '(mu4e-headers-fields
-     '((:human-date . 12)
-       (:flags . 6)
-       (:from . 22)
-       (:thread-subject))))
-
-  (setq mu4e-use-fancy-chars t
-        mu4e-headers-new-mark '("N" . "")
-        mu4e-headers-passed-mark '("P" . "→")
-        mu4e-headers-replied-mark '("R" . "←")
-        mu4e-headers-seen-mark '("S" . "")
-        mu4e-headers-attach-mark '("a" . "a")
-        mu4e-headers-flagged-mark '("F" . "✱")
-        mu4e-headers-unread-mark '("u" . "●"))
-
-  (setq mu4e-headers-thread-child-prefix '("├>" . "├▶")
-        mu4e-headers-thread-last-child-prefix '("└>" . "└▶")
-        mu4e-headers-thread-connection-prefix '("│" . "│")
-        mu4e-headers-thread-orphan-prefix '("┬>" . "┬▶")
-        mu4e-headers-thread-single-orphan-prefix '("─>" . "─▶"))
-
-  (defun m4e-view-in-eww (msg)
-    (eww-browse-url (concat "file://" (mu4e~write-body-to-html msg))))
-
-  (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-  (add-to-list 'mu4e-view-actions '("Eww view" . mu4e-view-in-eww) t))
-
 (load-package 'message
   :after-load
   (custom-set-variables

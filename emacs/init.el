@@ -269,7 +269,7 @@ Keybindings you define here will take precedence."
   :after-load
   (setq transient-detect-key-conflicts t
         transient-force-fixed-pitch t
-        transient-show-popup 0.5))
+        transient-show-popup t))
 
 (load-package 'exec-path-from-shell
   :require
@@ -421,6 +421,7 @@ Uses the `default-directory' unless a path is supplied."
   "Lookup `word-at-point' with MacOS's Dictionary.app"
   (interactive)
   (shell-command (format "open dict://%s" (word-at-point))))
+
 (defun crux-open-with (arg)
   "Open visited file in default external program.
 When in dired mode, open file under the cursor.
@@ -652,6 +653,15 @@ If r is pressed replace the text with the result"
        next-screen-context-lines)
     2)))
 
+(defun compose-mail-system ()
+  "Compose a message using macOS's default mail program."
+  (interactive)
+  (browse-url-default-macosx-browser "mailto:"))
+
+(defun open-with-finder (path)
+  "Prompt for PATH and open it with Finder."
+  (shell-command (concat "open " path)))
+
 
 ;;; Advice
 
@@ -751,6 +761,7 @@ If r is pressed replace the text with the result"
   "M-z" 'zap-up-to-char
   "M-i" 'imenu
   "M-q" 'fill-unfill-paragraph
+  "M-S-q" 'unfill-dwim
   "C-d" 'delete-forward-char
   "M-o" 'other-window
   "M-O" 'other-window-previous
@@ -1627,14 +1638,9 @@ M - Mike         Z - Zulu")
   (vertico-multiform-mode 1)
 
   (setq vertico-multiform-categories
-        '((file reverse)
-          (consult-grep buffer)
-          (imenu buffer indexed)))
+        '((file reverse)))
 
-  (setq vertico-multiform-commands
-        '((consult-buffer unobtrusive)
-          (consult-line buffer)
-          (execute-extended-command unobtrusive)
+  (setq vertico-multiform-commands '(
           (completion-at-point reverse)))
 
   (defkey vertico-map

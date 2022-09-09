@@ -124,6 +124,7 @@
 (setq package-selected-packages
       '(consult
         delight
+        ef-themes
         elfeed
         embark
         embark-consult
@@ -855,7 +856,7 @@ If r is pressed replace the text with the result"
   (defun customize-modus-vivendi nil
     (custom-set-variables
      '(modus-themes-mode-line '(accented borderless (padding . 3)))
-     '(modus-themes-syntax '(yellow-comments faint))))
+     '(modus-themes-syntax '(alt-syntax green-strings yellow-comments faint))))
 
   (defun customize-modus-operandi nil
     (custom-set-variables
@@ -864,6 +865,8 @@ If r is pressed replace the text with the result"
 
   (advice-add 'load-theme-dark :before 'customize-modus-vivendi)
   (advice-add 'load-theme-light :before 'customize-modus-operandi))
+
+(load-package 'ef-themes)
 
 ;; Actual theme loading...
 (load-package 'theme-loading
@@ -933,7 +936,7 @@ the buffer works like a pager."
                         :line nil
                         :mono-height 120
                         :mode-height 130
-                        :vari-height 130))
+                        :vari-height 120))
           (IBM . ( :mono "IBM Plex Mono"
                    :vari "IBM Plex Serif"
                    :mode "IBM Plex Sans"

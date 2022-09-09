@@ -131,40 +131,29 @@ function bbeditScratch()
    os.execute( "osascript -e 'tell application \"BBEdit\" to (open scratchpad document) activate'" )
 end
 
+function backupOpenLogs () os.execute("open ~/home/src/rsync-backup/logs") end
+function rsyncBackup() os.execute( "~/home/src/rsync-backup/laptop-backup.sh" ) end
 
--- HyperKey.spoon
--- -----------------------------------------------
+function emacsDebugInit() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs --debug-init" ) end
+function emacsQ() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs -q" ) end
 
--- Load and create a new switcher with 'HyperKey.spoon'
-local HyperKey = hs.loadSpoon("HyperKey")
+function copyMailURL() os.execute( "~/home/dot/bin/getMailURL | pbcopy | open hammerspoon://success" ) end
+function newMailMessage() os.execute("open mailto:") end
 
--- Activate the shortcut keys
-alphaKey = HyperKey:new(alpha)
-hyperKey = HyperKey:new(hyper)
+function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end
+function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
+function snipOrgDate() hs.eventtap.keyStrokes(os.date("<%Y-%m-%d %a>")) end
+function snipISODate() hs.eventtap.keyStrokes(os.date("%Y-%m-%d")) end
 
-alphaKey
-   :bind('m'):toApplication('/System/Applications/Mail.app')
-   :bind('c'):toApplication('/System/Applications/Calendar.app')
-   :bind('e'):toApplication('/Users/oht/Applications/Emacs.app')
-   :bind('s'):toApplication('/Applications/Safari.app')
-   :bind('a'):toApplication('/System/Applications/Music.app')
-   :bind('t'):toApplication('/System/Applications/Utilities/Terminal.app')
-   :bind('h'):toFunction("Reload Hammerspoon", reloadHammerspoon)
-   :bind('l'):toFunction("Lock screen", hs.caffeinate.startScreensaver)
-   :bind('p'):toFunction("BBEdit Scratchpad", bbeditScratch)
+function openWorkApps() os.execute( "open -a Dropbox; open -a OneDrive; open -a Tailscale" ) end
+function killWorkApps() os.execute( "killall {Dropbox,Tailscale,OneDrive}" ) end
 
-hyperKey
-   :bind('d'):toFunction("Toggle Dark Mode", toggleDarkMode)
-   :bind('['):toFunction("Move Win ←", wm_left)
-   :bind(']'):toFunction("Move Win →", wm_right)
-   :bind('='):toFunction("Center Window", wm_center)
-   :bind('left'):toFunction("Move/Resize Win ◼︎◻︎", wm_leftHalf)
-   :bind('right'):toFunction("Move/Resize Win ◻︎◼︎", wm_rightHalf)
-   :bind('f'):toFunction("Move/Resize Win Fullscreen", wm_full)
-   :bind('h'):toFunction("Move/Resize Win ◼︎◻︎◻︎", wm_left1third)
-   :bind('j'):toFunction("Move/Resize Win ◼︎◼︎◻︎", wm_left2third)
-   :bind('k'):toFunction("Move/Resize Win ◻︎◼︎◼︎", wm_right2third)
-   :bind('l'):toFunction("Move/Resize Win ◻︎◻︎◼︎", wm_right1third)
+function toggleMute()
+   local teams = hs.application.find("com.microsoft.teams")
+   hs.eventtap.keyStroke({"cmd","shift"}, "m", 0, teams)
+end
+
+hs.hotkey.bind(hyper, "1", toggleMute)
 
 
 -- Sky Rocket Spoon -- Window Resizing with Mouse
@@ -292,7 +281,8 @@ function myHammerMenuItem()
       { title = "YYYY-MM-DD", fn = snipISODate },
    }
    local menuTable = {
-      { title = "Misc", disabled = true },
+      { title = "Hammerspoon", disabled = true },
+      { title = "-" },
       { title = "Dark/Light Mode", fn = toggleDarkMode },
       { title = "Snippets", menu = snippetMenu },
       { title = "Open BBEdit Scratchpad", fn = bbeditScratch },
@@ -303,6 +293,10 @@ function myHammerMenuItem()
       { title = "Copy Mail Message URL", fn = copyMailURL},
       { title = "New Mail Message", fn = newMailMessage },
       { title = "-" },
+      { title = "Outpost", disabled = true },
+      { title = "Open Work Apps", fn = openWorkApps },
+      { title = "Close Work Apps", fn = killWorkApps },
+      { title = "-" },
       { title = "Rsync Backups", disabled = true },
       { title = "Rsync to NAS", fn = rsyncBackup },
       { title = "Open Logs", fn = backupOpenLogs },
@@ -310,25 +304,66 @@ function myHammerMenuItem()
    myHammerMenu:setMenu(menuTable)
 end
 
-function backupOpenLogs () os.execute("open ~/home/src/rsync-backup/logs") end
-function rsyncBackup() os.execute( "~/home/src/rsync-backup/laptop-backup.sh" ) end
-
-function emacsDebugInit() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs --debug-init" ) end
-function emacsQ() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs -q" ) end
-
-function copyMailURL() os.execute( "~/home/dot/bin/getMailURL | pbcopy | open hammerspoon://success" ) end
-function newMailMessage() os.execute("open mailto:") end
-
-function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end
-function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
-function snipOrgDate() hs.eventtap.keyStrokes(os.date("<%Y-%m-%d %a>")) end
-function snipISODate() hs.eventtap.keyStrokes(os.date("%Y-%m-%d")) end
-
 -- Add the menubar item to the menubar
 myHammerMenuItem()
 
--- What do you want the menubar item to display?
-myHammerMenu:setTitle("H")
+local iconH = [[ASCII:
+1.............1
+7.............5
+...............
+...............
+....AD...FI....
+...............
+...............
+....K.....L....
+....N.....M....
+...............
+...............
+....BC...GH....
+...............
+...............
+7.............5
+3.............3
+]]
+
+myHammerMenu:setIcon(iconH)
+
+
+-- HyperKey.spoon
+-- -----------------------------------------------
+
+-- Load and create a new switcher with 'HyperKey.spoon'
+local HyperKey = hs.loadSpoon("HyperKey")
+
+-- Activate the shortcut keys
+alphaKey = HyperKey:new(alpha)
+hyperKey = HyperKey:new(hyper)
+
+alphaKey
+   :bind('m'):toApplication('/System/Applications/Mail.app')
+   :bind('c'):toApplication('/System/Applications/Calendar.app')
+   :bind('e'):toApplication('/Users/oht/Applications/Emacs.app')
+   :bind('s'):toApplication('/Applications/Safari.app')
+   :bind('a'):toApplication('/System/Applications/Music.app')
+   :bind('t'):toApplication('/System/Applications/Utilities/Terminal.app')
+   :bind('h'):toFunction("Reload Hammerspoon", reloadHammerspoon)
+   :bind('l'):toFunction("Lock screen", hs.caffeinate.startScreensaver)
+   :bind('p'):toFunction("BBEdit Scratchpad", bbeditScratch)
+
+hyperKey
+   :bind('d'):toFunction("Toggle Dark Mode", toggleDarkMode)
+   :bind('['):toFunction("Move Win ←", wm_left)
+   :bind(']'):toFunction("Move Win →", wm_right)
+   :bind('='):toFunction("Center Window", wm_center)
+   :bind('left'):toFunction("Move/Resize Win ◼︎◻︎", wm_leftHalf)
+   :bind('right'):toFunction("Move/Resize Win ◻︎◼︎", wm_rightHalf)
+   :bind('f'):toFunction("Move/Resize Win Fullscreen", wm_full)
+   :bind('h'):toFunction("Move/Resize Win ◼︎◻︎◻︎", wm_left1third)
+   :bind('j'):toFunction("Move/Resize Win ◼︎◼︎◻︎", wm_left2third)
+   :bind('k'):toFunction("Move/Resize Win ◻︎◼︎◼︎", wm_right2third)
+   :bind('l'):toFunction("Move/Resize Win ◻︎◻︎◼︎", wm_right1third)
+   :bind('t'):toFunction("Insert Date", snipISODate)
+   :bind('m'):toFunction("Teams Mute", toggleMute)
 
 
 -- Reload Notification
@@ -336,7 +371,7 @@ myHammerMenu:setTitle("H")
 
 -- When this config is loaded, or reloaded, notify that it was done
 -- successfully.
-hs.notify.new({title='Hammerspoon', informativeText='🤘 Ready to Rock! 🤘'}):send()
+hs.notify.new({title='Hammerspoon', informativeText='Ready to Rock! 🤘'}):send()
 
 
 -- END HAMMERSPOON CONFIG --

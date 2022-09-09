@@ -1595,6 +1595,27 @@ M - Mike         Z - Zulu")
 (defkey global-map "C-c h" 'quick-help-prompt)
 
 
+;;; Text-Plus-Mode
+
+(defvar-local text-plus-mode nil)
+
+(defun text-plus-mode ()
+  "Toggle orgalist-mode, orgtbl-mode, and visual-line-mode."
+  (interactive)
+  (if text-plus-mode
+      (progn (setq text-plus-mode nil)
+             (orgalist-mode -1)
+             (orgtbl-mode -1)
+             (visual-line-mode -1)
+             (message "text-plus-mode deactivated"))
+    (progn (setq text-plus-mode t)
+           (orgalist-mode 1)
+           (orgtbl-mode 1)
+           (visual-line-mode 1)
+           (message "text-plus-mode activated"))))
+
+
+
 ;;; Snippets
 
 (defvar snippet-alist nil

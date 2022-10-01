@@ -122,7 +122,7 @@ function toggleDarkMode()
 end
 
 
--- Readline Shortcuts
+-- Readline Keymap
 -- ----------------------------------------------
 -- MacOS supports lots of Emacs-style shortcuts out of the box, but it is
 -- missing M-f, M-b, M-d -- and I think it should also support the readline
@@ -132,6 +132,10 @@ end
 -- when Emacs and the Terminal are the foreground app, so the below code does
 -- all that.
 
+-- First, create the keymap you'd like to bind into.
+local ReadlineKeymap = hs.hotkey.modal.new()
+
+-- Next, create the functions you want to use...
 -- There are a lot of different ways to simulate key events but the below
 -- approach, which simulates all the key up and down events for both modifiers
 -- and the keys themselves has proved the most reliable and the least likely
@@ -172,9 +176,7 @@ function moveWordForward()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
 end
 
-local ReadlineKeymap = hs.hotkey.modal.new()
-
--- Bind some keys to it
+-- Then bind some keys to the map.
 ReadlineKeymap:bind({'ctrl'}, 'w', deleteWordBack)
 ReadlineKeymap:bind({'ctrl'}, 'u', deleteLineBack)
 ReadlineKeymap:bind({'alt'},  'd', deleteWordForward)
@@ -182,27 +184,44 @@ ReadlineKeymap:bind({'alt'},  'b', moveWordBack)
 ReadlineKeymap:bind({'alt'},  'f', moveWordForward)
 
 
+-- Tot Keymap
+-- -----------------------------------------------
 
--- Readline Hotkeys
+local totKeymap = hs.hotkey.modal.new()
+
+
+
+-- Activate App-Specific Keymaps
 -- ------------------------------------------------
 
-local function readlineWatcherFunction(appName, eventType, appObject)
-   if (eventType == hs.application.watcher.activated) then
+local function setUserKeymaps()
       if appTitle() == "Emacs" or appTitle() == "Terminal" then
-         print('Readline keymap exited.')
+         -- print('Readline keymap exited.')
          ReadlineKeymap:exit()
       else
-         print('Readline keymap entered.')
+         -- print('Readline keymap entered.')
          ReadlineKeymap:enter()
       end
+      if appTitle() == "Tot" then
+         -- print('Tot keymap entered.')
+         totKeymap:enter()
+      else
+         -- print('Tot keymap exited.')
+         totKeymap:exit()
+      end
+end
+
+local function appWatcherFunction(appName, eventType, appObject)
+   if (eventType == hs.application.watcher.activated) then
+   setUserKeymaps()
    end
 end
 
-local readlineWatcher = hs.application.watcher.new(readlineWatcherFunction)
+setUserKeymaps()
 
-readlineWatcher:start()
+local appWatcher = hs.application.watcher.new(appWatcherFunction)
 
-readlineWatcherFunction()
+appWatcher:start()
 
 
 -- My Hammerspoon Menubar Item

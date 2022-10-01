@@ -13,23 +13,11 @@
 -- + https://github.com/justintanner/universal-emacs-keybindings
 -- + https://github.com/dbalatero/dotfiles/tree/master/hammerspoon
 
-
--- Misc Spoons
+-- Setup
 -- -----------------------------------------------
 
 local hyper = {'cmd', 'alt', 'ctrl'}
 local alpha = {'cmd', 'ctrl'}
-
-anycomplete = hs.loadSpoon("Anycomplete")
-anycomplete.engine = "duckduckgo"
-anycomplete.bindHotkeys()
-
-hs.loadSpoon("ClipboardTool")
-spoon.ClipboardTool:bindHotkeys( { show_clipboard = {hyper, "v"} })
-spoon.ClipboardTool.paste_on_select = true
-spoon.ClipboardTool.show_in_menubar = false
-spoon.ClipboardTool.show_copied_alert = false
-spoon.ClipboardTool:start()
 
 hs.window.animationDuration = 0
 
@@ -279,6 +267,17 @@ myHammerMenu:setIcon(iconH)
 
 -- Misc Spoons
 -- -----------------------------------------------
+
+anycomplete = hs.loadSpoon("Anycomplete")
+anycomplete.engine = "duckduckgo"
+anycomplete.bindHotkeys()
+
+hs.loadSpoon("ClipboardTool")
+spoon.ClipboardTool:bindHotkeys( { show_clipboard = {alpha, "v"} })
+spoon.ClipboardTool.paste_on_select = true
+spoon.ClipboardTool.show_in_menubar = false
+spoon.ClipboardTool.show_copied_alert = false
+spoon.ClipboardTool:start()
 
 hs.loadSpoon("MiroWindowsManager")
 spoon.MiroWindowsManager:bindHotkeys({

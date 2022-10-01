@@ -299,8 +299,8 @@ spoon.MiroWindowsManager:bindHotkeys({
 })
 
 
--- App Launcher
--- -----------------------------------------------
+-- Bindings
+-- ----------------------------------------------
 
 local applicationHotkeys = {
    m = 'Mail',
@@ -312,25 +312,25 @@ local applicationHotkeys = {
    r = 'Reminders',
 }
 
-for key, app in pairs(applicationHotkeys) do
-   hs.hotkey.bind(alpha, key, function()
-                     hs.application.launchOrFocus(app)
-   end)
-end
+local alphaHotkeys = {
+   h = reloadHammerspoon,
+   p = bbeditScratch,
+   n = noteToWorkSelf,
+}
 
-
--- Misc Bindings
--- ----------------------------------------------
-
-hs.hotkey.bind(alpha, 'h', reloadHammerspoon)
-hs.hotkey.bind(alpha, 'p', bbeditScratch)
-hs.hotkey.bind(alpha, 'n', noteToWorkSelf)
-
-hs.hotkey.bind(hyper, 't', snipISODate)
-hs.hotkey.bind(hyper, 'm', toggleTeamsMute)
-hs.hotkey.bind(hyper, 'd', toggleDarkMode)
+local hyperHotkeys = {
+   t = snipISODate,
+   m = toggleTeamsMute,
+   d = toggleDarkMode,
+}
 
 hs.hotkey.bind({'alt', 'shift'}, '0', snipCircle)
+
+for key, fn  in pairs(alphaHotkeys) do hs.hotkey.bind(alpha, key, fn) end
+for key, fn  in pairs(hyperHotkeys) do hs.hotkey.bind(hyper, key, fn) end
+for key, app in pairs(applicationHotkeys) do
+   hs.hotkey.bind(alpha, key, function() hs.application.launchOrFocus(app) end)
+end
 
 
 -- Reload Notification

@@ -25,6 +25,14 @@ hs.window.animationDuration = 0
 -- Misc Functions
 -- -----------------------------------------------
 
+local function appTitle()
+   -- Return title of foreground app
+   app = hs.application.frontmostApplication()
+   if app ~= nil then
+      return app:title()
+   end
+end
+
 function genericSuccess()
    -- Function for creating a notification saying "Success!"
    -- This is useful when testing new Hammerspoon stuff.
@@ -164,7 +172,6 @@ function moveWordForward()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
 end
 
--- Create a new keymap
 local ReadlineKeymap = hs.hotkey.modal.new()
 
 -- Bind some keys to it
@@ -175,39 +182,27 @@ ReadlineKeymap:bind({'alt'},  'b', moveWordBack)
 ReadlineKeymap:bind({'alt'},  'f', moveWordForward)
 
 
--- App Watcher
+
+-- Readline Hotkeys
 -- ------------------------------------------------
 
-local function appTitle()
-   -- Return title of foreground app
-   app = hs.application.frontmostApplication()
-   if app ~= nil then
-      return app:title()
-   end
-end
-
-local function setReadlineKeymap()
-   -- Activate and deactivate keymap based on appTitle()
-   if appTitle() == "Emacs" or appTitle() == "Terminal" then
-      print('Readline keybindings OFF for ' .. appTitle())
-      ReadlineKeymap:exit()
-   else
-      print('Readline keybindings ON for ' .. appTitle())
-      ReadlineKeymap:enter()
-   end
-end
-
-local function appWatcherFunction(appName, eventType, appObject)
+local function readlineWatcherFunction(appName, eventType, appObject)
    if (eventType == hs.application.watcher.activated) then
-      setReadlineKeymap()
+      if appTitle() == "Emacs" or appTitle() == "Terminal" then
+         print('Readline keymap exited.')
+         ReadlineKeymap:exit()
+      else
+         print('Readline keymap entered.')
+         ReadlineKeymap:enter()
+      end
    end
 end
 
-setReadlineKeymap()
+local readlineWatcher = hs.application.watcher.new(readlineWatcherFunction)
 
-local appWatcher = hs.application.watcher.new(appWatcherFunction)
+readlineWatcher:start()
 
-appWatcher:start()
+readlineWatcherFunction()
 
 
 -- My Hammerspoon Menubar Item

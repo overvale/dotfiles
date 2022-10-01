@@ -37,32 +37,6 @@ hs.urlevent.bind("success", genericSuccess)
 
 local reloadHammerspoon = function() hs.reload() end
 
-function darkModeStatus()
-   -- return the status of Dark Mode
-   local _, darkModeState = hs.osascript.javascript(
-      'Application("System Events").appearancePreferences.darkMode()'
-   )
-   return darkModeState
-end
-
-function setDarkMode(state)
-   -- Function for setting Dark Mode on/off.
-   -- Argument should be either 'true' or 'false'.
-   return hs.osascript.javascript(
-      string.format(
-         "Application('System Events').appearancePreferences.darkMode.set(%s)", state
-   ))
-end
-
-function toggleDarkMode()
-   -- Toggle Dark Mode status
-   if darkModeStatus() then
-      setDarkMode(false)
-   else
-      setDarkMode(true)
-   end
-end
-
 function bbeditScratch()
    os.execute( "osascript -e 'tell application \"BBEdit\" to (open scratchpad document) activate'" )
 end
@@ -89,7 +63,7 @@ function noteToWorkSelf()
   os.execute( "open mailto:otaylor@outpost-vfx.com" )
 end
 
-function toggleMute()
+function toggleTeamsMute()
    local teams = hs.application.find("com.microsoft.teams")
    hs.eventtap.keyStroke({"cmd","shift"}, "m", 0, teams)
 end
@@ -108,6 +82,36 @@ function pastePlainText()
         perl -ne 'print chr foreach unpack("C*",pack("H*",substr($_,11,-3)))' | \
         textutil -stdin -stdout -convert txt
 ]]) end
+
+
+-- Toggle Dark Mode
+-- ----------------------------------------------
+
+function darkModeStatus()
+   -- return the status of Dark Mode
+   local _, darkModeState = hs.osascript.javascript(
+      'Application("System Events").appearancePreferences.darkMode()'
+   )
+   return darkModeState
+end
+
+function setDarkMode(state)
+   -- Function for setting Dark Mode on/off.
+   -- Argument should be either 'true' or 'false'.
+   return hs.osascript.javascript(
+      string.format(
+         "Application('System Events').appearancePreferences.darkMode.set(%s)", state
+   ))
+end
+
+function toggleDarkMode()
+   -- Toggle Dark Mode status
+   if darkModeStatus() then
+      setDarkMode(false)
+   else
+      setDarkMode(true)
+   end
+end
 
 
 -- Readline Shortcuts
@@ -160,16 +164,27 @@ function moveWordForward()
    hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
 end
 
+-- Create a new keymap
+local ReadlineKeymap = hs.hotkey.modal.new()
+
+-- Bind some keys to it
+ReadlineKeymap:bind({'ctrl'}, 'w', deleteWordBack)
+ReadlineKeymap:bind({'ctrl'}, 'u', deleteLineBack)
+ReadlineKeymap:bind({'alt'},  'd', deleteWordForward)
+ReadlineKeymap:bind({'alt'},  'b', moveWordBack)
+ReadlineKeymap:bind({'alt'},  'f', moveWordForward)
+
+
+-- App Watcher
+-- ------------------------------------------------
+
 local function appTitle()
-   -- Get title of foreground app
+   -- Return title of foreground app
    app = hs.application.frontmostApplication()
    if app ~= nil then
       return app:title()
    end
 end
-
--- Create a new keymap
-local ReadlineKeymap = hs.hotkey.modal.new()
 
 local function setReadlineKeymap()
    -- Activate and deactivate keymap based on appTitle()
@@ -189,14 +204,10 @@ local function appWatcherFunction(appName, eventType, appObject)
 end
 
 setReadlineKeymap()
-local appWatcher = hs.application.watcher.new(appWatcherFunction)
-appWatcher:start()
 
-ReadlineKeymap:bind({'ctrl'}, 'w', deleteWordBack)
-ReadlineKeymap:bind({'ctrl'}, 'u', deleteLineBack)
-ReadlineKeymap:bind({'alt'},  'd', deleteWordForward)
-ReadlineKeymap:bind({'alt'},  'b', moveWordBack)
-ReadlineKeymap:bind({'alt'},  'f', moveWordForward)
+local appWatcher = hs.application.watcher.new(appWatcherFunction)
+
+appWatcher:start()
 
 
 -- My Hammerspoon Menubar Item
@@ -287,6 +298,7 @@ spoon.MiroWindowsManager:bindHotkeys({
 	nextscreen = {hyper, "n"}
 })
 
+
 -- App Launcher
 -- -----------------------------------------------
 
@@ -315,7 +327,7 @@ hs.hotkey.bind(alpha, 'p', bbeditScratch)
 hs.hotkey.bind(alpha, 'n', noteToWorkSelf)
 
 hs.hotkey.bind(hyper, 't', snipISODate)
-hs.hotkey.bind(hyper, 'm', toggleMute)
+hs.hotkey.bind(hyper, 'm', toggleTeamsMute)
 hs.hotkey.bind(hyper, 'd', toggleDarkMode)
 
 hs.hotkey.bind({'alt', 'shift'}, '0', snipCircle)

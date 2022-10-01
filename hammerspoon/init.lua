@@ -62,7 +62,6 @@ function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end
 function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
 function snipOrgDate() hs.eventtap.keyStrokes(os.date("<%Y-%m-%d %a>")) end
 function snipISODate() hs.eventtap.keyStrokes(os.date("%Y-%m-%d")) end
-function snipCircle() hs.eventtap.keyStrokes(os.date("○")) end
 
 function openWorkApps() os.execute( "open -a Dropbox; open -a OneDrive; open -a Tailscale" ) end
 function killWorkApps() os.execute( "killall {Dropbox,Tailscale,OneDrive}" ) end
@@ -189,6 +188,9 @@ ReadlineKeymap:bind({'alt'},  'f', moveWordForward)
 
 local totKeymap = hs.hotkey.modal.new()
 
+function snipCircle() hs.eventtap.keyStrokes("○") end
+
+totKeymap:bind({'alt', 'shift'}, '0', snipCircle)
 
 
 -- Activate App-Specific Keymaps
@@ -337,8 +339,6 @@ local hyperHotkeys = {
    m = toggleTeamsMute,
    d = toggleDarkMode,
 }
-
-hs.hotkey.bind({'alt', 'shift'}, '0', snipCircle)
 
 for key, fn  in pairs(alphaHotkeys) do hs.hotkey.bind(alpha, key, fn) end
 for key, fn  in pairs(hyperHotkeys) do hs.hotkey.bind(hyper, key, fn) end

@@ -80,20 +80,34 @@ function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end
 function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
 function snipOrgDate() hs.eventtap.keyStrokes(os.date("<%Y-%m-%d %a>")) end
 function snipISODate() hs.eventtap.keyStrokes(os.date("%Y-%m-%d")) end
+function snipCircle() hs.eventtap.keyStrokes(os.date("○")) end
 
 function openWorkApps() os.execute( "open -a Dropbox; open -a OneDrive; open -a Tailscale" ) end
 function killWorkApps() os.execute( "killall {Dropbox,Tailscale,OneDrive}" ) end
+
+function noteToWorkSelf()
+  os.execute( "open mailto:otaylor@outpost-vfx.com" )
+end
 
 function toggleMute()
    local teams = hs.application.find("com.microsoft.teams")
    hs.eventtap.keyStroke({"cmd","shift"}, "m", 0, teams)
 end
 
-hs.hotkey.bind(hyper, "1", toggleMute)
+function meetingTimes()
+  os.execute( "/Users/oht/home/dot/bin/meet | open -tf" )
+end
 
+function miniCalendar()
+  os.execute( "cal -h | open -tf" )
+end
 
-
-
+function pastePlainText()
+  hs.execute([[
+    osascript -e 'the clipboard as «class RTF »' | \
+        perl -ne 'print chr foreach unpack("C*",pack("H*",substr($_,11,-3)))' | \
+        textutil -stdin -stdout -convert txt
+]]) end
 
 
 -- Readline Shortcuts
@@ -200,21 +214,22 @@ function myHammerMenuItem()
       { title = "YYYY-MM-DD", fn = snipISODate },
    }
    local menuTable = {
-      { title = "Hammerspoon", disabled = true },
-      { title = "-" },
       { title = "Dark/Light Mode", fn = toggleDarkMode },
-      { title = "Snippets", menu = snippetMenu },
       { title = "Open BBEdit Scratchpad", fn = bbeditScratch },
+      { title = "Paste as Plain Text", fn = pastePlainText },
       { title = "-" },
-      { title = "Launch Emacs Debug Init", fn = emacsDebugInit },
-      { title = "Launch Emacs Q", fn = emacsQ },
-      { title = "-" },
-      { title = "Copy Mail Message URL", fn = copyMailURL},
-      { title = "New Mail Message", fn = newMailMessage },
+      { title = "Snippets", menu = snippetMenu },
       { title = "-" },
       { title = "Outpost", disabled = true },
+      { title = "Note to Self", fn = noteToWorkSelf },
       { title = "Open Work Apps", fn = openWorkApps },
       { title = "Close Work Apps", fn = killWorkApps },
+      { title = "Meeting Times", fn = meetingTimes },
+      { title = "Mini Calendar", fn = miniCalendar },
+      { title = "-" },
+      { title = "Mail", disabled = true},
+      { title = "Copy Mail Message URL", fn = copyMailURL},
+      { title = "New Mail Message", fn = newMailMessage },
       { title = "-" },
       { title = "Rsync Backups", disabled = true },
       { title = "Rsync to NAS", fn = rsyncBackup },
@@ -292,6 +307,18 @@ for key, app in pairs(applicationHotkeys) do
 end
 
 
+-- Misc Bindings
+-- ----------------------------------------------
+
+hs.hotkey.bind(alpha, 'h', reloadHammerspoon)
+hs.hotkey.bind(alpha, 'p', bbeditScratch)
+hs.hotkey.bind(alpha, 'n', noteToWorkSelf)
+
+hs.hotkey.bind(hyper, 't', snipISODate)
+hs.hotkey.bind(hyper, 'm', toggleMute)
+hs.hotkey.bind(hyper, 'd', toggleDarkMode)
+
+hs.hotkey.bind({'alt', 'shift'}, '0', snipCircle)
 
 
 -- Reload Notification

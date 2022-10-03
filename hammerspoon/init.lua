@@ -33,10 +33,29 @@ local function appTitle()
    end
 end
 
+-- Copied from https://github.com/Hammerspoon/Spoons/blob/4224cddc344198e086715a7c24983f90ec0f32fc/Source/PopupTranslateSelection.spoon/init.lua
+function currentSelection()
+   local elem=hs.uielement.focusedElement()
+   local sel=nil
+   if elem then
+      sel=elem:selectedText()
+   end
+   if (not sel) or (sel == "") then
+      hs.eventtap.keyStroke({"cmd"}, "c")
+      hs.timer.usleep(20000)
+      sel=hs.pasteboard.getContents()
+   end
+   return (sel or "")
+end
+
+function notify(title, text)
+  hs.notify.new({ title = title, informativeText = text}):send()
+end
+
 function genericSuccess()
    -- Function for creating a notification saying "Success!"
    -- This is useful when testing new Hammerspoon stuff.
-   hs.notify.new({title='Hammerspoon', informativeText='Success!'}):send()
+   notify('Hammerspoon', 'Success!')
 end
 
 -- With the below you can run `open hammerspoon:///success` in your terminal
@@ -387,7 +406,7 @@ end
 
 -- When this config is loaded, or reloaded, notify that it was done
 -- successfully.
-hs.notify.new({title='Hammerspoon', informativeText='Ready to Rock! 🤘'}):send()
+notify("Hammerspoon", "Ready to Rock! 🤘")
 
 
 -- END HAMMERSPOON CONFIG --

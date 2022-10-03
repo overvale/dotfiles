@@ -103,11 +103,10 @@ function miniCalendar()
 end
 
 function pastePlainText()
-  hs.execute([[
-    osascript -e 'the clipboard as «class RTF »' | \
-        perl -ne 'print chr foreach unpack("C*",pack("H*",substr($_,11,-3)))' | \
-        textutil -stdin -stdout -convert txt
-]]) end
+   paste = hs.pasteboard.readAllData()
+   hs.pasteboard.setContents(paste["public.utf8-plain-text"])
+   hs.eventtap.keyStroke({"cmd"}, "v")
+end
 
 
 -- Toggle Dark Mode
@@ -296,8 +295,8 @@ function myHammerMenuItem()
    local menuTable = {
       { title = "Dark/Light Mode", fn = toggleDarkMode },
       { title = "Open BBEdit Scratchpad", fn = bbeditScratch },
-      { title = "Paste as Plain Text", fn = pastePlainText },
       { title = "-" },
+      { title = "Paste as Plain Text", fn = pastePlainText },
       { title = "Snippets", menu = snippetMenu },
       { title = "-" },
       { title = "Outpost", disabled = true },

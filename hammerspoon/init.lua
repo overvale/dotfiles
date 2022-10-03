@@ -190,7 +190,41 @@ local totKeymap = hs.hotkey.modal.new()
 
 function snipCircle() hs.eventtap.keyStrokes("○") end
 
+function indentLine()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
+   hs.eventtap.event.newKeyEvent('a', true):post()
+   hs.eventtap.event.newKeyEvent('a', false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
+
+   hs.eventtap.event.newKeyEvent('tab', true):post()
+   hs.eventtap.event.newKeyEvent('tab', false):post()
+
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
+   hs.eventtap.event.newKeyEvent('e', true):post()
+   hs.eventtap.event.newKeyEvent('e', false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
+end
+
+function dedentLine()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
+   hs.eventtap.event.newKeyEvent('a', true):post()
+   hs.eventtap.event.newKeyEvent('a', false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
+
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
+   hs.eventtap.event.newKeyEvent('d', true):post()
+   hs.eventtap.event.newKeyEvent('d', false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
+
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
+   hs.eventtap.event.newKeyEvent('e', true):post()
+   hs.eventtap.event.newKeyEvent('e', false):post()
+   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
+end
+
 totKeymap:bind({'alt', 'shift'}, '0', snipCircle)
+totKeymap:bind({'cmd'}, ']', indentLine)
+totKeymap:bind({'cmd'}, '[', dedentLine)
 
 
 -- Activate App-Specific Keymaps
@@ -326,6 +360,7 @@ local applicationHotkeys = {
    a = 'Music',
    u = 'Terminal',
    r = 'Reminders',
+   t = 'Tot',
 }
 
 local alphaHotkeys = {

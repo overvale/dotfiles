@@ -5,13 +5,14 @@
 -- https://www.hammerspoon.org/docs/hs.keycodes.html#map
 
 -- Inspiration:
--- + https://spinscale.de/posts/2016-11-08-creating-a-productive-osx-environment-hammerspoon.html
--- + https://medium.com/@robhowlett/hammerspoon-the-best-mac-software-youve-never-heard-of-40c2df6db0f8
--- + https://github.com/jasonrudolph/keyboard
--- + https://github.com/dbmrq/dotfiles
--- + https://github.com/raulchen/dotfiles
--- + https://github.com/justintanner/universal-emacs-keybindings
--- + https://github.com/dbalatero/dotfiles/tree/master/hammerspoon
+-- https://spinscale.de/posts/2016-11-08-creating-a-productive-osx-environment-hammerspoon.html
+-- https://medium.com/@robhowlett/hammerspoon-the-best-mac-software-youve-never-heard-of-40c2df6db0f8
+-- https://github.com/jasonrudolph/keyboard
+-- https://github.com/dbmrq/dotfiles
+-- https://github.com/raulchen/dotfiles
+-- https://github.com/justintanner/universal-emacs-keybindings
+-- https://github.com/dbalatero/dotfiles/tree/master/hammerspoon
+-- https://github.com/senorprogrammer/hammerspoon_init/
 
 -- Setup
 -- -----------------------------------------------
@@ -272,10 +273,12 @@ local function appWatcherFunction(appName, eventType, appObject)
 end
 
 setUserKeymaps()
+print('User Keymaps activated.')
 
 local appWatcher = hs.application.watcher.new(appWatcherFunction)
 
 appWatcher:start()
+print('Application Watcher started.')
 
 
 -- My Hammerspoon Menubar Item

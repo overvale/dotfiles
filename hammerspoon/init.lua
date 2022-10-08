@@ -109,6 +109,20 @@ function pastePlainText()
   app = hs.application.frontmostApplication()
   app:selectMenuItem({"Edit", "Paste"})
 end
+
+-- Rather than switch to Safari, copy the current URL, switch back to the previous app and paste,
+-- This is a function that fetches the current URL from Safari and types it
+function typeCurrentSafariURL()
+    script = [[
+    tell application "Safari"
+        set currentURL to URL of document 1
+    end tell
+    return currentURL
+    ]]
+    ok, result = hs.applescript(script)
+    if (ok) then
+        hs.eventtap.keyStrokes(result)
+    end
 end
 
 

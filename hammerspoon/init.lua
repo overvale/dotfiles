@@ -104,9 +104,11 @@ function miniCalendar()
 end
 
 function pastePlainText()
-   paste = hs.pasteboard.readAllData()
-   hs.pasteboard.setContents(paste["public.utf8-plain-text"])
-   hs.eventtap.keyStroke({"cmd"}, "v")
+  local paste = hs.pasteboard.readString()
+  hs.pasteboard.setContents(paste)
+  app = hs.application.frontmostApplication()
+  app:selectMenuItem({"Edit", "Paste"})
+end
 end
 
 

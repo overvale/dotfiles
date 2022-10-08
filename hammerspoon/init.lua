@@ -83,13 +83,6 @@ function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
 function snipOrgDate() hs.eventtap.keyStrokes(os.date("<%Y-%m-%d %a>")) end
 function snipISODate() hs.eventtap.keyStrokes(os.date("%Y-%m-%d")) end
 
-function openWorkApps() os.execute( "open -a Dropbox; open -a OneDrive; open -a Tailscale" ) end
-function killWorkApps() os.execute( "killall {Dropbox,Tailscale,OneDrive}" ) end
-
-function noteToWorkSelf()
-  os.execute( "open mailto:otaylor@outpost-vfx.com" )
-end
-
 function toggleTeamsMute()
    local teams = hs.application.find("com.microsoft.teams")
    hs.eventtap.keyStroke({"cmd","shift"}, "m", 0, teams)
@@ -153,6 +146,19 @@ function toggleDarkMode()
    else
       setDarkMode(true)
    end
+end
+
+
+-- Work
+-- ----------------------------------------------
+
+function openWorkApps() os.execute( "open -a Dropbox; open -a OneDrive; open -a Tailscale" ) end
+function killWorkApps() os.execute( "killall {Dropbox,Tailscale,OneDrive}" ) end
+function noteToWorkSelf() os.execute( "~/home/dot/bin/mail2self" ) end
+
+function openDropboxProject()
+   os.execute("osascript -e 'tell app \"Terminal\" to do script \"open-bid && exit\"'")
+   hs.application.launchOrFocus("Terminal")
 end
 
 
@@ -277,6 +283,7 @@ function myHammerMenuItem()
       { title = "Close Work Apps", fn = killWorkApps },
       { title = "Meeting Times", fn = meetingTimes },
       { title = "Mini Calendar", fn = miniCalendar },
+      { title = "Open from Dropbox...", fn = openDropboxProject },
       { title = "-" },
       { title = "Mail", disabled = true},
       { title = "Copy Mail Message URL", fn = copyMailURL},
@@ -383,6 +390,7 @@ local alphaHotkeys = {
    h = reloadHammerspoon,
    p = bbeditScratch,
    n = noteToWorkSelf,
+   o = openDropboxProject,
 }
 
 local hyperHotkeys = {

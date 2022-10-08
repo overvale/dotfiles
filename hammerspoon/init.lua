@@ -314,6 +314,32 @@ local iconH = [[ASCII:
 myHammerMenu:setIcon(iconH)
 
 
+-- Window Moving
+-- -----------------------------------------------
+
+function moveWindow(dir)
+   -- Reposition the current window to the left, right, top, or bottom of screen.
+   local thiswindow = hs.window.frontmostWindow()
+   local loc = thiswindow:frame()
+   local thisscreen = thiswindow:screen()
+   local screenrect = thisscreen:frame()
+   if dir == 'left' then
+      loc.x = 0
+   elseif dir == 'right' then
+      loc.x = screenrect.w - loc.w
+   elseif dir == 'up' then
+      loc.y = 0
+   elseif dir == 'down' then
+      loc.y = screenrect.h - loc.h
+   end
+   thiswindow:setFrame(loc)
+end
+
+function wm_left()        moveWindow('left') end
+function wm_right()       moveWindow('right') end
+function wm_center()      hs.window.focusedWindow():centerOnScreen() end
+
+
 -- Misc Spoons
 -- -----------------------------------------------
 
@@ -363,6 +389,9 @@ local hyperHotkeys = {
    t = snipISODate,
    m = toggleTeamsMute,
    d = toggleDarkMode,
+   j = wm_left,
+   k = wm_center,
+   l = wm_right,
 }
 
 for key, fn  in pairs(alphaHotkeys) do hs.hotkey.bind(alpha, key, fn) end

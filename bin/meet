@@ -1,0 +1,39 @@
+#!/bin/bash
+# ig20180122 - displays meeting options in other time zones
+# First, print a calendar
+cal
+# set the following variable to the start and end of your working day
+myday="9 17" # start and end time, with one space
+# set the local TZ
+myplace='America/Los_Angeles'
+# set the most common places
+place[1]='America/Montreal'
+place[2]='Europe/London'
+# add cities using place[5], etc.
+# set the date format for search
+dfmt="%m-%d" # date format for meeting date
+hfmt="+%B %e, %Y" # date format for the header
+# no need to change onwards
+format1="%-12s " # Increase if your cities are large
+format2="%02d "
+mdate=$1
+if [[ "$1" == "" ]]; then mdate=`date "+$dfmt"`; fi
+date -j -f "$dfmt" "$hfmt" "$mdate"
+here=`TZ=$myplace date -j -f "$dfmt" +%z  "$mdate"`
+here=$((`printf "%g" $here` / 100))
+printf "$format1" "Los Angeles" 
+printf "$format2" `seq $myday` 
+printf "\n"
+for i in `seq 1 "${#place[*]}"`
+do
+    there=`TZ=${place[$i]} date -j -f "$dfmt" +%z  "$mdate"`
+    there=$((`printf "%g" $there` / 100))
+    city[$i]=${place[$i]/*\//}
+    tdiff[$i]=$(($there - $here))
+    printf "$format1" ${city[$i]}
+    for j in `seq $myday`
+    do
+        printf "$format2" $(($j+${tdiff[$i]}))
+    done
+    printf "(%+d)\n" ${tdiff[$i]}
+done

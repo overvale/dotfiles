@@ -354,13 +354,6 @@ anycomplete = hs.loadSpoon("Anycomplete")
 anycomplete.engine = "duckduckgo"
 anycomplete.bindHotkeys()
 
-hs.loadSpoon("ClipboardTool")
-spoon.ClipboardTool:bindHotkeys( { show_clipboard = {alpha, "v"} })
-spoon.ClipboardTool.paste_on_select = true
-spoon.ClipboardTool.show_in_menubar = false
-spoon.ClipboardTool.show_copied_alert = false
-spoon.ClipboardTool:start()
-
 hs.loadSpoon("MiroWindowsManager")
 spoon.MiroWindowsManager:bindHotkeys({
 	up         = {hyper, "up"},

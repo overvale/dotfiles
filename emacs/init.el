@@ -1950,6 +1950,27 @@ With a prefix argument, copy the link to the online manual instead."
           try-expand-dabbrev-all-buffers
           try-expand-dabbrev-from-kill)))
 
+(load-package 'rect
+  ;; Making rectangle mode easier...
+  :eval
+  (transient-define-prefix rectangle-transient ()
+    :transient-suffix 'transient--do-stay
+    ["Rectangles!"
+     ["Movement"
+      ("p" "↑" rectangle-previous-line)
+      ("n" "↓" rectangle-next-line)
+      ("b" "←" rectangle-backward-char)
+      ("f" "→" rectangle-forward-char)]
+     ["Actions"
+      ("w" "copy" copy-rectangle-as-kill)
+      ("y" "yank" yank-rectangle)
+      ("k" "kill" kill-rectangle)
+      ("u" "undo" undo-only)]
+     [("o" "open" open-rectangle)
+      ("t" "type" string-rectangle)
+      ("c" "clear" clear-rectangle)]
+     [("N" "Number-lines" rectangle-number-lines)
+      ("e" "exchange-point" rectangle-exchange-point-and-mark)]]))
 
 ;;; Mail
 

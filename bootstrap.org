@@ -145,10 +145,9 @@ they can run background processes, others complain every launch but work just
 fine.
 
 - BBEdit
-- Emacs (the [[https://github.com/railwaycat/homebrew-emacsmacport][correct version]], [[https://bitbucket.org/mituharu/emacs-mac/raw/892fa7b2501a403b4f0aea8152df9d60d63f391a/README-mac][more info]])
+- Emacs (the [[https://github.com/railwaycat/homebrew-emacsmacport][correct version]], [[https://bitbucket.org/mituharu/emacs-mac/src/master/README-mac][more info]])
 - Firefox
 - Hammerspoon
-- Microsoft Excel
 - Monodraw
 - Tot
 - Transmit

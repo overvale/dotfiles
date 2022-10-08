@@ -218,50 +218,6 @@ ReadlineKeymap:bind({'alt'},  'b', moveWordBack)
 ReadlineKeymap:bind({'alt'},  'f', moveWordForward)
 
 
--- Tot Keymap
--- -----------------------------------------------
-
-local totKeymap = hs.hotkey.modal.new()
-
-function snipCircle() hs.eventtap.keyStrokes("○") end
-
-function indentLine()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
-   hs.eventtap.event.newKeyEvent('a', true):post()
-   hs.eventtap.event.newKeyEvent('a', false):post()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
-
-   hs.eventtap.event.newKeyEvent('tab', true):post()
-   hs.eventtap.event.newKeyEvent('tab', false):post()
-
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
-   hs.eventtap.event.newKeyEvent('e', true):post()
-   hs.eventtap.event.newKeyEvent('e', false):post()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
-end
-
-function dedentLine()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
-   hs.eventtap.event.newKeyEvent('a', true):post()
-   hs.eventtap.event.newKeyEvent('a', false):post()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
-
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
-   hs.eventtap.event.newKeyEvent('d', true):post()
-   hs.eventtap.event.newKeyEvent('d', false):post()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
-
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, true):post()
-   hs.eventtap.event.newKeyEvent('e', true):post()
-   hs.eventtap.event.newKeyEvent('e', false):post()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.ctrl, false):post()
-end
-
-totKeymap:bind({'alt', 'shift'}, '0', snipCircle)
-totKeymap:bind({'cmd'}, ']', indentLine)
-totKeymap:bind({'cmd'}, '[', dedentLine)
-
-
 -- Activate App-Specific Keymaps
 -- ------------------------------------------------
 
@@ -272,13 +228,6 @@ local function setUserKeymaps()
       else
          -- print('Readline keymap entered.')
          ReadlineKeymap:enter()
-      end
-      if appTitle() == "Tot" then
-         -- print('Tot keymap entered.')
-         totKeymap:enter()
-      else
-         -- print('Tot keymap exited.')
-         totKeymap:exit()
       end
 end
 

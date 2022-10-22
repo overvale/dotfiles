@@ -132,6 +132,47 @@ function searchIMDB()
    end
 end
 
+function chooseMenuItem()
+   -- from: https://github.com/brokensandals/MenuChooser.spoon
+   local app = hs.application.frontmostApplication()
+   app:getMenuItems(function(menu)
+         local choices = {}
+         function findChoices(pathstr, path, list)
+            for _,item in pairs(list) do
+               local newpathstr
+               if pathstr then
+                  newpathstr = pathstr .. ' -> ' .. (item.AXTitle or '')
+               else
+                  newpathstr = item.AXTitle
+               end
+               local newpath = {}
+               for i,title in ipairs(path) do
+                  newpath[i] = title
+               end
+               newpath[#newpath+1] = item.AXTitle
+               if item.AXChildren then
+                  findChoices(newpathstr, newpath, item.AXChildren[1])
+               elseif item.AXEnabled and item.AXTitle and (not (item.AXTitle == '')) then
+                  choices[#choices+1] = {
+                     text = newpathstr,
+                     path = newpath
+                  }
+               end
+            end
+         end
+         findChoices(nil, {}, menu)
+         local chooser = hs.chooser.new(function(selected)
+               if selected then
+                  app:selectMenuItem(selected.path)
+               end
+         end)
+         chooser:choices(choices)
+         chooser:placeholderText('menu item')
+         chooser:show()
+   end)
+end
+
+
 
 -- MacOS System Stuff
 -- ----------------------------------------------
@@ -415,6 +456,7 @@ local hyperHotkeys = {
    j = wm_left,
    k = wm_center,
    l = wm_right,
+   p = chooseMenuItem,
 }
 
 for key, fn  in pairs(alphaHotkeys) do hs.hotkey.bind(alpha, key, fn) end

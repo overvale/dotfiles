@@ -379,6 +379,31 @@ end
 hs.hotkey.bind({'alt', 'cmd'}, 'm', toggleMenubar)
 
 
+-- Mail Keys
+-- ---------------------------------------------
+-- This creates a keymap you can activate/deactivate on demand,
+-- bind keys to, and it displays a status message in the menubar.
+
+-- Build a keymap to bind into
+mailKeys = hs.hotkey.modal.new()
+
+function mailKeys:entered()
+   mailKeysMenuItem = hs.menubar.new():setTitle("Mail Keys Mode")
+   mailKeysMenuItem:setTooltip("Press Escape to deactivate.")
+end
+
+function mailKeys:exited()
+   mailKeysMenuItem:delete()
+end
+
+mailKeys:bind('', 'escape', function() mailKeys:exit() end)
+mailKeys:bind(hyper, 'm', function() mailKeys:exit() end)
+mailKeys:bind('', 'n', function() newMailMessage() mailKeys:exit() end)
+mailKeys:bind('', 'l', function() noteToWorkSelf() mailKeys:exit() end)
+
+hs.hotkey.bind(hyper, 'm', function() mailKeys:enter() end)
+
+
 -- Reload Config
 -- ----------------------------------------------
 

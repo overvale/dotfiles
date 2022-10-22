@@ -63,7 +63,6 @@ end
 -- and you'll run the 'genericSuccess' function.
 hs.urlevent.bind("success", genericSuccess)
 
-local reloadHammerspoon = function() hs.reload() end
 
 function bbeditScratch()
    os.execute( "osascript -e 'tell application \"BBEdit\" to (open scratchpad document) activate'" )
@@ -402,12 +401,27 @@ for key, app in pairs(applicationHotkeys) do
 end
 
 
--- Reload Notification
+-- Reload Config
 -- ----------------------------------------------
 
--- When this config is loaded, or reloaded, notify that it was done
--- successfully.
-notify("Hammerspoon", "Ready to Rock! 🤘")
+local reloadHammerspoon = function() hs.reload() end
+
+function reloadConfig(files)
+    doReload = false
+    for _,file in pairs(files) do
+        if file:sub(-4) == ".lua" then
+            doReload = true
+        end
+    end
+    if doReload then
+        hs.reload()
+    end
+end
+
+reloadWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/home/dot/hammerspoon/", reloadConfig):start()
+
+-- When this config is loaded, or reloaded, send notification.
+notify("Hammerspoon", "Config reloaded, ready to rock! 🤘")
 
 
 -- END HAMMERSPOON CONFIG --

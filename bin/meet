@@ -3,7 +3,7 @@
 # First, print a calendar
 cal
 # set the following variable to the start and end of your working day
-myday="9 17" # start and end time, with one space
+myday="8 17" # start and end time, with one space
 # set the local TZ
 myplace='America/Los_Angeles'
 # set the most common places

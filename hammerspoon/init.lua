@@ -93,7 +93,7 @@ function typeCurrentSafariURL()
 end
 
 
--- Toggle Dark Mode
+-- MacOS System Stuff
 -- ----------------------------------------------
 
 function darkModeStatus()
@@ -122,6 +122,12 @@ function toggleDarkMode()
    end
 end
 
+function toggleMenubar()
+   hs.applescript([[
+tell application "System Events"
+    tell dock preferences to set autohide menu bar to not autohide menu bar
+end tell]])
+end
 
 
 -- Private
@@ -368,6 +374,9 @@ for key, fn  in pairs(hyperHotkeys) do hs.hotkey.bind(hyper, key, fn) end
 for key, app in pairs(applicationHotkeys) do
    hs.hotkey.bind(alpha, key, function() hs.application.launchOrFocus(app) end)
 end
+
+-- Similar to binding to hide/show the Dock.
+hs.hotkey.bind({'alt', 'cmd'}, 'm', toggleMenubar)
 
 
 -- Reload Config

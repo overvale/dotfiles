@@ -23,7 +23,7 @@ local alpha = {'cmd', 'ctrl'}
 hs.window.animationDuration = 0
 
 
--- Misc Functions
+-- Utility Functions
 -- -----------------------------------------------
 
 local function appTitle()
@@ -32,21 +32,6 @@ local function appTitle()
    if app ~= nil then
       return app:title()
    end
-end
-
--- Copied from https://github.com/Hammerspoon/Spoons/blob/4224cddc344198e086715a7c24983f90ec0f32fc/Source/PopupTranslateSelection.spoon/init.lua
-function currentSelection()
-   local elem=hs.uielement.focusedElement()
-   local sel=nil
-   if elem then
-      sel=elem:selectedText()
-   end
-   if (not sel) or (sel == "") then
-      hs.eventtap.keyStroke({"cmd"}, "c")
-      hs.timer.usleep(20000)
-      sel=hs.pasteboard.getContents()
-   end
-   return (sel or "")
 end
 
 function notify(title, text)
@@ -63,6 +48,16 @@ end
 -- and you'll run the 'genericSuccess' function.
 hs.urlevent.bind("success", genericSuccess)
 
+function pastePlainText()
+  local paste = hs.pasteboard.readString()
+  hs.pasteboard.setContents(paste)
+  app = hs.application.frontmostApplication()
+  app:selectMenuItem({"Edit", "Paste"})
+end
+
+
+-- Misc Functions
+-- ------------------------------------------------
 
 function bbeditScratch()
    os.execute( "osascript -e 'tell application \"BBEdit\" to (open scratchpad document) activate'" )
@@ -81,26 +76,6 @@ function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end
 function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
 function snipOrgDate() hs.eventtap.keyStrokes(os.date("<%Y-%m-%d %a>")) end
 function snipISODate() hs.eventtap.keyStrokes(os.date("%Y-%m-%d")) end
-
-function toggleTeamsMute()
-   local teams = hs.application.find("com.microsoft.teams")
-   hs.eventtap.keyStroke({"cmd","shift"}, "m", 0, teams)
-end
-
-function meetingTimes()
-  os.execute( "/Users/oht/home/dot/bin/meet | open -tf" )
-end
-
-function miniCalendar()
-  os.execute( "cal -h | open -tf" )
-end
-
-function pastePlainText()
-  local paste = hs.pasteboard.readString()
-  hs.pasteboard.setContents(paste)
-  app = hs.application.frontmostApplication()
-  app:selectMenuItem({"Edit", "Paste"})
-end
 
 -- Rather than switch to Safari, copy the current URL, switch back to the previous app and paste,
 -- This is a function that fetches the current URL from Safari and types it
@@ -148,17 +123,11 @@ function toggleDarkMode()
 end
 
 
--- Work
+
+-- Private
 -- ----------------------------------------------
 
-function openWorkApps() os.execute( "open -a Dropbox; open -a OneDrive; open -a Tailscale" ) end
-function killWorkApps() os.execute( "killall {Dropbox,Tailscale,OneDrive}" ) end
-function noteToWorkSelf() os.execute( "~/home/dot/bin/mail2self" ) end
-
-function openDropboxProject()
-   os.execute("osascript -e 'tell app \"Terminal\" to do script \"open-bid && exit\"'")
-   hs.application.launchOrFocus("Terminal")
-end
+require("private")
 
 
 -- Readline Keymap

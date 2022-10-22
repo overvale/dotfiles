@@ -247,7 +247,9 @@ function myHammerMenuItem()
    local menuTable = {
       { title = "Dark/Light Mode", fn = toggleDarkMode },
       { title = "Open BBEdit Scratchpad", fn = bbeditScratch },
+      { title = "Open Console", fn = hs.openConsole},
       { title = "-" },
+      { title = "Type Safari URL", fn = typeCurrentSafariURL},
       { title = "Paste as Plain Text", fn = pastePlainText },
       { title = "Snippets", menu = snippetMenu },
       { title = "-" },
@@ -256,8 +258,8 @@ function myHammerMenuItem()
       { title = "Open Work Apps", fn = openWorkApps },
       { title = "Close Work Apps", fn = killWorkApps },
       { title = "Meeting Times", fn = meetingTimes },
-      { title = "Mini Calendar", fn = miniCalendar },
       { title = "Open from Dropbox...", fn = openDropboxProject },
+      { title = "New Pipeline Task", fn = newPipelineTask},
       { title = "-" },
       { title = "Mail", disabled = true},
       { title = "Copy Mail Message URL", fn = copyMailURL},
@@ -346,23 +348,21 @@ local applicationHotkeys = {
    m = 'Mail',
    c = 'Calendar',
    b = 'BBEdit',
+   e = 'Emacs',
    s = 'Safari',
    a = 'Music',
-   u = 'Terminal',
+   t = 'Terminal',
    r = 'Reminders',
-   t = 'Tot',
 }
 
 local alphaHotkeys = {
    h = reloadHammerspoon,
    p = bbeditScratch,
-   n = noteToWorkSelf,
    o = openDropboxProject,
 }
 
 local hyperHotkeys = {
    t = snipISODate,
-   m = toggleTeamsMute,
    d = toggleDarkMode,
    j = wm_left,
    k = wm_center,

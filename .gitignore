@@ -5,4 +5,5 @@ plug.vim
 plug.vim.old
 bin/textplay
 hammerspoon/Spoons
+hammerspoon/private.lua
 mail2self

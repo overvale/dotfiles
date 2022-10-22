@@ -92,6 +92,46 @@ function typeCurrentSafariURL()
     end
 end
 
+function searchYouTube()
+   button, message = hs.dialog.textPrompt("Youtube", "Search YouTube for:", "", "Search", "Cancel")
+   if button == 'Cancel' then
+      return
+   else
+      search = hs.http.encodeForQuery(message)
+      os.execute("open http://www.youtube.com/results?search_query=" .. search)
+   end
+end
+
+function searchGitHub()
+   button, message = hs.dialog.textPrompt("GitHub", "Search GitHub for:", "", "Search", "Cancel")
+   if button == 'Cancel' then
+      return
+   else
+      search = hs.http.encodeForQuery(message)
+      os.execute("open https://github.com/search?q=" .. search)
+   end
+end
+
+function searchWikipedia()
+   button, message = hs.dialog.textPrompt("Wikipedia", "Search Wikipedia for:", "", "Search", "Cancel")
+   if button == 'Cancel' then
+      return
+   else
+      search = hs.http.encodeForQuery(message)
+      os.execute("open https://en.wikipedia.org/w/index.php?search=" .. search)
+   end
+end
+
+function searchIMDB()
+   button, message = hs.dialog.textPrompt("IMDB", "Search IMDB for:", "", "Search", "Cancel")
+   if button == 'Cancel' then
+      return
+   else
+      search = hs.http.encodeForQuery(message)
+      os.execute("open https://www.imdb.com/find?q=" .. search)
+   end
+end
+
 
 -- MacOS System Stuff
 -- ----------------------------------------------
@@ -244,10 +284,17 @@ function myHammerMenuItem()
       { title = "<YYYY-MM-DD Day>", fn = snipOrgDate },
       { title = "YYYY-MM-DD", fn = snipISODate },
    }
+   local searchMenu = {
+      { title = "Search YouTube", fn = searchYouTube },
+      { title = "Search GitHub", fn = searchGitHub },
+      { title = "Search Wikipedia", fn = searchWikipedia },
+      { title = "Search IMDB", fn = searchIMDB },
+   }
    local menuTable = {
       { title = "Dark/Light Mode", fn = toggleDarkMode },
       { title = "Open BBEdit Scratchpad", fn = bbeditScratch },
       { title = "Open Console", fn = hs.openConsole},
+      { title = "Search", menu = searchMenu },
       { title = "-" },
       { title = "Type Safari URL", fn = typeCurrentSafariURL},
       { title = "Paste as Plain Text", fn = pastePlainText },

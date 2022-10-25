@@ -49,10 +49,10 @@ end
 hs.urlevent.bind("success", genericSuccess)
 
 function pastePlainText()
-  local paste = hs.pasteboard.readString()
-  hs.pasteboard.setContents(paste)
-  app = hs.application.frontmostApplication()
-  app:selectMenuItem({"Edit", "Paste"})
+   p = hs.pasteboard.readDataForUTI(nil, "public.utf8-plain-text")
+   hs.pasteboard.setContents(p)
+   app = hs.application.frontmostApplication()
+   app:selectMenuItem({"Edit", "Paste"})
 end
 
 
@@ -446,7 +446,6 @@ local applicationHotkeys = {
 
 local alphaHotkeys = {
    h = reloadHammerspoon,
-   p = bbeditScratch,
    o = openDropboxProject,
 }
 
@@ -456,7 +455,7 @@ local hyperHotkeys = {
    j = wm_left,
    k = wm_center,
    l = wm_right,
-   p = chooseMenuItem,
+   v = pastePlainText,
 }
 
 for key, fn  in pairs(alphaHotkeys) do hs.hotkey.bind(alpha, key, fn) end
@@ -467,6 +466,8 @@ end
 
 -- Similar to binding to hide/show the Dock.
 hs.hotkey.bind({'alt', 'cmd'}, 'm', toggleMenubar)
+
+hs.hotkey.bind({'shift', 'cmd'}, 'p', chooseMenuItem)
 
 
 -- Mail Keys

@@ -149,7 +149,7 @@ function chooseMenuItem()
             for _,item in pairs(list) do
                local newpathstr
                if pathstr then
-                  newpathstr = pathstr .. ' > ' .. (item.AXTitle or '')
+                  newpathstr = pathstr .. ' › ' .. (item.AXTitle or '')
                else
                   newpathstr = item.AXTitle
                end
@@ -175,7 +175,8 @@ function chooseMenuItem()
                end
          end)
          chooser:choices(choices)
-         chooser:placeholderText('menu item')
+         chooser:placeholderText('Menu Item')
+         chooser:bgDark(true)
          chooser:show()
    end)
 end
@@ -359,6 +360,7 @@ oht.mxchooser:choices({
 })
 
 oht.mxchooser:placeholderText("M-x")
+oht.mxchooser:bgDark(true)
 
 hs.hotkey.bind(alpha, "x", function() oht.mxchooser:show() end)
 

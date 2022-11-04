@@ -144,7 +144,7 @@ function chooseMenuItem()
             for _,item in pairs(list) do
                local newpathstr
                if pathstr then
-                  newpathstr = pathstr .. ' -> ' .. (item.AXTitle or '')
+                  newpathstr = pathstr .. ' > ' .. (item.AXTitle or '')
                else
                   newpathstr = item.AXTitle
                end
@@ -482,6 +482,7 @@ spoon.MiroWindowsManager:bindHotkeys({
 
 local applicationHotkeys = {
    m = 'Mail',
+   n = 'Notes',
    c = 'Calendar',
    b = 'BBEdit',
    e = 'Emacs',
@@ -537,7 +538,7 @@ end
 mailKeys:bind('', 'escape', function() mailKeys:exit() end)
 mailKeys:bind(hyper, 'm', function() mailKeys:exit() end)
 mailKeys:bind('', 'n', function() newMailMessage() mailKeys:exit() end)
-mailKeys:bind('', 'l', function() noteToWorkSelf() mailKeys:exit() end)
+mailKeys:bind('', 'l', function() logbookEntry() mailKeys:exit() end)
 
 hs.hotkey.bind(hyper, 'm', function() mailKeys:enter() end)
 

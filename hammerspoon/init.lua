@@ -29,6 +29,11 @@ oht = {}
 -- Utility Functions
 -- -----------------------------------------------
 
+function oht.execute(x)
+   -- Executes the argument (string) as a function.
+   _G[x]()
+end
+
 local function appTitle()
    -- Return title of foreground app
    app = hs.application.frontmostApplication()

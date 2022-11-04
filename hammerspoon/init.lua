@@ -22,6 +22,9 @@ local alpha = {'cmd', 'ctrl'}
 
 hs.window.animationDuration = 0
 
+-- Personal namespace
+oht = {}
+
 
 -- Utility Functions
 -- -----------------------------------------------
@@ -309,6 +312,50 @@ local appWatcher = hs.application.watcher.new(appWatcherFunction)
 
 appWatcher:start()
 print('Application Watcher started.')
+
+
+-- M-x Anything
+-- ----------------------------------------------
+
+oht.mxchooser = hs.chooser.new(function(choice)
+      if not choice then
+         return
+      else
+         -- execute the choice as a callable function
+         _ENV[choice["func"]]()
+      end
+end)
+
+oht.mxchooser:choices({
+      {["text"] = "Open Rsync Backup Logs", ["func"] = "backupOpenLogs",},
+      {["text"] = "Open BBEdit Scratch", ["func"] = "bbeditScratch",},
+      {["text"] = "Choose Menu Item", ["func"] = "chooseMenuItem",},
+      {["text"] = "Copy Mail Message URL", ["func"] = "copyMailURL",},
+      {["text"] = "Kill Work Apps", ["func"] = "killWorkApps",},
+      {["text"] = "Show Meeting Times", ["func"] = "meetingTimes",},
+      {["text"] = "New Mail Message", ["func"] = "newMailMessage",},
+      {["text"] = "Note to Self", ["func"] = "noteToWorkSelf",},
+      {["text"] = "Open Dropbox Bid folder", ["func"] = "openDropboxProject",},
+      {["text"] = "Open Work Apps", ["func"] = "openWorkApps",},
+      {["text"] = "Paste as Plain Text", ["func"] = "pastePlainText",},
+      {["text"] = "Reload Hammerspoon", ["func"] = "reloadConfig",},
+      {["text"] = "Start Rsync Backup", ["func"] = "rsyncBackup",},
+      {["text"] = "Search GitHub", ["func"] = "searchGitHub",},
+      {["text"] = "Search IMDB", ["func"] = "searchIMDB",},
+      {["text"] = "Search Wikipedia", ["func"] = "searchWikipedia",},
+      {["text"] = "Search Youtube", ["func"] = "searchYouTube",},
+      {["text"] = "Snippet: ISO Date", ["func"] = "snipISODate",},
+      {["text"] = "Snippet: Org Mode Date", ["func"] = "snipOrgDate",},
+      {["text"] = "Snippet ¯\\_(ツ)_/¯", ["func"] = "snipShrug",},
+      {["text"] = "Snippet \"waving hands around\"", ["func"] = "snipWave",},
+      {["text"] = "Toggle Dark Mode", ["func"] = "toggleDarkMode",},
+      {["text"] = "Toggle MenuBar", ["func"] = "toggleMenubar",},
+      {["text"] = "Type Current Safari URL", ["func"] = "typeCurrentSafariURL",},
+})
+
+oht.mxchooser:placeholderText("M-x")
+
+hs.hotkey.bind(alpha, "x", function() oht.mxchooser:show() end)
 
 
 -- My Hammerspoon Menubar Item

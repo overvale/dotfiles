@@ -67,6 +67,10 @@ end
 -- Misc Functions
 -- ------------------------------------------------
 
+function editHammerspoonInit()
+   os.execute( "open -a Emacs ~/home/dot/hammerspoon/init.lua" )
+end
+
 function bbeditScratch()
    os.execute( "osascript -e 'tell application \"BBEdit\" to (open scratchpad document) activate'" )
 end
@@ -183,6 +187,12 @@ function chooseMenuItem()
          chooser:bgDark(true)
          chooser:show()
    end)
+end
+
+function oht.newFinderWindow()
+   finder = hs.appfinder.appFromName("Finder")
+   hs.osascript.applescript('tell application "Finder" to make new Finder window')
+   finder:activate()
 end
 
 
@@ -506,6 +516,7 @@ local applicationHotkeys = {
 local alphaHotkeys = {
    h = reloadHammerspoon,
    o = openDropboxProject,
+   f = oht.newFinderWindow,
 }
 
 local hyperHotkeys = {

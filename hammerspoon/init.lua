@@ -101,6 +101,7 @@ function typeCurrentSafariURL()
 end
 
 function searchYouTube()
+   hs.focus()
    button, message = hs.dialog.textPrompt("Youtube", "Search YouTube for:", "", "Search", "Cancel")
    if button == 'Cancel' then
       return
@@ -111,6 +112,7 @@ function searchYouTube()
 end
 
 function searchGitHub()
+   hs.focus()
    button, message = hs.dialog.textPrompt("GitHub", "Search GitHub for:", "", "Search", "Cancel")
    if button == 'Cancel' then
       return
@@ -121,6 +123,7 @@ function searchGitHub()
 end
 
 function searchWikipedia()
+   hs.focus()
    button, message = hs.dialog.textPrompt("Wikipedia", "Search Wikipedia for:", "", "Search", "Cancel")
    if button == 'Cancel' then
       return
@@ -131,6 +134,7 @@ function searchWikipedia()
 end
 
 function searchIMDB()
+   hs.focus()
    button, message = hs.dialog.textPrompt("IMDB", "Search IMDB for:", "", "Search", "Cancel")
    if button == 'Cancel' then
       return

@@ -341,117 +341,54 @@ oht.mxchooser = hs.chooser.new(function(choice)
       if not choice then
          return
       else
-         -- execute the choice as a callable function
-         _ENV[choice["func"]]()
+         if choice["type"] == "app" then
+            os.execute("open -a" .. choice["arg"])
+         elseif choice["type"] == "path" then
+            os.execute("open " .. choice["arg"])
+         elseif choice["type"] == "func" then
+            _ENV[choice["arg"]]()
+         end
       end
 end)
 
 oht.mxchooser:choices({
-      {["text"] = "Open Rsync Backup Logs", ["func"] = "backupOpenLogs",},
-      {["text"] = "Open BBEdit Scratch", ["func"] = "bbeditScratch",},
-      {["text"] = "Choose Menu Item", ["func"] = "chooseMenuItem",},
-      {["text"] = "Copy Mail Message URL", ["func"] = "copyMailURL",},
-      {["text"] = "Kill Work Apps", ["func"] = "killWorkApps",},
-      {["text"] = "Show Meeting Times", ["func"] = "meetingTimes",},
-      {["text"] = "New Mail Message", ["func"] = "newMailMessage",},
-      {["text"] = "Note to Self", ["func"] = "noteToWorkSelf",},
-      {["text"] = "Open Dropbox Bid folder", ["func"] = "openDropboxProject",},
-      {["text"] = "Open Work Apps", ["func"] = "openWorkApps",},
-      {["text"] = "Paste as Plain Text", ["func"] = "pastePlainText",},
-      {["text"] = "Reload Hammerspoon", ["func"] = "reloadConfig",},
-      {["text"] = "Start Rsync Backup", ["func"] = "rsyncBackup",},
-      {["text"] = "Search GitHub", ["func"] = "searchGitHub",},
-      {["text"] = "Search IMDB", ["func"] = "searchIMDB",},
-      {["text"] = "Search Wikipedia", ["func"] = "searchWikipedia",},
-      {["text"] = "Search Youtube", ["func"] = "searchYouTube",},
-      {["text"] = "Snippet: ISO Date", ["func"] = "snipISODate",},
-      {["text"] = "Snippet: Org Mode Date", ["func"] = "snipOrgDate",},
-      {["text"] = "Snippet ¯\\_(ツ)_/¯", ["func"] = "snipShrug",},
-      {["text"] = "Snippet \"waving hands around\"", ["func"] = "snipWave",},
-      {["text"] = "Toggle Dark Mode", ["func"] = "toggleDarkMode",},
-      {["text"] = "Toggle MenuBar", ["func"] = "toggleMenubar",},
-      {["text"] = "Type Current Safari URL", ["func"] = "typeCurrentSafariURL",},
+      {["type"] = "path", ["text"] = "New Finder Window", ["arg"] = "newFinderWindow",},
+      {["type"] = "path", ["text"] = "Desktop", ["arg"] = "~/Desktop",},
+      {["type"] = "path", ["text"] = "Downloads", ["arg"] = "~/Downloads",},
+      {["type"] = "path", ["text"] = "Home", ["arg"] = "~/home",},
+      {["type"] = "path", ["text"] = "iCloud Documents", ["arg"] = "~/Library/Mobile Documents/com~apple~CloudDocs/Oliver",},
+      {["type"] = "app",  ["text"] = "Safari", ["arg"] = "Safari",},
+      {["type"] = "func", ["text"] = "Edit Hammerspoon Config", ["arg"] = "editHammerspoonInit",},
+      {["type"] = "func", ["text"] = "Open Rsync Backup Logs", ["arg"] = "backupOpenLogs",},
+      {["type"] = "func", ["text"] = "Open BBEdit Scratch", ["arg"] = "bbeditScratch",},
+      {["type"] = "func", ["text"] = "Choose Menu Item", ["arg"] = "chooseMenuItem",},
+      {["type"] = "func", ["text"] = "Copy Mail Message URL", ["arg"] = "copyMailURL",},
+      {["type"] = "func", ["text"] = "Kill Work Apps", ["arg"] = "killWorkApps",},
+      {["type"] = "func", ["text"] = "Show Meeting Times", ["arg"] = "meetingTimes",},
+      {["type"] = "func", ["text"] = "New Mail Message", ["arg"] = "newMailMessage",},
+      {["type"] = "func", ["text"] = "Open Dropbox Bid folder", ["arg"] = "openDropboxProject",},
+      {["type"] = "func", ["text"] = "Open Work Apps", ["arg"] = "openWorkApps",},
+      {["type"] = "func", ["text"] = "Paste as Plain Text", ["arg"] = "pastePlainText",},
+      {["type"] = "func", ["text"] = "Reload Hammerspoon", ["arg"] = "reloadConfig",},
+      {["type"] = "func", ["text"] = "Start Rsync Backup", ["arg"] = "rsyncBackup",},
+      {["type"] = "func", ["text"] = "Search GitHub", ["arg"] = "searchGitHub",},
+      {["type"] = "func", ["text"] = "Search IMDB", ["arg"] = "searchIMDB",},
+      {["type"] = "func", ["text"] = "Search Wikipedia", ["arg"] = "searchWikipedia",},
+      {["type"] = "func", ["text"] = "Search Youtube", ["arg"] = "searchYouTube",},
+      {["type"] = "func", ["text"] = "Snippet: ISO Date", ["arg"] = "snipISODate",},
+      {["type"] = "func", ["text"] = "Snippet: Org Mode Date", ["arg"] = "snipOrgDate",},
+      {["type"] = "func", ["text"] = "Snippet ¯\\_(ツ)_/¯", ["arg"] = "snipShrug",},
+      {["type"] = "func", ["text"] = "Snippet \"waving hands around\"", ["arg"] = "snipWave",},
+      {["type"] = "func", ["text"] = "Toggle Dark Mode", ["arg"] = "toggleDarkMode",},
+      {["type"] = "func", ["text"] = "Toggle MenuBar", ["arg"] = "toggleMenubar",},
+      {["type"] = "func", ["text"] = "Type Current Safari URL", ["arg"] = "typeCurrentSafariURL",},
+      {["type"] = "func", ["text"] = "Type Execs + MDs + EPs email addresses", ["arg"] = "typeExecMDsEPs",},
 })
 
-oht.mxchooser:placeholderText("M-x")
+oht.mxchooser:placeholderText("M-x Hammerspoon")
 oht.mxchooser:bgDark(true)
 
 hs.hotkey.bind(alpha, "x", function() oht.mxchooser:show() end)
-
-
--- My Hammerspoon Menubar Item
--- ----------------------------------------------
-
--- Name the menubar item
-local myHammerMenu = hs.menubar.new()
-
--- Build the actual menubar item drop-down
-function myHammerMenuItem()
-   local snippetMenu = {
-      { title = "waving hands around", fn = snipWave },
-      { title = " ¯\\_(ツ)_/¯", fn = snipShrug },
-      { title = "<YYYY-MM-DD Day>", fn = snipOrgDate },
-      { title = "YYYY-MM-DD", fn = snipISODate },
-   }
-   local searchMenu = {
-      { title = "Search YouTube", fn = searchYouTube },
-      { title = "Search GitHub", fn = searchGitHub },
-      { title = "Search Wikipedia", fn = searchWikipedia },
-      { title = "Search IMDB", fn = searchIMDB },
-   }
-   local menuTable = {
-      { title = "Open Console", fn = hs.openConsole},
-      { title = "Search", menu = searchMenu },
-      { title = "-" },
-      { title = "Dark/Light Mode", fn = toggleDarkMode },
-      { title = "Open BBEdit Scratchpad", fn = bbeditScratch },
-      { title = "Type Safari URL", fn = typeCurrentSafariURL},
-      { title = "Paste as Plain Text", fn = pastePlainText },
-      { title = "-" },
-      { title = "Snippets", menu = snippetMenu },
-      { title = "-" },
-      { title = "Outpost", disabled = true },
-      { title = "Note to Self", fn = noteToWorkSelf },
-      { title = "Open Work Apps", fn = openWorkApps },
-      { title = "Close Work Apps", fn = killWorkApps },
-      { title = "Meeting Times", fn = meetingTimes },
-      { title = "Open from Dropbox...", fn = openDropboxProject },
-      { title = "New Pipeline Task", fn = newPipelineTask},
-      { title = "-" },
-      { title = "Mail", disabled = true},
-      { title = "New Mail Message", fn = newMailMessage },
-      { title = "Copy Mail Message URL", fn = copyMailURL},
-      { title = "-" },
-      { title = "Rsync Backups", disabled = true },
-      { title = "Rsync to NAS", fn = rsyncBackup },
-      { title = "Open Logs", fn = backupOpenLogs },
-   }
-   myHammerMenu:setMenu(menuTable)
-end
-
--- Add the menubar item to the menubar
-myHammerMenuItem()
-
-local iconH = [[ASCII:
-1.............1
-7.............5
-...............
-...............
-....AD...FI....
-...............
-...............
-....K.....L....
-....N.....M....
-...............
-...............
-....BC...GH....
-...............
-...............
-7.............5
-3.............3
-]]
-
-myHammerMenu:setIcon(iconH)
 
 
 -- Window Moving
@@ -537,7 +474,7 @@ end
 -- Similar to binding to hide/show the Dock.
 hs.hotkey.bind({'alt', 'cmd'}, 'm', toggleMenubar)
 
-hs.hotkey.bind({'shift', 'cmd'}, 'p', chooseMenuItem)
+hs.hotkey.bind({'shift', 'cmd'}, 'k', chooseMenuItem)
 
 
 -- Mail Keys

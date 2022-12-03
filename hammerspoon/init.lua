@@ -291,8 +291,7 @@ end
 local function appWatcherFunction(appName, eventType, appObject)
    if (eventType == hs.application.watcher.activated) then
       setUserKeymaps()
-      if (appName == "Finder") then
-         -- Bring all Finder windows forward when one gets activated
+      if (appName == "Microsoft Teams") then
          appObject:selectMenuItem({"Window", "Bring All to Front"})
       end
    end

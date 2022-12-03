@@ -451,29 +451,35 @@ hs.hotkey.bind(power, 'k', chooseMenuItem)
 
 
 
--- Mail Keys
+-- Custom Modal Keymap
 -- ---------------------------------------------
--- This creates a keymap you can activate/deactivate on demand,
--- bind keys to, and it displays a status message in the menubar.
 
--- Build a keymap to bind into
-mailKeys = hs.hotkey.modal.new()
+-- Create the model keymap to bind inside of
+oht.myKeys = hs.hotkey.modal.new()
 
-function mailKeys:entered()
-   mailKeysMenuItem = hs.menubar.new():setTitle("Mail Keys Mode")
-   mailKeysMenuItem:setTooltip("Press Escape to deactivate.")
+-- Create the menubar item
+function oht.myKeys:entered()
+   myKeysMenuItem = hs.menubar.new():setTitle("Oliver's Keymap!")
+   myKeysMenuItem:setTooltip("Press Escape to deactivate.")
 end
 
-function mailKeys:exited()
-   mailKeysMenuItem:delete()
+-- Remove the menu item
+function oht.myKeys:exited()
+   myKeysMenuItem:delete()
 end
 
-mailKeys:bind('', 'escape', function() mailKeys:exit() end)
-mailKeys:bind(hyper, 'm', function() mailKeys:exit() end)
-mailKeys:bind('', 'n', function() newMailMessage() mailKeys:exit() end)
-mailKeys:bind('', 'l', function() logbookEntry() mailKeys:exit() end)
+-- And you need a way to activate the keymap
+hs.hotkey.bind(power, 'space', function() oht.myKeys:enter() end)
 
-hs.hotkey.bind(hyper, 'm', function() mailKeys:enter() end)
+-- You need a way to exit the keymap
+-- And you should prevent recursion
+oht.myKeys:bind('', 'escape', function() oht.myKeys:exit() end)
+oht.myKeys:bind(power, 'space', function() oht.myKeys:exit() end)
+
+-- Now bind keys into the map
+oht.myKeys:bind('', 'return', function() typeHolidayFollowup() oht.myKeys:exit() end)
+oht.myKeys:bind('', 'n',      function() newMailMessage()      oht.myKeys:exit() end)
+oht.myKeys:bind('', 'l',      function() logbookEntry()        oht.myKeys:exit() end)
 
 
 -- Reload Config

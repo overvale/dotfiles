@@ -56,19 +56,19 @@ end
 -- and you'll run the 'genericSuccess' function.
 hs.urlevent.bind("success", genericSuccess)
 
-function pastePlainText()
-   p = hs.pasteboard.readDataForUTI(nil, "public.utf8-plain-text")
-   hs.pasteboard.setContents(p)
-   app = hs.application.frontmostApplication()
-   app:selectMenuItem({"Edit", "Paste"})
-end
-
 
 -- Misc Functions
 -- ------------------------------------------------
 
 function editHammerspoonInit()
    os.execute( "open -a Emacs ~/home/dot/hammerspoon/init.lua" )
+end
+
+function pastePlainText()
+   p = hs.pasteboard.readDataForUTI(nil, "public.utf8-plain-text")
+   hs.pasteboard.setContents(p)
+   app = hs.application.frontmostApplication()
+   app:selectMenuItem({"Edit", "Paste"})
 end
 
 function bbeditScratch()
@@ -352,37 +352,38 @@ oht.mxchooser = hs.chooser.new(function(choice)
 end)
 
 oht.mxchooser:choices({
-      {["type"] = "path", ["text"] = "New Finder Window", ["arg"] = "newFinderWindow",},
-      {["type"] = "path", ["text"] = "Desktop", ["arg"] = "~/Desktop",},
-      {["type"] = "path", ["text"] = "Downloads", ["arg"] = "~/Downloads",},
-      {["type"] = "path", ["text"] = "Home", ["arg"] = "~/home",},
-      {["type"] = "path", ["text"] = "iCloud Documents", ["arg"] = "~/Library/Mobile Documents/com~apple~CloudDocs/Oliver",},
-      {["type"] = "app",  ["text"] = "Safari", ["arg"] = "Safari",},
-      {["type"] = "func", ["text"] = "Edit Hammerspoon Config", ["arg"] = "editHammerspoonInit",},
-      {["type"] = "func", ["text"] = "Open Rsync Backup Logs", ["arg"] = "backupOpenLogs",},
-      {["type"] = "func", ["text"] = "Open BBEdit Scratch", ["arg"] = "bbeditScratch",},
-      {["type"] = "func", ["text"] = "Choose Menu Item", ["arg"] = "chooseMenuItem",},
-      {["type"] = "func", ["text"] = "Copy Mail Message URL", ["arg"] = "copyMailURL",},
-      {["type"] = "func", ["text"] = "Kill Work Apps", ["arg"] = "killWorkApps",},
-      {["type"] = "func", ["text"] = "Show Meeting Times", ["arg"] = "meetingTimes",},
-      {["type"] = "func", ["text"] = "New Mail Message", ["arg"] = "newMailMessage",},
-      {["type"] = "func", ["text"] = "Open Dropbox Bid folder", ["arg"] = "openDropboxProject",},
-      {["type"] = "func", ["text"] = "Open Work Apps", ["arg"] = "openWorkApps",},
-      {["type"] = "func", ["text"] = "Paste as Plain Text", ["arg"] = "pastePlainText",},
-      {["type"] = "func", ["text"] = "Reload Hammerspoon", ["arg"] = "reloadConfig",},
-      {["type"] = "func", ["text"] = "Start Rsync Backup", ["arg"] = "rsyncBackup",},
-      {["type"] = "func", ["text"] = "Search GitHub", ["arg"] = "searchGitHub",},
-      {["type"] = "func", ["text"] = "Search IMDB", ["arg"] = "searchIMDB",},
-      {["type"] = "func", ["text"] = "Search Wikipedia", ["arg"] = "searchWikipedia",},
-      {["type"] = "func", ["text"] = "Search Youtube", ["arg"] = "searchYouTube",},
-      {["type"] = "func", ["text"] = "Snippet: ISO Date", ["arg"] = "snipISODate",},
-      {["type"] = "func", ["text"] = "Snippet: Org Mode Date", ["arg"] = "snipOrgDate",},
-      {["type"] = "func", ["text"] = "Snippet ¯\\_(ツ)_/¯", ["arg"] = "snipShrug",},
-      {["type"] = "func", ["text"] = "Snippet \"waving hands around\"", ["arg"] = "snipWave",},
-      {["type"] = "func", ["text"] = "Toggle Dark Mode", ["arg"] = "toggleDarkMode",},
-      {["type"] = "func", ["text"] = "Toggle MenuBar", ["arg"] = "toggleMenubar",},
-      {["type"] = "func", ["text"] = "Type Current Safari URL", ["arg"] = "typeCurrentSafariURL",},
+      {["type"] = "path", ["text"] = "New Finder Window",                      ["arg"] = "newFinderWindow",},
+      {["type"] = "path", ["text"] = "Desktop",                                ["arg"] = "~/Desktop",},
+      {["type"] = "path", ["text"] = "Downloads",                              ["arg"] = "~/Downloads",},
+      {["type"] = "path", ["text"] = "Home",                                   ["arg"] = "~/home",},
+      {["type"] = "path", ["text"] = "iCloud Documents",                       ["arg"] = "~/Library/Mobile Documents/com~apple~CloudDocs/Oliver",},
+      {["type"] = "app",  ["text"] = "Safari",                                 ["arg"] = "Safari",},
+      {["type"] = "func", ["text"] = "Edit Hammerspoon Config",                ["arg"] = "editHammerspoonInit",},
+      {["type"] = "func", ["text"] = "Open Rsync Backup Logs",                 ["arg"] = "backupOpenLogs",},
+      {["type"] = "func", ["text"] = "Open BBEdit Scratch",                    ["arg"] = "bbeditScratch",},
+      {["type"] = "func", ["text"] = "Choose Menu Item",                       ["arg"] = "chooseMenuItem",},
+      {["type"] = "func", ["text"] = "Copy Mail Message URL",                  ["arg"] = "copyMailURL",},
+      {["type"] = "func", ["text"] = "Kill Work Apps",                         ["arg"] = "killWorkApps",},
+      {["type"] = "func", ["text"] = "Show Meeting Times",                     ["arg"] = "meetingTimes",},
+      {["type"] = "func", ["text"] = "New Mail Message",                       ["arg"] = "newMailMessage",},
+      {["type"] = "func", ["text"] = "Open Dropbox Bid folder",                ["arg"] = "openDropboxProject",},
+      {["type"] = "func", ["text"] = "Open Work Apps",                         ["arg"] = "openWorkApps",},
+      {["type"] = "func", ["text"] = "Paste as Plain Text",                    ["arg"] = "pastePlainText",},
+      {["type"] = "func", ["text"] = "Reload Hammerspoon",                     ["arg"] = "reloadConfig",},
+      {["type"] = "func", ["text"] = "Start Rsync Backup",                     ["arg"] = "rsyncBackup",},
+      {["type"] = "func", ["text"] = "Search GitHub",                          ["arg"] = "searchGitHub",},
+      {["type"] = "func", ["text"] = "Search IMDB",                            ["arg"] = "searchIMDB",},
+      {["type"] = "func", ["text"] = "Search Wikipedia",                       ["arg"] = "searchWikipedia",},
+      {["type"] = "func", ["text"] = "Search Youtube",                         ["arg"] = "searchYouTube",},
+      {["type"] = "func", ["text"] = "Snippet: ISO Date",                      ["arg"] = "snipISODate",},
+      {["type"] = "func", ["text"] = "Snippet: Org Mode Date",                 ["arg"] = "snipOrgDate",},
+      {["type"] = "func", ["text"] = "Snippet ¯\\_(ツ)_/¯",                    ["arg"] = "snipShrug",},
+      {["type"] = "func", ["text"] = "Snippet \"waving hands around\"",        ["arg"] = "snipWave",},
+      {["type"] = "func", ["text"] = "Toggle Dark Mode",                       ["arg"] = "toggleDarkMode",},
+      {["type"] = "func", ["text"] = "Toggle MenuBar",                         ["arg"] = "toggleMenubar",},
+      {["type"] = "func", ["text"] = "Type Current Safari URL",                ["arg"] = "typeCurrentSafariURL",},
       {["type"] = "func", ["text"] = "Type Execs + MDs + EPs email addresses", ["arg"] = "typeExecMDsEPs",},
+      {["type"] = "func", ["text"] = "Open Excel Scratch Doc",                 ["arg"] = "scratchExcel",},
 })
 
 oht.mxchooser:placeholderText("M-x Hammerspoon")

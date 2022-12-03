@@ -19,6 +19,7 @@
 
 local hyper = {'cmd', 'alt', 'ctrl'}
 local alpha = {'cmd', 'ctrl'}
+local power = {'cmd', 'shift'}
 
 hs.window.animationDuration = 0
 
@@ -475,7 +476,8 @@ end
 -- Similar to binding to hide/show the Dock.
 hs.hotkey.bind({'alt', 'cmd'}, 'm', toggleMenubar)
 
-hs.hotkey.bind({'shift', 'cmd'}, 'k', chooseMenuItem)
+hs.hotkey.bind(power, 'k', chooseMenuItem)
+
 
 
 -- Mail Keys

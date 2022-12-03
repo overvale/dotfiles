@@ -105,49 +105,21 @@ function typeCurrentSafariURL()
     end
 end
 
-function searchYouTube()
+function webSearch(name, url)
    hs.focus()
-   button, message = hs.dialog.textPrompt("Youtube", "Search YouTube for:", "", "Search", "Cancel")
+   button, message = hs.dialog.textPrompt(name, "Search " .. name .. "for:", "", "Search", "Cancel")
    if button == 'Cancel' then
       return
    else
       search = hs.http.encodeForQuery(message)
-      os.execute("open http://www.youtube.com/results?search_query=" .. search)
+      os.execute("open " .. url .. search)
    end
 end
 
-function searchGitHub()
-   hs.focus()
-   button, message = hs.dialog.textPrompt("GitHub", "Search GitHub for:", "", "Search", "Cancel")
-   if button == 'Cancel' then
-      return
-   else
-      search = hs.http.encodeForQuery(message)
-      os.execute("open https://github.com/search?q=" .. search)
-   end
-end
-
-function searchWikipedia()
-   hs.focus()
-   button, message = hs.dialog.textPrompt("Wikipedia", "Search Wikipedia for:", "", "Search", "Cancel")
-   if button == 'Cancel' then
-      return
-   else
-      search = hs.http.encodeForQuery(message)
-      os.execute("open https://en.wikipedia.org/w/index.php?search=" .. search)
-   end
-end
-
-function searchIMDB()
-   hs.focus()
-   button, message = hs.dialog.textPrompt("IMDB", "Search IMDB for:", "", "Search", "Cancel")
-   if button == 'Cancel' then
-      return
-   else
-      search = hs.http.encodeForQuery(message)
-      os.execute("open https://www.imdb.com/find?q=" .. search)
-   end
-end
+function searchYouTube()   webSearch("YouTube",   "http://www.youtube.com/results?search_query=") end
+function searchGitHub()    webSearch("GitHub",    "https://github.com/search?q=") end
+function searchWikipedia() webSearch("Wikipedia", "https://en.wikipedia.org/w/index.php?search=") end
+function searchIMDB()      webSearch("IMDB",      "https://www.imdb.com/find?q=") end
 
 function chooseMenuItem()
    -- from: https://github.com/brokensandals/MenuChooser.spoon

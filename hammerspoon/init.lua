@@ -27,7 +27,7 @@ hs.window.animationDuration = 0
 oht = {}
 
 
--- Utility Functions
+-- Functions
 -- -----------------------------------------------
 
 function oht.execute(x)
@@ -46,10 +46,6 @@ end
 function oht.notify(title, text)
   hs.notify.new({ title = title, informativeText = text}):send()
 end
-
-
--- Misc Functions
--- ------------------------------------------------
 
 function editHammerspoonInit()
    os.execute( "open -a Emacs ~/home/dot/hammerspoon/init.lua" )
@@ -157,11 +153,6 @@ function oht.newFinderWindow()
    hs.osascript.applescript('tell application "Finder" to make new Finder window')
    finder:activate()
 end
-
-
-
--- MacOS System Stuff
--- ----------------------------------------------
 
 function darkModeStatus()
    -- return the status of Dark Mode

@@ -35,7 +35,7 @@ function oht.execute(x)
    _G[x]()
 end
 
-local function appTitle()
+function oht.appTitle()
    -- Return title of foreground app
    app = hs.application.frontmostApplication()
    if app ~= nil then
@@ -43,7 +43,7 @@ local function appTitle()
    end
 end
 
-function notify(title, text)
+function oht.notify(title, text)
   hs.notify.new({ title = title, informativeText = text}):send()
 end
 
@@ -210,7 +210,7 @@ end
 -- Private
 -- ----------------------------------------------
 
-require("private")
+pvt = require("private")
 
 
 -- Readline Keymap
@@ -279,7 +279,7 @@ ReadlineKeymap:bind({'alt'},  'f', moveWordForward)
 -- ------------------------------------------------
 
 local function setUserKeymaps()
-      if appTitle() == "Emacs" or appTitle() == "Terminal" then
+      if oht.appTitle() == "Emacs" or oht.appTitle() == "Terminal" then
          -- print('Readline keymap exited.')
          ReadlineKeymap:exit()
       else
@@ -338,7 +338,7 @@ oht.mxchooser:choices({
       {["type"] = "func", ["text"] = "Kill Work Apps",                         ["arg"] = "killWorkApps",},
       {["type"] = "func", ["text"] = "Show Meeting Times",                     ["arg"] = "meetingTimes",},
       {["type"] = "func", ["text"] = "New Mail Message",                       ["arg"] = "newMailMessage",},
-      {["type"] = "func", ["text"] = "Open Dropbox Bid folder",                ["arg"] = "openDropboxProject",},
+      {["type"] = "func", ["text"] = "Open Dropbox Bid folder",                ["arg"] = "pvt.openDropbox",},
       {["type"] = "func", ["text"] = "Open Work Apps",                         ["arg"] = "openWorkApps",},
       {["type"] = "func", ["text"] = "Paste as Plain Text",                    ["arg"] = "pastePlainText",},
       {["type"] = "func", ["text"] = "Reload Hammerspoon",                     ["arg"] = "reloadConfig",},
@@ -425,7 +425,7 @@ local applicationHotkeys = {
 
 local alphaHotkeys = {
    h = reloadHammerspoon,
-   o = openDropboxProject,
+   o = pvt.openDropbox,
    f = oht.newFinderWindow,
 }
 
@@ -502,7 +502,9 @@ end
 reloadWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/home/dot/hammerspoon/", reloadConfig):start()
 
 -- When this config is loaded, or reloaded, send notification.
-notify("Hammerspoon", "Config reloaded, ready to rock! 🤘")
+oht.notify("Hammerspoon", "Config reloaded, ready to rock! 🤘")
 
+
+return oht
 
 -- END HAMMERSPOON CONFIG --

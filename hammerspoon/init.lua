@@ -364,7 +364,7 @@ oht.mxchooser:bgDark(true)
 hs.hotkey.bind(alpha, "x", function() oht.mxchooser:show() end)
 
 
--- Window Moving
+-- Window Moving & Resizing
 -- -----------------------------------------------
 
 function moveWindow(dir)
@@ -385,27 +385,48 @@ function moveWindow(dir)
    thiswindow:setFrame(loc)
 end
 
-function wm_left()        moveWindow('left') end
-function wm_right()       moveWindow('right') end
-function wm_center()      hs.window.focusedWindow():centerOnScreen() end
+function wm_left()   moveWindow('left') end
+function wm_right()  moveWindow('right') end
+function wm_center() hs.window.focusedWindow():centerOnScreen() end
+
+function winResizeLeft()
+   if winPosition == 'left23' then
+      winPosition = 'left12'
+      hs.window.focusedWindow():moveToUnit({0, 0, 1/2, 1})
+   elseif winPosition == 'left12' then
+      winPosition = 'left13'
+      hs.window.focusedWindow():moveToUnit({0, 0, 1/3, 1})
+   else
+      winPosition = 'left23'
+      hs.window.focusedWindow():moveToUnit({0, 0, 2/3, 1})
+   end
+end
+
+function winResizeRight()
+   if winPosition == 'right23' then
+      winPosition = 'right12'
+      hs.window.focusedWindow():moveToUnit({1/2, 0, 1/2, 1})
+   elseif winPosition == 'right12' then
+      winPosition = 'right13'
+      hs.window.focusedWindow():moveToUnit({2/3, 0, 1/3, 1})
+   else
+      winPosition = 'right23'
+      hs.window.focusedWindow():moveToUnit({1/3, 0, 2/3, 1})
+   end
+end
+
+function winResizeFull()
+   winPosition = 'full'
+   hs.window.focusedWindow():moveToUnit({0, 0, 1, 1})
+end
 
 
--- Misc Spoons
+-- Anycomplete
 -- -----------------------------------------------
 
 anycomplete = hs.loadSpoon("Anycomplete")
 anycomplete.engine = "duckduckgo"
 anycomplete.bindHotkeys()
-
-hs.loadSpoon("MiroWindowsManager")
-spoon.MiroWindowsManager:bindHotkeys({
-	up         = {hyper, "up"},
-	down       = {hyper, "down"},
-	left       = {hyper, "left"},
-	right      = {hyper, "right"},
-	fullscreen = {hyper, "f"},
-	nextscreen = {hyper, "n"}
-})
 
 
 -- Bindings
@@ -449,6 +470,9 @@ hs.hotkey.bind({'alt', 'cmd'}, 'm', toggleMenubar)
 
 hs.hotkey.bind(power, 'k', chooseMenuItem)
 
+hs.hotkey.bind(hyper, 'left', winResizeLeft)
+hs.hotkey.bind(hyper, 'right', winResizeRight)
+hs.hotkey.bind(hyper, 'f', winResizeFull)
 
 
 -- Custom Modal Keymap

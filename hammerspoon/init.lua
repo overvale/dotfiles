@@ -47,16 +47,6 @@ function oht.notify(title, text)
   hs.notify.new({ title = title, informativeText = text}):send()
 end
 
-function genericSuccess()
-   -- Function for creating a notification saying "Success!"
-   -- This is useful when testing new Hammerspoon stuff.
-   notify('Hammerspoon', 'Success!')
-end
-
--- With the below you can run `open hammerspoon:///success` in your terminal
--- and you'll run the 'genericSuccess' function.
-hs.urlevent.bind("success", genericSuccess)
-
 
 -- Misc Functions
 -- ------------------------------------------------

@@ -219,7 +219,6 @@ ReadlineKeymap:bind({'alt'},  'f', function() keyUpDown({'alt'}, 'right') end)
 -- Activate App-Specific Keymaps
 -- ------------------------------------------------
 
-local function setUserKeymaps()
       if oht.appTitle() == "Emacs" or oht.appTitle() == "Terminal" then
          -- print('Readline keymap exited.')
          ReadlineKeymap:exit()
@@ -227,9 +226,10 @@ local function setUserKeymaps()
          -- print('Readline keymap entered.')
          ReadlineKeymap:enter()
       end
+function setUserKeymaps()
 end
 
-local function appWatcherFunction(appName, eventType, appObject)
+function appWatcherFunction(appName, eventType, appObject)
    if (eventType == hs.application.watcher.activated) then
       setUserKeymaps()
       if (appName == "Microsoft Teams") then
@@ -241,7 +241,7 @@ end
 setUserKeymaps()
 print('User Keymaps activated.')
 
-local appWatcher = hs.application.watcher.new(appWatcherFunction)
+appWatcher = hs.application.watcher.new(appWatcherFunction)
 
 appWatcher:start()
 print('Application Watcher started.')

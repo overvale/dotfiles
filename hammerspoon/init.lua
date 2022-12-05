@@ -63,7 +63,7 @@ function pastePlainText()
 end
 
 function bbeditScratch()
-   os.execute( "osascript -e 'tell application \"BBEdit\" to (open scratchpad document) activate'" )
+   hs.osascript.applescript('tell application \"BBEdit\" to (open scratchpad document) activate')
 end
 
 function backupOpenLogs () os.execute("open ~/home/src/rsync-backup/logs") end
@@ -72,7 +72,7 @@ function rsyncBackup() os.execute( "~/home/src/rsync-backup/laptop-backup.sh" ) 
 function emacsDebugInit() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs --debug-init" ) end
 function emacsQ() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs -q" ) end
 
-function copyMailURL() os.execute( "~/home/dot/bin/getMailURL | pbcopy | open hammerspoon://success" ) end
+function copyMailURL() os.execute( "~/home/dot/bin/getMailURL | pbcopy" ) end
 function newMailMessage() os.execute("open mailto:") end
 
 function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end

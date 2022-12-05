@@ -219,19 +219,25 @@ ReadlineKeymap:bind({'alt'},  'f', function() keyUpDown({'alt'}, 'right') end)
 -- Activate App-Specific Keymaps
 -- ------------------------------------------------
 
-      if oht.appTitle() == "Emacs" or oht.appTitle() == "Terminal" then
-         -- print('Readline keymap exited.')
-         ReadlineKeymap:exit()
-      else
-         -- print('Readline keymap entered.')
-         ReadlineKeymap:enter()
-      end
 function setUserKeymaps()
+   -- This function is called every time any app is activated.
+   -- At the moment it just activates the readline keymap but
+   -- any number of keymaps for any number of apps could be activated here.
+   if oht.appTitle() == "Emacs" or oht.appTitle() == "Terminal" then
+      -- print( oht.appTitle() .. ': ' .. 'Readline keymap exited.')
+      ReadlineKeymap:exit()
+   else
+      -- print(oht.appTitle() .. ': ' .. 'Readline keymap entered.')
+      ReadlineKeymap:enter()
+   end
 end
 
 function appWatcherFunction(appName, eventType, appObject)
    if (eventType == hs.application.watcher.activated) then
+      -- Activate all my user keymaps
       setUserKeymaps()
+      -- Teams has an annoying bug that doesn't foreground the main window
+      -- when you switch to the app, this fixes it:
       if (appName == "Microsoft Teams") then
          appObject:selectMenuItem({"Window", "Bring All to Front"})
       end

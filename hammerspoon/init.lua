@@ -47,6 +47,10 @@ function oht.notify(title, text)
   hs.notify.new({ title = title, informativeText = text}):send()
 end
 
+function keyUpDown(modifiers, key)
+   hs.eventtap.keyStroke(modifiers, key, 0)
+end
+
 function editHammerspoonInit()
    os.execute( "open -a Emacs ~/home/dot/hammerspoon/init.lua" )
 end
@@ -201,59 +205,15 @@ pvt = require("private")
 -- shortcuts  C-u, C-w.
 -- https://readline.kablamo.org/emacs.html
 -- However, rather than just binding them globally, I want to switch them off
--- when Emacs and the Terminal are the foreground app, so the below code does
--- all that.
+-- when Emacs and the Terminal are the foreground app.
 
--- First, create the keymap you'd like to bind into.
 local ReadlineKeymap = hs.hotkey.modal.new()
 
--- Next, create the functions you want to use...
--- There are a lot of different ways to simulate key events but the below
--- approach, which simulates all the key up and down events for both modifiers
--- and the keys themselves has proved the most reliable and the least likely
--- to suffer from lag. At least that's what I've found.
-
-function deleteLineBack()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.cmd, true):post()
-   hs.eventtap.event.newKeyEvent('delete', true):post()
-   hs.eventtap.event.newKeyEvent('delete', false):post()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.cmd, false):post()
-end
-
-function deleteWordBack()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
-   hs.eventtap.event.newKeyEvent('delete', true):post()
-   hs.eventtap.event.newKeyEvent('delete', false):post()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
-end
-
-function deleteWordForward()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
-   hs.eventtap.event.newKeyEvent('forwarddelete', true):post()
-   hs.eventtap.event.newKeyEvent('forwarddelete', false):post()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
-end
-
-function moveWordBack()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
-   hs.eventtap.event.newKeyEvent('left', true):post()
-   hs.eventtap.event.newKeyEvent('left', false):post()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
-end
-
-function moveWordForward()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, true):post()
-   hs.eventtap.event.newKeyEvent('right', true):post()
-   hs.eventtap.event.newKeyEvent('right', false):post()
-   hs.eventtap.event.newKeyEvent(hs.keycodes.map.alt, false):post()
-end
-
--- Then bind some keys to the map.
-ReadlineKeymap:bind({'ctrl'}, 'w', deleteWordBack)
-ReadlineKeymap:bind({'ctrl'}, 'u', deleteLineBack)
-ReadlineKeymap:bind({'alt'},  'd', deleteWordForward)
-ReadlineKeymap:bind({'alt'},  'b', moveWordBack)
-ReadlineKeymap:bind({'alt'},  'f', moveWordForward)
+ReadlineKeymap:bind({'ctrl'}, 'w', function() keyUpDown({'alt'}, 'delete') end)
+ReadlineKeymap:bind({'ctrl'}, 'u', function() keyUpDown({'cmd'}, 'delete') end)
+ReadlineKeymap:bind({'alt'},  'd', function() keyUpDown({'alt'}, 'forwarddelete') end)
+ReadlineKeymap:bind({'alt'},  'b', function() keyUpDown({'alt'}, 'left') end)
+ReadlineKeymap:bind({'alt'},  'f', function() keyUpDown({'alt'}, 'right') end)
 
 
 -- Activate App-Specific Keymaps

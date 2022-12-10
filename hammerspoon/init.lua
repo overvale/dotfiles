@@ -478,29 +478,12 @@ oht.myKeys:bind('', 'n',      function() newMailMessage()      oht.myKeys:exit()
 oht.myKeys:bind('', 'l',      function() logbookEntry()        oht.myKeys:exit() end)
 
 
--- Reload Config
--- ----------------------------------------------
 
-local reloadHammerspoon = function() hs.reload() end
-
-function reloadConfig(files)
-    doReload = false
-    for _,file in pairs(files) do
-        if file:sub(-4) == ".lua" then
-            doReload = true
-        end
-    end
-    if doReload then
-        hs.reload()
-    end
 end
 
-reloadWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/home/dot/hammerspoon/", reloadConfig):start()
-
--- When this config is loaded, or reloaded, send notification.
-oht.notify("Hammerspoon", "Config reloaded, ready to rock! 🤘")
 
 
-return oht
+oht.notify('Hammerspoon', 'Hammerspoon loaded successfully!')
 
 -- END HAMMERSPOON CONFIG --
+return oht

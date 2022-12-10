@@ -51,6 +51,8 @@ function keyUpDown(modifiers, key)
    hs.eventtap.keyStroke(modifiers, key, 0)
 end
 
+function reloadHammerspoon() hs.reload() end
+
 function editHammerspoonInit()
    os.execute( "open -a Emacs ~/home/dot/hammerspoon/init.lua" )
 end

@@ -461,23 +461,26 @@ function oht.myKeys:exited()
    myKeysMenuItem:delete()
 end
 
--- And you need a way to activate the keymap
-hs.hotkey.bind(power, 'space', function() oht.myKeys:enter() end)
+oht.myKeysBindings = {
+   { {}, 'n', newMailMessage },
+   { {}, 'l', logbookEntry},
+   { {}, 'return', typeHolidayFollowup },
+}
 
--- You need a way to exit the keymap
--- And you should prevent recursion
-oht.myKeys:bind('', 'escape', function() oht.myKeys:exit() end)
-oht.myKeys:bind(power, 'space', function() oht.myKeys:exit() end)
-
--- Now bind keys into the map
-oht.myKeys:bind('', 'return', function() typeHolidayFollowup() oht.myKeys:exit() end)
-oht.myKeys:bind('', 'n',      function() newMailMessage()      oht.myKeys:exit() end)
-oht.myKeys:bind('', 'l',      function() logbookEntry()        oht.myKeys:exit() end)
-
-
-
+do -- Set the binding and provide an escape, while preventing recursion.
+   local mod = power
+   local key = 'space'
+   hs.hotkey.bind(mod, key, function() oht.myKeys:enter() end)
+   oht.myKeys:bind(mod, key, function() oht.myKeys:exit() end)
+   oht.myKeys:bind('', 'escape', function() oht.myKeys:exit() end)
 end
 
+for i, mapping in ipairs(oht.myKeysBindings) do
+   local mod = mapping[1]
+   local key = mapping[2]
+   local fn  = mapping[3]
+   oht.myKeys:bind(mod, key, function() fn() oht.myKeys:exit() end)
+end
 
 
 oht.notify('Hammerspoon', 'Hammerspoon loaded successfully!')

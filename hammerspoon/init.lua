@@ -404,47 +404,44 @@ anycomplete.bindHotkeys()
 -- Bindings
 -- ----------------------------------------------
 
-local applicationHotkeys = {
-   m = 'Mail',
-   n = 'Notes',
-   c = 'Calendar',
-   b = 'BBEdit',
-   e = 'Emacs',
-   s = 'Safari',
-   a = 'Music',
-   t = 'Terminal',
-   r = 'Reminders',
+keyBindings = {
+   { alpha, 'm', 'Mail' },
+   { alpha, 'n', 'Notes' },
+   { alpha, 'c', 'Calendar' },
+   { alpha, 'b', 'BBEdit' },
+   { alpha, 'e', 'Emacs' },
+   { alpha, 's', 'Safari' },
+   { alpha, 'a', 'Music' },
+   { alpha, 't', 'Terminal' },
+   { alpha, 'r', 'Reminders' },
+   { alpha, 'h', reloadHammerspoon },
+   { alpha, 'o', pvt.openDropbox },
+   { alpha, 'f', oht.newFinderWindow },
+   { hyper, 't', snipISODate },
+   { hyper, 'd', toggleDarkMode },
+   { hyper, 'left', winResizeLeft },
+   { hyper, 'right', winResizeRight },
+   { hyper, 'f', winResizeFull },
+   { hyper, 'j', wm_left },
+   { hyper, 'k', wm_center },
+   { hyper, 'l', wm_right },
+   { hyper, 'v', pastePlainText },
+   { power, 'k', chooseMenuItem},
+   { {'alt', 'cmd'}, 'm', toggleMenubar },
 }
 
-local alphaHotkeys = {
-   h = reloadHammerspoon,
-   o = pvt.openDropbox,
-   f = oht.newFinderWindow,
-}
-
-local hyperHotkeys = {
-   t = snipISODate,
-   d = toggleDarkMode,
-   j = wm_left,
-   k = wm_center,
-   l = wm_right,
-   v = pastePlainText,
-}
-
-for key, fn  in pairs(alphaHotkeys) do hs.hotkey.bind(alpha, key, fn) end
-for key, fn  in pairs(hyperHotkeys) do hs.hotkey.bind(hyper, key, fn) end
-for key, app in pairs(applicationHotkeys) do
-   hs.hotkey.bind(alpha, key, function() hs.application.launchOrFocus(app) end)
+for i, mapping in ipairs(keyBindings) do
+   local mod = mapping[1]
+   local key = mapping[2]
+   local app = mapping[3]
+   hs.hotkey.bind(mod, key, function()
+     if (type(app) == 'string') then
+            hs.application.launchOrFocus(app)
+     else
+        app()
+     end
+   end)
 end
-
--- Similar to binding to hide/show the Dock.
-hs.hotkey.bind({'alt', 'cmd'}, 'm', toggleMenubar)
-
-hs.hotkey.bind(power, 'k', chooseMenuItem)
-
-hs.hotkey.bind(hyper, 'left', winResizeLeft)
-hs.hotkey.bind(hyper, 'right', winResizeRight)
-hs.hotkey.bind(hyper, 'f', winResizeFull)
 
 
 -- Custom Modal Keymap

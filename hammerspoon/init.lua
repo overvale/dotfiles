@@ -207,7 +207,7 @@ pvt = require("private")
 -- However, rather than just binding them globally, I want to switch them off
 -- when Emacs and the Terminal are the foreground app.
 
-local ReadlineKeymap = hs.hotkey.modal.new()
+ReadlineKeymap = hs.hotkey.modal.new()
 
 ReadlineKeymap:bind({'ctrl'}, 'w', function() keyUpDown({'alt'}, 'delete') end)
 ReadlineKeymap:bind({'ctrl'}, 'u', function() keyUpDown({'cmd'}, 'delete') end)

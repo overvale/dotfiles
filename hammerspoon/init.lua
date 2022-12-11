@@ -23,19 +23,16 @@ local power = {'cmd', 'shift'}
 
 hs.window.animationDuration = 0
 
--- Personal namespace
-oht = {}
-
 
 -- Functions
 -- -----------------------------------------------
 
-function oht.execute(x)
+function stringCMD(x)
    -- Executes the argument (string) as a function.
    _G[x]()
 end
 
-function oht.appTitle()
+function appTitle()
    -- Return title of foreground app
    app = hs.application.frontmostApplication()
    if app ~= nil then
@@ -43,7 +40,7 @@ function oht.appTitle()
    end
 end
 
-function oht.notify(title, text)
+function simpleNotify(title, text)
   hs.notify.new({ title = title, informativeText = text}):send()
 end
 
@@ -154,7 +151,7 @@ function chooseMenuItem()
    end)
 end
 
-function oht.newFinderWindow()
+function newFinderWindow()
    finder = hs.appfinder.appFromName("Finder")
    hs.osascript.applescript('tell application "Finder" to make new Finder window')
    finder:activate()
@@ -225,11 +222,11 @@ function setUserKeymaps()
    -- This function is called every time any app is activated.
    -- At the moment it just activates the readline keymap but
    -- any number of keymaps for any number of apps could be activated here.
-   if oht.appTitle() == "Emacs" or oht.appTitle() == "Terminal" then
-      -- print( oht.appTitle() .. ': ' .. 'Readline keymap exited.')
+   if appTitle() == "Emacs" or appTitle() == "Terminal" then
+      -- print( appTitle() .. ': ' .. 'Readline keymap exited.')
       ReadlineKeymap:exit()
    else
-      -- print(oht.appTitle() .. ': ' .. 'Readline keymap entered.')
+      -- print(appTitle() .. ': ' .. 'Readline keymap entered.')
       ReadlineKeymap:enter()
    end
 end
@@ -259,12 +256,12 @@ print('Application Watcher started.')
 -- ----------------------------------------------
 
 -- Initialize the table of choices used by the chooser
-oht.mxchoices = {}
+mxChoices = {}
 
--- This table will be reformatted and inserted into oht.mxchoices.
+-- This table will be reformatted and inserted into mxChoices.
 -- This is done so that I can write it in this simpler format, rather than the
 -- cumbersome one required by the chooser.
-oht.mxoptions = {
+mxChoiceTable = {
    { "path", "Desktop",                                "~/Desktop" },
    { "path", "Downloads",                              "~/Downloads" },
    { "path", "Home",                                   "~/home" },
@@ -326,7 +323,7 @@ oht.mxoptions = {
    { "func", "Kill Work Apps",                         "killWorkApps" },
    { "func", "Show Meeting Times",                     "meetingTimes" },
    { "func", "New Mail Message",                       "newMailMessage" },
-   { "func", "Open Dropbox Bid folder",                "pvt.openDropbox" },
+   { "func", "Open Dropbox Bid folder",                "openDropbox" },
    { "func", "Open Work Apps",                         "openWorkApps" },
    { "func", "Paste as Plain Text",                    "pastePlainText" },
    { "func", "Reload Hammerspoon",                     "reloadConfig" },
@@ -348,18 +345,18 @@ oht.mxoptions = {
    { "func", "Reading Tabs",                           "readingTabs" }
 }
 
--- Now iterate over oht.mxoptions and insert all the table items into the
--- table used by the chooser (oht.mxchoices).
-for i, mapping in ipairs(oht.mxoptions) do
+-- Now iterate over mxChoiceTable and insert all the table items into the
+-- table used by the chooser (mxChoices).
+for i, mapping in ipairs(mxChoiceTable) do
    local type = mapping[1]
    local text = mapping[2]
    local arg  = mapping[3]
-   table.insert(oht.mxchoices, {["type"] = type, ["text"] = text, ["arg"] = arg})
+   table.insert(mxChoices, {["type"] = type, ["text"] = text, ["arg"] = arg})
 end
 
 -- Create the actual chooser and define what happens when you select an item
 -- from it.
-oht.mxchooser = hs.chooser.new(function(choice)
+mxChooser = hs.chooser.new(function(choice)
       if not choice then
          return
       else
@@ -373,11 +370,11 @@ oht.mxchooser = hs.chooser.new(function(choice)
       end
 end)
 
-oht.mxchooser:choices(oht.mxchoices)
-oht.mxchooser:placeholderText("M-x Hammerspoon")
-oht.mxchooser:bgDark(true)
+mxChooser:choices(mxChoices)
+mxChooser:placeholderText("M-x Hammerspoon")
+mxChooser:bgDark(true)
 
-hs.hotkey.bind(alpha, "x", function() oht.mxchooser:show() end)
+hs.hotkey.bind(alpha, "x", function() mxChooser:show() end)
 
 
 -- Window Moving & Resizing
@@ -459,8 +456,8 @@ keyBindings = {
    { alpha, 't', 'Terminal' },
    { alpha, 'r', 'Reminders' },
    { alpha, 'h', reloadHammerspoon },
-   { alpha, 'o', pvt.openDropbox },
-   { alpha, 'f', oht.newFinderWindow },
+   { alpha, 'o', openDropbox },
+   { alpha, 'f', newFinderWindow },
    { hyper, 't', snipISODate },
    { hyper, 'd', toggleDarkMode },
    { hyper, 'left', winResizeLeft },
@@ -492,20 +489,20 @@ end
 -- ---------------------------------------------
 
 -- Create the model keymap to bind inside of
-oht.myKeys = hs.hotkey.modal.new()
+transientKeys = hs.hotkey.modal.new()
 
 -- Create the menubar item
-function oht.myKeys:entered()
+function transientKeys:entered()
    myKeysMenuItem = hs.menubar.new():setTitle("Oliver's Keymap!")
    myKeysMenuItem:setTooltip("Press Escape to deactivate.")
 end
 
 -- Remove the menu item
-function oht.myKeys:exited()
+function transientKeys:exited()
    myKeysMenuItem:delete()
 end
 
-oht.myKeysBindings = {
+transientKeysBindings = {
    { {}, 'n', newMailMessage },
    { {}, 'l', logbookEntry},
    { {}, 'return', typeHolidayFollowup },
@@ -514,20 +511,19 @@ oht.myKeysBindings = {
 do -- Set the binding and provide an escape, while preventing recursion.
    local mod = power
    local key = 'space'
-   hs.hotkey.bind(mod, key, function() oht.myKeys:enter() end)
-   oht.myKeys:bind(mod, key, function() oht.myKeys:exit() end)
-   oht.myKeys:bind('', 'escape', function() oht.myKeys:exit() end)
+   hs.hotkey.bind(mod, key, function() transientKeys:enter() end)
+   transientKeys:bind(mod, key, function() transientKeys:exit() end)
+   transientKeys:bind('', 'escape', function() transientKeys:exit() end)
 end
 
-for i, mapping in ipairs(oht.myKeysBindings) do
+for i, mapping in ipairs(transientKeysBindings) do
    local mod = mapping[1]
    local key = mapping[2]
    local fn  = mapping[3]
-   oht.myKeys:bind(mod, key, function() fn() oht.myKeys:exit() end)
+   transientKeys:bind(mod, key, function() fn() transientKeys:exit() end)
 end
 
 
 oht.notify('Hammerspoon', 'Hammerspoon loaded successfully!')
 
 -- END HAMMERSPOON CONFIG --
-return oht

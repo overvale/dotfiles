@@ -316,7 +316,7 @@ oht.mxchooser = hs.chooser.new(function(choice)
          return
       else
          if choice["type"] == "app" then
-            os.execute("open -a" .. choice["arg"])
+            os.execute("open -a" .. "'" .. choice["arg"] .. "'")
          elseif choice["type"] == "path" then
             os.execute("open " .. choice["arg"])
          elseif choice["type"] == "func" then

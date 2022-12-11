@@ -1,18 +1,20 @@
--- Oliver Taylor's Hammerspoon Config
--- homepage: https://github.com/olivertaylor/dotfiles
+--[[ Oliver Taylor's Hammerspoon Config
+homepage: https://github.com/olivertaylor/dotfiles
 
--- Acceptable keycodes are here:
--- https://www.hammerspoon.org/docs/hs.keycodes.html#map
+Acceptable keycodes are here:
+https://www.hammerspoon.org/docs/hs.keycodes.html#map
 
--- Inspiration:
--- https://spinscale.de/posts/2016-11-08-creating-a-productive-osx-environment-hammerspoon.html
--- https://medium.com/@robhowlett/hammerspoon-the-best-mac-software-youve-never-heard-of-40c2df6db0f8
--- https://github.com/jasonrudolph/keyboard
--- https://github.com/dbmrq/dotfiles
--- https://github.com/raulchen/dotfiles
--- https://github.com/justintanner/universal-emacs-keybindings
--- https://github.com/dbalatero/dotfiles/tree/master/hammerspoon
--- https://github.com/senorprogrammer/hammerspoon_init/
+Inspiration:
+https://spinscale.de/posts/2016-11-08-creating-a-productive-osx-environment-hammerspoon.html
+https://medium.com/@robhowlett/hammerspoon-the-best-mac-software-youve-never-heard-of-40c2df6db0f8
+https://github.com/jasonrudolph/keyboard
+https://github.com/dbmrq/dotfiles
+https://github.com/raulchen/dotfiles
+https://github.com/justintanner/universal-emacs-keybindings
+https://github.com/dbalatero/dotfiles/tree/master/hammerspoon
+https://github.com/senorprogrammer/hammerspoon_init/
+
+--]]
 
 -- Setup
 -- -----------------------------------------------
@@ -246,9 +248,7 @@ end
 setUserKeymaps()
 print('User Keymaps activated.')
 
-appWatcher = hs.application.watcher.new(appWatcherFunction)
-
-appWatcher:start()
+hs.application.watcher.new(appWatcherFunction):start()
 print('Application Watcher started.')
 
 
@@ -524,6 +524,10 @@ for i, mapping in ipairs(transientKeysBindings) do
 end
 
 
-oht.notify('Hammerspoon', 'Hammerspoon loaded successfully!')
+-- Notify on Successful Load
+-- -------------------------------------------
+
+simpleNotify('Hammerspoon', 'Hammerspoon loaded successfully!')
+
 
 -- END HAMMERSPOON CONFIG --

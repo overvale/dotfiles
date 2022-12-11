@@ -300,19 +300,13 @@ oht.mxoptions = {
    { "func", "Type Work Email",                        "typeWorkEmail" }
 }
 
-function oht.mxAddChoice(type, text, arg)
-   -- This can be called from anywhere and inserts directly into the table
-   -- used by the chooser.
-   table.insert(oht.mxchoices, {["type"] = type, ["text"] = text, ["arg"] = arg})
-end
-
 -- Now iterate over oht.mxoptions and insert all the table items into the
 -- table used by the chooser (oht.mxchoices).
 for i, mapping in ipairs(oht.mxoptions) do
    local type = mapping[1]
    local text = mapping[2]
    local arg  = mapping[3]
-   oht.mxAddChoice(type, text, arg)
+   table.insert(oht.mxchoices, {["type"] = type, ["text"] = text, ["arg"] = arg})
 end
 
 -- Create the actual chooser and define what happens when you select an item

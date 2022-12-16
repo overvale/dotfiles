@@ -25,21 +25,9 @@ local power = {'cmd', 'shift'}
 
 hs.window.animationDuration = 0
 
-
--- Functions
--- -----------------------------------------------
-
 function stringCMD(x)
    -- Executes the argument (string) as a function.
    _G[x]()
-end
-
-function appTitle()
-   -- Return title of foreground app
-   app = hs.application.frontmostApplication()
-   if app ~= nil then
-      return app:title()
-   end
 end
 
 function simpleNotify(title, text)
@@ -49,6 +37,12 @@ end
 function keyUpDown(modifiers, key)
    hs.eventtap.keyStroke(modifiers, key, 0)
 end
+
+require("private")
+
+
+-- Functions
+-- -----------------------------------------------
 
 function reloadHammerspoon() hs.reload() end
 
@@ -193,10 +187,8 @@ end tell]])
 end
 
 
--- Private
 -- ----------------------------------------------
 
-pvt = require("private")
 
 
 -- Readline Keymap

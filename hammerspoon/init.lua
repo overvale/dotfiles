@@ -190,26 +190,12 @@ end
 -- User Keymaps
 -- ----------------------------------------------
 
-readlineModeMap = hs.hotkey.modal.new()
-
-readlineModeMap:bind({'ctrl'}, 'w', function() keyUpDown({'alt'}, 'delete') end)
-readlineModeMap:bind({'ctrl'}, 'u', function() keyUpDown({'cmd'}, 'delete') end)
-readlineModeMap:bind({'alt'},  'd', function() keyUpDown({'alt'}, 'forwarddelete') end)
-readlineModeMap:bind({'alt'},  'b', function() keyUpDown({'alt'}, 'left') end)
-readlineModeMap:bind({'alt'},  'f', function() keyUpDown({'alt'}, 'right') end)
-
 excelModeMap = hs.hotkey.modal.new()
 
 excelModeMap:bind({'cmd'}, 'return', function() keyUpDown({}, 'f2') end)
 
 function userKeymaps(appName, eventType, appObject)
    if (eventType == hs.application.watcher.activated) then
-      -- print(appName)
-      if (appTitle == "Emacs" or appTitle == "Terminal") then
-         readlineModeMap:exit()
-      else
-         readlineModeMap:enter()
-      end
       if (appName == "Microsoft Teams") then
          appObject:selectMenuItem({"Window", "Bring All to Front"})
       end

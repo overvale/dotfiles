@@ -1,0 +1,24 @@
+{
+  /* https://github.com/jrus/cocoa-text-system
+     Modifiers: ^ : Ctrl
+                $ : Shift
+                ~ : Option
+                @ : Command
+  */
+
+  "^ " = "setMark:";
+  "^x" = { "^x" = "swapWithMark:"; };
+  "^w" = "deleteToMark:";
+  "~h" = "selectParagraph:";
+  "^~h" = "selectLine:";
+  "^~ " = "selectWord:";
+  "~y" = "yankAndSelect:";
+  "~<" = "moveToBeginningOfDocument:";
+  "~>" = "moveToEndOfDocument:";
+  "~b" = "moveWordBackward:";
+  "~f" = "moveWordForward:";
+  "~d" = "deleteWordForward:";
+  "~c" = "capitalizeWord:";
+  "~u" = "uppercaseWord:";
+  "~l" = "lowercaseWord:";
+}

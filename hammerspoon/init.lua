@@ -187,61 +187,43 @@ end tell]])
 end
 
 
+-- User Keymaps
 -- ----------------------------------------------
 
+readlineModeMap = hs.hotkey.modal.new()
 
+readlineModeMap:bind({'ctrl'}, 'w', function() keyUpDown({'alt'}, 'delete') end)
+readlineModeMap:bind({'ctrl'}, 'u', function() keyUpDown({'cmd'}, 'delete') end)
+readlineModeMap:bind({'alt'},  'd', function() keyUpDown({'alt'}, 'forwarddelete') end)
+readlineModeMap:bind({'alt'},  'b', function() keyUpDown({'alt'}, 'left') end)
+readlineModeMap:bind({'alt'},  'f', function() keyUpDown({'alt'}, 'right') end)
 
--- Readline Keymap
--- ----------------------------------------------
--- MacOS supports lots of Emacs-style shortcuts out of the box, but it is
--- missing M-f, M-b, M-d -- and I think it should also support the readline
--- shortcuts  C-u, C-w.
--- https://readline.kablamo.org/emacs.html
--- However, rather than just binding them globally, I want to switch them off
--- when Emacs and the Terminal are the foreground app.
+excelModeMap = hs.hotkey.modal.new()
 
-ReadlineKeymap = hs.hotkey.modal.new()
+excelModeMap:bind({'cmd'}, 'return', function() keyUpDown({}, 'f2') end)
 
-ReadlineKeymap:bind({'ctrl'}, 'w', function() keyUpDown({'alt'}, 'delete') end)
-ReadlineKeymap:bind({'ctrl'}, 'u', function() keyUpDown({'cmd'}, 'delete') end)
-ReadlineKeymap:bind({'alt'},  'd', function() keyUpDown({'alt'}, 'forwarddelete') end)
-ReadlineKeymap:bind({'alt'},  'b', function() keyUpDown({'alt'}, 'left') end)
-ReadlineKeymap:bind({'alt'},  'f', function() keyUpDown({'alt'}, 'right') end)
-
-
--- Activate App-Specific Keymaps
--- ------------------------------------------------
-
-function setUserKeymaps()
-   -- This function is called every time any app is activated.
-   -- At the moment it just activates the readline keymap but
-   -- any number of keymaps for any number of apps could be activated here.
-   if appTitle() == "Emacs" or appTitle() == "Terminal" then
-      -- print( appTitle() .. ': ' .. 'Readline keymap exited.')
-      ReadlineKeymap:exit()
-   else
-      -- print(appTitle() .. ': ' .. 'Readline keymap entered.')
-      ReadlineKeymap:enter()
-   end
-end
-
-function appWatcherFunction(appName, eventType, appObject)
+function userKeymaps(appName, eventType, appObject)
    if (eventType == hs.application.watcher.activated) then
-      -- Activate all my user keymaps
-      setUserKeymaps()
-      -- Teams has an annoying bug that doesn't foreground the main window
-      -- when you switch to the app, this fixes it:
+      -- print(appName)
+      if (appTitle == "Emacs" or appTitle == "Terminal") then
+         readlineModeMap:exit()
+      else
+         readlineModeMap:enter()
+      end
       if (appName == "Microsoft Teams") then
          appObject:selectMenuItem({"Window", "Bring All to Front"})
+      end
+      if (appName == "Microsoft Excel") then
+         excelModeMap:enter()
+      else
+         excelModeMap:exit()
       end
    end
 end
 
-setUserKeymaps()
-print('User Keymaps activated.')
+userKeymapsWatcher = hs.application.watcher.new(userKeymaps)
 
-hs.application.watcher.new(appWatcherFunction):start()
-print('Application Watcher started.')
+userKeymapsWatcher:start()
 
 
 -- M-x Anything

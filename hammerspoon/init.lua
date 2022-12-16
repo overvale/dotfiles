@@ -393,6 +393,29 @@ function winResizeFull()
    hs.window.focusedWindow():moveToUnit({0, 0, 1, 1})
 end
 
+-- Toggle between full screen and orginal size. Returns the window instance.
+local previousSizes = {}
+winResizeFull= function()
+   local window = hs.window.focusedWindow()
+   if not window then return nil end
+
+   local id = window:id()
+   if previousSizes[id] == nil then
+      previousSizes[id] = window:frame()
+      window:maximize()
+   else
+      window:setFrame(previousSizes[id])
+      previousSizes[id] = nil
+   end
+
+   return window
+end
+
+function moveToNextScreen()
+  local app = hs.window.focusedWindow()
+  app:moveToScreen(app:screen():next())
+end
+
 
 -- Anycomplete
 -- -----------------------------------------------
@@ -426,6 +449,7 @@ keyBindings = {
    { hyper, 'j', wm_left },
    { hyper, 'k', wm_center },
    { hyper, 'l', wm_right },
+   { hyper, 'n', moveToNextScreen },
    { hyper, 'v', pastePlainText },
    { power, 'k', chooseMenuItem},
    { {'alt', 'cmd'}, 'm', toggleMenubar },

@@ -878,7 +878,6 @@ If r is pressed replace the text with the result"
 
 (load-package 'ef-themes)
 
-;; Actual theme loading...
 (load-package 'theme-loading
   :require
   :after-load
@@ -886,12 +885,9 @@ If r is pressed replace the text with the result"
   (setq dark-theme  'modus-vivendi)
   (setq default-theme-color 'light)
 
-  ;; On startup I want to match the system
-  (load-theme-color 'system)
+  (load-theme-custom 'system)
 
-  ;; I'm using the mac-port, which has this hook I can use:
-  (add-hook 'mac-effective-appearance-change-hook (lambda () (load-theme-color 'system))))
-
+  (add-hook 'mac-effective-appearance-change-hook (lambda () (load-theme-custom 'system))))
 
 ;;; Cursor
 

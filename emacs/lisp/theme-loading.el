@@ -62,7 +62,7 @@
       (load-theme-dark)
     (load-theme-light)))
 
-(defun load-theme-color (color)
+(defun load-theme-custom (color)
   "Load users preferred theme, based on ARG or macOS appearance.
 Disables all current themes, then:
 - if COLOR is \"light\" or \"dark\", load the `light-theme' or `dark-theme'.

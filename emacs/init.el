@@ -788,6 +788,9 @@ If r is pressed replace the text with the result"
 
 ;;; Themes
 
+;; Don't ask when loading themes
+(setq custom-safe-themes t)
+
 (load-package 'modus-themes
   :require
   :after-load

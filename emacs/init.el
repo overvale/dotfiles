@@ -1582,6 +1582,17 @@ M - Mike         Z - Zulu")
   (interactive)
   )"))
 
+(add-to-list 'snippet-alist '(load-package . "\
+(let ((package 'x))
+  (require package)
+  (add-to-list 'load-path (concat local-package-dir \"\"))
+  (autoload 'x package nil nil)
+  (with-eval-after-load package
+    (progn
+      ))
+  (progn
+    ))"))
+
 
 ;;; Packages
 

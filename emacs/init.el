@@ -124,12 +124,9 @@
 (setq package-selected-packages
       '(consult
         delight
-        ef-themes
         embark
         embark-consult
         exec-path-from-shell
-        hackernews
-        lin
         lua-mode
         magit
         markdown-mode
@@ -875,8 +872,6 @@ If r is pressed replace the text with the result"
 
   (advice-add 'load-theme-dark :before 'customize-modus-vivendi)
   (advice-add 'load-theme-light :before 'customize-modus-operandi))
-
-(load-package 'ef-themes)
 
 (load-package 'theme-loading
   :require
@@ -1733,11 +1728,6 @@ M - Mike         Z - Zulu")
   (custom-set-variables
    '(vundo-glyph-alist vundo-unicode-symbols)))
 
-(load-package 'lin
-  :require
-  :after-load
-  (lin-global-mode 1))
-
 (load-package 'delight
   :eval
   (with-eval-after-load 'flyspell (delight 'flyspell-mode " Spell" "flyspell"))
@@ -1769,20 +1759,6 @@ M - Mike         Z - Zulu")
   :autoload sdcv-search
   :eval
   (defalias 'describe-word 'sdcv-search))
-
-(load-package 'hackernews
-  :after-load
-  (setq hackernews-items-per-page 30)
-  (add-hook 'hackernews-mode-hook
-            (defun hackernews-config ()
-              (hl-line-mode 1)
-              (lin-mode 1)))
-  (custom-set-faces
-   '(hackernews-comment-count ((t (:inherit 'modus-themes-subtle-neutral))))
-   '(hackernews-comment-count-visited ((t (:inherit 'modus-themes-markup-macro))))
-   '(hackernews-link ((t (:inherit 'bold))))
-   '(hackernews-link-visited ((t (:inherit 'modus-themes-markup-macro))))
-   '(hackernews-score ((t (:inherit 'modus-themes-refine-yellow))))))
 
 (load-package 'move-text
   :require

@@ -871,7 +871,7 @@ the buffer works like a pager."
 
 ;; This makes it so text-scale adjustments operate exactly one point size at a
 ;; time. The original value is 1.2, which sometimes increases/decreases by
-;; more than a single point size.
+;; more than a single point size. For example: (* 1.2 12) = 14.39
 (setq text-scale-mode-step 1.09)
 
 (load-package 'custom-fonts

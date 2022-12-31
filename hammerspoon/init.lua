@@ -190,6 +190,12 @@ end
 -- User Keymaps
 -- ----------------------------------------------
 
+readlineModeMap = hs.hotkey.modal.new()
+
+readlineModeMap:bind({'alt'}, 'd', function() keyUpDown({'alt'}, 'forwarddelete') end)
+readlineModeMap:bind({'alt'}, 'b', function() keyUpDown({'alt'}, 'left') end)
+readlineModeMap:bind({'alt'}, 'f', function() keyUpDown({'alt'}, 'right') end)
+
 excelModeMap = hs.hotkey.modal.new()
 
 excelModeMap:bind({'cmd'}, 'return', function() keyUpDown({}, 'f2') end)

@@ -603,8 +603,8 @@ If r is pressed replace the text with the result"
   (interactive)
   (browse-url-default-macosx-browser "mailto:"))
 
-(defun open-with-finder (path)
-  "Prompt for PATH and open it with Finder."
+(defun shell-open (path)
+  "Send PATH to shell command 'open'."
   (shell-command (concat "open " path)))
 
 
@@ -1750,8 +1750,16 @@ With a prefix argument, copy the link to the online manual instead."
 (load-package 'dired
   :after-load
   (setq dired-use-ls-dired nil)
+
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+
+  (defun dired-finder nil
+    "Open the current dired directory in Finder."
+    (interactive)
+    (shell-open dired-directory))
+
   (defkey dired-mode-map
+    "." 'dired-finder
     "O" 'crux-open-with
     "C-/" 'dired-undo))
 
@@ -1793,12 +1801,23 @@ With a prefix argument, copy the link to the online manual instead."
   :after-load
   (setq isearch-lazy-count t)
   (setq isearch-repeat-on-direction-change t)
+
+  (defun switch-to-consult-line ()
+    "Switch from isearch to consult-line."
+    (interactive)
+    (isearch-exit)
+    (consult-line isearch-string))
+
   (defun isearch-exit-at-start ()
     "Exit search at the beginning of the current match."
     (when (and isearch-forward
                (number-or-marker-p isearch-other-end)
                (not isearch-mode-end-hook-quit))
       (goto-char isearch-other-end)))
+
+  (defkey isearch-mode-map
+        "M-l" 'switch-to-consult-line)
+
   (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start))
 
 (load-package 'ibuffer

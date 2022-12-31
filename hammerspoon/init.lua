@@ -105,6 +105,7 @@ function searchYouTube()   webSearch("YouTube",   "http://www.youtube.com/result
 function searchGitHub()    webSearch("GitHub",    "https://github.com/search?q=") end
 function searchWikipedia() webSearch("Wikipedia", "https://en.wikipedia.org/w/index.php?search=") end
 function searchIMDB()      webSearch("IMDB",      "https://www.imdb.com/find?q=") end
+function searchWolframAlpha() webSearch("Wolfram Alpha", "https://www.wolframalpha.com/input?i=") end
 
 function chooseMenuItem()
    -- from: https://github.com/brokensandals/MenuChooser.spoon
@@ -443,7 +444,8 @@ keyBindings = {
    { alpha, 'e', 'Emacs' },
    { alpha, 's', 'Safari' },
    { alpha, 'a', 'Music' },
-   { alpha, 't', 'Terminal' },
+   { alpha, 'u', 'Terminal' },
+   { alpha, 't', 'Microsoft Teams' },
    { alpha, 'r', 'Reminders' },
    { alpha, 'h', reloadHammerspoon },
    { alpha, 'o', openDropbox },
@@ -495,7 +497,6 @@ end
 
 transientKeysBindings = {
    { {}, 'n', newMailMessage },
-   { {}, 'l', logbookEntry},
    { {}, 'return', typeHolidayFollowup },
 }
 

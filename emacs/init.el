@@ -1933,7 +1933,6 @@ With a prefix argument, copy the link to the online manual instead."
   (transient-define-prefix general-transient ()
     "General-purpose transient."
     [["Actions/Toggles"
-      ("x" "M-x" execute-extended-command)
       ("o f" "Other Frame Prefix..." other-frame-prefix)
       ("o w" "Other Window Prefix..." other-window-prefix)
       ("a" "AutoFill" auto-fill-mode)
@@ -1942,25 +1941,25 @@ With a prefix argument, copy the link to the online manual instead."
       ("l" "List Buffers" bs-show)
       ("k" "Kill Buffer" kill-buffer-dwim)
       ("K" "Kill Buffer & Window" kill-buffer-and-window)]
-     ["Org"
-      ("o a" "Org Agenda" org-agenda)
-      ("o k" "Org Capture" org-capture)
-      ("o s" "Store Link" org-store-link)
-      ("o i" "Insert Link" org-insert-link)
-      "Consult"
-      ("c o" "Outline" consult-outline)
-      ("c g" "Grep" consult-grep)]
+     ["Outpost"
+      ("t" "Todo List" find-outpost-todo-file)
+      ("n" "New Log Entry" outpost-new-log-entry)
+      ("N" "Find Notes" outpost-find-notes)
+      ("C-m" "Mail to Self" outpost-mail-self)
+      ("M-m" "Compose Mail" compose-mail-system)
+      ("b" "Find Bid" outpost-find-in-bidding-dir)]
      ["Other"
-      ("f" "Set Fonts" set-custom-fonts)
-      ("F" "Set Buffer Fonts" buffer-remap-faces-mode)
-      ("t" "Toggle Dark/Light Theme" toggle-theme-color :transient t)
-      ("T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
-      ("D" "Date/Time mode-line" toggle-date-time-battery)
-      ("C" "Calendar" calendar)
-      ("W" "World Clock" world-clock)
+      ("c" "Calendar" calendar)
+      ("w" "World Clock" world-clock)
       ("d" "Define Word" sdcv-search)
       ("s o" "*scratch-org*" scratch-buffer-org)
       ("s m" "*scratch-markdown*" scratch-buffer-markdown)]
+     ["Settings"
+      (", f" "Set Fonts" set-custom-fonts)
+      (", F" "Set Buffer Fonts" buffer-remap-faces-mode)
+      (", t" "Toggle Dark/Light Theme" toggle-theme-color :transient t)
+      (", T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
+      (", d" "Date/Time mode-line" toggle-date-time-battery)]
      ["Macros"
       ("m s" "Start" start-kbd-macro)
       ("m e" "End" end-kbd-macro)

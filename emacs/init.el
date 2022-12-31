@@ -886,7 +886,14 @@ the buffer works like a pager."
                         :line nil
                         :mono-height 120
                         :mode-height 130
-                        :vari-height 120))
+                        :vari-height 130))
+          (Hack . ( :mono "Hack"
+                    :vari "Verdana"
+                    :mode "SF Compact Text"
+                    :line nil
+                    :mono-height 120
+                    :mode-height 130
+                    :vari-height 120))
           (IBM . ( :mono "IBM Plex Mono"
                    :vari "IBM Plex Serif"
                    :mode "IBM Plex Sans"
@@ -902,7 +909,7 @@ the buffer works like a pager."
                         :mode-height 140
                         :vari-height 130))))
 
-  (set-custom-fonts "Berkeley"))
+  (set-custom-fonts "Hack"))
 
 
 ;;; Mode-Line

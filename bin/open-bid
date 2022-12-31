@@ -1,1 +1,1 @@
-open "$(find ~/home/dropbox/BIDDING/* -type d | fzf)"
+open "$(find ~/Dropbox\ \(OutpostVFX\)/BIDDING* -type d | fzf)"

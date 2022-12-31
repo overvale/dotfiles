@@ -136,6 +136,8 @@
         no-littering
         olivetti
         orderless
+        orgalist
+        standard-themes
         titlecase
         vertico
         visual-regexp

@@ -125,7 +125,6 @@
       '(consult
         delight
         ef-themes
-        elfeed
         embark
         embark-consult
         exec-path-from-shell
@@ -1774,44 +1773,6 @@ M - Mike         Z - Zulu")
   :autoload sdcv-search
   :eval
   (defalias 'describe-word 'sdcv-search))
-
-(load-package 'elfeed
-  :after-load
-  (require 'elfeed-extras)
-
-  (custom-set-variables
-   '(elfeed-use-curl t)
-   '(elfeed-db-directory (concat user-emacs-directory "elfeed/"))
-   '(elfeed-enclosure-default-dir user-downloads-directory))
-
-  (defun elfeed-search:emacs () (interactive) (elfeed-search-set-filter "+unread +emacs"))
-  (defun elfeed-search:vfx   () (interactive) (elfeed-search-set-filter "+unread +vfx"))
-  (defun elfeed-search:other () (interactive) (elfeed-search-set-filter "+unread -emacs -vfx"))
-  (defun elfeed-search:star  () (interactive) (elfeed-search-set-filter "+star"))
-
-
-  (defkey elfeed-search-mode-map
-    "b"   'elfeed-search-browse-url-background
-    "*"   'elfeed-search-tag--star
-    "8"   'elfeed-search-untag--star
-    "s-D" 'elfeed-search-safari-read-later
-    "o"   'delete-other-windows
-    "E"   'elfeed-search:emacs
-    "O"   'elfeed-search:other
-    "S"   'elfeed-search:star
-    "V"   'elfeed-search:vfx)
-
-  (defkey elfeed-show-mode-map
-    "r"   'elfeed-show-tag--read
-    "u"   'elfeed-show-tag--unread
-    "*"   'elfeed-show-tag--star
-    "8"   'elfeed-show-tag--unstar
-    "s-D" 'elfeed-show-safari-read-later
-    "b"   'elfeed-show-visit-background
-    "o"   'delete-other-windows
-    "d"   'elfeed-ytdl-download)
-
-  (add-hook 'elfeed-show-mode-hook 'variable-pitch-adjust-mode))
 
 (load-package 'hackernews
   :after-load

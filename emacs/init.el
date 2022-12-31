@@ -1908,27 +1908,6 @@ With a prefix argument, copy the link to the online manual instead."
 
 ;;; Org
 
-(defun find-org-files ()
-  "Find org files in your org directory, pass to completing-read."
-  (interactive)
-  (find-file (completing-read "Find Org Files: "
-                              (directory-files-recursively org-directory "\.org$"))))
-
-(defun find-org-directory ()
-  "Open org directory in dired."
-  (interactive)
-  (find-file org-directory))
-
-(defun consult-grep-orgfiles ()
-  (interactive)
-  (consult-grep org-directory))
-
-(autoload 'org-export-dispatch "org")
-(autoload 'org-store-link "org")
-
-;; Load less modules to reduce org initialization time
-(setq org-modules '(org-id ol-info))
-
 (with-eval-after-load 'org
   (custom-set-variables
    '(org-list-allow-alphabetical t)
@@ -1954,22 +1933,7 @@ With a prefix argument, copy the link to the online manual instead."
    '(org-src-fontify-natively t)
    '(org-fontify-quote-and-verse-blocks t)
    '(org-src-tab-acts-natively t)
-   '(org-edit-src-content-indentation 0)
-   ;; Agenda Settings
-   '(org-agenda-window-setup 'current-window)
-   '(org-agenda-restore-windows-after-quit t)
-   '(org-agenda-span 'day)
-   '(org-agenda-start-with-log-mode nil)
-   '(org-agenda-log-mode-items '(closed clock state))
-   '(org-agenda-use-time-grid nil)
-   '(org-deadline-warning-days 7)
-   '(org-agenda-todo-ignore-scheduled nil)
-   '(org-agenda-todo-ignore-deadlines nil)
-   '(org-agenda-skip-deadline-if-done t)
-   '(org-agenda-skip-scheduled-if-done t)
-   '(org-agenda-skip-deadline-prewarning-if-scheduled t))
-
-  (setq org-agenda-files (list org-directory))
+   '(org-edit-src-content-indentation 0))
 
   (add-to-list 'org-structure-template-alist '("L" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("f" . "src fountain"))
@@ -1981,111 +1945,10 @@ With a prefix argument, copy the link to the online manual instead."
         '(("DELG" . org-scheduled-previously)
           ("LATER" . org-scheduled-previously)))
 
-  (transient-define-prefix org-todo-transient ()
-    [["Org TODO Status"
-      ("t" "TODO"     (lambda () (interactive) (org-todo "TODO")))
-      ("g" "DELG"     (lambda () (interactive) (org-todo "DELG")))
-      ("l" "LATER"    (lambda () (interactive) (org-todo "LATER")))
-      ("d" "DONE"     (lambda () (interactive) (org-todo "DONE")))
-      ("c" "CANCELED" (lambda () (interactive) (org-todo "CANCELED")))
-      ("m" "MOVED"    (lambda () (interactive) (org-todo "MOVED")))
-      ]])
-
-  (defkey org-mode-map "C-c C-t" 'org-todo-transient)
-
-  (setq org-capture-templates
-        `(("i" "Personal Inbox" entry
-           (file+headline ,(concat org-directory "oliver.org") "Inbox")
-           "* %?\n\n" :empty-lines 1)
-          ("l" "Personal Log Entry" entry
-           (file+olp+datetree ,(concat org-directory "logbook.org"))
-           "* %?\n%T\n\n" :empty-lines 1 :tree-type month )
-          ("o" "Outpost Log Entry" entry
-           (file+olp+datetree ,(concat org-directory "outpost-logbook.org"))
-           "* %?\n%T\n\n" :empty-lines 1)
-          ("k" "Links" entry
-           (file+headline ,(concat org-directory "links.org") "LINKS")
-           "* %?\n\n" :empty-lines 1)))
-
   (defun org-toggle-checkbox-presence ()
     (interactive)
     (let ((current-prefix-arg '(4)))
-      (call-interactively 'org-toggle-checkbox)))
-
-  (defun my/org-refile-preserve-collapsed-parent ()
-    (org-up-heading-safe)
-    (when (save-excursion
-            (end-of-line)
-            (org-invisible-p))
-      (outline-hide-subtree)))
-
-  (add-hook 'org-after-refile-insert-hook #'my/org-refile-preserve-collapsed-parent)
-
-  ) ; End Org
-
-
-;;;; Org Agenda
-
-(with-eval-after-load 'org-agenda
-
-  (add-hook 'org-agenda-mode-hook 'hl-line-mode)
-
-  (setq org-agenda-custom-commands
-        '(("1" "Priority Tasks"
-           ((todo "TODO|DELG"
-                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-                   (org-agenda-overriding-header "Active, not scheduled, Tasks: ")))))
-          ("!" "Today + Priority Tasks"
-           ((agenda 'day)
-            (todo "TODO|DELG"
-                  ((org-agenda-sorting-strategy '(todo-state-up priority-down))
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
-                   (org-agenda-overriding-header "Active, not scheduled, Tasks: ")))))))
-
-  (defkey org-agenda-mode-map
-    "k" 'org-capture
-    "K" 'org-agenda-capture
-    "S" 'org-agenda-schedule
-    "D" 'org-agenda-deadline
-    "C-/" 'org-agenda-undo)
-
-  (transient-define-prefix org-agenda-todo-transient ()
-  [["Org TODO Status"
-    ("t" "TODO"     (lambda () (interactive) (org-agenda-todo "TODO")))
-    ("g" "DELG"     (lambda () (interactive) (org-agenda-todo "DELG")))
-    ("l" "LATER"    (lambda () (interactive) (org-agenda-todo "LATER")))
-    ("d" "DONE"     (lambda () (interactive) (org-agenda-todo "DONE")))
-    ("c" "CANCELED" (lambda () (interactive) (org-agenda-todo "CANCELED")))
-    ("m" "MOVED"    (lambda () (interactive) (org-agenda-todo "MOVED")))
-    ]])
-
-  (defkey org-agenda-mode-map "t" 'org-agenda-todo-transient)
-
-  ) ; End Org Agenda
-
-
-;;;; Calendar <--> Org Integration
-
-;; You can jump to org's agenda from the calendar, and capture from any date
-;; in the agenda, why now capture from the calendar as well?
-
-(with-eval-after-load 'calendar
-  (defun org-calendar-capture (&optional with-time)
-    "Call `org-capture' with the date at point.
-With a `C-1' prefix, use the HH:MM value at point, if any, or the
-current HH:MM time."
-    (interactive "P")
-    (if (not (eq major-mode 'calendar-mode))
-        (user-error "You cannot do this outside of calendar buffers")
-      (progn
-        (require 'org)
-        (let ((org-overriding-default-time
-	           (org-get-cursor-date)))
-          (delete-window)
-          (call-interactively 'org-capture)))))
-
-  (defkey calendar-mode-map "k" 'org-calendar-capture))
+      (call-interactively 'org-toggle-checkbox))))
 
 
 ;;; Transients
@@ -2161,7 +2024,6 @@ current HH:MM time."
       ("c" "Go To Calendar" org-goto-calendar)
       ("v" "Visible Markup" visible-mode)]
      ["Item"
-      ("t" "TODO State" org-todo-transient)
       (":" "Set Tags" org-set-tags-command)
       ("a" "Archive Subtree" org-archive-subtree)
       ("r" "Refile" org-refile)

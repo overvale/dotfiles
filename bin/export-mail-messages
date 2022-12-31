@@ -1,0 +1,48 @@
+#!/usr/bin/env osascript
+
+-- Mail.app: Export Selected Messages to plain text (.txt) files
+-- https://stackoverflow.com/questions/72655448/how-to-use-applescript-to-save-an-email-as-a-txt-file
+-- https://veritrope.com/code/export-apple-mail-messages-and-notes-to-text-files/
+
+use AppleScript version "2.5"
+use scripting additions
+use framework "Foundation"
+
+set timeZone to (abbreviation of (current application's NSTimeZone's localTimeZone())) as text
+
+-- Mail.app part (load remote content, get message properties)
+tell application "Mail"
+	set download html attachments to true -- load remote content as well
+	set theMessages to selection
+	repeat with thisMessage in theMessages
+		tell thisMessage
+			
+			set {theSubject, fromHider} to {subject, "From: " & sender}
+			tell (get date sent) -- build here "Date: ....." text line
+				set dateSentHider to "Date: " & date string & " - " & time string & " " & timeZone
+			end tell
+			set {toHider, messageContent} to {"To: " & address of to recipient 1, content}
+			
+			set allText to fromHider & linefeed & "Subject: " & theSubject & linefeed & dateSentHider & ¬
+				linefeed & toHider & linefeed & linefeed & messageContent
+			
+			-- replace every ":" symbol in theSubject with "_"
+			set {ATID, AppleScript's text item delimiters} to {AppleScript's text item delimiters, ":"}
+			set {itemList, AppleScript's text item delimiters} to {text items of theSubject, "_"}
+			set {theSubject, AppleScript's text item delimiters} to {itemList as rich text, ATID}
+			
+			-- isolate the message's date for the filename
+			set theDate to date sent
+			set isoDay to rich text 1 thru 10 of (theDate as «class isot» as string)
+			
+			-- build destination file's Posix path, write to it
+			set theFile to POSIX path of (path to desktop folder) & isoDay & " - " & theSubject & ".txt"
+			-- or,
+			-- set theFile to POSIX path of (choose folder) & theSubject & ".txt"
+			((current application's NSString's stringWithString:allText)'s writeToFile:theFile atomically:true ¬
+				encoding:(current application's NSUTF8StringEncoding) |error|:(missing value))
+			
+		end tell
+	end repeat
+end tell
+

@@ -633,6 +633,9 @@ If r is pressed replace the text with the result"
 ;;; Minibuffer
 
 (custom-set-variables
+ '(read-file-name-completion-ignore-case t)
+ '(read-buffer-completion-ignore-case t)
+ '(completion-ignore-case t)
  '(completions-format 'one-column)
  '(completions-detailed t)
  '(completion-show-help nil)
@@ -1676,7 +1679,15 @@ M - Mike         Z - Zulu")
                      :preview-key nil)
   (custom-set-variables
    '(consult-find-command "fd --color=never --full-path ARG OPTS"))
+
   :eval
+  (setq completion-in-region-function
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args)))
+
   (defkey global-map
     [remap imenu] 'consult-imenu
     [remap yank-pop] 'consult-yank-pop

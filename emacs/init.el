@@ -788,44 +788,37 @@ If r is pressed replace the text with the result"
 
 ;;; Themes
 
-;; Don't ask when loading themes
 (setq custom-safe-themes t)
 
 (load-package 'modus-themes
   :require
   :after-load
+  (setq modus-themes-italic-constructs t
+        modus-themes-mixed-fonts t
+        modus-themes-prompts '(bold))
 
-  (custom-set-variables
-   '(modus-themes-mixed-fonts t)
-   '(modus-themes-italic-constructs t)
-   '(modus-themes-links '(neutral-underline))
-   '(modus-themes-org-blocks 'gray-background)
-   '(modus-themes-org-agenda '((header-block . (variable-pitch 1.6))
-                               (header-date . (bold-today))
-                               (scheduled . rainbow))))
-
-  (custom-set-variables
-   '(modus-themes-vivendi-color-overrides '((bg-main     . "#24242d")
-                                            (bg-inactive . "#2f2f3b")
-                                            (bg-hl-line  . "#2f2f3b"))))
-
-  ;; I want different syntax options for operandi and vivendi and there doesn't
-  ;; seem to be a built in way to do that. So I've created some custom
-  ;; functions/advice for that. NOTE that any options you set in one of the
-  ;; themes need to be reset to nil in the other theme.
+  ;; Run (modus-themes-list-colors-current) to see color options.
+  (defun customize-modus-operandi nil
+    (setq modus-themes-common-palette-overrides
+          '((underline-link border)
+            (underline-link-visited border)
+            (underline-link-symbolic border)
+            (bg-mode-line-active bg-blue-subtle)
+            (fg-mode-line-active fg-main)
+            (bg-region bg-cyan-subtle)
+            (fg-region fg-main)
+            (comment red)
+            (string green-cooler))))
 
   (defun customize-modus-vivendi nil
-    (custom-set-variables
-     '(modus-themes-mode-line '(accented borderless (padding . 3)))
-     '(modus-themes-syntax '(alt-syntax green-strings yellow-comments faint))))
-
-  (defun customize-modus-operandi nil
-    (custom-set-variables
-     '(modus-themes-mode-line '(borderless (padding . 3)))
-     '(modus-themes-syntax nil)))
-
-  (advice-add 'load-theme-dark :before 'customize-modus-vivendi)
-  (advice-add 'load-theme-light :before 'customize-modus-operandi))
+    (setq modus-themes-common-palette-overrides
+          '((bg-main bg-dim)
+            (bg-mode-line-active bg-cyan-subtle)
+            (fg-mode-line-active fg-main)
+            (bg-region bg-lavender)
+            (fg-region fg-main)
+            (comment magenta-faint)
+            (string green-faint)))))
 
 (load-package 'theme-loading
   :require
@@ -833,6 +826,9 @@ If r is pressed replace the text with the result"
   (setq light-theme 'modus-operandi)
   (setq dark-theme  'modus-vivendi)
   (setq default-theme-color 'light)
+
+  (advice-add 'load-theme-light :before 'customize-modus-operandi)
+  (advice-add 'load-theme-dark :before 'customize-modus-vivendi)
 
   (load-theme-custom 'system)
 

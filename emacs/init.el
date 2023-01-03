@@ -788,9 +788,10 @@ If r is pressed replace the text with the result"
 
 (setq custom-safe-themes t)
 
-(load-package 'modus-themes
-  :require
-  :after-load
+(progn
+  (require 'modus-themes)
+  (require 'theme-loading)
+
   (setq modus-themes-italic-constructs t
         modus-themes-mixed-fonts t
         modus-themes-prompts '(bold))
@@ -822,9 +823,6 @@ This function is marked as obsolete in modus-themes 4.0 for some reason."
             (comment yellow-cooler)
             (string green-faint))))
 
-(load-package 'theme-loading
-  :require
-  :after-load
   (setq light-theme 'modus-operandi)
   (setq dark-theme  'modus-vivendi)
   (setq default-theme-color 'light)

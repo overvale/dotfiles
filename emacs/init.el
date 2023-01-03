@@ -800,6 +800,11 @@ If r is pressed replace the text with the result"
         modus-themes-mixed-fonts t
         modus-themes-prompts '(bold))
 
+  (defun modus-themes-color (face)
+    "Return the value of a modus-themes face.
+This function is marked as obsolete in modus-themes 4.0 for some reason."
+    (car (alist-get face (modus-themes--current-theme-palette))))
+
   ;; Run (modus-themes-list-colors-current) to see color options.
   (defun customize-modus-operandi nil
     (setq modus-themes-common-palette-overrides

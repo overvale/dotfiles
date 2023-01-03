@@ -600,11 +600,6 @@ If r is pressed replace the text with the result"
        next-screen-context-lines)
     2)))
 
-(defun compose-mail-system ()
-  "Compose a message using macOS's default mail program."
-  (interactive)
-  (browse-url-default-macosx-browser "mailto:"))
-
 (defun shell-open (path)
   "Send PATH to shell command 'open'."
   (shell-command (concat "open " path)))
@@ -1895,6 +1890,21 @@ With a prefix argument, copy the link to the online manual instead."
      [("N" "Number-lines" rectangle-number-lines)
       ("e" "exchange-point" rectangle-exchange-point-and-mark)]]))
 
+(load-package 'browse-url
+  :eval
+  (setq browse-url-mailto-function 'browse-url-generic
+        browse-url-generic-program "open")
+
+  (defun compose-mail-system ()
+    "Compose a message using macOS's default mail program."
+    (interactive)
+    (browse-url "mailto:"))
+
+  (defun send-buffer-mail-system ()
+    "Send the current buffer as an email using the system mail program."
+    (interactive)
+    (browse-url (concat "mailto:?subject=" (url-hexify-string (buffer-name))
+                        "&body=" (url-hexify-string (buffer-string))))))
 
 ;;; Org
 

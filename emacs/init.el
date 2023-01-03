@@ -1310,19 +1310,6 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("o" "Kill Others"  delete-other-windows)
     ("m" "Maximize" maximize-window)]])
 
-(load-package 'windmove
-  :eval
-  (setq windmove-create-window t)
-  (defkey global-map
-    "S-<up>" #'windmove-up
-    "S-<right>" #'windmove-right
-    "S-<down>" #'windmove-down
-    "S-<left>" #'windmove-left
-    "M-S-<up>" #'windmove-swap-states-up
-    "M-S-<right>" #'windmove-swap-states-right
-    "M-S-<down>" #'windmove-swap-states-down
-    "M-S-<left>" #'windmove-swap-states-left))
-
 
 ;;; Confirm Killing Modified Buffers
 

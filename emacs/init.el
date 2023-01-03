@@ -1605,10 +1605,13 @@ M - Mike         Z - Zulu")
   (vertico-multiform-mode 1)
 
   (setq vertico-multiform-categories
-        '((file reverse)))
+        '((file grid)
+          (consult-grep buffer)))
 
-  (setq vertico-multiform-commands '(
-          (completion-at-point reverse)))
+  (setq vertico-multiform-commands
+        '((consult-imenu buffer indexed)
+          (execute-extended-command unobtrusive)
+          (consult-buffer unobtrusive)))
 
   (defkey vertico-map
     "'"   #'vertico-quick-jump
@@ -1619,9 +1622,9 @@ M - Mike         Z - Zulu")
     "M-u" #'vertico-multiform-unobtrusive)
 
   ;; vertico-directory
-  (define-key vertico-map "\r" #'vertico-directory-enter)
-  (define-key vertico-map "\d" #'vertico-directory-delete-char)
-  (define-key vertico-map "\M-\d" #'vertico-directory-delete-word)
+  (define-key vertico-map (kbd "RET") #'vertico-directory-enter)
+  (define-key vertico-map (kbd "DEL") #'vertico-directory-delete-char)
+  (define-key vertico-map (kbd "M-DEL") #'vertico-directory-delete-word)
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
 
   ) ; end vertico/extensions

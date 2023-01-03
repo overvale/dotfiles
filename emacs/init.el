@@ -811,8 +811,6 @@ This function is marked as obsolete in modus-themes 4.0 for some reason."
           '((underline-link border)
             (underline-link-visited border)
             (underline-link-symbolic border)
-            (bg-mode-line-active bg-blue-subtle)
-            (fg-mode-line-active fg-main)
             (bg-region bg-cyan-subtle)
             (fg-region fg-main)
             (comment red)
@@ -821,12 +819,13 @@ This function is marked as obsolete in modus-themes 4.0 for some reason."
   (defun customize-modus-vivendi nil
     (setq modus-themes-common-palette-overrides
           '((bg-main bg-dim)
+            (cursor blue-intense)
             (bg-mode-line-active bg-cyan-subtle)
             (fg-mode-line-active fg-main)
             (bg-region bg-lavender)
             (fg-region fg-main)
-            (comment magenta-faint)
-            (string green-faint)))))
+            (comment yellow-cooler)
+            (string green-faint))))
 
 (load-package 'theme-loading
   :require
@@ -952,7 +951,7 @@ the buffer works like a pager."
   "Return a string indicating buffer modification status."
   (if (and (buffer-modified-p)
            (buffer-file-name))
-      (propertize " -MOD- "
+      (propertize " MOD "
                   'face `( :background ,(modus-themes-color 'blue-faint)
                            :foreground ,(modus-themes-color 'bg-main)
                            :weight bold)
@@ -961,8 +960,8 @@ the buffer works like a pager."
 (defun mode-line-buffer-read-only-status ()
   "Return a string indicating buffer read-only status."
   (if buffer-read-only
-      (propertize " -RO- "
-                  'face `( :background ,(modus-themes-color 'yellow)
+      (propertize " RO "
+                  'face `( :background ,(modus-themes-color 'red-warmer)
                            :foreground ,(modus-themes-color 'bg-main)
                            :weight bold)
                   'help-echo "Buffer is read-only!")))
@@ -970,8 +969,9 @@ the buffer works like a pager."
 (defun mode-line-buffer-confirm-kill-status ()
   "Return a string indicating `buffer-confirm-kill' status."
   (if buffer-confirm-kill
-      (propertize " -CK- "
-                  'face `( :foreground ,(modus-themes-color 'cyan-intense))
+      (propertize " Confirm "
+                  'face `( :background ,(modus-themes-color 'cyan-intense)
+                           :foreground ,(modus-themes-color 'bg-main))
                   'help-echo "You must confirm killing this buffer.")))
 
 (defun mode-line-buffer-line-spacing-status ()

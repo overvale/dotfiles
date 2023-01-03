@@ -1804,7 +1804,24 @@ With a prefix argument, copy the link to the online manual instead."
   :after-load
   (require 'solar)
   (setq calendar-latitude 34.157
-        calendar-longitude -118.324))
+        calendar-longitude -118.324)
+
+  (defvar calendar-copy-as-kill-format "%a %d %B %Y"
+    "Format string for formatting calendar dates with `format-time-string'.")
+
+  (defun calendar-copy-as-kill ()
+    "Copy date at point as kill if region is not active."
+    (interactive)
+    (if (use-region-p)
+        (call-interactively #'kill-ring-save)
+      (let ((date (calendar-cursor-to-date)))
+        (when date
+          (setq date (encode-time 0 0 0 (nth 1 date) (nth 0 date) (nth 2 date)))
+          (kill-new (format-time-string calendar-copy-as-kill-format date))
+          (message "Date saved to kill-ring.")))))
+
+  (defkey calendar-mode-map
+    "s-c" 'calendar-copy-as-kill))
 
 (load-package 'time
   :after-load

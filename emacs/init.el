@@ -236,25 +236,26 @@ Define your keys like this:
         def)
       (setq body (cddr body)))))
 
-;;;; Bosskey Mode
+;;;; Override Global Mode
 
 ;; The key binding technique below is taken from the bind-key package. It
 ;; places all the bindings I don't want overridden into a minor mode which is
 ;; inserted into the `emulation-mode-map-alists', so only very few things can
 ;; override them.
 
-(defvar bosskey-mode-map (make-sparse-keymap))
+(defvar override-global-map (make-keymap)
+  "Keymap for `override-global-mode'.")
 
-(define-minor-mode bosskey-mode
+(define-minor-mode override-global-mode
   "Minor mode for my personal keybindings, which override others.
 The only purpose of this minor mode is to override global keybindings.
 Keybindings you define here will take precedence."
   :init-value t
   :global t
-  :keymap bosskey-mode-map)
+  :keymap override-global-map)
 
 (add-to-list 'emulation-mode-map-alists
-             `((bosskey-mode . ,bosskey-mode-map)))
+             `((override-global-mode . ,override-global-map)))
 
 
 ;;;; Critical Packages
@@ -683,16 +684,16 @@ If r is pressed replace the text with the result"
 
 ;; I'm trying to unlearn these and use the `general-transient' and mac-like
 ;; bindings instead.
-(defkey bosskey-mode-map
+(defkey override-global-map
   "C-x C-f" 'undefined
   "C-x f"   'undefined
   "C-x C-b" 'undefined
   "C-x b"   'undefined
   "C-x k"   'undefined)
 
-;; Because they're in the `bosskey-mode-map' these bindings won't be
+;; Because they're in the `override-global-map' these bindings won't be
 ;; overridden by minor modes and the like.
-(defkey bosskey-mode-map
+(defkey override-global-map
   "<C-return>" 'universal-transient
   "M-j" 'join-line-next
   "C-." 'embark-act
@@ -713,7 +714,7 @@ If r is pressed replace the text with the result"
   "C-M-O" 'other-window-prefix)
 
 (with-eval-after-load 'magit
-  ;; Magit overrides `bosskey-mode-map', so I need to override this here:
+  ;; Magit overrides `override-global-map', so I need to override this here:
   (defkey magit-file-section-map "<C-return>" 'universal-transient))
 
 ;; For bindings that I do want to be overriden by minor/major modes, I use the
@@ -1016,7 +1017,7 @@ back to system default."
 (advice-add 'mac-next-tab :around 'add-arg-to-func)
 (advice-add 'mac-previous-tab :around 'add-arg-to-func)
 
-(defkey bosskey-mode-map
+(defkey override-global-map
   "s-t" 'mac-new-tab
   "s-}" 'mac-next-tab
   "s-{" 'mac-previous-tab
@@ -1091,7 +1092,7 @@ If SPACING is nil, set line-spacing to nil."
       (message "Line-spacing is nil")
     (setq-local line-spacing (- line-spacing 1))))
 
-(defkey bosskey-mode-map
+(defkey override-global-map
   "C-c C-=" 'buffer-line-spacing-increase
   "C-c C-+" 'buffer-line-spacing-increase
   "C-c C--" 'buffer-line-spacing-decrease
@@ -1216,7 +1217,7 @@ Does not pass arguments to underlying functions."
    [("SPC" "Activate Mark" activate-the-mark)
     ("RET" "Exit" transient-quit-all)]])
 
-(defkey bosskey-mode-map
+(defkey override-global-map
   "C-z" 'set-mark-transient
   "C-M-h" 'mark-line
   "C-x C-x" 'exchange-point-and-mark-dwim)

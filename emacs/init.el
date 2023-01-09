@@ -694,6 +694,7 @@ If r is pressed replace the text with the result"
     "C-p" 'switch-to-completions-bottom)
   (defkey list
     [remap other-window] 'switch-to-minibuffer
+    "M-v" 'switch-to-minibuffer
     "z" #'completion-kill-buffer
     [remap keyboard-quit] #'delete-completion-window
     [remap quit-window] #'completion-quit
@@ -721,8 +722,10 @@ If r is pressed replace the text with the result"
   "M-j" 'join-line-next
   "C-." 'embark-act
   "s-b" 'consult-buffer
+  "s-B" 'consult-buffer-other-window
   "s-f" 'consult-line
   "s-o" 'find-file
+  "s-O" 'find-file-other-window
   "s-j" 'dired-jump
   "s-w" 'window-transient
   "M-/" 'completion-at-point
@@ -1715,6 +1718,7 @@ M - Mike         Z - Zulu")
                  args)))
 
   (defkey global-map
+    "M-m" 'consult-outline
     [remap imenu] 'consult-imenu
     [remap yank-pop] 'consult-yank-pop
     [remap repeat-complex-command] #'consult-complex-command))
@@ -2046,7 +2050,6 @@ With a prefix argument, copy the link to the online manual instead."
       (", f" "Set Fonts" set-custom-fonts)
       (", F" "Set Buffer Fonts" buffer-remap-faces-mode)
       (", t" "Toggle Dark/Light Theme" toggle-theme-color :transient t)
-      (", T" "Toggle macOS Apperance" macos-toggle-system-appearance :transient t)
       (", d" "Date/Time mode-line" toggle-date-time-battery)]
      ["Macros"
       ("m s" "Start" start-kbd-macro)

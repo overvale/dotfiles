@@ -72,6 +72,7 @@
  '(tool-bar-mode nil)
  '(ring-bell-function 'ignore)
  '(context-menu-mode 1)
+ '(column-number-mode 1)
  '(scroll-step 1)
  '(scroll-margin 1)
  '(set-language-environment "UTF-8")

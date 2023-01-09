@@ -1375,6 +1375,8 @@ M - Mike         Z - Zulu")
   (progn
     ))"))
 
+(add-to-list 'snippet-alist '(comment-line . "# ----------------------------------------------------------"))
+
 
 ;;; Packages
 

@@ -760,6 +760,9 @@ This function is missing in modus-themes 4.0 for some reason."
 
   (set-custom-fonts "Berkeley"))
 
+;; Enable rendering SF symbols on macOS.
+(set-fontset-font t nil "SF Pro Text" nil 'append)
+
 
 ;;; Mode-Line
 
@@ -792,35 +795,26 @@ This function is missing in modus-themes 4.0 for some reason."
   "Return a string indicating buffer modification status."
   (if (and (buffer-modified-p)
            (buffer-file-name))
-      (propertize " MOD "
-                  'face `( :background ,(modus-themes-color 'blue-faint)
-                           :foreground ,(modus-themes-color 'bg-main)
-                           :weight bold)
+      (propertize " 􀤑 "
                   'help-echo "Buffer is modified.")))
 
 (defun mode-line-buffer-read-only-status ()
   "Return a string indicating buffer read-only status."
   (if buffer-read-only
-      (propertize " RO "
-                  'face `( :background ,(modus-themes-color 'red-warmer)
-                           :foreground ,(modus-themes-color 'bg-main)
-                           :weight bold)
+      (propertize " 􀎠 "
                   'help-echo "Buffer is read-only!")))
 
 (defun mode-line-buffer-confirm-kill-status ()
   "Return a string indicating `buffer-confirm-kill' status."
   (if buffer-confirm-kill
-      (propertize " Confirm "
-                  'face `( :background ,(modus-themes-color 'cyan-intense)
-                           :foreground ,(modus-themes-color 'bg-main))
+      (propertize " 􀞛 "
                   'help-echo "You must confirm killing this buffer.")))
 
 (defun mode-line-buffer-line-spacing-status ()
   "Return a string indicating the buffer's `line-spacing' value."
   (if line-spacing
-      (propertize
-       (concat " LS+" (number-to-string line-spacing))
-       'help-echo "Buffer's line-spacing has been modified.")))
+      (propertize (concat " 􀆏" (number-to-string line-spacing) " ")
+                  'help-echo "Buffer's line-spacing has been modified.")))
 
 ;; Normally the buffer name is right-padded with whitespace until it
 ;; is at least 12 characters. This is a waste of space, so we
@@ -834,10 +828,9 @@ This function is missing in modus-themes 4.0 for some reason."
                 "  " mode-line-buffer-identification "  "
                 (:eval (mode-line-buffer-read-only-status))
                 (:eval (mode-line-buffer-confirm-kill-status))
-                (:eval (if (eq buffer-position t) (list "  " mode-line-position "  ") " "))
+                (:eval (if (eq buffer-position t) (list "  􀋵 " mode-line-position "  ") " "))
                 mode-line-modes
                 (:eval (mode-line-buffer-line-spacing-status))
-                (vc-mode vc-mode)
                 mode-line-misc-info))
 
 

@@ -818,7 +818,12 @@ If r is pressed replace the text with the result"
 
   (setq modus-themes-italic-constructs t
         modus-themes-mixed-fonts t
-        modus-themes-prompts '(bold))
+        modus-themes-prompts '(bold)
+        modus-themes-org-blocks 'gray-background
+        modus-themes-headings
+           '((1 . (variable-pitch regular 1.3))
+             (2 . (variable-pitch regular 1.2))
+             (t . (1))))
 
   (defun modus-themes-color (face)
     "Return the value of a modus-themes face.
@@ -828,7 +833,9 @@ This function is marked as obsolete in modus-themes 4.0 for some reason."
   ;; Run (modus-themes-list-colors-current) to see color options.
   (defun customize-modus-operandi nil
     (setq modus-themes-common-palette-overrides
-          '((underline-link border)
+          '((bg-mode-line-active bg-blue-intense)
+            (fg-mode-line-active fg-main)
+            (underline-link border)
             (underline-link-visited border)
             (underline-link-symbolic border)
             (bg-region bg-cyan-subtle)
@@ -906,12 +913,19 @@ the buffer works like a pager."
                      :mode-height 130
                      :vari-height 140))
           (Berkeley . ( :mono "Berkeley Mono"
-                        :vari "Verdana"
+                        :vari "Go"
                         :mode "SF Compact Text"
                         :line nil
                         :mono-height 120
                         :mode-height 130
-                        :vari-height 130))
+                        :vari-height 120))
+          (Go . ( :mono "Go Mono"
+                  :vari "Go"
+                  :mode "Go"
+                  :line nil
+                  :mono-height 120
+                  :mode-height 120
+                  :vari-height 120))
           (Hack . ( :mono "Hack"
                     :vari "Verdana"
                     :mode "SF Compact Text"
@@ -934,7 +948,7 @@ the buffer works like a pager."
                         :mode-height 140
                         :vari-height 130))))
 
-  (set-custom-fonts "Hack"))
+  (set-custom-fonts "Berkeley"))
 
 
 ;;; Mode-Line

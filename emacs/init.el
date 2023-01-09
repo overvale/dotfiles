@@ -843,26 +843,15 @@ This function is missing in modus-themes 4.0 for some reason."
 ;; `tab-bar-mode'.
 
 (defun mac-new-tab ()
-  "Create new Mac-style tab.
-This function works by setting the new-frame behaviour to use
-tabs, creating a new frame (thus, tab), then changing the setting
-back to system default."
+  "Create new Mac-style tab."
   (interactive)
-  (setq mac-frame-tabbing t)
-  (make-frame-command)
-  (setq mac-frame-tabbing 'automatic))
-
-(defun add-arg-to-func (fn &rest args)
-  "Adds the argument \'1\' to FN."
-  (funcall fn 1))
-
-(advice-add 'mac-next-tab :around 'add-arg-to-func)
-(advice-add 'mac-previous-tab :around 'add-arg-to-func)
+  (let ((mac-frame-tabbing t))
+    (make-frame-command)))
 
 (defkey override-global-map
   "s-t" 'mac-new-tab
-  "s-}" 'mac-next-tab
-  "s-{" 'mac-previous-tab
+  "s-}" (lambda () (interactive (mac-next-tab 1)))
+  "s-{" (lambda () (interactive (mac-previous-tab 1)))
   "s-T" 'mac-toggle-tab-bar
   "s-|" 'mac-toggle-tab-group-overview)
 

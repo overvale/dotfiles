@@ -1746,6 +1746,7 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
    '(org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+")))
    '(org-list-indent-offset 2)
    ;; src blocks
+   '(org-link-elisp-confirm-function nil)
    '(org-src-fontify-natively t)
    '(org-fontify-quote-and-verse-blocks t)
    '(org-src-tab-acts-natively t)

@@ -94,6 +94,7 @@
  '(tab-width 4)
  '(indent-tabs-mode nil)
  '(fill-column 78)
+ '(split-width-threshold 120)
  '(delete-by-moving-to-trash t)
  '(trash-directory "~/.Trash"))
 

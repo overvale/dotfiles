@@ -1233,6 +1233,14 @@ PROMPT sets the `read-string prompt."
                    "https://github.com/search?l=Emacs+Lisp&type=Code&q="
                    "Github Elisp: ")
 
+(web-search-engine "imdb"
+                   "https://www.imdb.com/find/?q="
+                   "IMDB: ")
+
+(web-search-engine "linkedin"
+                   "https://www.linkedin.com/search/results/all/?keywords="
+                   "LinkedIn: ")
+
 
 ;;; Quick Help
 

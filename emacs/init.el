@@ -536,6 +536,7 @@ With a prefix ARG always prompt for command to use."
   "s-b" 'consult-buffer
   "s-B" 'consult-buffer-other-window
   "s-f" 'consult-line
+  "s-F" 'consult-line-multi
   "s-o" 'find-file
   "s-O" 'find-file-other-window
   "s-j" 'dired-jump
@@ -544,7 +545,6 @@ With a prefix ARG always prompt for command to use."
   "M-\\" 'cycle-spacing
   "M-z" 'zap-up-to-char
   "M-S-q" 'unfill-dwim
-  "C-d" 'delete-forward-char
   "M-o" 'other-window
   "M-O" 'other-window-previous)
 
@@ -599,13 +599,14 @@ With a prefix ARG always prompt for command to use."
   "s-x" 'kill-region
   "s-c" 'kill-ring-save
   "s-v" 'yank
-  "s-<backspace>" 'backward-kill-line-dwim
+  "s-<backspace>" 'backward-kill-line
   "s-a" 'mark-whole-buffer
   "s-n" 'new-buffer
   "s-N" 'make-frame-command
   "s-[" 'previous-buffer
   "s-]" 'next-buffer
   "s-/" 'comment-line
+  "s-e" 'isearch-forward-symbol-at-point
   "s-<up>" 'beginning-of-buffer
   "s-<down>" 'end-of-buffer
   "s-s" 'save-buffer
@@ -1073,6 +1074,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("c" "Clone Indirect" clone-indirect-buffer)
     ("t" "Tear Off" tear-off-window)
     ("k" "Kill" delete-window)
+    ("s-w" "Kill Frame" delete-frame)
     ("K" "Kill Buffer & Window" kill-buffer-and-window)
     ("o" "Kill Others"  delete-other-windows)
     ("m" "Maximize" maximize-window)]])
@@ -1634,6 +1636,7 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
           (message "Date saved to kill-ring.")))))
 
   (defkey calendar-mode-map
+    "w"   'calendar-copy-as-kill
     "s-c" 'calendar-copy-as-kill))
 
 (load-package 'time

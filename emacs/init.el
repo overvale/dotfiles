@@ -390,13 +390,6 @@ Uses the `default-directory' unless a path is supplied."
       (unfill-region)
     (unfill-paragraph)))
 
-(defun browse-url-macos-background (url)
-  "Open URL with macOS `open'."
-  (interactive)
-  (start-process "open url"
-                 nil "open" "--background" url)
-  (message "URL opened in background."))
-
 (defun crux-open-with (arg)
   "Open visited file in default external program.
 When in dired mode, open file under the cursor.
@@ -623,7 +616,14 @@ With a prefix ARG always prompt for command to use."
   "s-." 'keyboard-quit)
 
 
-;;; Themes
+;;; Theme & Cursor
+
+(custom-set-variables
+ '(cursor-type 'box)
+ '(cursor-in-non-selected-windows 'hollow)
+ '(blink-cursor-blinks 0)
+ '(blink-cursor-interval 0.5)
+ '(blink-cursor-delay 0.2))
 
 (setq custom-safe-themes t)
 
@@ -1032,20 +1032,11 @@ Does not pass arguments to underlying functions."
                (window-height . fit-window-to-buffer))
              t)
 
-(add-to-list 'display-buffer-alist
-             '("\\*Org Select\\*"
-               (display-buffer-in-side-window)
-               (dedicated . t)
-               (side . bottom)
-               (slot . 0)
-               (window-parameters . ((mode-line-format . none))))
-             t)
-
-(add-to-list 'display-buffer-alist
-             '("\\*\\(.* # Help.*\\|Help\\)\\*"
-               (display-buffer-reuse-window display-buffer-same-window)
-               (reusable-frames . t))
-             t)
+;; (add-to-list 'display-buffer-alist
+;;              '("\\*\\(.* # Help.*\\|Help\\)\\*"
+;;                (display-buffer-reuse-window display-buffer-same-window)
+;;                (reusable-frames . t))
+;;              t)
 
 (add-to-list 'display-buffer-alist
              '("\\*wclock.*"
@@ -1560,7 +1551,7 @@ With a prefix argument, copy the link to the online manual instead."
   (defun dired-finder nil
     "Open the current dired directory in Finder."
     (interactive)
-    (shell-open dired-directory))
+    (shell-command (concat "open " dired-directory)))
 
   (defkey dired-mode-map
     "." 'dired-finder
@@ -1706,6 +1697,13 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
   (setq browse-url-mailto-function 'browse-url-generic
         browse-url-generic-program "open")
 
+  (defun browse-url-macos-background (url)
+    "Open URL with macOS `open'."
+    (interactive)
+    (start-process "open url"
+                   nil "open" "--background" url)
+    (message "URL opened in background."))
+
   (defun compose-mail-system ()
     "Compose a message using macOS's default mail program."
     (interactive)
@@ -1800,7 +1798,7 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
      ["Settings"
       (", f" "Set Fonts" set-custom-fonts)
       (", F" "Set Buffer Fonts" buffer-remap-faces-mode)
-      (", t" "Toggle Dark/Light Theme" toggle-theme-color :transient t)
+      (", t" "Toggle Dark/Light Theme" modus-themes-toggle :transient t)
       (", d" "Date/Time mode-line" toggle-date-time-battery)]
      ["Macros"
       ("m s" "Start" start-kbd-macro)

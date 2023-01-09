@@ -815,9 +815,42 @@ If r is pressed replace the text with the result"
 
 (setq custom-safe-themes t)
 
-(progn
-  (require 'modus-themes)
-  (require 'theme-loading)
+(defun disable-current-themes nil
+  "Disables all currently enabled themes."
+  (interactive)
+  (if custom-enabled-themes
+      (mapcar 'disable-theme custom-enabled-themes)))
+
+(defun load-theme-cleanly (theme)
+  "Disable active themes, then load theme."
+  (interactive
+   (list (intern
+          (completing-read "Load Theme: "
+                           (mapcar 'symbol-name (custom-available-themes))))))
+  (disable-current-themes)
+  (load-theme theme t))
+
+(defun macos-dark-p ()
+  "Return t if macOS appearance is dark."
+  (interactive)
+  (string= (shell-command-to-string "defaults read -g AppleInterfaceStyle")
+           "Dark\n"))
+
+(load-package 'modus-themes
+  ;; Run (modus-themes-list-colors-current) to see color options.
+  :require
+  :eval
+  (defun modus-themes-color (face)
+    "Return the value of a modus-themes face.
+This function is missing in modus-themes 4.0 for some reason."
+    (car (alist-get face (modus-themes--current-theme-palette))))
+
+  (defun load-modus-theme-match-system nil
+    "Load `modus-operandi' or `modus-vivendi' matching the system theme."
+    (interactive)
+    (if (macos-dark-p)
+        (load-theme-cleanly 'modus-vivendi)
+      (load-theme-cleanly 'modus-operandi)))
 
   (setq modus-themes-italic-constructs t
         modus-themes-mixed-fonts t
@@ -828,73 +861,30 @@ If r is pressed replace the text with the result"
              (2 . (variable-pitch regular 1.2))
              (t . (1))))
 
-  (defun modus-themes-color (face)
-    "Return the value of a modus-themes face.
-This function is marked as obsolete in modus-themes 4.0 for some reason."
-    (car (alist-get face (modus-themes--current-theme-palette))))
+  (setq modus-operandi-palette-overrides
+        '((bg-mode-line-active bg-blue-intense)
+          (fg-mode-line-active fg-main)
+          (underline-link border)
+          (underline-link-visited border)
+          (underline-link-symbolic border)
+          (bg-region bg-cyan-subtle)
+          (fg-region fg-main)
+          (comment red)
+          (string green-cooler)))
 
-  ;; Run (modus-themes-list-colors-current) to see color options.
-  (defun customize-modus-operandi nil
-    (setq modus-themes-common-palette-overrides
-          '((bg-mode-line-active bg-blue-intense)
-            (fg-mode-line-active fg-main)
-            (underline-link border)
-            (underline-link-visited border)
-            (underline-link-symbolic border)
-            (bg-region bg-cyan-subtle)
-            (fg-region fg-main)
-            (comment red)
-            (string green-cooler))))
+  (setq modus-vivendi-palette-overrides
+        '((bg-main bg-dim)
+          (cursor blue-intense)
+          (bg-mode-line-active bg-cyan-subtle)
+          (fg-mode-line-active fg-main)
+          (bg-region bg-lavender)
+          (fg-region fg-main)
+          (comment yellow-cooler)
+          (string green-faint)))
 
-  (defun customize-modus-vivendi nil
-    (setq modus-themes-common-palette-overrides
-          '((bg-main bg-dim)
-            (cursor blue-intense)
-            (bg-mode-line-active bg-cyan-subtle)
-            (fg-mode-line-active fg-main)
-            (bg-region bg-lavender)
-            (fg-region fg-main)
-            (comment yellow-cooler)
-            (string green-faint))))
+  (load-modus-theme-match-system)
 
-  (setq light-theme 'modus-operandi)
-  (setq dark-theme  'modus-vivendi)
-  (setq default-theme-color 'light)
-
-  (advice-add 'load-theme-light :before 'customize-modus-operandi)
-  (advice-add 'load-theme-dark :before 'customize-modus-vivendi)
-
-  (load-theme-custom 'system)
-
-  (add-hook 'mac-effective-appearance-change-hook (lambda () (load-theme-custom 'system))))
-
-;;; Cursor
-
-(custom-set-variables
- '(cursor-type 'box)
- '(cursor-in-non-selected-windows 'hollow)
- '(blink-cursor-blinks 0)
- '(blink-cursor-interval 0.5)
- '(blink-cursor-delay 0.2))
-
-(defvar-local hide-cursor--original nil)
-
-(define-minor-mode hide-cursor-mode
-  "Hide or show the cursor.
-
-When the cursor is hidden `scroll-lock-mode' is enabled, so that
-the buffer works like a pager."
-  :global nil
-  :lighter "H"
-  (if hide-cursor-mode
-      (progn
-        (scroll-lock-mode 1)
-        (setq-local hide-cursor--original
-                    cursor-type)
-        (setq-local cursor-type nil))
-    (scroll-lock-mode -1)
-    (setq-local cursor-type (or hide-cursor--original
-                                t))))
+  (add-hook 'mac-effective-appearance-change-hook 'load-modus-theme-match-system))
 
 
 ;;; Fonts

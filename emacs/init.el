@@ -71,6 +71,8 @@
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(ring-bell-function 'ignore)
+ '(use-dialog-box nil)
+ '(use-file-dialog nil)
  '(context-menu-mode 1)
  '(column-number-mode 1)
  '(scroll-step 1)

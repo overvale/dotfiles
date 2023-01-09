@@ -490,6 +490,29 @@ This will save the buffer if it is not currently saved."
   (interactive)
   (kill-line 0))
 
+(defun backward-kill-line-dwim ()
+  ;; https://christiantietze.de/posts/2022/09/delete-to-beginning-of-line-in-emacs-to-rewrite-code/
+  "Kill from point to beginning of line.
+In `prog-mode', delete up to beginning of actual, not visual
+line, stopping at whitespace. Repeat to delete whitespace. In
+other modes, e.g. when editing prose, delete to beginning of
+visual line only."
+  (interactive)
+  (let ((current-point (point)))
+      (if (not (derived-mode-p 'prog-mode))
+          ;; In prose editing, kill to beginning of (visual) line.
+          (if visual-line-mode
+              (kill-visual-line 0)
+            (kill-line 0))
+        ;; When there's whitespace at the beginning of the line, go to
+        ;; before the first non-whitespace char.
+        (beginning-of-line)
+        (when (search-forward-regexp (rx (not space)) (point-at-eol) t)
+          ;; `search-forward' puts point after the find, i.e. first
+          ;; non-whitespace char. Step back to capture it, too.
+          (backward-char))
+        (kill-region (point) current-point))))
+
 (defun join-line-next nil
   "Join this line to next."
   (interactive)
@@ -768,7 +791,7 @@ If r is pressed replace the text with the result"
   "s-x" 'kill-region
   "s-c" 'kill-ring-save
   "s-v" 'yank
-  "s-<backspace>" 'backward-kill-line
+  "s-<backspace>" 'backward-kill-line-dwim
   "s-a" 'mark-whole-buffer
   "s-n" 'new-buffer
   "s-N" 'make-frame-command

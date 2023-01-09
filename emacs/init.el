@@ -1032,12 +1032,6 @@ Does not pass arguments to underlying functions."
                (window-height . fit-window-to-buffer))
              t)
 
-;; (add-to-list 'display-buffer-alist
-;;              '("\\*\\(.* # Help.*\\|Help\\)\\*"
-;;                (display-buffer-reuse-window display-buffer-same-window)
-;;                (reusable-frames . t))
-;;              t)
-
 (add-to-list 'display-buffer-alist
              '("\\*wclock.*"
                (display-buffer-below-selected)

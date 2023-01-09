@@ -287,8 +287,6 @@ Keybindings you define here will take precedence."
 
 ;;;; Environment Variables
 
-(defvar user-downloads-directory "~/Desktop/")
-
 (setq local-package-dir (concat user-home-dir "opt/"))
 
 (setq org-directory (concat user-home-dir "org/"))
@@ -357,11 +355,6 @@ argument makes the windows rotate backwards."
   (interactive)
   (other-window -1))
 
-(defun split-window-dwim ()
-  "Interactive wrapper around `split-window-sensibly'."
-  (interactive)
-  (split-window-sensibly))
-
 (defun find-file-recursively (&optional path)
   "Find Files Recursively using completing read.
 Uses the `default-directory' unless a path is supplied."
@@ -397,29 +390,12 @@ Uses the `default-directory' unless a path is supplied."
       (unfill-region)
     (unfill-paragraph)))
 
-(defun fill-unfill-paragraph ()
-  "Fill/unfill paragraph."
-  (interactive)
-  (if (eq last-command this-command)
-      (progn (setq this-command nil)
-             (unfill-paragraph))
-    (fill-paragraph)))
-
 (defun browse-url-macos-background (url)
   "Open URL with macOS `open'."
   (interactive)
   (start-process "open url"
                  nil "open" "--background" url)
   (message "URL opened in background."))
-
-(defun macos-open-app (app)
-  "Open APP with macOS `open'."
-  (start-process "open app" nil "open" "-a" app))
-
-(defun macos-define-word ()
-  "Lookup `word-at-point' with MacOS's Dictionary.app"
-  (interactive)
-  (shell-command (format "open dict://%s" (word-at-point))))
 
 (defun crux-open-with (arg)
   "Open visited file in default external program.
@@ -437,38 +413,6 @@ With a prefix ARG always prompt for command to use."
                       (read-shell-command "Open current file with: ")
                     open)))
     (call-process program nil 0 nil current-file-name)))
-
-(defun crux-rename-file-and-buffer ()
-  "Rename current buffer and if the buffer is visiting a file, rename it too."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (rename-buffer (read-from-minibuffer "New name: " (buffer-name)))
-      (let* ((new-name (read-file-name "New name: " (file-name-directory filename)))
-             (containing-dir (file-name-directory new-name)))
-        (make-directory containing-dir t)
-        (cond
-         ((vc-backend filename) (vc-rename-file filename new-name))
-         (t
-          (rename-file filename new-name t)
-          (set-visited-file-name new-name t t)))))))
-
-(defun kf-make-file-executable ()
-  "Make current buffer's file have permissions 755 \(rwxr-xr-x)\.
-This will save the buffer if it is not currently saved."
-  (interactive)
-  (set-buffer-modified-p t)
-  (save-buffer)
-  (chmod (buffer-file-name) 493))
-
-(defun frames-p-save-buffers-kill-emacs ()
-  "If more than one frame exists, confirm exit of Emacs."
-  (interactive)
-  (if (nth 1 (frame-list))
-      (if (y-or-n-p "Multiple frames exist; exit anyway?")
-          (save-buffers-kill-emacs)
-        nil)
-    (save-buffers-kill-emacs)))
 
 (defun describe-symbol-at-point ()
   "Run `describe-symbol' for the `symbol-at-point'."
@@ -490,83 +434,11 @@ This will save the buffer if it is not currently saved."
   (interactive)
   (kill-line 0))
 
-(defun backward-kill-line-dwim ()
-  ;; https://christiantietze.de/posts/2022/09/delete-to-beginning-of-line-in-emacs-to-rewrite-code/
-  "Kill from point to beginning of line.
-In `prog-mode', delete up to beginning of actual, not visual
-line, stopping at whitespace. Repeat to delete whitespace. In
-other modes, e.g. when editing prose, delete to beginning of
-visual line only."
-  (interactive)
-  (let ((current-point (point)))
-      (if (not (derived-mode-p 'prog-mode))
-          ;; In prose editing, kill to beginning of (visual) line.
-          (if visual-line-mode
-              (kill-visual-line 0)
-            (kill-line 0))
-        ;; When there's whitespace at the beginning of the line, go to
-        ;; before the first non-whitespace char.
-        (beginning-of-line)
-        (when (search-forward-regexp (rx (not space)) (point-at-eol) t)
-          ;; `search-forward' puts point after the find, i.e. first
-          ;; non-whitespace char. Step back to capture it, too.
-          (backward-char))
-        (kill-region (point) current-point))))
-
 (defun join-line-next nil
   "Join this line to next."
   (interactive)
   (save-excursion
     (delete-indentation t)))
-
-(defun occur-dwim ()
-  "Call `occur' with a sane default."
-  (interactive)
-  (push (if (region-active-p)
-            (buffer-substring-no-properties
-             (region-beginning)
-             (region-end))
-          (--when-let (thing-at-point 'symbol)
-            (regexp-quote it)))
-        regexp-history)
-  (call-interactively 'occur))
-
-(defun wrap-region-in-xml-tag (start end arg)
-  "Wrap the region in an xml tag of ARG."
-  (interactive "r\nsTagname: ")
-  (goto-char start)
-  (insert "<" arg ">")
-  (goto-char (+ end 2 (length arg)))
-  (insert "</" arg ">"))
-
-(defun wrap-http-link-backwards ()
-  "Looks backwards from point for a link and wraps in HTML tag."
-  (interactive)
-  (let ((start (copy-marker (point))))
-    (re-search-backward "\\(^\\|\\s-+\\)https?://")
-    (forward-word 1)
-    (forward-word -1)
-    (insert "<a href=\"")
-    (search-forward " ")
-    (just-one-space)
-    (forward-char -1)
-    (insert "\"")
-    (forward-char 1)
-    (when (looking-at "$")
-      (delete-char -1)
-      (forward-char 1))
-    (insert ">")
-    (goto-char start)
-    (insert "</a>")))
-
-(defun safari-read-later (url)
-  "Add URL to Safari's Reading List."
-  (interactive
-   (list (completing-read "URL to save: " nil)))
-  (shell-command-to-string
-   (concat "osascript -e \'tell application \"Safari\" to add reading list item \""
-           url "\"\'"))
-  (message "URL sent to Safari's Reading List."))
 
 (defun dumb-down-punctuation (beg end)
   "Replace smart punctuation in buffer or region with ascii equivalents."
@@ -578,55 +450,6 @@ visual line only."
                             ("\x2013" . "--")
                             ("\x2014" . "---"))
                           nil beg end))
-
-(defun calc-eval-region (beg end)
-  "Calculate the region and display the result in the echo area.
-If a is pressed after, insert the result at the end of region.
-If r is pressed replace the text with the result"
-  (interactive (if (use-region-p)
-                   (list (region-beginning) (region-end))
-                 (list (point-at-bol) (point-at-eol))))
-  (let* ((expr (buffer-substring-no-properties beg end))
-         (result (calc-eval expr))
-         (my-beg beg)
-         (my-end end) map)
-    (message "%s = %s -- a = append, r = replace region" expr result)
-    (when (not (listp result))
-      (setq map (make-sparse-keymap))
-      (define-key map "a"
-        (lambda () (interactive) (goto-char my-end) (insert " = " result)))
-      (define-key map "r"
-        (lambda ()
-          (interactive)
-          (kill-region my-beg my-end)
-          (goto-char my-beg)
-          (insert result)))
-      (set-transient-map map))))
-
-(defun url-retrieve-source-at-point ()
-  "Get the URL at point and display the source."
-  (interactive)
-  (switch-to-buffer (url-retrieve (thing-at-point-url-at-point) (lambda (_)))))
-
-(defun scroll-up-half ()
-  (interactive)
-  (scroll-up-command
-   (floor
-    (- (window-height)
-       next-screen-context-lines)
-    2)))
-
-(defun scroll-down-half ()
-  (interactive)
-  (scroll-down-command
-   (floor
-    (- (window-height)
-       next-screen-context-lines)
-    2)))
-
-(defun shell-open (path)
-  "Send PATH to shell command 'open'."
-  (shell-command (concat "open " path)))
 
 
 ;;; Advice
@@ -643,10 +466,6 @@ If r is pressed replace the text with the result"
               dot-mode-execute
               apply-macro-to-region-lines))
   (advice-add fn :around #'block-undo))
-
-;; This makes it so the region is not deactivated after you indent text.
-(advice-add 'indent-rigidly-left-to-tab-stop :after 'activate-mark)
-(advice-add 'indent-rigidly-right-to-tab-stop :after 'activate-mark)
 
 
 ;;; Minibuffer
@@ -731,13 +550,10 @@ If r is pressed replace the text with the result"
   "M-/" 'completion-at-point
   "M-\\" 'cycle-spacing
   "M-z" 'zap-up-to-char
-  "M-i" 'imenu
-  "M-q" 'fill-unfill-paragraph
   "M-S-q" 'unfill-dwim
   "C-d" 'delete-forward-char
   "M-o" 'other-window
-  "M-O" 'other-window-previous
-  "C-M-O" 'other-window-prefix)
+  "M-O" 'other-window-previous)
 
 (with-eval-after-load 'magit
   ;; Magit overrides `override-global-map', so I need to override this here:
@@ -753,10 +569,6 @@ If r is pressed replace the text with the result"
   ;; Make shift-click extend the region.
   [S-down-mouse-1] 'ignore
   [S-mouse-1] 'mouse-save-then-kill
-  ;; mode-line mouse mappings
-  [mode-line S-mouse-1] 'mouse-delete-other-windows
-  [mode-line M-mouse-1] 'mouse-delete-window
-  [mode-line C-mouse-1] 'mouse-split-window-horizontally
   ;; Use M-drag-mouse-1 to create rectangle regions.
   [M-down-mouse-1] #'mouse-drag-region-rectangle ; down
   [M-drag-mouse-1] #'ignore                      ; drag
@@ -1055,48 +867,6 @@ back to system default."
   "s-|" 'mac-toggle-tab-group-overview)
 
 
-;;; Mac-style Search
-
-;; MacOS has this wonderful feature where you can select some text, run the
-;; command "Use Selection For Find" and then press command-g to jump directly
-;; to the next occurance of that text. Emacs has a few similar commands such
-;; as 'isearch-forward-symbol-at-point' but nothing identical. So I've built a
-;; few commands that let me replicate this great feature.
-
-(defvar search-dwim-initial-string nil
-  "Used by `search-forward-dwim' and `search-backward-dwim'.")
-
-(defun set-search-dwim-initial-string ()
-  "Sets `search-dwim-initial-string' to the region or symbol at point."
-  (interactive)
-  (let ((thing
-         (if (region-active-p)
-             (buffer-substring (region-beginning) (region-end))
-           (symbol-name (symbol-at-point)))))
-    (setq search-dwim-initial-string thing)
-    (deactivate-mark)
-    (message (format "%S" thing))))
-
-(defun search-forward-dwim (&optional arg)
-  (interactive)
-  (if arg (search-forward arg)
-    (if search-dwim-initial-string
-        (search-forward search-dwim-initial-string)
-      (message "Nothing to search for!"))))
-
-(defun search-backward-dwim (&optional arg)
-  (interactive)
-  (if arg (search-backward arg)
-    (if search-dwim-initial-string
-        (search-backward search-dwim-initial-string)
-      (message "Nothing to search for!"))))
-
-(defkey global-map
-  "s-e" 'set-search-dwim-initial-string
-  "s-G" 'search-backward-dwim
-  "s-g" 'search-forward-dwim)
-
-
 ;;; Buffer Line-Spacing
 
 ;; In a manner similar to `text-scale-adjust'.
@@ -1318,13 +1088,12 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
 (transient-define-prefix window-transient ()
   "Most commonly used window commands."
   [["Splits"
-    ("s" "Split Sensibly" split-window-dwim)
     ("h" "Split Horizontal" split-window-below-select)
     ("v" "Split Vertical"   split-window-right-select)
     ("b" "Balance"    balance-windows)
     ("f" "Fit"        fit-window-to-buffer)
     ("r" "Rotate Split" rotate-window-split)
-    ("S" "Swap Windows" swap-windows)]
+    ("s" "Swap Windows" swap-windows)]
    ["Window"
     ("d" "Dedicate Window" dedicated-mode)
     ("c" "Clone Indirect" clone-indirect-buffer)
@@ -1683,7 +1452,6 @@ M - Mike         Z - Zulu")
   (defkey embark-url-map
     "r" 'safari-read-later)
   (defkey embark-file-map
-    "O" 'crux-open-with
     "j" 'dired-jump))
 
 (load-package 'consult
@@ -1890,33 +1658,6 @@ With a prefix argument, copy the link to the online manual instead."
 (load-package 'ibuffer
   :after-load
   (setq ibuffer-display-summary nil))
-
-(load-package 'remember
-  :eval
-  (custom-set-variables
-   '(remember-data-file "~/home/remember-notes")
-   '(remember-notes-initial-major-mode 'fundamental-mode)
-   '(remember-notes-auto-save-visited-file-name t))
-  (defun remember-dwim ()
-    "If the region is active, capture with region, otherwise just capture."
-    (interactive)
-    (if (use-region-p)
-        (let ((current-prefix-arg 4)) (call-interactively 'remember))
-      (remember))))
-
-(load-package 'hippie-exp
-  :after-load
-  (setq hippie-expand-try-functions-list
-        '(try-complete-file-name-partially
-          try-complete-file-name
-          try-complete-lisp-symbol-partially
-          try-complete-lisp-symbol
-          try-expand-line
-          try-expand-list
-          try-expand-all-abbrevs
-          try-expand-dabbrev
-          try-expand-dabbrev-all-buffers
-          try-expand-dabbrev-from-kill)))
 
 (load-package 'rect
   ;; Making rectangle mode easier...

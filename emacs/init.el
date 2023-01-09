@@ -1592,6 +1592,40 @@ With a prefix argument, copy the link to the online manual instead."
   (setq calendar-latitude 34.157
         calendar-longitude -118.324)
 
+  (defun year-calendar (&optional year)
+    "Generate a one year calendar that can be scrolled by year in each direction.
+This is a modification of:  http://homepage3.nifty.com/oatu/emacs/calendar.html
+See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-than-3-months"
+    (interactive)
+    (require 'calendar)
+    (let* ((current-year (number-to-string (nth 5 (decode-time (current-time)))))
+           (month 0)
+           (year (if year year (string-to-number (format-time-string "%Y" (current-time))))))
+      (switch-to-buffer (get-buffer-create calendar-buffer))
+      (when (not (eq major-mode 'calendar-mode))
+        (calendar-mode))
+      (setq displayed-month month)
+      (setq displayed-year year)
+      (setq buffer-read-only nil)
+      (erase-buffer)
+      ;; horizontal rows
+      (dotimes (j 4)
+        ;; vertical columns
+        (dotimes (i 3)
+          (calendar-generate-month
+           (setq month (+ month 1))
+           year
+           ;; indentation / spacing between months
+           (+ 5 (* 25 i))))
+        (goto-char (point-max))
+        (insert (make-string (- 10 (count-lines (point-min) (point-max))) ?\n))
+        (widen)
+        (goto-char (point-max))
+        (narrow-to-region (point-max) (point-max)))
+      (widen)
+      (goto-char (point-min))
+      (setq buffer-read-only t)))
+
   (defvar calendar-copy-as-kill-format "%a %d %B %Y"
     "Format string for formatting calendar dates with `format-time-string'.")
 

@@ -448,6 +448,20 @@ With a prefix ARG always prompt for command to use."
                             ("\x2014" . "---"))
                           nil beg end))
 
+(defun compose-mail-macos (&optional to subject body)
+  "Compose a message using macOS's default mail program."
+  (interactive)
+  (start-process "Open Mail Message" nil "open"
+                 (concat "mailto:"
+                         (when to to) "?"
+                         (when subject (concat "&subject=" (url-hexify-string subject)))
+                         (when body (concat "&body=" (url-hexify-string body))))))
+
+(defun send-buffer-mail-macos ()
+  "Mail buffer using `compose-mail-macos'."
+  (interactive)
+  (compose-mail-macos nil (buffer-name) (buffer-string)))
+
 
 ;;; Advice
 
@@ -1706,18 +1720,7 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
     (interactive)
     (start-process "open url"
                    nil "open" "--background" url)
-    (message "URL opened in background."))
-
-  (defun compose-mail-system ()
-    "Compose a message using macOS's default mail program."
-    (interactive)
-    (browse-url "mailto:"))
-
-  (defun send-buffer-mail-system ()
-    "Send the current buffer as an email using the system mail program."
-    (interactive)
-    (browse-url (concat "mailto:?subject=" (url-hexify-string (buffer-name))
-                        "&body=" (url-hexify-string (buffer-string))))))
+    (message "URL opened in background.")))
 
 ;;; Org
 

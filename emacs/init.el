@@ -562,7 +562,7 @@ With a prefix ARG always prompt for command to use."
   "M-/" 'completion-at-point
   "M-\\" 'cycle-spacing
   "M-z" 'zap-up-to-char
-  "M-S-q" 'unfill-dwim
+  "M-Q" 'unfill-dwim
   "M-o" 'other-window
   "M-O" 'other-window-previous)
 
@@ -683,21 +683,25 @@ This function is missing in modus-themes 4.0 for some reason."
         (load-theme-cleanly 'modus-vivendi)
       (load-theme-cleanly 'modus-operandi)))
 
-  (setq modus-themes-italic-constructs t
+  (setq modus-themes-italic-constructs nil
         modus-themes-mixed-fonts t
         modus-themes-prompts '(bold)
         modus-themes-org-blocks 'gray-background
         modus-themes-headings
-           '((1 . (variable-pitch regular 1.3))
-             (2 . (variable-pitch regular 1.2))
-             (t . (1))))
+        '( (0 . (variable-pitch bold 1.5))
+           (1 . (variable-pitch regular 1.3))
+           (2 . (variable-pitch regular 1.2))
+           (3 . (variable-pitch bold 1))
+           (t . (1))))
+
+  (setq modus-themes-common-palette-overrides
+        '((underline-link border)
+          (underline-link-visited border)
+          (underline-link-symbolic border)))
 
   (setq modus-operandi-palette-overrides
         '((bg-mode-line-active bg-blue-intense)
           (fg-mode-line-active fg-main)
-          (underline-link border)
-          (underline-link-visited border)
-          (underline-link-symbolic border)
           (bg-region bg-cyan-subtle)
           (fg-region fg-main)
           (comment red)
@@ -762,17 +766,17 @@ This function is missing in modus-themes 4.0 for some reason."
                    :mode "IBM Plex Sans"
                    :line nil
                    :mono-height 120
-                   :mode-height 140
+                   :mode-height 130
                    :vari-height 130))
           (Pragmata . ( :mono "PragmataPro"
-                        :vari "Fira Sans"
+                        :vari "SF Pro Text"
                         :mode "SF Compact Text"
                         :line nil
                         :mono-height 130
-                        :mode-height 140
-                        :vari-height 130))))
+                        :mode-height 130
+                        :vari-height 120))))
 
-  (set-custom-fonts "Berkeley"))
+  (set-custom-fonts "Pragmata"))
 
 ;; Enable rendering SF symbols on macOS.
 (set-fontset-font t nil "SF Pro Text" nil 'append)
@@ -1407,8 +1411,7 @@ M - Mike         Z - Zulu")
   (setq vertico-multiform-commands
         '((consult-imenu buffer indexed)
           (consult-outline buffer indexed)
-          (consult-line-multi buffer)
-          (execute-extended-command unobtrusive)))
+          (consult-line-multi buffer)))
 
   (defkey vertico-map
     "'"   #'vertico-quick-jump
@@ -1741,7 +1744,7 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
    '(org-hide-emphasis-markers nil)
    '(org-hide-leading-stars nil)
    '(org-adapt-indentation nil)
-   '(org-ellipsis "...")
+   '(org-ellipsis " 􀍡")
    '(org-insert-heading-respect-content t)
    '(org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+")))
    '(org-list-indent-offset 2)
@@ -1782,8 +1785,6 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
   (transient-define-prefix general-transient ()
     "General-purpose transient."
     [["Actions/Toggles"
-      ("o f" "Other Frame Prefix..." other-frame-prefix)
-      ("o w" "Other Window Prefix..." other-window-prefix)
       ("a" "AutoFill" auto-fill-mode)
       ("h" "Line Highlight" hl-line-mode)
       ("g" "Magit Status" magit-status)
@@ -1791,12 +1792,12 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
       ("k" "Kill Buffer" kill-buffer-dwim)
       ("K" "Kill Buffer & Window" kill-buffer-and-window)]
      ["Outpost"
-      ("t" "Todo List" find-outpost-todo-file)
-      ("n" "New Log Entry" outpost-new-log-entry)
-      ("N" "Find Notes" outpost-find-notes)
-      ("C-m" "Mail to Self" outpost-mail-self)
-      ("M-m" "Compose Mail" compose-mail-system)
-      ("b" "Find Bid" outpost-find-in-bidding-dir)]
+      ("o t" "Todo List" find-outpost-todo-file)
+      ("o n" "New Log Entry" outpost-new-log-entry)
+      ("o g" "Grep Notes" outpost-grep-notes)
+      ("o N" "Find Notes" outpost-find-notes)
+      ("o m" "Mail to Self" outpost-mail-self)
+      ("o b" "Find Bid" outpost-find-in-bidding-dir)]
      ["Other"
       ("c" "Calendar" calendar)
       ("w" "World Clock" world-clock)

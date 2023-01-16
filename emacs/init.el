@@ -536,17 +536,6 @@ With a prefix ARG always prompt for command to use."
 
 (defkey key-translation-map "ESC" (kbd "C-g"))
 
-;; I'm trying to unlearn these and use the `general-transient' and mac-like
-;; bindings instead.
-(defkey override-global-map
-  "C-x C-f" 'undefined
-  "C-x f"   'undefined
-  "C-x C-b" 'undefined
-  "C-x b"   'undefined
-  "C-x k"   'undefined)
-
-;; Because they're in the `override-global-map' these bindings won't be
-;; overridden by minor modes and the like.
 (defkey override-global-map
   "<C-return>" 'general-dispatch
   "M-j" 'join-line-next
@@ -1520,7 +1509,6 @@ M - Mike         Z - Zulu")
                  args)))
 
   (defkey global-map
-    "M-m" 'consult-outline
     [remap imenu] 'consult-imenu
     [remap yank-pop] 'consult-yank-pop
     [remap repeat-complex-command] #'consult-complex-command))

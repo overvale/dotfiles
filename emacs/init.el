@@ -1426,6 +1426,13 @@ M - Mike         Z - Zulu")
 
 (add-to-list 'snippet-alist '(comment-line . "# ----------------------------------------------------------"))
 
+(add-to-list 'snippet-alist '(transient . "\
+(transient-define-prefix foo ()
+    \"bar\"
+    [[\"baz\"
+      (\"x\" \"foo\" bar)]
+     ])"))
+
 
 ;;; Packages
 

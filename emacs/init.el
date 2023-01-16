@@ -548,7 +548,7 @@ With a prefix ARG always prompt for command to use."
 ;; Because they're in the `override-global-map' these bindings won't be
 ;; overridden by minor modes and the like.
 (defkey override-global-map
-  "<C-return>" 'universal-transient
+  "<C-return>" 'general-dispatch
   "M-j" 'join-line-next
   "C-." 'embark-act
   "s-b" 'consult-buffer
@@ -558,13 +558,37 @@ With a prefix ARG always prompt for command to use."
   "s-o" 'find-file
   "s-O" 'find-file-other-window
   "s-j" 'dired-jump
-  "s-w" 'window-transient
+  "s-w" 'window-dispatch
   "M-/" 'completion-at-point
   "M-\\" 'cycle-spacing
   "M-z" 'zap-up-to-char
   "M-Q" 'unfill-dwim
   "M-o" 'other-window
   "M-O" 'other-window-previous)
+
+(transient-define-prefix general-dispatch ()
+  "General-purpose transient."
+  [["Actions/Toggles"
+    ("a" "AutoFill" auto-fill-mode)
+    ("h" "Line Highlight" hl-line-mode)
+    ("g" "Magit Status" magit-status)
+    ("l" "List Buffers" bs-show)
+    ("k" "Kill Buffer" kill-buffer-dwim)
+    ("K" "Kill Buffer & Window" kill-buffer-and-window)]
+   ["Other"
+    ("o" "Outpost..." outpost-dispatch)
+    ("c" "Calendar" calendar)
+    ("w" "World Clock" world-clock)
+    ("d" "Define Word" sdcv-search)
+    ("s o" "*scratch-org*" scratch-buffer-org)
+    ("s m" "*scratch-markdown*" scratch-buffer-markdown)
+    ("p" "Package Ops..." package-dispatch)
+    ("m" "Keyboard Macro..." kbd-macro-dispatch)]
+   ["Settings"
+    ("f" "Set Fonts" set-custom-fonts)
+    ("F" "Set Buffer Fonts" buffer-remap-faces-mode)
+    ("t" "Toggle Dark/Light Theme" modus-themes-toggle :transient t)
+    ("D" "Date/Time mode-line" toggle-date-time-battery)]])
 
 (with-eval-after-load 'magit
   ;; Magit overrides `override-global-map', so I need to override this here:
@@ -590,20 +614,43 @@ With a prefix ARG always prompt for command to use."
 (with-eval-after-load 'bs-mode
   (defkey bs-mode-map "i" 'ibuffer))
 
-;; Package Operations
+(transient-define-prefix rectangle-dispatch ()
+    :transient-suffix 'transient--do-stay
+    ["Rectangles!"
+     ["Movement"
+      ("p" "↑" rectangle-previous-line)
+      ("n" "↓" rectangle-next-line)
+      ("b" "←" rectangle-backward-char)
+      ("f" "→" rectangle-forward-char)]
+     ["Actions"
+      ("w" "copy" copy-rectangle-as-kill)
+      ("y" "yank" yank-rectangle)
+      ("k" "kill" kill-rectangle)
+      ("u" "undo" undo-only)]
+     [("o" "open" open-rectangle)
+      ("t" "type" string-rectangle)
+      ("c" "clear" clear-rectangle)]
+     [("N" "Number-lines" rectangle-number-lines)
+      ("e" "exchange-point" rectangle-exchange-point-and-mark)]])
 
-(define-prefix-command 'pkg-ops-map nil "Packages")
+(transient-define-prefix kbd-macro-dispatch ()
+    "Transient for keyboard macros."
+    [["Keyboard Macros"
+      ("s" "Start" start-kbd-macro)
+      ("e" "End" end-kbd-macro)
+      ("c" "Call" call-last-kbd-macro)
+      ("r" "Region Lines" apply-macro-to-region-lines)]])
 
-(defkey pkg-ops-map
-  "h" '("describe" . describe-package)
-  "a" '("autoremove" . package-autoremove)
-  "d" '("delete" . package-delete)
-  "i" '("install" . package-install)
-  "s" '("selected" . package-install-selected-packages)
-  "r" '("refresh" . package-refresh-contents)
-  "l" '("list" . list-packages))
-
-(defkey global-map"C-c p" 'pkg-ops-map)
+(transient-define-prefix package-dispatch ()
+  "Transient for package operations."
+  [["Packages"
+    ("h" "Describe" describe-package)
+    ("a" "Autoremove" package-autoremove)
+    ("d" "Delete" package-delete)
+    ("i" "Install" package-install)
+    ("s" "Selected" package-install-selected-packages)
+    ("r" "Refresh" package-refresh-contents)
+    ("l" "List" list-packages)]])
 
 
 ;; MacOS-like bindings
@@ -1001,7 +1048,7 @@ Does not pass arguments to underlying functions."
 ;; I find the default mark-setting bindings to be difficult to remember. Who
 ;; the heck can remember all these esoteric bindings? Much better to make
 ;; these a simple transient dispatcher and give it a nice binding.
-(transient-define-prefix set-mark-transient ()
+(transient-define-prefix mark-dispatch ()
   "Transient dispatcher for marking commands."
   :transient-suffix 'transient--do-stay
   [["Navigate:"
@@ -1023,7 +1070,7 @@ Does not pass arguments to underlying functions."
     ("RET" "Exit" transient-quit-all)]])
 
 (defkey override-global-map
-  "C-z" 'set-mark-transient
+  "C-z" 'mark-dispatch
   "C-M-h" 'mark-line
   "C-x C-x" 'exchange-point-and-mark-dwim)
 
@@ -1075,7 +1122,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
              (if dedicated "no longer " "")
              (buffer-name))))
 
-(transient-define-prefix window-transient ()
+(transient-define-prefix window-dispatch ()
   "Most commonly used window commands."
   [["Splits"
     ("h" "Split Horizontal" split-window-below-select)
@@ -1691,28 +1738,6 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
   :after-load
   (setq ibuffer-display-summary nil))
 
-(load-package 'rect
-  ;; Making rectangle mode easier...
-  :eval
-  (transient-define-prefix rectangle-transient ()
-    :transient-suffix 'transient--do-stay
-    ["Rectangles!"
-     ["Movement"
-      ("p" "↑" rectangle-previous-line)
-      ("n" "↓" rectangle-next-line)
-      ("b" "←" rectangle-backward-char)
-      ("f" "→" rectangle-forward-char)]
-     ["Actions"
-      ("w" "copy" copy-rectangle-as-kill)
-      ("y" "yank" yank-rectangle)
-      ("k" "kill" kill-rectangle)
-      ("u" "undo" undo-only)]
-     [("o" "open" open-rectangle)
-      ("t" "type" string-rectangle)
-      ("c" "clear" clear-rectangle)]
-     [("N" "Number-lines" rectangle-number-lines)
-      ("e" "exchange-point" rectangle-exchange-point-and-mark)]]))
-
 (load-package 'browse-url
   :eval
   (setq browse-url-mailto-function 'browse-url-generic
@@ -1769,112 +1794,6 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
     (interactive)
     (let ((current-prefix-arg '(4)))
       (call-interactively 'org-toggle-checkbox))))
-
-
-;;; Transients
-
-(with-eval-after-load 'transient
-
-  (defun universal-transient ()
-    "If ARG is nil, display the `general-transient', otherwise `call-mode-help-transient'."
-    (interactive)
-    (if (equal current-prefix-arg nil)
-        (general-transient)
-      (call-mode-help-transient)))
-
-  (transient-define-prefix general-transient ()
-    "General-purpose transient."
-    [["Actions/Toggles"
-      ("a" "AutoFill" auto-fill-mode)
-      ("h" "Line Highlight" hl-line-mode)
-      ("g" "Magit Status" magit-status)
-      ("l" "List Buffers" bs-show)
-      ("k" "Kill Buffer" kill-buffer-dwim)
-      ("K" "Kill Buffer & Window" kill-buffer-and-window)]
-     ["Outpost"
-      ("o t" "Todo List" find-outpost-todo-file)
-      ("o n" "New Log Entry" outpost-new-log-entry)
-      ("o g" "Grep Notes" outpost-grep-notes)
-      ("o N" "Find Notes" outpost-find-notes)
-      ("o m" "Mail to Self" outpost-mail-self)
-      ("o b" "Find Bid" outpost-find-in-bidding-dir)]
-     ["Other"
-      ("c" "Calendar" calendar)
-      ("w" "World Clock" world-clock)
-      ("d" "Define Word" sdcv-search)
-      ("s o" "*scratch-org*" scratch-buffer-org)
-      ("s m" "*scratch-markdown*" scratch-buffer-markdown)]
-     ["Settings"
-      (", f" "Set Fonts" set-custom-fonts)
-      (", F" "Set Buffer Fonts" buffer-remap-faces-mode)
-      (", t" "Toggle Dark/Light Theme" modus-themes-toggle :transient t)
-      (", d" "Date/Time mode-line" toggle-date-time-battery)]
-     ["Macros"
-      ("m s" "Start" start-kbd-macro)
-      ("m e" "End" end-kbd-macro)
-      ("m c" "Call" call-last-kbd-macro)
-      ("m r" "Region Lines" apply-macro-to-region-lines)]])
-
-  ;; Emacs has so many modes. Who can remember all the commands? These
-  ;; mode-specific transients are designed to help with that.
-
-  (defun call-mode-help-transient ()
-    "Call a helpful transient based on the mode you're in."
-    (interactive)
-    (unless
-        (cond ((derived-mode-p 'org-mode)
-               (org-mode-help-transient))
-              ((derived-mode-p 'Info-mode)
-               (info-mode-help-transient)))
-      (message "No transient defined for this mode.")))
-
-  ) ; end transient
-
-(with-eval-after-load 'org
-  (transient-define-prefix org-mode-help-transient ()
-    "Transient for Org Mode"
-    ["Org Mode"
-     ["Navigation"
-      ("o" "Outline" consult-org-heading)
-      ("f" "Find Heading" consult-org-agenda)
-      ("c" "Go To Calendar" org-goto-calendar)
-      ("v" "Visible Markup" visible-mode)]
-     ["Item"
-      (":" "Set Tags" org-set-tags-command)
-      ("a" "Archive Subtree" org-archive-subtree)
-      ("r" "Refile" org-refile)
-      ("x" "Checkbox State" org-toggle-checkbox)
-      ("X" "Checkbox Presence" org-toggle-checkbox-presence)]
-     ["Insert"
-      ("." "Insert Date, Active" org-time-stamp)
-      ("!" "Insert Date, Inactive" org-time-stamp-inactive)
-      ("<" "Structure Template" org-insert-structure-template)]
-     ["Links"
-      ("s" "Store Link" org-store-link)
-      ("i" "Insert Link" org-insert-last-stored-link)]]))
-
-(with-eval-after-load 'info
-  (transient-define-prefix info-mode-help-transient ()
-    "Transient for Info mode"
-    ["Info"
-     [("d" "Info Directory" Info-directory)
-      ("m" "Menu" Info-menu)
-      ("F" "Go to Node" Info-goto-emacs-command-node)]
-     [("s" "Search regex Info File" Info-search)
-      ("i" "Index" Info-index)
-      ("I" "Index, Virtual" Info-virtual-index)]]
-    ["Navigation"
-     [("l" "Left, History" Info-history-back)
-      ("r" "Right, History" Info-history-forward)
-      ("L" "List, History" Info-history)]
-     [("T" "Table of Contents" Info-toc)
-      ("n" "Next Node" Info-next)
-      ("p" "Previous Node" Info-prev)
-      ("u" "Up" Info-up)]
-     [("<" "Top Node" Info-top-node)
-      (">" "Final Node" Info-final-node)
-      ("[" "Forward Node" Info-backward-node)
-      ("]" "Backward Node" Info-forward-node)]]))
 
 
 ;;; End of init.el

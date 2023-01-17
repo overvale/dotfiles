@@ -53,6 +53,9 @@
 ;; This means interactive customization is session-local. Only this init file persists sessions.
 (setq custom-file (make-temp-file "emacs-custom-"))
 
+(setq mac-command-modifier 'super
+      mac-option-modifier 'meta)
+
 ;; For most of my "settings" I use `custom-set-variables', which does a bunch of neat stuff:
 ;;
 ;; 1. It calls a variable's "setter" function, if it has one. A perfect
@@ -645,9 +648,6 @@ With a prefix ARG always prompt for command to use."
 
 
 ;; MacOS-like bindings
-
-(setq mac-command-modifier 'super
-      mac-option-modifier 'meta)
 
 (defkey global-map
   "s-z" 'undo-only

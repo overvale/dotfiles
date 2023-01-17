@@ -560,19 +560,21 @@ With a prefix ARG always prompt for command to use."
   [["Actions/Toggles"
     ("a" "AutoFill" auto-fill-mode)
     ("h" "Line Highlight" hl-line-mode)
-    ("g" "Magit Status" magit-status)
     ("l" "List Buffers" bs-show)
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("K" "Kill Buffer & Window" kill-buffer-and-window)]
-   ["Other"
-    ("o" "Outpost..." outpost-dispatch)
-    ("c" "Calendar" calendar)
-    ("w" "World Clock" world-clock)
-    ("d" "Define Word" sdcv-search)
+   [""
     ("s o" "*scratch-org*" scratch-buffer-org)
     ("s m" "*scratch-markdown*" scratch-buffer-markdown)
+    ("O" "Org Mode" org-mode)
+    ("g" "Magit Status" magit-status)]
+   ["Other"
+    ("o" "Outpost..." outpost-dispatch)
+    ("d" "Define Word" sdcv-search)
     ("p" "Package Ops..." package-dispatch)
-    ("m" "Keyboard Macro..." kbd-macro-dispatch)]
+    ("m" "Keyboard Macro..." kbd-macro-dispatch)
+    ("c" "Calendar" calendar)
+    ("w" "World Clock" world-clock)]
    ["Settings"
     ("f" "Set Fonts" set-custom-fonts)
     ("F" "Set Buffer Fonts" buffer-remap-faces-mode)

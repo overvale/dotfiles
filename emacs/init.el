@@ -847,9 +847,9 @@ This function is missing in modus-themes 4.0 for some reason."
 
 (defun mode-line-buffer-modified-status ()
   "Return a string indicating buffer modification status."
-  (if (and (buffer-modified-p)
-           (buffer-file-name))
-      (propertize " 􀤑 "
+  (if (and (buffer-modified-p) ;; modified
+           (buffer-file-name)) ;; file-visiting buffer
+      (propertize " 􀑇 "
                   'help-echo "Buffer is modified.")))
 
 (defun mode-line-buffer-read-only-status ()
@@ -861,7 +861,7 @@ This function is missing in modus-themes 4.0 for some reason."
 (defun mode-line-buffer-confirm-kill-status ()
   "Return a string indicating `buffer-confirm-kill' status."
   (if buffer-confirm-kill
-      (propertize " 􀞛 "
+      (propertize " 􀁢 "
                   'help-echo "You must confirm killing this buffer.")))
 
 (defun mode-line-buffer-line-spacing-status ()
@@ -1764,7 +1764,7 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
    '(org-hide-emphasis-markers nil)
    '(org-hide-leading-stars nil)
    '(org-adapt-indentation nil)
-   '(org-ellipsis " 􀍡")
+   '(org-ellipsis " 􀐷")
    '(org-insert-heading-respect-content t)
    '(org-list-demote-modify-bullet '(("+" . "*") ("*" . "-") ("-" . "+")))
    '(org-list-indent-offset 2)

@@ -604,31 +604,31 @@ With a prefix ARG always prompt for command to use."
   (defkey bs-mode-map "i" 'ibuffer))
 
 (transient-define-prefix rectangle-dispatch ()
-    :transient-suffix 'transient--do-stay
-    ["Rectangles!"
-     ["Movement"
-      ("p" "↑" rectangle-previous-line)
-      ("n" "↓" rectangle-next-line)
-      ("b" "←" rectangle-backward-char)
-      ("f" "→" rectangle-forward-char)]
-     ["Actions"
-      ("w" "copy" copy-rectangle-as-kill)
-      ("y" "yank" yank-rectangle)
-      ("k" "kill" kill-rectangle)
-      ("u" "undo" undo-only)]
-     [("o" "open" open-rectangle)
-      ("t" "type" string-rectangle)
-      ("c" "clear" clear-rectangle)]
-     [("N" "Number-lines" rectangle-number-lines)
-      ("e" "exchange-point" rectangle-exchange-point-and-mark)]])
+  :transient-suffix 'transient--do-stay
+  ["Rectangles!"
+   ["Movement"
+    ("p" "↑" rectangle-previous-line)
+    ("n" "↓" rectangle-next-line)
+    ("b" "←" rectangle-backward-char)
+    ("f" "→" rectangle-forward-char)]
+   ["Actions"
+    ("w" "copy" copy-rectangle-as-kill)
+    ("y" "yank" yank-rectangle)
+    ("k" "kill" kill-rectangle)
+    ("u" "undo" undo-only)]
+   [("o" "open" open-rectangle)
+    ("t" "type" string-rectangle)
+    ("c" "clear" clear-rectangle)]
+   [("N" "Number-lines" rectangle-number-lines)
+    ("e" "exchange-point" rectangle-exchange-point-and-mark)]])
 
 (transient-define-prefix kbd-macro-dispatch ()
-    "Transient for keyboard macros."
-    [["Keyboard Macros"
-      ("s" "Start" start-kbd-macro)
-      ("e" "End" end-kbd-macro)
-      ("c" "Call" call-last-kbd-macro)
-      ("r" "Region Lines" apply-macro-to-region-lines)]])
+  "Transient for keyboard macros."
+  [["Keyboard Macros"
+    ("s" "Start" start-kbd-macro)
+    ("e" "End" end-kbd-macro)
+    ("c" "Call" call-last-kbd-macro)
+    ("r" "Region Lines" apply-macro-to-region-lines)]])
 
 (transient-define-prefix package-dispatch ()
   "Transient for package operations."
@@ -1725,7 +1725,7 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
       (goto-char isearch-other-end)))
 
   (defkey isearch-mode-map
-        "M-l" 'switch-to-consult-line)
+    "M-l" 'switch-to-consult-line)
 
   (add-hook 'isearch-mode-end-hook 'isearch-exit-at-start))
 

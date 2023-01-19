@@ -271,6 +271,8 @@ Keybindings you define here will take precedence."
 ;; so they need to be declared early on.
 
 (load-package 'transient
+  ;; The best tutorial I've found for transients is here:
+  ;; https://github.com/positron-solutions/transient-showcase
   :autoload transient-define-prefix
   :after-load
   (setq transient-detect-key-conflicts t
@@ -560,26 +562,23 @@ With a prefix ARG always prompt for command to use."
 
 (transient-define-prefix general-dispatch ()
   "General-purpose transient."
-  [["Actions/Toggles"
-    ("a" "AutoFill" auto-fill-mode)
+  ["Dispatch Transient"
+   [("a" "AutoFill" auto-fill-mode)
     ("h" "Line Highlight" hl-line-mode)
     ("l" "List Buffers" bs-show)
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("K" "Kill Buffer & Window" kill-buffer-and-window)]
-   [""
-    ("s o" "*scratch-org*" scratch-buffer-org)
+   [("s o" "*scratch-org*" scratch-buffer-org)
     ("s m" "*scratch-markdown*" scratch-buffer-markdown)
     ("O" "Org Mode" org-mode)
     ("g" "Magit Status" magit-status)]
-   ["Other"
-    ("o" "Outpost..." outpost-dispatch)
+   [("o" "Outpost..." outpost-dispatch)
     ("d" "Define Word" sdcv-search)
     ("p" "Package Ops..." package-dispatch)
     ("m" "Keyboard Macro..." kbd-macro-dispatch)
     ("c" "Calendar" calendar)
     ("w" "World Clock" world-clock)]
-   ["Settings"
-    ("f" "Set Fonts" set-custom-fonts)
+   [("f" "Set Fonts" set-custom-fonts)
     ("F" "Set Buffer Fonts" buffer-remap-faces-mode)
     ("t" "Toggle Dark/Light Theme" modus-themes-toggle :transient t)
     ("D" "Date/Time mode-line" toggle-date-time-battery)]])
@@ -1049,15 +1048,17 @@ Does not pass arguments to underlying functions."
    ["Set/Extend Mark To..."
     ("b" "Whole Buffer" mark-whole-buffer)
     ("<" "Beginning of Buffer" mark-beginning-of-buffer)
-    (">" "End of Buffer" mark-end-of-buffer)]
-   [("w" "Word" mark-word)
+    (">" "End of Buffer" mark-end-of-buffer)
+    ("S" "Sexp" mark-sexp)
+    ("D" "Defun" mark-defun)]
+   [""
+    ("w" "Word" mark-word)
     ("l" "Line" mark-line)
     ("p" "Paragraph" mark-paragraph)
     ("s" "Sentence" mark-sentence)
     ("P" "Page" mark-page)]
-   [("S" "Sexp" mark-sexp)
-    ("D" "Defun" mark-defun)]
-   [("SPC" "Activate Mark" activate-the-mark)
+   ["Other:"
+    ("SPC" "Activate Mark" activate-the-mark)
     ("RET" "Exit" transient-quit-all)]])
 
 (defkey override-global-map
@@ -1124,13 +1125,14 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("s" "Swap Windows" swap-windows)]
    ["Window"
     ("d" "Dedicate Window" dedicated-mode)
-    ("c" "Clone Indirect" clone-indirect-buffer)
-    ("t" "Tear Off" tear-off-window)
     ("k" "Kill" delete-window)
     ("s-w" "Kill Frame" delete-frame)
     ("K" "Kill Buffer & Window" kill-buffer-and-window)
     ("o" "Kill Others"  delete-other-windows)
-    ("m" "Maximize" maximize-window)]])
+    ("m" "Maximize" maximize-window)]
+   [""
+    ("c" "Clone Indirect" clone-indirect-buffer)
+    ("t" "Tear Off" tear-off-window)]])
 
 
 ;;; Confirm Killing Modified Buffers

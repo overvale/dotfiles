@@ -1351,6 +1351,23 @@ K - Kilo         X - X-ray
 L - Lima         Y - Yankee
 M - Mike         Z - Zulu") t)
 
+(add-to-list 'quick-help-functions-alist '(info-mode . "Info Mode
+
+p   - previous node       n - next node
+[   - previous node       ] - next node
+^   - up node             d - go to top
+r   - forward history     l - back history
+s/S - search              i - search index
+m   - pick menu           f - follow reference
+g   - goto node") t)
+
+(add-to-list 'quick-help-functions-alist '(dired-mode . "Dired Mode
+
+f       open    b       back    o       open in new window
+D       delete  C       copy    R       rename
+m       mark    u       unmark  t       toggle mark
+s-c     copy    s-v     paste   M-s-v   move
+S-s-.   toggle invisible        (       toggle more info") t)
 
 (defkey global-map "C-c h" 'quick-help)
 

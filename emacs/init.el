@@ -958,6 +958,42 @@ If SPACING is nil, set line-spacing to nil."
 (put 'set-buffer-line-spacing 'repeat-map 'line-spacing-repeat-map)
 
 
+;;; Active Mark Keymap
+
+;; A keymap that activates when the mark is active.
+;; This is a simpler version of the "selected" package.
+
+;; https://archive.casouri.cc/note/2018/easy-bindings-when-region-is-active/
+(defconst angel-transient-mode-map-alist
+  `((mark-active
+     ,@(let ((map (make-sparse-keymap)))
+         (define-key map (kbd ";") 'comment-dwim)
+         (define-key map (kbd "w") 'kill-ring-save)
+         (define-key map (kbd "r") 'rectangle-mark-mode)
+         (define-key map (kbd ".") 'embark-act)
+         (define-key map (kbd "n") 'next-line)
+         (define-key map (kbd "p") 'previous-line)
+         (define-key map (kbd "<right>") 'forward-char)
+         (define-key map (kbd "<left>") 'backward-char)
+         (define-key map (kbd "f") 'forward-word)
+         (define-key map (kbd "b") 'backward-word)
+         (define-key map (kbd "a") 'beginning-of-line)
+         (define-key map (kbd "e") 'end-of-line)
+         (define-key map (kbd "<") 'beginning-of-buffer)
+         (define-key map (kbd ">") 'end-of-buffer)
+         (define-key map (kbd "{") 'backward-paragraph)
+         (define-key map (kbd "}") 'forward-paragraph)
+         (define-key map (kbd "(") 'backward-sentence)
+         (define-key map (kbd ")") 'forward-sentence)
+         (define-key map (kbd "[") 'scroll-down-line)
+         (define-key map (kbd "]") 'scroll-up-line)
+         (define-key map (kbd "x") 'exchange-point-and-mark)
+         map))))
+
+(add-to-list 'emulation-mode-map-alists
+             'angel-transient-mode-map-alist t)
+
+
 ;;; The Mark
 
 (custom-set-variables

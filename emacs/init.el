@@ -1298,14 +1298,14 @@ PROMPT sets the `read-string prompt."
 ;; Inspired by "On-demand help panels for obscure topics" here:
 ;; https://svn.red-bean.com/repos/kfogel/trunk/.emacs
 
-(defvar quick-help-functions-alist nil
+(defvar quick-help-alist nil
   "An alist of functions used by `quick-help'.")
 
 (defun quick-help nil
   "Create quick help buffer for TOPIC with TEXT."
   (interactive)
-  (let* ((topic (completing-read "Help For: " quick-help-functions-alist))
-         (help (alist-get (intern topic) quick-help-functions-alist))
+  (let* ((topic (completing-read "Help For: " quick-help-alist))
+         (help (alist-get (intern topic) quick-help-alist))
          (qh-buffer "*Quick Help*"))
     (with-current-buffer (get-buffer-create qh-buffer)
       (buffer-disable-undo)
@@ -1322,20 +1322,20 @@ PROMPT sets the `read-string prompt."
                                (window-height . fit-window-to-buffer)))
     (message "C-g - Previous Window, q - Remove Window")))
 
-(add-to-list 'quick-help-functions-alist '(weather . "Weather Whether Wether
+(add-to-list 'quick-help-alist '(weather . "Weather Whether Wether
 
 The climate is made up of \"WEATHER\";
 WHETHER it is nice out depends on whether it is raining or not.
 A WETHER is just a castrated sheep.") t)
 
 
-(add-to-list 'quick-help-functions-alist '(lying . "Lying
+(add-to-list 'quick-help-alist '(lying . "Lying
 
 Lie (recline)   lay   lain  lying
 Lay (put down)  laid  laid  laying
 Lie (false)     lied  lied  lying   lies") t)
 
-(add-to-list 'quick-help-functions-alist '(NATO-alphabet . "NATO ALPHABET
+(add-to-list 'quick-help-alist '(NATO-alphabet . "NATO ALPHABET
 
 A - Alpha        N - November
 B - Bravo        O - Oscar
@@ -1351,7 +1351,7 @@ K - Kilo         X - X-ray
 L - Lima         Y - Yankee
 M - Mike         Z - Zulu") t)
 
-(add-to-list 'quick-help-functions-alist '(info-mode . "Info Mode
+(add-to-list 'quick-help-alist '(info-mode . "Info Mode
 
 p   - previous node       n - next node
 [   - previous node       ] - next node
@@ -1361,7 +1361,7 @@ s/S - search              i - search index
 m   - pick menu           f - follow reference
 g   - goto node") t)
 
-(add-to-list 'quick-help-functions-alist '(dired-mode . "Dired Mode
+(add-to-list 'quick-help-alist '(dired-mode . "Dired Mode
 
 f       open    b       back    o       open in new window
 D       delete  C       copy    R       rename

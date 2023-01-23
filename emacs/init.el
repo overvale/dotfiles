@@ -1299,14 +1299,17 @@ PROMPT sets the `read-string prompt."
 ;; https://svn.red-bean.com/repos/kfogel/trunk/.emacs
 
 (defvar quick-help-functions-alist nil
-  "An alist of functions created by the `quick-help' macro.")
+  "An alist of functions used by `quick-help'.")
 
-(defun quick-help (topic text)
+(defun quick-help nil
   "Create quick help buffer for TOPIC with TEXT."
-  (let ((qh-buffer (concat "*Quick Help: " topic "*")))
+  (interactive)
+  (let* ((topic (completing-read "Help For: " quick-help-functions-alist))
+         (help (alist-get (intern topic) quick-help-functions-alist))
+         (qh-buffer "*Quick Help*"))
     (with-current-buffer (get-buffer-create qh-buffer)
       (buffer-disable-undo)
-      (setf (buffer-string) text)
+      (setf (buffer-string) help)
       (goto-char (point-min))
       (set-buffer-modified-p nil)
       (toggle-truncate-lines 1)
@@ -1319,33 +1322,21 @@ PROMPT sets the `read-string prompt."
                                (window-height . fit-window-to-buffer)))
     (message "C-g - Previous Window, q - Remove Window")))
 
-(defmacro def-quick-help (name buffer text)
-  "Macro for creating callable functions that display help.
-Where NAME is name of function, BUFFER is name of buffer, and TEXT is displayed."
-  (declare (indent defun))
-  `(progn
-     (add-to-list 'quick-help-functions-alist ',name t)
-     (defun ,name nil
-       "Function created by the `def-quick-help` macro."
-       (interactive)
-       (quick-help ,buffer ,text))))
+(add-to-list 'quick-help-functions-alist '(weather . "Weather Whether Wether
 
-(def-quick-help qhelp-wheather
-  "Weather Whether Wether"
-  "The climate is made up of \"WEATHER\";
+The climate is made up of \"WEATHER\";
 WHETHER it is nice out depends on whether it is raining or not.
-A WETHER is just a castrated sheep.")
+A WETHER is just a castrated sheep.") t)
 
-(def-quick-help qhelp-lying
-  "Lying"
-  "\
+
+(add-to-list 'quick-help-functions-alist '(lying . "Lying
+
 Lie (recline)   lay   lain  lying
 Lay (put down)  laid  laid  laying
-Lie (false)     lied  lied  lying   lies")
+Lie (false)     lied  lied  lying   lies") t)
 
-(def-quick-help qhelp-NATO-alphabet
-  "NATO ALPHABET"
-  "\
+(add-to-list 'quick-help-functions-alist '(NATO-alphabet . "NATO ALPHABET
+
 A - Alpha        N - November
 B - Bravo        O - Oscar
 C - Charlie      P - Papa
@@ -1358,15 +1349,10 @@ I - India        V - Victor
 J - Juliet       W - Whiskey
 K - Kilo         X - X-ray
 L - Lima         Y - Yankee
-M - Mike         Z - Zulu")
+M - Mike         Z - Zulu") t)
 
-(defun quick-help-prompt nil
-  "Prompt user for help to display."
-  (interactive)
-  (call-interactively
-   (intern (completing-read "Quick Help: " quick-help-functions-alist))))
 
-(defkey global-map "C-c h" 'quick-help-prompt)
+(defkey global-map "C-c h" 'quick-help)
 
 
 ;;; Text-Plus-Mode

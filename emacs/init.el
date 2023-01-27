@@ -587,25 +587,6 @@ With a prefix ARG always prompt for command to use."
 (with-eval-after-load 'bs-mode
   (defkey bs-mode-map "i" 'ibuffer))
 
-(transient-define-prefix rectangle-dispatch ()
-  :transient-suffix 'transient--do-stay
-  ["Rectangles!"
-   ["Movement"
-    ("p" "↑" rectangle-previous-line)
-    ("n" "↓" rectangle-next-line)
-    ("b" "←" rectangle-backward-char)
-    ("f" "→" rectangle-forward-char)]
-   ["Actions"
-    ("w" "copy" copy-rectangle-as-kill)
-    ("y" "yank" yank-rectangle)
-    ("k" "kill" kill-rectangle)
-    ("u" "undo" undo-only)]
-   [("o" "open" open-rectangle)
-    ("t" "type" string-rectangle)
-    ("c" "clear" clear-rectangle)]
-   [("N" "Number-lines" rectangle-number-lines)
-    ("e" "exchange-point" rectangle-exchange-point-and-mark)]])
-
 (transient-define-prefix kbd-macro-dispatch ()
   "Transient for keyboard macros."
   [["Keyboard Macros"
@@ -1148,7 +1129,7 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("m" "Maximize" maximize-window)]
    [""
     ("c" "Clone Indirect" clone-indirect-buffer)
-    ("t" "Tear Off" tear-off-window)]])
+    ("T" "Tear Off" tear-off-window)]])
 
 
 ;;; Confirm Killing Modified Buffers
@@ -1774,6 +1755,19 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
     (start-process "open url"
                    nil "open" "--background" url)
     (message "URL opened in background.")))
+
+(load-package 'rect
+  :after-load
+  (defkey rectangle-mark-mode-map
+    "t" 'string-rectangle
+    "o" 'open-rectangle
+    "c" 'clear-rectangle
+    "n" 'rectangle-number-lines
+    "x" 'rectangle-exchange-point-and-mark
+    "w" 'copy-rectangle-as-kill
+    "y" 'yank-rectangle
+    "k" 'kill-rectangle))
+
 
 ;;; Org
 

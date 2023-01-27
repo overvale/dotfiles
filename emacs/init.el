@@ -315,9 +315,8 @@ Keybindings you define here will take precedence."
   (interactive)
   (find-file user-init-file))
 
-(defun rotate-window-split ()
-  ;; https://github.com/oantolin/emacs-config/blob/master/my-lisp/window-extras.el
-  "Rotate window split from vertical to horizontal."
+(defun toggle-window-split ()
+  "Toggle window split from vertical to horizontal."
   (interactive)
   (if (> (length (window-list)) 2)
       (error "Can't toggle with more than 2 windows.")
@@ -330,34 +329,14 @@ Keybindings you define here will take precedence."
         (other-window 1)
         (switch-to-buffer (other-buffer))))))
 
-(defun swap-windows (count)
-  "Swap your windows.
-Dedicated windows are left untouched. Giving a negative prefix
-argument makes the windows rotate backwards."
-  (interactive "p")
-  (let* ((non-dedicated-windows (cl-remove-if 'window-dedicated-p (window-list)))
-         (num-windows (length non-dedicated-windows))
-         (i 0)
-         (step (+ num-windows count)))
-    (cond ((not (> num-windows 1))
-           (message "You can't rotate a single window!"))
-          (t
-           (dotimes (counter (- num-windows 1))
-             (let* ((next-i (% (+ step i) num-windows))
-
-                    (w1 (elt non-dedicated-windows i))
-                    (w2 (elt non-dedicated-windows next-i))
-
-                    (b1 (window-buffer w1))
-                    (b2 (window-buffer w2))
-
-                    (s1 (window-start w1))
-                    (s2 (window-start w2)))
-               (set-window-buffer w1 b2)
-               (set-window-buffer w2 b1)
-               (set-window-start w1 s2)
-               (set-window-start w2 s1)
-               (setq i next-i)))))))
+(defun transpose-windows ()
+  "Swap the buffers shown in current and next window."
+  (interactive)
+  (let ((this-buffer (window-buffer))
+        (next-window (next-window nil :no-minibuf nil)))
+    (set-window-buffer nil (window-buffer next-window))
+    (set-window-buffer next-window this-buffer)
+    (select-window next-window)))
 
 (defun other-window-previous nil
   "Select previous window."
@@ -1157,8 +1136,8 @@ The code is taken from here: https://github.com/skeeto/.emacs.d/blob/master/lisp
     ("v" "Split Vertical"   split-window-right-select)
     ("b" "Balance"    balance-windows)
     ("f" "Fit"        fit-window-to-buffer)
-    ("r" "Rotate Split" rotate-window-split)
-    ("s" "Swap Windows" swap-windows)]
+    ("+" "Toggle H/V Split" toggle-window-split)
+    ("t" "Transpose Windows" transpose-windows)]
    ["Window"
     ("d" "Dedicate Window" dedicated-mode)
     ("k" "Kill" delete-window)

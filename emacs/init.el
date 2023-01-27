@@ -1740,9 +1740,12 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
 
   (defun isearch-exit-at-start ()
     "Exit search at the beginning of the current match."
-    (when (and isearch-forward
-               (number-or-marker-p isearch-other-end)
-               (not isearch-mode-end-hook-quit))
+    (unless (or isearch-mode-end-hook-quit
+                (bound-and-true-p isearch-suspended)
+                (not isearch-forward)
+                (not isearch-other-end)
+                (and (boundp 'avy-command)
+                     (eq avy-command 'avy-isearch)))
       (goto-char isearch-other-end)))
 
   (defkey isearch-mode-map

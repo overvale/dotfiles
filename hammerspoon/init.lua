@@ -191,13 +191,19 @@ end
 -- User Keymaps
 -- ----------------------------------------------
 
+-- Excel Mode Map
 
 excelModeMap = hs.hotkey.modal.new()
 
 excelModeMap:bind({'cmd'}, 'return', function() keyUpDown({}, 'f2') end)
 
+-- Teams Mode Map
 
+teamsModeMap = hs.hotkey.modal.new()
 
+teamsModeMap:bind({'cmd'}, 'delete', function()
+      keyUpDown({'cmd', 'shift'}, 'left')
+end)
 
 
 -- M-x Anything

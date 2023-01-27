@@ -201,22 +201,8 @@ excelModeMap = hs.hotkey.modal.new()
 
 excelModeMap:bind({'cmd'}, 'return', function() keyUpDown({}, 'f2') end)
 
-function userKeymaps(appName, eventType, appObject)
-   if (eventType == hs.application.watcher.activated) then
-      if (appName == "Microsoft Teams") then
-         appObject:selectMenuItem({"Window", "Bring All to Front"})
-      end
-      if (appName == "Microsoft Excel") then
-         excelModeMap:enter()
-      else
-         excelModeMap:exit()
-      end
-   end
-end
 
-userKeymapsWatcher = hs.application.watcher.new(userKeymaps)
 
-userKeymapsWatcher:start()
 
 
 -- M-x Anything
@@ -478,7 +464,30 @@ for i, mapping in ipairs(keyBindings) do
 end
 
 
--- Custom Modal Keymap
+-- App Activation Watcher
+-- ---------------------------------------------
+
+function appActivation(appName, eventType, appObject)
+   if (eventType == hs.application.watcher.activated) then
+      if (appName == "Microsoft Teams") then
+         teamsModeMap:enter()
+      else
+         teamsModeMap:exit()
+      end
+      if (appName == "Microsoft Excel") then
+         excelModeMap:enter()
+      else
+         excelModeMap:exit()
+      end
+   end
+end
+
+appActivationWatcher = hs.application.watcher.new(appActivation)
+
+appActivationWatcher:start()
+
+
+-- Transient Keymap
 -- ---------------------------------------------
 
 -- Create the model keymap to bind inside of
@@ -486,7 +495,7 @@ transientKeys = hs.hotkey.modal.new()
 
 -- Create the menubar item
 function transientKeys:entered()
-   myKeysMenuItem = hs.menubar.new():setTitle("Oliver's Keymap!")
+   myKeysMenuItem = hs.menubar.new():setTitle("􀇳 Transient Keymap!")
    myKeysMenuItem:setTooltip("Press Escape to deactivate.")
 end
 

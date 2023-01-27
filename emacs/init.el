@@ -130,6 +130,7 @@
 
 (setq package-selected-packages
       '(consult
+        ctrlf
         delight
         embark
         embark-consult
@@ -1490,6 +1491,13 @@ S-s-.   toggle invisible        (       toggle more info") t)
   (define-key vertico-map (kbd "DEL") #'vertico-directory-delete-char)
   (define-key vertico-map (kbd "M-DEL") #'vertico-directory-delete-word)
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy))
+
+(load-package 'ctrlf
+  :eval
+  (setq ctrlf-go-to-end-of-match nil
+        ctrlf-highlight-current-line nil
+        ctrlf-show-match-count-at-eol nil)
+  (ctrlf-mode 1))
 
 (load-package 'marginalia
   :eval

@@ -34,11 +34,10 @@
 ;;     is probably not one of my good ideas.
 
 ;; If you like this config I would recommend reading these:
-;; https://svn.red-bean.com/repos/kfogel/trunk/.emacs
 ;; https://github.com/raxod502/radian
+;; https://svn.red-bean.com/repos/kfogel/trunk/.emacs
+;; https://github.com/casouri/lunarymacs
 ;; https://github.com/oantolin/emacs-config
-;; https://github.com/skeeto/.emacs.d
-;; https://github.com/bbatsov/prelude
 
 
 ;;; Settings
@@ -770,12 +769,12 @@ This function is missing in modus-themes 4.0 for some reason."
                         :mode-height 130
                         :vari-height 120))
           (Triplicate . ( :mono "Triplicate T4"
-                        :vari "Triplicate T4p"
-                        :mode "SF Compact Text"
-                        :line nil
-                        :mono-height 130
-                        :mode-height 130
-                        :vari-height 130))
+                          :vari "Triplicate T4p"
+                          :mode "SF Compact Text"
+                          :line nil
+                          :mono-height 130
+                          :mode-height 130
+                          :vari-height 130))
           ))
 
   (set-custom-fonts "Triplicate"))

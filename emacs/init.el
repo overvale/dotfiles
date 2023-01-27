@@ -1699,7 +1699,7 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
       (goto-char (point-min))
       (setq buffer-read-only t)))
 
-  (defvar calendar-copy-as-kill-format "%a %d %B %Y"
+  (defvar calendar-copy-as-kill-format "%a, %d %b"
     "Format string for formatting calendar dates with `format-time-string'.")
 
   (defun calendar-copy-as-kill ()

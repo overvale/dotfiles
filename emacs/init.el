@@ -686,10 +686,10 @@ This function is missing in modus-themes 4.0 for some reason."
         modus-themes-prompts '(bold)
         modus-themes-org-blocks 'gray-background
         modus-themes-headings
-        '( (0 . (variable-pitch bold 1.5))
-           (1 . (variable-pitch regular 1.3))
-           (2 . (variable-pitch regular 1.2))
-           (3 . (variable-pitch bold 1))
+        '( (0 . (variable-pitch bold 1.4))
+           (1 . (variable-pitch bold 1.3))
+           (2 . (variable-pitch bold 1.2))
+           (3 . (variable-pitch bold 1.1))
            (t . (1))))
 
   (setq modus-themes-common-palette-overrides
@@ -744,7 +744,7 @@ This function is missing in modus-themes 4.0 for some reason."
                         :line nil
                         :mono-height 120
                         :mode-height 130
-                        :vari-height 120))
+                        :vari-height 130))
           (Go . ( :mono "Go Mono"
                   :vari "Go"
                   :mode "Go"
@@ -772,9 +772,17 @@ This function is missing in modus-themes 4.0 for some reason."
                         :line nil
                         :mono-height 130
                         :mode-height 130
-                        :vari-height 120))))
+                        :vari-height 120))
+          (Triplicate . ( :mono "Triplicate T4"
+                        :vari "Triplicate T4p"
+                        :mode "SF Compact Text"
+                        :line nil
+                        :mono-height 130
+                        :mode-height 130
+                        :vari-height 130))
+          ))
 
-  (set-custom-fonts "Pragmata"))
+  (set-custom-fonts "Triplicate"))
 
 ;; Enable rendering SF symbols on macOS.
 (set-fontset-font t nil "SF Pro Text" nil 'append)
@@ -811,7 +819,7 @@ This function is missing in modus-themes 4.0 for some reason."
   "Return a string indicating buffer modification status."
   (if (and (buffer-modified-p) ;; modified
            (buffer-file-name)) ;; file-visiting buffer
-      (propertize " 􀑇 "
+      (propertize " 􀑇"
                   'help-echo "Buffer is modified.")))
 
 (defun mode-line-buffer-read-only-status ()

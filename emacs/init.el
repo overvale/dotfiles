@@ -563,10 +563,6 @@ With a prefix ARG always prompt for command to use."
     ("t" "Toggle Dark/Light Theme" modus-themes-toggle :transient t)
     ("D" "Date/Time mode-line" toggle-date-time-battery)]])
 
-(with-eval-after-load 'magit
-  ;; Magit overrides `override-global-map', so I need to override this here:
-  (defkey magit-file-section-map "<C-return>" 'universal-transient))
-
 ;; For bindings that I do want to be overriden by minor/major modes, I use the
 ;; built-in `global-map'.
 (defkey global-map
@@ -1538,6 +1534,12 @@ S-s-.   toggle invisible        (       toggle more info") t)
     [remap imenu] 'consult-imenu
     [remap yank-pop] 'consult-yank-pop
     [remap repeat-complex-command] #'consult-complex-command))
+
+(load-package 'magit
+  :after-load
+  ;; Magit overrides `override-global-map', so I need to override this here:
+  (defkey magit-file-section-map
+    "<C-return>" 'universal-transient))
 
 (load-package 'visual-regexp
   :eval

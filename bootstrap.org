@@ -33,13 +33,6 @@ Plus, it's more secure and private. So there.
    Makes your computer faster, have less distractions, and greatly improves
    battery life.
 
-* Accounts Setup
-
-- The first account you create will be an admin account, only use this when you must.
-- The second account will be the account you use day-to-day.
-    + Doing this will make a few things more of a pain for you, but it will
-      put the applications you install and use in a smaller, more secure box.
-
 * Settings
 
 - Sign in with AppleID.
@@ -175,10 +168,8 @@ I pretty much organize everything under =~/home/=.
 
 - =~/home/=
     + =dot= - My dotfiles.
-    + =files= - Anything that doesn't fit elsewhere.
     + =src= - Source code, and source code related things.
     + =opt= - Basically a place for software installed via a =git clone=.
-    + =org= - My org-files.
     + =work=
     + =project_a=
     + =project_b=

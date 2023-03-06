@@ -90,6 +90,23 @@ function typeCurrentSafariURL()
     end
 end
 
+function menuCapitalize()
+   local app = hs.application.frontmostApplication()
+   app:selectMenuItem({"Edit", "Transformations", "Capitalize"})
+end
+
+function menuUpperCase()
+   local app = hs.application.frontmostApplication()
+   app:selectMenuItem({"Edit", "Transformations", "Make Upper Case"})
+end
+
+function menuLowerCase()
+   local app = hs.application.frontmostApplication()
+   app:selectMenuItem({"Edit", "Transformations", "Make Lower Case"})
+end
+
+
+
 function webSearch(name, url)
    hs.focus()
    button, message = hs.dialog.textPrompt(name, "Search " .. name .. "for:", "", "Search", "Cancel")
@@ -188,22 +205,6 @@ end tell]])
 end
 
 
--- User Keymaps
--- ----------------------------------------------
-
--- Excel Mode Map
-
-excelModeMap = hs.hotkey.modal.new()
-
-excelModeMap:bind({'cmd'}, 'return', function() keyUpDown({}, 'f2') end)
-
--- Teams Mode Map
-
-teamsModeMap = hs.hotkey.modal.new()
-
-teamsModeMap:bind({'cmd'}, 'delete', function()
-      keyUpDown({'cmd', 'shift'}, 'left')
-end)
 
 
 -- M-x Anything
@@ -465,20 +466,51 @@ for i, mapping in ipairs(keyBindings) do
 end
 
 
+-- User Keymaps
+-- ----------------------------------------------
+
+-- Excel Mode Map
+
+excelModeMap = hs.hotkey.modal.new()
+
+excelModeMap:bind({'cmd'}, 'return', function() keyUpDown({}, 'f2') end)
+
+-- Bike Mode Map
+
+bikeModeMap = hs.hotkey.modal.new()
+
+bikeModeMap:bind({'alt'}, 'b', function() keyUpDown({'alt'}, 'left') end)
+bikeModeMap:bind({'alt'}, 'f', function() keyUpDown({'alt'}, 'right') end)
+bikeModeMap:bind({'alt'}, 'd', function() keyUpDown({'alt'}, 'forwarddelete') end)
+
+-- Readline Mode Map
+
+readlineModeMap = hs.hotkey.modal.new()
+
+readlineModeMap:bind({'alt'}, 'l', function() menuLowerCase() end)
+readlineModeMap:bind({'alt'}, 'c', function() menuCapitalize() end)
+readlineModeMap:bind({'alt'}, 'u', function() menuUpperCase() end)
+
+
 -- App Activation Watcher
 -- ---------------------------------------------
 
 function appActivation(appName, eventType, appObject)
    if (eventType == hs.application.watcher.activated) then
-      if (appName == "Microsoft Teams") then
-         teamsModeMap:enter()
+      if (appName == "Emacs") or (appName == "Terminal") then
+         readlineModeMap:exit()
       else
-         teamsModeMap:exit()
+         readlineModeMap:enter()
       end
       if (appName == "Microsoft Excel") then
          excelModeMap:enter()
       else
          excelModeMap:exit()
+      end
+      if (appName == "Bike") then
+         bikeModeMap:enter()
+      else
+         bikeModeMap:exit()
       end
    end
 end

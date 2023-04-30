@@ -433,7 +433,7 @@ keyBindings = {
    { alpha, 's', 'Safari' },
    { alpha, 'a', 'Music' },
    { alpha, 'u', 'Terminal' },
-   { alpha, 't', 'Microsoft Teams' },
+   { alpha, 't', 'Tot' },
    { alpha, 'r', 'Reminders' },
    { alpha, 'h', reloadHammerspoon },
    { alpha, 'o', openDropbox },

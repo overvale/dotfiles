@@ -543,6 +543,7 @@ With a prefix ARG always prompt for command to use."
   "General-purpose transient."
   ["Dispatch Transient"
    [("a" "AutoFill" auto-fill-mode)
+    ("v" "Wrap Lines" visual-line-mode)
     ("h" "Line Highlight" hl-line-mode)
     ("l" "List Buffers" bs-show)
     ("k" "Kill Buffer" kill-buffer-dwim)
@@ -625,7 +626,8 @@ With a prefix ARG always prompt for command to use."
   "s-m" 'iconify-frame
   "s-," 'find-user-init-file
   "s-q" 'save-buffers-kill-emacs
-  "s-." 'keyboard-quit)
+  "s-." 'keyboard-quit
+  "M-8" (lambda () (interactive) (insert "•")))
 
 
 ;;; Theme & Cursor
@@ -695,7 +697,7 @@ This function is missing in modus-themes 4.0 for some reason."
   (setq modus-operandi-palette-overrides
         '((bg-mode-line-active bg-blue-intense)
           (fg-mode-line-active fg-main)
-          (bg-region bg-cyan-subtle)
+          (bg-region bg-lavender)
           (fg-region fg-main)
           (comment red)
           (string green-cooler)))
@@ -777,7 +779,7 @@ This function is missing in modus-themes 4.0 for some reason."
                           :vari-height 130))
           ))
 
-  (set-custom-fonts "Triplicate"))
+  (set-custom-fonts "Berkeley"))
 
 ;; Enable rendering SF symbols on macOS.
 (set-fontset-font t nil "SF Pro Text" nil 'append)
@@ -826,7 +828,7 @@ This function is missing in modus-themes 4.0 for some reason."
 (defun mode-line-buffer-confirm-kill-status ()
   "Return a string indicating `buffer-confirm-kill' status."
   (if buffer-confirm-kill
-      (propertize " 􀁢 "
+      (propertize " 􀉻 "
                   'help-echo "You must confirm killing this buffer.")))
 
 (defun mode-line-buffer-line-spacing-status ()
@@ -1804,6 +1806,7 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
 
 (with-eval-after-load 'org
   (custom-set-variables
+   '(org-ellipsis " 􀠩")
    '(org-list-allow-alphabetical t)
    '(org-log-done 'time)
    '(org-log-into-drawer t)
@@ -1858,7 +1861,7 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
   (custom-set-variables
    '(org-agenda-window-setup 'current-window)
    '(org-agenda-restore-windows-after-quit t)
-   '(org-agenda-span 'week)
+   '(org-agenda-span 'day)
    '(org-agenda-start-with-log-mode nil)
    '(org-agenda-log-mode-items '(closed clock state))
    '(org-agenda-use-time-grid nil)

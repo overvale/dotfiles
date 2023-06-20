@@ -197,6 +197,30 @@ function toggleDarkMode()
    end
 end
 
+function utilTrim(str)
+  return str:match("^()%s*$") and "" or str:match("^%s*(.*%S)")
+end
+
+function stageManStatus()
+   local stageManState = hs.execute("/usr/bin/defaults read com.apple.WindowManager GloballyEnabled")
+   return utilTrim(stageManState) == "1"
+end
+
+function setStageMan(state)
+   -- Function for setting Stage Manger on/off.
+   -- Argument should be either 'true' or 'false'.
+   hs.execute(string.format("/usr/bin/defaults write com.apple.WindowManager GloballyEnabled -bool %s", state) )
+end
+
+function toggleStageMan()
+   -- Toggle Stage Manager status
+   if stageManStatus() then
+      setStageMan(false)
+   else
+      setStageMan(true)
+   end
+end
+
 function toggleMenubar()
    hs.applescript([[
 tell application "System Events"
@@ -291,6 +315,7 @@ mxChoiceTable = {
    { "func", "Snippet: Org Mode Date",                 "snipOrgDate" },
    { "func", "Snippet ¯\\_(ツ)_/¯",                    "snipShrug" },
    { "func", "Snippet \"waving hands around\"",        "snipWave" },
+   { "func", "Toggle Stage Manager",                   "toggleStageMan" },
    { "func", "Toggle Dark Mode",                       "toggleDarkMode" },
    { "func", "Toggle MenuBar",                         "toggleMenubar" },
    { "func", "Type Current Safari URL",                "typeCurrentSafariURL" },
@@ -439,6 +464,7 @@ keyBindings = {
    { alpha, 'o', openDropbox },
    { alpha, 'f', newFinderWindow },
    { hyper, 't', snipISODate },
+   { hyper, 's', toggleStageMan },
    { hyper, 'd', toggleDarkMode },
    { hyper, 'left', winResizeLeft },
    { hyper, 'right', winResizeRight },

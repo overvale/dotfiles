@@ -442,6 +442,17 @@ With a prefix ARG always prompt for command to use."
                          (when subject (concat "&subject=" (url-hexify-string subject)))
                          (when body (concat "&body=" (url-hexify-string body))))))
 
+(defun compose-mail-macos-multiple (list subject body)
+  "ADDRESSES should be a list of email addresses in the form of:
+(setq mail-list '(\"Mail 1 <mail1@example.com>\"
+                  \"Mail 2 <mail2@example.com>\"
+                  \"Mail 3 <mail3@example.com>\"))"
+  (while list
+    ;; car = first item, cdr = remaining items
+    (let ((to (car list)))
+      (compose-mail-macos to subject body)
+      (setq list (cdr list)))))
+
 (defun send-buffer-mail-macos ()
   "Mail buffer using `compose-mail-macos'."
   (interactive)

@@ -256,7 +256,29 @@ tell application "System Events"
 end tell]])
 end
 
+function openAIcomplete(prompt)
+   -- openai_api_key is set elsewhere
+   local url = "https://api.openai.com/v1/engines/text-davinci-003/completions"
+   local data = string.format("{ \"prompt\": %q, \"max_tokens\": 1024, \"temperature\": 0.7 }", prompt)
+   local headers = {
+      ["Content-Type"] = "application/json",
+      ["Authorization"] = "Bearer " .. openai_api_key,
+   }
+   local status, response, headers = hs.http.post(url, data, headers)
+   if status == 200 then
+      local extractedText = string.match(response, '"text":"\\n\\n([^"]+)"')
+      return extractedText:gsub("\\([nt])", {n="\n", t="\t"})
+   else
+      return "OpenAI Error"
+   end
+end
 
+function openAIreplace()
+   openAIresponse = openAIcomplete(hs.pasteboard.getContents())
+   hs.pasteboard.setContents(openAIresponse)
+   app = hs.application.frontmostApplication()
+   app:selectMenuItem({"Edit", "Paste"})
+end
 
 
 -- M-x Anything
@@ -353,7 +375,8 @@ mxChoiceTable = {
    { "func", "Open Excel Scratch Doc",                 "scratchExcel" },
    { "func", "Type Work Email",                        "typeWorkEmail" },
    { "func", "Reading Tabs",                           "readingTabs" },
-   { "func", "Search Mail",                            "searchMail" }
+   { "func", "Search Mail",                            "searchMail" },
+   { "func", "Send to OpenAI",                          "openAIreplace" }
 }
 
 -- Now iterate over mxChoiceTable and insert all the table items into the

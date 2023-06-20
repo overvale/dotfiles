@@ -114,7 +114,7 @@ function webSearch(name, url)
       return
    else
       search = hs.http.encodeForQuery(message)
-      os.execute("open " .. url .. search)
+      hs.urlevent.openURL(url .. search)
    end
 end
 
@@ -123,6 +123,34 @@ function searchGitHub()    webSearch("GitHub",    "https://github.com/search?q="
 function searchWikipedia() webSearch("Wikipedia", "https://en.wikipedia.org/w/index.php?search=") end
 function searchIMDB()      webSearch("IMDB",      "https://www.imdb.com/find?q=") end
 function searchWolframAlpha() webSearch("Wolfram Alpha", "https://www.wolframalpha.com/input?i=") end
+
+function searchGoogle()
+   -- This function was written by chatGTP
+   -- Create a chooser for user input
+   local chooser = hs.chooser.new(function(choice)
+      if not choice then return end
+      -- Open a URL for a Google search with the selected query
+      hs.urlevent.openURL("https://www.google.com/search?q=" .. hs.http.encodeForQuery(choice.text))
+      -- hs.alert(hs.http.encodeForQuery(choice.text))
+   end)
+   chooser:placeholderText("Google Search...")
+   -- Fetch autocomplete suggestions from Google
+   chooser:queryChangedCallback(function(string)
+      if #string == 0 then return end
+      hs.http.asyncGet("https://suggestqueries.google.com/complete/search?client=firefox&q=" .. hs.http.encodeForQuery(string), nil, function(status, body)
+         if status ~= 200 then return end
+         local suggestions = hs.json.decode(body)[2]
+         local results = {}
+         for i, suggestion in ipairs(suggestions) do
+            table.insert(results, {
+               ["text"] = suggestion
+            })
+         end
+         chooser:choices(results)
+      end)
+   end)
+   chooser:show()
+end
 
 function chooseMenuItem()
    -- from: https://github.com/brokensandals/MenuChooser.spoon
@@ -311,6 +339,8 @@ mxChoiceTable = {
    { "func", "Search IMDB",                            "searchIMDB" },
    { "func", "Search Wikipedia",                       "searchWikipedia" },
    { "func", "Search Youtube",                         "searchYouTube" },
+   { "func", "Search Google",                          "searchGoogle" },
+   { "func", "Search WolframAlpha",                    "searchWolframAlpha" },
    { "func", "Snippet: ISO Date",                      "snipISODate" },
    { "func", "Snippet: Org Mode Date",                 "snipOrgDate" },
    { "func", "Snippet ¯\\_(ツ)_/¯",                    "snipShrug" },
@@ -463,6 +493,7 @@ keyBindings = {
    { alpha, 'h', reloadHammerspoon },
    { alpha, 'o', openDropbox },
    { alpha, 'f', newFinderWindow },
+   { alpha, 'g', searchGoogle },
    { hyper, 't', snipISODate },
    { hyper, 's', toggleStageMan },
    { hyper, 'd', toggleDarkMode },

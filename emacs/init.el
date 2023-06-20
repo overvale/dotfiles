@@ -144,6 +144,7 @@
         olivetti
         orderless
         orgalist
+        request
         standard-themes
         titlecase
         vertico

@@ -129,7 +129,7 @@ cfp(){
     fi
 }
 
-function makepdf(){
+makepdf(){
     if test -z $3; then
         echo "USAGE: makepdf format /source /destination" >&2
         return 1
@@ -138,5 +138,3 @@ function makepdf(){
         return 0
     fi
 }
-
-

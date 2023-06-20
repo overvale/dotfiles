@@ -1797,14 +1797,6 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
 
 ;;; Org
 
-(setq org-directory (concat outpost-dir "notes/"))
-
-(setq org-agenda-files '("~/home/outpost/notes/todo.org"
-                         "~/home/checkins.org"))
-
-(setq org-capture-templates '(("t" "New Outpost Task"
-                               checkitem
-                               (file+headline "~/home/outpost/notes/todo.org" "Active"))))
 
 (defkey override-global-map
   "s-k" 'org-capture)

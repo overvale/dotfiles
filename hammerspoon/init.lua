@@ -25,15 +25,6 @@ local power = {'cmd', 'shift'}
 
 hs.window.animationDuration = 0
 
-function stringCMD(x)
-   -- Executes the argument (string) as a function.
-   _G[x]()
-end
-
-function simpleNotify(title, text)
-  hs.notify.new({ title = title, informativeText = text}):send()
-end
-
 function keyUpDown(modifiers, key)
    hs.eventtap.keyStroke(modifiers, key, 0)
 end
@@ -44,11 +35,7 @@ require("private")
 -- Functions
 -- -----------------------------------------------
 
-function reloadHammerspoon() hs.reload() end
-
-function editHammerspoonInit()
-   os.execute( "open -a Emacs ~/home/dot/hammerspoon/init.lua" )
-end
+-- TODO: Add to menubad item
 
 function pastePlainText()
    p = hs.pasteboard.readDataForUTI(nil, "public.utf8-plain-text")
@@ -57,16 +44,6 @@ function pastePlainText()
    app:selectMenuItem({"Edit", "Paste"})
 end
 
-function bbeditScratch()
-   hs.osascript.applescript('tell application \"BBEdit\" to (open scratchpad document) activate')
-end
-
-function backupOpenLogs () os.execute("open ~/home/src/rsync-backup/logs") end
-function rsyncBackup() os.execute( "~/home/src/rsync-backup/laptop-backup.sh" ) end
-
-function emacsDebugInit() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs --debug-init" ) end
-function emacsQ() os.execute( "~/Applications/Emacs.app/Contents/MacOS/Emacs -q" ) end
-
 function copyMailURL() os.execute( "~/home/dot/bin/getMailURL | pbcopy" ) end
 function newMailMessage() os.execute("open mailto:") end
 
@@ -74,21 +51,6 @@ function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end
 function snipShrug() hs.eventtap.keyStrokes(" ¯\\_(ツ)_/¯") end
 function snipOrgDate() hs.eventtap.keyStrokes(os.date("<%Y-%m-%d %a>")) end
 function snipISODate() hs.eventtap.keyStrokes(os.date("%Y-%m-%d")) end
-
--- Rather than switch to Safari, copy the current URL, switch back to the previous app and paste,
--- This is a function that fetches the current URL from Safari and types it
-function typeCurrentSafariURL()
-    script = [[
-    tell application "Safari"
-        set currentURL to URL of document 1
-    end tell
-    return currentURL
-    ]]
-    ok, result = hs.applescript(script)
-    if (ok) then
-        hs.eventtap.keyStrokes(result)
-    end
-end
 
 function menuCapitalize()
    local app = hs.application.frontmostApplication()
@@ -104,8 +66,6 @@ function menuLowerCase()
    local app = hs.application.frontmostApplication()
    app:selectMenuItem({"Edit", "Transformations", "Make Lower Case"})
 end
-
-
 
 function webSearch(name, url)
    hs.focus()
@@ -152,52 +112,20 @@ function searchGoogle()
    chooser:show()
 end
 
-function chooseMenuItem()
-   -- from: https://github.com/brokensandals/MenuChooser.spoon
-   local app = hs.application.frontmostApplication()
-   app:getMenuItems(function(menu)
-         local choices = {}
-         function findChoices(pathstr, path, list)
-            for _,item in pairs(list) do
-               local newpathstr
-               if pathstr then
-                  newpathstr = pathstr .. ' › ' .. (item.AXTitle or '')
-               else
-                  newpathstr = item.AXTitle
-               end
-               local newpath = {}
-               for i,title in ipairs(path) do
-                  newpath[i] = title
-               end
-               newpath[#newpath+1] = item.AXTitle
-               if item.AXChildren then
-                  findChoices(newpathstr, newpath, item.AXChildren[1])
-               elseif item.AXEnabled and item.AXTitle and (not (item.AXTitle == '')) then
-                  choices[#choices+1] = {
-                     text = newpathstr,
-                     path = newpath
-                  }
-               end
-            end
-         end
-         findChoices(nil, {}, menu)
-         local chooser = hs.chooser.new(function(selected)
-               if selected then
-                  app:selectMenuItem(selected.path)
-               end
-         end)
-         chooser:choices(choices)
-         chooser:placeholderText('Menu Item')
-         chooser:bgDark(true)
-         chooser:show()
-   end)
-end
-
 function newFinderWindow()
    finder = hs.appfinder.appFromName("Finder")
    hs.osascript.applescript('tell application "Finder" to make new Finder window')
    finder:activate()
 end
+
+function toggleMenubar()
+   hs.applescript([[
+tell application "System Events"
+    tell dock preferences to set autohide menu bar to not autohide menu bar
+end tell]])
+end
+
+---- Dark Mode ----
 
 function darkModeStatus()
    -- return the status of Dark Mode
@@ -225,6 +153,8 @@ function toggleDarkMode()
    end
 end
 
+---- Stage Manager ----
+
 function utilTrim(str)
   return str:match("^()%s*$") and "" or str:match("^%s*(.*%S)")
 end
@@ -249,247 +179,6 @@ function toggleStageMan()
    end
 end
 
-function toggleMenubar()
-   hs.applescript([[
-tell application "System Events"
-    tell dock preferences to set autohide menu bar to not autohide menu bar
-end tell]])
-end
-
-function openAIcomplete(prompt)
-   -- openai_api_key is set elsewhere
-   local url = "https://api.openai.com/v1/engines/text-davinci-003/completions"
-   local data = string.format("{ \"prompt\": %q, \"max_tokens\": 1024, \"temperature\": 0.7 }", prompt)
-   local headers = {
-      ["Content-Type"] = "application/json",
-      ["Authorization"] = "Bearer " .. openai_api_key,
-   }
-   local status, response, headers = hs.http.post(url, data, headers)
-   if status == 200 then
-      local extractedText = string.match(response, '"text":"\\n\\n([^"]+)"')
-      return extractedText:gsub("\\([nt])", {n="\n", t="\t"})
-   else
-      return "OpenAI Error"
-   end
-end
-
-function openAIreplace()
-   openAIresponse = openAIcomplete(hs.pasteboard.getContents())
-   hs.pasteboard.setContents(openAIresponse)
-   app = hs.application.frontmostApplication()
-   app:selectMenuItem({"Edit", "Paste"})
-end
-
-
--- M-x Anything
--- ----------------------------------------------
-
--- Initialize the table of choices used by the chooser
-mxChoices = {}
-
--- This table will be reformatted and inserted into mxChoices.
--- This is done so that I can write it in this simpler format, rather than the
--- cumbersome one required by the chooser.
-mxChoiceTable = {
-   { "path", "Desktop",            "~/Desktop" },
-   { "path", "Downloads",          "~/Downloads" },
-   { "path", "Home",               "~/home" },
-   { "path", "iCloud Documents",   "~/Library/Mobile Documents/com~apple~CloudDocs/Oliver" },
-   { "app",  "Activity Monitor",   "Activity Monitor" },
-   { "app",  "Arc",                "Arc" },
-   { "app",  "BBEdit",             "BBEdit" },
-   { "app",  "Calendar",           "Calendar" },
-   { "app",  "Clock",              "Clock" },
-   { "app",  "Console",            "Console" },
-   { "app",  "Contacts",           "Contacts" },
-   { "app",  "Dictionary",         "Dictionary" },
-   { "app",  "Emacs",              "Emacs" },
-   { "app",  "FaceTime",           "FaceTime" },
-   { "app",  "Find My",            "Find My" },
-   { "app",  "Firefox",            "Firefox" },
-   { "app",  "Font Book",          "Font Book" },
-   { "app",  "Hammerspoon",        "Hammerspoon" },
-   { "app",  "Keychain Access",    "Keychain Access" },
-   { "app",  "Keynote",            "Keynote" },
-   { "app",  "Mail",               "Mail" },
-   { "app",  "Maps",               "Maps" },
-   { "app",  "Messages",           "Messages" },
-   { "app",  "Microsoft Excel",    "Microsoft Excel" },
-   { "app",  "Microsoft Outlook",  "Microsoft Outlook" },
-   { "app",  "Microsoft Teams",    "Microsoft Teams" },
-   { "app",  "Microsoft Word",     "Microsoft Word" },
-   { "app",  "Muse",               "Muse" },
-   { "app",  "Music",              "Music" },
-   { "app",  "Notes",              "Notes" },
-   { "app",  "Numbers",            "Numbers" },
-   { "app",  "Pages",              "Pages" },
-   { "app",  "Photos",             "Photos" },
-   { "app",  "Pixelmator",         "Pixelmator" },
-   { "app",  "Preview",            "Preview" },
-   { "app",  "QuickTime Player",   "QuickTime Player" },
-   { "app",  "Reminders",          "Reminders" },
-   { "app",  "Safari",             "Safari" },
-   { "app",  "Script Editor",      "Script Editor" },
-   { "app",  "Shortcuts",          "Shortcuts" },
-   { "app",  "System Information", "System Information" },
-   { "app",  "System Settings",    "System Settings" },
-   { "app",  "TV",                 "TV" },
-   { "app",  "Tailscale",          "Tailscale" },
-   { "app",  "Terminal",           "Terminal" },
-   { "app",  "TextEdit",           "TextEdit" },
-   { "app",  "Tot",                "Tot" },
-   { "app",  "Transmit",           "Transmit" },
-   { "app",  "Voice Memos",        "Voice Memos" },
-   { "app",  "Weather",            "Weather" },
-   { "app",  "iA Writer",          "iA Writer" },
-   { "app",  "zoom.us",            "zoom.us" },
-   { "func", "New Finder Window",                      "newFinderWindow" },
-   { "func", "Edit Hammerspoon Config",                "editHammerspoonInit" },
-   { "func", "Open Rsync Backup Logs",                 "backupOpenLogs" },
-   { "func", "Open BBEdit Scratch",                    "bbeditScratch" },
-   { "func", "Choose Menu Item",                       "chooseMenuItem" },
-   { "func", "Copy Mail Message URL",                  "copyMailURL" },
-   { "func", "Kill Work Apps",                         "killWorkApps" },
-   { "func", "Show Meeting Times",                     "meetingTimes" },
-   { "func", "New Mail Message",                       "newMailMessage" },
-   { "func", "Open Dropbox Bid folder",                "openDropbox" },
-   { "func", "Open Work Apps",                         "openWorkApps" },
-   { "func", "Paste as Plain Text",                    "pastePlainText" },
-   { "func", "Reload Hammerspoon",                     "reloadConfig" },
-   { "func", "Start Rsync Backup",                     "rsyncBackup" },
-   { "func", "Search GitHub",                          "searchGitHub" },
-   { "func", "Search IMDB",                            "searchIMDB" },
-   { "func", "Search Wikipedia",                       "searchWikipedia" },
-   { "func", "Search Youtube",                         "searchYouTube" },
-   { "func", "Search Google",                          "searchGoogle" },
-   { "func", "Search WolframAlpha",                    "searchWolframAlpha" },
-   { "func", "Snippet: ISO Date",                      "snipISODate" },
-   { "func", "Snippet: Org Mode Date",                 "snipOrgDate" },
-   { "func", "Snippet ¯\\_(ツ)_/¯",                    "snipShrug" },
-   { "func", "Snippet \"waving hands around\"",        "snipWave" },
-   { "func", "Toggle Stage Manager",                   "toggleStageMan" },
-   { "func", "Toggle Dark Mode",                       "toggleDarkMode" },
-   { "func", "Toggle MenuBar",                         "toggleMenubar" },
-   { "func", "Type Current Safari URL",                "typeCurrentSafariURL" },
-   { "func", "Type Execs + MDs + EPs email addresses", "typeExecMDsEPs" },
-   { "func", "Open Excel Scratch Doc",                 "scratchExcel" },
-   { "func", "Type Work Email",                        "typeWorkEmail" },
-   { "func", "Reading Tabs",                           "readingTabs" },
-   { "func", "Search Mail",                            "searchMail" },
-   { "func", "Send to OpenAI",                          "openAIreplace" }
-}
-
--- Now iterate over mxChoiceTable and insert all the table items into the
--- table used by the chooser (mxChoices).
-for i, mapping in ipairs(mxChoiceTable) do
-   local type = mapping[1]
-   local text = mapping[2]
-   local arg  = mapping[3]
-   table.insert(mxChoices, {["type"] = type, ["text"] = text, ["arg"] = arg})
-end
-
--- Create the actual chooser and define what happens when you select an item
--- from it.
-mxChooser = hs.chooser.new(function(choice)
-      if not choice then
-         return
-      else
-         if choice["type"] == "app" then
-            os.execute("open -a" .. "'" .. choice["arg"] .. "'")
-         elseif choice["type"] == "path" then
-            os.execute("open " .. choice["arg"])
-         elseif choice["type"] == "func" then
-            _ENV[choice["arg"]]()
-         end
-      end
-end)
-
-mxChooser:choices(mxChoices)
-mxChooser:placeholderText("M-x Hammerspoon")
-mxChooser:bgDark(true)
-
-hs.hotkey.bind(alpha, "x", function() mxChooser:show() end)
-
-
--- Window Moving & Resizing
--- -----------------------------------------------
-
-function moveWindow(dir)
-   -- Reposition the current window to the left, right, top, or bottom of screen.
-   local thiswindow = hs.window.frontmostWindow()
-   local loc = thiswindow:frame()
-   local thisscreen = thiswindow:screen()
-   local screenrect = thisscreen:frame()
-   if dir == 'left' then
-      loc.x = 0
-   elseif dir == 'right' then
-      loc.x = screenrect.w - loc.w
-   elseif dir == 'up' then
-      loc.y = 0
-   elseif dir == 'down' then
-      loc.y = screenrect.h - loc.h
-   end
-   thiswindow:setFrame(loc)
-end
-
-function wm_left()   moveWindow('left') end
-function wm_right()  moveWindow('right') end
-function wm_center() hs.window.focusedWindow():centerOnScreen() end
-
-function winResizeLeft()
-   if winPosition == 'left23' then
-      winPosition = 'left12'
-      hs.window.focusedWindow():moveToUnit({0, 0, 1/2, 1})
-   elseif winPosition == 'left12' then
-      winPosition = 'left13'
-      hs.window.focusedWindow():moveToUnit({0, 0, 1/3, 1})
-   else
-      winPosition = 'left23'
-      hs.window.focusedWindow():moveToUnit({0, 0, 2/3, 1})
-   end
-end
-
-function winResizeRight()
-   if winPosition == 'right23' then
-      winPosition = 'right12'
-      hs.window.focusedWindow():moveToUnit({1/2, 0, 1/2, 1})
-   elseif winPosition == 'right12' then
-      winPosition = 'right13'
-      hs.window.focusedWindow():moveToUnit({2/3, 0, 1/3, 1})
-   else
-      winPosition = 'right23'
-      hs.window.focusedWindow():moveToUnit({1/3, 0, 2/3, 1})
-   end
-end
-
-function winResizeFull()
-   winPosition = 'full'
-   hs.window.focusedWindow():moveToUnit({0, 0, 1, 1})
-end
-
--- Toggle between full screen and orginal size. Returns the window instance.
-local previousSizes = {}
-winResizeFull= function()
-   local window = hs.window.focusedWindow()
-   if not window then return nil end
-
-   local id = window:id()
-   if previousSizes[id] == nil then
-      previousSizes[id] = window:frame()
-      window:maximize()
-   else
-      window:setFrame(previousSizes[id])
-      previousSizes[id] = nil
-   end
-
-   return window
-end
-
-function moveToNextScreen()
-  local app = hs.window.focusedWindow()
-  app:moveToScreen(app:screen():next())
-end
-
 
 -- Anycomplete
 -- -----------------------------------------------
@@ -497,6 +186,68 @@ end
 anycomplete = hs.loadSpoon("Anycomplete")
 anycomplete.engine = "duckduckgo"
 anycomplete.bindHotkeys()
+
+
+-- My Hammerspoon Menubar Item
+-- ----------------------------------------------
+
+-- Name the menubar item
+local myHammerMenu = hs.menubar.new()
+
+-- Build the actual menubar item drop-down
+function myHammerMenuItem()
+   local snippetMenu = {
+      { title = "(waving hands around)", fn = snipWave },
+      { title = " ¯\\_(ツ)_/¯", fn = snipShrug },
+      { title = "<YYYY-MM-DD DDD>", fn = snipOrgDate },
+      { title = "YYYY-MM-DD", fn = snipISODate },
+   }
+   local searchMenu = {
+      { title = "Search YouTube", fn = searchYouTube },
+      { title = "Search GitHub", fn = searchGitHub },
+      { title = "Search Wikipedia", fn = searchWikipedia },
+      { title = "Search IMDB", fn = searchIMDB },
+      { title = "Search Wolfram Alpha", fn = searchWolframAlpha },
+      { title = "Search Google", fn = searchGoogle },
+   }
+   local menuTable = {
+      { title = "Toggle Dark Mode", fn = toggleDarkMode },
+      { title = "Toggle Stage Manager", fn = toggleStageMan },
+      { title = "Toggle Menu Bar", fn = toggleMenubar },
+      { title = "-" },
+      { title = "Snippets", menu = snippetMenu },
+      { title = "Search...", menu = searchMenu },
+      { title = "-" },
+      { title = "Mail", disabled = true },
+      { title = "New Mail Message", fn = newMailMessage },
+      { title = "Copy Mail Message URL", fn = copyMailURL},
+   }
+   myHammerMenu:setMenu(menuTable)
+end
+
+-- Add the menubar item to the menubar
+myHammerMenuItem()
+
+local iconH = [[ASCII:
+1.............1
+7.............5
+...............
+...............
+....AD...FI....
+...............
+...............
+....K.....L....
+....N.....M....
+...............
+...............
+....BC...GH....
+...............
+...............
+7.............5
+3.............3
+]]
+
+myHammerMenu:setIcon(iconH)
 
 
 -- Bindings
@@ -510,25 +261,15 @@ keyBindings = {
    { alpha, 'e', 'Emacs' },
    { alpha, 's', 'Safari' },
    { alpha, 'a', 'Music' },
-   { alpha, 'u', 'Terminal' },
-   { alpha, 't', 'Tot' },
+   { alpha, 't', 'Terminal' },
    { alpha, 'r', 'Reminders' },
-   { alpha, 'h', reloadHammerspoon },
-   { alpha, 'o', openDropbox },
    { alpha, 'f', newFinderWindow },
    { alpha, 'g', searchGoogle },
+   -- hyper g reserved for Anycomplete
    { hyper, 't', snipISODate },
    { hyper, 's', toggleStageMan },
    { hyper, 'd', toggleDarkMode },
-   { hyper, 'left', winResizeLeft },
-   { hyper, 'right', winResizeRight },
-   { hyper, 'f', winResizeFull },
-   { hyper, 'j', wm_left },
-   { hyper, 'k', wm_center },
-   { hyper, 'l', wm_right },
-   { hyper, 'n', moveToNextScreen },
    { hyper, 'v', pastePlainText },
-   { power, 'k', chooseMenuItem},
    { {'alt', 'cmd'}, 'm', toggleMenubar },
 }
 
@@ -548,6 +289,9 @@ end
 
 -- User Keymaps
 -- ----------------------------------------------
+-- This creates keymaps for specific apps, and creates an application watcher
+-- that activates and deactivates the mappings when the associated app
+-- activates.
 
 -- Excel Mode Map
 
@@ -573,7 +317,6 @@ readlineModeMap:bind({'alt'}, 'u', function() menuUpperCase() end)
 
 
 -- App Activation Watcher
--- ---------------------------------------------
 
 function appActivation(appName, eventType, appObject)
    if (eventType == hs.application.watcher.activated) then
@@ -602,6 +345,8 @@ appActivationWatcher:start()
 
 -- Transient Keymap
 -- ---------------------------------------------
+-- This creates a custom transient keymap that is only active for one event
+-- and then exists.
 
 -- Create the model keymap to bind inside of
 transientKeys = hs.hotkey.modal.new()
@@ -619,7 +364,6 @@ end
 
 transientKeysBindings = {
    { {}, 'n', newMailMessage },
-   { {}, 'return', typeHolidayFollowup },
 }
 
 do -- Set the binding and provide an escape, while preventing recursion.
@@ -636,12 +380,6 @@ for i, mapping in ipairs(transientKeysBindings) do
    local fn  = mapping[3]
    transientKeys:bind(mod, key, function() fn() transientKeys:exit() end)
 end
-
-
--- Notify on Successful Load
--- -------------------------------------------
-
-simpleNotify('Hammerspoon', 'Hammerspoon loaded successfully!')
 
 
 -- END HAMMERSPOON CONFIG --

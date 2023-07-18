@@ -35,7 +35,7 @@ require("private")
 -- Functions
 -- -----------------------------------------------
 
--- TODO: Add to menubad item
+-- TODO: Add to menubar item
 
 function pastePlainText()
    p = hs.pasteboard.readDataForUTI(nil, "public.utf8-plain-text")
@@ -119,10 +119,10 @@ function newFinderWindow()
 end
 
 function toggleMenubar()
-   hs.applescript([[
-tell application "System Events"
-    tell dock preferences to set autohide menu bar to not autohide menu bar
-end tell]])
+  hs.applescript([[
+    tell application "System Events"
+      tell dock preferences to set autohide menu bar to not autohide menu bar
+    end tell]])
 end
 
 ---- Dark Mode ----
@@ -146,6 +146,7 @@ end
 
 function toggleDarkMode()
    -- Toggle Dark Mode status
+   -- Argument should be either 'true' or 'false'.
    if darkModeStatus() then
       setDarkMode(false)
    else
@@ -254,19 +255,7 @@ myHammerMenu:setIcon(iconH)
 -- ----------------------------------------------
 
 keyBindings = {
-   { alpha, 'm', 'Mail' },
-   { alpha, 'n', 'Notes' },
-   { alpha, 'c', 'Calendar' },
-   { alpha, 'b', 'BBEdit' },
-   { alpha, 'e', 'Emacs' },
-   { alpha, 's', 'Safari' },
-   { alpha, 'a', 'Music' },
-   { alpha, 't', 'Terminal' },
-   { alpha, 'r', 'Reminders' },
-   { alpha, 'f', newFinderWindow },
-   { alpha, 'g', searchGoogle },
    -- hyper g reserved for Anycomplete
-   { hyper, 't', snipISODate },
    { hyper, 's', toggleStageMan },
    { hyper, 'd', toggleDarkMode },
    { hyper, 'v', pastePlainText },
@@ -277,13 +266,7 @@ for i, mapping in ipairs(keyBindings) do
    local mod = mapping[1]
    local key = mapping[2]
    local app = mapping[3]
-   hs.hotkey.bind(mod, key, function()
-     if (type(app) == 'string') then
-            hs.application.launchOrFocus(app)
-     else
-        app()
-     end
-   end)
+   hs.hotkey.bind(mod, key, function() app() end)
 end
 
 
@@ -363,7 +346,18 @@ function transientKeys:exited()
 end
 
 transientKeysBindings = {
-   { {}, 'n', newMailMessage },
+  { {}, 'n', newMailMessage },
+  { {}, 'm', 'Mail' },
+  { {}, 'n', 'Notes' },
+  { {}, 'c', 'Calendar' },
+  { {}, 'b', 'BBEdit' },
+  { {}, 'e', 'Emacs' },
+  { {}, 's', 'Safari' },
+  { {}, 'a', 'Music' },
+  { {}, 't', 'Terminal' },
+  { {}, 'r', 'Reminders' },
+  { {}, 'f', newFinderWindow },
+  { {}, 'g', searchGoogle },
 }
 
 do -- Set the binding and provide an escape, while preventing recursion.
@@ -375,10 +369,16 @@ do -- Set the binding and provide an escape, while preventing recursion.
 end
 
 for i, mapping in ipairs(transientKeysBindings) do
-   local mod = mapping[1]
-   local key = mapping[2]
-   local fn  = mapping[3]
-   transientKeys:bind(mod, key, function() fn() transientKeys:exit() end)
+  local mod = mapping[1]
+  local key = mapping[2]
+  local fn  = mapping[3]
+  transientKeys:bind(mod, key, function()
+    if (type(fn) == 'string') then
+      hs.application.launchOrFocus(fn)
+    else
+      fn()
+    end
+    transientKeys:exit() end)
 end
 
 

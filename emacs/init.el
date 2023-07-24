@@ -690,7 +690,7 @@ This function is missing in modus-themes 4.0 for some reason."
         (load-theme-cleanly 'modus-vivendi)
       (load-theme-cleanly 'modus-operandi)))
 
-  (setq modus-themes-italic-constructs nil
+  (setq modus-themes-italic-constructs t
         modus-themes-mixed-fonts t
         modus-themes-prompts '(bold)
         modus-themes-org-blocks 'gray-background
@@ -754,20 +754,13 @@ This function is missing in modus-themes 4.0 for some reason."
                         :mono-height 120
                         :mode-height 130
                         :vari-height 130))
-          (Go . ( :mono "Go Mono"
-                  :vari "Go"
-                  :mode "Go"
-                  :line nil
-                  :mono-height 120
-                  :mode-height 120
-                  :vari-height 120))
-          (Hack . ( :mono "Hack"
-                    :vari "Verdana"
-                    :mode "SF Compact Text"
-                    :line nil
-                    :mono-height 120
-                    :mode-height 130
-                    :vari-height 120))
+          (Dossier . ( :mono "Dossier"
+                       :vari "New York Small"
+                       :mode "SF Compact Text"
+                       :line 1
+                       :mono-height 110
+                       :mode-height 130
+                       :vari-height 140))
           (IBM . ( :mono "IBM Plex Mono"
                    :vari "IBM Plex Serif"
                    :mode "IBM Plex Sans"

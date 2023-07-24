@@ -1598,7 +1598,8 @@ With a prefix argument, copy the link to the online manual instead."
 
 (load-package 'dired
   :after-load
-  (setq dired-use-ls-dired nil)
+  (setq dired-use-ls-dired nil
+        dired-auto-revert-buffer t)
 
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 

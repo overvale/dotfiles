@@ -31,7 +31,7 @@ autoload -Uz url-quote-magic
 zle -N self-insert url-quote-magic
 
 export PROMPT='
-%F{yellow}􀰆 %F{blue} %n@%m %F{green}%~ %F{white}%# '
+􀰆 %n@%m %~  '
 
 # Private Stuff
 source ~/home/src/private-zshrc

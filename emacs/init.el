@@ -565,7 +565,7 @@ With a prefix ARG always prompt for command to use."
     ("s m" "*scratch-markdown*" scratch-buffer-markdown)
     ("O" "Org Mode" org-mode)
     ("g" "Magit Status" magit-status)]
-   [("o" "Outpost..." outpost-dispatch)
+   [("L" "Logbook" logbook-dispatch)
     ("d" "Define Word" sdcv-search)
     ("p" "Package Ops..." package-dispatch)
     ("m" "Keyboard Macro..." kbd-macro-dispatch)

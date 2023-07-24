@@ -131,6 +131,7 @@
       '(consult
         ctrlf
         delight
+        ef-themes
         embark
         embark-consult
         exec-path-from-shell

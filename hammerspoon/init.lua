@@ -25,6 +25,10 @@ local power = {'cmd', 'shift'}
 
 hs.window.animationDuration = 0
 
+function keyUpDown(modifiers, key)
+  hs.eventtap.keyStroke(modifiers, key, 0)
+end
+
 require("private")
 require("macos-toggles")
 require("functions")

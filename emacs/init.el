@@ -755,37 +755,22 @@ This function is missing in modus-themes 4.0 for some reason."
                         :mono-height 120
                         :mode-height 130
                         :vari-height 130))
-          (Dossier . ( :mono "Dossier"
-                       :vari "New York Small"
-                       :mode "SF Compact Text"
-                       :line 1
-                       :mono-height 110
-                       :mode-height 130
-                       :vari-height 140))
-          (IBM . ( :mono "IBM Plex Mono"
-                   :vari "IBM Plex Serif"
-                   :mode "IBM Plex Sans"
-                   :line nil
-                   :mono-height 120
-                   :mode-height 130
-                   :vari-height 130))
+          (JetBrains . ( :mono "JetBrains Mono"
+                         :vari "SF Pro Text"
+                         :mode "SF Compact Text"
+                         :line nil
+                         :mono-height 120
+                         :mode-height 130
+                         :vari-height 120))
           (Pragmata . ( :mono "PragmataPro"
                         :vari "SF Pro Text"
                         :mode "SF Compact Text"
                         :line nil
                         :mono-height 130
                         :mode-height 130
-                        :vari-height 120))
-          (Triplicate . ( :mono "Triplicate T4"
-                          :vari "Triplicate T4p"
-                          :mode "SF Compact Text"
-                          :line nil
-                          :mono-height 130
-                          :mode-height 130
-                          :vari-height 130))
-          ))
+                        :vari-height 120))))
 
-  (set-custom-fonts "Berkeley"))
+  (set-custom-fonts "Apple"))
 
 ;; Enable rendering SF symbols on macOS.
 (set-fontset-font t nil "SF Pro Text" nil 'append)

@@ -30,8 +30,7 @@ zstyle ':completion:*' insert-tab pending
 autoload -Uz url-quote-magic
 zle -N self-insert url-quote-magic
 
-export PROMPT='
-􀰆 %n@%m %~  '
+export PROMPT='>> %n@%m %~ > '
 
 # Private Stuff
 source ~/home/src/private-zshrc
@@ -52,6 +51,9 @@ alias pbp="pbpaste"
 alias pbc="pbcopy"
 alias python=python3
 alias emacs="open -a Emacs"
+
+alias backup-nas="~/home/src/rsync-backup/backup-nas.sh"
+alias backup-cloud="~/home/src/rsync-backup/backup-cloud.sh"
 
 # System Reports
 # I use these commands to search for background processes I don't want

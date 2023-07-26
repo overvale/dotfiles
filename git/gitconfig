@@ -10,3 +10,5 @@
     whitespace = nowarn
 [log]
     decorate = full
+[alias]
+    ls = log --oneline

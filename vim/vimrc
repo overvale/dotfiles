@@ -1,0 +1,103 @@
+let mapleader = ','
+
+" Statusline
+set statusline=\ %f\ %m\ %=\ %l/%c%V\ (%P)\ %y\ 
+
+set encoding=utf-8
+set backspace=indent,eol,start
+set display+=lastline
+set formatoptions=croqn1jl nojoinspaces
+set foldlevelstart=99
+set hidden confirm
+set incsearch ignorecase gdefault
+set laststatus=2 showcmd showmode
+set listchars=tab:▶\ ,eol:¬,trail:¿,extends:⟩,precedes:⟨,nbsp:╌
+set mouse=n
+set scrolloff=0 sidescrolloff=5
+set shortmess+=I
+set spellfile=~/.vim/custom-dictionary.utf-8.add
+set spelllang=en_us
+set splitbelow splitright
+set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+set notimeout ttimeout
+set timeoutlen=1000 ttimeoutlen=0
+set wildmenu wildmode=longest:full
+set wrap linebreak breakindent
+set wrapscan
+set nostartofline
+
+" Remap U to redo
+nnoremap U <c-r>
+
+" Enter command-mode with <space>
+noremap <space> :
+
+" Make Y behave like other capitals
+nnoremap Y y$
+
+" In Visual Mode I almost never want $ to select the newline
+noremap $ g_
+
+" Maintain selection on in/de-dent
+xnoremap > >gv
+xnoremap < <gv
+
+" Use 'gk' for k, unless a count is given. Useful for relative numbered lines.
+noremap <expr> k (v:count == 0 ? 'gk' : 'k')
+noremap <expr> j (v:count == 0 ? 'gj' : 'j')
+
+" Break undo before CTRL-U
+inoremap <C-U> <C-G>u<C-U>
+
+" Set proper italic escape-codes
+let &t_ZH="\e[3m"
+let &t_ZR="\e[23m"
+
+" Quickly go to next/previous tab/buffer/window/quickfix/jump
+nnoremap ]b :bnext<cr>
+nnoremap [b :bprev<cr>
+nnoremap ]t :tabn<cr>
+nnoremap [t :tabp<cr>
+nnoremap [w <c-w>W
+nnoremap ]w <c-w>w
+nnoremap [q :cN<cr>
+nnoremap ]q :cn<cr>
+nnoremap [j <c-o>
+nnoremap ]j <c-i>
+
+" Use the above mappings instead...
+nnoremap <c-o> <nop>
+nnoremap <c-i> <nop>
+" ...and that frees up <tab> because terms see <c-i> and <tab> as the same
+nnoremap <tab> <c-w><c-w>
+
+" Move lines
+nnoremap <c-k> :<c-u>execute 'move .' . '--' . v:count1<cr>
+nnoremap <c-j> :<c-u>execute 'move .' . '+' . v:count1<cr>
+xnoremap <c-k> :<c-u>execute "'<,'>move'<--" . v:count1<cr>gv
+xnoremap <c-j> :<c-u>execute "'<,'>move'>+" . v:count1<cr>gv
+
+" Toggle relativenumber
+nnoremap <leader>n :set relativenumber!<cr>
+nnoremap <leader>N :set number!<cr>
+
+" Select last pasted text
+nnoremap gV `[v`]
+
+" Quickly read-in from shell
+nnoremap ! :r!
+
+" Insert-Mode Spelling Correction
+inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+
+" Never use a mapping when a command will do! This is Vim!
+command! H1 :normal yypVr=
+command! H2 :normal yypVr-
+command! SS :set spell! | set spell?
+command! QR :enew ~/home/src/notes/vim-quickref
+command! Src :source $MYVIMRC | :echom "vimrc reloaded!"
+command! Erc :e $MYVIMRC
+command! Wrc :w | :source $MYVIMRC | :echom "vimrc saved and reloaded!"
+command! WW :set wrap!
+command! TODO vimgrep TODO % | cw
+command! DATES vimgrep /\v<\d{4}-\d{2}-\d{2}>/j % | cw

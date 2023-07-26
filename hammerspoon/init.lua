@@ -110,9 +110,15 @@ hammerMenuSet()
 -- activates.
 
 -- The Apps you want to customize
+readlineModeMap = hs.hotkey.modal.new()
 excelModeMap = hs.hotkey.modal.new()
 bikeModeMap = hs.hotkey.modal.new()
-readlineModeMap = hs.hotkey.modal.new()
+novaModeMap = hs.hotkey.modal.new()
+
+-- Readline
+readlineModeMap:bind({'alt'}, 'l', function() menuLowerCase() end)
+readlineModeMap:bind({'alt'}, 'c', function() menuCapitalize() end)
+readlineModeMap:bind({'alt'}, 'u', function() menuUpperCase() end)
 
 -- Excel
 excelModeMap:bind({'cmd'}, 'return', function() keyUpDown({}, 'f2') end)
@@ -122,11 +128,10 @@ bikeModeMap:bind({'alt'}, 'b', function() keyUpDown({'alt'}, 'left') end)
 bikeModeMap:bind({'alt'}, 'f', function() keyUpDown({'alt'}, 'right') end)
 bikeModeMap:bind({'alt'}, 'd', function() keyUpDown({'alt'}, 'forwarddelete') end)
 
--- Readline
-readlineModeMap:bind({'alt'}, 'l', function() menuLowerCase() end)
-readlineModeMap:bind({'alt'}, 'c', function() menuCapitalize() end)
-readlineModeMap:bind({'alt'}, 'u', function() menuUpperCase() end)
-
+-- Nova
+novaModeMap:bind({'alt'}, 'b', function() keyUpDown({'alt'}, 'left') end)
+novaModeMap:bind({'alt'}, 'f', function() keyUpDown({'alt'}, 'right') end)
+novaModeMap:bind({'alt'}, 'd', function() keyUpDown({'alt'}, 'forwarddelete') end)
 
 -- App Activation Watcher
 function appActivation(appName, eventType, appObject)
@@ -145,6 +150,11 @@ function appActivation(appName, eventType, appObject)
          bikeModeMap:enter()
       else
          bikeModeMap:exit()
+      end
+      if (appName == "Nova") then
+        novaModeMap:enter()
+      else
+        novaModeMap:exit()
       end
    end
 end

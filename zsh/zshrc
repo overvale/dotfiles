@@ -73,10 +73,41 @@ source ~/home/opt/fzf-tab/fzf-tab.plugin.zsh
 # FUNCTIONS
 # ----------------------------------------------------------------------------
 
-did (){
-    # A simple log-entry system that appends anything you type after
-    # `did` to the log file.
-    echo "$(date +%Y-%m-%d): $@" >> ~/home/did.txt
+todo() {
+    if [[ $1 == "-h" ]]; then
+        echo "Usage: todo [text]"
+        echo "       Without arguments, opens todo file."
+        echo "       With arguments, prepends arguments to the todo file."
+        return 0
+    fi
+
+    TODO="${HOME}/cloud/todo.txt"
+    if [ $# -eq 0 ]; then
+        open $TODO
+    else
+        sed -i '' "1s/^/$*"$'\\n/g' $TODO
+    fi
+}
+
+log() {
+    if [[ $1 == "-h" ]]; then
+        echo "Usage: log [text]"
+        echo "       Without arguments, opens today's log file."
+        echo "       With arguments, appends to today's log file."
+        return 0
+    fi
+
+    LOGPATH="${HOME}/cloud/log/"
+    DATE=$(date +%Y-%m-%d)
+    FILENAME="${LOGPATH}${DATE}.txt"
+    if [ ! -f $FILENAME ]; then
+        touch $FILENAME
+    fi
+    if [ $# -eq 0 ]; then
+        open $FILENAME
+    else
+        echo "$*" >> $FILENAME
+    fi
 }
 
 function td() {
@@ -139,4 +170,8 @@ makepdf(){
         pandoc -f $1+smart -t html < $2 | prince -s ~/home/src/print_css/print.css - -o $3
         return 0
     fi
+}
+
+function xman() {
+  open x-man-page://$1
 }

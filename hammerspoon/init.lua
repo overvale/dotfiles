@@ -33,6 +33,7 @@ require("private")
 require("macos-toggles")
 require("functions")
 require("hammer-menu")
+require("backup-menu")
 
 anycomplete = hs.loadSpoon("Anycomplete")
 anycomplete.engine = "duckduckgo"

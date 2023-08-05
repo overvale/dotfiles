@@ -55,18 +55,16 @@ keyBindings = {
 -- Accepts strings and function names
 -- Strings are assumed to be Application names
 transientKeysBindings = {
-  { {}, 'n', newMailMessage },
-  { {}, 'm', 'Mail' },
-  { {}, 'n', 'Notes' },
-  { {}, 'c', 'Calendar' },
-  { {}, 'b', 'BBEdit' },
-  { {}, 'e', 'Emacs' },
-  { {}, 's', 'Safari' },
-  { {}, 'a', 'Music' },
-  { {}, 't', 'Terminal' },
-  { {}, 'r', 'Reminders' },
-  { {}, 'f', newFinderWindow },
-  { {}, 'g', searchGoogle },
+  { {'cmd'}, 'm', 'Mail' },
+  { {'cmd'}, 'c', 'Calendar' },
+  { {'cmd'}, 'b', 'BBEdit' },
+  { {'cmd'}, 'e', 'Emacs' },
+  { {'cmd'}, 's', 'Safari' },
+  { {'cmd'}, 'a', 'Music' },
+  { {'cmd'}, 't', 'Terminal' },
+  { {'cmd'}, 'r', 'Reminders' },
+  { {'cmd'}, 'f', newFinderWindow },
+  { {'cmd'}, 'g', searchGoogle },
 }
 
 
@@ -170,8 +168,8 @@ end
 
 -- Keymap should provide an escape and prevent recursion.
 do
-   local mod = power
-   local key = 'space'
+   local mod = {'cmd'}
+   local key = 'e'
    hs.hotkey.bind(mod, key, function() transientKeys:enter() end)
    transientKeys:bind(mod, key, function() transientKeys:exit() end)
    transientKeys:bind('', 'escape', function() transientKeys:exit() end)

@@ -40,8 +40,8 @@ source ~/home/src/private-zshrc
 # ----------------------------------------------------------------------------
 alias rm="rm -i"
 alias mv="mv -i"
-alias l='exa -1'
-alias la="exa -la"
+alias l='ls -1p'
+alias la="ls -lap"
 alias ..="cd .."
 alias ax="chmod a+x"
 alias batt="pmset -g batt"

@@ -66,6 +66,7 @@ Plus, it's more secure and private. So there.
   bottom of the screen.
 - Run =defaults write com.apple.TextEdit NSShowAppCentricOpenPanelInsteadOfUntitledFile -bool false=
   to make TextEdit create Untitled documents when it launches. [[https://mjtsai.com/blog/2020/12/10/making-textedit-create-an-untitled-document-at-launch/][Source]]
+- Run =defaults write com.apple.TextEdit "TabWidth" '4'=
 - Run =defaults -currentHost write -g NSTextKillRingSize -string 6= to expand the kill ring to 6 entries. See [[https://www.hogbaysoftware.com/posts/mac-text-editing-mark-kill-yank/][here]].
 
 * Encryption

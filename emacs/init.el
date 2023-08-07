@@ -743,40 +743,41 @@ This function is missing in modus-themes 4.0 for some reason."
 ;; This makes it so text-scale adjustments operate exactly one point size at a
 ;; time. The original value is 1.2, which sometimes increases/decreases by
 ;; more than a single point size. For example: (* 1.2 12) = 14.39
-(setq text-scale-mode-step 1.09)
+(setq text-scale-mode-step 1.084)
 
 (load-package 'custom-fonts
   :require
   :after-load
   (setq custom-fonts-alist
-        '((Apple . ( :mono "SF Mono"
-                     :vari "New York"
-                     :mode "SF Compact Text"
-                     :line nil
-                     :mono-height 120
-                     :mode-height 130
-                     :vari-height 140))
+        '((Apple    . ( :mono "SF Mono"
+                        :vari "SF Text Pro"
+                        :mode "SF Compact Text"
+                        :line nil
+                        :mono-height 120
+                        :mode-height 130
+                        :vari-height 140))
           (Berkeley . ( :mono "Berkeley Mono"
-                        :vari "Go"
+                        :vari "Verdana"
                         :mode "SF Compact Text"
                         :line nil
                         :mono-height 120
                         :mode-height 130
                         :vari-height 130))
-          (JetBrains . ( :mono "JetBrains Mono"
-                         :vari "SF Pro Text"
-                         :mode "SF Compact Text"
-                         :line nil
-                         :mono-height 120
-                         :mode-height 130
-                         :vari-height 120))
           (Pragmata . ( :mono "PragmataPro"
-                        :vari "SF Pro Text"
+                        :vari "Inter"
                         :mode "SF Compact Text"
                         :line nil
                         :mono-height 130
                         :mode-height 130
-                        :vari-height 120))))
+                        :vari-height 120))
+          (Writing  . ( :mono "SF Mono"
+                        :vari "Charter"
+                        :mode "SF Compact Text"
+                        :line nil
+                        :mono-height 120
+                        :mode-height 130
+                        :vari-height 160))
+          ))
 
   (set-custom-fonts "Apple"))
 

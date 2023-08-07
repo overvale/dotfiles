@@ -151,7 +151,8 @@
         vertico
         visual-regexp
         visual-regexp-steroids
-        vundo))
+        vundo
+        wc-mode))
 
 ;;;; Load-Package Macro
 
@@ -1552,6 +1553,10 @@ S-s-.   toggle invisible        (       toggle more info") t)
   :require
   :eval
   (move-text-default-bindings))
+
+(load-package 'wc-mode
+  :after-load
+  (setq wc-modeline-format "%tww"))
 
 
 ;;; Libraries

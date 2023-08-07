@@ -646,8 +646,8 @@ With a prefix ARG always prompt for command to use."
 ;;; Theme & Cursor
 
 (custom-set-variables
- '(cursor-type 'box)
- '(cursor-in-non-selected-windows 'hollow)
+ '(cursor-type 'bar)
+ '(cursor-in-non-selected-windows nil)
  '(blink-cursor-blinks 0)
  '(blink-cursor-interval 0.5)
  '(blink-cursor-delay 0.2))
@@ -708,11 +708,16 @@ This function is missing in modus-themes 4.0 for some reason."
           (underline-link-symbolic border)))
 
   (setq modus-operandi-palette-overrides
-        '((bg-mode-line-active bg-blue-intense)
-          (fg-mode-line-active fg-main)
+        '((comment red)
+          (bg-mode-line-active bg-dim)
+          (fg-mode-line-active fg-alt)
+          (bg-mode-line-inactive bg-main)
+          (fg-mode-line-inactive border)
+          (border-mode-line-active border)
+          (border-mode-line-inactive border)
           (bg-region bg-lavender)
           (fg-region fg-main)
-          (comment red)
+          (fringe bg-main)
           (string green-cooler)))
 
   (setq modus-vivendi-palette-overrides

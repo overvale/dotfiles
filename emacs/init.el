@@ -816,7 +816,7 @@ This function is missing in modus-themes 4.0 for some reason."
   "Return a string indicating buffer modification status."
   (if (and (buffer-modified-p) ;; modified
            (buffer-file-name)) ;; file-visiting buffer
-      (propertize " 􀑇"
+      (propertize " 􀜞"
                   'help-echo "Buffer is modified.")))
 
 (defun mode-line-buffer-read-only-status ()
@@ -837,22 +837,64 @@ This function is missing in modus-themes 4.0 for some reason."
       (propertize (concat " 􀆏" (number-to-string line-spacing) " ")
                   'help-echo "Buffer's line-spacing has been modified.")))
 
-;; Normally the buffer name is right-padded with whitespace until it
-;; is at least 12 characters. This is a waste of space, so we
-;; eliminate the padding here. Check the docstrings for more
-;; information.
-(setq-default mode-line-buffer-identification
-              (propertized-buffer-identification "%b"))
+;; back-ported from Emacs 29.1
+(defun mode-line-window-selected-p ()
+  "Return non-nil if we're updating the mode line for the selected window.
+This function is meant to be called in `:eval' mode line
+constructs to allow altering the look of the mode line depending
+on whether the mode line belongs to the currently selected window
+or not."
+  (let ((window (selected-window)))
+    (or (eq window (old-selected-window))
+	(and (minibuffer-window-active-p (minibuffer-window))
+	     (with-selected-window (minibuffer-window)
+	       (eq window (minibuffer-selected-window)))))))
+
+(defun modeline-major-mode-indicator ()
+  "Return appropriate propertized mode line indicator for the major mode."
+  (let ((indicator (cond
+                    ((derived-mode-p 'text-mode) "§")
+                    ((derived-mode-p 'prog-mode) "λ")
+                    ((derived-mode-p 'comint-mode) ">_")
+                    (t "◦"))))
+    (propertize indicator 'face 'shadow)))
+
+(defun modeline-major-mode-name ()
+  "Return capitalized `major-mode' without the -mode suffix."
+  (capitalize (string-replace "-mode" "" (symbol-name major-mode))))
+
+(defun modeline-major-mode-help-echo ()
+  "Return `help-echo' value for `prot-modeline-major-mode'."
+  (if-let ((parent (get major-mode 'derived-mode-parent)))
+      (format "Symbol: `%s'.  Derived from: `%s'" major-mode parent)
+    (format "Symbol: `%s'." major-mode)))
 
 (setq-default mode-line-format
-              '((:eval (mode-line-buffer-modified-status))
-                "  " mode-line-buffer-identification "  "
-                (:eval (mode-line-buffer-read-only-status))
-                (:eval (mode-line-buffer-confirm-kill-status))
-                (:eval (if (eq buffer-position t) (list "  􀋵 " mode-line-position "  ") " "))
-                mode-line-modes
-                (:eval (mode-line-buffer-line-spacing-status))
-                mode-line-misc-info))
+              '((:eval (propertize (mode-line-buffer-modified-status) 'face 'modus-themes-fg-blue-intense))
+                ;; buffer name
+                (:eval (propertize "  %b  " 'face 'bold))
+                ;; Major Mode
+                "    "
+                (:eval
+                 `(,(modeline-major-mode-indicator)
+                   " "
+                   ,(modeline-major-mode-name)
+                   ))
+                ;; buffer status
+                (:eval (propertize (mode-line-buffer-read-only-status) 'face 'warning))
+                (:eval (propertize (mode-line-buffer-confirm-kill-status) 'face 'warning))
+                "    "
+                ;; Modes
+                (:eval (when (mode-line-window-selected-p)
+                           mode-line-modes))
+                ;; Cursor position in buffer
+                (:eval (when (mode-line-window-selected-p)
+                         (when (eq buffer-position t)
+                           (list "  􀋵 " mode-line-position "  "))))
+                ;; Line-height spacing
+                (:eval (when (mode-line-window-selected-p)
+                         (mode-line-buffer-line-spacing-status)))))
+
 
 
 ;;; Mac-style Tabs

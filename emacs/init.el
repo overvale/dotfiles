@@ -558,6 +558,8 @@ With a prefix ARG always prompt for command to use."
   ["Dispatch Transient"
    [("a" "AutoFill" auto-fill-mode)
     ("v" "Wrap Lines" visual-line-mode)
+    ("V" "Variable Width" variable-pitch-mode)
+    ("o" "Olivetti" olivetti-mode)
     ("h" "Line Highlight" hl-line-mode)
     ("l" "List Buffers" bs-show)
     ("k" "Kill Buffer" kill-buffer-dwim)

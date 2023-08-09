@@ -70,7 +70,7 @@
 
 (custom-set-variables
  '(inhibit-startup-screen t)
- '(scroll-bar-mode nil)
+ '(scroll-bar-mode t)
  '(tool-bar-mode nil)
  '(ring-bell-function 'ignore)
  '(use-dialog-box nil)
@@ -135,6 +135,7 @@
         embark
         embark-consult
         exec-path-from-shell
+        hide-mode-line
         lua-mode
         magit
         markdown-mode
@@ -720,6 +721,7 @@ This function is missing in modus-themes 4.0 for some reason."
           (border-mode-line-inactive border)
           (bg-region bg-lavender)
           (fg-region fg-main)
+          (cursor "#2f7bff")
           (fringe bg-main)
           (string green-cooler)))
 
@@ -750,7 +752,7 @@ This function is missing in modus-themes 4.0 for some reason."
   :after-load
   (setq custom-fonts-alist
         '((Apple    . ( :mono "SF Mono"
-                        :vari "SF Text Pro"
+                        :vari "SF Pro Text"
                         :mode "SF Compact Text"
                         :line nil
                         :mono-height 120
@@ -857,7 +859,7 @@ or not."
                     ((derived-mode-p 'prog-mode) "λ")
                     ((derived-mode-p 'comint-mode) ">_")
                     (t "◦"))))
-    (propertize indicator 'face 'shadow)))
+    (propertize indicator)))
 
 (defun modeline-major-mode-name ()
   "Return capitalized `major-mode' without the -mode suffix."

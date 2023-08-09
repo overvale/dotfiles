@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+if [[ $1 == "-h" ]]; then
+    echo "Usage: todo [text]"
+    echo "       Without arguments, opens todo file."
+    echo "       With arguments, prepends arguments to the todo file."
+    return 0
+fi
+
+TODO="${HOME}/cloud/todo.txt"
+if [ $# -eq 0 ]; then
+    open $TODO
+else
+    sed -i '' "1s/^/$*"$'\\n/g' $TODO
+fi

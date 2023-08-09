@@ -8,7 +8,6 @@ function pastePlainText()
    app:selectMenuItem({"Edit", "Paste"})
 end
 
-function copyMailURL() os.execute( "~/home/dot/bin/getMailURL | pbcopy" ) end
 function newMailMessage() os.execute("open mailto:") end
 
 function snipWave() hs.eventtap.keyStrokes("(waving hands around)") end

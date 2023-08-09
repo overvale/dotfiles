@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+if [[ $1 == "-h" ]]; then
+    echo "Usage:     log [options] [text]"
+    echo "Options:   -h   Display this help."
+    echo "           -l   Open the logs folder."
+    echo "Without arguments, opens today's log file."
+    echo "With arguments, appends to today's log file."
+    return 0
+fi
+
+LOGPATH="${HOME}/cloud/log/"
+DATE=$(date +%Y-%m-%d)
+FILENAME="${LOGPATH}${DATE}.txt"
+
+if [[ $1 == "-l" ]]; then
+    echo "Opening logbook..."
+    open $LOGPATH
+    return 0
+fi
+
+if [ ! -f $FILENAME ]; then
+    touch $FILENAME
+    echo "Log file created."
+fi
+if [ $# -eq 0 ]; then
+    open $FILENAME
+else
+    echo "$*" >> $FILENAME
+    echo "Appended to log."
+fi

@@ -65,13 +65,19 @@ transientKeysBindings = {
   { {'cmd'}, 'r', 'Reminders' },
   { {'cmd'}, 'f', newFinderWindow },
   { {'cmd'}, 'g', searchGoogle },
+  { {'cmd'}, 'd', todoTXT },
+  { {'cmd'}, 'l', logbook },
 }
 
 
 hammerMenuTable = {
+  -- { title = "", fn = },
   { title = "Toggle Dark Mode", fn = toggleDarkMode },
   { title = "Toggle Stage Manager", fn = toggleStageMan },
   { title = "Toggle Menu Bar", fn = toggleMenubar },
+  { title = "-" },
+  { title = "todo.txt", fn = todoTXT},
+  { title = "Today's Log", fn = logbook },
   { title = "-" },
   { title = "Snippets", menu = {
     { title = "(waving hands around)", fn = snipWave },
@@ -90,7 +96,6 @@ hammerMenuTable = {
     }
   },
   { title = "-" },
-  { title = "Mail", disabled = true },
   { title = "New Mail Message", fn = newMailMessage },
   { title = "Copy Mail Message URL", fn = copyMailURL},
   { title = "-" },

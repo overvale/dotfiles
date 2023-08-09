@@ -1382,25 +1382,29 @@ S-s-.   toggle invisible        (       toggle more info") t)
 (defkey global-map "C-c h" 'quick-help)
 
 
-;;; Text-Plus-Mode
+;;; Focus Mode
 
-(defvar-local text-plus-mode nil)
+(defvar-local focus-mode nil)
 
-(defun text-plus-mode ()
-  "Toggle orgalist-mode, orgtbl-mode, and visual-line-mode."
+(defun focus-mode ()
+  "Toggle `focus-mode'."
   (interactive)
-  (if text-plus-mode
-      (progn (setq text-plus-mode nil)
+  (if focus-mode
+      (progn (setq focus-mode nil)
              (orgalist-mode -1)
-             (orgtbl-mode -1)
              (visual-line-mode -1)
+             (variable-pitch-mode -1)
+             (olivetti-mode -1)
+             (text-scale-mode -1)
              (message "text-plus-mode deactivated"))
-    (progn (setq text-plus-mode t)
+    (progn (setq focus-mode t)
            (orgalist-mode 1)
-           (orgtbl-mode 1)
            (visual-line-mode 1)
+           (variable-pitch-mode 1)
+           (olivetti-mode 1)
+           (setq-local text-scale-mode-amount 2)
+           (text-scale-mode 1)
            (message "text-plus-mode activated"))))
-
 
 
 ;;; Snippets

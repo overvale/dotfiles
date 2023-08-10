@@ -427,4 +427,25 @@ S-s-.   toggle invisible        (       toggle more info") t)
      ])"))
 
 
+;;; Logbook
+
+(defvar logbook-dir-personal "~/cloud/log/"
+  "Directory containing personal logbook entries.")
+
+(defun find-logbook-personal nil
+  (interactive)
+  (find-file logbook-dir-personal))
+
+(defun grep-logbook-personal nil
+  (interactive)
+  (consult-grep logbook-dir-personal))
+
+(defun find-log-entry-personal nil
+  "Create a new entry in `logbook-dir-personal'."
+  (interactive)
+  (let* ((date (format-time-string "%Y-%m-%d"))
+         (filename (concat logbook-dir-personal date ".txt")))
+    (pop-to-buffer (find-file filename))))
+
+
 (provide 'overvale-tools)

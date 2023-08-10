@@ -86,6 +86,10 @@
     ("l" "List Buffers" bs-show)
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("K" "Kill Buffer & Window" kill-buffer-and-window)]
+   ["Logbook"
+    ("l f" "Open Logbook" find-logbook-personal)
+    ("l g" "Grep Logbook" grep-logbook-personal)
+    ("l t" "Today's Log Entry" find-log-entry-personal)]
    [
     ("s o" "*scratch-org*" scratch-buffer-org)
     ("s m" "*scratch-markdown*" scratch-buffer-markdown)
@@ -93,8 +97,7 @@
     ("q" "Quick Help" quick-help)
     ("g" "Magit Status" magit-status)
     ]
-   [("L" "Logbook" logbook-dispatch)
-    ("p" "Package Ops..." package-dispatch)
+   [("p" "Package Ops..." package-dispatch)
     ("m" "Keyboard Macro..." kbd-macro-dispatch)
     ("c" "Calendar" calendar)
     ("w" "World Clock" world-clock)]

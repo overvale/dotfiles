@@ -107,9 +107,14 @@
 (use-package vertico
   :init
   (vertico-mode 1)
-  (vertico-unobtrusive-mode 1)
   (vertico-multiform-mode 1)
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+  :custom
+  (vertico-multiform-commands
+   '((consult-grep buffer)
+     (grep-logbook-personal buffer)
+     (execute-extended-command unobtrusive)
+     (switch-to-buffer unobtrusive)))
   :bind
   (:map vertico-map
         ("M-v" . vertico-multiform-vertical)

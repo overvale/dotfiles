@@ -11,24 +11,11 @@
 
 ;;; Commentary:
 
-;; This file has an outline which can be viewed by looking at comments
-;; starting with three or more semicolons. `outline-minor-mode' supports this
-;; convention by default and helps with navigation. You can also create an
-;; occur buffer with the search /^;;;+/.
-
 ;; Every Emacs configuration is unique to the person who created it, to their
 ;; needs and their taste. This one takes the following approach:
 ;;
 ;;   + I prefer to write my own code instead of installing packages, because
 ;;     I love pain and hate sleep.
-;;   + I use package.el and don't use Use-Package. Get out your pitchfork,
-;;     I'll be waiting for you at the castle.
-;;   + It is NOT modular, so if you don't have all the listed packages
-;;     installed large parts of the config won't work. It is also (largely)
-;;     grouped by topic and not by package, so a package's keybindings might
-;;     be in a few different places. If this drives you crazy simply accept
-;;     that the world is an insane and unfair place and have an ice cream,
-;;     you'll soon feel better.
 ;;   + Symbol names are not prefixed (for the most part) so take care to
 ;;     to avoid collisions if you copy something into your own config. This
 ;;     is probably not one of my good ideas.
@@ -39,7 +26,10 @@
 ;; https://github.com/casouri/lunarymacs
 ;; https://github.com/oantolin/emacs-config
 
-(load (concat user-home-dir "src/lisp/private.el"))
+;;; Code:
+
+;;;; Basic Setup, Personal Lisp
+
 (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/"))
 
 (require 'overvale-setup)
@@ -50,7 +40,7 @@
 (require 'overvale-modeline)
 (require 'overvale-tools)
 
-;;; External Packages
+;;;; External Packages
 
 (require 'package)
 
@@ -188,7 +178,7 @@
   (wc-modeline-format "%tww"))
 
 
-;;; Libraries
+;;;; Built-in Libraries
 
 (use-package prog-mode
   :init

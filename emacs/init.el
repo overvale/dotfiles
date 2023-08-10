@@ -245,7 +245,4 @@
                t))
 
 
-;; (require 'overvale-org)
-
-
 ;;; End of init.el

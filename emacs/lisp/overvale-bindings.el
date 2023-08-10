@@ -83,7 +83,8 @@
     ("V" "Variable Width" variable-pitch-mode)
     ("o" "Olivetti" olivetti-mode)
     ("h" "Line Highlight" hl-line-mode)
-    ("l" "List Buffers" bs-show)
+    ("b" "List Buffers" bs-show)
+    ("r" "Rename Visited File" rename-visited-file)
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("K" "Kill Buffer & Window" kill-buffer-and-window)]
    ["Logbook"
@@ -107,6 +108,8 @@
     ;; ("t" "Toggle Dark/Light Theme" modus-themes-toggle :transient t)
     ;; ("D" "Date/Time mode-line" toggle-date-time-battery)
     ]])
+
+;; TODO: create a fonts transient for the above, and for `global-text-scale-adjust'.
 
 (transient-define-prefix kbd-macro-dispatch ()
   "Transient for keyboard macros."

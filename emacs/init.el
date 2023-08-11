@@ -4,8 +4,8 @@
 ;; Learning Emacs was my COVID pandemic project, now I cannot escape.
 
 ;; Author: Oliver Taylor
-;; URL: https://olivertaylor.net
-;; URL: https://github.com/olivertaylor/dotfiles
+;; URL: https://overvale.com
+;; URL: https://github.com/overvale/dotfiles
 
 ;; This config targets Emacs 29.1
 

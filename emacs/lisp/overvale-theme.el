@@ -65,12 +65,9 @@
 
   (setq modus-operandi-palette-overrides
         '((comment red)
-          (bg-mode-line-active bg-dim)
-          (fg-mode-line-active fg-alt)
-          (bg-mode-line-inactive bg-main)
-          (fg-mode-line-inactive border)
-          (border-mode-line-active border)
-          (border-mode-line-inactive border)
+          ;; (bg-mode-line-active bg-hl-line)
+          (border-mode-line-active border-mode-line-inactive)
+          (bg-mode-line-inactive bg-dim)
           (bg-region bg-lavender)
           (fg-region fg-main)
           (cursor "#2f7bff")

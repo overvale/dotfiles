@@ -450,4 +450,12 @@ S-s-.   toggle invisible        (       toggle more info") t)
     (pop-to-buffer (find-file filename))))
 
 
+;;; todo.txt
+
+(defun todo-personal nil
+  "Find personal todo list."
+  (interactive)
+  (find-file "~/cloud/todo.txt"))
+
+
 (provide 'overvale-tools)

@@ -62,7 +62,6 @@
  ("s-|" . mac-toggle-tab-group-overview)
  ("M-8" . (lambda () (interactive) (insert "•"))))
 
-
 ;; None of these seem to work -- mac-port issue?
 (custom-set-variables
  '(mouse-drag-mode-line-buffer t)
@@ -87,29 +86,21 @@
     ("r" "Rename Visited File" rename-visited-file)
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("K" "Kill Buffer & Window" kill-buffer-and-window)]
-   ["Logbook"
+   [
+    ("t" "todo.txt" todo-personal)
     ("l f" "Open Logbook" find-logbook-personal)
     ("l g" "Grep Logbook" grep-logbook-personal)
     ("l t" "Today's Log Entry" find-log-entry-personal)]
    [
     ("s o" "*scratch-org*" scratch-buffer-org)
     ("s m" "*scratch-markdown*" scratch-buffer-markdown)
-    ("O" "Org Mode" org-mode)
     ("q" "Quick Help" quick-help)
     ("g" "Magit Status" magit-status)
     ]
    [("p" "Package Ops..." package-dispatch)
     ("m" "Keyboard Macro..." kbd-macro-dispatch)
     ("c" "Calendar" calendar)
-    ("w" "World Clock" world-clock)]
-   [
-    ;; ("f" "Set Fonts" set-custom-fonts)
-    ;; ("F" "Set Buffer Fonts" buffer-remap-faces-mode)
-    ;; ("t" "Toggle Dark/Light Theme" modus-themes-toggle :transient t)
-    ;; ("D" "Date/Time mode-line" toggle-date-time-battery)
-    ]])
-
-;; TODO: create a fonts transient for the above, and for `global-text-scale-adjust'.
+    ("w" "World Clock" world-clock)]])
 
 (transient-define-prefix kbd-macro-dispatch ()
   "Transient for keyboard macros."
@@ -164,16 +155,13 @@
     ("b" "Balance"    balance-windows)
     ("f" "Fit"        fit-window-to-buffer)
     ("+" "Toggle H/V Split" toggle-window-split)
-    ("t" "Transpose Windows" transpose-windows)
-    ]
+    ("t" "Transpose Windows" transpose-windows)]
    ["Window"
-    ;; ("d" "Dedicate Window" dedicated-mode)
     ("k" "Kill" delete-window)
     ("s-w" "Kill Frame" delete-frame)
     ("K" "Kill Buffer & Window" kill-buffer-and-window)
     ("o" "Kill Others"  delete-other-windows)
-    ("m" "Maximize" maximize-window)]
-   [""
+    ("m" "Maximize" maximize-window)
     ("c" "Clone Indirect" clone-indirect-buffer)
     ("T" "Tear Off" tear-off-window)]])
 

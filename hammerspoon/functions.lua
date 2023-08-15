@@ -80,3 +80,14 @@ function newFinderWindow()
    hs.osascript.applescript('tell application "Finder" to make new Finder window')
    finder:activate()
 end
+
+function textEditFont()
+    local applescript = [[
+        tell application "TextEdit"
+            tell front document
+                set font to "SF Pro Text"
+                set size to 14
+            end tell
+        end tell]]
+    hs.osascript.applescript(applescript)
+end

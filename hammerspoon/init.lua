@@ -118,6 +118,7 @@ readlineModeMap = hs.hotkey.modal.new()
 excelModeMap = hs.hotkey.modal.new()
 bikeModeMap = hs.hotkey.modal.new()
 novaModeMap = hs.hotkey.modal.new()
+textEditModeMap = hs.hotkey.modal.new()
 
 -- Readline
 readlineModeMap:bind({'alt'}, 'l', function() menuLowerCase() end)
@@ -129,6 +130,10 @@ readlineModeMap:bind({'alt'}, 'd', function() keyUpDown({'alt'}, 'forwarddelete'
 
 -- Excel
 excelModeMap:bind({'cmd'}, 'return', function() keyUpDown({}, 'f2') end)
+
+-- TextEdit
+textEditModeMap:bind({'cmd', 'alt'}, 't', function() textEditFont() end)
+
 
 -- App Activation Watcher
 function appActivation(appName, eventType, appObject)
@@ -142,6 +147,11 @@ function appActivation(appName, eventType, appObject)
          excelModeMap:enter()
       else
          excelModeMap:exit()
+      end
+      if (appName == "TextEdit") then
+         textEditModeMap:enter()
+      else
+         textEditModeMap:exit()
       end
    end
 end

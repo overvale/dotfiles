@@ -101,3 +101,6 @@ command! Wrc :w | :source $MYVIMRC | :echom "vimrc saved and reloaded!"
 command! WW :set wrap!
 command! TODO vimgrep TODO % | cw
 command! DATES vimgrep /\v<\d{4}-\d{2}-\d{2}>/j % | cw
+
+" Except when you want to
+nnoremap <leader>, :Erc<cr>

@@ -58,7 +58,7 @@ transientKeysBindings = {
   { {'cmd'}, 'm', 'Mail' },
   { {'cmd'}, 'c', 'Calendar' },
   { {'cmd'}, 'b', 'BBEdit' },
-  { {'cmd'}, 'e', 'Emacs' },
+  { {'cmd'}, 'n', 'Notes'},
   { {'cmd'}, 's', 'Safari' },
   { {'cmd'}, 'a', 'Music' },
   { {'cmd'}, 't', 'Terminal' },

@@ -138,7 +138,8 @@
                      :preview-key nil)
   :bind (([remap imenu] . consult-imesnu)
          ([remap yank-pop] . consult-yank-pop)
-         ([remap repeat-complex-command] . consult-complex-command)))
+         ([remap repeat-complex-command] . consult-complex-command)
+         ("s-f" . consult-line)))
 
 (use-package visual-regexp
   :bind ([remap query-replace] . vr/query-replace)

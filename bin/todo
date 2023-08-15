@@ -9,7 +9,7 @@ fi
 
 TODO="${HOME}/cloud/todo.txt"
 if [ $# -eq 0 ]; then
-    open $TODO
+    open -a BBEdit $TODO
 else
     sed -i '' "1s/^/$*"$'\\n/g' $TODO
 fi

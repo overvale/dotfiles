@@ -24,7 +24,7 @@ if [ ! -f $FILENAME ]; then
     echo "Log file created."
 fi
 if [ $# -eq 0 ]; then
-    open -a Bike $FILENAME
+    open $FILENAME
 else
     echo "$*" >> $FILENAME
     echo "Appended to log."

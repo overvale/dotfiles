@@ -115,10 +115,6 @@ hammerMenuSet()
 
 -- The Apps you want to customize
 readlineModeMap = hs.hotkey.modal.new()
-excelModeMap = hs.hotkey.modal.new()
-bikeModeMap = hs.hotkey.modal.new()
-novaModeMap = hs.hotkey.modal.new()
-textEditModeMap = hs.hotkey.modal.new()
 
 -- Readline
 readlineModeMap:bind({'alt'}, 'l', function() menuLowerCase() end)
@@ -142,16 +138,6 @@ function appActivation(appName, eventType, appObject)
          readlineModeMap:exit()
       else
          readlineModeMap:enter()
-      end
-      if (appName == "Microsoft Excel") then
-         excelModeMap:enter()
-      else
-         excelModeMap:exit()
-      end
-      if (appName == "TextEdit") then
-         textEditModeMap:enter()
-      else
-         textEditModeMap:exit()
       end
    end
 end

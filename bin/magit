@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+git_root=$(git rev-parse --show-toplevel)
+
+~/Applications/Emacs.app/Contents/MacOS/Emacs \
+  -L ~/.emacs.d/elpa -L ~/Applications/Emacs.app/Contents/Resources/lisp \
+  --eval "(setq magit-repository-directories '((\"$git_root\" . 0)))" \
+  --eval "(progn (magit-status \"$git_root\") (delete-other-windows))"

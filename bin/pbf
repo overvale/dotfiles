@@ -1,0 +1,13 @@
+#!/bin/bash
+# pbp -- pasteboard filter
+# pipe the pasteboard through the 1st argument,
+# then place it back on the pasteboard
+
+if [ -z "$1" ]; then
+  echo "Please provide a command to pipe through."
+  exit 1
+fi
+
+pbpaste | $@ | pbcopy
+echo "Clipboard content filtered through '$@' successfully:"
+pbpaste

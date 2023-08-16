@@ -11,4 +11,5 @@
 [log]
     decorate = full
 [alias]
+    st = status -sb
     ls = log --oneline

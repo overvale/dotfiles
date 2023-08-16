@@ -26,6 +26,8 @@ set wrap linebreak breakindent
 set wrapscan
 set nostartofline
 
+syntax on
+
 " Remap U to redo
 nnoremap U <c-r>
 

@@ -124,13 +124,6 @@ readlineModeMap:bind({'alt'}, 'b', function() keyUpDown({'alt'}, 'left') end)
 readlineModeMap:bind({'alt'}, 'f', function() keyUpDown({'alt'}, 'right') end)
 readlineModeMap:bind({'alt'}, 'd', function() keyUpDown({'alt'}, 'forwarddelete') end)
 
--- Excel
-excelModeMap:bind({'cmd'}, 'return', function() keyUpDown({}, 'f2') end)
-
--- TextEdit
-textEditModeMap:bind({'cmd', 'alt'}, 't', function() textEditFont() end)
-
-
 -- App Activation Watcher
 function appActivation(appName, eventType, appObject)
    if (eventType == hs.application.watcher.activated) then

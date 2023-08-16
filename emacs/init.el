@@ -28,6 +28,9 @@
 
 ;;; Code:
 
+;; TODO: Add preamble, with lexical binding, to all lisp files.
+;; TODO: Search dir for TODO statements
+
 ;;;; Basic Setup, Personal Lisp
 
 (add-to-list 'load-path (concat user-home-dir "dot/emacs/lisp/"))
@@ -100,6 +103,7 @@
   (vertico-multiform-mode 1)
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
   :custom
+  (vertico-resize t)
   (vertico-multiform-commands
    '((consult-grep buffer)
      (grep-logbook-personal buffer)

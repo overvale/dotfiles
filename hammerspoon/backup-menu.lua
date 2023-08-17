@@ -24,4 +24,4 @@ end
 
 backupMenu:setMenu(backupMenuItem)
 
-backupMenu:setTitle("Backups")
+backupMenu:setTitle("􀙖")

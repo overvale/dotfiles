@@ -23,7 +23,8 @@ hammerMenuIcon = [[ASCII:
 ]]
 
 hammerMenu = hs.menubar.new()
-hammerMenu:setIcon(hammerMenuIcon)
+--hammerMenu:setIcon(hammerMenuIcon)
+hammerMenu:setTitle("􀀒")
 
 function hammerMenuSet()
   hammerMenu:setMenu(hammerMenuTable)

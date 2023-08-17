@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Launch Acme with this script, rather than directly,
+# the below settings are important to Acme working correctly.
+
+export BROWSER=safari
+export TERM=dumb
+export SHELL=rc
+export PAGER=p
+
+export VARFONT="/mnt/font/GoRegular/16a/font"
+export FIXFONT="/mnt/font/GoMono/14a/font"
+
+# Start plumber
+if [ "$(pgrep plumber)" ]; then
+    echo "plumber is running"
+else
+	echo "starting plumber"
+	plumber
+	# order matters, the first matched rule wins
+	# see /usr/local/plan9port/plumb/basic
+	cat /Users/oht/home/plumbing $PLAN9/plumb/basic $PLAN9/plumb/fileaddr | 9p write plumb/rules
+fi
+
+exec acme -a -f $VARFONT -F $FIXFONT &

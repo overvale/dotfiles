@@ -1,0 +1,38 @@
+#!/bin/rc
+
+rfork e
+srch='/search?q='
+
+fn usage {
+	echo 'usage: google [-wgi] text...' >[1=2]
+	echo '       text may be multiple words or/and quoted phrases'
+	exit 'usage'
+}
+
+while(! ~ $#* 0 && ~ $1 -* && ! ~ $1 --){
+	switch($1){
+	case -m
+		srch='/maps?q='
+	case -w
+		srch='/search?q='
+	case -g
+		srch='/groups?q='
+	case -i
+		srch='/images?q='
+	case *
+		usage
+	}
+	shift
+}
+
+if ( ~ $#* 0)
+	usage
+
+pat=''
+for (p){
+	if(echo $p | grep -s '[ 	]')
+		p='%22'^`{echo $p | sed 's/[ 	]/+/g'}^'%22'
+	pat=$pat+$p
+}
+
+open http://google.com^$srch^$pat

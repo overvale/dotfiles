@@ -1,0 +1,5 @@
+#!/usr/local/plan9/bin/rc
+
+echo name `{pwd}^/$1 | 9p write acme/$winid/ctl
+echo clean | 9p write acme/$winid/ctl
+echo get | 9p write acme/$winid/ctl

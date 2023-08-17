@@ -2,21 +2,15 @@
 
 ## Introduction
 
-This document describes, and includes some code for, how I like to set up my Mac. You might ask "How often do you buy a new computer? What's the point in documenting all this if you only have to do it once?" The answer is that I find that writing clarifies my thinking and writing everything down helps me remember why I did what I did (which is occasionally important). Additionally, I'd hate to lose the knowledge accumulated here simply from disuse or by losing my laptop.
-
-I bought a new laptop in the summer of 2020 and as I set it up I documented pretty much everything I did. I'm doing my best to remember to keep this document up to date.
-
-Some of the stuff below might seem a little militant (running as a non-admin user, installing as little as possible into `/Applications`, turning off analytics, using an ad-blocker, and digging through the nitty-gritty of background processes in the terminal) but I can tell you that since I started doing this I've seen a dramatic improvement in battery life on my laptop. Plus, it's more secure and private. So there.
+This document describes, and includes some code for, how I like to set up my Mac. I bought a new laptop in the summer of 2020 and as I set it up I documented pretty much everything I did. I'm doing my best to remember to keep this document up to date.
 
 
 ## Philosophy
 
 1. Use default apps and services first.
-2. Don't install Chrome.
-3. No Electron apps.
-4. New software should never slow the system, ideally only make it faster.
-5. Don't use apps that install background update deamons, if you can help it.
-6. `#hottip`: turn Wi-Fi on only when you need it, and to make backups, etc. Makes your computer faster, have less distractions, and greatly improves battery life.
+1. Don't install Chrome or Electron apps.
+1. New software should never slow the system, ideally only make it faster.
+1. Don't use apps that install background update deamons, if you can help it.
 
 
 ## Settings
@@ -26,6 +20,7 @@ Some of the stuff below might seem a little militant (running as a non-admin use
 - Check for software updates, install if you want.
 - Enable trackpad tap-to-click.
 - Enable three-finger-drag in `System Prefs > Accessibility`.
+- Run `defaults write -g NSWindowShouldDragOnGesture yes` in the terminal, then you can drag windows around with `ctrl+cmd` mouse-drag from anywhere in the window.
 - Change caps-lock to Control.
 - Set computer name in `System Prefs > Sharing`.
 - Require password immediately.
@@ -41,10 +36,8 @@ Some of the stuff below might seem a little militant (running as a non-admin use
 - On your iPhone, enable text message forwarded to your new computer.
 - Verify you're not sending analytics here: `System Preferences > Security & Privacy > Analytics & Improvements`.
 - Add unix welcome message `sudo echo "Welcome to UNIX!" > /etc/motd`.
-- Block Google Analytics `echo '\n0.0.0.0 google-analytics.com\n0.0.0.0 www.google-analytics.com >> /etc/hosts`
 - Set up ssh keys - use [GitHub instructions](https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) - don't forget to set a password, and store the password in your keychain.
-- Run `defaults write -g NSWindowShouldDragOnGesture yes` in the terminal, then you can drag windows around with `ctrl+option+cmd` mouse-drag from anywhere in the window.
-- Run `defaults write com.apple.dock autohide-time-modifier -float 0.4;killall Dock` in the terminal to speed up revealing the dock when you move your mouse to the bottom of the screen.
+- Run `defaults write com.apple.dock autohide-time-modifier -float 0.4; killall Dock` in the terminal to speed up revealing the dock when you move your mouse to the bottom of the screen.
 - Run `defaults write com.apple.TextEdit NSShowAppCentricOpenPanelInsteadOfUntitledFile -bool false` to make TextEdit create Untitled documents when it launches. [Source](https://mjtsai.com/blog/2020/12/10/making-textedit-create-an-untitled-document-at-launch/)
 - Run `defaults write com.apple.TextEdit "TabWidth" '4'`
 - Run `defaults -currentHost write -g NSTextKillRingSize -string 6` to expand the kill ring to 6 entries. See [here](https://www.hogbaysoftware.com/posts/mac-text-editing-mark-kill-yank/).
@@ -55,7 +48,6 @@ Some of the stuff below might seem a little militant (running as a non-admin use
 I try to use encryption wherever I can.
 
 - Encrypt the hard drive with FileVault.
-- Backups stored in the cloud are encrypted before they leave my computer.
 - Use encrypted methods for transfers/sync.
 - Protect secrets with additional encryption via disk images and GPG encrypted files.
 
@@ -78,57 +70,47 @@ While anyone could, in theory, adopt the settings above, the utilities and appli
 ### Utilities
 
 - Install command-line dev tools with `xcode-select --install`.
-- Install Magic Lasso (ad-blocker)
-- Install [StopTheMadness](https://underpassapp.com/StopTheMadness/)
-- Install [Hush](https://oblador.github.io/hush/)
 - Install [princeXML](https://www.princexml.com)
 - Install [Homebrew](https://brew.sh)
-- Install [Syncthing (macos)](https://github.com/syncthing/syncthing-macos)
 - Install [Pro Video Formats 2.2](https://support.apple.com/downloads/pro%2520video%2520formats) (work-related)
-- Install WorldWideWeb
+- Install Safari Extensions
+	- AdBlock
+	- [Hush](https://oblador.github.io/hush/)
 
 Install brew packages (you can run `brew leaves` to find out what you have installed right now):
 
 ```
 brew install \
      aspell \
-     exa \
      fzf \
      fd  \
      git \
      gpg \
+     markdown \
      pandoc \
-     parallel \
-     restic \
-     sdcv \
-     the_silver_searcher \
      tldr \
      tree \
      vim \
-     youtube-dl \
      zsh
 ```
-
-- Run `parallel --citation` to suppress the warning message that comes up on first-run.
-
 
 ### Applications
 
 Install as many app as you can into `~/Applications`, most work just fine from there, and apps in that directory run with the user's permissions, not admin permissions. Some tools, like Excel, require installation to `/Applications` so they can run background processes, others complain every launch but work just fine.
 
+- Apps from App Store account
 - BBEdit
-- Emacs (the [correct version](https://github.com/railwaycat/homebrew-emacsmacport), [more info](https://bitbucket.org/mituharu/emacs-mac/src/master/README-mac))
+- Emacs (the [mac port](https://github.com/railwaycat/homebrew-emacsmacport), [more info](https://bitbucket.org/mituharu/emacs-mac/src/master/README-mac))
 - Firefox
 - Hammerspoon
 - Monodraw
-- Tot
 - Transmit
-- ViDL
+- Tailscale
 
 
 ## My Stuff
 
-- Copy files from old machine / backup (thunderbolt bridge is nice if you have the cable).
+- Copy files from old machine / backup.
 - Copy fonts from backup.
 - Install [textplay](http://git.io/textplay) with `cd ~/home/src/textplay && make install`.
 
@@ -143,9 +125,6 @@ I pretty much organize everything under `~/home/`.
 	- `dot` - My dotfiles.
 	- `src` - Source code, and source code related things.
 	- `opt` - Basically a place for software installed via a `git clone`.
-	- `work`
-	- `project_a`
-	- `project_b`
 
 
 ### Symlinks
@@ -160,9 +139,9 @@ ln -s ~/home/dot/git/gitignore_global .gitignore_global
 ln -s ~/home/dot/zsh/zshrc ~/.zshrc
 ln -s ~/home/dot/zsh/zshenv ~/.zshenv
 ln -s ~/home/dot/hammerspoon ~/.hammerspoon
+ln -s ~/home/dot/vim ~/.vim
 ```
 
-- Rewrite all paths pointing to repos in `~/home/src/git/` — this can be done with the command `fd "\.git$" -H -t f | xargs bbedit`
 - Open emacs, zsh, etc. and verify everything is functioning correctly (plugins and whatnot).
 
 
@@ -173,81 +152,21 @@ This installs Webster's 1913 dictionary. Which is awesome.
 1. Download the newest release [here](https://github.com/cmod/websters-1913).
 2. Move it to `~/Library/Dictionaries`.
 
-To get it working in emacs [more info here](http://mbork.pl/2017-01-14_I'm_now_using_the_right_dictionary):
-
-1. `brew install sdcv`.
-2. [Download the stardict file](https://s3.amazonaws.com/jsomers/dictionary.zip).
-3. Install the [emacs-sdcv package](https://github.com/gucong/emacs-sdcv/).
-
-
-## More Info about Background Processes
-
-First check `System Preferences > Users & Groups > Login Items` and `System Preferences > Extensions > All` for anything listed there. Removing entries from this list often disables the corresponding background processes.
-
-- Check for Launch Deamons and Agents with `ls -al /Library/Launch* ~/Library/Launch*`
-	- If there's anything you don't want, just move them into a `disabled` folder.
-- List all non-apple "running *user* agents/daemons" `launchctl list | grep -v 'com.apple.' | tail -n+2 | sort -k 3`
-- List all non-apple "running *system* agent/daemons" `sudo launchctl list | grep -v 'com.apple.' | tail -n+2 | sort -k 3`
-- Check for kernel extensions with: `kextstat | grep -v com.apple`
-- List all running processes, minus system stuff: `ps -ax | grep -v '/System\|/Applications\|/usr\|/sbin\|ttys00[0-9]'`
-
-This kills Aspera in all its forms - if chrome + plugin is running, you'll need to quit Chrome:
-
-```
-ps -Ax | grep -i asperacrypt   | sed /grep/d | awk '{ print $1 }' | xargs kill -9
-ps -Ax | grep -i asperaconnect | sed /grep/d | awk '{ print $1 }' | xargs kill -9
-```
-
-For details on killing Adobe processes: <https://www.ravbug.com/tutorials/stop-adobe-daemons/>
-
 
 ## Backups
 
-1. Don't trust the hardware you're using. Which means multiple backups, local and off-site.
-2. Don't trust the cloud services you pay for. Which means encrypting data before you upload it.
-
 My setup is basically:
 
-1. Laptop – for anything I'm working on, or want quick access to.
-2. Local NAS (with RAID backup) – for large media and inactive archives.
-3. Cloud (encrypted pre-upload) – for versioned backups of laptop data.
+1. Laptop -- for anything I'm working on, or want quick access to.
+2. Local NAS (with RAID backup) -- for large media and archives.
+3. Cloud -- for versioned backups of laptop data.
 
 I've settled on using an `rsync` backup script to a server that creates regular snapshots. This allows me to keep the backups very simple and rely on the server’s snapshots for versioning.
-
-```
-             ┌───────────┐   ┌───────────┐             
-             │  Server   │   │ Local NAS │             
-             └───────────┘   └───────────┘             
-                   ▲               ▲                   
-                   │               │                   
-                   │               │                   
-                   └───────┬───────┘                   
-                           │                           
-                           │                           
-                           │                           
-    ┌───────────┐    ┌───────────┐
-    │  iPhone   │    │  MacBook  │
-    └───────────┘    └───────────┘
-          │                ▲                           
-          │                │                           
-          │                │                           
-          │          ┌───────────┐                     
-          └─────────▶│  iCloud   │                     
-                     └───────────┘                     
-```
-
-*iPhone to iCloud* -- Standard iCloud backup. I use iCloud Photos so every photo I take is uploaded there.
-
-*iCloud to MacBook* -- I have the Photos app on my MacBook set to download all the originals, that way I have a local copy of everything.
-
-*MacBook to Local NAS* -- For these backups I use Syncthing, which I've found very reliable, with an installation both on my MacBook and on my Synology NAS. Mostly I backup the originals from iCloud photos, and iCloud's Mail folder.
-
-*MacBook to Cloud* -- I use `restic` for this, with some custom scripts. I use rsync.et, which I really like.
 
 
 ## Synology Setup
 
-I have a Synology NAS that I use for backups. Mostly I connect through the Finder via SMB, or through Transmit via SFTP, but I occasionally use tools like rsync, restic, scp, etc. that need ssh access.
+I have a Synology NAS that I use for backups. Mostly I connect through the Finder via SMB, or through Transmit via SFTP, but I occasionally use tools like rsync, etc. that need ssh access.
 
 There are a few pain-in-the-ass details I've picks up along the way.
 

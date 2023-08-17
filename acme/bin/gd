@@ -1,3 +1,0 @@
-#!/bin/sh
-
-git --no-pager diff --no-color

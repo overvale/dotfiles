@@ -30,7 +30,7 @@ zstyle ':completion:*' insert-tab pending
 autoload -Uz url-quote-magic
 zle -N self-insert url-quote-magic
 
-export PROMPT='⯈ %F{green}[%n@%m %~ ]%f '
+export PROMPT='⯈ %F{magenta}[%n@%m %~ ]%f '
 
 # Private Stuff
 source ~/home/src/private-zshrc

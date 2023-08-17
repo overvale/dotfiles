@@ -32,9 +32,6 @@ zle -N self-insert url-quote-magic
 
 export PROMPT='⯈ %F{magenta}[%n@%m %~ ]%f '
 
-# Private Stuff
-source ~/home/src/private-zshrc
-
 
 # ALIASES
 # ----------------------------------------------------------------------------
@@ -62,12 +59,6 @@ alias ,lsrundeamons='launchctl list | grep -v "com.apple." | tail -n+2 | sort -k
 alias ,lsrunsysdeamons='sudo launchctl list | grep -v "com.apple." | tail -n+2 | sort -k 3'
 alias ,lskext='kextstat | grep -v com.apple'
 alias ,lsmyps='ps -ax | grep -v "/System\|/Applications\|/usr\|/sbin\|ttys00[0-9]"'
-
-
-# FZF
-# ----------------------------------------------------------------------------
-
-source ~/home/opt/fzf-tab/fzf-tab.plugin.zsh
 
 
 # FUNCTIONS

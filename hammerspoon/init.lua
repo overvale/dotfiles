@@ -34,6 +34,7 @@ require("macos-toggles")
 require("functions")
 require("hammer-menu")
 require("backup-menu")
+require("transient")
 
 anycomplete = hs.loadSpoon("Anycomplete")
 anycomplete.engine = "duckduckgo"
@@ -54,7 +55,7 @@ keyBindings = {
 
 -- Accepts strings and function names
 -- Strings are assumed to be Application names
-transientKeysBindings = {
+transientBindings = {
   { {'cmd'}, 'm', 'Mail' },
   { {'cmd'}, 'c', 'Calendar' },
   { {'cmd'}, 'b', 'BBEdit' },
@@ -69,6 +70,7 @@ transientKeysBindings = {
   { {'cmd'}, 'l', logbook },
 }
 
+transientSetBindings()
 
 hammerMenuTable = {
   -- { title = "", fn = },
@@ -106,7 +108,6 @@ hammerMenuTable = {
 hammerMenuSet()
 
 
-
 -- User Keymaps
 -- ----------------------------------------------
 -- This creates keymaps for specific apps, and creates an application watcher
@@ -137,51 +138,6 @@ end
 
 appActivationWatcher = hs.application.watcher.new(appActivation)
 appActivationWatcher:start()
-
-
--- Transient Keymap
--- ---------------------------------------------
--- This creates a custom transient keymap that is only active for one event
--- and then exists.
-
--- Requires a table named 'transientKeysBindings'
-
--- Create the model keymap to bind inside of
-transientKeys = hs.hotkey.modal.new()
-
-function transientKeys:entered()
-  -- Create the menubar item
-  myKeysMenuItem = hs.menubar.new():setTitle("􀇳 Transient Keymap!")
-  myKeysMenuItem:setTooltip("Press Escape to deactivate.")
-end
-
-function transientKeys:exited()
-  -- Remove the menu item
-  myKeysMenuItem:delete()
-end
-
--- Keymap should provide an escape and prevent recursion.
-do
-   local mod = {'cmd'}
-   local key = 'e'
-   hs.hotkey.bind(mod, key, function() transientKeys:enter() end)
-   transientKeys:bind(mod, key, function() transientKeys:exit() end)
-   transientKeys:bind('', 'escape', function() transientKeys:exit() end)
-end
-
--- Set the kindings in keymap
-for i, mapping in ipairs(transientKeysBindings) do
-  local mod = mapping[1]
-  local key = mapping[2]
-  local fn  = mapping[3]
-  transientKeys:bind(mod, key, function()
-  if (type(fn) == 'string') then
-    hs.application.launchOrFocus(fn)
-  else
-    fn()
-  end
-  transientKeys:exit() end)
-end
 
 
 -- Bindings

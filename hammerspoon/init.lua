@@ -34,6 +34,7 @@ require("macos-toggles")
 require("functions")
 require("hammer-menu")
 require("backup-menu")
+require("keybindings")
 require("transient")
 
 anycomplete = hs.loadSpoon("Anycomplete")
@@ -52,6 +53,8 @@ keyBindings = {
    { hyper, 'v', pastePlainText },
    { {'alt', 'cmd'}, 'm', toggleMenubar },
 }
+
+keyBindingsSet()
 
 -- Accepts strings and function names
 -- Strings are assumed to be Application names
@@ -139,17 +142,6 @@ end
 appActivationWatcher = hs.application.watcher.new(appActivation)
 appActivationWatcher:start()
 
-
--- Bindings
--- ---------------------------------------------
--- This binds keys to functions in the 'keyBindings' list.
-
-for i, mapping in ipairs(keyBindings) do
-   local mod = mapping[1]
-   local key = mapping[2]
-   local fn  = mapping[3]
-   hs.hotkey.bind(mod, key, function() fn() end)
-end
 
 
 -- END HAMMERSPOON CONFIG --

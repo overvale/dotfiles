@@ -70,7 +70,6 @@ transientBindings = {
   { {'cmd'}, 'f', newFinderWindow },
   { {'cmd'}, 'g', searchGoogle },
   { {'cmd'}, 'd', todoTXT },
-  { {'cmd'}, 'l', logbook },
 }
 
 transientSetBindings()
@@ -80,8 +79,7 @@ hammerMenuTable = {
   { title = "Toggle Stage Manager", fn = toggleStageMan },
   { title = "Toggle Menu Bar", fn = toggleMenubar },
   { title = "-" },
-  { title = "todo.txt", fn = todoTXT},
-  { title = "Today's Log", fn = logbook },
+  { title = "todo", fn = todoTXT},
   { title = "-" },
   { title = "Snippets", menu = {
     { title = "(waving hands around)", fn = snipWave },

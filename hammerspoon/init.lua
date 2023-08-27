@@ -76,7 +76,6 @@ transientBindings = {
 transientSetBindings()
 
 hammerMenuTable = {
-  -- { title = "", fn = },
   { title = "Toggle Dark Mode", fn = toggleDarkMode },
   { title = "Toggle Stage Manager", fn = toggleStageMan },
   { title = "Toggle Menu Bar", fn = toggleMenubar },
@@ -142,6 +141,17 @@ end
 appActivationWatcher = hs.application.watcher.new(appActivation)
 appActivationWatcher:start()
 
+-- Can I define like this?:
+--appBindings = {
+--	Excel = {
+--		{{'cmd'}, 'l', function() menuLowerCase() end)},
+--		{{'cmd'}, 'u', function() menuUpperCase() end)},
+--	},
+--	Bike = {
+--		{{'ctrl', 'alt'}, 'p', newMailMessage },
+--		{{'cmd'}, 'o', searchGoogle },
+--	},
+--}
 
 
 -- END HAMMERSPOON CONFIG --

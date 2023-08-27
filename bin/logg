@@ -13,18 +13,22 @@ LOGPATH="${HOME}/cloud/log/"
 DATE=$(date +%Y-%m-%d)
 FILENAME="${LOGPATH}${DATE}.txt"
 
+# Open logbook directory
 if [[ $1 == "-l" ]]; then
     echo "Opening logbook..."
     open $LOGPATH
     return 0
 fi
 
+# If today’s log entry doesn’t exist, create it
 if [ ! -f $FILENAME ]; then
     touch $FILENAME
     echo "Log file created."
 fi
+
+# Open it, if no argument, otherwise append
 if [ $# -eq 0 ]; then
-    open $FILENAME
+    open -a Bike $FILENAME
 else
     echo "$*" >> $FILENAME
     echo "Appended to log."

@@ -38,6 +38,10 @@ Plug 'thinca/vim-ft-markdown_fold'
 
 call plug#end()
 
+set background=dark
+colorscheme gruvbox8
+syntax enable
+
 " Statusline
 set statusline=\ %f\ %m\ %=\ %l/%c%V\ (%P)\ %y\ 
 
@@ -63,8 +67,6 @@ set wildmenu wildmode=longest:full
 set wrap linebreak breakindent
 set wrapscan
 set nostartofline
-
-syntax on
 
 " Remap U to redo
 nnoremap U <c-r>

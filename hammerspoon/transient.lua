@@ -87,8 +87,8 @@ end
 
 -- Bind keys for activating the transient keymap and cheetsheat
 do
-   local mod = {'cmd'}
-   local key = 'e'
+   local mod = {'ctrl'}
+   local key = 'return'
    hs.hotkey.bind(mod, key, function() transientKeys:enter() end)
    -- prevent recursion
    transientKeys:bind(mod, key, function() transientKeys:exit() end)

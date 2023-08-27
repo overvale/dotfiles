@@ -146,3 +146,18 @@ command! DATES vimgrep /\v<\d{4}-\d{2}-\d{2}>/j % | cw
 
 " Except when you want to
 nnoremap <leader>, :Erc<cr>
+
+augroup custom_misc
+    autocmd!
+    autocmd FileType gitcommit setlocal spell
+    autocmd BufRead,BufNewFile *.text,*.md setlocal spell filetype=markdown syntax=markdown
+augroup END
+
+function! Markdown()
+    setlocal spell
+    setlocal filetype=markdown
+    setlocal syntax=markdown
+endfunction
+
+inoreabbrev <expr> #!! "#!/usr/bin/env" . (empty(&filetype) ? '' : ' '.&filetype)
+

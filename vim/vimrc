@@ -1,5 +1,43 @@
 let mapleader = ','
 
+call plug#begin()
+" Improve searching in the buffer
+Plug 'junegunn/vim-slash'
+" Preview registers
+Plug 'junegunn/vim-peekaboo'
+" Add readline shortcuts to insert mode
+Plug 'tpope/vim-rsi'
+" My favorite color scheme
+Plug 'lifepillar/vim-gruvbox8'
+
+Plug 'junegunn/fzf.vim'
+    set rtp+=/usr/local/opt/fzf
+    nnoremap <leader>l :BLines<cr>      " Lines in current buffer
+    nnoremap <leader>L :Lines<cr>       " Lines in all loaded buffers
+    nnoremap <leader>f :Files<cr>       " Files in dir
+    nnoremap <leader>a :Ag<cr>          " Lines in all files in dir
+    nnoremap <leader>b :Buffers<cr>
+    nnoremap <leader>h :Helptags<cr>
+    nnoremap <leader>c :Colors<cr>
+    nnoremap <leader>t :Filetypes<cr>
+    nnoremap <leader><space> :Commands<cr>
+
+Plug 'tweekmonster/spellrotate.vim'
+    nmap <silent> zn <Plug>(SpellRotateForward)
+    nmap <silent> zN <Plug>(SpellRotateBackward)
+    vmap <silent> zn <Plug>(SpellRotateForwardV)
+    vmap <silent> zN <Plug>(SpellRotateBackwardV)
+
+Plug 'plasticboy/vim-markdown'
+    " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
+    let g:vim_markdown_folding_disabled=1
+    " Disable ge mapping
+    map <Plug> <Plug>Markdown_EditUrlUnderCursor
+    let g:vim_markdown_toc_autofit = 1
+Plug 'thinca/vim-ft-markdown_fold'
+
+call plug#end()
+
 " Statusline
 set statusline=\ %f\ %m\ %=\ %l/%c%V\ (%P)\ %y\ 
 

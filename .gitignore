@@ -1,6 +1,7 @@
 .DS_Store
 vim/.netrwhist
 vim/custom-dictionary.*
+vim/plugged
 plug.vim
 plug.vim.old
 bin/textplay

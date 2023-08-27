@@ -70,15 +70,6 @@
 (keymap-set isearch-mode-map "s-g" 'isearch-repeat-forward)
 (keymap-set isearch-mode-map "s-G" 'isearch-repeat-backward)
 
-;; None of these seem to work -- mac-port issue?
-(custom-set-variables
- '(mouse-drag-mode-line-buffer t)
- '(mouse-drag-and-drop-region-cross-program t)
- '(mouse-drag-and-drop-region-scroll-margin t)
- '(mouse-drag-copy-region t)
- '(dnd-indicate-insertion-point t)
- '(dnd-scroll-margin t))
-
 
 ;;; Transients
 
@@ -128,32 +119,6 @@
     ("s" "Selected" package-install-selected-packages)
     ("r" "Refresh" package-refresh-contents)
     ("l" "List" list-packages)]])
-
-;; I find the default mark-setting bindings to be difficult to remember. Who
-;; the heck can remember all these esoteric bindings? Much better to make
-;; these a simple transient dispatcher and give it a nice binding.
-(transient-define-prefix mark-dispatch ()
-  "Transient dispatcher for marking commands."
-  :transient-suffix 'transient--do-stay
-  [["Navigate:"
-    ("c" "Consult Mark" consult-mark :transient nil)
-    ("," "Back" pop-to-mark-command)
-    ("." "Forward" unpop-to-mark-command)]
-   ["Set/Extend Mark To..."
-    ("b" "Whole Buffer" mark-whole-buffer)
-    ("<" "Beginning of Buffer" mark-beginning-of-buffer)
-    (">" "End of Buffer" mark-end-of-buffer)
-    ("S" "Sexp" mark-sexp)
-    ("D" "Defun" mark-defun)]
-   [""
-    ("w" "Word" mark-word)
-    ("l" "Line" mark-line)
-    ("p" "Paragraph" mark-paragraph)
-    ("s" "Sentence" mark-sentence)
-    ("P" "Page" mark-page)]
-   ["Other:"
-    ("SPC" "Activate Mark" activate-the-mark)
-    ("RET" "Exit" transient-quit-all)]])
 
 (transient-define-prefix window-dispatch ()
   "Most commonly used window commands."

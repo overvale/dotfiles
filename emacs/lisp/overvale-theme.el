@@ -45,63 +45,13 @@
   (string= (shell-command-to-string "defaults read -g AppleInterfaceStyle")
            "Dark\n"))
 
-(use-package modus-themes
-  :init
-  (setq modus-themes-italic-constructs t
-        modus-themes-mixed-fonts t
-        modus-themes-prompts '(bold)
-        modus-themes-org-blocks 'gray-background
-        modus-themes-headings
-        '( (0 . (variable-pitch bold 1.4))
-           (1 . (variable-pitch bold 1.3))
-           (2 . (variable-pitch bold 1.2))
-           (3 . (variable-pitch bold 1.1))
-           (t . (1))))
-
-  (setq modus-themes-common-palette-overrides
-        '((underline-link border)
-          (underline-link-visited border)
-          (underline-link-symbolic border)))
-
-  (setq modus-operandi-palette-overrides
-        '((border-mode-line-active border-mode-line-inactive)
-          (bg-mode-line-active "#eeeeee")
-          (bg-mode-line-inactive bg-main)
-          (fringe bg-main)
-          (cursor "#2f7bff")
-          (bg-region "#bad6fc")
-          (bg-paren-match bg-changed)
-          (string green)
-          (comment red-warmer)
-          ))
-
-  (setq modus-vivendi-palette-overrides
-        '((bg-main bg-dim)
-          (cursor blue-intense)
-          (border-mode-line-active border-mode-line-inactive)
-          (bg-mode-line-active bg-cyan-subtle)
-          (fg-mode-line-active fg-main)
-          (bg-region bg-lavender)
-          (fg-region fg-main)
-          (comment yellow-cooler)
-          (string green-faint)))
-
-  (defun load-modus-theme-match-system nil
-    "Load `modus-operandi' or `modus-vivendi' matching the system theme."
-    (interactive)
-    (if (macos-dark-p)
-        (load-theme-cleanly 'modus-vivendi)
-      (load-theme-cleanly 'modus-operandi)))
-
-  (load-modus-theme-match-system)
-
-  (add-hook 'mac-effective-appearance-change-hook 'load-modus-theme-match-system))
+(load-theme 'standard-light)
 
 
 ;;;; Cursor
 
 (custom-set-variables
- '(cursor-type 'bar)
+ '(cursor-type 'box)
  '(cursor-in-non-selected-windows nil)
  '(blink-cursor-blinks 0)
  '(blink-cursor-interval 0.5)

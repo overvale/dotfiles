@@ -59,7 +59,6 @@
 ;; do not configure them.
 (setq package-selected-packages
       '(consult
-        delight
         embark
         embark-consult
         exec-path-from-shell
@@ -67,17 +66,14 @@
         magit
         markdown-mode
         marginalia
-        modus-themes
         move-text
         no-littering
-        olivetti
         orderless
-        orgalist
+        standard-themes
         vertico
         visual-regexp
         visual-regexp-steroids
-        vundo
-        wc-mode))
+        vundo))
 
 (use-package exec-path-from-shell
   :demand
@@ -99,24 +95,7 @@
 
 (use-package vertico
   :init
-  (vertico-mode 1)
-  (vertico-multiform-mode 1)
-  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-  :custom
-  (vertico-resize t)
-  (vertico-multiform-commands
-   '((consult-grep buffer)
-     (grep-logbook-personal buffer)
-     (execute-extended-command unobtrusive)
-     (switch-to-buffer unobtrusive)))
-  :bind
-  (:map vertico-map
-        ("M-v" . vertico-multiform-vertical)
-        ("M-r" . vertico-multiform-reverse)
-        ("M-u" . vertico-multiform-unobtrusive)
-        ("RET" . vertico-directory-enter)
-        ("DEL" . vertico-directory-delete-char)
-        ("M-DEL" . vertico-directory-delete-word)))
+  (vertico-mode 1))
 
 (use-package marginalia
   :init
@@ -159,28 +138,14 @@
 (use-package embark
   :bind ("C-." . embark-act))
 
-(use-package delight
-  :init
-  (with-eval-after-load 'flyspell (delight 'flyspell-mode " Spell" "flyspell"))
-  (delight 'outline-minor-mode " Out" "outline")
-  (delight 'auto-fill-function " Fill" "simple"))
-
 (use-package markdown-mode
   :init
   (add-to-list 'auto-mode-alist
                '("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . gfm-mode)))
 
-(use-package olivetti
-  :custom
-  (olivetti-body-width 82))
-
 (use-package move-text
   :init
   (move-text-default-bindings))
-
-(use-package wc-mode
-  :custom
-  (wc-modeline-format "%tww"))
 
 
 ;;;; Built-in Libraries

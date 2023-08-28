@@ -12,8 +12,8 @@
 (custom-set-faces
  '(default ((t :family "SF Mono" :height 120)))
  '(fixed-pitch ((t :family "SF Mono")))
- '(mode-line-active ((t :family "SF Compact Text")))
- '(mode-line-inactive ((t :family "SF Compact Text")))
+ '(mode-line-active ((t :family "SF Compact Text" :height 130)))
+ '(mode-line-inactive ((t :family "SF Compact Text" :height 130)))
  '(variable-pitch ((t :family "SF Pro Text"))))
 
 ;; Enable rendering SF symbols on macOS.

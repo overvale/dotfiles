@@ -79,21 +79,14 @@
    [("a" "AutoFill" auto-fill-mode)
     ("v" "Wrap Lines" visual-line-mode)
     ("V" "Variable Width" variable-pitch-mode)
-    ("o" "Olivetti" olivetti-mode)
     ("h" "Line Highlight" hl-line-mode)
     ("b" "List Buffers" bs-show)
     ("r" "Rename Visited File" rename-visited-file)
     ("k" "Kill Buffer" kill-buffer-dwim)
     ("K" "Kill Buffer & Window" kill-buffer-and-window)]
    [
-    ("t" "todo.txt" todo-personal)
-    ("l f" "Open Logbook" find-logbook-personal)
-    ("l g" "Grep Logbook" grep-logbook-personal)
-    ("l t" "Today's Log Entry" find-log-entry-personal)]
-   [
     ("s o" "*scratch-org*" scratch-buffer-org)
     ("s m" "*scratch-markdown*" scratch-buffer-markdown)
-    ("q" "Quick Help" quick-help)
     ("g" "Magit Status" magit-status)
     ]
    [("p" "Package Ops..." package-dispatch)

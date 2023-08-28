@@ -28,7 +28,7 @@
 
 (custom-set-variables
  '(inhibit-startup-screen t)
- '(scroll-bar-mode t)
+ '(scroll-bar-mode nil)
  '(ring-bell-function 'ignore)
  '(use-dialog-box nil)
  '(use-file-dialog nil)

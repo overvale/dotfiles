@@ -28,14 +28,6 @@ Plug 'tweekmonster/spellrotate.vim'
     vmap <silent> zn <Plug>(SpellRotateForwardV)
     vmap <silent> zN <Plug>(SpellRotateBackwardV)
 
-Plug 'plasticboy/vim-markdown'
-    " Disable vim-markdown's folding in favor of thinca/vim-ft-markdown_fold
-    let g:vim_markdown_folding_disabled=1
-    " Disable ge mapping
-    map <Plug> <Plug>Markdown_EditUrlUnderCursor
-    let g:vim_markdown_toc_autofit = 1
-Plug 'thinca/vim-ft-markdown_fold'
-
 call plug#end()
 
 set background=dark
@@ -133,10 +125,7 @@ nnoremap ! :r!
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
 
 " Never use a mapping when a command will do! This is Vim!
-command! H1 :normal yypVr=
-command! H2 :normal yypVr-
 command! SS :set spell! | set spell?
-command! QR :enew ~/home/src/notes/vim-quickref
 command! Src :source $MYVIMRC | :echom "vimrc reloaded!"
 command! Erc :e $MYVIMRC
 command! Wrc :w | :source $MYVIMRC | :echom "vimrc saved and reloaded!"

@@ -42,13 +42,13 @@ function showKeyBindings()
             action = name or "Unknown Function"
         end
 
-        local line = keys .. "  " .. tostring(action) .. "\n"
-        if #line * 9 > maxWidth then maxWidth = #line * 9 end
+        local line = keys .. "\t" .. tostring(action) .. "\n"
+        if #line * 13 > maxWidth then maxWidth = #line * 13 end
         displayString = displayString .. line
     end
 
     local lines = select(2, displayString:gsub('\n', '\n')) + 1
-    local height = lines * 18 -- Adjust line height here
+    local height = lines * 20 -- Adjust line height here
 
     -- Create and position a background rectangle
     transientBG = hs.drawing.rectangle(hs.geometry.rect(19, 33, maxWidth, height))
@@ -56,7 +56,7 @@ function showKeyBindings()
 
     -- Create and position a textbox
     local styledTextAttributes = {
-        font = { name = "SF Mono", size = 14 },
+        font = { name = "SF Pro Text", size = 16 },
         color = transientTextColor,
         paragraphStyle = { alignment = "left" }
     }

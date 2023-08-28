@@ -1,6 +1,17 @@
 -- Functions
 -- -----------------------------------------------
 
+function copyMailURL() os.execute( "~/home/dot/bin/getMailURL | pbcopy" ) end
+
+function todoList()
+	hs.osascript.applescript([[
+	tell application "Notes"
+		tell folder "Notes"
+			show note "🗂️ Todo List"
+		end tell
+	end tell]])
+end
+
 function pastePlainText()
    p = hs.pasteboard.readDataForUTI(nil, "public.utf8-plain-text")
    hs.pasteboard.setContents(p)

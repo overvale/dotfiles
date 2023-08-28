@@ -1,27 +1,11 @@
---[[ Oliver Taylor's Hammerspoon Config
-homepage: https://github.com/olivertaylor/dotfiles
+-- Oliver Taylor's Hammerspoon Config
+-- https://github.com/overvale/dotfiles
 
-Acceptable keycodes are here:
-https://www.hammerspoon.org/docs/hs.keycodes.html#map
-
-Inspiration:
-https://spinscale.de/posts/2016-11-08-creating-a-productive-osx-environment-hammerspoon.html
-https://medium.com/@robhowlett/hammerspoon-the-best-mac-software-youve-never-heard-of-40c2df6db0f8
-https://github.com/jasonrudolph/keyboard
-https://github.com/dbmrq/dotfiles
-https://github.com/raulchen/dotfiles
-https://github.com/justintanner/universal-emacs-keybindings
-https://github.com/dbalatero/dotfiles/tree/master/hammerspoon
-https://github.com/senorprogrammer/hammerspoon_init/
-
---]]
 
 -- Setup
 -- -----------------------------------------------
 
 local hyper = {'cmd', 'alt', 'ctrl'}
-local alpha = {'cmd', 'ctrl'}
-local power = {'cmd', 'shift'}
 
 hs.window.animationDuration = 0
 
@@ -29,13 +13,8 @@ function keyUpDown(modifiers, key)
   hs.eventtap.keyStroke(modifiers, key, 0)
 end
 
-require("private")
 require("macos-toggles")
 require("functions")
-require("hammer-menu")
-require("backup-menu")
-require("keybindings")
-require("transient")
 
 anycomplete = hs.loadSpoon("Anycomplete")
 anycomplete.engine = "duckduckgo"
@@ -54,32 +33,49 @@ keyBindings = {
    { {'alt', 'cmd'}, 'm', toggleMenubar },
 }
 
-keyBindingsSet()
+function keyBindingsSet ()
+  for i, mapping in ipairs(keyBindings) do
+    local mod = mapping[1]
+    local key = mapping[2]
+    local fn  = mapping[3]
+    hs.hotkey.bind(mod, key, function() fn() end)
+  end
+end
+
+
+-- Transient
+-- ---------------------------------------------
+
+require("transient")
 
 -- Accepts strings and function names
 -- Strings are assumed to be Application names
 transientBindings = {
-  { {'cmd'}, 'm', 'Mail' },
-  { {'cmd'}, 'c', 'Calendar' },
-  { {'cmd'}, 'b', 'BBEdit' },
-  { {'cmd'}, 'n', 'Notes'},
-  { {'cmd'}, 's', 'Safari' },
-  { {'cmd'}, 'a', 'Music' },
-  { {'cmd'}, 't', 'Terminal' },
-  { {'cmd'}, 'r', 'Reminders' },
-  { {'cmd'}, 'f', newFinderWindow },
-  { {'cmd'}, 'g', searchGoogle },
-  { {'cmd'}, 'd', todoTXT },
+  { {}, 'm', 'Mail' },
+  { {}, 'c', 'Calendar' },
+  { {}, 'b', 'BBEdit' },
+  { {}, 'n', 'Notes'},
+  { {}, 's', 'Safari' },
+  { {}, 'a', 'Music' },
+  { {}, 't', 'Terminal' },
+  { {}, 'r', 'Reminders' },
+  { {}, 'f', newFinderWindow },
+  { {}, 'g', searchGoogle },
+  { {}, 'd', todoList },
 }
 
 transientSetBindings()
+
+
+-- Hammer Menu
+-- ---------------------------------------
 
 hammerMenuTable = {
   { title = "Toggle Dark Mode", fn = toggleDarkMode },
   { title = "Toggle Stage Manager", fn = toggleStageMan },
   { title = "Toggle Menu Bar", fn = toggleMenubar },
   { title = "-" },
-  { title = "todo", fn = todoTXT},
+  { title = "Todo List", fn = todoList},
   { title = "-" },
   { title = "Snippets", menu = {
     { title = "(waving hands around)", fn = snipWave },
@@ -105,10 +101,47 @@ hammerMenuTable = {
   { title = "New Finder Window", fn = newFinderWindow},
 }
 
-hammerMenuSet()
+hammerMenu = hs.menubar.new()
+
+styledTitle = hs.styledtext.new("􀂢", {
+    font = { size = 16.5 },
+})
+
+hammerMenu:setTitle(styledTitle)
+
+hammerMenu:setMenu(hammerMenuTable)
 
 
--- User Keymaps
+-- Backup Menu
+-- --------------------------------------------------
+
+backupMenu = hs.menubar.new()
+
+function lastBackupNAS ()
+   local output, _, _ = hs.execute("/Users/oht/home/src/rsync-backup/last-backup-NAS.sh")
+   return output
+end
+
+function lastBackupCloud ()
+   local output, _, _ = hs.execute("/Users/oht/home/src/rsync-backup/last-backup-cloud.sh")
+   return output
+end
+
+function backupMenuItem()
+    local menuTable = {
+      { title = "Latest Backups:", disabled = true },
+      { title = lastBackupNAS(), disabled = true },
+      { title = lastBackupCloud(), disabled = true },
+    }
+    return menuTable
+end
+
+backupMenu:setMenu(backupMenuItem)
+
+backupMenu:setTitle("􀙖")
+
+
+-- App-Specific Keymaps
 -- ----------------------------------------------
 -- This creates keymaps for specific apps, and creates an application watcher
 -- that activates and deactivates the mappings when the associated app
@@ -138,18 +171,6 @@ end
 
 appActivationWatcher = hs.application.watcher.new(appActivation)
 appActivationWatcher:start()
-
--- Can I define like this?:
---appBindings = {
---	Excel = {
---		{{'cmd'}, 'l', function() menuLowerCase() end)},
---		{{'cmd'}, 'u', function() menuUpperCase() end)},
---	},
---	Bike = {
---		{{'ctrl', 'alt'}, 'p', newMailMessage },
---		{{'cmd'}, 'o', searchGoogle },
---	},
---}
 
 
 -- END HAMMERSPOON CONFIG --
